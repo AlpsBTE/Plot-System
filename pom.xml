@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>BTEPlotSystem</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <repositories>
+        <!-- Spigot & Bukkit API -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+
+        <!-- World Edit & World Guard API -->
+        <repository>
+            <id>nachwahl-repo</id>
+            <url>https://maven.nachwahl.dev/</url>
+        </repository>
+
+        <repository>
+            <id>enginehub-maven</id>
+            <url>http://maven.enginehub.org/repo/</url>
+        </repository>
+
+        <repository>
+            <id>fawe-repo</id>
+            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+        </repository>
+
+        <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+
+        <!-- Discord JDA API -->
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Spigot API -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- Bukkit API -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Fast Async World Edit API [VLatest]-->
+        <dependency>
+            <groupId>com.boydti</groupId>
+            <artifactId>fawe-api</artifactId>
+            <version>latest</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- World Edit API [V1.6.9]-->
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1.9</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- World Guard API [V6.2]-->
+        <dependency>
+            <groupId>com.sk89q.worldguard</groupId>
+            <artifactId>worldguard-legacy</artifactId>
+            <version>6.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Inventory Menu Builder API [V1.6.0]-->
+        <dependency>
+            <groupId>org.ipvp</groupId>
+            <artifactId>canvas</artifactId>
+            <version>1.6.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Discord JDA API [V4.2.0_168]-->
+        <!--<dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>4.2.0_168</version>
+        </dependency>-->
+
+        <!-- MySQL Connector API [V8.0.22]-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.22</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Plugin Build Settings -->
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*</include>
+                </includes>
+            </resource>
+        </resources>
+        <!-- IMPORTANT: Plugin Building Path -->
+        <sourceDirectory>src/main/java/io/github/BTEPlotSystem</sourceDirectory>
+        <!-- IMPORTANT: Output File Name -->
+        <finalName>BTE-PlotSystem V1.0</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+</project>
