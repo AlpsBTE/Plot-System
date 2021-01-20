@@ -1,12 +1,16 @@
-import core.EventListener;
+package github.BTEPlotSystem;
+import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
@@ -27,6 +31,7 @@ public class BTEPlotSystem extends JavaPlugin {
         // Add Commands
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
+        getLogger().log(Level.INFO, "MC Cords: 3662176 -4651104 IRL Cords: " + Arrays.toString(Utils.toGeo(3662176, -4651104)));
     }
 
     public static BTEPlotSystem getPlugin() {

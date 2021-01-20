@@ -1,4 +1,4 @@
-package core;
+package github.BTEPlotSystem.core;
 
 import org.bukkit.event.Listener;
 
