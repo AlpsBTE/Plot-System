@@ -1,3 +1,4 @@
+/*
 package github.BTEPlotSystem.utils;
 
 import com.sk89q.worldedit.math.MathUtils;
@@ -266,3 +267,4 @@ public class Utils {
         return y > ALEUTIAN_M * x + ALEUTIAN_B;
     }
 }
+*/

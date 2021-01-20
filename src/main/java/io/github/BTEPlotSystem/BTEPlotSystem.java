@@ -1,6 +1,6 @@
 package github.BTEPlotSystem;
 import github.BTEPlotSystem.core.EventListener;
-import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,7 +31,7 @@ public class BTEPlotSystem extends JavaPlugin {
         // Add Commands
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
-        getLogger().log(Level.INFO, "MC Cords: 3662176 -4651104 IRL Cords: " + Arrays.toString(Utils.toGeo(3662176, -4651104)));
+        getLogger().log(Level.INFO, "MC Cords: 3662176 -4651104 IRL Cords: " + Arrays.toString(CoordinateConversion.convertToGeo(-42.39012107174608, 19.198042385454855)));
     }
 
     public static BTEPlotSystem getPlugin() {
