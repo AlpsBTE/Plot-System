@@ -1,6 +1,7 @@
 package github.BTEPlotSystem;
+
+import github.BTEPlotSystem.commands.CMDCoords;
 import github.BTEPlotSystem.core.EventListener;
-import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
@@ -29,9 +29,16 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), plugin);
 
         // Add Commands
+        this.getCommand("coords").setExecutor(new CMDCoords());
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
-        getLogger().log(Level.INFO, "MC Cords: 3662176 -4651104 IRL Cords: " + Arrays.toString(CoordinateConversion.convertToGeo(-42.39012107174608, 19.198042385454855)));
+
+        /*try {
+            getLogger().log(Level.INFO, "MC Cords: 3386345 -4686798 IRL Cords: " + Arrays.toString(CoordinateConversion.convertToGeo(3386345, -4686798)));
+        } catch (OutOfProjectionBoundsException e) {
+            e.printStackTrace();
+        }*/
+
     }
 
     public static BTEPlotSystem getPlugin() {

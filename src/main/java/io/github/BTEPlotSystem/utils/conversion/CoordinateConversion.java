@@ -1,6 +1,20 @@
 package github.BTEPlotSystem.utils.conversion;
 
-public class CoordinateConversion extends ConversionProcessor {
+import github.BTEPlotSystem.utils.conversion.projection.GeographicProjection;
+import github.BTEPlotSystem.utils.conversion.projection.OffsetProjectionTransform;
+import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import github.BTEPlotSystem.utils.conversion.projection.ScaleProjectionTransform;
+
+public class CoordinateConversion {
+
+    private static GeographicProjection projection;
+
+    static {
+        projection  = GeographicProjection.projections.get("bteairocean");
+        projection = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
+        projection = new ScaleProjectionTransform(projection, 7318261.522857145, 7318261.522857145);
+        projection = new OffsetProjectionTransform(projection, 0, 0);
+    }
 
     /**
      * Converts Minecraft coordinates to geographic coordinates
@@ -9,8 +23,8 @@ public class CoordinateConversion extends ConversionProcessor {
      * @param yCords - Minecraft player y-axis coordinates
      * @return - WG84 EPSG:4979 coordinates as double array {lon,lat} in degrees
      */
-    public static double[] convertToGeo(double xCords, double yCords) {
-        return convertCoordinates(xCords, yCords);
+    public static double[] convertToGeo(double xCords, double yCords) throws OutOfProjectionBoundsException {
+        return projection.toGeo(xCords, yCords);
     }
 
     /**
@@ -20,6 +34,6 @@ public class CoordinateConversion extends ConversionProcessor {
      * @return - Formatted coordinates as String
      */
     public static String formatGeoCoordinates(double[] coordinates) {
-        return coordinates[0] + ", " + coordinates[1];
+        return coordinates[1] + ", " + coordinates[0];
     }
 }
