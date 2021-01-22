@@ -118,7 +118,7 @@
             </resource>
         </resources>
         <!-- IMPORTANT: Plugin Building Path -->
-        <sourceDirectory>src/main/java/io/github/BTEPlotSystem</sourceDirectory>
+        <sourceDirectory>src/main/java/io</sourceDirectory>
         <!-- IMPORTANT: Output File Name -->
         <finalName>BTE-PlotSystem V1.0</finalName>
         <plugins>
