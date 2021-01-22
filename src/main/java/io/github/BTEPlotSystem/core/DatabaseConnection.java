@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 
 public class DatabaseConnection {
@@ -34,5 +35,9 @@ public class DatabaseConnection {
 
     public static Connection getConnection() {
         return connection;
+    }
+
+    public static Statement createStatement() throws SQLException {
+        return getConnection().createStatement();
     }
 }
