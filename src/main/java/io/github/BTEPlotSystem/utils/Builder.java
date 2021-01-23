@@ -9,10 +9,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-enum Slot {
-    first, second, third
-}
-
 public class Builder {
 
     private final Player player;

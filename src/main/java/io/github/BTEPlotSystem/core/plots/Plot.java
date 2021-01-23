@@ -2,16 +2,13 @@ package github.BTEPlotSystem.core.plots;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.STATUS;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-enum STATUS {
-    unclaimed, unfinished, unreviewed, complete
-}
 
 public class Plot {
 
@@ -74,6 +71,10 @@ public class Plot {
 
     public STATUS getStatus() {
         return status;
+    }
+
+    public Builder getBuilder() {
+        return builder;
     }
 
     public String getOSMMapsLink() {

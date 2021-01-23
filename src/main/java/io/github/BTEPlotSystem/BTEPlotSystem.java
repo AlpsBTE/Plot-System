@@ -2,6 +2,7 @@ package github.BTEPlotSystem;
 
 import github.BTEPlotSystem.commands.CMDCoords;
 import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,8 @@ import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
     private static BTEPlotSystem plugin;
+    private static PlotManager plotManager;
+
     private FileConfiguration config;
     private File configFile;
 
@@ -43,6 +46,10 @@ public class BTEPlotSystem extends JavaPlugin {
 
     public static BTEPlotSystem getPlugin() {
         return plugin;
+    }
+
+    public static PlotManager getPlotManager() {
+        return plotManager;
     }
 
     @Override

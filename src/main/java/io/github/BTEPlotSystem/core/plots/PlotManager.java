@@ -2,6 +2,7 @@ package github.BTEPlotSystem.core.plots;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.STATUS;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlotManager extends PlotHandler {
+
+    public final int PLOTSIZE = 103;
 
     public void CreatePlot(int id, Builder builder) {
 

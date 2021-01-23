@@ -7,13 +7,14 @@ import github.BTEPlotSystem.utils.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.sql.SQLException;
 
 public class Review implements Listener {
     private Inventory reviewMenu;
@@ -39,45 +40,36 @@ public class Review implements Listener {
     private Plot selectedPlot;
 
     private Player player;
-    private int round;
 
-    private FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-    public Review(Player player, int round){
+    public Review(Player player) throws SQLException {
         //Opens Review Menu, showing all plots in the given round.
-        reviewMenu = Bukkit.createInventory(player,54,"Review Plots | Round "+round);
+        reviewMenu = Bukkit.createInventory(player,54,"Review Plots");
         this.player = player;
-        this.round = round;
 
         Object[] plots;
-        plots = config.getConfigurationSection("Tournament.Module.Round-"+round+".Plots").getKeys(false).toArray();
+        plots = BTEPlotSystem.getPlotManager().getPlots().toArray();
         plot = new ItemStack[plots.length];
 
         for (int i = 0; i < 54; i++){
             if (i<plots.length){
-                if (config.getBoolean("Tournament.Module.Round-"+round+".Plots.Plot-"+i+".Finished")){
-                    if (config.getBoolean("Tournament.Module.Round-"+round+".Plots.Plot-"+i+".Reviewed")){
-                        plot[i] = new ItemBuilder(Material.MAP, 1)
-                                .setName("§6#"+i+" | reviewed")
+                switch (new Plot(i).getStatus()){
+                    case unfinished:
+                        plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
+                                .setName("§6#"+i+" | unfinished")
                                 .setLore(new LoreBuilder()
                                         .description("§7Open plot...")
                                         .build())
                                 .build();
-                    } else {
+                        break;
+                    case unreviewed:
                         plot[i] = new ItemBuilder(Material.PAPER, 1)
                                 .setName("§6#"+i+" | unreviewed")
                                 .setLore(new LoreBuilder()
                                         .description("§7Open plot...")
                                         .build())
                                 .build();
-                    }
-                } else {
-                    plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
-                            .setName("§6#"+i+" | unfinished")
-                            .setLore(new LoreBuilder()
-                                    .description("§7Open plot...")
-                                    .build())
-                            .build();
+                        break;
                 }
                 reviewMenu.setItem(i,plot[i]);
             }
@@ -119,6 +111,7 @@ public class Review implements Listener {
     }
 
     private void ReviewPlot(Plot plot){
+        //TODO: Add Submit button
         reviewPlotMenu = Bukkit.createInventory(player,54,"Review Plot #" + plot.getID());
 
         for (int i = 0; i < 54; i++){
@@ -183,7 +176,6 @@ public class Review implements Listener {
                     int column = (i%9)+1;
                     int row = (i - (i%9))/9+1;
                     if (column > 2 && column < 9 && row > 1 && row < 6) {
-                        reviewPlotMenu.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 4).setName("TEST").build());
                         if ((i+1)%9 == 3){
                             itemPointZero[((i+1)-(i+1)%9)/54] = new ItemBuilder(Material.WOOL, 1,(byte) 8)
                                     .setName("§l§70 Points")
@@ -270,9 +262,12 @@ public class Review implements Listener {
                     if (event.getCurrentItem().equals(itemClose)) {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
-                        int plotsSize = config.getInt("Tournament.PlotSize");
+                        //TODO: Move to PlotHandler Class
+                        double plotsSize = BTEPlotSystem.getPlotManager().PLOTSIZE;
                         player.teleport(new Location(player.getWorld(),selectedPlot.getMcCoordinates().getX()-plotsSize/2,selectedPlot.getMcCoordinates().getY()+1,selectedPlot.getMcCoordinates().getZ()+plotsSize/2));
-                        player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID());
+                        player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID()+" By " + selectedPlot.getBuilder().getPlayer().getName());
+                    } else {
+                        //TODO: Check and Set points
                     }
                     event.setCancelled(true);
                 }
