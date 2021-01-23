@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import org.bukkit.Bukkit;
@@ -259,7 +260,7 @@ public class Review implements Listener {
 
                     for (int i = 0;i<plot.length;i++){
                         if (event.getCurrentItem().equals(plot[i])){
-                            selectedPlot = new Plot(i,round);
+                            selectedPlot = new Plot(i);
                             event.getWhoClicked().closeInventory();
                             ReviewPlot(selectedPlot);
                         }
@@ -270,7 +271,7 @@ public class Review implements Listener {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         int plotsSize = config.getInt("Tournament.PlotSize");
-                        player.teleport(new Location(player.getWorld(),selectedPlot.getLocation().getX()-plotsSize/2,selectedPlot.getLocation().getY()+1,selectedPlot.getLocation().getZ()+plotsSize/2));
+                        player.teleport(new Location(player.getWorld(),selectedPlot.getMcCoordinates().getX()-plotsSize/2,selectedPlot.getMcCoordinates().getY()+1,selectedPlot.getMcCoordinates().getZ()+plotsSize/2));
                         player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID());
                     }
                     event.setCancelled(true);

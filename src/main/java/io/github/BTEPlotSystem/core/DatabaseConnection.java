@@ -2,10 +2,8 @@ package github.BTEPlotSystem.core;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.logging.Level;
 
 public class DatabaseConnection {
@@ -39,5 +37,9 @@ public class DatabaseConnection {
 
     public static Statement createStatement() throws SQLException {
         return getConnection().createStatement();
+    }
+
+    public static void prepareStatement(String query) throws SQLException {
+        getConnection().prepareStatement(query);
     }
 }

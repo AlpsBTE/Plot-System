@@ -1,6 +1,8 @@
 package github.BTEPlotSystem.core.plots;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.utils.Builder;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.File;
@@ -14,6 +16,7 @@ enum STATUS {
 public class Plot {
 
     private final int ID;
+    private Builder builder;
     private File schematic;
     private STATUS status;
     private Location mcCoordinates;
@@ -26,20 +29,25 @@ public class Plot {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE idplot = " + ID);
 
         if(rs.next()) {
-            // TODO: Set schematic file name structure
+            // TODO: Schematic file name structure
             this.schematic = null;
 
-            // Set status
+            // TODO: City ID
+
+            // Builder
+            this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
+
+            // Status
             this.status = STATUS.valueOf(rs.getString("status"));
 
-            // Set MC Coordinates
+            // MC Coordinates
             String[] mcLocation = rs.getString("mcCoordinates").split(",");
             this.mcCoordinates = new Location(null, Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
 
-            // Set numeric geo coordinates
+            // Numeric Geo Coordinates
             this.geoCoordinatesNumeric = rs.getString("geoCoordinatesNumeric");
 
-            // Set NSEW geo coordinates
+            // NSEW Geo Coordinates
             this.geoCoordinatesNSEW = rs.getString("geoCoordinatesNSEW");
         }
     }
@@ -60,9 +68,13 @@ public class Plot {
         return geoCoordinatesNumeric;
     }
 
-    public String getGeoCoordinatesNSEW() { return geoCoordinatesNSEW; }
+    public String getGeoCoordinatesNSEW() {
+        return geoCoordinatesNSEW;
+    }
 
-    public STATUS getStatus() { return status; }
+    public STATUS getStatus() {
+        return status;
+    }
 
     public String getOSMMapsLink() {
         return "https://www.openstreetmap.org/#map=16/" + getGeoCoordinatesNumeric().replace(",", "/");
