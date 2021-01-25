@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class Review implements Listener {
     private Inventory reviewMenu;
@@ -46,12 +47,12 @@ public class Review implements Listener {
         reviewMenu = Bukkit.createInventory(player,54,"Review Plots");
         this.player = player;
 
-        Object[] plots;
-        plots = BTEPlotSystem.getPlotManager().getPlots().toArray();
-        plot = new ItemStack[plots.length];
+        List<Plot> plots;
+        plots = BTEPlotSystem.getPlotManager().getPlots();
+        plot = new ItemStack[plots.size()];
 
         for (int i = 0; i < 54; i++){
-            if (i<plots.length){
+            if (i< plots.size()){
                 switch (new Plot(i).getStatus()){
                     case unfinished:
                         plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
