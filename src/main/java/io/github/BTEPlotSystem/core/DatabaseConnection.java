@@ -10,7 +10,7 @@ public class DatabaseConnection {
 
     private static Connection connection;
 
-    public DatabaseConnection() {
+    public static void ConnectToDatabase() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.println("MySQL JDBC Driver Registered!");
