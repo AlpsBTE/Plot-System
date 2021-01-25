@@ -106,7 +106,7 @@ public class Companion {
                     menu.getSlot(9+i)
                             .setItem(new ItemBuilder(Material.GOLD_HELMET)
                                     .setName(cities.get(i).getName())
-                                    .setLore(new LoreBuilder().description(cities.get(i).getDescription()).build()).build();
+                                    .setLore(new LoreBuilder().description(cities.get(i).getDescription()).build()).build());
                     break;
             }
         }
