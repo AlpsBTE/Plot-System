@@ -19,8 +19,8 @@ public class DatabaseConnection {
                 FileConfiguration config = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
                 connection = DriverManager.getConnection(
                         "jdbc:mysql://localhost:3306/alpsbte",
-                        config.getString("review-system.database.username"),
-                        config.getString("review-system.database.password"));
+                        config.getString("database.username"),
+                        config.getString("database.password"));
 
                 Bukkit.getLogger().log(Level.INFO, "SQL Connection to database established!");
             } catch (SQLException ex) {

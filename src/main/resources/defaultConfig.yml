@@ -1,1 +1,4 @@
 #BTE-PlotSystem Configuration File
+database:
+  username: null
+  password: null
