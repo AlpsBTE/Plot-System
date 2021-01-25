@@ -1,6 +1,7 @@
 package github.BTEPlotSystem;
 
 import github.BTEPlotSystem.commands.CMDCoords;
+import github.BTEPlotSystem.commands.CMDReview;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,6 +34,7 @@ public class BTEPlotSystem extends JavaPlugin {
 
         // Add Commands
         this.getCommand("coords").setExecutor(new CMDCoords());
+        this.getCommand("review").setExecutor(new CMDReview());
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
 

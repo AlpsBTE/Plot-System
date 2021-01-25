@@ -9,3 +9,7 @@ commands:
     description: get player coordinates
     usage: /coords
     permission: plot.coords
+  review:
+    description: review unreviewed plots
+    usage: /review
+    permission: alpsbte.review
