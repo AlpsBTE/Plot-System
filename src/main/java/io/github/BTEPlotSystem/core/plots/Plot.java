@@ -1,6 +1,5 @@
 package github.BTEPlotSystem.core.plots;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;

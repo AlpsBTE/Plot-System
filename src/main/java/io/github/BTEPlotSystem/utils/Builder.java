@@ -6,32 +6,15 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Builder {
 
     private final Player player;
 
-    private Plot firstPlot;
-    private Plot secondPlot;
-    private Plot thirdPlot;
-
-    public Builder(Player player) throws SQLException {
+    public Builder(Player player) {
         this.player = player;
-        System.out.println("UUID: " + player.getUniqueId());
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM players WHERE uuid = '" + player.getUniqueId() + "'");
-
-        if(rs.next()) {
-            // First Plot
-            this.firstPlot = new Plot(rs.getInt("firstSlot"));
-
-            // Second Plot
-            this.secondPlot = new Plot(rs.getInt("secondSlot"));
-
-            // Third Plot
-            this.thirdPlot = new Plot(rs.getInt("thirdSlot"));
-        }
     }
 
     public Player getPlayer() {
@@ -46,17 +29,16 @@ public class Builder {
         return DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = " + player.getUniqueId()).getInt("completedBuilds");
     }
 
-    public List<Plot> getPlots() {
-        return Arrays.asList(firstPlot, secondPlot, thirdPlot);
-    }
+    public Plot getActivePlot(Slot slot) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + player.getUniqueId() + "'");
 
-    public Plot getPlot(Slot slot) {
-        if(slot == Slot.first) {
-            return firstPlot;
-        } else if(slot == Slot.second) {
-            return secondPlot;
-        } else if(slot == Slot.third){
-            return thirdPlot;
+        switch (slot) {
+            case FIRST:
+                return new Plot(rs.getInt("firstSlot"));
+            case SECOND:
+                return new Plot(rs.getInt("secondSlot"));
+            case THIRD:
+                return new Plot(rs.getInt("thirdSlot"));
         }
         return null;
     }
@@ -73,15 +55,15 @@ public class Builder {
         );
     }
 
-    public void setPlot(Plot plot, Slot slot) throws SQLException {
-        String query = "UPDATE players SET {slot} = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'";
+    public void setFirstPlot(Plot plot) throws SQLException {
+        DatabaseConnection.prepareStatement("UPDATE players SET firstSlot = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'");
+    }
 
-        if(slot == Slot.first) {
-            DatabaseConnection.prepareStatement(query.replace("{slot}", "firstPlot"));
-        } else if(slot == Slot.second) {
-            DatabaseConnection.prepareStatement(query.replace("{slot}", "secondPlot"));
-        } else if(slot == Slot.third){
-            DatabaseConnection.prepareStatement(query.replace("{slot}", "thirdPlot"));
-        }
+    public void setSecondPlot(Plot plot) throws SQLException {
+        DatabaseConnection.prepareStatement("UPDATE players SET secondPlot = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'");
+    }
+
+    public void setThirdPlot(Plot plot) throws SQLException {
+        DatabaseConnection.prepareStatement("UPDATE players SET thirdPlot = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'");
     }
 }

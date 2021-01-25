@@ -49,8 +49,8 @@ public class Review implements Listener {
         this.player = player;
 
         List<Plot> plots;
-        plots = BTEPlotSystem.getPlotManager().getPlotsByStatus(STATUS.unfinished);
-        plots.addAll(BTEPlotSystem.getPlotManager().getPlotsByStatus(STATUS.unreviewed));
+        plots = BTEPlotSystem.getPlotManager().getPlots(STATUS.unfinished);
+        plots.addAll(BTEPlotSystem.getPlotManager().getPlots(STATUS.unreviewed));
 
         plot = new ItemStack[plots.size()];
 
