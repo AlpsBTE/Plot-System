@@ -3,6 +3,7 @@ package github.BTEPlotSystem;
 import github.BTEPlotSystem.commands.CMDCompanion;
 import github.BTEPlotSystem.commands.CMDCoords;
 import github.BTEPlotSystem.commands.CMDReview;
+import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,6 +29,9 @@ public class BTEPlotSystem extends JavaPlugin {
         plugin = this;
 
         reloadConfig();
+
+        // Connect to Database
+        DatabaseConnection.ConnectToDatabase();
 
         // Add Listener
         this.getServer().getPluginManager().registerEvents(new EventListener(), plugin);
