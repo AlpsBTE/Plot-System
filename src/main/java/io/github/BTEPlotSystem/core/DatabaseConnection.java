@@ -12,15 +12,21 @@ public class DatabaseConnection {
 
     public static void ConnectToDatabase() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("MySQL JDBC Driver Registered!");
+            Class.forName("org.mariadb.jdbc.Driver");
+            System.out.println("MariaDB JDBC Driver Registered!");
 
             try {
                 FileConfiguration config = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
+
                 connection = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/alpsbte",
+                        "jdbc:mariadb://172.18.0.1:3306/alpsbte",
                         config.getString("database.username"),
                         config.getString("database.password"));
+
+                /*connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/alpsbte" +
+                        "?user=" + config.getString("database.username") +
+                        "&password=" + config.getString("datbase.password") +
+                        "&useUnicode=true&characterEncoding=UTF-8");*/
 
                 Bukkit.getLogger().log(Level.INFO, "SQL Connection to database established!");
             } catch (SQLException ex) {

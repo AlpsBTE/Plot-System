@@ -19,7 +19,7 @@ public class CityProject {
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM cityProjects WHERE idcityProject =" + ID);
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM cityProjects WHERE idcityProject = '" + ID + "'");
 
         if(rs.next()) {
             // Name
@@ -35,7 +35,7 @@ public class CityProject {
             this.tags = rs.getString("tags");
 
             // Difficulty
-            this.difficulty = Difficulty.valueOf(rs.getString("difficulty_iddifficulty"));
+            this.difficulty = Difficulty.values()[rs.getInt("difficulty_iddifficulty") - 1];
         }
     }
 

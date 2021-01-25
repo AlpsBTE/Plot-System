@@ -50,15 +50,19 @@ public class Companion {
 
         //Slots
         for (int i = 0;i<3;i++){
-            Plot plot = new Builder(player).getPlot(Slot.values()[i]);
-            if (plot != null){
+            try {
+                Plot plot = new Builder(player).getPlot(Slot.values()[i]);
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.MAP,1+i)
-                        .setName("Slot " + i+1 + " | " + plot.getCity().getName() + " #" + plot.getID()).setLore(new LoreBuilder().description("click to teleport...").build()).build());
-            } else {
+                                .setName("Slot " + i+1 + " | " + plot.getCity().getName() + " #" + plot.getID())
+                                .setLore(new LoreBuilder().description("click to teleport...").build())
+                                .build());
+            } catch (Exception e) {
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
-                        .setName("Slot " + i+1 + " | Unasigned").setLore(new LoreBuilder().description("click on any of the cities to create a new plot").build()).build());
+                                .setName("Slot " + i+1 + " | Unasigned")
+                                .setLore(new LoreBuilder().description("click on any of the cities to create a new plot").build())
+                                .build());
             }
         }
 

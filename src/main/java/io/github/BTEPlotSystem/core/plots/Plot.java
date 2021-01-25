@@ -25,14 +25,14 @@ public class Plot {
     public Plot(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE idplot = " + ID);
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE idplot = '" + ID + "'");
 
         if(rs.next()) {
             // City ID
             this.cityProject = new CityProject(rs.getInt("idcity"));
 
             // Schematic File
-            this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + cityProject.getID() + "//" + getID());
+            //this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + cityProject.getID() + "//" + getID());
 
             // Builder
             this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
@@ -74,7 +74,7 @@ public class Plot {
     }
 
     public STATUS getStatus() throws SQLException {
-        return STATUS.valueOf(DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = " + getID()).getString("status"));
+        return STATUS.values()[DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'").getInt("status") - 1];
     }
 
     public Builder getBuilder() {

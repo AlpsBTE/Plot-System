@@ -19,8 +19,8 @@ public class Builder {
 
     public Builder(Player player) throws SQLException {
         this.player = player;
-
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM players WHERE uuid = " + player.getUniqueId());
+        System.out.println("UUID: " + player.getUniqueId());
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM players WHERE uuid = '" + player.getUniqueId() + "'");
 
         if(rs.next()) {
             // First Plot
@@ -63,18 +63,18 @@ public class Builder {
 
     public void addScore(int score) throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = " + player.getUniqueId()
+                "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + player.getUniqueId() + "'"
         );
     }
 
     public void addCompletedBuild() throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET completedBuilds = " + (getCompletedBuilds() + 1) + " WHERE uuid = " + player.getUniqueId()
+                "UPDATE players SET completedBuilds = " + (getCompletedBuilds() + 1) + " WHERE uuid = '" + player.getUniqueId() + "'"
         );
     }
 
     public void setPlot(Plot plot, Slot slot) throws SQLException {
-        String query = "UPDATE players SET {slot} = " + plot.getID() + " WHERE uuid = " + player.getUniqueId();
+        String query = "UPDATE players SET {slot} = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'";
 
         if(slot == Slot.first) {
             DatabaseConnection.prepareStatement(query.replace("{slot}", "firstPlot"));

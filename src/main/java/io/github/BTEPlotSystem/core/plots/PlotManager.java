@@ -20,7 +20,7 @@ public class PlotManager extends PlotHandler {
     }
 
     public List<Plot> getPlotsByStatus(STATUS status) throws SQLException {
-        return getPlots(DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE status = " + status));
+        return getPlots(DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE status = '" + status + "'"));
     }
 
     private List<Plot> getPlots(ResultSet rs) throws SQLException {
