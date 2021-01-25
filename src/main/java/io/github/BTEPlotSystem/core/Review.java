@@ -41,7 +41,6 @@ public class Review implements Listener {
 
     private Player player;
 
-
     public Review(Player player) throws SQLException {
         //Opens Review Menu, showing all plots in the given round.
         reviewMenu = Bukkit.createInventory(player,54,"Review Plots");
