@@ -6,6 +6,7 @@ import github.BTEPlotSystem.commands.CMDReview;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.plots.PlotManager;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

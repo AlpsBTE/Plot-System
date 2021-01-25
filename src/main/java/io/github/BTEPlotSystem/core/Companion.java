@@ -2,8 +2,10 @@ package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.utils.*;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -54,13 +56,13 @@ public class Companion {
                 Plot plot = new Builder(player).getPlot(Slot.values()[i]);
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.MAP,1+i)
-                                .setName("Slot " + i+1 + " | " + plot.getCity().getName() + " #" + plot.getID())
+                                .setName("§l§6Slot " + (i+1) + " | " + plot.getCity().getName() + " #" + plot.getID())
                                 .setLore(new LoreBuilder().description("click to teleport...").build())
                                 .build());
             } catch (Exception e) {
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
-                                .setName("Slot " + i+1 + " | Unasigned")
+                                .setName("§l§aSlot " + (i+1) + " | Unasigned")
                                 .setLore(new LoreBuilder().description("click on any of the cities to create a new plot").build())
                                 .build());
             }
@@ -90,27 +92,36 @@ public class Companion {
         //Show CityProjects
 
         List<CityProject> cities = CityProject.getCityProjects();
+        HeadDatabaseAPI api = new HeadDatabaseAPI();
         for (int i = 0; i<cities.size();i++){
             switch (cities.get(i).getCountry()){
-                //TODO: set correct heads as icons
                 //TODO: get total open plot count to description
                 case AT:
                     menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(Material.PORK)
-                            .setName(cities.get(i).getName())
-                            .setLore(new LoreBuilder().description(cities.get(i).getDescription()).build()).build());
+                            .setItem(new ItemBuilder(api.getItemHead("4397"))
+                                    .setName("§l§b" + cities.get(i).getName())
+                                    .setLore(new LoreBuilder()
+                                            .description(cities.get(i).getDescription())
+                                            .build())
+                                    .build());
                     break;
                 case CH:
                     menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(Material.COOKIE)
-                                    .setName(cities.get(i).getName())
-                                    .setLore(new LoreBuilder().description(cities.get(i).getDescription()).build()).build());
+                            .setItem(new ItemBuilder(api.getItemHead("32348"))
+                                    .setName("§l§b" + cities.get(i).getName())
+                                    .setLore(new LoreBuilder()
+                                            .description(cities.get(i).getDescription())
+                                            .build())
+                                    .build());
                     break;
                 case LI:
                     menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(Material.GOLD_HELMET)
-                                    .setName(cities.get(i).getName())
-                                    .setLore(new LoreBuilder().description(cities.get(i).getDescription()).build()).build());
+                            .setItem(new ItemBuilder(api.getItemHead("26174"))
+                                    .setName("§l§b" + cities.get(i).getName())
+                                    .setLore(new LoreBuilder()
+                                            .description(cities.get(i).getDescription())
+                                            .build())
+                                    .build());
                     break;
             }
         }

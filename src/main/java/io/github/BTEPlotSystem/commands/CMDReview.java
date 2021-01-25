@@ -24,6 +24,6 @@ public class CMDReview implements CommandExecutor {
                 }
             }
         }
-        return false;
+        return true;
     }
 }

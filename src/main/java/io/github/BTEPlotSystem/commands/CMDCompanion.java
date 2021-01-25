@@ -24,6 +24,6 @@ public class CMDCompanion implements CommandExecutor {
                 }
             }
         }
-        return false;
+        return true;
     }
 }
