@@ -4,6 +4,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.STATUS;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,30 +49,34 @@ public class Review implements Listener {
         this.player = player;
 
         List<Plot> plots;
-        plots = BTEPlotSystem.getPlotManager().getPlots();
+        plots = BTEPlotSystem.getPlotManager().getPlotsByStatus(STATUS.unfinished);
+        plots.addAll(BTEPlotSystem.getPlotManager().getPlotsByStatus(STATUS.unreviewed));
+
         plot = new ItemStack[plots.size()];
 
         for (int i = 0; i < 54; i++){
-            if (i< plots.size()){
-                switch (new Plot(i).getStatus()){
-                    case unfinished:
-                        plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
-                                .setName("§6#"+i+" | unfinished")
-                                .setLore(new LoreBuilder()
-                                        .description("§7Open plot...")
-                                        .build())
-                                .build();
-                        break;
-                    case unreviewed:
-                        plot[i] = new ItemBuilder(Material.PAPER, 1)
-                                .setName("§6#"+i+" | unreviewed")
-                                .setLore(new LoreBuilder()
-                                        .description("§7Open plot...")
-                                        .build())
-                                .build();
-                        break;
+            if (!plots.isEmpty()){
+                if (i< plots.size()){
+                    switch (new Plot(i).getStatus()){
+                        case unfinished:
+                            plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
+                                    .setName("§6#"+i+" | unfinished")
+                                    .setLore(new LoreBuilder()
+                                            .description("§7Open plot...")
+                                            .build())
+                                    .build();
+                            break;
+                        case unreviewed:
+                            plot[i] = new ItemBuilder(Material.PAPER, 1)
+                                    .setName("§6#"+i+" | unreviewed")
+                                    .setLore(new LoreBuilder()
+                                            .description("§7Open plot...")
+                                            .build())
+                                    .build();
+                            break;
+                    }
+                    reviewMenu.setItem(i,plot[i]);
                 }
-                reviewMenu.setItem(i,plot[i]);
             }
 
             if (i >= 45 && i != 46 && i != 49 && i != 52){
