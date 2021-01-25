@@ -262,7 +262,7 @@ public class Review implements Listener {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         //TODO: Move to PlotHandler Class
-                        double plotsSize = BTEPlotSystem.getPlotManager().PLOTSIZE;
+                        double plotsSize = BTEPlotSystem.getPlotManager().getPlotSize();
                         player.teleport(new Location(player.getWorld(),selectedPlot.getMcCoordinates().getX()-plotsSize/2,selectedPlot.getMcCoordinates().getY()+1,selectedPlot.getMcCoordinates().getZ()+plotsSize/2));
                         player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID()+" By " + selectedPlot.getBuilder().getPlayer().getName());
                     } else {

@@ -11,8 +11,6 @@ import java.util.List;
 
 public class PlotManager extends PlotHandler {
 
-    public final int PLOTSIZE = 103;
-
     public void CreatePlot(int id, Builder builder) {
 
     }
@@ -33,5 +31,13 @@ public class PlotManager extends PlotHandler {
         }
 
         return plots;
+    }
+
+    public int getPlotSize() {
+        return 103;
+    }
+
+    public String getSchematicPath() {
+        return "";
     }
 }

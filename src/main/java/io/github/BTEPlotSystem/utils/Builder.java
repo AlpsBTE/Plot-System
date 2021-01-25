@@ -12,8 +12,6 @@ import java.util.List;
 public class Builder {
 
     private final Player player;
-    private int score;
-    private int completedBuilds;
 
     private Plot firstPlot;
     private Plot secondPlot;
@@ -25,12 +23,6 @@ public class Builder {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM players WHERE uuid = " + player.getUniqueId());
 
         if(rs.next()) {
-            // Player Score
-            this.score = rs.getInt("score");
-
-            // Completed Builds
-            this.completedBuilds = rs.getInt("completedBuilds");
-
             // First Plot
             this.firstPlot = new Plot(rs.getInt("firstSlot"));
 
@@ -46,19 +38,19 @@ public class Builder {
         return player;
     }
 
-    public int getScore() {
-        return score;
+    public int getScore() throws SQLException {
+        return DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = " + player.getUniqueId()).getInt("score");
     }
 
-    public int getCompletedBuilds() {
-        return completedBuilds;
+    public int getCompletedBuilds() throws SQLException {
+        return DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = " + player.getUniqueId()).getInt("completedBuilds");
     }
 
     public List<Plot> getPlots() {
         return Arrays.asList(firstPlot, secondPlot, thirdPlot);
     }
 
-    public Plot getPlotBySlot(Slot slot) {
+    public Plot getPlot(Slot slot) {
         if(slot == Slot.first) {
             return firstPlot;
         } else if(slot == Slot.second) {
@@ -81,7 +73,7 @@ public class Builder {
         );
     }
 
-    public void setPlotBySlot(Plot plot, Slot slot) throws SQLException {
+    public void setPlot(Plot plot, Slot slot) throws SQLException {
         String query = "UPDATE players SET {slot} = " + plot.getID() + " WHERE uuid = " + player.getUniqueId();
 
         if(slot == Slot.first) {

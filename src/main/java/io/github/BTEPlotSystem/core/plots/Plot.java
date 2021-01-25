@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.core.plots;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.City;
@@ -13,11 +14,10 @@ import java.sql.SQLException;
 
 public class Plot {
 
-    private int ID;
+    private final int ID;
     private City city;
     private Builder builder;
     private File schematic;
-    private STATUS status;
     private Location mcCoordinates;
     private String geoCoordinatesNumeric;
     private String geoCoordinatesNSEW;
@@ -28,17 +28,14 @@ public class Plot {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE idplot = " + ID);
 
         if(rs.next()) {
-            // TODO: City ID
+            // City ID
             this.city = new City(rs.getInt("idcity"));
 
-            // TODO: Schematic file name structure
-            //this.schematic = ;
+            // Schematic File
+            this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + city.getID() + "//" + getID());
 
             // Builder
             this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
-
-            // Status
-            this.status = STATUS.valueOf(rs.getString("status"));
 
             // MC Coordinates
             String[] mcLocation = rs.getString("mcCoordinates").split(",");
@@ -54,6 +51,10 @@ public class Plot {
 
     public int getID() {
         return ID;
+    }
+
+    public City getCity() {
+        return city;
     }
 
     public File getSchematic() {
@@ -72,8 +73,8 @@ public class Plot {
         return geoCoordinatesNSEW;
     }
 
-    public STATUS getStatus() {
-        return status;
+    public STATUS getStatus() throws SQLException {
+        return STATUS.valueOf(DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = " + getID()).getString("status"));
     }
 
     public Builder getBuilder() {
