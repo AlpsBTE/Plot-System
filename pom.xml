@@ -98,6 +98,14 @@
             <version>4.2.0_168</version>
         </dependency>-->
 
+        <!-- HeadDB API -->
+        <dependency>
+            <groupId>com.github.shynixn.headdatabase</groupId>
+            <artifactId>hdb-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
         <!-- MySQL Connector API [V8.0.22]-->
         <dependency>
             <groupId>mysql</groupId>

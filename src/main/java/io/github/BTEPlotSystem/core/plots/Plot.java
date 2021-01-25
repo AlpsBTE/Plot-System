@@ -2,6 +2,7 @@ package github.BTEPlotSystem.core.plots;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.City;
 import github.BTEPlotSystem.utils.STATUS;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,7 +13,8 @@ import java.sql.SQLException;
 
 public class Plot {
 
-    private final int ID;
+    private int ID;
+    private City city;
     private Builder builder;
     private File schematic;
     private STATUS status;
@@ -26,10 +28,11 @@ public class Plot {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE idplot = " + ID);
 
         if(rs.next()) {
-            // TODO: Schematic file name structure
-            this.schematic = null;
-
             // TODO: City ID
+            this.city = new City(rs.getInt("idcity"));
+
+            // TODO: Schematic file name structure
+            //this.schematic = ;
 
             // Builder
             this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
