@@ -3,7 +3,7 @@ package github.BTEPlotSystem.core.plots;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
-import github.BTEPlotSystem.utils.City;
+import github.BTEPlotSystem.utils.CityProject;
 import github.BTEPlotSystem.utils.STATUS;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class Plot {
 
     private final int ID;
-    private City city;
+    private CityProject cityProject;
     private Builder builder;
     private File schematic;
     private Location mcCoordinates;
@@ -29,10 +29,10 @@ public class Plot {
 
         if(rs.next()) {
             // City ID
-            this.city = new City(rs.getInt("idcity"));
+            this.cityProject = new CityProject(rs.getInt("idcity"));
 
             // Schematic File
-            this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + city.getID() + "//" + getID());
+            this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + cityProject.getID() + "//" + getID());
 
             // Builder
             this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
@@ -53,8 +53,8 @@ public class Plot {
         return ID;
     }
 
-    public City getCity() {
-        return city;
+    public CityProject getCity() {
+        return cityProject;
     }
 
     public File getSchematic() {

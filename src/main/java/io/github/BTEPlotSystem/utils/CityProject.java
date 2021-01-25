@@ -4,8 +4,10 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class City {
+public class CityProject {
 
     private final int ID;
     private String name;
@@ -14,13 +16,13 @@ public class City {
     private String tags;
     private Difficulty difficulty;
 
-    public City(int ID) throws SQLException {
+    public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM cityProjects WHERE idcityProject =" + ID);
 
         if(rs.next()) {
-            // City Name
+            // Name
             this.name = rs.getString("name");
 
             // Country
@@ -59,5 +61,16 @@ public class City {
 
     public Difficulty getDifficulty() {
         return difficulty;
+    }
+
+    public static List<CityProject> getCityProjects() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects");
+        List<CityProject> cityProjects = new ArrayList<>();
+
+        while (rs.next()) {
+            cityProjects.add(new CityProject(rs.getInt("idcityProject")));
+        }
+
+        return cityProjects;
     }
 }
