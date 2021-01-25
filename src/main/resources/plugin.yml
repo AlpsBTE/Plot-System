@@ -13,3 +13,7 @@ commands:
     description: review unreviewed plots
     usage: /review
     permission: alpsbte.review
+  companion:
+    description: opens the companion UI
+    usage: /companion
+    permission: alpsbte.companion

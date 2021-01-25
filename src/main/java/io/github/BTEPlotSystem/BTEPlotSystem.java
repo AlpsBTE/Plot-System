@@ -1,5 +1,6 @@
 package github.BTEPlotSystem;
 
+import github.BTEPlotSystem.commands.CMDCompanion;
 import github.BTEPlotSystem.commands.CMDCoords;
 import github.BTEPlotSystem.commands.CMDReview;
 import github.BTEPlotSystem.core.EventListener;
@@ -35,6 +36,7 @@ public class BTEPlotSystem extends JavaPlugin {
         // Add Commands
         this.getCommand("coords").setExecutor(new CMDCoords());
         this.getCommand("review").setExecutor(new CMDReview());
+        this.getCommand("companion").setExecutor(new CMDCompanion());
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
 
