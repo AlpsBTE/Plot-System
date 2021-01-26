@@ -1,12 +1,10 @@
 package github.BTEPlotSystem;
 
 import github.BTEPlotSystem.commands.CMDCompanion;
-import github.BTEPlotSystem.commands.CMDCoords;
 import github.BTEPlotSystem.commands.CMDGeneratePlot;
 import github.BTEPlotSystem.commands.CMDReview;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
-import github.BTEPlotSystem.core.plots.PlotManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,7 +36,6 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), plugin);
 
         // Add Commands
-        this.getCommand("coords").setExecutor(new CMDCoords());
         this.getCommand("review").setExecutor(new CMDReview());
         this.getCommand("companion").setExecutor(new CMDCompanion());
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
