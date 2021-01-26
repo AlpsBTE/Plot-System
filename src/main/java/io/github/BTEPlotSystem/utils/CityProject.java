@@ -65,6 +65,15 @@ public class CityProject {
         return difficulty;
     }
 
+    public static int getPlotsCount(int cityID) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT COUNT(idplot) FROM plots WHERE idcity = '" + cityID + "'");
+
+        if(rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
+    }
+
     public static List<CityProject> getCityProjects() throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects");
         List<CityProject> cityProjects = new ArrayList<>();
