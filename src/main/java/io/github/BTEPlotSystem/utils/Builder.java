@@ -28,7 +28,22 @@ public class Builder {
         return DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = " + player.getUniqueId()).getInt("completedBuilds");
     }
 
-    public Plot getActivePlot(Slot slot) throws SQLException {
+    public Slot getFreeSlot() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + player.getUniqueId() + "'");
+
+        if(rs.next()) {
+            if(rs.getString(Slot.firstSlot.name()) == null) {
+                return Slot.firstSlot;
+            } else if(rs.getString(Slot.secondSlot.name()) == null) {
+                return Slot.secondSlot;
+            } else if(rs.getString(Slot.thirdSlot.name()) == null) {
+                return Slot.thirdSlot;
+            }
+        }
+        return null;
+    }
+
+    public Plot getPlot(Slot slot) throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + player.getUniqueId() + "'");
 
         if (rs.next()) {
@@ -50,15 +65,7 @@ public class Builder {
         );
     }
 
-    public void setFirstPlot(Plot plot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET firstSlot = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'");
-    }
-
-    public void setSecondPlot(Plot plot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET secondPlot = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'");
-    }
-
-    public void setThirdPlot(Plot plot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET thirdPlot = " + plot.getID() + " WHERE uuid = '" + player.getUniqueId() + "'");
+    public void setPlot(int plotID, Slot slot) throws SQLException {
+        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = " + plotID + " WHERE uuid = '" + player.getUniqueId() + "'");
     }
 }

@@ -53,7 +53,7 @@ public class Companion {
         // Set Slots
         for (int i = 0;i<3;i++){
             try {
-                Plot plot = new Builder(player).getActivePlot(Slot.values()[i]);
+                Plot plot = new Builder(player).getPlot(Slot.values()[i]);
 
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.MAP,1+i)
