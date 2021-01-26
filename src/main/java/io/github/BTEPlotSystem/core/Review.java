@@ -271,6 +271,7 @@ public class Review implements Listener {
                         double plotsSize = PlotManager.getPlotSize();
                         player.teleport(new Location(player.getWorld(),selectedPlot.getMcCoordinates().getX()-plotsSize/2,selectedPlot.getMcCoordinates().getY()+1,selectedPlot.getMcCoordinates().getZ()+plotsSize/2));
                         player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID()+" By " + selectedPlot.getBuilder().getPlayer().getName());
+                        event.getWhoClicked().closeInventory();
                     } else {
                         //TODO: Check and Set points
                     }

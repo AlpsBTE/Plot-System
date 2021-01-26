@@ -1,8 +1,11 @@
 package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.Slot;
+import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,10 +48,15 @@ public class Companion {
 
     public void showItems(Player player) throws SQLException {
         // Set HUB
-        //TODO: Set active player count
+        //TODO: Set online player count
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.NETHER_STAR,1)
                 .setName("§6§lHUB").setLore(new LoreBuilder().server(0,true).build()).build());
+        menu.getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.performCommand("hub");
+            //TODO: Add hub command
+            clickPlayer.closeInventory();
+        });
 
         // Set Slots
         for (int i = 0;i<3;i++){
@@ -60,6 +68,11 @@ public class Companion {
                                 .setName("§l§6Slot " + (i+1) + " | " + plot.getCity().getName() + " #" + plot.getID())
                                 .setLore(new LoreBuilder().description("click to teleport...").build())
                                 .build());
+                menu.getSlot(46+i).setClickHandler((clickPlayer, clickInformation) -> {
+                    clickPlayer.sendMessage("teleporting...");
+                    //TODO: Teleport
+                    clickPlayer.closeInventory();
+                });
             } catch (Exception e) {
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
@@ -75,6 +88,10 @@ public class Companion {
                 .setName("§b§lCUSTOM HEADS")
                 .setLore(new LoreBuilder().description("Open the head menu to get a variety of custom heads.").build())
                 .build());
+        menu.getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.performCommand("hdb");
+            clickPlayer.closeInventory();
+        });
 
         // Set Custom Banners
         menu.getSlot(51)
@@ -82,6 +99,10 @@ public class Companion {
                 .setName("§b§lBANNER MAKER")
                 .setLore(new LoreBuilder().description("Open the banner maker menu to create your own custom banners.").build())
                 .build());
+        menu.getSlot(51).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.performCommand("bm");
+            clickPlayer.closeInventory();
+        });
 
         // Set Custom Blocks
         menu.getSlot(52)
@@ -89,19 +110,42 @@ public class Companion {
                 .setName("§b§lSPECIAL BLOCKS")
                 .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build());
+        menu.getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
+            openCustomBlocks(clickPlayer);
+            clickPlayer.closeInventory();
+        });
 
         // List CityProjects
         List<CityProject> cities = CityProject.getCityProjects();
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         for (int i = 0; i<cities.size();i++){
+            int cityID = i;
+            menu.getSlot(9+i).setClickHandler((clickPlayer, clickInformation) -> {
+                try {
+                    if (new Builder(clickPlayer).getFreeSlot() != null){
+                        if (PlotManager.getPlots(cityID+1, Status.unclaimed).size() != 0){
+                            clickPlayer.sendMessage("creating new plot...");
+                            PlotManager.ClaimPlot(cityID+1, new Builder(clickPlayer));
+                        } else {
+                            clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
+                        }
+                    } else {
+                        clickPlayer.sendMessage("§4All slots are occupied! Finish an active plot before starting a new project!");
+                    }
+                } catch (SQLException throwables) {
+                    clickPlayer.sendMessage("§4SQL Error! :pepehands:");
+                    throwables.printStackTrace();
+                }
+                clickPlayer.closeInventory();
+            });
+
             switch (cities.get(i).getCountry()){
-                //TODO: get total open plot count to description
                 case AT:
                     menu.getSlot(9+i)
                             .setItem(new ItemBuilder(api.getItemHead("4397"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription())
+                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(i+1, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(i+1, Status.complete).size() + "§7 completed plots")
                                             .build())
                                     .build());
                     break;
@@ -110,7 +154,7 @@ public class Companion {
                             .setItem(new ItemBuilder(api.getItemHead("32348"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription())
+                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(i+1, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(i+1, Status.complete).size() + "§7 completed plots")
                                             .build())
                                     .build());
                     break;
@@ -119,11 +163,19 @@ public class Companion {
                             .setItem(new ItemBuilder(api.getItemHead("26174"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription())
+                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(i+1, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(i+1, Status.complete).size() + "§7 completed plots")
                                             .build())
                                     .build());
                     break;
+
             }
         }
     }
+
+    private void openCustomBlocks(Player player){
+        //TODO: open menu
+        player.sendMessage("soontm");
+    }
+
+
 }
