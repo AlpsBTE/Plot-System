@@ -17,20 +17,24 @@ public class PlotManager extends PlotHandler {
     }
 
     public static List<Plot> getPlots() throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots"));
     }
 
     public static List<Plot> getPlots(Status status) throws SQLException {
         System.out.println(status.name());
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE status = '" + status.name() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "'"));
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "'"));
     }
 
     public static List<Plot> getPlots(Builder builder, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "'"));
+    }
+
+    public static List<Plot> getPlots(int cityID, Status status) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "'"));
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
