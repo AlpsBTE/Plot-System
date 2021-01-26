@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PlotManager extends PlotHandler {
 
-    public static void CreatePlot(Plot plot, Builder builder) {
+    public static void ClaimPlot(int cityID, Builder builder) {
         throw new NotImplementedException();
     }
 
