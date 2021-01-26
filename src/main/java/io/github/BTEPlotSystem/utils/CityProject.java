@@ -1,6 +1,8 @@
 package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.utils.enums.Country;
+import github.BTEPlotSystem.utils.enums.Difficulty;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

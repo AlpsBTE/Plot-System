@@ -18,3 +18,7 @@ commands:
     description: opens the companion UI
     usage: /companion
     permission: alpsbte.companion
+  generateplot:
+    description: generate a new plot
+    usage: /generateplot <ID>
+    permission: alpsbte.generateplot

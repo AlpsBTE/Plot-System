@@ -12,15 +12,14 @@ import java.sql.SQLException;
 
 public class CMDReview implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (commandSender instanceof Player){
-            Player player = (Player)commandSender;
-            if (commandSender.hasPermission("alpsbte.review")){
+    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+        if (sender instanceof Player){
+            Player player = (Player)sender;
+            if (sender.hasPermission("alpsbte.review")){
                 try {
                     Bukkit.getPluginManager().registerEvents(new Review(player), BTEPlotSystem.getPlugin());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                    player.sendMessage("§4SQL Error!");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
         }

@@ -3,7 +3,7 @@ package github.BTEPlotSystem.core.plots;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
-import github.BTEPlotSystem.utils.STATUS;
+import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -36,9 +36,9 @@ public class Plot {
             // Builder
             this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
 
-            // MC Coordinates
-            String[] mcLocation = rs.getString("mcCoordinates").split(",");
-            this.mcCoordinates = new Location(null, Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+            // TODO: Fix MC Coordinates
+            //String[] mcLocation = rs.getString("mcCoordinates").split(",");
+            //this.mcCoordinates = new Location(builder.getPlayer().getWorld(), builder.getPlayer().getLocation().getX(), builder.getPlayer().getLocation().getY(), builder.getPlayer().getLocation().getZ());
 
             // Numeric Geo Coordinates
             this.geoCoordinatesNumeric = rs.getString("geoCoordinatesNumeric");
@@ -72,8 +72,14 @@ public class Plot {
         return geoCoordinatesNSEW;
     }
 
-    public STATUS getStatus() throws SQLException {
-        return STATUS.values()[DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'").getInt("status") - 1];
+    public Status getStatus() throws SQLException {
+       ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
+
+       if(rs.next()) {
+           return Status.valueOf(rs.getString("status"));
+       } else {
+           return null;
+       }
     }
 
     public Builder getBuilder() {

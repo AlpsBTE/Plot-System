@@ -1,10 +1,10 @@
 package github.BTEPlotSystem.core;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.STATUS;
+import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Review implements Listener {
-    private Inventory reviewMenu;
+    private final Inventory reviewMenu;
     private Inventory reviewPlotMenu;
 
     //Review Inventory
@@ -28,20 +28,20 @@ public class Review implements Listener {
     private ItemStack itemClose;
 
     //Review Plot Inventory
-    private  ItemStack itemMap;
-    private  ItemStack[] itemCategory = new ItemStack[4];
-    private  ItemStack[] itemPointZero = new ItemStack[4];
-    private  ItemStack[] itemPointOne = new ItemStack[4];
-    private  ItemStack[] itemPointTwo = new ItemStack[4];
-    private  ItemStack[] itemPointThree = new ItemStack[4];
-    private  ItemStack[] itemPointFour = new ItemStack[4];
-    private  ItemStack[] itemPointFive = new ItemStack[4];
+    private ItemStack itemMap;
+    private final ItemStack[] itemCategory = new ItemStack[4];
+    private final ItemStack[] itemPointZero = new ItemStack[4];
+    private final ItemStack[] itemPointOne = new ItemStack[4];
+    private final ItemStack[] itemPointTwo = new ItemStack[4];
+    private final ItemStack[] itemPointThree = new ItemStack[4];
+    private final ItemStack[] itemPointFour = new ItemStack[4];
+    private final ItemStack[] itemPointFive = new ItemStack[4];
 
-    private ItemStack[] plot;
+    private final ItemStack[] plot;
 
     private Plot selectedPlot;
 
-    private Player player;
+    private final Player player;
 
     public Review(Player player) throws SQLException {
         //Opens Review Menu, showing all plots in the given round.
@@ -49,15 +49,15 @@ public class Review implements Listener {
         this.player = player;
 
         List<Plot> plots;
-        plots = BTEPlotSystem.getPlotManager().getPlots(STATUS.unfinished);
-        plots.addAll(BTEPlotSystem.getPlotManager().getPlots(STATUS.unreviewed));
+        plots = PlotManager.getPlots(Status.unfinished);
+        plots.addAll(PlotManager.getPlots(Status.unreviewed));
 
         plot = new ItemStack[plots.size()];
 
         for (int i = 0; i < 54; i++){
             if (!plots.isEmpty()){
-                if (i< plots.size()){
-                    switch (new Plot(i).getStatus()){
+                if (i < plots.size()){
+                    switch (new Plot(i + 1).getStatus()){
                         case unfinished:
                             plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
                                     .setName("§6#"+i+" | unfinished")
@@ -268,7 +268,7 @@ public class Review implements Listener {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         //TODO: Move to PlotHandler Class
-                        double plotsSize = BTEPlotSystem.getPlotManager().getPlotSize();
+                        double plotsSize = PlotManager.getPlotSize();
                         player.teleport(new Location(player.getWorld(),selectedPlot.getMcCoordinates().getX()-plotsSize/2,selectedPlot.getMcCoordinates().getY()+1,selectedPlot.getMcCoordinates().getZ()+plotsSize/2));
                         player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID()+" By " + selectedPlot.getBuilder().getPlayer().getName());
                     } else {

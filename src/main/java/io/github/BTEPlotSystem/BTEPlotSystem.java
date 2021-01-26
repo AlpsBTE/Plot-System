@@ -2,11 +2,11 @@ package github.BTEPlotSystem;
 
 import github.BTEPlotSystem.commands.CMDCompanion;
 import github.BTEPlotSystem.commands.CMDCoords;
+import github.BTEPlotSystem.commands.CMDGeneratePlot;
 import github.BTEPlotSystem.commands.CMDReview;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.plots.PlotManager;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +20,6 @@ import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
     private static BTEPlotSystem plugin;
-    private static PlotManager plotManager;
 
     private FileConfiguration config;
     private File configFile;
@@ -42,6 +41,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("coords").setExecutor(new CMDCoords());
         this.getCommand("review").setExecutor(new CMDReview());
         this.getCommand("companion").setExecutor(new CMDCompanion());
+        this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
 
@@ -57,13 +57,9 @@ public class BTEPlotSystem extends JavaPlugin {
         return plugin;
     }
 
-    public static PlotManager getPlotManager() {
-        return plotManager;
-    }
-
     @Override
     public void reloadConfig() {
-        configFile = new File(getDataFolder(), "defaultConfig.yml");
+        configFile = new File(getDataFolder(), "config.yml");
         if (configFile.exists()) {
             config = YamlConfiguration.loadConfiguration(configFile);
         } else {

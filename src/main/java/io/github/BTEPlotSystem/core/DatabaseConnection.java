@@ -23,11 +23,6 @@ public class DatabaseConnection {
                         config.getString("database.username"),
                         config.getString("database.password"));
 
-                /*connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/alpsbte" +
-                        "?user=" + config.getString("database.username") +
-                        "&password=" + config.getString("datbase.password") +
-                        "&useUnicode=true&characterEncoding=UTF-8");*/
-
                 Bukkit.getLogger().log(Level.INFO, "SQL Connection to database established!");
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Connection Failed!", ex);

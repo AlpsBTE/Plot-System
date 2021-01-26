@@ -2,12 +2,11 @@ package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Builder {
 
@@ -30,16 +29,12 @@ public class Builder {
     }
 
     public Plot getActivePlot(Slot slot) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + player.getUniqueId() + "'");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + player.getUniqueId() + "'");
 
-        switch (slot) {
-            case FIRST:
-                return new Plot(rs.getInt("firstSlot"));
-            case SECOND:
-                return new Plot(rs.getInt("secondSlot"));
-            case THIRD:
-                return new Plot(rs.getInt("thirdSlot"));
+        if (rs.next()) {
+            return new Plot(rs.getInt(slot.name()));
         }
+
         return null;
     }
 
