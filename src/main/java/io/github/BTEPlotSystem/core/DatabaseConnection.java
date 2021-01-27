@@ -37,6 +37,9 @@ public class DatabaseConnection {
     }
 
     public static Statement createStatement() throws SQLException {
+        if(getConnection().isClosed()) {
+            ConnectToDatabase();
+        }
         return getConnection().createStatement();
     }
 
