@@ -1,8 +1,12 @@
 package github.BTEPlotSystem.core.plots;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.Vector2D;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
+import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
+import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,7 +21,7 @@ public class Plot {
     private CityProject cityProject;
     private Builder builder;
     private File schematic;
-    private Location mcCoordinates;
+    private Vector mcCoordinates;
     private String geoCoordinatesNumeric;
     private String geoCoordinatesNSEW;
 
@@ -30,21 +34,30 @@ public class Plot {
             // City ID
             this.cityProject = new CityProject(rs.getInt("idcity"));
 
-            // Schematic File
+            // Schematic file
             //this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + cityProject.getID() + "//" + getID());
 
             // Builder
-            this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
+            if(getStatus() != Status.unclaimed) {
+                this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
+            }
 
-            // TODO: Fix MC Coordinates
-            //String[] mcLocation = rs.getString("mcCoordinates").split(",");
-            //this.mcCoordinates = new Location(builder.getPlayer().getWorld(), builder.getPlayer().getLocation().getX(), builder.getPlayer().getLocation().getY(), builder.getPlayer().getLocation().getZ());
+            // Player MC Coordinates
+            String[] mcLocation = rs.getString("mcCoordinates").split(",");
+            this.mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
 
-            // Numeric Geo Coordinates
-            this.geoCoordinatesNumeric = rs.getString("geoCoordinatesNumeric");
+            // Convert MC coordinates to geo coordinates
+            try {
+                double[] coords = CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ());
 
-            // NSEW Geo Coordinates
-            this.geoCoordinatesNSEW = rs.getString("geoCoordinatesNSEW");
+                // Geo coordinates numeric
+                this.geoCoordinatesNumeric = CoordinateConversion.formatGeoCoordinatesNumeric(coords);
+
+                // Geo coordinates NSEW
+                this.geoCoordinatesNSEW = CoordinateConversion.formatGeoCoordinatesNSEW(coords);
+            } catch (OutOfProjectionBoundsException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -60,7 +73,7 @@ public class Plot {
         return schematic;
     }
 
-    public Location getMcCoordinates() {
+    public Vector getMcCoordinates() {
         return mcCoordinates;
     }
 

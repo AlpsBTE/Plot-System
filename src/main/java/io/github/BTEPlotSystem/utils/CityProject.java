@@ -37,7 +37,7 @@ public class CityProject {
             this.tags = rs.getString("tags");
 
             // Difficulty
-            this.difficulty = Difficulty.values()[rs.getInt("difficulty_iddifficulty") - 1];
+            this.difficulty = Difficulty.values()[rs.getInt("idDifficulty") - 1];
         }
     }
 

@@ -118,14 +118,14 @@ public class Companion {
         // List CityProjects
         List<CityProject> cities = CityProject.getCityProjects();
         HeadDatabaseAPI api = new HeadDatabaseAPI();
-        for (int i = 0; i<cities.size();i++){
-            int cityID = i;
+        for (int i = 0; i < cities.size(); i++){
+            int cityID = cities.get(i).getID();
             menu.getSlot(9+i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
                     if (new Builder(clickPlayer).getFreeSlot() != null){
-                        if (PlotManager.getPlots(cityID+1, Status.unclaimed).size() != 0){
+                        if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
                             clickPlayer.sendMessage("creating new plot...");
-                            PlotManager.ClaimPlot(cityID+1, new Builder(clickPlayer));
+                            PlotManager.ClaimPlot(cityID, new Builder(clickPlayer));
                         } else {
                             clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
                         }
@@ -145,7 +145,7 @@ public class Companion {
                             .setItem(new ItemBuilder(api.getItemHead("4397"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(i+1, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(i+1, Status.complete).size() + "§7 completed plots")
+                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
                                             .build())
                                     .build());
                     break;
@@ -154,7 +154,7 @@ public class Companion {
                             .setItem(new ItemBuilder(api.getItemHead("32348"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(i+1, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(i+1, Status.complete).size() + "§7 completed plots")
+                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
                                             .build())
                                     .build());
                     break;
@@ -163,7 +163,7 @@ public class Companion {
                             .setItem(new ItemBuilder(api.getItemHead("26174"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(i+1, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(i+1, Status.complete).size() + "§7 completed plots")
+                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
                                             .build())
                                     .build());
                     break;
