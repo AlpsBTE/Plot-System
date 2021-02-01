@@ -2,3 +2,5 @@
 database:
   username: null
   password: null
+schematic-path: null
+default-plot-schematic: null

@@ -1,19 +1,41 @@
 package github.BTEPlotSystem.core.plots;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.CityProject;
 import github.BTEPlotSystem.utils.enums.Status;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class PlotManager extends PlotHandler {
+public class PlotManager {
 
-    public static void ClaimPlot(int cityID, Builder builder) {
-        throw new NotImplementedException();
+    public static void ClaimPlot(int cityID, Builder builder) throws SQLException {
+        int claimedCityPlots = CityProject.getPlotsCount(cityID);
+        List<Plot> unclaimedCityPlots = getPlots(cityID, Status.unclaimed);
+        Plot newPlot = new Plot(new Random().nextInt(unclaimedCityPlots.size() + 1));
+
+        // TODO: Calculate newPlot spawn location
+
+        // Updates values and database
+        builder.setPlot(newPlot.getID(), builder.getFreeSlot());
+        newPlot.setStatus(Status.unfinished);
+
+        // TODO: Update newPlot coordinates location
+
+        // TODO: Spawn default plot platform schematic
+
+        // TODO: Spawn plot schematic
+
+        // TODO: Set plot building protection
+
+        // Teleport player
+        PlotHandler.TeleportPlayer(newPlot);
     }
 
     public static List<Plot> getPlots() throws SQLException {
@@ -52,6 +74,10 @@ public class PlotManager extends PlotHandler {
     }
 
     public static String getSchematicPath() {
-        throw new NotImplementedException();
+        return BTEPlotSystem.getPlugin().getConfig().getString("PlotSystem.schematic-path");
+    }
+
+    public static File getDefaultPlot() {
+        return new File(BTEPlotSystem.getPlugin().getConfig().getString("PlotSystem.default-plot-schematic"));
     }
 }
