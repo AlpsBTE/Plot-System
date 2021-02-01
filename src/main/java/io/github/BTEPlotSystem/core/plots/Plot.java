@@ -106,6 +106,12 @@ public class Plot {
         statement.executeUpdate();
     }
 
+    public void setPlotCoordinates(Vector vector) throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET plotCoordinates = ? WHERE idplot = '" + getID() + "'");
+        statement.setString(1, vector.getX() + "," + vector.getY() + "," + vector.getZ());
+        statement.executeUpdate();
+    }
+
     public Builder getBuilder() {
         return builder;
     }
