@@ -1,7 +1,6 @@
 package github.BTEPlotSystem.core.plots;
 
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.Vector2D;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
@@ -9,7 +8,6 @@ import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -22,6 +20,7 @@ public class Plot {
     private Builder builder;
     private File schematic;
     private Vector mcCoordinates;
+    private Vector plotCoordinates;
     private String geoCoordinatesNumeric;
     private String geoCoordinatesNSEW;
 
@@ -35,11 +34,14 @@ public class Plot {
             this.cityProject = new CityProject(rs.getInt("idcity"));
 
             // Schematic file
-            //this.schematic = new File(BTEPlotSystem.getPlotManager().getSchematicPath() + cityProject.getID() + "//" + getID());
+            this.schematic = new File(PlotManager.getSchematicPath().concat(cityProject + "/" + getID() + ".schematic"));
 
-            // Builder
+            // Builder and Plot Coordinates
             if(getStatus() != Status.unclaimed) {
                 this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
+
+                String[] plotLocation = rs.getString("plotCoordinates").split(",");
+                this.plotCoordinates = new Vector(Integer.parseInt(plotLocation[0]), Integer.parseInt(plotLocation[1]), Integer.parseInt(plotLocation[2]));
             }
 
             // Player MC Coordinates
@@ -76,6 +78,8 @@ public class Plot {
     public Vector getMcCoordinates() {
         return mcCoordinates;
     }
+
+    public Vector getPlotCoordinates() { return plotCoordinates; }
 
     public String getGeoCoordinatesNumeric() {
         return geoCoordinatesNumeric;
