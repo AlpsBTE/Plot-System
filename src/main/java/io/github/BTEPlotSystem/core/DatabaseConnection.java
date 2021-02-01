@@ -43,7 +43,7 @@ public class DatabaseConnection {
         return getConnection().createStatement();
     }
 
-    public static void prepareStatement(String query) throws SQLException {
-        getConnection().prepareStatement(query);
+    public static PreparedStatement prepareStatement(String query) throws SQLException {
+        return getConnection().prepareStatement(query);
     }
 }

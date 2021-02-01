@@ -10,6 +10,7 @@ import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -97,6 +98,12 @@ public class Plot {
        } else {
            return null;
        }
+    }
+
+    public void setStatus(Status status) throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
+        statement.setString(1, status.name());
+        statement.executeUpdate();
     }
 
     public Builder getBuilder() {
