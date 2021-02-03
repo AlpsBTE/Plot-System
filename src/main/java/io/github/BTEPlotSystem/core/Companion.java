@@ -111,7 +111,7 @@ public class Companion {
                 .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build());
         menu.getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            openCustomBlocks(clickPlayer);
+            new SpecialBlocksMenu().getUI().open(clickPlayer);
             clickPlayer.closeInventory();
         });
 
@@ -171,11 +171,4 @@ public class Companion {
             }
         }
     }
-
-    private void openCustomBlocks(Player player){
-        //TODO: open menu
-        player.sendMessage("soontm");
-    }
-
-
 }
