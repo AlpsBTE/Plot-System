@@ -36,7 +36,7 @@ public class LoreBuilder {
         return this;
     }
 
-    public LoreBuilder emtpyLine() {
+    public LoreBuilder emptyLine() {
         lore.add("");
         return this;
     }

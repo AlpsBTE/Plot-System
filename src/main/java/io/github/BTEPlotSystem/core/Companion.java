@@ -70,7 +70,7 @@ public class Companion {
                                 .build());
                 menu.getSlot(46+i).setClickHandler((clickPlayer, clickInformation) -> {
                     clickPlayer.sendMessage("teleporting...");
-                    //TODO: Teleport
+                    PlotHandler.TeleportPlayer(plot, clickPlayer);
                     clickPlayer.closeInventory();
                 });
             } catch (Exception e) {
