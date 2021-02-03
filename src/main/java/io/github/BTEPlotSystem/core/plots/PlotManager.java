@@ -43,7 +43,6 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Status status) throws SQLException {
-        System.out.println(status.name());
         return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "'"));
     }
 

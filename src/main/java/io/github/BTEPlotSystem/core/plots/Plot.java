@@ -19,7 +19,6 @@ public class Plot {
     private final int ID;
     private CityProject cityProject;
     private Builder builder;
-    private File schematic;
     private Vector mcCoordinates;
     private Vector plotCoordinates;
     private String geoCoordinatesNumeric;
@@ -34,15 +33,12 @@ public class Plot {
             // City ID
             this.cityProject = new CityProject(rs.getInt("idcity"));
 
-            // Schematic file
-            this.schematic = new File(PlotManager.getSchematicPath().concat(cityProject + "/" + getID() + ".schematic"));
-
             // Builder and Plot Coordinates
             if(getStatus() != Status.unclaimed) {
                 this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
 
                 String[] plotLocation = rs.getString("plotCoordinates").split(",");
-                this.plotCoordinates = new Vector(Integer.parseInt(plotLocation[0]), Integer.parseInt(plotLocation[1]), Integer.parseInt(plotLocation[2]));
+                this.plotCoordinates = new Vector(Double.parseDouble(plotLocation[0]), Double.parseDouble(plotLocation[1]), Double.parseDouble(plotLocation[2]));
             }
 
             // Player MC Coordinates
@@ -73,7 +69,8 @@ public class Plot {
     }
 
     public File getSchematic() {
-        return schematic;
+        System.out.println(PlotManager.getSchematicPath().concat(cityProject + "/" + getID() + ".schematic"));
+        return new File(PlotManager.getSchematicPath().concat(cityProject + "/" + getID() + ".schematic"));
     }
 
     public Vector getMcCoordinates() {
