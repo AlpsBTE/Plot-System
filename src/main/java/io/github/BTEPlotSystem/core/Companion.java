@@ -89,8 +89,8 @@ public class Companion {
                 .setLore(new LoreBuilder().description("Open the head menu to get a variety of custom heads.").build())
                 .build());
         menu.getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.performCommand("hdb");
             clickPlayer.closeInventory();
+            clickPlayer.performCommand("hdb");
         });
 
         // Set Custom Banners
@@ -111,8 +111,8 @@ public class Companion {
                 .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build());
         menu.getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            new SpecialBlocksMenu().getUI().open(clickPlayer);
             clickPlayer.closeInventory();
+            new SpecialBlocksMenu().getUI().open(clickPlayer);
         });
 
         // List CityProjects
