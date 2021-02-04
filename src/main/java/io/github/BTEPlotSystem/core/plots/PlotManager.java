@@ -10,6 +10,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -43,28 +44,27 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "' ORDER BY ASC"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "'"));
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' ORDER BY ASC"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "'"));
     }
 
     public static List<Plot> getPlots(Builder builder, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "' ORDER BY ASC"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "'"));
     }
 
     public static List<Plot> getPlots(int cityID, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "' ORDER BY ASC"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "'"));
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
         List<Plot> plots = new ArrayList<>();
 
+        // Get plot
         while (rs.next()) {
-            int i = rs.getInt("idplot");
-            System.out.println(i);
-            plots.add(new Plot(i));
+           plots.add(new Plot(rs.getInt("idplot")));
         }
 
         return plots;

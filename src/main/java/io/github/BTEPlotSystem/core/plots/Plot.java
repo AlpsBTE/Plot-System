@@ -46,7 +46,7 @@ public class Plot {
             this.mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
 
             // Convert MC coordinates to geo coordinates
-            try {
+            /*try {
                 double[] coords = CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ());
 
                 // Geo coordinates numeric
@@ -56,7 +56,7 @@ public class Plot {
                 //this.geoCoordinatesNSEW = CoordinateConversion.formatGeoCoordinatesNSEW(coords);
             } catch (OutOfProjectionBoundsException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 

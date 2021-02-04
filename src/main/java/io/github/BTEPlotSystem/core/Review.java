@@ -37,7 +37,8 @@ public class Review implements Listener {
     private final ItemStack[] itemPointFour = new ItemStack[4];
     private final ItemStack[] itemPointFive = new ItemStack[4];
 
-    private List<Plot> plots;
+    private final List<Plot> plots = PlotManager.getPlots(Status.unfinished);
+    private List<ItemStack> plotItems;
     private Plot selectedPlot;
 
     private final Player player;
@@ -54,7 +55,6 @@ public class Review implements Listener {
                         .build())
                 .build();
 
-        plots = PlotManager.getPlots(Status.unfinished);
         plots.addAll(PlotManager.getPlots(Status.unreviewed));
 
         int counter = 0;
@@ -62,7 +62,7 @@ public class Review implements Listener {
             try {
                 switch (plot.getStatus()){
                     case unfinished:
-                        reviewMenu.setItem(counter, new ItemBuilder(Material.REDSTONE_BLOCK, 1)
+                        plotItems.add(counter, new ItemBuilder(Material.REDSTONE_BLOCK, 1)
                                 .setName("§6#"+ plot.getID() +" | unfinished")
                                 .setLore(new LoreBuilder()
                                         .description("§7Open plot...")
@@ -70,7 +70,7 @@ public class Review implements Listener {
                                 .build());
                         break;
                     case unreviewed:
-                         reviewMenu.setItem(counter, new ItemBuilder(Material.PAPER, 1)
+                         plotItems.add(counter, new ItemBuilder(Material.PAPER, 1)
                                 .setName("§6#"+ plot.getID() +" | unreviewed")
                                 .setLore(new LoreBuilder()
                                         .description("§7Open plot...")
@@ -79,7 +79,9 @@ public class Review implements Listener {
                         break;
                     default:
                         reviewMenu.setItem(counter, plotLoadError);
+                        return;
                 }
+                reviewMenu.setItem(counter, plotItems.get(counter));
             } catch (Exception e) {
                 reviewMenu.setItem(counter, plotLoadError);
             }
