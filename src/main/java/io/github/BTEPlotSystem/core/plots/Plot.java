@@ -6,6 +6,7 @@ import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import github.BTEPlotSystem.utils.enums.Categories;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 
@@ -47,17 +48,17 @@ public class Plot {
             this.mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
 
             // Convert MC coordinates to geo coordinates
-            /*try {
+            try {
                 double[] coords = CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ());
 
                 // Geo coordinates numeric
-                //this.geoCoordinatesNumeric = CoordinateConversion.formatGeoCoordinatesNumeric(coords);
+                this.geoCoordinatesNumeric = CoordinateConversion.formatGeoCoordinatesNumeric(coords);
 
                 // Geo coordinates NSEW
-                //this.geoCoordinatesNSEW = CoordinateConversion.formatGeoCoordinatesNSEW(coords);
+                this.geoCoordinatesNSEW = CoordinateConversion.formatGeoCoordinatesNSEW(coords);
             } catch (OutOfProjectionBoundsException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
     }
 
@@ -98,9 +99,35 @@ public class Plot {
        }
     }
 
+    public int getScore(Categories category) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
+
+        if(rs.next()) {
+            String[] scoreAsString = rs.getString("score").split(",");
+
+            switch (category) {
+                case ACCURACY:
+                    return Integer.parseInt(scoreAsString[0]);
+                case BLOCKPALETTE:
+                    return Integer.parseInt(scoreAsString[1]);
+                case DETAILING:
+                    return Integer.parseInt(scoreAsString[2]);
+                case TECHNIQUE:
+                    return Integer.parseInt(scoreAsString[3]);
+            }
+        }
+        return 0;
+    }
+
     public void setStatus(Status status) throws SQLException {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
         statement.setString(1, status.name());
+        statement.executeUpdate();
+    }
+
+    public void setScore(String scoreFormat) throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
+        statement.setString(1, scoreFormat);
         statement.executeUpdate();
     }
 
