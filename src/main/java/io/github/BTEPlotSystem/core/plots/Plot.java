@@ -9,6 +9,7 @@ import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsExc
 import github.BTEPlotSystem.utils.enums.Categories;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -22,7 +23,6 @@ public class Plot {
     private CityProject cityProject;
     private Builder builder;
     private Vector mcCoordinates;
-    private Vector plotCoordinates;
     private String geoCoordinatesNumeric;
     private String geoCoordinatesNSEW;
 
@@ -38,9 +38,6 @@ public class Plot {
             // Builder and Plot Coordinates
             if(getStatus() != Status.unclaimed) {
                 this.builder = new Builder(Bukkit.getPlayer(UUID.fromString(rs.getString("uuidplayer"))));
-
-                String[] plotLocation = rs.getString("plotCoordinates").split(",");
-                this.plotCoordinates = new Vector(Double.parseDouble(plotLocation[0]), Double.parseDouble(plotLocation[1]), Double.parseDouble(plotLocation[2]));
             }
 
             // Player MC Coordinates
@@ -75,11 +72,17 @@ public class Plot {
         return new File(PlotManager.getSchematicPath().concat(cityProject + "/" + getID() + ".schematic"));
     }
 
+    public Builder getBuilder() {
+        return builder;
+    }
+
     public Vector getMcCoordinates() {
         return mcCoordinates;
     }
 
-    public Vector getPlotCoordinates() { return plotCoordinates; }
+    public Vector getPlotCoordinates() {
+        return PlotManager.CalculatePlotCoordinates(getID());
+    }
 
     public String getGeoCoordinatesNumeric() {
         return geoCoordinatesNumeric;
@@ -119,6 +122,12 @@ public class Plot {
         return 0;
     }
 
+    public void setBuilder(String UUID) throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
+        statement.setString(1, UUID);
+        statement.executeUpdate();
+    }
+
     public void setStatus(Status status) throws SQLException {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
         statement.setString(1, status.name());
@@ -129,16 +138,6 @@ public class Plot {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
         statement.setString(1, scoreFormat);
         statement.executeUpdate();
-    }
-
-    public void setPlotCoordinates(Vector vector) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET plotCoordinates = ? WHERE idplot = '" + getID() + "'");
-        statement.setString(1, vector.getX() + "," + vector.getY() + "," + vector.getZ());
-        statement.executeUpdate();
-    }
-
-    public Builder getBuilder() {
-        return builder;
     }
 
     public String getOSMMapsLink() {

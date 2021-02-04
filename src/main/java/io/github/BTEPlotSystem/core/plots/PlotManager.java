@@ -1,33 +1,60 @@
 package github.BTEPlotSystem.core.plots;
 
+import com.boydti.fawe.object.FawePlayer;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.ClipboardFormats;
+import com.sk89q.worldedit.math.transform.Transform;
+import com.sk89q.worldedit.world.World;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
-import github.BTEPlotSystem.utils.CityProject;
 import github.BTEPlotSystem.utils.enums.Status;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.logging.Level;
 
 public class PlotManager {
 
     public static void ClaimPlot(int cityID, Builder builder) throws SQLException {
-        int claimedCityPlots = CityProject.getPlotsCount(cityID);
         List<Plot> unclaimedCityPlots = getPlots(cityID, Status.unclaimed);
-        Plot newPlot = new Plot(new Random().nextInt(unclaimedCityPlots.size() + 1));
+        Plot plot = new Plot(new Random().nextInt(unclaimedCityPlots.size() + 1));
 
-        // TODO: Calculate newPlot spawn location
+        World weWorld = new BukkitWorld(builder.getPlayer().getWorld());
+        Vector plotCoordinates;
+
+        try {
+            plotCoordinates = plot.getPlotCoordinates();
+        } catch (Exception ex) {
+            builder.getPlayer().sendMessage("§8§l>> §cAn error occurred while claiming the plot. Please try again.");
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while calculating new plot location!", ex);
+            return;
+        }
+
+        // Generate default plot
+        try {
+            EditSession editSession =
+                            ClipboardFormats.findByFile(getDefaultPlot())
+                            .load(getDefaultPlot())
+                            .paste(weWorld, plotCoordinates, false, true, null);
+            editSession.flushQueue();
+
+            Bukkit.getLogger().log(Level.INFO, "Successfully generated new plot at " + plotCoordinates.getX() + " / " + plotCoordinates.getY() + " / " + plotCoordinates.getZ());
+        } catch (Exception ex) {
+            builder.getPlayer().sendMessage("§8§l>> §cAn error occurred while claiming the plot. Please try again.");
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while loading new plot!", ex);
+            return;
+        }
 
         // Updates values and database
-        builder.setPlot(newPlot.getID(), builder.getFreeSlot());
-        newPlot.setStatus(Status.unfinished);
-
-        // TODO: Update newPlot coordinates location
+        builder.setPlot(plot.getID(), builder.getFreeSlot());
+        plot.setStatus(Status.unfinished);
+        plot.setBuilder(builder.getPlayer().getUniqueId().toString());
 
         // TODO: Spawn default plot platform schematic
 
@@ -36,7 +63,7 @@ public class PlotManager {
         // TODO: Set plot building protection
 
         // Teleport player
-        PlotHandler.TeleportPlayer(newPlot, builder.getPlayer());
+        PlotHandler.TeleportPlayer(plot, builder.getPlayer());
     }
 
     public static List<Plot> getPlots() throws SQLException {
@@ -78,15 +105,32 @@ public class PlotManager {
         return plots;
     }
 
+    public static Vector CalculatePlotCoordinates(int plotID) {
+        // Get row of the plot
+        int row = (int) (Math.floor((plotID - 1) / 5)) + 1;
+
+        // Get column of the plot
+        int column = ((plotID - 1) % getMaxRowsSize()) + 1;
+
+        int xCoords = (getPlotSize() * row) * 20;
+        int zCoords = (getPlotSize() * column) * 20;
+
+        return Vector.toBlockPoint(xCoords, 70, zCoords);
+    }
+
     public static int getPlotSize() {
         return 103;
     }
 
+    public static int getMaxRowsSize() {
+        return 5;
+    }
+
     public static String getSchematicPath() {
-        return BTEPlotSystem.getPlugin().getConfig().getString("PlotSystem.schematic-path");
+        return BTEPlotSystem.getPlugin().getConfig().getString("schematic-path");
     }
 
     public static File getDefaultPlot() {
-        return new File(BTEPlotSystem.getPlugin().getConfig().getString("PlotSystem.default-plot-schematic"));
+        return new File(BTEPlotSystem.getPlugin().getConfig().getString("default-plot-schematic"));
     }
 }
