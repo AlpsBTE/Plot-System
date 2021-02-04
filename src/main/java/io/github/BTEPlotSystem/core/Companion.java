@@ -69,9 +69,13 @@ public class Companion {
                                 .setLore(new LoreBuilder().description("click to teleport...").build())
                                 .build());
                 menu.getSlot(46+i).setClickHandler((clickPlayer, clickInformation) -> {
-                    clickPlayer.sendMessage("teleporting...");
-                    PlotHandler.TeleportPlayer(plot, clickPlayer);
                     clickPlayer.closeInventory();
+                    try {
+                        showPlotActionsMenu(clickPlayer, plot);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                        clickPlayer.sendMessage("§4Something went wrong... please contact a manager or developer");
+                    }
                 });
             } catch (Exception e) {
                 menu.getSlot(46+i)
@@ -170,5 +174,48 @@ public class Companion {
 
             }
         }
+    }
+
+    public void showPlotActionsMenu(Player player, Plot plot) throws SQLException {
+        //create menu
+        Menu menu = ChestMenu.builder(3).title("§l§6" + plot.getCity().getName() + " #" + plot.getID() + " | " + plot.getStatus().name()).build();
+
+        mask = BinaryMask.builder(menu)
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("111111111")
+                .build();
+        mask.apply(menu);
+
+        //set items
+        menu.getSlot(10)
+                .setItem(new ItemBuilder(Material.NAME_TAG,1)
+                        .setName("§a§lFinish").setLore(new LoreBuilder().description("Click to finish the selected plot and submit it to be reviewed...","§cNote: You wont be able to continue building on your Plot!").build()).build());
+        menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
+            //TODO: Finish Plot
+            player.sendMessage("finish plot soontm");
+            clickPlayer.closeInventory();
+        });
+
+        menu.getSlot(13)
+                .setItem(new ItemBuilder(Material.COMPASS,1)
+                        .setName("§6§lTeleport").setLore(new LoreBuilder().description("click to teleport to your plot...").build()).build());
+        menu.getSlot(13).setClickHandler((clickPlayer, clickInformation) -> {
+            //TODO: Teleport to Plot
+            PlotHandler.TeleportPlayer(plot,player);
+            clickPlayer.closeInventory();
+        });
+
+        menu.getSlot(16)
+                .setItem(new ItemBuilder(Material.BARRIER,1)
+                        .setName("§c§lAbandon").setLore(new LoreBuilder().description("click to abandon your plot...","§cNote: You wont be able to continue building on your Plot!").build()).build());
+        menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
+            //TODO: Abandon Plot
+            player.sendMessage("abandon plot soontm");
+            clickPlayer.closeInventory();
+        });
+
+        menu.open(player);
     }
 }
