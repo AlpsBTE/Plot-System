@@ -50,10 +50,10 @@ public class Plot {
                 double[] coords = CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ());
 
                 // Geo coordinates numeric
-                this.geoCoordinatesNumeric = CoordinateConversion.formatGeoCoordinatesNumeric(coords);
+                //this.geoCoordinatesNumeric = CoordinateConversion.formatGeoCoordinatesNumeric(coords);
 
                 // Geo coordinates NSEW
-                this.geoCoordinatesNSEW = CoordinateConversion.formatGeoCoordinatesNSEW(coords);
+                //this.geoCoordinatesNSEW = CoordinateConversion.formatGeoCoordinatesNSEW(coords);
             } catch (OutOfProjectionBoundsException e) {
                 e.printStackTrace();
             }

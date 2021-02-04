@@ -37,8 +37,7 @@ public class Review implements Listener {
     private final ItemStack[] itemPointFour = new ItemStack[4];
     private final ItemStack[] itemPointFive = new ItemStack[4];
 
-    private final ItemStack[] plot;
-
+    private List<Plot> plots;
     private Plot selectedPlot;
 
     private final Player player;
@@ -48,41 +47,47 @@ public class Review implements Listener {
         reviewMenu = Bukkit.createInventory(player,54,"Review Plots");
         this.player = player;
 
-        List<Plot> plots;
+        ItemStack plotLoadError = new ItemBuilder(Material.BARRIER, 1)
+                .setName("§cCould not load plot")
+                .setLore(new LoreBuilder()
+                        .description("Please contact a Manager or Developer!")
+                        .build())
+                .build();
+
         plots = PlotManager.getPlots(Status.unfinished);
         plots.addAll(PlotManager.getPlots(Status.unreviewed));
 
-        plot = new ItemStack[plots.size()];
-
-        for (int i = 0; i < 54; i++){
-            if (!plots.isEmpty()){
-                if (i < plots.size()){
-                    switch (new Plot(i + 1).getStatus()){
-                        case unfinished:
-                            plot[i] = new ItemBuilder(Material.REDSTONE_BLOCK, 1)
-                                    .setName("§6#"+i+" | unfinished")
-                                    .setLore(new LoreBuilder()
-                                            .description("§7Open plot...")
-                                            .build())
-                                    .build();
-                            break;
-                        case unreviewed:
-                            plot[i] = new ItemBuilder(Material.PAPER, 1)
-                                    .setName("§6#"+i+" | unreviewed")
-                                    .setLore(new LoreBuilder()
-                                            .description("§7Open plot...")
-                                            .build())
-                                    .build();
-                            break;
-                    }
-                    reviewMenu.setItem(i,plot[i]);
+        int counter = 0;
+        for(Plot plot : plots) {
+            try {
+                switch (plot.getStatus()){
+                    case unfinished:
+                        reviewMenu.setItem(counter, new ItemBuilder(Material.REDSTONE_BLOCK, 1)
+                                .setName("§6#"+ plot.getID() +" | unfinished")
+                                .setLore(new LoreBuilder()
+                                        .description("§7Open plot...")
+                                        .build())
+                                .build());
+                        break;
+                    case unreviewed:
+                         reviewMenu.setItem(counter, new ItemBuilder(Material.PAPER, 1)
+                                .setName("§6#"+ plot.getID() +" | unreviewed")
+                                .setLore(new LoreBuilder()
+                                        .description("§7Open plot...")
+                                        .build())
+                                .build());
+                        break;
+                    default:
+                        reviewMenu.setItem(counter, plotLoadError);
                 }
+            } catch (Exception e) {
+                reviewMenu.setItem(counter, plotLoadError);
             }
+            counter++;
+        }
 
-            if (i >= 45 && i != 46 && i != 49 && i != 52){
-                reviewMenu.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build());
-            }
-            switch (i){
+        for(int i = 45; i <= 52; i++) {
+            switch (i) {
                 case 46:
                     itemArrowLeft = new ItemBuilder(Material.ARROW, 1)
                             .setName("§l§6Previous Page")
@@ -90,7 +95,7 @@ public class Review implements Listener {
                                     .description("§7Show previous page")
                                     .build())
                             .build();
-                    reviewMenu.setItem(i,itemArrowLeft);
+                    reviewMenu.setItem(i, itemArrowLeft);
                     break;
                 case 49:
                     itemClose = new ItemBuilder(Material.BARRIER, 1)
@@ -99,7 +104,7 @@ public class Review implements Listener {
                                     .description("§7Close the review menu")
                                     .build())
                             .build();
-                    reviewMenu.setItem(i,itemClose);
+                    reviewMenu.setItem(i, itemClose);
                     break;
                 case 52:
                     itemArrowRight = new ItemBuilder(Material.ARROW, 1)
@@ -108,8 +113,10 @@ public class Review implements Listener {
                                     .description("§7Show next page")
                                     .build())
                             .build();
-                    reviewMenu.setItem(i,itemArrowRight);
+                    reviewMenu.setItem(i, itemArrowRight);
                     break;
+                default:
+                    reviewMenu.setItem(i, new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build());
             }
         }
         player.openInventory(reviewMenu);
@@ -255,9 +262,9 @@ public class Review implements Listener {
                         event.getWhoClicked().closeInventory();
                     }
 
-                    for (int i = 0;i<plot.length;i++){
-                        if (event.getCurrentItem().equals(plot[i])){
-                            selectedPlot = new Plot(i);
+                    for (Plot plot : plots) {
+                        if (event.getCurrentItem().equals(plot)) {
+                            selectedPlot = plot;
                             event.getWhoClicked().closeInventory();
                             ReviewPlot(selectedPlot);
                         }
