@@ -178,7 +178,7 @@ public class Companion {
 
     public void showPlotActionsMenu(Player player, Plot plot) throws SQLException {
         //create menu
-        Menu menu = ChestMenu.builder(3).title("§l§6" + plot.getCity().getName() + " #" + plot.getID() + " | " + plot.getStatus().name()).build();
+        Menu menu = ChestMenu.builder(3).title(plot.getCity().getName() + " #" + plot.getID() + " | " + plot.getStatus().name()).build();
 
         mask = BinaryMask.builder(menu)
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
