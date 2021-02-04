@@ -2,10 +2,7 @@ package github.BTEPlotSystem;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import github.BTEPlotSystem.commands.CMDCompanion;
-import github.BTEPlotSystem.commands.CMDGeneratePlot;
-import github.BTEPlotSystem.commands.CMDHub;
-import github.BTEPlotSystem.commands.CMDReview;
+import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import org.bukkit.Bukkit;
@@ -45,6 +42,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("companion").setExecutor(new CMDCompanion());
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
         this.getCommand("hub").setExecutor(new CMDHub());
+        this.getCommand("setleaderboardposition").setExecutor(new CMDSetLeaderboardPosition());
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
