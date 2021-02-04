@@ -8,6 +8,7 @@ import github.BTEPlotSystem.commands.CMDHub;
 import github.BTEPlotSystem.commands.CMDReview;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,6 +45,8 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("companion").setExecutor(new CMDCompanion());
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
         this.getCommand("hub").setExecutor(new CMDHub());
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
 
