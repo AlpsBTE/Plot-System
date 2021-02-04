@@ -374,10 +374,7 @@ public class Airocean extends GeographicProjection {
 
     @Override
     public double[] toGeo(double x, double y) throws OutOfProjectionBoundsException {
-        System.out.println("Test 3: " + x + " | " + y);
         int face = findTriangleGrid(x, y);
-
-        System.out.println("Face: " + face);
 
         if (face == -1) throw OutOfProjectionBoundsException.get();
 

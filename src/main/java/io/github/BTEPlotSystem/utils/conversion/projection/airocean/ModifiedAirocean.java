@@ -53,8 +53,6 @@ public class ModifiedAirocean extends ConformalEstimate {
 
     @Override
     public double[] toGeo(double x, double y) throws OutOfProjectionBoundsException {
-        System.out.println("Test 1: " + x + " | " + y);
-
         boolean easia;
         if (y < 0) {
             easia = x > 0;
@@ -82,8 +80,6 @@ public class ModifiedAirocean extends ConformalEstimate {
 
         //check to make sure still in right part
         if (easia != this.isEurasianPart(x, y)) throw OutOfProjectionBoundsException.get();
-
-        System.out.println("Test 2: " + x + " | " + y);
 
         return super.toGeo(x, y);
     }
