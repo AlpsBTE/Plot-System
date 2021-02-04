@@ -1,12 +1,14 @@
 package github.BTEPlotSystem;
 
-import github.BTEPlotSystem.commands.CMDCompanion;
-import github.BTEPlotSystem.commands.CMDGeneratePlot;
-import github.BTEPlotSystem.commands.CMDReview;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 
@@ -39,6 +41,10 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("review").setExecutor(new CMDReview());
         this.getCommand("companion").setExecutor(new CMDCompanion());
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
+        this.getCommand("hub").setExecutor(new CMDHub());
+        this.getCommand("setleaderboardposition").setExecutor(new CMDSetLeaderboardPosition());
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
 
@@ -90,6 +96,18 @@ public class BTEPlotSystem extends JavaPlugin {
             getConfig().save(configFile);
         } catch (IOException ex) {
             getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+        }
+    }
+
+    public void connectPlayer(Player player, String server) {
+        try{
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("ConnectOther");
+            out.writeUTF(player.getName());
+            out.writeUTF(server);
+            player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+        } catch (Exception ex){
+            getLogger().log(Level.WARNING, "Could not connect player [" + player + "] to " + server, ex);
         }
     }
 }

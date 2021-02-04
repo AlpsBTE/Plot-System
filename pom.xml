@@ -22,6 +22,12 @@
             <url>https://maven.nachwahl.dev/</url>
         </repository>
 
+        <!-- Holographic Displays -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+
         <repository>
             <id>enginehub-maven</id>
             <url>http://maven.enginehub.org/repo/</url>
@@ -57,6 +63,14 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Holographic Displays -->
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.4.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Fast Async World Edit API [VLatest]-->

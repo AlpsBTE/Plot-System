@@ -3,7 +3,7 @@ version: 1.0
 api-version: 1.12.2
 name: AlpsBTE-PlotSystem
 author: R3tuxn & Cinnazeyy
-depend: [HeadDatabase]
+depend: [HeadDatabase, HolographicDisplays]
 
 commands:
   review:
@@ -18,3 +18,11 @@ commands:
     description: generate a new plot
     usage: /generateplot <ID>
     permission: alpsbte.generateplot
+  hub:
+    description: teleports you back to the hub
+    usage: /hub
+    permission: alpsbte.hub
+  setleaderboardposition:
+    description: sets the position of the leaderboard
+    usage: /setleaderboardposition
+    permission: alpsbte.leaderboard

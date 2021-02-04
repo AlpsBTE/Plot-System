@@ -62,6 +62,10 @@ public class PlotManager {
 
         // TODO: Set plot building protection
 
+        // TODO: Abandon Plot (clear slot and remove owner from plot and add to open plot at city project)
+
+        // TODO: Finish Plot (set status to unreviewed)
+
         // Teleport player
         PlotHandler.TeleportPlayer(plot, builder.getPlayer());
     }
