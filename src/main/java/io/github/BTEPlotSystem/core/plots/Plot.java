@@ -13,6 +13,7 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class Plot {
 
@@ -35,7 +36,7 @@ public class Plot {
 
             // Builder and Plot Coordinates
             if(getStatus() != Status.unclaimed) {
-                this.builder = new Builder(Bukkit.getPlayer(rs.getString("uuidplayer")));
+                this.builder = new Builder(Bukkit.getPlayer(UUID.fromString(rs.getString("uuidplayer"))));
 
                 String[] plotLocation = rs.getString("plotCoordinates").split(",");
                 this.plotCoordinates = new Vector(Double.parseDouble(plotLocation[0]), Double.parseDouble(plotLocation[1]), Double.parseDouble(plotLocation[2]));

@@ -16,7 +16,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Review implements Listener {
     private final Inventory reviewMenu;
@@ -37,8 +39,7 @@ public class Review implements Listener {
     private final ItemStack[] itemPointFour = new ItemStack[4];
     private final ItemStack[] itemPointFive = new ItemStack[4];
 
-    private final List<Plot> plots = PlotManager.getPlots(Status.unfinished);
-    private List<ItemStack> plotItems;
+    private final HashMap<Plot, ItemStack> plotItems = new HashMap<>();
     private Plot selectedPlot;
 
     private final Player player;
@@ -55,25 +56,30 @@ public class Review implements Listener {
                         .build())
                 .build();
 
-        plots.addAll(PlotManager.getPlots(Status.unreviewed));
+        List<Plot> plots = PlotManager.getPlots(Status.unreviewed);
+        plots.addAll(PlotManager.getPlots(Status.unfinished));
 
         int counter = 0;
         for(Plot plot : plots) {
             try {
                 switch (plot.getStatus()){
                     case unfinished:
-                        plotItems.add(counter, new ItemBuilder(Material.REDSTONE_BLOCK, 1)
-                                .setName("§6#"+ plot.getID() +" | unfinished")
+                        plotItems.put(plot, new ItemBuilder(Material.WOOL, 1, (byte) 1)
+                                .setName("§6Manage Plot")
                                 .setLore(new LoreBuilder()
-                                        .description("§7Open plot...")
+                                        .description("§bID: §7" + plot.getID(),
+                                                     "§bBuilder: §7" + plot.getBuilder().getPlayer().getName(),
+                                                     "§bCity: §7" + plot.getCity().getName())
                                         .build())
                                 .build());
                         break;
                     case unreviewed:
-                         plotItems.add(counter, new ItemBuilder(Material.PAPER, 1)
-                                .setName("§6#"+ plot.getID() +" | unreviewed")
+                         plotItems.put(plot, new ItemBuilder(Material.MAP, 1)
+                                .setName("§6Review Plot")
                                 .setLore(new LoreBuilder()
-                                        .description("§7Open plot...")
+                                        .description("§bID: §7" + plot.getID(),
+                                                     "§bBuilder: §7" + plot.getBuilder().getPlayer().getDisplayName(),
+                                                     "§bCity: §7" + plot.getCity().getName())
                                         .build())
                                 .build());
                         break;
@@ -81,9 +87,10 @@ public class Review implements Listener {
                         reviewMenu.setItem(counter, plotLoadError);
                         return;
                 }
-                reviewMenu.setItem(counter, plotItems.get(counter));
+                reviewMenu.setItem(counter, plotItems.get(plot));
             } catch (Exception e) {
                 reviewMenu.setItem(counter, plotLoadError);
+                e.printStackTrace();
             }
             counter++;
         }
@@ -264,9 +271,9 @@ public class Review implements Listener {
                         event.getWhoClicked().closeInventory();
                     }
 
-                    for (Plot plot : plots) {
-                        if (event.getCurrentItem().equals(plot)) {
-                            selectedPlot = plot;
+                    for (ItemStack plotItem : plotItems.values()) {
+                        if (event.getCurrentItem().equals(plotItem)) {
+                            selectedPlot = getPlotByValue(plotItem);
                             event.getWhoClicked().closeInventory();
                             ReviewPlot(selectedPlot);
                         }
@@ -288,5 +295,14 @@ public class Review implements Listener {
                 }
             }
         } catch(Exception ex) { }
+    }
+
+    private Plot getPlotByValue(ItemStack item) {
+        for(Map.Entry entry : plotItems.entrySet()) {
+            if(entry.getValue().equals(item)) {
+                return (Plot) entry.getKey();
+            }
+        }
+        return null;
     }
 }

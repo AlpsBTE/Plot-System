@@ -43,8 +43,16 @@ public class PlotManager {
         return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots"));
     }
 
-    public static List<Plot> getPlots(Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "'"));
+    public static List<Plot> getPlots(Status... status) throws SQLException {
+        StringBuilder query = new StringBuilder("SELECT idplot FROM plots WHERE status = ");
+
+        for(int i = 0; i < status.length; i++) {
+            query.append("'").append(status[i].name()).append("'");
+
+            query.append((i != status.length - 1) ? " OR status = " : "");
+        }
+
+        return listPlots(DatabaseConnection.createStatement().executeQuery(query.toString()));
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
