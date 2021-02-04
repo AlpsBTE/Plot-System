@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
@@ -283,10 +284,7 @@ public class Review implements Listener {
                     if (event.getCurrentItem().equals(itemClose)) {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
-                        //TODO: Move to PlotHandler Class
-                        double plotsSize = PlotManager.getPlotSize();
-                        player.teleport(new Location(player.getWorld(),selectedPlot.getMcCoordinates().getX()-plotsSize/2,selectedPlot.getMcCoordinates().getY()+1,selectedPlot.getMcCoordinates().getZ()+plotsSize/2));
-                        player.sendMessage("§7>> Teleported to Plot #"+selectedPlot.getID()+" By " + selectedPlot.getBuilder().getPlayer().getName());
+                        PlotHandler.TeleportPlayer(selectedPlot,player);
                         event.getWhoClicked().closeInventory();
                     } else {
                         //TODO: Check and Set points
