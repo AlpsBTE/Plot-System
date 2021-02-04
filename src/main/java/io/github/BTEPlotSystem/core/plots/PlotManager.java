@@ -35,7 +35,7 @@ public class PlotManager {
         // TODO: Set plot building protection
 
         // Teleport player
-        PlotHandler.TeleportPlayer(newPlot);
+        PlotHandler.TeleportPlayer(newPlot, builder.getPlayer());
     }
 
     public static List<Plot> getPlots() throws SQLException {
@@ -43,26 +43,28 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE status = '" + status.name() + "' ORDER BY ASC"));
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' ORDER BY ASC"));
     }
 
     public static List<Plot> getPlots(Builder builder, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "' ORDER BY ASC"));
     }
 
     public static List<Plot> getPlots(int cityID, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "' ORDER BY ASC"));
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
         List<Plot> plots = new ArrayList<>();
 
         while (rs.next()) {
-            plots.add(new Plot(rs.getInt("idplot")));
+            int i = rs.getInt("idplot");
+            System.out.println(i);
+            plots.add(new Plot(i));
         }
 
         return plots;
