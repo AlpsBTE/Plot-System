@@ -65,11 +65,12 @@ public class Review implements Listener {
             try {
                 switch (plot.getStatus()){
                     case unfinished:
+                        System.out.println(plot.getBuilder());
                         plotItems.put(plot, new ItemBuilder(Material.WOOL, 1, (byte) 1)
                                 .setName("§6Manage Plot")
                                 .setLore(new LoreBuilder()
                                         .description("§bID: §7" + plot.getID(),
-                                                     "§bBuilder: §7" + plot.getBuilder().getPlayer().getName(),
+                                                     "§bBuilder: §7" + plot.getBuilder().getName(),
                                                      "§bCity: §7" + plot.getCity().getName())
                                         .build())
                                 .build());
@@ -79,7 +80,7 @@ public class Review implements Listener {
                                 .setName("§6Review Plot")
                                 .setLore(new LoreBuilder()
                                         .description("§bID: §7" + plot.getID(),
-                                                     "§bBuilder: §7" + plot.getBuilder().getPlayer().getDisplayName(),
+                                                     "§bBuilder: §7" + plot.getBuilder().getName(),
                                                      "§bCity: §7" + plot.getCity().getName())
                                         .build())
                                 .build());

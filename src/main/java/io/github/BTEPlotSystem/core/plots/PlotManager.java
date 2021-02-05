@@ -23,7 +23,8 @@ public class PlotManager {
 
     public static void ClaimPlot(int cityID, Builder builder) throws SQLException {
         List<Plot> unclaimedCityPlots = getPlots(cityID, Status.unclaimed);
-        Plot plot = new Plot(new Random().nextInt(unclaimedCityPlots.size() + 1));
+        int rndPlot = new Random().nextInt(unclaimedCityPlots.size());
+        Plot plot = unclaimedCityPlots.get(rndPlot);
 
         World weWorld = new BukkitWorld(builder.getPlayer().getWorld());
         Vector plotCoordinates;
@@ -39,9 +40,9 @@ public class PlotManager {
         // Generate default plot
         try {
             EditSession editSession =
-                            ClipboardFormats.findByFile(getDefaultPlot())
+                            Objects.requireNonNull(ClipboardFormats.findByFile(getDefaultPlot()))
                             .load(getDefaultPlot())
-                            .paste(weWorld, plotCoordinates, false, true, null);
+                            .paste(weWorld, plotCoordinates, false, false, null);
             editSession.flushQueue();
 
             Bukkit.getLogger().log(Level.INFO, "Successfully generated new plot at " + plotCoordinates.getX() + " / " + plotCoordinates.getY() + " / " + plotCoordinates.getZ());
@@ -55,8 +56,6 @@ public class PlotManager {
         builder.setPlot(plot.getID(), builder.getFreeSlot());
         plot.setStatus(Status.unfinished);
         plot.setBuilder(builder.getPlayer().getUniqueId().toString());
-
-        // TODO: Spawn default plot platform schematic
 
         // TODO: Spawn plot schematic
 
@@ -111,19 +110,25 @@ public class PlotManager {
 
     public static Vector CalculatePlotCoordinates(int plotID) {
         // Get row of the plot
-        int row = (int) (Math.floor((plotID - 1) / 5)) + 1;
+        int row = (int) Math.floor((plotID - 1) / getMaxRowsSize()) + 1;
+
+        System.out.println("ID: " + plotID);
+        System.out.println("Row Size: " + getMaxRowsSize());
 
         // Get column of the plot
-        int column = ((plotID - 1) % getMaxRowsSize()) + 1;
+        int column = (int) ((plotID - 1) % getMaxRowsSize()) + 1;
 
-        int xCoords = (getPlotSize() * row) * 20;
-        int zCoords = (getPlotSize() * column) * 20;
+        System.out.println("Row: " + row);
+        System.out.println("Column: " + column);
+
+        int xCoords = getPlotSize() * row;
+        int zCoords = getPlotSize() * column;
 
         return Vector.toBlockPoint(xCoords, 70, zCoords);
     }
 
     public static int getPlotSize() {
-        return 103;
+        return 105;
     }
 
     public static int getMaxRowsSize() {

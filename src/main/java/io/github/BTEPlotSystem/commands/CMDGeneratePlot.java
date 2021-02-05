@@ -18,8 +18,9 @@ public class CMDGeneratePlot implements CommandExecutor {
         if(sender instanceof Player) {
             try {
                 if(sender.hasPermission("alpsbte.generateplot")) {
-                    int plotid = 0;
+                    int plotid = 1;
                     try {
+                        System.out.println(args[0]);
                         plotid = Integer.parseInt(args[0]);
                     } catch (Exception e) {
                         Bukkit.getLogger().log(Level.SEVERE, "Could not convert plot id");
