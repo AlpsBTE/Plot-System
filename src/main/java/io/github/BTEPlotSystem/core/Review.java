@@ -6,9 +6,11 @@ import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.enums.Status;
+import javafx.application.Application;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +22,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Review implements Listener {
     private final Inventory reviewMenu;
@@ -288,12 +291,25 @@ public class Review implements Listener {
                         PlotHandler.TeleportPlayer(selectedPlot,player);
                         event.getWhoClicked().closeInventory();
                     } else {
+                        int slot = event.getSlot();
+                        int column = (slot%9)+1;
+                        int row = (slot - (slot%9))/9+1;
+
+                        if (column > 2 && column < 9 && row > 1 && row < 6){
+                            if (event.getCurrentItem().containsEnchantment(Enchantment.ARROW_DAMAGE)){
+                                event.getCurrentItem().getItemMeta().removeEnchant(Enchantment.ARROW_DAMAGE);
+                            } else {
+                                event.getCurrentItem().getItemMeta().addEnchant(Enchantment.ARROW_DAMAGE,1,true);
+                            }
+                        }
                         //TODO: Check and Set points
                     }
                     event.setCancelled(true);
                 }
             }
-        } catch(Exception ex) { }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private Plot getPlotByValue(ItemStack item) {

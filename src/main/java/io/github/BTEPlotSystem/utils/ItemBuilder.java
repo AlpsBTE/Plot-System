@@ -16,21 +16,25 @@ public class ItemBuilder {
     public ItemBuilder(Material material) {
         item = new ItemStack(material);
         itemMeta = item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
     public ItemBuilder(Material material, int amount) {
         item = new ItemStack(material, amount);
         itemMeta = item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
     public ItemBuilder(Material material, int amount, byte color) {
         item = new ItemStack(material, amount, (byte) color);
         itemMeta = item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
     public ItemBuilder(ItemStack item) {
         this.item = item;
         itemMeta = this.item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
     public ItemBuilder setName(String name) {
