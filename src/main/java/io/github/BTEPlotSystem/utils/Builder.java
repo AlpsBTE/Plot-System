@@ -3,25 +3,30 @@ package github.BTEPlotSystem.utils;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.utils.enums.Slot;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class Builder {
 
-    private final Player player;
-    private final String name;
+    private final UUID UUID;
+    private String name;
 
-    public Builder(Player player) throws SQLException {
-        this.player = player;
+    public Builder(UUID UUID) throws SQLException {
+        this.UUID = UUID;
 
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name FROM players WHERE uuid = '" + player.getUniqueId() + "'");
-        this.name = rs.getString("name");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name FROM players WHERE uuid = '" + UUID + "'");
+
+        if(rs.next()) {
+            this.name = rs.getString("name");
+        }
     }
 
     public Player getPlayer() {
-        return player;
+        return Bukkit.getPlayer(UUID);
     }
 
     public String getName() {
@@ -29,15 +34,15 @@ public class Builder {
     }
 
     public int getScore() throws SQLException {
-        return DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = " + player.getUniqueId()).getInt("score");
+        return DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = " + UUID).getInt("score");
     }
 
     public int getCompletedBuilds() throws SQLException {
-        return DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = " + player.getUniqueId()).getInt("completedBuilds");
+        return DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = " + UUID).getInt("completedBuilds");
     }
 
     public Slot getFreeSlot() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + player.getUniqueId() + "'");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + UUID + "'");
 
         if(rs.next()) {
             if(rs.getString(Slot.firstSlot.name()) == null) {
@@ -52,7 +57,7 @@ public class Builder {
     }
 
     public Plot getPlot(Slot slot) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + player.getUniqueId() + "'");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + UUID + "'");
 
         if (rs.next()) {
             return new Plot(rs.getInt(slot.name()));
@@ -63,17 +68,17 @@ public class Builder {
 
     public void addScore(int score) throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + player.getUniqueId() + "'"
+                "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + UUID + "'"
         );
     }
 
     public void addCompletedBuild() throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET completedBuilds = " + (getCompletedBuilds() + 1) + " WHERE uuid = '" + player.getUniqueId() + "'"
+                "UPDATE players SET completedBuilds = " + (getCompletedBuilds() + 1) + " WHERE uuid = '" + UUID + "'"
         );
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = " + plotID + " WHERE uuid = '" + player.getUniqueId() + "'");
+        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = " + plotID + " WHERE uuid = '" + UUID + "'");
     }
 }
