@@ -11,13 +11,21 @@ import java.sql.SQLException;
 public class Builder {
 
     private final Player player;
+    private final String name;
 
-    public Builder(Player player) {
+    public Builder(Player player) throws SQLException {
         this.player = player;
+
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name FROM players WHERE uuid = '" + player.getUniqueId() + "'");
+        this.name = rs.getString("name");
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getScore() throws SQLException {
