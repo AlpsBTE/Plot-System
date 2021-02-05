@@ -24,7 +24,7 @@ public class CMDGeneratePlot implements CommandExecutor {
                     } catch (Exception e) {
                         Bukkit.getLogger().log(Level.SEVERE, "Could not convert plot id");
                     }
-                    PlotManager.ClaimPlot(plotid, new Builder((Player)sender));
+                    PlotManager.ClaimPlot(plotid, new Builder(((Player) sender).getUniqueId()));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

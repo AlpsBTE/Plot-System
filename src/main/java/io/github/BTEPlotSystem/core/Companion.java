@@ -61,7 +61,7 @@ public class Companion {
         // Set Slots
         for (int i = 0;i<3;i++){
             try {
-                Plot plot = new Builder(player).getPlot(Slot.values()[i]);
+                Plot plot = new Builder(player.getUniqueId()).getPlot(Slot.values()[i]);
 
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.MAP,1+i)
@@ -126,10 +126,10 @@ public class Companion {
             int cityID = cities.get(i).getID();
             menu.getSlot(9+i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
-                    if (new Builder(clickPlayer).getFreeSlot() != null){
+                    if (new Builder(clickPlayer.getUniqueId()).getFreeSlot() != null){
                         if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
                             clickPlayer.sendMessage("creating new plot...");
-                            PlotManager.ClaimPlot(cityID, new Builder(clickPlayer));
+                            PlotManager.ClaimPlot(cityID, new Builder(clickPlayer.getUniqueId()));
                         } else {
                             clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
                         }

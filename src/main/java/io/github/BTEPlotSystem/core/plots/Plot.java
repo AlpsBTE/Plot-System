@@ -37,7 +37,7 @@ public class Plot {
 
             // Builder and Plot Coordinates
             if(getStatus() != Status.unclaimed) {
-                this.builder = new Builder(Bukkit.getPlayer(UUID.fromString(rs.getString("uuidplayer"))));
+                this.builder = new Builder(UUID.fromString(rs.getString("uuidplayer")));
             }
 
             // Player MC Coordinates
