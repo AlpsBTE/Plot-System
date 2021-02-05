@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.utils.Leaderboard;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,7 +54,7 @@ public class BTEPlotSystem extends JavaPlugin {
         } catch (OutOfProjectionBoundsException e) {
             e.printStackTrace();
         }*/
-
+        new Leaderboard();
     }
 
     public static BTEPlotSystem getPlugin() {

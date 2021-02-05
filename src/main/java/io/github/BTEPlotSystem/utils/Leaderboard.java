@@ -9,31 +9,44 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 public class Leaderboard {
+
+    private final FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
     private Hologram hologram;
     private TextLine textLine[] = new TextLine[14];
     private ItemLine itemLine;
 
     public Leaderboard(){
-        hologram = HologramsAPI.createHologram(BTEPlotSystem.getPlugin(),new Location(Bukkit.getWorlds().get(0),682.5,102,1209.5));
-        itemLine = hologram.appendItemLine(new ItemStack(Material.NETHER_STAR));
-
+        createHologram();
         insertText();
 
     }
 
     private void insertText(){
-        textLine[0] = hologram.insertTextLine(0,"Score Leaderboard");
-        textLine[1] = hologram.insertTextLine(0,"---------------");
+        itemLine = hologram.insertItemLine(0,new ItemStack(Material.NETHER_STAR));
 
-        for (int i = 0; i>10;i++){
-            textLine[i+2] = hologram.insertTextLine(i+2,"#"+(i+1)+" Name");
+        textLine[0] = hologram.insertTextLine(1,"§b§lSCORE LEADERBOARD");
+        textLine[1] = hologram.insertTextLine(2,"§7---------------");
+
+        for (int i = 2; i<=11;i++){
+            textLine[i] = hologram.insertTextLine(i+1,"§e#"+(i-1)+" §aName §7- §b69420");
         }
 
-        textLine[13] = hologram.insertTextLine(0,"---------------");
+        textLine[13] = hologram.insertTextLine(13,"§7---------------");
+    }
+
+    private void createHologram(){
+        String world = config.getString("leaderboard.world");
+        double x = Double.parseDouble(config.getString("leaderboard.x"));
+        double y = Double.parseDouble(config.getString("leaderboard.y"));
+        double z = Double.parseDouble(config.getString("leaderboard.z"));
+
+        Location location = new Location(Bukkit.getWorld(world),x,y+4,z);
+        hologram = HologramsAPI.createHologram(BTEPlotSystem.getPlugin(),location);
     }
 
 }
