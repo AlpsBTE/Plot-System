@@ -1,15 +1,13 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.plots.PlotGenerator;
 import github.BTEPlotSystem.utils.Builder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class CMDGeneratePlot implements CommandExecutor {
@@ -25,7 +23,7 @@ public class CMDGeneratePlot implements CommandExecutor {
                     } catch (Exception e) {
                         Bukkit.getLogger().log(Level.SEVERE, "Could not convert plot id");
                     }
-                    PlotManager.ClaimPlot(plotid, new Builder(((Player) sender).getUniqueId()));
+                    new PlotGenerator(new Plot(plotid), new Builder(((Player) sender).getUniqueId())).generate();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.core.plots.PlotGenerator;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.*;
@@ -8,6 +9,7 @@ import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -129,7 +131,9 @@ public class Companion {
                     if (new Builder(clickPlayer.getUniqueId()).getFreeSlot() != null){
                         if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
                             clickPlayer.sendMessage("creating new plot...");
-                            PlotManager.ClaimPlot(cityID, new Builder(clickPlayer.getUniqueId()));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5f, 5f);
+
+                            new PlotGenerator(cityID, new Builder(clickPlayer.getUniqueId())).generate();
                         } else {
                             clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
                         }
@@ -139,6 +143,8 @@ public class Companion {
                 } catch (SQLException throwables) {
                     clickPlayer.sendMessage("§4SQL Error! :pepehands:");
                     throwables.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 clickPlayer.closeInventory();
             });

@@ -29,6 +29,10 @@ public class Builder {
         return Bukkit.getPlayer(UUID);
     }
 
+    public java.util.UUID getUUID() {
+        return UUID;
+    }
+
     public String getName() {
         return name;
     }
@@ -74,11 +78,11 @@ public class Builder {
 
     public void addCompletedBuild() throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET completedBuilds = " + (getCompletedBuilds() + 1) + " WHERE uuid = '" + UUID + "'"
+                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + 1) + "' WHERE uuid = '" + UUID + "'"
         );
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = " + plotID + " WHERE uuid = '" + UUID + "'");
+        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + plotID + "' WHERE uuid = '" + UUID + "'");
     }
 }

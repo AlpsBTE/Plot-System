@@ -10,7 +10,9 @@ public class PlotHandler {
         Vector plotCoordinates = PlotManager.CalculatePlotCoordinates(plot.getID());
         player.teleport(new Location(player.getWorld(),
                 plotCoordinates.getX() - (PlotManager.getPlotSize() / 2) + 0.5,
-                plotCoordinates.getY() + 15,
-                plotCoordinates.getZ() + (PlotManager.getPlotSize() / 2) + 0.5));
+                plotCoordinates.getY() + 20,
+                plotCoordinates.getZ() + (PlotManager.getPlotSize() / 2) + 0.5,
+                -90,
+                90));
     }
 }

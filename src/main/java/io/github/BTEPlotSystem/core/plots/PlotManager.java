@@ -1,73 +1,17 @@
 package github.BTEPlotSystem.core.plots;
 
-import com.boydti.fawe.object.FawePlayer;
-import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.clipboard.ClipboardFormats;
-import com.sk89q.worldedit.math.transform.Transform;
-import com.sk89q.worldedit.world.World;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.enums.Status;
-import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 
 public class PlotManager {
-
-    public static void ClaimPlot(int cityID, Builder builder) throws SQLException {
-        List<Plot> unclaimedCityPlots = getPlots(cityID, Status.unclaimed);
-        int rndPlot = new Random().nextInt(unclaimedCityPlots.size());
-        Plot plot = unclaimedCityPlots.get(rndPlot);
-
-        World weWorld = new BukkitWorld(builder.getPlayer().getWorld());
-        Vector plotCoordinates;
-
-        try {
-            plotCoordinates = plot.getPlotCoordinates();
-        } catch (Exception ex) {
-            builder.getPlayer().sendMessage("§8§l>> §cAn error occurred while claiming the plot. Please try again.");
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while calculating new plot location!", ex);
-            return;
-        }
-
-        // Generate default plot
-        try {
-            EditSession editSession =
-                            Objects.requireNonNull(ClipboardFormats.findByFile(getDefaultPlot()))
-                            .load(getDefaultPlot())
-                            .paste(weWorld, plotCoordinates, false, false, null);
-            editSession.flushQueue();
-
-            Bukkit.getLogger().log(Level.INFO, "Successfully generated new plot at " + plotCoordinates.getX() + " / " + plotCoordinates.getY() + " / " + plotCoordinates.getZ());
-        } catch (Exception ex) {
-            builder.getPlayer().sendMessage("§8§l>> §cAn error occurred while claiming the plot. Please try again.");
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while loading new plot!", ex);
-            return;
-        }
-
-        // Updates values and database
-        builder.setPlot(plot.getID(), builder.getFreeSlot());
-        plot.setStatus(Status.unfinished);
-        plot.setBuilder(builder.getPlayer().getUniqueId().toString());
-
-        // TODO: Spawn plot schematic
-
-        // TODO: Set plot building protection
-
-        // TODO: Abandon Plot (clear slot and remove owner from plot and add to open plot at city project)
-
-        // TODO: Finish Plot (set status to unreviewed)
-
-        // Teleport player
-        PlotHandler.TeleportPlayer(plot, builder.getPlayer());
-    }
 
     public static List<Plot> getPlots() throws SQLException {
         return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots"));
@@ -112,19 +56,13 @@ public class PlotManager {
         // Get row of the plot
         int row = (int) Math.floor((plotID - 1) / getMaxRowsSize()) + 1;
 
-        System.out.println("ID: " + plotID);
-        System.out.println("Row Size: " + getMaxRowsSize());
-
         // Get column of the plot
         int column = (int) ((plotID - 1) % getMaxRowsSize()) + 1;
-
-        System.out.println("Row: " + row);
-        System.out.println("Column: " + column);
 
         int xCoords = getPlotSize() * row;
         int zCoords = getPlotSize() * column;
 
-        return Vector.toBlockPoint(xCoords, 70, zCoords);
+        return Vector.toBlockPoint(xCoords, 10, zCoords);
     }
 
     public static int getPlotSize() {
