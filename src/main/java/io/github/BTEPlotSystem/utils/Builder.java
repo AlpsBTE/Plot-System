@@ -73,16 +73,16 @@ public class Builder {
     public void addScore(int score) throws SQLException {
         DatabaseConnection.prepareStatement(
                 "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + UUID + "'"
-        );
+        ).executeUpdate();
     }
 
     public void addCompletedBuild() throws SQLException {
         DatabaseConnection.prepareStatement(
                 "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + 1) + "' WHERE uuid = '" + UUID + "'"
-        );
+        ).executeUpdate();
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + plotID + "' WHERE uuid = '" + UUID + "'");
+        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + plotID + "' WHERE uuid = '" + UUID + "'").executeUpdate();
     }
 }
