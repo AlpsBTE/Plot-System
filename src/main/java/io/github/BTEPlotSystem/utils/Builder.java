@@ -38,7 +38,12 @@ public class Builder {
     }
 
     public int getScore() throws SQLException {
-        return DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = " + UUID).getInt("score");
+        ResultSet rs =  DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = '" + getUUID() + "'");
+
+        if(rs.next()) {
+            return rs.getInt("score");
+        }
+        return 0;
     }
 
     public int getCompletedBuilds() throws SQLException {

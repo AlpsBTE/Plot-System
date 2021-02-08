@@ -121,14 +121,15 @@ public class Plot {
 
     public Slot getSlot() throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot,secondSlot,thirdSlot FROM players WHERE uuid = '" + getBuilder().getUUID() + "'");
-        rs.next();
 
-        if(rs.getInt(1) == getID()) {
-            return Slot.firstSlot;
-        } else if(rs.getInt(2) == getID()) {
-            return Slot.secondSlot;
-        } else if(rs.getInt(3) == getID()) {
-            return Slot.thirdSlot;
+        if(rs.next()) {
+            if (rs.getInt(1) == getID()) {
+                return Slot.firstSlot;
+            } else if (rs.getInt(2) == getID()) {
+                return Slot.secondSlot;
+            } else if (rs.getInt(3) == getID()) {
+                return Slot.thirdSlot;
+            }
         }
         return null;
     }
