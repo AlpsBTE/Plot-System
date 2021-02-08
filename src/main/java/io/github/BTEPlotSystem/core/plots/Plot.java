@@ -129,16 +129,16 @@ public class Plot {
 
     // Get Open Street Maps link
     public String getOSMMapsLink() {
-        return "https://www.openstreetmap.org/#map=16/" + getGeoCoordinatesNumeric().replace(",", "/");
+        return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinatesNumeric().replace(",", "/");
     }
 
     // Get Google Maps link
     public String getGoogleMapsLink() {
-        return "https://www.google.com/maps/place/" + getGeoCoordinatesNSEW() + "/@" + getGeoCoordinatesNumeric() + ",15z";
+        return "https://www.google.com/maps/place/" + getGeoCoordinatesNumeric();
     }
 
     // Get Google Earth Web link
     public String getGoogleEarthLink() {
-        return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,10000d,30y,-0h,0t,0r";
+        return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
     }
 }
