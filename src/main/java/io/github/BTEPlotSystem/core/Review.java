@@ -34,6 +34,9 @@ public class Review implements Listener {
 
     //Review Plot Inventory
     private ItemStack itemMap;
+    private ItemStack itemCancel;
+    private ItemStack itemSubmit;
+
     private final ItemStack[] itemCategory = new ItemStack[4];
     private final ItemStack[] itemPointZero = new ItemStack[4];
     private final ItemStack[] itemPointOne = new ItemStack[4];
@@ -188,14 +191,24 @@ public class Review implements Listener {
                             .build();
                     reviewPlotMenu.setItem(i,itemCategory[3]);
                     break;
-                case 49:
-                    itemClose = new ItemBuilder(Material.BARRIER, 1)
-                            .setName("§c§lCLOSE")
+                case 48:
+                    itemSubmit = new ItemBuilder(Material.CONCRETE, 1,(byte) 13)
+                            .setName("§a§lSUBMIT")
+                            .setLore(new LoreBuilder()
+                                    .description("§7Submit selected points and mark plot as reviewed")
+                                    .build())
+                            .build();
+                    reviewPlotMenu.setItem(i,itemSubmit);
+                    break;
+                case 50:
+
+                    itemCancel = new ItemBuilder(Material.CONCRETE, 1,(byte) 14)
+                            .setName("§c§lCANCEL")
                             .setLore(new LoreBuilder()
                                     .description("§7Close the review menu")
                                     .build())
                             .build();
-                    reviewPlotMenu.setItem(i,itemClose);
+                    reviewPlotMenu.setItem(i,itemCancel);
                     break;
                 default:
                     int column = (i%9)+1;
@@ -208,6 +221,11 @@ public class Review implements Listener {
                                             .description("§7Click to select")
                                             .build())
                                     .build();
+
+                            //Add Enchantment
+                            ItemMeta itemMeta = itemPointZero[((i + 1) - (i + 1) % 9) / 54].getItemMeta();
+                            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE,1,true);
+                            itemPointZero[((i + 1) - (i + 1) % 9) / 54].setItemMeta(itemMeta);
                             reviewPlotMenu.setItem(i,itemPointZero[(i-(i+1)%9)/54]);
                         } else if((i+1)%9 == 4) {
                             itemPointOne[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 1, (byte) 14)
@@ -216,6 +234,7 @@ public class Review implements Listener {
                                             .description("§7Click to select")
                                             .build())
                                     .build();
+
                             reviewPlotMenu.setItem(i,itemPointOne[(i-(i+1)%9)/54]);
                         } else if ((i+1)%9 == 5) {
                             itemPointTwo[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 2, (byte) 1)
@@ -284,8 +303,39 @@ public class Review implements Listener {
                     }
                     event.setCancelled(true);
                 } else if (event.getClickedInventory().equals(reviewPlotMenu)){
-                    if (event.getCurrentItem().equals(itemClose)) {
+                    if (event.getCurrentItem().equals(itemCancel)) {
                         event.getWhoClicked().closeInventory();
+                    } else if (event.getCurrentItem().equals(itemSubmit)) {
+
+                        //TODO: SUBMIT
+                        StringBuilder score = new StringBuilder();
+                        for (int i = 0; i < 4; i++) {
+                            for (int j = 0; j < 6; j++) {
+                                if (reviewPlotMenu.getItem(11+(i*9)+j).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)){
+                                    switch (i){
+                                        case 0:
+                                            player.sendMessage("§7>> Accuracy: " + j);
+                                            score.append(j).append(",");
+                                            break;
+                                        case 1:
+                                            player.sendMessage("§7>> Block Palette: " + j);
+                                            score.append(j).append(",");
+                                            break;
+                                        case 2:
+                                            player.sendMessage("§7>> Detailing: " + j);
+                                            score.append(j).append(",");
+                                            break;
+                                        case 3:
+                                            player.sendMessage("§7>> Technique: " + j);
+                                            score.append(j);
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        selectedPlot.setScore(score.toString());
+                        player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " marked as reviewed");
+                        player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         PlotHandler.TeleportPlayer(selectedPlot,player);
                         event.getWhoClicked().closeInventory();
@@ -314,7 +364,6 @@ public class Review implements Listener {
                             event.getCurrentItem().setItemMeta(meta);
                             reviewPlotMenu.setItem(slot,event.getCurrentItem());
                         }
-                        //TODO: Check and Set points
                     }
                     event.setCancelled(true);
                 }
