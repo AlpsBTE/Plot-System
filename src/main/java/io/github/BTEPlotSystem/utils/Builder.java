@@ -85,4 +85,8 @@ public class Builder {
     public void setPlot(int plotID, Slot slot) throws SQLException {
         DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + plotID + "' WHERE uuid = '" + UUID + "'").executeUpdate();
     }
+
+    public void removePlot(Slot slot) throws SQLException {
+        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + null + "' WHERE uuid = '" + UUID + "'").executeUpdate();
+    }
 }

@@ -1,5 +1,5 @@
 package github.BTEPlotSystem.utils.enums;
 
 public enum Category {
-    ACCURACY, BLOCKPALETTE, DETAILING, TECHNIQUE
+    ACCURACY, BLOCKPALETTE, DETAILING, TECHNIQUE, ALL
 }

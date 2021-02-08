@@ -7,6 +7,7 @@ import github.BTEPlotSystem.utils.CityProject;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.Category;
+import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 
@@ -111,9 +112,25 @@ public class Plot {
                     return Integer.parseInt(scoreAsString[2]);
                 case TECHNIQUE:
                     return Integer.parseInt(scoreAsString[3]);
+                case ALL:
+                    return Integer.parseInt(scoreAsString[0] + scoreAsString[1] + scoreAsString[2] + scoreAsString[3]);
             }
         }
         return 0;
+    }
+
+    public Slot getSlot() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot,secondSlot,thirdSlot FROM players WHERE uuid = '" + getBuilder().getUUID() + "'");
+        rs.next();
+
+        if(rs.getInt(1) == getID()) {
+            return Slot.firstSlot;
+        } else if(rs.getInt(2) == getID()) {
+            return Slot.secondSlot;
+        } else if(rs.getInt(3) == getID()) {
+            return Slot.thirdSlot;
+        }
+        return null;
     }
 
     /**
@@ -127,6 +144,8 @@ public class Plot {
         statement.executeUpdate();
 
         setStatus(Status.complete);
+        builder.addScore(getScore(Category.ALL));
+        builder.removePlot(getSlot());
     }
 
     // Get Open Street Maps link
