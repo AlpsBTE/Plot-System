@@ -300,7 +300,15 @@ public class Review implements Listener {
                             if(meta.hasEnchant(Enchantment.ARROW_DAMAGE)){
                                 meta.removeEnchant(Enchantment.ARROW_DAMAGE);
                             } else {
-                                //TODO: Check it other item is already selected
+                                //Go through the whole points row
+                                for (int i = 0; i < 6; i++) {
+                                    if (reviewPlotMenu.getItem(slot-(column-1)+i+2).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)){
+                                        ItemMeta metaPrevious = reviewPlotMenu.getItem(slot-(column-1)+i+2).getItemMeta();
+                                        metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
+                                        reviewPlotMenu.getItem(slot-(column-1)+i+2).setItemMeta(metaPrevious);
+                                    }
+                                }
+
                                 meta.addEnchant(Enchantment.ARROW_DAMAGE,1,true);
                             }
                             event.getCurrentItem().setItemMeta(meta);
