@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -39,6 +40,13 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClickEvent(InventoryClickEvent event){
+        if (event.getCurrentItem().equals(Companion.getItem())){
+            event.setCancelled(true);
         }
     }
 
