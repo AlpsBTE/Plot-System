@@ -10,7 +10,10 @@ import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -223,5 +226,13 @@ public class Companion {
         });
 
         menu.open(player);
+    }
+
+    public static ItemStack getItem(){
+        return new ItemBuilder(Material.NETHER_STAR, 1)
+                .setName("§b§lCompanion §7(Right Click)")
+                .setEnchantment(Enchantment.ARROW_DAMAGE)
+                .setItemFlag(ItemFlag.HIDE_ENCHANTS)
+                .build();
     }
 }
