@@ -134,7 +134,7 @@ public class Plot {
 
     // Get Google Maps link
     public String getGoogleMapsLink() {
-        return "https://www.google.com/maps/place/" + getGeoCoordinatesNumeric();
+        return "https://www.google.com/maps/place/"+ getGeoCoordinatesNumeric();
     }
 
     // Get Google Earth Web link

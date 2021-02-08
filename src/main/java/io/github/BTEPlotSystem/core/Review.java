@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -293,12 +294,17 @@ public class Review implements Listener {
                         int column = (slot%9)+1;
                         int row = (slot - (slot%9))/9+1;
 
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+
                         if (column > 2 && column < 9 && row > 1 && row < 6){
-                            if (event.getCurrentItem().containsEnchantment(Enchantment.ARROW_DAMAGE)){
-                                event.getCurrentItem().getItemMeta().removeEnchant(Enchantment.ARROW_DAMAGE);
+                            if(meta.hasEnchant(Enchantment.ARROW_DAMAGE)){
+                                meta.removeEnchant(Enchantment.ARROW_DAMAGE);
                             } else {
-                                event.getCurrentItem().getItemMeta().addEnchant(Enchantment.ARROW_DAMAGE,1,true);
+                                //TODO: Check it other item is already selected
+                                meta.addEnchant(Enchantment.ARROW_DAMAGE,1,true);
                             }
+                            event.getCurrentItem().setItemMeta(meta);
+                            reviewPlotMenu.setItem(slot,event.getCurrentItem());
                         }
                         //TODO: Check and Set points
                     }
