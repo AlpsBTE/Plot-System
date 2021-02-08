@@ -125,6 +125,8 @@ public class Plot {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
         statement.setString(1, scoreFormat);
         statement.executeUpdate();
+
+        setStatus(Status.complete);
     }
 
     // Get Open Street Maps link
