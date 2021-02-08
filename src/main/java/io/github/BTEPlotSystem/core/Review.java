@@ -297,8 +297,13 @@ public class Review implements Listener {
                     for (ItemStack plotItem : plotItems.values()) {
                         if (event.getCurrentItem().equals(plotItem)) {
                             selectedPlot = getPlotByValue(plotItem);
-                            event.getWhoClicked().closeInventory();
-                            ReviewPlot(selectedPlot);
+                            if (selectedPlot.getStatus() == Status.unreviewed){
+                                event.getWhoClicked().closeInventory();
+                                ReviewPlot(selectedPlot);
+                            } else {
+                                event.getWhoClicked().closeInventory();
+                                PlotHandler.TeleportPlayer(selectedPlot,player);
+                            }
                         }
                     }
                     event.setCancelled(true);
@@ -334,7 +339,7 @@ public class Review implements Listener {
                             }
                         }
                         selectedPlot.setScore(score.toString());
-                        player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " marked as reviewed");
+                        player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         PlotHandler.TeleportPlayer(selectedPlot,player);
