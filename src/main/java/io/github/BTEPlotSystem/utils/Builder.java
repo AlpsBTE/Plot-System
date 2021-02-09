@@ -106,25 +106,25 @@ public class Builder {
        statement.executeUpdate();
     }
 
-    public static List<Builder> getBuildersByScore(int limit) throws SQLException {
-        List<Builder> builders = new ArrayList<>();
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid, score FROM players ORDER BY score DESC LIMIT " + limit + "");
+    public static List<String> getBuildersByScore(int limit) throws SQLException {
+        List<String> scoreAsFormat = new ArrayList<>();
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name, score FROM players ORDER BY score DESC LIMIT " + limit);
 
         while (rs.next()) {
-            builders.add(new Builder(java.util.UUID.fromString(rs.getString("uuid"))));
+            scoreAsFormat.add(rs.getString("name") + ", " + rs.getInt("score"));
         }
 
-        return builders;
+        return scoreAsFormat;
     }
 
-    public static List<Builder> getBuildersByCompletedBuilds(int limit) throws SQLException {
-        List<Builder> builders = new ArrayList<>();
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid, completedBuilds FROM players ORDER BY completedBuilds DESC LIMIT " + limit + "");
+    public static List<String> getBuildersByCompletedBuilds(int limit) throws SQLException {
+        List<String> completedBuildsAsFormat = new ArrayList<>();
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name, completedBuilds FROM players ORDER BY completedBuilds DESC LIMIT " + limit);
 
         while (rs.next()) {
-            builders.add(new Builder(java.util.UUID.fromString(rs.getString("uuid"))));
+            completedBuildsAsFormat.add(rs.getString("name") + ", " + rs.getInt("completedBuilds"));
         }
 
-        return builders;
+        return completedBuildsAsFormat;
     }
 }
