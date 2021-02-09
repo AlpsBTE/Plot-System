@@ -2,6 +2,7 @@ package github.BTEPlotSystem;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
@@ -22,12 +23,15 @@ import java.util.logging.Level;
 public class BTEPlotSystem extends JavaPlugin {
     private static BTEPlotSystem plugin;
 
+    private static MultiverseCore multiverseCore;
+
     private FileConfiguration config;
     private File configFile;
 
     @Override
     public void onEnable() {
         plugin = this;
+        multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("MultiverseCore");
 
         reloadConfig();
 
@@ -60,6 +64,8 @@ public class BTEPlotSystem extends JavaPlugin {
     public static BTEPlotSystem getPlugin() {
         return plugin;
     }
+
+    public static MultiverseCore getMultiverseCore() { return multiverseCore; }
 
     @Override
     public void reloadConfig() {
