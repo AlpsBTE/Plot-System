@@ -131,12 +131,13 @@ public class Companion {
             int cityID = cities.get(i).getID();
             menu.getSlot(9+i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
+                    clickPlayer.closeInventory();
                     if (new Builder(clickPlayer.getUniqueId()).getFreeSlot() != null){
                         if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
-                            clickPlayer.sendMessage("creating new plot...");
+                            clickPlayer.sendMessage("§7>> §aCreating a new plot...");
                             clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5f, 5f);
 
-                            new PlotGenerator(cityID, new Builder(clickPlayer.getUniqueId())).generate();
+                            new PlotGenerator(cityID, new Builder(clickPlayer.getUniqueId()));
                         } else {
                             clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
                         }
@@ -149,7 +150,6 @@ public class Companion {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                clickPlayer.closeInventory();
             });
 
             switch (cities.get(i).getCountry()){

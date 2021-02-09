@@ -1,30 +1,37 @@
 package github.BTEPlotSystem.core.plots;
 
-import com.sk89q.worldedit.Vector;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class PlotHandler {
 
     public static void TeleportPlayer(Plot plot, Player player) {
-        Vector plotCoordinates = PlotManager.CalculatePlotCoordinates(plot.getID());
-        player.teleport(new Location(player.getWorld(),
-                plotCoordinates.getX() - (double)(PlotManager.getPlotSize() / 2) + 0.5,
-                plotCoordinates.getY() + 15,
-                plotCoordinates.getZ() + (double)(PlotManager.getPlotSize() / 2) + 0.5,
-                -90,
-                90));
+        player.sendMessage("§7>> §aTeleporting to plot §6#" + plot.getID());
 
-        player.sendMessage(">> teleporting...");
-        sendLinkMessages(plot,player);
+        player.teleport(new Location(Bukkit.getWorld("Plot_" + plot.getID()),
+                (double) (PlotManager.getPlotSize() / 2) + 0.5,
+                30,
+                (double) (PlotManager.getPlotSize() / 2) + 0.5,
+                -90,
+                90)
+        );
+
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5.0f, 1.0f);
+        player.setGameMode(GameMode.CREATIVE);
+        player.setFlying(true);
+
+        sendLinkMessages(plot, player);
     }
 
-    public static void sendLinkMessages(Plot plot,Player player){
-        TextComponent tc[] = new TextComponent[3];
+    public static void sendLinkMessages(Plot plot, Player player){
+        TextComponent[] tc = new TextComponent[3];
         tc[0] = new TextComponent();
         tc[1] = new TextComponent();
         tc[2] = new TextComponent();

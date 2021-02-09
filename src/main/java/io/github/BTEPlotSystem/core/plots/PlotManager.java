@@ -1,12 +1,10 @@
 package github.BTEPlotSystem.core.plots;
 
-import com.sk89q.worldedit.Vector;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.enums.Status;
 
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -52,32 +50,11 @@ public class PlotManager {
         return plots;
     }
 
-    public static Vector CalculatePlotCoordinates(int plotID) {
-        // Get row of the plot
-        int row = (int) Math.floor((plotID - 1) / getMaxRowsSize()) + 1;
-
-        // Get column of the plot
-        int column = (int) ((plotID - 1) % getMaxRowsSize()) + 1;
-
-        int xCoords = getPlotSize() * row;
-        int zCoords = getPlotSize() * column;
-
-        return Vector.toBlockPoint(xCoords, 10, zCoords);
-    }
-
     public static int getPlotSize() {
-        return 105;
-    }
-
-    public static int getMaxRowsSize() {
-        return 5;
+        return 100;
     }
 
     public static String getSchematicPath() {
         return BTEPlotSystem.getPlugin().getConfig().getString("schematic-path");
-    }
-
-    public static File getDefaultPlot() {
-        return new File(BTEPlotSystem.getPlugin().getConfig().getString("default-plot-schematic"));
     }
 }
