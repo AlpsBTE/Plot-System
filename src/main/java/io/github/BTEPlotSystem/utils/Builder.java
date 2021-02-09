@@ -6,8 +6,12 @@ import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Builder {
@@ -41,17 +45,22 @@ public class Builder {
         ResultSet rs =  DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = '" + getUUID() + "'");
 
         if(rs.next()) {
-            return rs.getInt("score");
+            return rs.getInt(1);
         }
         return 0;
     }
 
     public int getCompletedBuilds() throws SQLException {
-        return DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = " + UUID).getInt("completedBuilds");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT completedBuilds FROM players WHERE uuid = '" + getUUID() + "'");
+
+        if(rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
     }
 
     public Slot getFreeSlot() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + UUID + "'");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + getUUID() + "'");
 
         if(rs.next()) {
             if(rs.getString(Slot.firstSlot.name()) == null) {
@@ -66,7 +75,7 @@ public class Builder {
     }
 
     public Plot getPlot(Slot slot) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + UUID + "'");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + getUUID() + "'");
 
         if (rs.next()) {
             return new Plot(rs.getInt(slot.name()));
@@ -77,21 +86,45 @@ public class Builder {
 
     public void addScore(int score) throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + UUID + "'"
+                "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + getUUID() + "'"
         ).executeUpdate();
     }
 
     public void addCompletedBuild() throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + 1) + "' WHERE uuid = '" + UUID + "'"
+                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + 1) + "' WHERE uuid = '" + getUUID() + "'"
         ).executeUpdate();
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + plotID + "' WHERE uuid = '" + UUID + "'").executeUpdate();
+        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + plotID + "' WHERE uuid = '" + getUUID() + "'").executeUpdate();
     }
 
     public void removePlot(Slot slot) throws SQLException {
-        DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = '" + null + "' WHERE uuid = '" + UUID + "'").executeUpdate();
+       PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = ? WHERE uuid = '" + getUUID() + "'");
+       statement.setNull(1, Types.VARCHAR);
+       statement.executeUpdate();
+    }
+
+    public static List<Builder> getBuildersByScore(int limit) throws SQLException {
+        List<Builder> builders = new ArrayList<>();
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid, score FROM players ORDER BY score DESC LIMIT " + limit + "");
+
+        while (rs.next()) {
+            builders.add(new Builder(java.util.UUID.fromString(rs.getString("uuid"))));
+        }
+
+        return builders;
+    }
+
+    public static List<Builder> getBuildersByCompletedBuilds(int limit) throws SQLException {
+        List<Builder> builders = new ArrayList<>();
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid, completedBuilds FROM players ORDER BY completedBuilds DESC LIMIT " + limit + "");
+
+        while (rs.next()) {
+            builders.add(new Builder(java.util.UUID.fromString(rs.getString("uuid"))));
+        }
+
+        return builders;
     }
 }
