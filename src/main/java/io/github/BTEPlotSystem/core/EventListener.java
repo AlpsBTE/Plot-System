@@ -1,7 +1,15 @@
 package github.BTEPlotSystem.core;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.event.extent.EditSessionEvent;
+import com.sk89q.worldedit.util.eventbus.Subscribe;
+import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.plots.TestExtend;
+import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -14,17 +22,19 @@ import org.bukkit.inventory.ItemStack;
 
 public class EventListener extends SpecialBlocks implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoinEvent(PlayerJoinEvent event){
         Bukkit.broadcastMessage("§7[§6+§7] > " + event.getPlayer().getName());
         event.setJoinMessage(null);
+
+        event.getPlayer().teleport(Utils.getSpawnPoint());
 
         if (!event.getPlayer().getInventory().contains(Companion.getItem())){
             event.getPlayer().getInventory().setItem(0, Companion.getItem());
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerLeaveEvent(PlayerQuitEvent event){
         Bukkit.broadcastMessage("§7[§c-§7] > " + event.getPlayer().getName());
         event.setQuitMessage(null);
