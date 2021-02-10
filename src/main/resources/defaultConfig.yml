@@ -3,4 +3,9 @@ database:
   username: null
   password: null
 schematic-path: null
-default-plot-schematic: null
+spawn-point:
+  x: null
+  y: null
+  z: null
+  yaw: null
+  pitch: null
