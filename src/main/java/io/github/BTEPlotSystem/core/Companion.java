@@ -202,8 +202,12 @@ public class Companion {
                 .setItem(new ItemBuilder(Material.NAME_TAG,1)
                         .setName("§a§lFinish").setLore(new LoreBuilder().description("Click to finish the selected plot and submit it to be reviewed...","§cNote: You wont be able to continue building on your Plot!").build()).build());
         menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
-            //TODO: Finish Plot
-            player.sendMessage("finish plot soontm");
+            try {
+                PlotHandler.FinishPlot(plot, false);
+                clickPlayer.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             clickPlayer.closeInventory();
         });
 
@@ -211,8 +215,7 @@ public class Companion {
                 .setItem(new ItemBuilder(Material.COMPASS,1)
                         .setName("§6§lTeleport").setLore(new LoreBuilder().description("click to teleport to your plot...").build()).build());
         menu.getSlot(13).setClickHandler((clickPlayer, clickInformation) -> {
-            //TODO: Teleport to Plot
-            PlotHandler.TeleportPlayer(plot,player);
+            PlotHandler.TeleportPlayer(plot, player);
             clickPlayer.closeInventory();
         });
 
@@ -220,8 +223,12 @@ public class Companion {
                 .setItem(new ItemBuilder(Material.BARRIER,1)
                         .setName("§c§lAbandon").setLore(new LoreBuilder().description("click to abandon your plot...","§cNote: You wont be able to continue building on your Plot!").build()).build());
         menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
-            //TODO: Abandon Plot
-            player.sendMessage("abandon plot soontm");
+            try {
+                PlotHandler.FinishPlot(plot, true);
+                clickPlayer.sendMessage("§7>> §aAbandoned plot with the ID §6#" + plot.getID());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             clickPlayer.closeInventory();
         });
 

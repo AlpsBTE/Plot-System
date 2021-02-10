@@ -113,7 +113,7 @@ public class Plot {
                 case TECHNIQUE:
                     return Integer.parseInt(scoreAsString[3]);
                 case ALL:
-                    return Integer.parseInt(scoreAsString[0] + scoreAsString[1] + scoreAsString[2] + scoreAsString[3]);
+                    return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
             }
         }
         return 0;
