@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.core.plots;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.BlockVector;
@@ -43,7 +44,7 @@ public final class PlotGenerator {
     private World weWorld;
     private RegionManager regionManager;
 
-    private final static MVWorldManager mvWorldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
+    private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
     private MultiverseWorld mvWorld;
 
     public PlotGenerator(int cityID, Builder builder) throws SQLException {
@@ -65,14 +66,17 @@ public final class PlotGenerator {
                 wc.createWorld();
                 Bukkit.getLogger().log(Level.INFO, "Successfully generated plot world (" + worldName + ")");
 
+                worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidWorld", false);
+
                 org.bukkit.World world = Bukkit.getWorld(worldName);
                 world.setGameRuleValue("randomTickSpeed", "0");
-                world.setGameRuleValue("doDaylighCycle", "false");
+                world.setGameRuleValue("doDaylightCycle", "false");
                 world.setGameRuleValue("doFireTick", "false");
                 world.setGameRuleValue("doWeatherCycle", "false");
                 world.setGameRuleValue("keepInventory", "true");
 
-                mvWorld = mvWorldManager.getMVWorld(worldName);
+                mvWorld = worldManager.getMVWorld(world);
+                mvWorld.setAllowFlight(true);
                 mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(world));
                 mvWorld.setDifficulty(Difficulty.PEACEFUL);
                 mvWorld.setAllowAnimalSpawn(false);
@@ -114,16 +118,14 @@ public final class PlotGenerator {
                 (double) (PlotManager.getPlotSize() / 2) + 0.5
         );
 
-        try {
-            EditSession editSession = ClipboardFormat.findByFile(plot.getSchematic())
-                    .load(plot.getSchematic())
-                    .paste(weWorld, buildingOutlinesCoordinates, false, false, null);
-            editSession.flushQueue();
-        } catch (Exception e) {
-            WorldEditPlugin we = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
-            EditSession session = we.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, 1000000);
-            MCEditSchematicFormat.getFormat(plot.getSchematic()).load(plot.getSchematic()).paste(session, buildingOutlinesCoordinates, false);
-        }
+        EditSession editSession = ClipboardFormat.findByFile(plot.getSchematic())
+                .load(plot.getSchematic())
+                .paste(weWorld, buildingOutlinesCoordinates, false, false, null);
+        editSession.flushQueue();
+
+        /*WorldEditPlugin we = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
+        EditSession session = we.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, 1000000);
+        MCEditSchematicFormat.getFormat(plot.getSchematic()).load(plot.getSchematic()).paste(session, buildingOutlinesCoordinates, false);*/
 
         Bukkit.getLogger().log(Level.INFO, "Successfully generated building outlines at " + buildingOutlinesCoordinates.getX() + " / " + buildingOutlinesCoordinates.getY() + " / " + buildingOutlinesCoordinates.getZ());
     }
