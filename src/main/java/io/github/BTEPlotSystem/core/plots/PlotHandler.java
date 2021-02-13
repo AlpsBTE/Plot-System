@@ -27,31 +27,40 @@ public class PlotHandler {
         player.teleport(getPlotSpawnPoint(Bukkit.getWorld(worldName)));
 
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5.0f, 1.0f);
+        player.setAllowFlight(true);
         player.setFlying(true);
 
         sendLinkMessages(plot, player);
     }
 
-    public static void FinishPlot(Plot plot, boolean abandon) throws SQLException {
-        plot.setStatus(abandon ? Status.unclaimed : Status.unreviewed);
-        plot.getBuilder().removePlot(plot.getSlot());
+    public static void FinishPlot(Plot plot) throws SQLException {
+        plot.setStatus(Status.unreviewed);
 
         String worldName = "Plot_" + plot.getID();
-
         if(Bukkit.getWorld(worldName) != null) {
             for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
             }
+        }
+    }
 
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().unloadWorld("Plot_" + plot.getID());
+    public static void AbandonPlot(Plot plot) throws SQLException {
+        plot.setStatus(Status.unclaimed);
+
+        String worldName = "Plot_" + plot.getID();
+        if(Bukkit.getWorld(worldName) != null) {
+            for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
+                player.teleport(Utils.getSpawnPoint());
+            }
         }
 
-        if(abandon) {
-            try {
-                BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName);
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while deleting world!", ex);
-            }
+        try {
+            plot.getBuilder().removePlot(plot.getSlot());
+            plot.setBuilder(null);
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName);
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while deleting world!", ex);
         }
     }
 
