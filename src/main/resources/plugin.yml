@@ -30,3 +30,7 @@ commands:
     description: reload the data of the leaderboard
     usage: /reloadleaderboard
     permission: alpsbte.leaderboard
+  spawn:
+    description: teleports you back to the spawn location
+    usage: /spawn
+    permission: alpsbte.companion

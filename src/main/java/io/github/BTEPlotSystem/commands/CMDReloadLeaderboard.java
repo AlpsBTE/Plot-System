@@ -14,12 +14,14 @@ public class CMDReloadLeaderboard implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender instanceof Player){
-            try {
-                BTEPlotSystem.getPlugin().getScoreLeaderboard().updateHologram(Builder.getBuildersByScore(10));
-                commandSender.sendMessage("§7>> §aReloaded Leaderboard");
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                commandSender.sendMessage("§4Error Reloading Score Leaderboard");
+            if (commandSender.hasPermission("alpsbte.leaderboard")){
+                try {
+                    BTEPlotSystem.getPlugin().getScoreLeaderboard().updateHologram(Builder.getBuildersByScore(10));
+                    commandSender.sendMessage("§7>> §aReloaded Leaderboard");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                    commandSender.sendMessage("§4Error Reloading Score Leaderboard");
+                }
             }
         }
         return true;

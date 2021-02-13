@@ -54,6 +54,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("hub").setExecutor(new CMDHub());
         this.getCommand("setleaderboardposition").setExecutor(new CMDSetLeaderboardPosition());
         this.getCommand("reloadleaderboard").setExecutor(new CMDReloadLeaderboard());
+        this.getCommand("spawn").setExecutor(new CMDSpawn());
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
