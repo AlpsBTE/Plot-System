@@ -101,8 +101,7 @@ public class Builder {
     }
 
     public void removePlot(Slot slot) throws SQLException {
-       PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = ? WHERE uuid = '" + getUUID() + "'");
-       statement.setNull(1, Types.VARCHAR);
+       PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = DEFAULT(firstSlot) WHERE uuid = '" + getUUID() + "'");
        statement.executeUpdate();
     }
 
