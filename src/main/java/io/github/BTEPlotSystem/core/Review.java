@@ -1,8 +1,10 @@
 package github.BTEPlotSystem.core;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -340,6 +342,7 @@ public class Review implements Listener {
                         }
                         selectedPlot.setScore(score.toString());
                         player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
+                        BTEPlotSystem.getPlugin().getScoreLeaderboard().updateHologram(Builder.getBuildersByScore(10));
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         PlotHandler.TeleportPlayer(selectedPlot,player);
