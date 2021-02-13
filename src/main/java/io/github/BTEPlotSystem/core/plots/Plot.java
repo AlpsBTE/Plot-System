@@ -66,8 +66,13 @@ public class Plot {
 
     // Set builder of the plot
     public void setBuilder(String UUID) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
-        statement.setString(1, UUID);
+        PreparedStatement statement;
+        if(UUID != null) {
+            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
+            statement.setString(1, UUID);
+        } else {
+            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = DEFAULT(uuidplayer) WHERE idplot = '" + getID() + "'");
+        }
         statement.executeUpdate();
     }
 
