@@ -26,3 +26,7 @@ commands:
     description: sets the position of the leaderboard
     usage: /setleaderboardposition
     permission: alpsbte.leaderboard
+  reloadleaderboard:
+    description: reload the data of the leaderboard
+    usage: /reloadleaderboard
+    permission: alpsbte.leaderboard

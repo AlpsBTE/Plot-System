@@ -6,8 +6,10 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Leaderboard;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
@@ -27,6 +30,8 @@ public class BTEPlotSystem extends JavaPlugin {
 
     private FileConfiguration config;
     private File configFile;
+
+    private Leaderboard scoreLeaderboard;
 
     @Override
     public void onEnable() {
@@ -48,6 +53,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
         this.getCommand("hub").setExecutor(new CMDHub());
         this.getCommand("setleaderboardposition").setExecutor(new CMDSetLeaderboardPosition());
+        this.getCommand("reloadleaderboard").setExecutor(new CMDReloadLeaderboard());
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
@@ -58,7 +64,12 @@ public class BTEPlotSystem extends JavaPlugin {
         } catch (OutOfProjectionBoundsException e) {
             e.printStackTrace();
         }*/
-        new Leaderboard();
+
+        try {
+            scoreLeaderboard = new Leaderboard("SCORE LEADERBOARD", Material.NETHER_STAR, Builder.getBuildersByScore(10));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public static BTEPlotSystem getPlugin() {
@@ -104,6 +115,10 @@ public class BTEPlotSystem extends JavaPlugin {
         } catch (IOException ex) {
             getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
         }
+    }
+
+    public Leaderboard getScoreLeaderboard() {
+        return scoreLeaderboard;
     }
 
     public void connectPlayer(Player player, String server) {

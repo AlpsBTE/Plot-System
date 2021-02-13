@@ -110,7 +110,7 @@ public class Builder {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name, score FROM players ORDER BY score DESC LIMIT " + limit);
 
         while (rs.next()) {
-            scoreAsFormat.add(rs.getString("name") + ", " + rs.getInt("score"));
+            scoreAsFormat.add(rs.getString("name") + "," + rs.getInt("score"));
         }
 
         return scoreAsFormat;
@@ -121,7 +121,7 @@ public class Builder {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT name, completedBuilds FROM players ORDER BY completedBuilds DESC LIMIT " + limit);
 
         while (rs.next()) {
-            completedBuildsAsFormat.add(rs.getString("name") + ", " + rs.getInt("completedBuilds"));
+            completedBuildsAsFormat.add(rs.getString("name") + "," + rs.getInt("completedBuilds"));
         }
 
         return completedBuildsAsFormat;

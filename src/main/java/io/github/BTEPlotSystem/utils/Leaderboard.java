@@ -12,31 +12,46 @@ import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.BigInteger;
+import java.util.List;
+
 public class Leaderboard {
 
     private final FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
     private Hologram hologram;
-    private TextLine textLine[] = new TextLine[14];
+    private TextLine textLine[];
     private ItemLine itemLine;
 
-    public Leaderboard(){
-        createHologram();
-        insertText();
+    private int runnable;
 
+    public Leaderboard(String title, Material item, List<String> data){
+        createHologram();
+        insertText(title,item,data);
+
+
+        //Runs every 30 min
+        /*runnable = BTEPlotSystem.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                updateHologram();
+            }
+        }, 0,20*60*30);*/
     }
 
-    private void insertText(){
-        itemLine = hologram.insertItemLine(0,new ItemStack(Material.NETHER_STAR));
+    private void insertText(String title, Material item, List<String> data){
+        itemLine = hologram.insertItemLine(0,new ItemStack(item));
 
-        textLine[0] = hologram.insertTextLine(1,"§b§lSCORE LEADERBOARD");
+        textLine = new TextLine[data.size()+4];
+
+        textLine[0] = hologram.insertTextLine(1,"§b§l"+title);
         textLine[1] = hologram.insertTextLine(2,"§7---------------");
 
-        for (int i = 2; i<=11;i++){
-            textLine[i] = hologram.insertTextLine(i+1,"§e#"+(i-1)+" §aName §7- §b69420");
+        for (int i = 2; i<data.size() + 2;i++){
+            textLine[i] = hologram.insertTextLine(i+1,"§e#"+(i-1)+" §a"+data.get(i-2).split(",")[0] + " §7- §b"+ data.get(i-2).split(",")[1]);
         }
 
-        textLine[13] = hologram.insertTextLine(13,"§7---------------");
+        textLine[data.size()+3] = hologram.insertTextLine(data.size()+3,"§7---------------");
     }
 
     private void createHologram(){
@@ -49,4 +64,10 @@ public class Leaderboard {
         hologram = HologramsAPI.createHologram(BTEPlotSystem.getPlugin(),location);
     }
 
+    public void updateHologram(List<String> data){
+        for (int i = 0; i < data.size(); i++) {
+            hologram.removeLine(i+3);
+            hologram.insertTextLine(i+3,"§e#"+(i+1)+" §a"+data.get(i).split(",")[0] + " §7- §b"+ data.get(i).split(",")[1]);
+        }
+    }
 }
