@@ -49,7 +49,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event){
-        if (event.getCurrentItem().equals(Companion.getItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(Companion.getItem())){
             event.setCancelled(true);
         }
     }
