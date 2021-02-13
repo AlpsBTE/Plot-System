@@ -31,7 +31,7 @@ public class BTEPlotSystem extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("MultiverseCore");
+        multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
 
         reloadConfig();
 

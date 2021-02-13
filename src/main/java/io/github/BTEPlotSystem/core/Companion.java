@@ -203,7 +203,7 @@ public class Companion {
                         .setName("§a§lFinish").setLore(new LoreBuilder().description("Click to finish the selected plot and submit it to be reviewed...","§cNote: You wont be able to continue building on your Plot!").build()).build());
         menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                PlotHandler.FinishPlot(plot, false);
+                PlotHandler.FinishPlot(plot);
                 clickPlayer.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -224,7 +224,7 @@ public class Companion {
                         .setName("§c§lAbandon").setLore(new LoreBuilder().description("click to abandon your plot...","§cNote: You wont be able to continue building on your Plot!").build()).build());
         menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                PlotHandler.FinishPlot(plot, true);
+                PlotHandler.AbandonPlot(plot);
                 clickPlayer.sendMessage("§7>> §aAbandoned plot with the ID §6#" + plot.getID());
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
