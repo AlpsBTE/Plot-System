@@ -10,6 +10,7 @@ import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -80,6 +81,7 @@ public class Companion {
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                         clickPlayer.sendMessage("§4Something went wrong... please contact a manager or developer");
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound,1,1);
                     }
                 });
             } catch (Exception e) {
@@ -135,17 +137,20 @@ public class Companion {
                     if (new Builder(clickPlayer.getUniqueId()).getFreeSlot() != null){
                         if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
                             clickPlayer.sendMessage("§7>> §aCreating a new plot...");
-                            clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 5f, 5f);
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
                             new PlotGenerator(cityID, new Builder(clickPlayer.getUniqueId()));
                         } else {
                             clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } else {
                         clickPlayer.sendMessage("§4All slots are occupied! Finish an active plot before starting a new project!");
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                     }
                 } catch (SQLException throwables) {
                     clickPlayer.sendMessage("§4SQL Error! :pepehands:");
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                     throwables.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -205,6 +210,7 @@ public class Companion {
             try {
                 PlotHandler.FinishPlot(plot);
                 clickPlayer.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -226,6 +232,7 @@ public class Companion {
             try {
                 PlotHandler.AbandonPlot(plot);
                 clickPlayer.sendMessage("§7>> §aAbandoned plot with the ID §6#" + plot.getID());
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

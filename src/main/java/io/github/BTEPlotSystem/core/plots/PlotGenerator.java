@@ -25,6 +25,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.*;
 
@@ -107,6 +108,7 @@ public final class PlotGenerator {
             PlotHandler.TeleportPlayer(plot, builder.getPlayer());
         } catch (Exception ex) {
             builder.getPlayer().sendMessage("§7>> §cAn error occurred while generating new plot!");
+            builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
         }
     }

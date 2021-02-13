@@ -3,6 +3,9 @@ package github.BTEPlotSystem.commands;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.Companion;
 import github.BTEPlotSystem.utils.Leaderboard;
+import github.BTEPlotSystem.utils.Utils;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,6 +29,7 @@ public class CMDSetLeaderboardPosition implements CommandExecutor {
                     config.set("leaderboard.y",player.getLocation().getY());
                     config.set("leaderboard.z",player.getLocation().getZ());
                     BTEPlotSystem.getPlugin().saveConfig();
+                    player.playSound(player.getLocation(), Utils.Done,1,1);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

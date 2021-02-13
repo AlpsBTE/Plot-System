@@ -7,9 +7,12 @@ import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -342,6 +345,7 @@ public class Review implements Listener {
                         }
                         selectedPlot.setScore(score.toString());
                         player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
+                        player.playSound(player.getLocation(), Utils.FinishPlotSound,1,1);
                         BTEPlotSystem.getPlugin().getScoreLeaderboard().updateHologram(Builder.getBuildersByScore(10));
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){

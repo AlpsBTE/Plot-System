@@ -27,7 +27,7 @@ public class PlotHandler {
 
         player.teleport(getPlotSpawnPoint(Bukkit.getWorld(worldName)));
 
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 5.0f, 1.0f);
+        player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
         player.setAllowFlight(true);
         player.setFlying(true);
 
