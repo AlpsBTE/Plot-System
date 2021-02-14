@@ -151,6 +151,7 @@ public class Plot {
 
         setStatus(Status.complete);
         builder.addScore(getScore(Category.ALL));
+        builder.addCompletedBuild();
         builder.removePlot(getSlot());
     }
 
