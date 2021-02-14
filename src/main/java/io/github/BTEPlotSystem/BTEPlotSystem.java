@@ -1,5 +1,6 @@
 package github.BTEPlotSystem;
 
+import com.google.common.annotations.Beta;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -8,7 +9,6 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Leaderboard;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -86,13 +87,9 @@ public class BTEPlotSystem extends JavaPlugin {
             config = YamlConfiguration.loadConfiguration(configFile);
         } else {
             // Look for default configuration file
-            try {
-                Reader defConfigStream = new InputStreamReader(this.getResource("defaultConfig.yml"), "UTF8");
+            Reader defConfigStream = new InputStreamReader(this.getResource("defaultConfig.yml"), StandardCharsets.UTF_8);
 
-                config = YamlConfiguration.loadConfiguration(defConfigStream);
-            } catch (IOException ex) {
-                getLogger().log(Level.SEVERE, "Could not load default configuration file", ex);
-            }
+            config = YamlConfiguration.loadConfiguration(defConfigStream);
         }
         saveConfig();
     }

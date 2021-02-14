@@ -1,17 +1,12 @@
 package github.BTEPlotSystem.core.plots;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.schematic.MCEditSchematicFormat;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -31,6 +26,7 @@ import org.bukkit.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -45,8 +41,8 @@ public final class PlotGenerator {
     private World weWorld;
     private RegionManager regionManager;
 
+    private final String worldName;
     private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
-    private MultiverseWorld mvWorld;
 
     public PlotGenerator(int cityID, Builder builder) throws SQLException {
         this(getPlots(cityID, Status.unclaimed).get(random.nextInt(getPlots(cityID, Status.unclaimed).size())), builder);
@@ -56,71 +52,84 @@ public final class PlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        String worldName = "Plot_" + plot.getID();
+        worldName = "Plot_" + plot.getID();
 
-        try {
-            if(Bukkit.getWorld(worldName) == null) {
-                WorldCreator wc = new WorldCreator(worldName);
-                wc.environment(org.bukkit.World.Environment.NORMAL);
-                wc.type(WorldType.FLAT);
-                wc.generatorSettings("2;0;1;");
-                wc.createWorld();
-                Bukkit.getLogger().log(Level.INFO, "Successfully generated plot world (" + worldName + ")");
+        if(Bukkit.getWorld(worldName) == null) {
 
-                worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidWorld", false);
+           Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+               try {
+                   generateWorld();
 
-                org.bukkit.World world = Bukkit.getWorld(worldName);
-                world.setGameRuleValue("randomTickSpeed", "0");
-                world.setGameRuleValue("doDaylightCycle", "false");
-                world.setGameRuleValue("doFireTick", "false");
-                world.setGameRuleValue("doWeatherCycle", "false");
-                world.setGameRuleValue("keepInventory", "true");
+                   generateBuildingOutlines();
 
-                mvWorld = worldManager.getMVWorld(world);
-                mvWorld.setAllowFlight(true);
-                mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(world));
-                mvWorld.setDifficulty(Difficulty.PEACEFUL);
-                mvWorld.setAllowAnimalSpawn(false);
-                mvWorld.setAllowMonsterSpawn(false);
-                mvWorld.setAutoLoad(false);
-                mvWorld.setKeepSpawnInMemory(false);
-                mvWorld.setGameMode(GameMode.CREATIVE);
+                   createPlotProtection();
 
-                RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-                this.regionManager = container.get(world);
-                this.weWorld = new BukkitWorld(world);
+                   builder.setPlot(plot.getID(), builder.getFreeSlot());
+                   plot.setStatus(Status.unfinished);
+                   plot.setBuilder(builder.getPlayer().getUniqueId().toString());
 
-                GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
+                   Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> PlotHandler.TeleportPlayer(plot, builder.getPlayer()));
 
-                globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
-                globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-
-                regionManager.addRegion(globalRegion);
-
-                generateBuildingOutlines();
-
-                createPlotProtection();
-
-                builder.setPlot(plot.getID(), builder.getFreeSlot());
-                plot.setStatus(Status.unfinished);
-                plot.setBuilder(builder.getPlayer().getUniqueId().toString());
-            }
+               } catch (IOException | SQLException ex) {
+                   builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating a new plot!"));
+                   builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
+                   Bukkit.getLogger().log(Level.SEVERE, "An error occurred while a generating plot!", ex);
+               }
+           });
+        } else {
             PlotHandler.TeleportPlayer(plot, builder.getPlayer());
-        } catch (Exception ex) {
-            builder.getPlayer().sendMessage("§7>> §cAn error occurred while generating new plot!");
-            builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
         }
     }
 
-    private void generateBuildingOutlines() throws IOException, DataException, MaxChangedBlocksException {
+    private void generateWorld() {
+        WorldCreator wc = new WorldCreator(worldName);
+        wc.environment(org.bukkit.World.Environment.NORMAL);
+        wc.type(WorldType.FLAT);
+        wc.generatorSettings("2;0;1;");
+        wc.createWorld();
+
+        worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidWorld", false);
+
+        org.bukkit.World world = Bukkit.getWorld(worldName);
+        world.setGameRuleValue("randomTickSpeed", "0");
+        world.setGameRuleValue("doDaylightCycle", "false");
+        world.setGameRuleValue("doFireTick", "false");
+        world.setGameRuleValue("doWeatherCycle", "false");
+        world.setGameRuleValue("keepInventory", "true");
+
+        world.setTime(6000);
+
+        MultiverseWorld mvWorld = worldManager.getMVWorld(world);
+        mvWorld.setAllowFlight(true);
+        mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(world));
+        mvWorld.setDifficulty(Difficulty.PEACEFUL);
+        mvWorld.setAllowAnimalSpawn(false);
+        mvWorld.setAllowMonsterSpawn(false);
+        mvWorld.setAutoLoad(false);
+        mvWorld.setKeepSpawnInMemory(false);
+        mvWorld.setGameMode(GameMode.CREATIVE);
+
+        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
+        this.regionManager = container.get(world);
+        this.weWorld = new BukkitWorld(world);
+
+        GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
+
+        globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
+        globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+        regionManager.addRegion(globalRegion);
+    }
+
+    private void generateBuildingOutlines() throws IOException {
         Vector buildingOutlinesCoordinates = Vector.toBlockPoint(
                 (double) (PlotManager.getPlotSize() / 2) + 0.5,
                 15,
                 (double) (PlotManager.getPlotSize() / 2) + 0.5
         );
 
-        EditSession editSession = ClipboardFormat.findByFile(plot.getSchematic())
+        EditSession editSession = Objects.requireNonNull(
+                ClipboardFormat.findByFile(plot.getSchematic()))
                 .load(plot.getSchematic())
                 .paste(weWorld, buildingOutlinesCoordinates, false, false, null);
         editSession.flushQueue();
@@ -128,8 +137,6 @@ public final class PlotGenerator {
         /*WorldEditPlugin we = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
         EditSession session = we.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, 1000000);
         MCEditSchematicFormat.getFormat(plot.getSchematic()).load(plot.getSchematic()).paste(session, buildingOutlinesCoordinates, false);*/
-
-        Bukkit.getLogger().log(Level.INFO, "Successfully generated building outlines at " + buildingOutlinesCoordinates.getX() + " / " + buildingOutlinesCoordinates.getY() + " / " + buildingOutlinesCoordinates.getZ());
     }
 
     private void createPlotProtection() {
