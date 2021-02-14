@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class Utils {
 
+    // Sounds
     public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
     public static Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
     public static Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
@@ -15,6 +16,7 @@ public class Utils {
     public static Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
     public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
+    // Spawn Location
     public static Location getSpawnPoint() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
@@ -25,5 +27,16 @@ public class Utils {
                 (float) config.getDouble("spawn-point.yaw"),
                 (float) config.getDouble("spawn-point.pitch")
         );
+    }
+
+    // Player Messages
+    private static final String messagePrefix = "§l§7>> ";
+
+    public static String getInfoMessageFormat(String info) {
+        return messagePrefix + "§a" + info;
+    }
+
+    public static String getErrorMessageFormat(String error) {
+        return messagePrefix + "§c" + error;
     }
 }
