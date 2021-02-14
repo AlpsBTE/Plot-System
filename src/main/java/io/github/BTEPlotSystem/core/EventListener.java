@@ -14,6 +14,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -25,6 +29,17 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         if (!event.getPlayer().getInventory().contains(Companion.getItem())){
             event.getPlayer().getInventory().setItem(0, Companion.getItem());
+        }
+
+        if(!event.getPlayer().hasPlayedBefore()) {
+            try {
+                PreparedStatement statement = DatabaseConnection.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
+                statement.setString(1, event.getPlayer().getUniqueId().toString());
+                statement.setString(2, event.getPlayer().getName());
+                statement.execute();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "Could not add player [" + event.getPlayer().getName() + "] to database!", ex);
+            }
         }
     }
 
