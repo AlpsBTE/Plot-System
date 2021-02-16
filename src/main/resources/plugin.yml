@@ -6,6 +6,18 @@ author: R3tuxn & Cinnazeyy
 depend: [HeadDatabase, HolographicDisplays]
 
 commands:
+  plot:
+    description: teleport to a plot
+    usage: /plot <ID>
+    permission: alpsbte.plot
+  finish:
+    description: finish a plot
+    usage: /finish
+    permission: alpsbte.finish
+  abandon:
+    description: abandon a plot
+    usage: /abandon
+    permission: alpsbte.abandon
   review:
     description: review unreviewed plots
     usage: /review

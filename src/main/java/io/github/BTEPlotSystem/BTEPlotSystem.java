@@ -1,6 +1,5 @@
 package github.BTEPlotSystem;
 
-import com.google.common.annotations.Beta;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -49,13 +48,20 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), plugin);
 
         // Add Commands
-        this.getCommand("review").setExecutor(new CMDReview());
-        this.getCommand("companion").setExecutor(new CMDCompanion());
+        this.getCommand("plot").setExecutor(new CMDPlot());
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
+        this.getCommand("finish").setExecutor(new CMDFinish());
+        this.getCommand("abandon").setExecutor(new CMDAbandon());
+
+        this.getCommand("companion").setExecutor(new CMDCompanion());
+        this.getCommand("review").setExecutor(new CMDReview());
+
         this.getCommand("hub").setExecutor(new CMDHub());
+        this.getCommand("spawn").setExecutor(new CMDSpawn());
+
         this.getCommand("setleaderboardposition").setExecutor(new CMDSetLeaderboardPosition());
         this.getCommand("reloadleaderboard").setExecutor(new CMDReloadLeaderboard());
-        this.getCommand("spawn").setExecutor(new CMDSpawn());
+
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
