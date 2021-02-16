@@ -26,8 +26,7 @@ import org.bukkit.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 import static github.BTEPlotSystem.core.plots.PlotManager.getPlots;
@@ -43,6 +42,9 @@ public final class PlotGenerator {
 
     private final String worldName;
     private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
+
+    private final Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
+    private final Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/finish", "/abandon", "//undo", "//redo", "/plot"));
 
     public PlotGenerator(int cityID, Builder builder) throws SQLException {
         this(getPlots(cityID, Status.unclaimed).get(random.nextInt(getPlots(cityID, Status.unclaimed).size())), builder);
@@ -168,6 +170,12 @@ public final class PlotGenerator {
 
         protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
         protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, blockedCommandsNonBuilder);
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+
+        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, allowedCommandsBuilder);
+        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
 
         regionManager.addRegion(protectedPlotRegion);
     }
