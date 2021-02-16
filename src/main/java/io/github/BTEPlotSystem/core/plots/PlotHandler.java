@@ -1,5 +1,10 @@
 package github.BTEPlotSystem.core.plots;
 
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
@@ -36,6 +41,11 @@ public class PlotHandler {
 
     public static void FinishPlot(Plot plot) throws SQLException {
         plot.setStatus(Status.unreviewed);
+
+        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
+        RegionManager regionManager = container.get(plot.getBuilder().getPlayer().getWorld());
+        ProtectedRegion region = regionManager.getApplicableRegions(plot.getBuilder().getPlayer().getLocation()).getRegions().stream().findFirst().get();
+        region.getOwners().removePlayer(plot.getBuilder().getUUID());
 
         String worldName = "Plot_" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
