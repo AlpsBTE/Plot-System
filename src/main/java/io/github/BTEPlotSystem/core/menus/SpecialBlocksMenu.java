@@ -1,5 +1,6 @@
-package github.BTEPlotSystem.core;
+package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.core.SpecialBlocks;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import org.bukkit.Material;

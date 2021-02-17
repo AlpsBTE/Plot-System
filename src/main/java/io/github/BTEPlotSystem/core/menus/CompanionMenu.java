@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.core;
+package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotGenerator;
@@ -8,9 +8,8 @@ import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -22,23 +21,18 @@ import org.ipvp.canvas.type.ChestMenu;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 
-public class Companion {
-    private Menu menu;
-    private Mask mask;
+public class CompanionMenu {
+    private final Menu menu = ChestMenu.builder(6).title("Companion").build();
+    private final Player player;
 
-    public Companion(Player player) throws SQLException {
-        menu = createMenu();
+    private final HeadDatabaseAPI headDB = Utils.headDatabaseAPI;
 
-        showItems(player);
+    public CompanionMenu(Player player) throws SQLException {
+        this.player = player;
 
-        menu.open(player);
-    }
-
-    public Menu createMenu(){
-        Menu menu = ChestMenu.builder(6).title("Companion").build();
-
-        mask = BinaryMask.builder(menu)
+        Mask mask = BinaryMask.builder(menu)
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111101111")
                 .pattern("000000000")
@@ -47,64 +41,76 @@ public class Companion {
                 .pattern("000000000")
                 .pattern("100010001")
                 .build();
-
         mask.apply(menu);
-        return menu;
+
+        setMenuItems();
+
+        menu.open(player);
     }
 
-    public void showItems(Player player) throws SQLException {
-        // Set HUB
-        //TODO: Set online player count
+    public void setMenuItems() throws SQLException {
+
+        // TODO: Set Navigator
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.NETHER_STAR,1)
                 .setName("§6§lHUB").setLore(new LoreBuilder().server(0,true).build()).build());
         menu.getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.performCommand("hub");
-            //TODO: Add hub command
             clickPlayer.closeInventory();
         });
 
-        // Set Slots
+        // Set Player Slots Items
         for (int i = 0;i<3;i++){
             try {
                 Plot plot = new Builder(player.getUniqueId()).getPlot(Slot.values()[i]);
 
+                System.out.println("Test -> " + plot);
                 menu.getSlot(46+i)
-                        .setItem(new ItemBuilder(Material.MAP,1+i)
-                                .setName("§l§6Slot " + (i+1) + " | " + plot.getCity().getName() + " #" + plot.getID())
-                                .setLore(new LoreBuilder().description("click to teleport...").build())
+                        .setItem(new ItemBuilder(Material.MAP,1 + i)
+                                .setName("§b§lSLOT " + (i + 1))
+                                .setLore(new LoreBuilder()
+                                        .description("§6ID: §7" + plot.getID(),
+                                                     "§6City: §7" + plot.getCity().getName(),
+                                                     "§6Difficulty: §7" + plot.getCity().getDifficulty().name(),
+                                                     "",
+                                                     "§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1))
+                                        .build())
                                 .build());
-                menu.getSlot(46+i).setClickHandler((clickPlayer, clickInformation) -> {
+
+                menu.getSlot(46 + i).setClickHandler((clickPlayer, clickInformation) -> {
                     clickPlayer.closeInventory();
                     try {
-                        showPlotActionsMenu(clickPlayer, plot);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                        clickPlayer.sendMessage("§4Something went wrong... please contact a manager or developer");
+                        new PlotActionsMenu(plot, player);
+                    } catch (Exception ex ) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("Something went wrong... please message a Manager or Developer."));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound,1,1);
+                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred when opening plot actions menu.", ex);
                     }
                 });
             } catch (Exception e) {
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
-                                .setName("§l§aSlot " + (i+1) + " | Unasigned")
-                                .setLore(new LoreBuilder().description("click on any of the cities to create a new plot").build())
+                                .setName("§b§lSLOT " + (i + 1))
+                                .setLore(new LoreBuilder()
+                                        .description("§6§lStatus: §7§l Unassigned",
+                                                     "",
+                                                     "§7Click on a city project to create a new plot.")
+                                        .build())
                                 .build());
             }
         }
 
-        // Set Custom Heads
+        // Set Custom Heads Item
         menu.getSlot(50)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
                 .setName("§b§lCUSTOM HEADS")
                 .setLore(new LoreBuilder().description("Open the head menu to get a variety of custom heads.").build())
                 .build());
         menu.getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
             clickPlayer.performCommand("hdb");
         });
 
-        // Set Custom Banners
+        // Set Banner Maker Item
         menu.getSlot(51)
                 .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
                 .setName("§b§lBANNER MAKER")
@@ -112,55 +118,52 @@ public class Companion {
                 .build());
         menu.getSlot(51).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.performCommand("bm");
-            clickPlayer.closeInventory();
         });
 
-        // Set Custom Blocks
+        // Set Custom Blocks Item
         menu.getSlot(52)
                 .setItem(new ItemBuilder(Material.GOLD_BLOCK ,1)
                 .setName("§b§lSPECIAL BLOCKS")
                 .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build());
         menu.getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
             new SpecialBlocksMenu().getUI().open(clickPlayer);
         });
 
-        // List CityProjects
+        // Set City Projects Items
         List<CityProject> cities = CityProject.getCityProjects();
-        HeadDatabaseAPI api = new HeadDatabaseAPI();
+
         for (int i = 0; i < cities.size(); i++){
             int cityID = cities.get(i).getID();
+
             menu.getSlot(9+i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
                     clickPlayer.closeInventory();
                     if (new Builder(clickPlayer.getUniqueId()).getFreeSlot() != null){
                         if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
-                            clickPlayer.sendMessage("§7>> §aCreating a new plot...");
+                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
                             new PlotGenerator(cityID, new Builder(clickPlayer.getUniqueId()));
                         } else {
-                            clickPlayer.sendMessage("§4This city doesn't have any open plots left... Please choose a different one or check again later!");
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } else {
-                        clickPlayer.sendMessage("§4All slots are occupied! Finish an active plot before starting a new project!");
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                     }
-                } catch (SQLException throwables) {
-                    clickPlayer.sendMessage("§4SQL Error! :pepehands:");
+                } catch (SQLException ex) {
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while creating a new plot! Please try again or contact a staff member."));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                    throwables.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while generating a new plot!", ex);
                 }
             });
 
             switch (cities.get(i).getCountry()){
                 case AT:
                     menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(api.getItemHead("4397"))
+                            .setItem(new ItemBuilder(getCityProjectItem("4397"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
                                             .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
@@ -169,7 +172,7 @@ public class Companion {
                     break;
                 case CH:
                     menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(api.getItemHead("32348"))
+                            .setItem(new ItemBuilder(getCityProjectItem("32348"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
                                             .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
@@ -178,7 +181,7 @@ public class Companion {
                     break;
                 case LI:
                     menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(api.getItemHead("26174"))
+                            .setItem(new ItemBuilder(getCityProjectItem("26174"))
                                     .setName("§l§b" + cities.get(i).getName())
                                     .setLore(new LoreBuilder()
                                             .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
@@ -190,56 +193,8 @@ public class Companion {
         }
     }
 
-    public void showPlotActionsMenu(Player player, Plot plot) throws SQLException {
-        //create menu
-        Menu menu = ChestMenu.builder(3).title(plot.getCity().getName() + " #" + plot.getID() + " | " + plot.getStatus().name()).build();
-
-        mask = BinaryMask.builder(menu)
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111111111")
-                .pattern("000000000")
-                .pattern("111111111")
-                .build();
-        mask.apply(menu);
-
-        //set items
-        menu.getSlot(10)
-                .setItem(new ItemBuilder(Material.NAME_TAG,1)
-                        .setName("§a§lFinish").setLore(new LoreBuilder().description("Click to finish the selected plot and submit it to be reviewed...","§cNote: You wont be able to continue building on your Plot!").build()).build());
-        menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
-            try {
-                PlotHandler.FinishPlot(plot);
-                clickPlayer.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            clickPlayer.closeInventory();
-        });
-
-        menu.getSlot(13)
-                .setItem(new ItemBuilder(Material.COMPASS,1)
-                        .setName("§6§lTeleport").setLore(new LoreBuilder().description("click to teleport to your plot...").build()).build());
-        menu.getSlot(13).setClickHandler((clickPlayer, clickInformation) -> {
-            PlotHandler.TeleportPlayer(plot, player);
-            clickPlayer.closeInventory();
-        });
-
-        menu.getSlot(16)
-                .setItem(new ItemBuilder(Material.BARRIER,1)
-                        .setName("§c§lAbandon").setLore(new LoreBuilder().description("click to abandon your plot...","§cNote: You wont be able to continue building on your Plot!").build()).build());
-        menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
-            try {
-                PlotHandler.AbandonPlot(plot);
-                clickPlayer.sendMessage("§7>> §aAbandoned plot with the ID §6#" + plot.getID());
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            clickPlayer.closeInventory();
-        });
-
-        menu.open(player);
+    private ItemStack getCityProjectItem(String HeadID) {
+        return (headDB != null) ? headDB.getItemHead(HeadID) : new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
     }
 
     public static ItemStack getItem(){

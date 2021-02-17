@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.core;
+package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class Review implements Listener {
+public class ReviewMenu implements Listener {
     private final Inventory reviewMenu;
     private Inventory reviewPlotMenu;
 
@@ -55,7 +55,7 @@ public class Review implements Listener {
 
     private final Player player;
 
-    public Review(Player player) throws SQLException {
+    public ReviewMenu(Player player) throws SQLException {
         //Opens Review Menu, showing all plots in the given round.
         reviewMenu = Bukkit.createInventory(player,54,"Review Plots");
         this.player = player;
