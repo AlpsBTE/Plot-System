@@ -62,10 +62,11 @@ public class PlotActionsMenu {
                 if(plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
                     clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                } else
-                PlotHandler.FinishPlot(plot);
-                clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
+                } else {
+                    PlotHandler.FinishPlot(plot);
+                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
+                }
             } catch (Exception ex) {
                 clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while completing the selected plot! Please try again or contact a staff member."));
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -100,10 +101,11 @@ public class PlotActionsMenu {
                 if(plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
                     clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                } else
+                } else {
                     PlotHandler.AbandonPlot(plot);
-                clickPlayer.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
+                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
+                }
             } catch (Exception ex) {
                 clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while abandoning the selected plot! Please try again or contact a staff member."));
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
