@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -17,6 +18,9 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -39,7 +43,7 @@ public class PlotHandler {
         sendLinkMessages(plot, player);
     }
 
-    public static void FinishPlot(Plot plot) throws SQLException {
+    public static void FinishPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
         // TODO: Removing the player's building permissions when the builder is not online.
@@ -56,7 +60,7 @@ public class PlotHandler {
         }
     }
 
-    public static void AbandonPlot(Plot plot) throws SQLException {
+    public static void AbandonPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unclaimed);
 
         String worldName = "Plot_" + plot.getID();
@@ -66,14 +70,20 @@ public class PlotHandler {
             }
         }
 
-        try {
-            plot.getBuilder().removePlot(plot.getSlot());
-            plot.setBuilder(null);
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName);
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while deleting world!", ex);
-        }
+        plot.getBuilder().removePlot(plot.getSlot());
+        plot.setBuilder(null);
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
+    }
+
+    public static void DeletePlot(Plot plot) throws Exception {
+        AbandonPlot(plot);
+
+        Files.deleteIfExists(Paths.get(PlotManager.getSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+
+        String query = "DELETE FROM plots WHERE idplot = '" + plot.getID() + "'";
+        PreparedStatement statement = DatabaseConnection.prepareStatement(query);
+        statement.execute();
     }
 
     public static Location getPlotSpawnPoint(World world) {
