@@ -76,16 +76,9 @@ public class Plot {
         statement.executeUpdate();
     }
 
-    public File getSchematic() {
-        System.out.println("Schematic Path: " + Paths.get(PlotManager.getSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile().getAbsolutePath());
-        return Paths.get(PlotManager.getSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
-    }
+    public File getSchematic() { return Paths.get(PlotManager.getSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile(); }
 
     public String getGeoCoordinatesNumeric() { return CoordinateConversion.formatGeoCoordinatesNumeric(geoCoordinates); }
-
-    public String getGeoCoordinatesNSEW() {
-        return CoordinateConversion.formatGeoCoordinatesNSEW(geoCoordinates);
-    }
 
     public Status getStatus() throws SQLException {
        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
