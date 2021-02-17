@@ -5,6 +5,7 @@ import github.BTEPlotSystem.core.plots.PlotGenerator;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.*;
+import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -50,12 +51,14 @@ public class CompanionMenu {
 
     public void setMenuItems() throws SQLException {
 
-        // TODO: Set Navigator
         menu.getSlot(4)
-                .setItem(new ItemBuilder(Material.NETHER_STAR,1)
-                .setName("§6§lHUB").setLore(new LoreBuilder().server(0,true).build()).build());
+                .setItem(new ItemBuilder(Material.COMPASS,1)
+                .setName("§6§lNavigator").setLore(new LoreBuilder()
+                                .description("Open the navigator menu.")
+                                .build())
+                .build());
         menu.getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.performCommand("hub");
+            clickPlayer.performCommand("navigator");
             clickPlayer.closeInventory();
         });
 
@@ -68,11 +71,11 @@ public class CompanionMenu {
                         .setItem(new ItemBuilder(Material.MAP,1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
-                                        .description("§6ID: §7" + plot.getID(),
-                                                     "§6City: §7" + plot.getCity().getName(),
-                                                     "§6Difficulty: §7" + plot.getCity().getDifficulty().name(),
+                                        .description("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1),
                                                      "",
-                                                     "§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1))
+                                                     "§6ID: §7" + plot.getID(),
+                                                     "§6City: §7" + plot.getCity().getName(),
+                                                     "§6Difficulty: §7" + plot.getCity().getDifficulty().name())
                                         .build())
                                 .build());
 
@@ -91,7 +94,7 @@ public class CompanionMenu {
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
-                                        .description("§6§lStatus: §7§l Unassigned",
+                                        .description("§6§lStatus: §7§lUnassigned",
                                                      "",
                                                      "§7Click on a city project to create a new plot.")
                                         .build())
@@ -159,36 +162,34 @@ public class CompanionMenu {
                 }
             });
 
-            switch (cities.get(i).getCountry()){
+            ItemStack cityProjectItem = null;
+            switch (cities.get(i).getCountry()) {
                 case AT:
-                    menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(getCityProjectItem("4397"))
-                                    .setName("§l§b" + cities.get(i).getName())
-                                    .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
-                                            .build())
-                                    .build());
+                    cityProjectItem = getCityProjectItem("4397");
                     break;
                 case CH:
-                    menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(getCityProjectItem("32348"))
-                                    .setName("§l§b" + cities.get(i).getName())
-                                    .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
-                                            .build())
-                                    .build());
+                    cityProjectItem = getCityProjectItem("32348");
                     break;
                 case LI:
-                    menu.getSlot(9+i)
-                            .setItem(new ItemBuilder(getCityProjectItem("26174"))
-                                    .setName("§l§b" + cities.get(i).getName())
-                                    .setLore(new LoreBuilder()
-                                            .description(cities.get(i).getDescription(),"", "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots", "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots")
-                                            .build())
-                                    .build());
+                    cityProjectItem = getCityProjectItem("26174");
                     break;
-
             }
+
+            menu.getSlot(9+i)
+                    .setItem(new ItemBuilder(cityProjectItem)
+                            .setName("§b§l" + cities.get(i).getName())
+                            .setLore(new LoreBuilder()
+                                    .description(
+                                            cities.get(i).getDescription(),
+                                            "",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots",
+                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots",
+                                            "",
+                                            cities.get(i).getDifficulty() == Difficulty.EASY ?
+                                                "§a§lEasy" : cities.get(i).getDifficulty() == Difficulty.MEDIUM ?
+                                                "§6§lMedium" : "§c§lHard")
+                                    .build())
+                            .build());
         }
     }
 

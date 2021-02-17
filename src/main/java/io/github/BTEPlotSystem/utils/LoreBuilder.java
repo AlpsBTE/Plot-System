@@ -9,7 +9,11 @@ public class LoreBuilder {
 
     public LoreBuilder description(String... lines) {
         for (String line : lines) {
-            lore.add("§7" + line);
+            String[] newLines = line.split("/");
+
+            for(String newLine : newLines) {
+                lore.add("§7" + newLine.replace("/", ""));
+            }
         }
         return this;
     }
