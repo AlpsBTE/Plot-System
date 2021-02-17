@@ -1,18 +1,12 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.Companion;
-import github.BTEPlotSystem.utils.Leaderboard;
 import github.BTEPlotSystem.utils.Utils;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import java.sql.SQLException;
 
 public class CMDSetLeaderboardPosition implements CommandExecutor {
 

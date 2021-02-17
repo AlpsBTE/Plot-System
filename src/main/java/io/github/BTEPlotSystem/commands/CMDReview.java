@@ -1,7 +1,7 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.Review;
+import github.BTEPlotSystem.core.menus.ReviewMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,7 +17,7 @@ public class CMDReview implements CommandExecutor {
             Player player = (Player)sender;
             if (sender.hasPermission("alpsbte.review")){
                 try {
-                    Bukkit.getPluginManager().registerEvents(new Review(player), BTEPlotSystem.getPlugin());
+                    Bukkit.getPluginManager().registerEvents(new ReviewMenu(player), BTEPlotSystem.getPlugin());
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }

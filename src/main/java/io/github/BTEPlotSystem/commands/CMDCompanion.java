@@ -1,6 +1,6 @@
 package github.BTEPlotSystem.commands;
 
-import github.BTEPlotSystem.core.Companion;
+import github.BTEPlotSystem.core.menus.CompanionMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ public class CMDCompanion implements CommandExecutor {
             Player player = (Player)sender;
             if (sender.hasPermission("alpsbte.companion")){
                 try {
-                    new Companion(player);
+                    new CompanionMenu(player);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
