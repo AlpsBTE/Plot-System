@@ -34,7 +34,7 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix = "§l§7>> ";
+    private static final String messagePrefix = "§7§l>> ";
 
     public static String getInfoMessageFormat(String info) {
         return messagePrefix + "§a" + info;
