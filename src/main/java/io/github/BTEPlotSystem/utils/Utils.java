@@ -1,12 +1,16 @@
 package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Utils {
+
+    // Head Database API
+    public static HeadDatabaseAPI headDatabaseAPI;
 
     // Sounds
     public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;

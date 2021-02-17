@@ -1,6 +1,9 @@
 package github.BTEPlotSystem.core;
 
+import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.utils.Utils;
+import me.arcaniax.hdb.api.DatabaseLoadEvent;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,8 +30,8 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
-        if (!event.getPlayer().getInventory().contains(Companion.getItem())){
-            event.getPlayer().getInventory().setItem(0, Companion.getItem());
+        if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
+            event.getPlayer().getInventory().setItem(0, CompanionMenu.getItem());
         }
 
         if(!event.getPlayer().hasPlayedBefore()) {
@@ -53,8 +56,8 @@ public class EventListener extends SpecialBlocks implements Listener {
     public void onPlayerInteractEvent(PlayerInteractEvent event){
         try {
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-                if (event.getItem() != null && event.getItem().equals(Companion.getItem())){
-                    new Companion(event.getPlayer());
+                if (event.getItem() != null && event.getItem().equals(CompanionMenu.getItem())){
+                    new CompanionMenu(event.getPlayer());
                 }
             }
         } catch (Exception e){
@@ -64,7 +67,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event){
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(Companion.getItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getItem())){
             event.setCancelled(true);
         }
     }
@@ -72,7 +75,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
         try {
-            if(event.getItemDrop().getItemStack().equals(Companion.getItem())) {
+            if(event.getItemDrop().getItemStack().equals(CompanionMenu.getItem())) {
                 event.setCancelled(true);
             }
         } catch (Exception e) {
@@ -107,5 +110,10 @@ public class EventListener extends SpecialBlocks implements Listener {
                 event.getBlockPlaced().setTypeIdAndData(162, (byte) 13, true);
             }
         }
+    }
+
+    @EventHandler
+    public void onDatabaseLoad(DatabaseLoadEvent event) {
+       Utils.headDatabaseAPI = new HeadDatabaseAPI();
     }
 }
