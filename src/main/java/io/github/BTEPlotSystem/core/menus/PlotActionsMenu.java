@@ -5,6 +5,7 @@ import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -58,6 +59,10 @@ public class PlotActionsMenu {
                         .build());
         menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             try {
+                if(plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                } else
                 PlotHandler.FinishPlot(plot);
                 clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
@@ -92,7 +97,11 @@ public class PlotActionsMenu {
                         .build());
         menu.getSlot(additionalSlot ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                PlotHandler.AbandonPlot(plot);
+                if(plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                } else
+                    PlotHandler.AbandonPlot(plot);
                 clickPlayer.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
             } catch (Exception ex) {
@@ -115,7 +124,7 @@ public class PlotActionsMenu {
                             .build());
             menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
-                    // TODO: Call PlotHandler.DeletePlot(plot);
+                    PlotHandler.DeletePlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Deleted plot with the ID §6#" + plot.getID()));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
                 } catch (Exception ex) {
