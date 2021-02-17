@@ -64,7 +64,6 @@ public class CompanionMenu {
             try {
                 Plot plot = new Builder(player.getUniqueId()).getPlot(Slot.values()[i]);
 
-                System.out.println("Test -> " + plot);
                 menu.getSlot(46+i)
                         .setItem(new ItemBuilder(Material.MAP,1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
