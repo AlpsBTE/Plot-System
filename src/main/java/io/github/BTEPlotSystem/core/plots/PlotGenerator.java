@@ -44,7 +44,7 @@ public final class PlotGenerator {
     private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
 
     private final Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
-    private final Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/finish", "/abandon", "//undo", "//redo", "/plot"));
+    private final Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/finish", "/abandon", "//undo", "//redo", "/plot", "/navigator", "/plots", "/review"));
 
     public PlotGenerator(int cityID, Builder builder) throws SQLException {
         this(getPlots(cityID, Status.unclaimed).get(random.nextInt(getPlots(cityID, Status.unclaimed).size())), builder);
