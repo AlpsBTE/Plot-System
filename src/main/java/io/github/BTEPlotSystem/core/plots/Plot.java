@@ -42,7 +42,14 @@ public class Plot {
 
         // Player MC Coordinates
         String[] mcLocation = rs.getString("mcCoordinates").split(",");
-        Vector mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
+
+       // Added support for the recently added Y plot coordinate
+        Vector mcCoordinates;
+        if(mcLocation.length == 2) {
+            mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
+        } else {
+            mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),Double.parseDouble(mcLocation[1]),Double.parseDouble(mcLocation[2]));
+        }
 
         // Convert MC coordinates to geo coordinates
         try {
