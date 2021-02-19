@@ -71,11 +71,11 @@ public class CompanionMenu {
                         .setItem(new ItemBuilder(Material.MAP,1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
-                                        .description("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1),
-                                                     "",
-                                                     "§6ID: §7" + plot.getID(),
+                                        .description("§6ID: §7" + plot.getID(),
                                                      "§6City: §7" + plot.getCity().getName(),
-                                                     "§6Difficulty: §7" + plot.getCity().getDifficulty().name())
+                                                     "§6Difficulty: §7" + plot.getCity().getDifficulty().name(),
+                                                     "",
+                                                     "§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1))
                                         .build())
                                 .build());
 
@@ -94,9 +94,9 @@ public class CompanionMenu {
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
-                                        .description("§6§lStatus: §7§lUnassigned",
+                                        .description("§7Click on a city project to create a new plot.",
                                                      "",
-                                                     "§7Click on a city project to create a new plot.")
+                                                     "§6§lStatus: §7§lUnassigned")
                                         .build())
                                 .build());
             }

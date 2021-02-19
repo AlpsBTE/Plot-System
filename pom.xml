@@ -138,14 +138,6 @@
             <version>1.0</version>
         </dependency>
 
-
-        <!-- MySQL Connector API [V8.0.22]
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.22</version>
-        </dependency>-->
-
         <!-- MariaDB Connector API [V2.7.1]-->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>

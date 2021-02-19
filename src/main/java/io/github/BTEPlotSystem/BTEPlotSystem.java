@@ -8,6 +8,7 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Leaderboard;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -65,26 +66,24 @@ public class BTEPlotSystem extends JavaPlugin {
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
-
-        /*try {
-            getLogger().log(Level.INFO, "MC Cords: 3386345 -4686798 IRL Cords: " + Arrays.toString(CoordinateConversion.convertToGeo(3386345, -4686798)));
-        } catch (OutOfProjectionBoundsException e) {
-            e.printStackTrace();
-        }*/
-
+        // Set Leaderboards
         try {
             scoreLeaderboard = new Leaderboard("SCORE LEADERBOARD", Material.NETHER_STAR, Builder.getBuildersByScore(10));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing leaderboards!", ex);
         }
+
+        getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
     }
 
     public static BTEPlotSystem getPlugin() {
         return plugin;
     }
-
     public static MultiverseCore getMultiverseCore() { return multiverseCore; }
+
+    public Leaderboard getScoreLeaderboard() {
+        return scoreLeaderboard;
+    }
 
     @Override
     public void reloadConfig() {
@@ -119,10 +118,6 @@ public class BTEPlotSystem extends JavaPlugin {
         } catch (IOException ex) {
             getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
         }
-    }
-
-    public Leaderboard getScoreLeaderboard() {
-        return scoreLeaderboard;
     }
 
     public void connectPlayer(Player player, String server) {
