@@ -6,7 +6,6 @@ import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -14,7 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
@@ -23,11 +21,8 @@ import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event){
-        Bukkit.broadcastMessage("§7[§6+§7] > " + event.getPlayer().getName());
-        event.setJoinMessage(null);
-
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
@@ -46,22 +41,12 @@ public class EventListener extends SpecialBlocks implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerLeaveEvent(PlayerQuitEvent event){
-        Bukkit.broadcastMessage("§7[§c-§7] > " + event.getPlayer().getName());
-        event.setQuitMessage(null);
-    }
-
     @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event){
-        try {
-            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-                if (event.getItem() != null && event.getItem().equals(CompanionMenu.getItem())){
-                    new CompanionMenu(event.getPlayer());
-                }
+    public void onPlayerInteractEvent(PlayerInteractEvent event) throws SQLException {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
+            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getItem())){
+                new CompanionMenu(event.getPlayer());
             }
-        } catch (Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -74,12 +59,8 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
-        try {
-            if(event.getItemDrop().getItemStack().equals(CompanionMenu.getItem())) {
-                event.setCancelled(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getItem())) {
+            event.setCancelled(true);
         }
     }
 
