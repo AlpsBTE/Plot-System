@@ -13,11 +13,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Leaderboard {
 
     private final FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
+    private String configKey;
 
     private Hologram hologram;
     private TextLine textLine[];
@@ -25,18 +27,27 @@ public class Leaderboard {
 
     private int runnable;
 
-    public Leaderboard(String title, Material item, List<String> data){
+    public Leaderboard(String title, Material item, List<String> data, String configKey, boolean useRunnable){
+        this.configKey = configKey;
         createHologram();
         insertText(title,item,data);
 
 
-        //Runs every 30 min
-        /*runnable = BTEPlotSystem.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                updateHologram();
-            }
-        }, 0,20*60*30);*/
+        if (useRunnable){
+            //Runs every 30 min
+            runnable = BTEPlotSystem.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        updateHologram(BTEPlotSystem.getPlugin().getParkourList());
+                        System.out.println("Leaderboard has been refreshed");
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+
+                }
+            }, 0,20*60);
+        }
     }
 
     private void insertText(String title, Material item, List<String> data){
@@ -55,10 +66,10 @@ public class Leaderboard {
     }
 
     private void createHologram(){
-        String world = config.getString("leaderboard.world");
-        double x = Double.parseDouble(config.getString("leaderboard.x"));
-        double y = Double.parseDouble(config.getString("leaderboard.y"));
-        double z = Double.parseDouble(config.getString("leaderboard.z"));
+        String world = config.getString(configKey + ".world");
+        double x = config.getDouble(configKey + ".x");
+        double y = config.getDouble(configKey + ".y");
+        double z = config.getDouble(configKey + ".z");
 
         Location location = new Location(Bukkit.getWorld(world),x,y+4,z);
         hologram = HologramsAPI.createHologram(BTEPlotSystem.getPlugin(),location);
