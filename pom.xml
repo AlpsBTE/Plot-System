@@ -115,7 +115,6 @@
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
             <version>2.5.0</version>
-
             <exclusions>
                 <exclusion>
                     <groupId>org.bukkit</groupId>
@@ -138,8 +137,15 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- ASYNC Database API -->
+        <!--<dependency>
+            <groupId>org.mariadb</groupId>
+            <artifactId>r2dbc-mariadb</artifactId>
+            <version>1.0.0</version>
+        </dependency>-->
+
         <!-- MariaDB Connector API [V2.7.1]-->
-        <dependency>
+         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>2.7.1</version>

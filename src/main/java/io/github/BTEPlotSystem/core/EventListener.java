@@ -26,7 +26,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
-            event.getPlayer().getInventory().setItem(0, CompanionMenu.getItem());
+            event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
         }
 
         if(!event.getPlayer().hasPlayedBefore()) {
