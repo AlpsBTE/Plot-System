@@ -2,12 +2,10 @@ package github.BTEPlotSystem.core.plots;
 
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -15,13 +13,11 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class PlotHandler {
@@ -83,6 +79,17 @@ public class PlotHandler {
         String query = "DELETE FROM plots WHERE idplot = '" + plot.getID() + "'";
         PreparedStatement statement = DatabaseConnection.prepareStatement(query);
         statement.execute();
+    }
+
+    public static void unloadPlot(Player player) {
+        World world = player.getWorld();
+        if(world.getName().startsWith("Plot_") && world.getPlayers().size() - 1 == 0) {
+            try {
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(world, true), 1, 20*3);
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
+            }
+        }
     }
 
     public static Location getPlotSpawnPoint(World world) {

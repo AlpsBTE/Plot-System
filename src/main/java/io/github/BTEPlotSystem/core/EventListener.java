@@ -1,22 +1,25 @@
 package github.BTEPlotSystem.core;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
+import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.utils.Utils;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.PrimitiveIterator;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
@@ -48,6 +51,16 @@ public class EventListener extends SpecialBlocks implements Listener {
                 new CompanionMenu(event.getPlayer());
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        PlotHandler.unloadPlot(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
+        PlotHandler.unloadPlot(event.getPlayer());
     }
 
     @EventHandler
