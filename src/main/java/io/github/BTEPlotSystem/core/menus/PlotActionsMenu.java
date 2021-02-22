@@ -63,7 +63,7 @@ public class PlotActionsMenu {
                     clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 } else {
-                    PlotHandler.FinishPlot(plot);
+                    PlotHandler.finishPlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
                 }
@@ -83,7 +83,7 @@ public class PlotActionsMenu {
                                 .build())
                         .build());
         menu.getSlot(additionalSlot ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
-            PlotHandler.TeleportPlayer(plot, player);
+            PlotHandler.teleportPlayer(plot, player);
             clickPlayer.closeInventory();
         });
 
@@ -102,7 +102,7 @@ public class PlotActionsMenu {
                     clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 } else {
-                    PlotHandler.AbandonPlot(plot);
+                    PlotHandler.abandonPlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
                 }
@@ -126,7 +126,7 @@ public class PlotActionsMenu {
                             .build());
             menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
-                    PlotHandler.DeletePlot(plot);
+                    PlotHandler.deletePlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Deleted plot with the ID §6#" + plot.getID()));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
                 } catch (Exception ex) {

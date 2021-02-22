@@ -70,7 +70,7 @@ public final class PlotGenerator {
                    plot.setStatus(Status.unfinished);
                    plot.setBuilder(builder.getPlayer().getUniqueId().toString());
 
-                   Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> PlotHandler.TeleportPlayer(plot, builder.getPlayer()));
+                   Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> PlotHandler.teleportPlayer(plot, builder.getPlayer()));
 
                } catch (IOException | SQLException ex) {
                    builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating a new plot!"));
@@ -79,7 +79,7 @@ public final class PlotGenerator {
                }
            });
         } else {
-            PlotHandler.TeleportPlayer(plot, builder.getPlayer());
+            PlotHandler.teleportPlayer(plot, builder.getPlayer());
         }
     }
 

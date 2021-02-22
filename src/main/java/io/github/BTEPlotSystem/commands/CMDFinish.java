@@ -25,7 +25,7 @@ public class CMDFinish implements CommandExecutor {
                         Plot plot = new Plot(ID);
 
                         if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
-                            PlotHandler.FinishPlot(plot);
+                            PlotHandler.finishPlot(plot);
                             player.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
                             player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
                         } else {

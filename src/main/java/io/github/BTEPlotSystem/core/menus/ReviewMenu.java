@@ -4,15 +4,12 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
-import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +23,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class ReviewMenu implements Listener {
     private final Inventory reviewMenu;
@@ -307,7 +303,7 @@ public class ReviewMenu implements Listener {
                                 ReviewPlot(selectedPlot);
                             } else {
                                 event.getWhoClicked().closeInventory();
-                                PlotHandler.TeleportPlayer(selectedPlot,player);
+                                PlotHandler.teleportPlayer(selectedPlot,player);
                             }
                         }
                     }
@@ -349,7 +345,7 @@ public class ReviewMenu implements Listener {
                         BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
-                        PlotHandler.TeleportPlayer(selectedPlot,player);
+                        PlotHandler.teleportPlayer(selectedPlot,player);
                         event.getWhoClicked().closeInventory();
                     } else {
                         int slot = event.getSlot();

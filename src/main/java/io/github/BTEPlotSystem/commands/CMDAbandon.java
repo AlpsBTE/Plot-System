@@ -24,7 +24,7 @@ public class CMDAbandon implements CommandExecutor {
                         Plot plot = new Plot(ID);
 
                         if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
-                            PlotHandler.AbandonPlot(plot);
+                            PlotHandler.abandonPlot(plot);
                             player.sendMessage("§7>> §aAbandoned plot with the ID §6#" + plot.getID());
                             player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);
                         } else {

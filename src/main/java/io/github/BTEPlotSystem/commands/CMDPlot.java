@@ -1,11 +1,9 @@
 package github.BTEPlotSystem.commands;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +28,7 @@ public class CMDPlot implements CommandExecutor {
                     String worldName = "Plot_" + ID;
                     if((BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName)) {
                         try {
-                            PlotHandler.TeleportPlayer(new Plot(ID), (Player) sender);
+                            PlotHandler.teleportPlayer(new Plot(ID), (Player) sender);
                         } catch (SQLException ex) {
                             sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                             ex.printStackTrace();

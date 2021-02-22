@@ -22,7 +22,7 @@ import java.util.logging.Level;
 
 public class PlotHandler {
 
-    public static void TeleportPlayer(Plot plot, Player player) {
+    public static void teleportPlayer(Plot plot, Player player) {
         player.sendMessage("§7>> §aTeleporting to plot §6#" + plot.getID());
 
         String worldName = "Plot_" + plot.getID();
@@ -39,7 +39,7 @@ public class PlotHandler {
         sendLinkMessages(plot, player);
     }
 
-    public static void FinishPlot(Plot plot) throws Exception {
+    public static void finishPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
@@ -55,7 +55,7 @@ public class PlotHandler {
         }
     }
 
-    public static void AbandonPlot(Plot plot) throws Exception {
+    public static void abandonPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unclaimed);
 
         String worldName = "Plot_" + plot.getID();
@@ -71,8 +71,8 @@ public class PlotHandler {
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
     }
 
-    public static void DeletePlot(Plot plot) throws Exception {
-        AbandonPlot(plot);
+    public static void deletePlot(Plot plot) throws Exception {
+        abandonPlot(plot);
 
         Files.deleteIfExists(Paths.get(PlotManager.getSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
