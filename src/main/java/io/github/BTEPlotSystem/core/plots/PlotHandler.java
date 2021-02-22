@@ -46,9 +46,8 @@ public class PlotHandler {
     public static void FinishPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
-        // TODO: Removing the player's building permissions when the builder is not online.
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-        RegionManager regionManager = container.get(plot.getBuilder().getPlayer().getWorld());
+        RegionManager regionManager = container.get(Bukkit.getWorld("Plot_" + plot.getID()));
         ProtectedRegion region = regionManager.getApplicableRegions(plot.getBuilder().getPlayer().getLocation()).getRegions().stream().findFirst().get();
         region.getOwners().removePlayer(plot.getBuilder().getUUID());
 
