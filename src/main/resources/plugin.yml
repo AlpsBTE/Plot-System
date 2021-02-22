@@ -34,14 +34,14 @@ commands:
     description: teleports you back to the hub
     usage: /hub
     permission: alpsbte.hub
-  setleaderboardposition:
-    description: sets the position of the leaderboard
-    usage: /setleaderboardposition
-    permission: alpsbte.leaderboard
-  reloadleaderboard:
-    description: reload the data of the leaderboard
-    usage: /reloadleaderboard
-    permission: alpsbte.leaderboard
+  sethologram:
+    description: sets the position of a hologram
+    usage: /sethologram <name>
+    permission: alpsbte.hologram
+  reloadhologram:
+    description: reloads all holograms
+    usage: /reloadhologram
+    permission: alpsbte.hologram
   spawn:
     description: teleports you back to the spawn location
     usage: /spawn

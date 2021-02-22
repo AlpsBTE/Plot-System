@@ -346,7 +346,7 @@ public class ReviewMenu implements Listener {
                         selectedPlot.setScore(score.toString());
                         player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
                         player.playSound(player.getLocation(), Utils.FinishPlotSound,1,1);
-                        BTEPlotSystem.getPlugin().getScoreLeaderboard().updateHologram(Builder.getBuildersByScore(10));
+                        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)){
                         PlotHandler.TeleportPlayer(selectedPlot,player);
