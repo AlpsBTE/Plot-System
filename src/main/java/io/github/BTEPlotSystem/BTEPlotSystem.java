@@ -6,6 +6,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.core.holograms.EventHologram;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ParkourLeaderboard;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
@@ -32,6 +33,7 @@ public class BTEPlotSystem extends JavaPlugin {
     private static MultiverseCore multiverseCore;
 
     private FileConfiguration leaderboardConfig;
+    private FileConfiguration navigatorConfig;
     private FileConfiguration config;
     private File configFile;
 
@@ -72,7 +74,8 @@ public class BTEPlotSystem extends JavaPlugin {
         // Set holograms
         holograms.addAll(Arrays.asList(
                 new ScoreLeaderboard(),
-                new ParkourLeaderboard()
+                new ParkourLeaderboard(),
+                new EventHologram()
         ));
         holograms.forEach(Thread::start);
 
@@ -120,9 +123,19 @@ public class BTEPlotSystem extends JavaPlugin {
         try{
             leaderboardConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("LeakParkour").getDataFolder(), "history.yml"));
         } catch (Exception ex){
-            ex.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reading config file!", ex);
         }
         return leaderboardConfig;
+    }
+
+    public FileConfiguration getNavigatorConfig() {
+        try {
+            System.out.println(Bukkit.getPluginManager().getPlugin("AlpsBTE-Navigator").getDataFolder().getAbsolutePath());
+            navigatorConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("AlpsBTE-Navigator").getDataFolder(), "config.yml"));
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reading config file!", ex);
+        }
+        return navigatorConfig;
     }
 
     @Override
