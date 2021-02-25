@@ -10,6 +10,7 @@ import github.BTEPlotSystem.core.holograms.EventHologram;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ParkourLeaderboard;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
+import github.BTEPlotSystem.utils.PortalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -78,6 +79,8 @@ public class BTEPlotSystem extends JavaPlugin {
                 new EventHologram()
         ));
         holograms.forEach(Thread::start);
+
+        new PortalManager().start();
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
     }
