@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -35,6 +36,8 @@ public class PlotHandler {
         player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
         player.setAllowFlight(true);
         player.setFlying(true);
+
+        player.getInventory().setItem(8, CompanionMenu.getItem());
 
         sendLinkMessages(plot, player);
     }

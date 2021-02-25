@@ -1,13 +1,11 @@
 package github.BTEPlotSystem.core;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.utils.Utils;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -19,13 +17,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.PrimitiveIterator;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event){
+        event.setJoinMessage(null);
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
@@ -53,12 +51,35 @@ public class EventListener extends SpecialBlocks implements Listener {
         }
     }
 
+/*    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPortalTravel(PlayerPortalEvent event) {
+        if(event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
+            if(Utils.Portal_Plot.contains((int) event.getFrom().getX(),(int) event.getFrom().getZ())) {
+                event.getPlayer().sendMessage(Utils.getErrorMessageFormat("This portal is work in progress... please use the companion!"));
+                event.getPlayer().teleport(Utils.getSpawnPoint());
+                event.getPlayer().performCommand("companion");
+            } else if (Utils.Portal_Terra.contains((int) event.getFrom().getX(),(int) event.getFrom().getZ())) {
+                BTEPlotSystem.getPlugin().connectPlayer(event.getPlayer(), "TERRA");
+            } else if(Utils.Portal_Event.contains((int) event.getFrom().getX(),(int) event.getFrom().getZ())) {
+                FileConfiguration config = BTEPlotSystem.getPlugin().getNavigatorConfig();
+
+                if(config.getBoolean("servers.event.joinable") || event.getPlayer().hasPermission("alpsbte.joinEventStaff")) {
+                    if(event.getPlayer().hasPermission("alpsbte.joinEvent")) {
+                        BTEPlotSystem.getPlugin().connectPlayer(event.getPlayer(), "EVENT");
+                    }
+                }
+            }
+            event.setCancelled(true);
+        }
+    }*/
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        event.setQuitMessage(null);
         PlotHandler.unloadPlot(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
         PlotHandler.unloadPlot(event.getPlayer());
     }

@@ -1,11 +1,16 @@
 package github.BTEPlotSystem.utils;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import github.BTEPlotSystem.BTEPlotSystem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.rmi.registry.Registry;
 
 public class Utils {
 
@@ -24,7 +29,7 @@ public class Utils {
     public static Location getSpawnPoint() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        return new Location(Bukkit.getWorld("world"),
+        return new Location(Bukkit.getWorld("Plot"),
                 config.getDouble("spawn-point.x"),
                 config.getDouble("spawn-point.y"),
                 config.getDouble("spawn-point.z"),
