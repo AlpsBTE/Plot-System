@@ -30,10 +30,6 @@ commands:
     description: generate a new plot
     usage: /generateplot <ID>
     permission: alpsbte.generateplot
-  hub:
-    description: teleports you back to the hub
-    usage: /hub
-    permission: alpsbte.hub
   sethologram:
     description: sets the position of a hologram
     usage: /sethologram <name>
