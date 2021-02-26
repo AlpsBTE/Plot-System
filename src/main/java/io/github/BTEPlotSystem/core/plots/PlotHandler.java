@@ -13,9 +13,13 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.multiverse.io.FileUtils;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
@@ -72,6 +76,9 @@ public class PlotHandler {
         plot.setBuilder(null);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
+
+        FileUtils.deleteDirectory(new File(getWorldGuardConfigPath(plot.getID())));
+        FileUtils.deleteDirectory(new File(getMultiverseInventoriesConfigPath(plot.getID())));
     }
 
     public static void deletePlot(Plot plot) throws Exception {
@@ -127,5 +134,13 @@ public class PlotHandler {
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§7--------------------");
+    }
+
+    public static String getWorldGuardConfigPath(int plotID) {
+        return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/P-" + plotID;
+    }
+
+    public static String getMultiverseInventoriesConfigPath(int plotID) {
+        return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/P-" + plotID;
     }
 }
