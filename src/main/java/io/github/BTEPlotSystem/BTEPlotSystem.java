@@ -63,7 +63,6 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("companion").setExecutor(new CMDCompanion());
         this.getCommand("review").setExecutor(new CMDReview());
 
-        this.getCommand("hub").setExecutor(new CMDHub());
         this.getCommand("spawn").setExecutor(new CMDSpawn());
 
         this.getCommand("sethologram").setExecutor(new CMDSetHologramPosition());

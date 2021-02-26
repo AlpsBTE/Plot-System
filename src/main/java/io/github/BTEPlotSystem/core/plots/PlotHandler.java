@@ -26,7 +26,7 @@ public class PlotHandler {
     public static void teleportPlayer(Plot plot, Player player) {
         player.sendMessage("§7>> §aTeleporting to plot §6#" + plot.getID());
 
-        String worldName = "Plot_" + plot.getID();
+        String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) == null) {
             BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(worldName);
         }
@@ -46,11 +46,11 @@ public class PlotHandler {
         plot.setStatus(Status.unreviewed);
 
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-        RegionManager regionManager = container.get(Bukkit.getWorld("Plot_" + plot.getID()));
+        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
         ProtectedRegion region = regionManager.getApplicableRegions(plot.getBuilder().getPlayer().getLocation()).getRegions().stream().findFirst().get();
         region.getOwners().removePlayer(plot.getBuilder().getUUID());
 
-        String worldName = "Plot_" + plot.getID();
+        String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
             for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
@@ -61,7 +61,7 @@ public class PlotHandler {
     public static void abandonPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unclaimed);
 
-        String worldName = "Plot_" + plot.getID();
+        String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
             for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
@@ -86,7 +86,7 @@ public class PlotHandler {
 
     public static void unloadPlot(Player player) {
         World world = player.getWorld();
-        if(world.getName().startsWith("Plot_") && world.getPlayers().size() - 1 == 0) {
+        if(world.getName().startsWith("P-") && world.getPlayers().size() - 1 == 0) {
             try {
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(world, true), 1, 20*3);
             } catch (Exception ex) {

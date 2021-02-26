@@ -1,8 +1,5 @@
 package github.BTEPlotSystem.utils;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
 import github.BTEPlotSystem.BTEPlotSystem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
@@ -48,4 +45,13 @@ public class Utils {
     public static String getErrorMessageFormat(String error) {
         return messagePrefix + "§c" + error;
     }
+
+    // Servers
+    public final static String PLOT_SERVER = "ALPS-1";
+
+    public final static String TERRA_SERVER = "ALPS-2";
+
+    public final static String EVENT_SERVER = "ALPS-3";
+
+    public final static String TEST_SERVER = "ALPS-4";
 }

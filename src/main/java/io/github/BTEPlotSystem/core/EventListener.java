@@ -51,28 +51,6 @@ public class EventListener extends SpecialBlocks implements Listener {
         }
     }
 
-/*    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPortalTravel(PlayerPortalEvent event) {
-        if(event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
-            if(Utils.Portal_Plot.contains((int) event.getFrom().getX(),(int) event.getFrom().getZ())) {
-                event.getPlayer().sendMessage(Utils.getErrorMessageFormat("This portal is work in progress... please use the companion!"));
-                event.getPlayer().teleport(Utils.getSpawnPoint());
-                event.getPlayer().performCommand("companion");
-            } else if (Utils.Portal_Terra.contains((int) event.getFrom().getX(),(int) event.getFrom().getZ())) {
-                BTEPlotSystem.getPlugin().connectPlayer(event.getPlayer(), "TERRA");
-            } else if(Utils.Portal_Event.contains((int) event.getFrom().getX(),(int) event.getFrom().getZ())) {
-                FileConfiguration config = BTEPlotSystem.getPlugin().getNavigatorConfig();
-
-                if(config.getBoolean("servers.event.joinable") || event.getPlayer().hasPermission("alpsbte.joinEventStaff")) {
-                    if(event.getPlayer().hasPermission("alpsbte.joinEvent")) {
-                        BTEPlotSystem.getPlugin().connectPlayer(event.getPlayer(), "EVENT");
-                    }
-                }
-            }
-            event.setCancelled(true);
-        }
-    }*/
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         event.setQuitMessage(null);

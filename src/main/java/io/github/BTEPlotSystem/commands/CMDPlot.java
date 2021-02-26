@@ -25,7 +25,7 @@ public class CMDPlot implements CommandExecutor {
                         return true;
                     }
 
-                    String worldName = "Plot_" + ID;
+                    String worldName = "P-" + ID;
                     if((BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName)) {
                         try {
                             PlotHandler.teleportPlayer(new Plot(ID), (Player) sender);

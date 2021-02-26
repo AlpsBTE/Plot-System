@@ -54,7 +54,7 @@ public final class PlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        worldName = "Plot_" + plot.getID();
+        worldName = "P-" + plot.getID();
 
         if(Bukkit.getWorld(worldName) == null) {
 
@@ -154,7 +154,7 @@ public final class PlotGenerator {
         );
 
         ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(
-                "Plot_" + plot.getID(),
+                "P-" + plot.getID(),
                 min,
                 max
         );
