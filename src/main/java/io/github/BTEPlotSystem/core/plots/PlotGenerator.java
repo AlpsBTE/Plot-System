@@ -98,6 +98,7 @@ public final class PlotGenerator {
         world.setGameRuleValue("doFireTick", "false");
         world.setGameRuleValue("doWeatherCycle", "false");
         world.setGameRuleValue("keepInventory", "true");
+        world.setGameRuleValue("announceAdvancements", "false");
 
         world.setTime(6000);
 
