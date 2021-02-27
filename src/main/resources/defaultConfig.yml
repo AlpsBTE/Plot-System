@@ -1,7 +1,8 @@
 #BTE-PlotSystem Configuration File
 database:
-  username: null
-  password: null
+  name: name
+  username: username
+  password: password
 schematic-path: null
 spawn-point:
   x: 0
