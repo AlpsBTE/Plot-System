@@ -21,6 +21,7 @@ public class PortalManager extends Thread {
 
     public void run() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+
             for(Player player : Bukkit.getOnlinePlayers()) {
                 try {
                     Vector playerLocation = Vector.toBlockPoint(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
@@ -42,6 +43,6 @@ public class PortalManager extends Thread {
                     Bukkit.getLogger().log(Level.SEVERE, "An error occurred while handling player in portal.");
                 }
             }
-        }, 1, 20*2);
+        }, 1, 15);
     }
 }
