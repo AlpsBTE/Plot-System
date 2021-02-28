@@ -42,3 +42,7 @@ commands:
     description: teleports you back to the spawn location
     usage: /spawn
     permission: alpsbte.companion
+  tpp:
+    description: teleport to a player
+    usage: /tpp <Player>
+    permission: alpsbte.tpp
