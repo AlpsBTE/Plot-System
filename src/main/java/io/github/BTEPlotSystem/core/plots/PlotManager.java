@@ -4,6 +4,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.enums.Status;
+import org.bukkit.World;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,8 +51,12 @@ public class PlotManager {
         return plots;
     }
 
+    public static Plot getPlotByWorld(World plotWorld) throws SQLException {
+        return new Plot(Integer.parseInt(plotWorld.getName().substring(2)));
+    }
+
     public static int getPlotSize() {
-        return 100;
+        return 150;
     }
 
     public static String getSchematicPath() {

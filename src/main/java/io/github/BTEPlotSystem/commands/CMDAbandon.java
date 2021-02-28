@@ -3,6 +3,7 @@ package github.BTEPlotSystem.commands;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -20,8 +21,7 @@ public class CMDAbandon implements CommandExecutor {
 
                 if(BTEPlotSystem.getMultiverseCore().getMVWorldManager().isMVWorld(playerWorld) && playerWorld.getName().startsWith("P-")) {
                     try {
-                        int ID = Integer.parseInt(playerWorld.getName().substring(5));
-                        Plot plot = new Plot(ID);
+                        Plot plot = PlotManager.getPlotByWorld(playerWorld);
 
                         if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
                             PlotHandler.abandonPlot(plot);

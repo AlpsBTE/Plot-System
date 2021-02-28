@@ -109,7 +109,11 @@ public class CompanionMenu {
                 .setLore(new LoreBuilder().description("Open the head menu to get a variety of custom heads.").build())
                 .build());
         menu.getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.performCommand("hdb");
+            if (clickPlayer.getWorld().getName().startsWith("P-")){
+                clickPlayer.performCommand("hdb");
+            } else {
+                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this"));
+            }
         });
 
         // Set Banner Maker Item
@@ -119,7 +123,11 @@ public class CompanionMenu {
                 .setLore(new LoreBuilder().description("Open the banner maker menu to create your own custom banners.").build())
                 .build());
         menu.getSlot(51).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.performCommand("bm");
+            if (clickPlayer.getWorld().getName().startsWith("P-")){
+                clickPlayer.performCommand("bm");
+            } else {
+                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this"));
+            }
         });
 
         // Set Custom Blocks Item
@@ -129,7 +137,11 @@ public class CompanionMenu {
                 .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build());
         menu.getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            new SpecialBlocksMenu().getUI().open(clickPlayer);
+            if(clickPlayer.getWorld().getName().startsWith("P-")){
+                new SpecialBlocksMenu().getUI().open(clickPlayer);
+            } else {
+                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this"));
+            }
         });
 
         // Set City Projects Items
@@ -182,8 +194,9 @@ public class CompanionMenu {
                                     .description(
                                             cities.get(i).getDescription(),
                                             "",
-                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots",
-                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 plots open",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + "§7 plots in progress",
+                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 plots completed",
                                             "",
                                             cities.get(i).getDifficulty() == Difficulty.EASY ?
                                                 "§a§lEasy" : cities.get(i).getDifficulty() == Difficulty.MEDIUM ?

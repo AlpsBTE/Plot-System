@@ -28,7 +28,7 @@ public class PlotActionsMenu {
         this.plot = plot;
         this.player = player;
 
-        this.menu = ChestMenu.builder(3).title(plot.getCity().getName() + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1)).build();
+        this.menu = ChestMenu.builder(3).title("Plot #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1)).build();
 
         Mask mask = BinaryMask.builder(menu)
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
@@ -65,6 +65,7 @@ public class PlotActionsMenu {
                 } else {
                     PlotHandler.finishPlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
+                    Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
                 }
             } catch (Exception ex) {
