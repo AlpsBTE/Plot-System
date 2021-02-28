@@ -32,9 +32,12 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
         }
-        if (!event.getPlayer().getInventory().contains(ReviewMenu.getItem())){
-            event.getPlayer().getInventory().setItem(7, ReviewMenu.getItem());
+        if (event.getPlayer().hasPermission("alpsbte.review")){
+            if (!event.getPlayer().getInventory().contains(ReviewMenu.getItem())){
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getItem());
+            }
         }
+
 
 
         if(!event.getPlayer().hasPlayedBefore()) {
