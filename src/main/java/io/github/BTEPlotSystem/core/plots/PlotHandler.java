@@ -49,9 +49,13 @@ public class PlotHandler {
     public static void finishPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
+        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
+        }
+
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
         RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
-        ProtectedRegion region = regionManager.getApplicableRegions(plot.getBuilder().getPlayer().getLocation()).getRegions().stream().findFirst().get();
+        ProtectedRegion region = regionManager.getRegion("p-" + plot.getID());
         region.getOwners().removePlayer(plot.getBuilder().getUUID());
 
         String worldName = "P-" + plot.getID();
