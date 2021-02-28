@@ -51,7 +51,7 @@ public class PlotManager {
     }
 
     public static int getPlotSize() {
-        return 100;
+        return 150;
     }
 
     public static String getSchematicPath() {
