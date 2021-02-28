@@ -17,6 +17,8 @@ public class CMDTpp implements CommandExecutor {
                     Player targetPlayer = player.getServer().getPlayer(args[0]);
                     player.teleport(targetPlayer);
                     player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
+
+                    player.getInventory().setItem(8, CompanionMenu.getItem());
                 } catch (Exception ignore) {
                     player.sendMessage(Utils.getErrorMessageFormat("Usage: /tpp <Player>"));
                 }
