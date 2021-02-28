@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -388,5 +389,13 @@ public class ReviewMenu implements Listener {
             }
         }
         return null;
+    }
+
+    public static ItemStack getItem(){
+        return new ItemBuilder(Material.BOOK, 1)
+                .setName("§b§lReview Plots §7(Right Click)")
+                .setEnchantment(Enchantment.ARROW_DAMAGE)
+                .setItemFlag(ItemFlag.HIDE_ENCHANTS)
+                .build();
     }
 }

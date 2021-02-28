@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
+import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.utils.Utils;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
@@ -26,9 +27,15 @@ public class EventListener extends SpecialBlocks implements Listener {
         event.setJoinMessage(null);
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
+
+
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
         }
+        if (!event.getPlayer().getInventory().contains(ReviewMenu.getItem())){
+            event.getPlayer().getInventory().setItem(7, ReviewMenu.getItem());
+        }
+
 
         if(!event.getPlayer().hasPlayedBefore()) {
             try {
@@ -47,6 +54,8 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
             if (event.getItem() != null && event.getItem().equals(CompanionMenu.getItem())){
                 new CompanionMenu(event.getPlayer());
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getItem())){
+                event.getPlayer().performCommand("review");
             }
         }
     }
@@ -67,11 +76,17 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getItem())){
             event.setCancelled(true);
         }
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getItem())){
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
         if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getItem())) {
+            event.setCancelled(true);
+        }
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getItem())) {
             event.setCancelled(true);
         }
     }
