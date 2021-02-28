@@ -20,7 +20,7 @@ public class CMDAbandon implements CommandExecutor {
 
                 if(BTEPlotSystem.getMultiverseCore().getMVWorldManager().isMVWorld(playerWorld) && playerWorld.getName().startsWith("P-")) {
                     try {
-                        int ID = Integer.parseInt(playerWorld.getName().substring(5));
+                        int ID = Integer.parseInt(playerWorld.getName().substring(2));
                         Plot plot = new Plot(ID);
 
                         if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
