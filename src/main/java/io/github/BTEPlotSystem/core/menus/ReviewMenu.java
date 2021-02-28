@@ -4,6 +4,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.rmi.CORBA.Util;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -301,7 +303,11 @@ public class ReviewMenu implements Listener {
                             selectedPlot = getPlotByValue(plotItem);
                             if (selectedPlot.getStatus() == Status.unreviewed) {
                                 event.getWhoClicked().closeInventory();
-                                ReviewPlot(selectedPlot);
+                                if (!selectedPlot.getBuilder().equals(new Builder(event.getWhoClicked().getUniqueId()))){
+                                    ReviewPlot(selectedPlot);
+                                } else {
+                                    event.getWhoClicked().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+                                }
                             } else {
                                 event.getWhoClicked().closeInventory();
                                 PlotHandler.teleportPlayer(selectedPlot, player);
