@@ -5,6 +5,7 @@ import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,6 +27,7 @@ public class CMDFinish implements CommandExecutor {
 
                         if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
                             PlotHandler.finishPlot(plot);
+                            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
                             player.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
                             player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
                         } else {

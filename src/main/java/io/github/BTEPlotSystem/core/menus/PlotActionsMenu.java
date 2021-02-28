@@ -65,7 +65,7 @@ public class PlotActionsMenu {
                 } else {
                     PlotHandler.finishPlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
-                    Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot #" + plot.getID() + " by " + plot.getBuilder().getName() + " has been finished!"));
+                    Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
                 }
             } catch (Exception ex) {
