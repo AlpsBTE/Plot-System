@@ -103,7 +103,7 @@ public class ReviewMenu implements Listener {
             counter++;
         }
 
-        for(int i = 45; i <= 52; i++) {
+        for(int i = 45; i <= 53; i++) {
             switch (i) {
                 case 46:
                     itemArrowLeft = new ItemBuilder(Material.ARROW, 1)
