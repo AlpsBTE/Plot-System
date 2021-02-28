@@ -310,7 +310,7 @@ public class ReviewMenu implements Listener {
                                 }
                             } else {
                                 event.getWhoClicked().closeInventory();
-                                PlotHandler.teleportPlayer(selectedPlot, player);
+                                new PlotActionsMenu(selectedPlot, player);
                             }
                         }
                     }
@@ -352,8 +352,8 @@ public class ReviewMenu implements Listener {
                         BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)) {
-                        PlotHandler.teleportPlayer(selectedPlot, player);
                         event.getWhoClicked().closeInventory();
+                        new PlotActionsMenu(selectedPlot, player);
                     } else {
                         int slot = event.getSlot();
                         int column = (slot % 9) + 1;

@@ -194,8 +194,9 @@ public class CompanionMenu {
                                     .description(
                                             cities.get(i).getDescription(),
                                             "",
-                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 open plots",
-                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 completed plots",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 plots open",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + "§7 plots in progress",
+                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 plots completed",
                                             "",
                                             cities.get(i).getDifficulty() == Difficulty.EASY ?
                                                 "§a§lEasy" : cities.get(i).getDifficulty() == Difficulty.MEDIUM ?
