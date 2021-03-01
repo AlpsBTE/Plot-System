@@ -59,6 +59,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
         this.getCommand("finish").setExecutor(new CMDFinish());
         this.getCommand("abandon").setExecutor(new CMDAbandon());
+        this.getCommand("link").setExecutor(new CMDLink());
 
         this.getCommand("companion").setExecutor(new CMDCompanion());
         this.getCommand("review").setExecutor(new CMDReview());

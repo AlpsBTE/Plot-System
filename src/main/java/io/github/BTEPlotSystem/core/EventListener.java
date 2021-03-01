@@ -38,8 +38,6 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
         }
 
-
-
         if(!event.getPlayer().hasPlayedBefore()) {
             try {
                 PreparedStatement statement = DatabaseConnection.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");

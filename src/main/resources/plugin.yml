@@ -46,3 +46,6 @@ commands:
     description: teleport to a player
     usage: /tpp <Player>
     permission: alpsbte.tpp
+  link:
+    description: sends you the links of the plot you are currently on
+    usage: /link
