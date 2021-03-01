@@ -41,6 +41,8 @@ public class Builder {
         return name;
     }
 
+    public boolean isOnline() { return Bukkit.getPlayer(UUID) != null; }
+
     public int getScore() throws SQLException {
         ResultSet rs =  DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = '" + getUUID() + "'");
 
@@ -103,6 +105,18 @@ public class Builder {
     public void removePlot(Slot slot) throws SQLException {
        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = DEFAULT(firstSlot) WHERE uuid = '" + getUUID() + "'");
        statement.executeUpdate();
+    }
+
+    public static UUID getPlayerUUIDByName(String name) {
+        try {
+            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid FROM alpsbte.players WHERE name = '" + name + "'");
+
+            if(rs.next()) {
+                return java.util.UUID.fromString(rs.getString("uuid"));
+            }
+            return null;
+        } catch (Exception ignore) { }
+        return null;
     }
 
     public static List<String> getBuildersByScore(int limit) throws SQLException {
