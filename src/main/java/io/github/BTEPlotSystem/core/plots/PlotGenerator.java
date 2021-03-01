@@ -88,7 +88,7 @@ public final class PlotGenerator {
         wc.environment(org.bukkit.World.Environment.NORMAL);
         wc.type(WorldType.FLAT);
         wc.generatorSettings("2;0;1;");
-        wc.createWorld();
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), wc::createWorld); // Potential fix
 
         worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidWorld", false);
 
