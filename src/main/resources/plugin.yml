@@ -49,3 +49,6 @@ commands:
   link:
     description: sends you the links of the plot you are currently on
     usage: /link
+  plots:
+    description: shows all plots of the given player
+    usage: /plots, /plots <Player>
