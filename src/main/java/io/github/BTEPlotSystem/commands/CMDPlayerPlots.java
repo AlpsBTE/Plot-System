@@ -12,23 +12,22 @@ public class CMDPlayerPlots implements CommandExecutor {
         if (sender instanceof Player){
             Player player = (Player)sender;
 
-            switch (strings.length){
-                case 0:
-                    //Open own plots menu
-                    break;
-                case 1:
-                    if (player.hasPermission("alpsbte.review")){
-                        //open plots menu of the given player
-                    }
-                    break;
-                default:
-                    if (player.hasPermission("alpsbte.review")){
-                        player.sendMessage(Utils.getErrorMessageFormat("Invalid command usage! Use /plots <Player>"));
-                    } else {
+            if (player.hasPermission("alpsbte.review")) {
+                switch (strings.length){
+                    case 0:
                         //Open own plots menu
-                    }
-                    break;
+                        break;
+                    case 1:
+                        //open plots menu of the given player
+                        break;
+                    default:
+                        player.sendMessage(Utils.getErrorMessageFormat("Invalid command usage! Use /plots <Player>"));
+                        break;
+                }
+            } else {
+                //Open own plots menu
             }
+
         }
         return true;
     }

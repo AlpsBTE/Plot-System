@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.rmi.CORBA.Util;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +73,6 @@ public class ReviewMenu implements Listener {
             try {
                 switch (plot.getStatus()) {
                     case unfinished:
-                        System.out.println(plot.getBuilder());
                         plotItems.put(plot, new ItemBuilder(Material.WOOL, 1, (byte) 1)
                                 .setName("§6Manage Plot")
                                 .setLore(new LoreBuilder()
@@ -143,7 +141,6 @@ public class ReviewMenu implements Listener {
     }
 
     private void ReviewPlot(Plot plot) {
-        //TODO: Add Submit button
         reviewPlotMenu = Bukkit.createInventory(player, 54, "Review Plot #" + plot.getID());
 
         for (int i = 0; i < 54; i++) {
@@ -319,8 +316,6 @@ public class ReviewMenu implements Listener {
                     if (event.getCurrentItem().equals(itemCancel)) {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemSubmit)) {
-
-                        //TODO: SUBMIT
                         StringBuilder score = new StringBuilder();
                         for (int i = 0; i < 4; i++) {
                             for (int j = 0; j < 6; j++) {
