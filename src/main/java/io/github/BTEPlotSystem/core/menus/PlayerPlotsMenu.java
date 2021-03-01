@@ -22,9 +22,9 @@ public class PlayerPlotsMenu {
     private final Player player;
     private final Builder builder;
 
-    public PlayerPlotsMenu(Player player) throws SQLException {
-        this.player = player;
-        this.builder = new Builder(player.getUniqueId());
+    public PlayerPlotsMenu(Builder builder) throws SQLException {
+        this.player = builder.getPlayer();
+        this.builder = builder;
         menu = ChestMenu.builder(6).title(builder.getName() + "'s Plots").build();
 
         Mask mask = BinaryMask.builder(menu)
@@ -46,7 +46,7 @@ public class PlayerPlotsMenu {
     private void setMenuItems() throws SQLException {
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM,1)
-                        .setName("§l§6" + builder.getName()).setLore(new LoreBuilder()
+                        .setName("§bs§l" + builder.getName()).setLore(new LoreBuilder()
                                 .description("§6Points: §7"+builder.getScore(),"§6Completed builds: §7"+builder.getCompletedBuilds())
                                 .build())
                         .build());
@@ -75,14 +75,45 @@ public class PlayerPlotsMenu {
                     menu.getSlot(i+9)
                             .setItem(new ItemBuilder(Material.WOOL,1, (byte) 1)
                                     .setName("§l§6#"+ plotList.get(i).getID() + " | " + plotList.get(i).getCity().getName()).setLore(new LoreBuilder()
-                                            .description("§bAccuracy: §7"+ plotList.get(i).getScore(Category.ACCURACY))
+                                            .description("§bAccuracy: §7"+ plotList.get(i).getScore(Category.ACCURACY),
+                                                    "§bBlock Palette: §7"+ plotList.get(i).getScore(Category.BLOCKPALETTE),
+                                                    "§bDetailing: §7"+ plotList.get(i).getScore(Category.DETAILING),
+                                                    "§bTechnique: §7"+ plotList.get(i).getScore(Category.TECHNIQUE))
                                             .build())
                                     .build());
                     break;
                 case unreviewed:
+                    menu.getSlot(i+9)
+                            .setItem(new ItemBuilder(Material.MAP,1)
+                                    .setName("§l§6#"+ plotList.get(i).getID() + " | " + plotList.get(i).getCity().getName()).setLore(new LoreBuilder()
+                                            .description("§bAccuracy: §7"+ plotList.get(i).getScore(Category.ACCURACY),
+                                                    "§bBlock Palette: §7"+ plotList.get(i).getScore(Category.BLOCKPALETTE),
+                                                    "§bDetailing: §7"+ plotList.get(i).getScore(Category.DETAILING),
+                                                    "§bTechnique: §7"+ plotList.get(i).getScore(Category.TECHNIQUE))
+                                            .build())
+                                    .build());
+                    break;
+                case complete:
+                    menu.getSlot(i+9)
+                            .setItem(new ItemBuilder(Material.WOOL,1, (byte) 13)
+                                    .setName("§l§6#"+ plotList.get(i).getID() + " | " + plotList.get(i).getCity().getName()).setLore(new LoreBuilder()
+                                            .description("§bAccuracy: §7"+ plotList.get(i).getScore(Category.ACCURACY),
+                                                    "§bBlock Palette: §7"+ plotList.get(i).getScore(Category.BLOCKPALETTE),
+                                                    "§bDetailing: §7"+ plotList.get(i).getScore(Category.DETAILING),
+                                                    "§bTechnique: §7"+ plotList.get(i).getScore(Category.TECHNIQUE))
+                                            .build())
+                                    .build());
                     break;
             }
 
+            menu.getSlot(i+9).setClickHandler((clickPlayer, clickInformation) -> {
+                try {
+                    new PlotActionsMenu(plotList.get(clickInformation.getClickedSlot().getIndex()-9),clickPlayer);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("SQL Error!"));
+                }
+            });
         }
     }
 }
