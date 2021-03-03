@@ -300,7 +300,7 @@ public class ReviewMenu implements Listener {
                             selectedPlot = getPlotByValue(plotItem);
                             if (selectedPlot.getStatus() == Status.unreviewed) {
                                 event.getWhoClicked().closeInventory();
-                                if (!selectedPlot.getBuilder().equals(new Builder(event.getWhoClicked().getUniqueId()))){
+                                if (selectedPlot.getBuilder().getName() != event.getWhoClicked().getName()){
                                     ReviewPlot(selectedPlot);
                                 } else {
                                     event.getWhoClicked().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
