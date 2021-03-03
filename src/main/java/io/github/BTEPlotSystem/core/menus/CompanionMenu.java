@@ -185,6 +185,8 @@ public class CompanionMenu {
                 case LI:
                     cityProjectItem = getCityProjectItem("26174");
                     break;
+                case IT:
+                    cityProjectItem = getCityProjectItem("21903");
             }
 
             menu.getSlot(9+i)
