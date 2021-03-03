@@ -88,7 +88,7 @@ public final class PlotGenerator {
         wc.environment(org.bukkit.World.Environment.NORMAL);
         wc.type(WorldType.FLAT);
         wc.generatorSettings("2;0;1;");
-        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), wc::createWorld); // Potential fix
+        wc.createWorld();
 
         worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidWorld", false);
 
@@ -104,13 +104,14 @@ public final class PlotGenerator {
 
         MultiverseWorld mvWorld = worldManager.getMVWorld(world);
         mvWorld.setAllowFlight(true);
+        mvWorld.setGameMode(GameMode.CREATIVE);
+        mvWorld.setEnableWeather(false);
         mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(world));
         mvWorld.setDifficulty(Difficulty.PEACEFUL);
         mvWorld.setAllowAnimalSpawn(false);
         mvWorld.setAllowMonsterSpawn(false);
         mvWorld.setAutoLoad(false);
         mvWorld.setKeepSpawnInMemory(false);
-        mvWorld.setGameMode(GameMode.CREATIVE);
 
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
         this.regionManager = container.get(world);
