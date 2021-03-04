@@ -2,7 +2,6 @@ package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotGenerator;
-import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.Difficulty;
@@ -73,7 +72,7 @@ public class CompanionMenu {
                                 .setLore(new LoreBuilder()
                                         .description("§6ID: §7" + plot.getID(),
                                                      "§6City: §7" + plot.getCity().getName(),
-                                                     "§6Difficulty: §7" + plot.getCity().getDifficulty().name(),
+                                                     "§6Difficulty: §7" + plot.getDifficulty(),
                                                      "",
                                                      "§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1))
                                         .build())
@@ -198,11 +197,7 @@ public class CompanionMenu {
                                             "",
                                             "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 plots open",
                                             "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + "§7 plots in progress",
-                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 plots completed",
-                                            "",
-                                            cities.get(i).getDifficulty() == Difficulty.EASY ?
-                                                "§a§lEasy" : cities.get(i).getDifficulty() == Difficulty.MEDIUM ?
-                                                "§6§lMedium" : "§c§lHard")
+                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 plots completed")
                                     .build())
                             .build());
         }
