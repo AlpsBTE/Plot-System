@@ -11,12 +11,10 @@ import java.util.UUID;
 public class Review {
 
     private final int reviewID;
-    private final int plotID;
     private final UUID reviewerUUID;
 
-    public Review(int reviewID, int plotID) throws SQLException {
+    public Review(int reviewID) throws SQLException {
         this.reviewID = reviewID;
-        this.plotID = plotID;
 
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM reviews WHERE id_review = '" + getReviewID() + "'");
         rs.next();
@@ -25,8 +23,6 @@ public class Review {
     }
 
     public int getReviewID() { return reviewID; }
-
-    public int getPlotID() { return plotID; }
 
     public Builder getReviewer() throws SQLException { return new Builder(reviewerUUID); }
 
