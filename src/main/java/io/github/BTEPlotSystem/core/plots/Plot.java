@@ -53,7 +53,7 @@ public class Plot {
 
         // Set Review Class
         if(getStatus() == Status.complete) {
-            review = new Review(rs.getInt("idreview"), getID());
+            review = new Review(rs.getInt("idreview"));
         }
 
         // Player MC Coordinates
@@ -170,5 +170,9 @@ public class Plot {
     // Get Google Earth Web link
     public String getGoogleEarthLink() {
         return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
+    }
+
+    public boolean isReviewed(){
+        return getReview() != null;
     }
 }
