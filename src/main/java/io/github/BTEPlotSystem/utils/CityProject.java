@@ -2,7 +2,6 @@ package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.enums.Country;
-import github.BTEPlotSystem.utils.enums.Difficulty;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +15,6 @@ public class CityProject {
     private Country country;
     private String description;
     private String tags;
-    private Difficulty difficulty;
 
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
@@ -35,9 +33,6 @@ public class CityProject {
 
             // Tags
             this.tags = rs.getString("tags");
-
-            // Difficulty
-            this.difficulty = Difficulty.values()[rs.getInt("idDifficulty") - 1];
         }
     }
 
@@ -53,25 +48,10 @@ public class CityProject {
         return country;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
     public String getTags() {
         return tags;
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public static int getPlotsCount(int cityID) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT COUNT(idplot) FROM plots WHERE idcity = '" + cityID + "'");
-
-        if(rs.next()) {
-            return rs.getInt(1);
-        }
-        return 0;
     }
 
     public static List<CityProject> getCityProjects() throws SQLException {
