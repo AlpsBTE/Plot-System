@@ -29,11 +29,11 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "'"));
     }
 
     public static List<Plot> getPlots(Builder builder, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getPlayer().getUniqueId() + "' AND status = '" + status.name() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' AND status = '" + status.name() + "'"));
     }
 
     public static List<Plot> getPlots(int cityID, Status status) throws SQLException {
