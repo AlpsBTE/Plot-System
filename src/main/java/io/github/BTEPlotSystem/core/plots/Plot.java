@@ -4,9 +4,10 @@ import com.sk89q.worldedit.Vector;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
+import github.BTEPlotSystem.utils.Review;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
-import github.BTEPlotSystem.utils.enums.Category;
+import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -25,6 +27,9 @@ public class Plot {
     private final CityProject cityProject;
     private final Builder builder;
     private double[] geoCoordinates;
+    private final Difficulty difficulty;
+    private final Date lastActivity;
+    private Review review;
 
     public Plot(int ID) throws SQLException {
         this.ID = ID;
@@ -39,6 +44,17 @@ public class Plot {
         this.builder = (getStatus() != Status.unclaimed) ?
                 new Builder(UUID.fromString(rs.getString("uuidplayer"))) :
                 null;
+
+        // Set Plot Difficulty
+        this.difficulty = Difficulty.values()[rs.getInt("iddifficulty")];
+
+        // Set Plot Last Player Activity Date
+        this.lastActivity = rs.getDate("lastActivity");
+
+        // Set Review Class
+        if(getStatus() == Status.complete) {
+            review = new Review(rs.getInt("idreview"), getID());
+        }
 
         // Player MC Coordinates
         String[] mcLocation = rs.getString("mcCoordinates").split(",");
@@ -59,17 +75,17 @@ public class Plot {
         }
     }
 
-    public int getID() {
-        return ID;
-    }
+    public int getID() { return ID; }
 
-    public CityProject getCity() {
-        return cityProject;
-    }
+    public CityProject getCity() { return cityProject; }
 
-    public Builder getBuilder() {
-        return builder;
-    }
+    public Builder getBuilder() { return builder; }
+
+    public Difficulty getDifficulty() { return difficulty; }
+
+    public Date getLastActivity() { return lastActivity; }
+
+    public Review getReview() { return review; }
 
     // Set builder of the plot
     public void setBuilder(String UUID) throws SQLException {
@@ -101,25 +117,11 @@ public class Plot {
         statement.executeUpdate();
     }
 
-    // Get plot score by category
-    public int getScore(Category category) throws SQLException {
+    public int getScore() throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
 
         if(rs.next()) {
-            String[] scoreAsString = rs.getString("score").split(",");
-
-            switch (category) {
-                case ACCURACY:
-                    return Integer.parseInt(scoreAsString[0]);
-                case BLOCKPALETTE:
-                    return Integer.parseInt(scoreAsString[1]);
-                case DETAILING:
-                    return Integer.parseInt(scoreAsString[2]);
-                case TECHNIQUE:
-                    return Integer.parseInt(scoreAsString[3]);
-                case ALL:
-                    return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
-            }
+            return rs.getInt("score");
         }
         return 0;
     }
@@ -150,7 +152,7 @@ public class Plot {
         statement.executeUpdate();
 
         setStatus(Status.complete);
-        builder.addScore(getScore(Category.ALL));
+        builder.addScore(getScore());
         builder.addCompletedBuild();
         builder.removePlot(getSlot());
     }
