@@ -22,9 +22,12 @@ public class CMDPlayerPlots implements CommandExecutor {
                             new PlayerPlotsMenu(new Builder(player.getUniqueId()));
                             break;
                         case 1:
-                            //TODO: Get builder by name
-                            Builder builder = new Builder(player.getUniqueId());
-                            new PlayerPlotsMenu(builder);
+                            Builder builder = Builder.getBuilderByName(strings[0]);
+                            if (builder != null){
+                                new PlayerPlotsMenu(builder,player);
+                            } else {
+                                player.sendMessage(Utils.getErrorMessageFormat("Could not find that user! Use /plots <Player>"));
+                            }
                             break;
                         default:
                             player.sendMessage(Utils.getErrorMessageFormat("Invalid command usage! Use /plots <Player>"));

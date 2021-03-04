@@ -24,6 +24,10 @@ public class PlayerPlotsMenu {
     private final Builder builder;
 
     public PlayerPlotsMenu(Builder builder) throws SQLException {
+        this(builder,builder.getPlayer());
+    }
+
+    public PlayerPlotsMenu(Builder builder, Player openPlayer) throws SQLException {
         this.player = builder.getPlayer();
         this.builder = builder;
         menu = ChestMenu.builder(6).title(builder.getName() + "'s Plots").build();
@@ -40,14 +44,13 @@ public class PlayerPlotsMenu {
         mask.apply(menu);
 
         setMenuItems();
-
-        menu.open(player);
+        menu.open(openPlayer);
     }
 
     private void setMenuItems() throws SQLException {
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
-                        .setName("§bs§l" + builder.getName()).setLore(new LoreBuilder()
+                        .setName("§b§l" + builder.getName()).setLore(new LoreBuilder()
                                 .description("§6Points: §7"+builder.getScore(),"§6Completed builds: §7"+builder.getCompletedBuilds())
                                 .build())
                         .build());

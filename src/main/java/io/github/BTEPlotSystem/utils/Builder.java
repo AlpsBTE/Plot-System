@@ -107,12 +107,12 @@ public class Builder {
        statement.executeUpdate();
     }
 
-    public static UUID getPlayerUUIDByName(String name) {
+    public static Builder getBuilderByName(String name) {
         try {
             ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid FROM alpsbte.players WHERE name = '" + name + "'");
 
             if(rs.next()) {
-                return java.util.UUID.fromString(rs.getString("uuid"));
+                return new Builder(java.util.UUID.fromString(rs.getString("uuid")));
             }
             return null;
         } catch (Exception ignore) { }
