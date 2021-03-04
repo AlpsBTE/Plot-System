@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
+import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,6 +20,7 @@ public class CMDTpp implements CommandExecutor {
                     player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
 
                     player.getInventory().setItem(8, CompanionMenu.getItem());
+                    player.getInventory().setItem(7, ReviewMenu.getItem());
                 } catch (Exception ignore) {
                     player.sendMessage(Utils.getErrorMessageFormat("Usage: /tpp <Player>"));
                 }
