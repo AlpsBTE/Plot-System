@@ -52,9 +52,7 @@ public class PlotHandler {
     public static void finishPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
-        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
-        }
+        loadPlot(plot);
 
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
         RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
@@ -71,7 +69,13 @@ public class PlotHandler {
 
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
-        //TODO: Set permissions and everything
+
+        loadPlot(plot);
+
+        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
+        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
+        ProtectedRegion region = regionManager.getRegion("p-" + plot.getID());
+        region.getOwners().addPlayer(plot.getBuilder().getUUID());
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
@@ -111,6 +115,12 @@ public class PlotHandler {
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
             }
+        }
+    }
+
+    public static void loadPlot(Plot plot) {
+        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
         }
     }
 
