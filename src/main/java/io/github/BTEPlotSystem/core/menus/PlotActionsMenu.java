@@ -2,6 +2,7 @@ package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
@@ -48,37 +49,65 @@ public class PlotActionsMenu {
 
         boolean additionalSlot = player.hasPermission("alpsbte.removePlot");
 
-        // Set Finish Plot Item
-        menu.getSlot(10)
-                .setItem(new ItemBuilder(Material.NAME_TAG,1)
-                        .setName("§a§lFinish").setLore(new LoreBuilder()
-                                .description("Click to complete the selected plot and submit it to be reviewed.",
-                                             "",
-                                             "§c§lNote: §7You won't be able to continue building on your plot!")
-                                .build())
-                        .build());
-        menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
-            try {
-                if(plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
-                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                } else {
-                    PlotHandler.finishPlot(plot);
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
-                    Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
-                }
-            } catch (Exception ex) {
-                clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while completing the selected plot! Please try again or contact a staff member."));
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while completing a plot (ID: " + plot.getID() + ")!", ex);
+        try {
+            if (plot.getStatus().equals(Status.unreviewed)) {
+                // Set Undo Submit Item
+                menu.getSlot(10)
+                        .setItem(new ItemBuilder(Material.FIREBALL, 1)
+                                .setName("§c§lUndo Submit").setLore(new LoreBuilder()
+                                        .description("Click to undo your submission...")
+                                        .build())
+                                .build());
+                menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
+                    try {
+                        PlotHandler.undoSubmit(plot);
+                        clickPlayer.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));
+                        Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ais now unfinished again!"));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
+                        clickPlayer.closeInventory();
+                    } catch (SQLException ex) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while trying to undo the submission of the selected plot! Please try again or contact a staff member."));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while completing a plot (ID: " + plot.getID() + ")!", ex);
+                    }
+                });
+            } else {
+                // Set Finish Plot Item
+                menu.getSlot(10)
+                        .setItem(new ItemBuilder(Material.NAME_TAG, 1)
+                                .setName("§a§lFinish").setLore(new LoreBuilder()
+                                        .description("Click to complete the selected plot and submit it to be reviewed.",
+                                                "",
+                                                "§c§lNote: §7You won't be able to continue building on your plot!")
+                                        .build())
+                                .build());
+                menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
+                    try {
+                        if (plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        } else {
+                            PlotHandler.finishPlot(plot);
+                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
+                            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
+                        }
+                    } catch (Exception ex) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while completing the selected plot! Please try again or contact a staff member."));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while completing a plot (ID: " + plot.getID() + ")!", ex);
+                    }
+                    clickPlayer.closeInventory();
+                });
             }
-            clickPlayer.closeInventory();
-        });
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while completing a plot (ID: " + plot.getID() + ")!", ex);
+        }
+
 
         // Set Teleport To Plot Item
         menu.getSlot(additionalSlot ? 12 : 13)
-                .setItem(new ItemBuilder(Material.COMPASS,1)
+                .setItem(new ItemBuilder(Material.COMPASS, 1)
                         .setName("§6§lTeleport").setLore(new LoreBuilder()
                                 .description("Click to teleport to the plot.")
                                 .build())
@@ -90,16 +119,16 @@ public class PlotActionsMenu {
 
         // Set Abandon Plot Item
         menu.getSlot(additionalSlot ? 14 : 16)
-                .setItem(new ItemBuilder(Material.BARRIER,1)
+                .setItem(new ItemBuilder(Material.BARRIER, 1)
                         .setName("§c§lAbandon").setLore(new LoreBuilder()
                                 .description("Click to reset your plot and give it to someone else.",
-                                             "",
-                                             "§c§lNote: §7You won't be able to continue building on your plot!")
+                                        "",
+                                        "§c§lNote: §7You won't be able to continue building on your plot!")
                                 .build())
                         .build());
         menu.getSlot(additionalSlot ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if(plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
+                if (plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
                     clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 } else {
@@ -116,13 +145,13 @@ public class PlotActionsMenu {
         });
 
         // Set Delete Plot Item
-        if(additionalSlot) {
+        if (additionalSlot) {
             menu.getSlot(16)
                     .setItem(new ItemBuilder(Utils.headDatabaseAPI != null ? Utils.headDatabaseAPI.getItemHead("25108") : new ItemStack(Material.SKULL_ITEM, 1, (byte) 3))
-                        .setName("§c§lDelete").setLore(new LoreBuilder()
-                            .description("Click to delete the plot from the system.",
-                                         "",
-                                         "§c§lNote: §7You won't be able to restore the plot!")
+                            .setName("§c§lDelete").setLore(new LoreBuilder()
+                                    .description("Click to delete the plot from the system.",
+                                            "",
+                                            "§c§lNote: §7You won't be able to restore the plot!")
                                     .build())
                             .build());
             menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {

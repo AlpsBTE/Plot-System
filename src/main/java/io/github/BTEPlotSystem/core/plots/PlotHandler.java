@@ -24,6 +24,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class PlotHandler {
@@ -66,6 +67,11 @@ public class PlotHandler {
                 player.teleport(Utils.getSpawnPoint());
             }
         }
+    }
+
+    public static void undoSubmit(Plot plot) throws SQLException {
+        plot.setStatus(Status.unfinished);
+        //TODO: Set permissions and everything
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
