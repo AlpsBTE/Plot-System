@@ -141,14 +141,9 @@ public class Plot {
         return null;
     }
 
-    /**
-     * Set plot score [Accuracy, Blockpalette, Detailing, Technique]
-     *
-     * @param scoreFormat Format: 0,0,0,0
-     */
-    public void setScore(String scoreFormat) throws SQLException {
+    public void setScore(int score) throws SQLException {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
-        statement.setString(1, scoreFormat);
+        statement.setInt(1, score);
         statement.executeUpdate();
 
         setStatus(Status.complete);

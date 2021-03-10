@@ -4,10 +4,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
-import github.BTEPlotSystem.utils.Builder;
-import github.BTEPlotSystem.utils.ItemBuilder;
-import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -319,6 +316,9 @@ public class ReviewMenu implements Listener {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemSubmit)) {
                         StringBuilder score = new StringBuilder();
+                        int totalRating = 0;
+                        boolean isRejected = false;
+
                         for (int i = 0; i < 4; i++) {
                             for (int j = 0; j < 6; j++) {
                                 if (reviewPlotMenu.getItem(11 + (i * 9) + j).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
@@ -340,13 +340,28 @@ public class ReviewMenu implements Listener {
                                             score.append(j);
                                             break;
                                     }
+                                    totalRating+=j;
+                                    if (j <= 0){ isRejected = true; }
                                 }
                             }
                         }
-                        selectedPlot.setScore(score.toString());
-                        player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
+                        if (totalRating <= 8){ isRejected = true; }
+
+
+                        //TODO: set all values
+                        if (!isRejected){
+                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
+
+                            //TODO: multiply with multiplier
+                            selectedPlot.setScore(totalRating);
+                            BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
+                        } else {
+
+
+                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " rejected... send feedback using the /feedback command");
+                        }
+                        selectedPlot.getReview().setRating(score.toString());
                         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
-                        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)) {
                         event.getWhoClicked().closeInventory();
