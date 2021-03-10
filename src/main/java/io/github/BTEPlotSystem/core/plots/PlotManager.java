@@ -3,6 +3,7 @@ package github.BTEPlotSystem.core.plots;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.World;
 
@@ -32,12 +33,21 @@ public class PlotManager {
         return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "'"));
     }
 
-    public static List<Plot> getPlots(Builder builder, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' AND status = '" + status.name() + "'"));
+    public static List<Plot> getPlots(Builder builder, Status... status) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' AND status = '" + getPlots(status).toString() + "'"));
     }
 
     public static List<Plot> getPlots(int cityID, Status status) throws SQLException {
         return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "'"));
+    }
+
+    public static int getMultiplierByDifficulty(Difficulty difficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + difficulty.name() + "'");
+
+        if(rs.next()) {
+            return rs.getInt(1);
+        }
+        return 1;
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
