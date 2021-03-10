@@ -2,10 +2,18 @@ package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
@@ -27,7 +36,23 @@ public class EventListener extends SpecialBlocks implements Listener {
         event.setJoinMessage(null);
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
+        try {
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
 
+            for(Plot plot : plots) {
+                if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
+                    TextComponent tc = new TextComponent();
+                    tc.setText(Utils.getInfoMessageFormat("Your plot with the ID §6#" + plot.getID() + " §7has been reviewed! Click Here to check your feedback."));
+                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "feedback " + plot.getID()));
+                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
+
+                    event.getPlayer().spigot().sendMessage(tc);
+                    event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1, 1);
+                }
+            }
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
+        }
 
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
