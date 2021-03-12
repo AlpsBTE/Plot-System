@@ -5,14 +5,14 @@ import java.util.List;
 
 public class LoreBuilder {
 
-    private List<String> lore = new ArrayList<String>();
+    private final List<String> lore = new ArrayList<String>();
 
     public LoreBuilder description(String... lines) {
         for (String line : lines) {
-            String[] newLines = line.split("/");
+            String[] newLines = line.split("//");
 
             for(String newLine : newLines) {
-                lore.add("§7" + newLine.replace("/", ""));
+                lore.add("§7" + newLine.replace("//", ""));
             }
         }
         return this;
