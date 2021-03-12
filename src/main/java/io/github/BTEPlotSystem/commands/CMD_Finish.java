@@ -25,12 +25,13 @@ public class CMD_Finish implements CommandExecutor {
                     try {
                         Plot plot = PlotManager.getPlotByWorld(playerWorld);
 
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
+                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
                             PlotHandler.finishPlot(plot);
                             Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
                             player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
                         } else {
                             player.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));
+                            player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);
                             return true;
                         }
                     } catch (Exception ex) {

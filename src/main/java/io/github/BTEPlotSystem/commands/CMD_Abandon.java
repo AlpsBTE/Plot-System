@@ -22,12 +22,13 @@ public class CMD_Abandon implements CommandExecutor {
                 try {
                     Plot plot = PlotManager.getPlotByWorld(playerWorld);
 
-                    if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || sender.hasPermission("alpsbte.review")) {
+                    if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || sender.hasPermission("alpsbte.admin")) {
                         PlotHandler.abandonPlot(plot);
                         player.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
                         player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);
                     } else {
                         player.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
+                        player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);;
                         return true;
                     }
                 } catch (Exception ex) {

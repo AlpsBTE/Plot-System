@@ -17,7 +17,7 @@ import java.util.logging.Level;
 public class CMD_CleanUp implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender.hasPermission("alpsbte.cleanup")) {
+        if(sender.hasPermission("alpsbte.admin")) {
             // Clean Up Review System
             try {
                 for (Plot plot : PlotManager.getPlots()) {

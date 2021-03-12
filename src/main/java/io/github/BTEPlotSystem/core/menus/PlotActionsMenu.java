@@ -2,16 +2,13 @@ package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
-import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
-import me.arcaniax.hdb.enums.CategoryEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -61,11 +58,16 @@ public class PlotActionsMenu {
                                 .build());
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
                     try {
-                        PlotHandler.undoSubmit(plot);
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));
-                        Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ais now unfinished again!"));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
-                        clickPlayer.closeInventory();
+                        if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to undo submit this plot!"));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        } else {
+                            PlotHandler.undoSubmit(plot);
+                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));
+                            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ais now unfinished again!"));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
+                            clickPlayer.closeInventory();
+                        }
                     } catch (SQLException ex) {
                         clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while trying to undo the submission of the selected plot! Please try again or contact a staff member."));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -84,8 +86,8 @@ public class PlotActionsMenu {
                                 .build());
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
                     try {
-                        if (plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
+                        if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         } else {
                             PlotHandler.finishPlot(plot);
@@ -129,8 +131,8 @@ public class PlotActionsMenu {
                         .build());
         menu.getSlot(additionalSlot ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if (plot.getStatus().equals(Status.unreviewed) || plot.getStatus().equals(Status.complete)) {
-                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("Selected plot is already finished!"));
+                if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 } else {
                     PlotHandler.abandonPlot(plot);

@@ -29,19 +29,18 @@ commands:
   generateplot:
     description: generate a new plot
     usage: /generateplot <ID>
-    permission: alpsbte.generateplot
+    permission: alpsbte.admin
   sethologram:
     description: sets the position of a hologram
     usage: /sethologram <name>
-    permission: alpsbte.hologram
+    permission: alpsbte.admin
   reloadhologram:
     description: reloads all holograms
     usage: /reloadhologram
-    permission: alpsbte.hologram
+    permission: alpsbte.admin
   spawn:
     description: teleports you back to the spawn location
     usage: /spawn
-    permission: alpsbte.companion
   tpp:
     description: teleport to a player
     usage: /tpp <Player>
@@ -57,7 +56,7 @@ commands:
     usage: /feedback <ID>
   cleanup:
     description: temporary command for database clean up
-    permission: alpsbte.cleanup
+    permission: alpsbte.admin
     usage: /cleanup
 permissions:
   alpsbte.admin:
