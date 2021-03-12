@@ -65,6 +65,11 @@ public class PlotManager {
         return new Plot(Integer.parseInt(plotWorld.getName().substring(2)));
     }
 
+    public static boolean plotExists(int ID) {
+        String worldName = "P-" + ID;
+        return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
+    }
+
     public static int getPlotSize() {
         return 150;
     }

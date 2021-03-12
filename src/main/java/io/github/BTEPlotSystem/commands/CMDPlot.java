@@ -3,6 +3,7 @@ package github.BTEPlotSystem.commands;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,8 +26,7 @@ public class CMDPlot implements CommandExecutor {
                         return true;
                     }
 
-                    String worldName = "P-" + ID;
-                    if((BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName)) {
+                    if(PlotManager.plotExists(ID)) {
                         try {
                             PlotHandler.teleportPlayer(new Plot(ID), (Player) sender);
                         } catch (SQLException ex) {
