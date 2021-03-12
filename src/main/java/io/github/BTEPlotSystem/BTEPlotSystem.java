@@ -55,23 +55,24 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), plugin);
 
         // Add Commands
-        this.getCommand("plot").setExecutor(new CMDPlot());
-        this.getCommand("generateplot").setExecutor(new CMDGeneratePlot());
-        this.getCommand("finish").setExecutor(new CMDFinish());
-        this.getCommand("abandon").setExecutor(new CMDAbandon());
-        this.getCommand("link").setExecutor(new CMDLink());
+        this.getCommand("plot").setExecutor(new CMD_Plot());
+        this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
+        this.getCommand("finish").setExecutor(new CMD_Finish());
+        this.getCommand("abandon").setExecutor(new CMD_Abandon());
+        this.getCommand("link").setExecutor(new CMD_Link());
 
-        this.getCommand("companion").setExecutor(new CMDCompanion());
-        this.getCommand("review").setExecutor(new CMDReview());
-        this.getCommand("plots").setExecutor(new CMDPlayerPlots());
-        this.getCommand("feedback").setExecutor(new CMDFeedback());
+        this.getCommand("companion").setExecutor(new CMD_Companion());
+        this.getCommand("review").setExecutor(new CMD_Review());
+        this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
+        this.getCommand("feedback").setExecutor(new CMD_Feedback());
 
-        this.getCommand("tpp").setExecutor(new CMDTpp());
-        this.getCommand("spawn").setExecutor(new CMDSpawn());
+        this.getCommand("tpp").setExecutor(new CMD_Tpp());
+        this.getCommand("spawn").setExecutor(new CMD_Spawn());
 
-        this.getCommand("sethologram").setExecutor(new CMDSetHologramPosition());
-        this.getCommand("reloadhologram").setExecutor(new CMDReloadHolograms());
+        this.getCommand("sethologram").setExecutor(new CMD_SetHologramPosition());
+        this.getCommand("reloadhologram").setExecutor(new CMD_Reload());
 
+        this.getCommand("cleanup").setExecutor(new CMD_CleanUp());
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 

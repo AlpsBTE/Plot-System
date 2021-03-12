@@ -55,3 +55,10 @@ commands:
   feedback:
     description: shows all feedback information of a plot
     usage: /feedback <ID>
+  cleanup:
+    description: temporary command for database clean up
+    permission: alpsbte.cleanup
+    usage: /cleanup
+permissions:
+  alpsbte.admin:
+    description: manager permissions

@@ -12,7 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMDFinish implements CommandExecutor {
+public class CMD_Finish implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
@@ -25,10 +25,9 @@ public class CMDFinish implements CommandExecutor {
                     try {
                         Plot plot = PlotManager.getPlotByWorld(playerWorld);
 
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             PlotHandler.finishPlot(plot);
                             Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
-                            player.sendMessage("§7>> §aFinished plot with the ID §6#" + plot.getID());
                             player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
                         } else {
                             player.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));

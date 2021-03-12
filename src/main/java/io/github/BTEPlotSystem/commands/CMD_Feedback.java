@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMDFeedback implements CommandExecutor {
+public class CMD_Feedback implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender instanceof Player) {
@@ -42,7 +42,7 @@ public class CMDFeedback implements CommandExecutor {
                         }
                     } catch (SQLException ex) {
                         sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
-                        Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
                 } else {
                     sender.sendMessage(Utils.getErrorMessageFormat("Please enter a valid ID!"));

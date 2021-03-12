@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMDTpp implements CommandExecutor {
+public class CMD_Tpp implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender instanceof Player) {
@@ -22,7 +22,7 @@ public class CMDTpp implements CommandExecutor {
                     player.getInventory().setItem(8, CompanionMenu.getItem());
                     player.getInventory().setItem(7, ReviewMenu.getItem());
                 } catch (Exception ignore) {
-                    player.sendMessage(Utils.getErrorMessageFormat("Usage: /tpp <Player>"));
+                    sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpp <Player>"));
                 }
             }
         }

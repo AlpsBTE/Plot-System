@@ -4,6 +4,7 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.enums.Status;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,12 +12,12 @@ import org.bukkit.command.CommandSender;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
-public class CMDCleanUp implements CommandExecutor {
+public class CMD_CleanUp implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender.hasPermission("alpsbte.cleanup")) {
-
             // Clean Up Review System
             try {
                 for (Plot plot : PlotManager.getPlots()) {
@@ -26,10 +27,9 @@ public class CMDCleanUp implements CommandExecutor {
                         ps.executeUpdate();
                     }
                 }
-            } catch (SQLException exception) {
-                exception.printStackTrace();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-
         }
         return true;
     }
