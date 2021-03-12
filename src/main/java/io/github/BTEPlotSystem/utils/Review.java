@@ -26,6 +26,14 @@ public class Review {
 
     public int getReviewID() { return reviewID; }
 
+    public int getPlotID() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idreview = '" + getReviewID() + "'");
+        if(rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
+    }
+
     public Builder getReviewer() throws SQLException {
         return new Builder(reviewerUUID);
     }
