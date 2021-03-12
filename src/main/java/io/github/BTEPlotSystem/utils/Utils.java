@@ -7,8 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.rmi.registry.Registry;
-
 public class Utils {
 
     // Head Database API
@@ -54,4 +52,13 @@ public class Utils {
     public final static String EVENT_SERVER = "ALPS-3";
 
     public final static String TEST_SERVER = "ALPS-4";
+
+    // Integer Try Parser
+    public static Integer TryParseInt(String someText) {
+        try {
+            return Integer.parseInt(someText);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
 }
