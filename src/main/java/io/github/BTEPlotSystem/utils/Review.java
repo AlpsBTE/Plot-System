@@ -2,11 +2,13 @@ package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.enums.Category;
+import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Review {
 
@@ -24,7 +26,9 @@ public class Review {
 
     public int getReviewID() { return reviewID; }
 
-    public Builder getReviewer() throws SQLException { return new Builder(reviewerUUID); }
+    public Builder getReviewer() throws SQLException {
+        return new Builder(reviewerUUID);
+    }
 
     // Get rating by category
     public int getRating(Category category) throws SQLException {
@@ -49,6 +53,15 @@ public class Review {
         return 0;
     }
 
+    public String getFeedback() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT feedbackText FROM reviews WHERE id_review = '" + getReviewID() + "'");
+
+        if(rs.next()) {
+            return rs.getString("feedbackText");
+        }
+        return "";
+    }
+
     /**
      * Set plot rating [Accuracy, Blockpalette, Detailing, Technique]
      *
@@ -60,19 +73,15 @@ public class Review {
         statement.executeUpdate();
     }
 
-    public String getFeedback() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT feedbackText FROM reviews WHERE id_review = '" + getReviewID() + "'");
-
-        if(rs.next()) {
-            return rs.getString("feedbackText");
-        }
-
-        return "";
-    }
-
     public void setFeedback(String feedback) throws SQLException {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET feedbackText = ? WHERE id_review = '" + getReviewID() + "'");
         statement.setString(1, feedback);
+        statement.executeUpdate();
+    }
+
+    public void setFeedbackSent(boolean isSent) throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET isSent = ? WHERE id_review = '" + getReviewID() + "'");
+        statement.setInt(1, isSent ? 1 : 0);
         statement.executeUpdate();
     }
 
@@ -86,9 +95,33 @@ public class Review {
         return false;
     }
 
-    public void setFeedbackSent(boolean isSent) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET isSent = ? WHERE id_review = '" + getReviewID() + "'");
-        statement.setInt(1, isSent ? 1 : 0);
-        statement.executeUpdate();
+    public static Review createReview(int plotID) {
+        try {
+            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + plotID + "'");
+
+            if(!rs.next()) {
+                ResultSet rs_reviewID = DatabaseConnection.createStatement().executeQuery("SELECT (t1.id_review + 1) AS firstID FROM reviews t1 " +
+                        "WHERE NOT EXISTS (SELECT t2.id_review FROM reviews t2 WHERE t2.id_review = t1.id_review + 1)");
+                if(rs_reviewID.next()) {
+                    int reviewID = rs_reviewID.getInt(1);
+
+                    PreparedStatement ps_reviews = DatabaseConnection.prepareStatement("INSERT INTO reviews (idreview) VALUES (?)");
+                    ps_reviews.setInt(1, reviewID);
+
+                    PreparedStatement ps_plots = DatabaseConnection.prepareStatement("UPDATE reviews SET idreview = ? WHERE idplot = '" + plotID + "'");
+                    ps_plots.setInt(1, reviewID);
+
+                    ps_reviews.executeUpdate();
+                    ps_plots.executeUpdate();
+
+                    return new Review(reviewID);
+                }
+            } else {
+                return new Review(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+        return null;
     }
 }
