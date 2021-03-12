@@ -52,3 +52,6 @@ commands:
   plots:
     description: shows all plots of the given player
     usage: /plots, /plots <Player>
+  feedback:
+    description: shows all feedback information of a plot
+    usage: /feedback <ID>
