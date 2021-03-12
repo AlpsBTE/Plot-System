@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.menus.FeedbackMenu;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class CMDFeedback implements CommandExecutor {
                             ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + ID + "'");
                             rs.next();
 
-                            // TODO: Open Feedback Menu
+                            new FeedbackMenu((Player) sender, rs.getInt(1));
                         } catch (SQLException ex) {
                             sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                             Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
