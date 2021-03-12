@@ -61,4 +61,21 @@ public class Utils {
             return null;
         }
     }
+
+    public static String getPointsByColor(int points) {
+        switch (points) {
+            case 0:
+                return "§7" + points;
+            case 1:
+                return "§4" + points;
+            case 2:
+                return "§6" + points;
+            case 3:
+                return "§e" + points;
+            case 4:
+                return "§2" + points;
+            default:
+                return "§a" + points;
+        }
+    }
 }
