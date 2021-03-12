@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.core.plots;
 
 import com.sk89q.worldedit.Vector;
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
@@ -52,7 +53,7 @@ public class Plot {
         this.lastActivity = rs.getDate("lastActivity");
 
         // Set Review Class
-        if(getStatus() == Status.complete) {
+        if(getStatus() == Status.complete || wasRejected()) {
             review = new Review(rs.getInt("idreview"));
         }
 
@@ -87,34 +88,15 @@ public class Plot {
 
     public Review getReview() { return review; }
 
-    // Set builder of the plot
-    public void setBuilder(String UUID) throws SQLException {
-        PreparedStatement statement;
-        if(UUID != null) {
-            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
-            statement.setString(1, UUID);
-        } else {
-            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = DEFAULT(uuidplayer) WHERE idplot = '" + getID() + "'");
-        }
-        statement.executeUpdate();
-    }
-
     public File getSchematic() { return Paths.get(PlotManager.getSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile(); }
 
     public String getGeoCoordinatesNumeric() { return CoordinateConversion.formatGeoCoordinatesNumeric(geoCoordinates); }
 
     public Status getStatus() throws SQLException {
-       ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
-       rs.next();
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
+        rs.next();
 
-       return Status.valueOf(rs.getString("status"));
-    }
-
-    // Update plot status
-    public void setStatus(Status status) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
-        statement.setString(1, status.name());
-        statement.executeUpdate();
+        return Status.valueOf(rs.getString("status"));
     }
 
     public int getScore() throws SQLException {
@@ -141,15 +123,29 @@ public class Plot {
         return null;
     }
 
+    public void setBuilder(String UUID) throws SQLException {
+        PreparedStatement statement;
+        if(UUID != null) {
+            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
+            statement.setString(1, UUID);
+        } else {
+            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = DEFAULT(uuidplayer) WHERE idplot = '" + getID() + "'");
+        }
+        statement.executeUpdate();
+    }
+
+    // Update plot status
+    public void setStatus(Status status) throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
+        statement.setString(1, status.name());
+        statement.executeUpdate();
+    }
+
     public void setScore(int score) throws SQLException {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
         statement.setInt(1, score);
         statement.executeUpdate();
-
-        setStatus(Status.complete);
-        builder.addScore(getScore());
-        builder.addCompletedBuild();
-        builder.removePlot(getSlot());
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
     }
 
     // Get Open Street Maps link
@@ -169,5 +165,9 @@ public class Plot {
 
     public boolean isReviewed(){
         return getReview() != null;
+    }
+
+    public boolean wasRejected() throws SQLException {
+        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != 0;
     }
 }
