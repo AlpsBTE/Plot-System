@@ -1,6 +1,5 @@
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
@@ -52,7 +51,7 @@ public class ReviewMenu implements Listener {
 
     public ReviewMenu(Player player) throws SQLException {
         //Opens Review Menu, showing all plots in the given round.
-        reviewMenu = Bukkit.createInventory(player, 54, "Review Plots");
+        reviewMenu = Bukkit.createInventory(player, 54, "Review & Manage Plots");
         this.player = player;
 
         ItemStack plotLoadError = new ItemBuilder(Material.BARRIER, 1)
@@ -71,21 +70,27 @@ public class ReviewMenu implements Listener {
                 switch (plot.getStatus()) {
                     case unfinished:
                         plotItems.put(plot, new ItemBuilder(Material.WOOL, 1, (byte) 1)
-                                .setName("§6Manage Plot")
+                                .setName("§b§lManage Plot")
                                 .setLore(new LoreBuilder()
-                                        .description("§bID: §7" + plot.getID(),
-                                                "§bBuilder: §7" + plot.getBuilder().getName(),
-                                                "§bCity: §7" + plot.getCity().getName())
+                                        .description(
+                                                "§7ID: §f" + plot.getID(),
+                                                "",
+                                                "§7Builder: §f" + plot.getBuilder().getName(),
+                                                "§7City: §f" + plot.getCity().getName(),
+                                                "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                         .build())
                                 .build());
                         break;
                     case unreviewed:
                         plotItems.put(plot, new ItemBuilder(Material.MAP, 1)
-                                .setName("§6Review Plot")
+                                .setName("§b§lReview Plot")
                                 .setLore(new LoreBuilder()
-                                        .description("§bID: §7" + plot.getID(),
-                                                "§bBuilder: §7" + plot.getBuilder().getName(),
-                                                "§bCity: §7" + plot.getCity().getName())
+                                        .description(
+                                                "§7ID: §f" + plot.getID(),
+                                                "",
+                                                "§7Builder: §f" + plot.getBuilder().getName(),
+                                                "§7City: §f" + plot.getCity().getName(),
+                                                "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                         .build())
                                 .build());
                         break;
@@ -105,9 +110,9 @@ public class ReviewMenu implements Listener {
             switch (i) {
                 case 46:
                     itemArrowLeft = new ItemBuilder(Material.ARROW, 1)
-                            .setName("§l§6Previous Page")
+                            .setName("§6§lPrevious Page")
                             .setLore(new LoreBuilder()
-                                    .description("§7Show previous page")
+                                    .description("§7Show the previous page")
                                     .build())
                             .build();
                     reviewMenu.setItem(i, itemArrowLeft);
@@ -116,7 +121,7 @@ public class ReviewMenu implements Listener {
                     itemClose = new ItemBuilder(Material.BARRIER, 1)
                             .setName("§c§lCLOSE")
                             .setLore(new LoreBuilder()
-                                    .description("§7Close the review menu")
+                                    .description("§7Close the menu")
                                     .build())
                             .build();
                     reviewMenu.setItem(i, itemClose);
@@ -125,7 +130,7 @@ public class ReviewMenu implements Listener {
                     itemArrowRight = new ItemBuilder(Material.ARROW, 1)
                             .setName("§6§lNext Page")
                             .setLore(new LoreBuilder()
-                                    .description("§7Show next page")
+                                    .description("§7Show the next page")
                                     .build())
                             .build();
                     reviewMenu.setItem(i, itemArrowRight);
@@ -146,9 +151,14 @@ public class ReviewMenu implements Listener {
             switch (i) {
                 case 4:
                     itemMap = new ItemBuilder(Material.MAP, 1)
-                            .setName("§l§6Plot #" + plot.getID() + " | ")
+                            .setName("§b§lReview Plot")
                             .setLore(new LoreBuilder()
-                                    .description("§7Show previous page")
+                                    .description(
+                                            "§7ID: §f" + plot.getID(),
+                                            "",
+                                            "§7Builder: §f" + plot.getBuilder().getName(),
+                                            "§7City: §f" + plot.getCity().getName(),
+                                            "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                     .build())
                             .build();
                     reviewPlotMenu.setItem(i, itemMap);
@@ -203,7 +213,7 @@ public class ReviewMenu implements Listener {
                     itemCancel = new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
                             .setName("§c§lCANCEL")
                             .setLore(new LoreBuilder()
-                                    .description("§7Close the review menu")
+                                    .description("§7Close the menu")
                                     .build())
                             .build();
                     reviewPlotMenu.setItem(i, itemCancel);
@@ -284,12 +294,8 @@ public class ReviewMenu implements Listener {
                         event.getWhoClicked().closeInventory();
 
                     } else if (event.getCurrentItem().equals(itemArrowLeft)) {
-                        player.sendMessage("§7>> :yellcat:");
-                        event.getWhoClicked().closeInventory();
 
                     } else if (event.getCurrentItem().equals(itemArrowRight)) {
-                        player.sendMessage("§7>> :yellcat:");
-                        event.getWhoClicked().closeInventory();
                     }
 
                     for (ItemStack plotItem : plotItems.values()) {
@@ -299,8 +305,6 @@ public class ReviewMenu implements Listener {
                                 event.getWhoClicked().closeInventory();
                                 if (!selectedPlot.getBuilder().getUUID().toString().equals(event.getWhoClicked().getUniqueId().toString())){
                                     ReviewPlot(selectedPlot);
-                                    System.out.println("Builder: "+selectedPlot.getBuilder().getUUID().toString());
-                                    System.out.println("EventClick: "+event.getWhoClicked().getUniqueId().toString());
                                 } else {
                                     event.getWhoClicked().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
                                 }
@@ -316,6 +320,7 @@ public class ReviewMenu implements Listener {
                         event.getWhoClicked().closeInventory();
                     } else if (event.getCurrentItem().equals(itemSubmit)) {
                         StringBuilder score = new StringBuilder();
+
                         int totalRating = 0;
                         boolean isRejected = false;
 
@@ -347,20 +352,29 @@ public class ReviewMenu implements Listener {
                         }
                         if (totalRating <= 8){ isRejected = true; }
 
+                        //TODO: multiply with multiplier
+                        selectedPlot.setScore(totalRating);
 
-                        //TODO: set all values
                         if (!isRejected){
-                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed");
+                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed!");
 
-                            //TODO: multiply with multiplier
-                            selectedPlot.setScore(totalRating);
-                            BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
+                            selectedPlot.setStatus(Status.complete);
+                            selectedPlot.getBuilder().addScore(totalRating);
+                            selectedPlot.getBuilder().addCompletedBuild();
+                            selectedPlot.getBuilder().removePlot(selectedPlot.getSlot());
                         } else {
+                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " has been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
 
-
-                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " rejected... send feedback using the /feedback command");
+                            PlotHandler.undoSubmit(selectedPlot);
                         }
-                        selectedPlot.getReview().setRating(score.toString());
+
+                        if(selectedPlot.isReviewed()) {
+                            selectedPlot.getReview().setRating(score.toString());
+                            selectedPlot.getReview().setReviewer(player.getUniqueId());
+                        } else {
+                            new Review(selectedPlot.getID(), player.getUniqueId(), score.toString());
+                        }
+
                         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
                         player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)) {

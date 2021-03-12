@@ -2,10 +2,8 @@ package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotGenerator;
-import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.*;
-import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -71,9 +69,10 @@ public class CompanionMenu {
                         .setItem(new ItemBuilder(Material.MAP,1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
-                                        .description("§6ID: §7" + plot.getID(),
-                                                     "§6City: §7" + plot.getCity().getName(),
-                                                     "§6Difficulty: §7" + plot.getDifficulty().name(),
+                                        .description(
+                                                     "§7ID: §f" + plot.getID(),
+                                                     "§7City: §f" + plot.getCity().getName(),
+                                                     "§7Difficulty: §f" +  plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(),
                                                      "",
                                                      "§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1))
                                         .build())
@@ -196,9 +195,9 @@ public class CompanionMenu {
                                     .description(
                                             cities.get(i).getDescription(),
                                             "",
-                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + "§7 plots open",
-                                            "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + "§7 plots in progress",
-                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + "§7 plots completed")
+                                            "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + " §7Plots Open",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + " §7Plots In Progress",
+                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + " §7Plots Completed")
                                     .build())
                             .build());
         }

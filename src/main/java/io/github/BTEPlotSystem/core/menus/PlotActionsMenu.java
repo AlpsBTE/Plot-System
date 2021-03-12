@@ -46,9 +46,9 @@ public class PlotActionsMenu {
         menu.open(player);
     }
 
-    private void setMenuItems() {
+    private void setMenuItems() throws SQLException {
 
-        boolean additionalSlot = player.hasPermission("alpsbte.removePlot");
+        boolean additionalSlot = plot.isReviewed() || plot.wasRejected();
 
         try {
             if (plot.getStatus().equals(Status.unreviewed)) {
@@ -145,27 +145,22 @@ public class PlotActionsMenu {
             clickPlayer.closeInventory();
         });
 
-        // Set Delete Plot Item
+        // Set Feedback Item
         if (additionalSlot) {
             menu.getSlot(16)
-                    .setItem(new ItemBuilder(Utils.headDatabaseAPI != null ? Utils.headDatabaseAPI.getItemHead("25108") : new ItemStack(Material.SKULL_ITEM, 1, (byte) 3))
-                            .setName("§c§lDelete").setLore(new LoreBuilder()
-                                    .description("Click to delete the plot from the system.",
-                                            "",
-                                            "§c§lNote: §7You won't be able to restore the plot!")
+                    .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+                            .setName("§b§lFeedback").setLore(new LoreBuilder()
+                                    .description("Click to view your plot review feedback.")
                                     .build())
                             .build());
             menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
-                    PlotHandler.deletePlot(plot);
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Deleted plot with the ID §6#" + plot.getID()));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
+                    new FeedbackMenu(clickPlayer, plot.getReview().getReviewID());
                 } catch (Exception ex) {
-                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while deleting the selected plot! Please try again or contact a staff member."));
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while opening the feedback menu! Please try again or contact a staff member."));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                    Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while deleting a plot from the system (ID: " + plot.getID() + ")!", ex);
-                }
-                clickPlayer.closeInventory();
+                    Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while opening the feedback menu! (ID: " + plot.getID() + ")!", ex);
+                };
             });
         }
     }
