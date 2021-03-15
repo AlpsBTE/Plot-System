@@ -25,7 +25,7 @@ public class CMD_Finish implements CommandExecutor {
                     try {
                         Plot plot = PlotManager.getPlotByWorld(playerWorld);
 
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             PlotHandler.finishPlot(plot);
                             Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
                             player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
