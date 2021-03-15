@@ -70,6 +70,10 @@ public class PlotManager {
         return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
+    public static boolean isPlotWorld(World world) {
+        return BTEPlotSystem.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
+    }
+
     public static int getPlotSize() {
         return 150;
     }
