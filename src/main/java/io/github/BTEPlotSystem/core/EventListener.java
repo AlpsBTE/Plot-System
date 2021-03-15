@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.core;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.plots.Plot;
