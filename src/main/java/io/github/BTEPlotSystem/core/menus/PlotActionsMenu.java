@@ -86,7 +86,7 @@ public class PlotActionsMenu {
                                 .build());
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
                     try {
-                        if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                        if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         } else {
@@ -131,7 +131,7 @@ public class PlotActionsMenu {
                         .build());
         menu.getSlot(additionalSlot ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                     clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 } else {

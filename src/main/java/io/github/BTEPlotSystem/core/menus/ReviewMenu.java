@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ReviewMenu implements Listener {
-    private final Inventory reviewMenu;
+    private Inventory reviewMenu;
     private Inventory reviewPlotMenu;
 
     //Review Inventory
@@ -140,6 +140,13 @@ public class ReviewMenu implements Listener {
             }
         }
         player.openInventory(reviewMenu);
+    }
+
+    public ReviewMenu(Player player, Plot plot) {
+        this.player = player;
+        selectedPlot = plot;
+
+        ReviewPlot(plot);
     }
 
     private void ReviewPlot(Plot plot) {
@@ -304,7 +311,7 @@ public class ReviewMenu implements Listener {
                             if (selectedPlot.getStatus() == Status.unreviewed) {
                                 event.getWhoClicked().closeInventory();
                                 if (!selectedPlot.getBuilder().getUUID().toString().equals(event.getWhoClicked().getUniqueId().toString())){
-                                    ReviewPlot(selectedPlot);
+                                    PlotHandler.teleportPlayer(selectedPlot, player);
                                 } else {
                                     event.getWhoClicked().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
                                 }
@@ -375,8 +382,11 @@ public class ReviewMenu implements Listener {
                             new Review(selectedPlot.getID(), player.getUniqueId(), score.toString());
                         }
 
+                        for(Player player : player.getWorld().getPlayers()) {
+                            player.teleport(Utils.getSpawnPoint());
+                        }
+
                         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
-                        player.closeInventory();
                     } else if (event.getCurrentItem().equals(itemMap)) {
                         event.getWhoClicked().closeInventory();
                         new PlotActionsMenu(selectedPlot, player);
