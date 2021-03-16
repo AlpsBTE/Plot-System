@@ -1,6 +1,10 @@
 package github.BTEPlotSystem.core.plots;
 
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
@@ -22,7 +26,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class Plot {
+public class Plot extends PlotPermissions {
 
     private final int ID;
     private final CityProject cityProject;
@@ -33,6 +37,7 @@ public class Plot {
     private Review review;
 
     public Plot(int ID) throws SQLException {
+        super(ID);
         this.ID = ID;
 
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM plots WHERE idplot = '" + getID() + "'");

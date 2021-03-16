@@ -1,14 +1,9 @@
 package github.BTEPlotSystem.core.plots;
 
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
-import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -17,8 +12,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.multiverse.io.FileUtils;
 import org.bukkit.*;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -55,7 +48,7 @@ public class PlotHandler {
 
         loadPlot(plot);
 
-        getPlotRegion(plot.getID()).getOwners().removePlayer(plot.getBuilder().getUUID());
+        plot.removeBuilderPerms(plot.getBuilder().getUUID());
 
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
@@ -68,7 +61,7 @@ public class PlotHandler {
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        givePlotPermission(plot.getBuilder(), plot);
+        plot.removeBuilderPerms(plot.getBuilder().getUUID());
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
@@ -100,20 +93,24 @@ public class PlotHandler {
         statement.execute();
     }
 
+    public static void loadPlot(Plot plot) {
+        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
+        }
+    }
+
     public static void unloadPlot(Player player) {
         World world = player.getWorld();
-        if(world.getName().startsWith("P-") && world.getPlayers().size() - 1 == 0) {
+        if(PlotManager.isPlotWorld(world) && world.getPlayers().size() - 1 == 0) {
             try {
+                Plot plot = PlotManager.getPlotByWorld(world);
+                if(plot.hasReviewerPerms()) {
+                    plot.removeReviewerPerms();
+                }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(world, true), 1, 20*3);
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
             }
-        }
-    }
-
-    public static void loadPlot(Plot plot) {
-        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
         }
     }
 
@@ -124,26 +121,6 @@ public class PlotHandler {
                 (double) (PlotManager.getPlotSize() / 2) + 0.5,
                 -90,
                 90);
-    }
-
-    public static void removePlotPermission(Builder builder, Plot plot) throws SQLException {
-        loadPlot(plot);
-
-        getPlotRegion(plot.getID()).getOwners().removePlayer(builder.getUUID());
-
-        if(builder.isOnline() && PlotManager.getPlotByWorld(builder.getPlayer().getWorld()).equals(plot)) {
-            unloadPlot(builder.getPlayer());
-        }
-    }
-
-    public static void givePlotPermission(Builder builder, Plot plot) throws SQLException {
-        loadPlot(plot);
-
-        getPlotRegion(plot.getID()).getOwners().addPlayer(builder.getUUID());
-
-        if(builder.isOnline() && PlotManager.getPlotByWorld(builder.getPlayer().getWorld()).equals(plot)) {
-            unloadPlot(builder.getPlayer());
-        }
     }
 
     public static void sendLinkMessages(Plot plot, Player player){
@@ -169,12 +146,6 @@ public class PlotHandler {
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§7--------------------");
-    }
-
-    private static ProtectedRegion getPlotRegion(int plotID) {
-        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plotID));
-        return regionManager.getRegion("p-" + plotID);
     }
 
     public static String getWorldGuardConfigPath(int plotID) {
