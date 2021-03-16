@@ -61,6 +61,10 @@ commands:
     description: temporary command for database clean up
     permission: alpsbte.admin
     usage: /cleanup
+  edit:
+    description: enable/disble build permissions for reviewers on plots
+    permission: alpsbte.review
+    usage: /edit
 permissions:
   alpsbte.admin:
     description: manager permissions
