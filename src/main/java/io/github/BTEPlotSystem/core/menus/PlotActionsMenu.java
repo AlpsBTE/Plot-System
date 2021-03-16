@@ -59,14 +59,13 @@ public class PlotActionsMenu {
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
                     try {
                         if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to undo submit this plot!"));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        } else {
                             PlotHandler.undoSubmit(plot);
                             clickPlayer.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));
-                            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ais now unfinished again!"));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
                             clickPlayer.closeInventory();
+                        } else {
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to undo submit this plot!"));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } catch (SQLException ex) {
                         clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while trying to undo the submission of the selected plot! Please try again or contact a staff member."));
@@ -87,13 +86,13 @@ public class PlotActionsMenu {
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
                     try {
                         if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        } else {
                             PlotHandler.finishPlot(plot);
                             clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
                             Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
+                        } else {
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } catch (Exception ex) {
                         clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while completing the selected plot! Please try again or contact a staff member."));
@@ -132,12 +131,12 @@ public class PlotActionsMenu {
         menu.getSlot(additionalSlot ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
-                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                } else {
                     PlotHandler.abandonPlot(plot);
                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
+                } else {
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 }
             } catch (Exception ex) {
                 clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while abandoning the selected plot! Please try again or contact a staff member."));
