@@ -8,6 +8,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -54,10 +55,7 @@ public class PlotHandler {
 
         loadPlot(plot);
 
-        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
-        ProtectedRegion region = regionManager.getRegion("p-" + plot.getID());
-        region.getOwners().removePlayer(plot.getBuilder().getUUID());
+        getPlotRegion(plot.getID()).getOwners().removePlayer(plot.getBuilder().getUUID());
 
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
@@ -70,12 +68,7 @@ public class PlotHandler {
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        loadPlot(plot);
-
-        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
-        ProtectedRegion region = regionManager.getRegion("p-" + plot.getID());
-        region.getOwners().addPlayer(plot.getBuilder().getUUID());
+        givePlotPermission(plot.getBuilder(), plot);
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
@@ -133,6 +126,26 @@ public class PlotHandler {
                 90);
     }
 
+    public static void removePlotPermission(Builder builder, Plot plot) throws SQLException {
+        loadPlot(plot);
+
+        getPlotRegion(plot.getID()).getOwners().removePlayer(builder.getUUID());
+
+        if(builder.isOnline() && PlotManager.getPlotByWorld(builder.getPlayer().getWorld()).equals(plot)) {
+            unloadPlot(builder.getPlayer());
+        }
+    }
+
+    public static void givePlotPermission(Builder builder, Plot plot) throws SQLException {
+        loadPlot(plot);
+
+        getPlotRegion(plot.getID()).getOwners().addPlayer(builder.getUUID());
+
+        if(builder.isOnline() && PlotManager.getPlotByWorld(builder.getPlayer().getWorld()).equals(plot)) {
+            unloadPlot(builder.getPlayer());
+        }
+    }
+
     public static void sendLinkMessages(Plot plot, Player player){
         TextComponent[] tc = new TextComponent[3];
         tc[0] = new TextComponent();
@@ -156,6 +169,12 @@ public class PlotHandler {
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§7--------------------");
+    }
+
+    private static ProtectedRegion getPlotRegion(int plotID) {
+        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
+        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plotID));
+        return regionManager.getRegion("p-" + plotID);
     }
 
     public static String getWorldGuardConfigPath(int plotID) {
