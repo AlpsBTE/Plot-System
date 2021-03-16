@@ -54,6 +54,9 @@ commands:
   feedback:
     description: shows all feedback information of a plot
     usage: /feedback <ID>
+  sendfeedback:
+    description: sets the feedback of a plot
+    usage: /sendfeedback <ID> <Text>
   cleanup:
     description: temporary command for database clean up
     permission: alpsbte.admin
