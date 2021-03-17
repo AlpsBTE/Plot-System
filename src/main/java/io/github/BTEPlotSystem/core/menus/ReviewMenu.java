@@ -146,6 +146,11 @@ public class ReviewMenu implements Listener {
         this.player = player;
         selectedPlot = plot;
 
+        if (selectedPlot.getBuilder().getUUID().equals(player.getUniqueId())){
+            player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+            return;
+        }
+
         ReviewPlot(plot);
     }
 
