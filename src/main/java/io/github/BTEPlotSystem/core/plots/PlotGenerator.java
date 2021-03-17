@@ -69,6 +69,7 @@ public final class PlotGenerator {
                    builder.setPlot(plot.getID(), builder.getFreeSlot());
                    plot.setStatus(Status.unfinished);
                    plot.setBuilder(builder.getPlayer().getUniqueId().toString());
+                   plot.setLastActivity(false);
 
                    Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> PlotHandler.teleportPlayer(plot, builder.getPlayer()));
 

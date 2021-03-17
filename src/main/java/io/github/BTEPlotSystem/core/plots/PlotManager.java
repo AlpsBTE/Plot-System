@@ -5,11 +5,13 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class PlotManager {
 
@@ -59,6 +61,30 @@ public class PlotManager {
         }
 
         return plots;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void checkPlotsForLastActivity() {
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+            try {
+                List<Plot> plots = getPlots(Status.unfinished);
+                long millisIn30Days = 30L * 24 * 60 * 60 * 1000;
+
+                for(Plot plot : plots) {
+                    if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn30Days)) {
+                        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                            try {
+                                PlotHandler.abandonPlot(plot);
+                            } catch (Exception ex) {
+                                Bukkit.getLogger().log(Level.SEVERE, "A unknown error occurred!", ex);
+                            }
+                        });
+                    }
+                }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }, 0L, 20 * 60 * 60); // 1 Hour
     }
 
     public static Plot getPlotByWorld(World plotWorld) throws SQLException {

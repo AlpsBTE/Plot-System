@@ -1,10 +1,6 @@
 package github.BTEPlotSystem.core.plots;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldedit.Vector;;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
@@ -129,9 +125,14 @@ public class Plot extends PlotPermissions {
         return null;
     }
 
-    public void setLastActivity() throws SQLException {
+    public void setLastActivity(boolean setNull) throws SQLException {
         PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = '" + getID() + "'");
         statement.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
+
+        if(setNull) {
+            statement = DatabaseConnection.prepareStatement("UPDATE plots SET lastActivity = DEFAULT(lastActivity) WHERE idplot = '" + getID() + "'");
+        }
+
         statement.executeUpdate();
     }
 

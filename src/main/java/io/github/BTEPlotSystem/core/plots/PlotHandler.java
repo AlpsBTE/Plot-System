@@ -44,7 +44,7 @@ public class PlotHandler {
 
         if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
             try {
-                plot.setLastActivity();
+                plot.setLastActivity(false);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -84,6 +84,7 @@ public class PlotHandler {
 
         plot.getBuilder().removePlot(plot.getSlot());
         plot.setBuilder(null);
+        plot.setLastActivity(true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
 
