@@ -5,12 +5,13 @@ import github.BTEPlotSystem.utils.enums.Category;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class Review {
 
-    private final int reviewID;
+    private int reviewID;
 
     public Review(int reviewID) throws SQLException {
         this.reviewID = reviewID;
@@ -21,7 +22,11 @@ public class Review {
                 "WHERE NOT EXISTS (SELECT t2.id_review FROM reviews t2 WHERE t2.id_review = t1.id_review + 1)");
         rs_reviewID.next();
 
-        this.reviewID = rs_reviewID.getInt(1);
+        try {
+            this.reviewID = rs_reviewID.getInt(1);
+        } catch (SQLDataException ex) {
+            this.reviewID = 1;
+        }
 
         PreparedStatement ps_reviews = DatabaseConnection.prepareStatement("INSERT INTO reviews (id_review, uuid_reviewer, rating) VALUES (?, ?, ?)");
         ps_reviews.setInt(1, reviewID);
@@ -31,7 +36,7 @@ public class Review {
         PreparedStatement ps_plots = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = ? WHERE idplot = '" + plotID + "'");
         ps_plots.setInt(1, reviewID);
 
-        ps_reviews.executeUpdate();
+        ps_reviews.execute();
         ps_plots.executeUpdate();
     }
 

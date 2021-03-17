@@ -109,7 +109,7 @@ public class Builder {
 
     public static Builder getBuilderByName(String name) {
         try {
-            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid FROM alpsbte.players WHERE name = '" + name + "'");
+            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid FROM players WHERE name = '" + name + "'");
 
             if(rs.next()) {
                 return new Builder(java.util.UUID.fromString(rs.getString("uuid")));

@@ -56,7 +56,7 @@ public class PlotHandler {
 
         loadPlot(plot);
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID());
+        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
 
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
@@ -69,12 +69,10 @@ public class PlotHandler {
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID());
+        plot.addBuilderPerms(plot.getBuilder().getUUID()).save();
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
-        plot.setStatus(Status.unclaimed);
-
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
             for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
@@ -85,6 +83,7 @@ public class PlotHandler {
         plot.getBuilder().removePlot(plot.getSlot());
         plot.setBuilder(null);
         plot.setLastActivity(true);
+        plot.setStatus(Status.unclaimed);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
 
@@ -116,14 +115,10 @@ public class PlotHandler {
         }
     }
 
-    public static void unloadPlot(Player player) {
-        World world = player.getWorld();
-        if(PlotManager.isPlotWorld(world) && world.getPlayers().size() - 1 == 0) {
+    public static void unloadPlot(Plot plot) {
+        World world = Bukkit.getWorld("P-" + plot.getID());
+        if(world.getPlayers().size() - 1 == 0) {
             try {
-                Plot plot = PlotManager.getPlotByWorld(world);
-                if(plot.hasReviewerPerms()) {
-                    plot.removeReviewerPerms();
-                }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(world, true), 1, 20*3);
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);

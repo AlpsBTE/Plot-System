@@ -364,6 +364,13 @@ public class ReviewMenu implements Listener {
                         }
                         if (totalRating <= 8){ isRejected = true; }
 
+                        if(selectedPlot.isReviewed()) {
+                            selectedPlot.getReview().setRating(score.toString());
+                            selectedPlot.getReview().setReviewer(player.getUniqueId());
+                        } else {
+                            new Review(selectedPlot.getID(), player.getUniqueId(), score.toString());
+                        }
+
                         //TODO: multiply with multiplier
                         selectedPlot.setScore(totalRating);
 
@@ -378,13 +385,6 @@ public class ReviewMenu implements Listener {
                             player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " has been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
 
                             PlotHandler.undoSubmit(selectedPlot);
-                        }
-
-                        if(selectedPlot.isReviewed()) {
-                            selectedPlot.getReview().setRating(score.toString());
-                            selectedPlot.getReview().setReviewer(player.getUniqueId());
-                        } else {
-                            new Review(selectedPlot.getID(), player.getUniqueId(), score.toString());
                         }
 
                         for(Player player : player.getWorld().getPlayers()) {

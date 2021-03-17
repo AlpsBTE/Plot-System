@@ -88,14 +88,19 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+    public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
         event.setQuitMessage(null);
-        PlotHandler.unloadPlot(event.getPlayer());
+
+        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
-        PlotHandler.unloadPlot(event.getPlayer());
+    public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
+        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
+        }
     }
 
     @EventHandler
