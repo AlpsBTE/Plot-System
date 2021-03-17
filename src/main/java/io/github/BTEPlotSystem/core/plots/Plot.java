@@ -33,7 +33,6 @@ public class Plot extends PlotPermissions {
     private final Builder builder;
     private double[] geoCoordinates;
     private final Difficulty difficulty;
-    private final Date lastActivity;
     private Review review;
 
     public Plot(int ID) throws SQLException {
@@ -53,9 +52,6 @@ public class Plot extends PlotPermissions {
 
         // Set Plot Difficulty
         this.difficulty = Difficulty.values()[rs.getInt("iddifficulty")];
-
-        // Set Plot Last Player Activity Date
-        this.lastActivity = rs.getDate("lastActivity");
 
         // Set Review Class
         if(getStatus() == Status.complete || wasRejected()) {
@@ -89,13 +85,18 @@ public class Plot extends PlotPermissions {
 
     public Difficulty getDifficulty() { return difficulty; }
 
-    public Date getLastActivity() { return lastActivity; }
-
     public Review getReview() { return review; }
 
     public File getSchematic() { return Paths.get(PlotManager.getSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile(); }
 
     public String getGeoCoordinatesNumeric() { return CoordinateConversion.formatGeoCoordinatesNumeric(geoCoordinates); }
+
+    public Date getLastActivity() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT lastActivity FROM plots WHERE idplot = '" + getID() + "'");
+        rs.next();
+
+        return rs.getDate(1);
+    }
 
     public Status getStatus() throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
@@ -126,6 +127,12 @@ public class Plot extends PlotPermissions {
             }
         }
         return null;
+    }
+
+    public void setLastActivity() throws SQLException {
+        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = '" + getID() + "'");
+        statement.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
+        statement.executeUpdate();
     }
 
     public void setBuilder(String UUID) throws SQLException {
