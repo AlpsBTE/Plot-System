@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class CMD_EditPlot implements CommandExecutor {
+public class CMD_Edit implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender instanceof Player) {

@@ -66,7 +66,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
         this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
-        this.getCommand("edit").setExecutor(new CMD_EditPlot());
+        this.getCommand("edit").setExecutor(new CMD_Edit());
 
         this.getCommand("tpp").setExecutor(new CMD_Tpp());
         this.getCommand("spawn").setExecutor(new CMD_Spawn());
