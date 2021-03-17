@@ -41,6 +41,14 @@ public class PlotHandler {
         player.getInventory().setItem(7, ReviewMenu.getItem());
 
         sendLinkMessages(plot, player);
+
+        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+            try {
+                plot.setLastActivity();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }
     }
 
     public static void finishPlot(Plot plot) throws Exception {
