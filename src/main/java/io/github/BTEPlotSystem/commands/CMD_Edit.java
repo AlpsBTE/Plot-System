@@ -27,10 +27,10 @@ public class CMD_Edit implements CommandExecutor {
                             Plot plot = PlotManager.getPlotByWorld(player.getWorld());
 
                             if(plot.hasReviewerPerms()) {
-                                plot.removeReviewerPerms();
+                                plot.removeReviewerPerms().save();
                                 sender.sendMessage(Utils.getInfoMessageFormat("§6Disabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
                             } else {
-                                plot.addReviewerPerms();
+                                plot.addReviewerPerms().save();
                                 sender.sendMessage(Utils.getInfoMessageFormat("§6Enabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
                             }
                         } catch (SQLException ex) {
