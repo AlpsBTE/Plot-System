@@ -41,11 +41,11 @@ public class PlotManager {
         return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "'"));
     }
 
-    public static int getMultiplierByDifficulty(Difficulty difficulty) throws SQLException {
+    public static double getMultiplierByDifficulty(Difficulty difficulty) throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + difficulty.name() + "'");
 
         if(rs.next()) {
-            return rs.getInt(1);
+            return rs.getDouble(1);
         }
         return 1;
     }
