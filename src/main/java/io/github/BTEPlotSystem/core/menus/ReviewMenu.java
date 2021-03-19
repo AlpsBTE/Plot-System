@@ -46,6 +46,7 @@ public class ReviewMenu implements Listener {
 
     private final HashMap<Plot, ItemStack> plotItems = new HashMap<>();
     private Plot selectedPlot;
+    private boolean sentWarning;
 
     private final Player player;
 
@@ -339,23 +340,10 @@ public class ReviewMenu implements Listener {
                         for (int i = 0; i < 4; i++) {
                             for (int j = 0; j < 6; j++) {
                                 if (reviewPlotMenu.getItem(11 + (i * 9) + j).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
-                                    switch (i) {
-                                        case 0:
-                                            player.sendMessage("§7>> Accuracy: " + j);
-                                            score.append(j).append(",");
-                                            break;
-                                        case 1:
-                                            player.sendMessage("§7>> Block Palette: " + j);
-                                            score.append(j).append(",");
-                                            break;
-                                        case 2:
-                                            player.sendMessage("§7>> Detailing: " + j);
-                                            score.append(j).append(",");
-                                            break;
-                                        case 3:
-                                            player.sendMessage("§7>> Technique: " + j);
-                                            score.append(j);
-                                            break;
+                                    if(i == 3) {
+                                        score.append(j);
+                                    } else {
+                                        score.append(j).append(",");
                                     }
                                     totalRating+=j;
                                     if (j <= 0){ isRejected = true; }
@@ -363,6 +351,17 @@ public class ReviewMenu implements Listener {
                             }
                         }
                         if (totalRating <= 8){ isRejected = true; }
+
+                        if(totalRating == 0 && !sentWarning) {
+                            player.sendMessage(Utils.getInfoMessageFormat("§c§lWARNING: §cThis plot will automatically get abandoned!"));
+                            player.playSound(player.getLocation(), Utils.CreatePlotSound, 1, 1);
+                            sentWarning = true;
+                            event.setCancelled(true);
+                            return;
+                        } else if(totalRating == 0) {
+                            PlotHandler.abandonPlot(selectedPlot);
+                            return;
+                        }
 
                         if(selectedPlot.isReviewed()) {
                             selectedPlot.getReview().setRating(score.toString());
