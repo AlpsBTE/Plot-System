@@ -4,7 +4,6 @@ import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -64,7 +63,7 @@ public class PlotActionsMenu {
                 // Set Finish Plot Item
                 menu.getSlot(10)
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
-                                .setName("§a§lFinish").setLore(new LoreBuilder()
+                                .setName("§a§lSubmit").setLore(new LoreBuilder()
                                         .description("Click to complete the selected plot and submit it to be reviewed.",
                                                 "",
                                                 "§c§lNote: §7You won't be able to continue building on your plot!")

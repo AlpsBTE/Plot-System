@@ -62,7 +62,6 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             boolean newMessage = false;
             for(Plot plot : plots) {
-                System.out.println(plot.isReviewed() + " | " + plot.getReview().isFeedbackSent());
                 if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
                     TextComponent tc = new TextComponent();
                     tc.setText(Utils.getInfoMessageFormat("Your plot with the ID §6#" + plot.getID() + " §ahas been reviewed! §6Click Here §ato check your feedback."));
