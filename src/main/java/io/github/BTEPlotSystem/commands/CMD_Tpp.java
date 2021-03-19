@@ -12,18 +12,16 @@ public class CMD_Tpp implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender instanceof Player) {
-            if(sender.hasPermission("alpsbte.tpp")) {
-                Player player = (Player) sender;
-                try {
-                    Player targetPlayer = player.getServer().getPlayer(args[0]);
-                    player.teleport(targetPlayer);
-                    player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
+            Player player = (Player) sender;
+            try {
+                Player targetPlayer = player.getServer().getPlayer(args[0]);
+                player.teleport(targetPlayer);
+                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
 
-                    player.getInventory().setItem(8, CompanionMenu.getItem());
-                    player.getInventory().setItem(7, ReviewMenu.getItem());
-                } catch (Exception ignore) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpp <Player>"));
-                }
+                player.getInventory().setItem(8, CompanionMenu.getItem());
+                player.getInventory().setItem(7, ReviewMenu.getItem());
+            } catch (Exception ignore) {
+                sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpp <Player>"));
             }
         }
         return true;

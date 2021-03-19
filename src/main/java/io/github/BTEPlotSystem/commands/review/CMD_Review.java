@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands;
+package github.BTEPlotSystem.commands.review;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.ReviewMenu;

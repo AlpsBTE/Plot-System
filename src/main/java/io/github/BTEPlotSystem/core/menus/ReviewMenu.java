@@ -374,14 +374,14 @@ public class ReviewMenu implements Listener {
                         selectedPlot.setScore(totalRating);
 
                         if (!isRejected){
-                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " marked as reviewed!");
+                            player.sendMessage("§7>> §aPlot §6#" + selectedPlot.getID() + " §aby §6" + selectedPlot.getBuilder().getName() + " §amarked as reviewed!");
 
                             selectedPlot.setStatus(Status.complete);
                             selectedPlot.getBuilder().addScore(totalRating);
                             selectedPlot.getBuilder().addCompletedBuild();
                             selectedPlot.getBuilder().removePlot(selectedPlot.getSlot());
                         } else {
-                            player.sendMessage("§7>> §aPlot #" + selectedPlot.getID() + " by " + selectedPlot.getBuilder().getName() + " has been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
+                            player.sendMessage("§7>> §aPlot §6#" + selectedPlot.getID() + " §aby §6" + selectedPlot.getBuilder().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
 
                             PlotHandler.undoSubmit(selectedPlot);
                         }

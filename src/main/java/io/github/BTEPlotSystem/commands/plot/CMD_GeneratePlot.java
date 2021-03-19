@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands;
+package github.BTEPlotSystem.commands.plot;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotGenerator;
@@ -17,15 +17,15 @@ public class CMD_GeneratePlot implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender instanceof Player) {
-                if(sender.hasPermission("alpsbte.admin")) {
-                    if(Utils.TryParseInt(args[0]) != null) {
-                        try {
-                            new PlotGenerator(new Plot(Integer.parseInt(args[0])), new Builder(((Player) sender).getUniqueId()));
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        }
+            if(sender.hasPermission("alpsbte.admin")) {
+                if(Utils.TryParseInt(args[0]) != null) {
+                    try {
+                        new PlotGenerator(new Plot(Integer.parseInt(args[0])), new Builder(((Player) sender).getUniqueId()));
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
                 }
+            }
         }
         return true;
     }

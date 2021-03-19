@@ -36,7 +36,14 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder, Status... status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' AND status = '" + getPlots(status).toString() + "'"));
+        StringBuilder query = new StringBuilder("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' AND status = ");
+
+        for(int i = 0; i < status.length; i++) {
+            query.append("'").append(status[i].name()).append("'");
+
+            query.append((i != status.length - 1) ? " OR status = " : "");
+        }
+        return listPlots(DatabaseConnection.createStatement().executeQuery(query.toString()));
     }
 
     public static List<Plot> getPlots(int cityID, Status status) throws SQLException {

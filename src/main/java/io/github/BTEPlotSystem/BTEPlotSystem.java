@@ -4,6 +4,14 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
+import github.BTEPlotSystem.commands.admin.CMD_CleanUp;
+import github.BTEPlotSystem.commands.admin.CMD_Reload;
+import github.BTEPlotSystem.commands.admin.CMD_SetHologramPosition;
+import github.BTEPlotSystem.commands.plot.*;
+import github.BTEPlotSystem.commands.review.CMD_Edit;
+import github.BTEPlotSystem.commands.review.CMD_Feedback;
+import github.BTEPlotSystem.commands.review.CMD_Review;
+import github.BTEPlotSystem.commands.review.CMD_SendFeedback;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.holograms.EventHologram;
@@ -58,8 +66,9 @@ public class BTEPlotSystem extends JavaPlugin {
         // Add Commands
         this.getCommand("plot").setExecutor(new CMD_Plot());
         this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
-        this.getCommand("finish").setExecutor(new CMD_Finish());
+        this.getCommand("submit").setExecutor(new CMD_Submit());
         this.getCommand("abandon").setExecutor(new CMD_Abandon());
+        this.getCommand("undosubmit").setExecutor(new CMD_UndoSubmit());
         this.getCommand("link").setExecutor(new CMD_Link());
 
         this.getCommand("companion").setExecutor(new CMD_Companion());

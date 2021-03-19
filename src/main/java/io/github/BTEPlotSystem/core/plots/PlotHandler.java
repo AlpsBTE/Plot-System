@@ -24,7 +24,7 @@ import java.util.logging.Level;
 public class PlotHandler {
 
     public static void teleportPlayer(Plot plot, Player player) {
-        player.sendMessage("§7>> §aTeleporting to plot §6#" + plot.getID());
+        player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) == null) {
@@ -51,7 +51,7 @@ public class PlotHandler {
         }
     }
 
-    public static void finishPlot(Plot plot) throws Exception {
+    public static void submitPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
         loadPlot(plot);

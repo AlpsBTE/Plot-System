@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands;
+package github.BTEPlotSystem.commands.admin;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
@@ -14,7 +14,7 @@ public class CMD_SetHologramPosition implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender instanceof Player){
             Player player = (Player)sender;
-            if (sender.hasPermission("alpsbte.hologram")){
+            if (sender.hasPermission("alpsbte.admin")){
                 if (args.length == 1) {
                     if(BTEPlotSystem.getHolograms().stream().anyMatch(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))) {
                         HolographicDisplay hologram = BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0])).findFirst().get();

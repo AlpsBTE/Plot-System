@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands;
+package github.BTEPlotSystem.commands.admin;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;

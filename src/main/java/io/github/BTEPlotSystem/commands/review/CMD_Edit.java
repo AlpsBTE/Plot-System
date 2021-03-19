@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands;
+package github.BTEPlotSystem.commands.review;
 
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotHandler;

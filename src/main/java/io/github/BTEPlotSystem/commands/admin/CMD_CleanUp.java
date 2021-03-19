@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands;
+package github.BTEPlotSystem.commands.admin;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.plots.Plot;

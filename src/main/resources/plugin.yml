@@ -8,54 +8,60 @@ depend: [HeadDatabase, HolographicDisplays]
 commands:
   plot:
     description: teleport to a plot
+    permission: alpsbte.admin
     usage: /plot <ID>
+  submit:
+    description: submit a plot
     permission: alpsbte.plot
-  finish:
-    description: finish a plot
-    usage: /finish
-    permission: alpsbte.finish
+    usage: /submit, /submit <ID>
   abandon:
     description: abandon a plot
-    usage: /abandon
-    permission: alpsbte.abandon
+    permission: alpsbte.plot
+    usage: /abandon, /abandon <ID>
+  undosubmit:
+    description: undo a submission of a plot
+    permission: alpsbte.plot
+    usage: /undosubmit, /undosubmit <ID>
   review:
     description: review unreviewed plots
-    usage: /review
     permission: alpsbte.review
+    usage: /review
   companion:
-    description: opens the companion UI
-    usage: /companion
+    description: opens the companion menu UI
     permission: alpsbte.companion
+    usage: /companion
   generateplot:
     description: generate a new plot
-    usage: /generateplot <ID>
     permission: alpsbte.admin
+    usage: /generateplot <ID>
   sethologram:
     description: sets the position of a hologram
-    usage: /sethologram <name>
     permission: alpsbte.admin
+    usage: /sethologram <name>
   reloadhologram:
     description: reloads all holograms
-    usage: /reloadhologram
     permission: alpsbte.admin
+    usage: /reloadhologram
   spawn:
     description: teleports you back to the spawn location
     usage: /spawn
   tpp:
     description: teleport to a player
     usage: /tpp <Player>
-    permission: alpsbte.tpp
   link:
     description: sends you the links of the plot you are currently on
     usage: /link
   plots:
     description: shows all plots of the given player
+    permission: alpsbte.plot
     usage: /plots, /plots <Player>
   feedback:
     description: shows all feedback information of a plot
+    permission: alpsbte.plot
     usage: /feedback <ID>
   sendfeedback:
     description: sets the feedback of a plot
+    permission: alpsbte.review
     usage: /sendfeedback <ID> <Text>
   cleanup:
     description: temporary command for database clean up

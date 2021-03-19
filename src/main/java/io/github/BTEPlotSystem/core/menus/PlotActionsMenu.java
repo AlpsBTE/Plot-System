@@ -53,25 +53,12 @@ public class PlotActionsMenu {
                 menu.getSlot(10)
                         .setItem(new ItemBuilder(Material.FIREBALL, 1)
                                 .setName("§c§lUndo Submit").setLore(new LoreBuilder()
-                                        .description("Click to undo your submission...")
+                                        .description("Click to undo your submission.")
                                         .build())
                                 .build());
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
-                    try {
-                        if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
-                            PlotHandler.undoSubmit(plot);
-                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
-                            clickPlayer.closeInventory();
-                        } else {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to undo submit this plot!"));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        }
-                    } catch (SQLException ex) {
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while trying to undo the submission of the selected plot! Please try again or contact a staff member."));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while completing a plot (ID: " + plot.getID() + ")!", ex);
-                    }
+                    clickPlayer.closeInventory();
+                    clickPlayer.performCommand("undosubmit " + plot.getID());
                 });
             } else {
                 // Set Finish Plot Item
@@ -84,22 +71,8 @@ public class PlotActionsMenu {
                                         .build())
                                 .build());
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
-                    try {
-                        if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
-                            PlotHandler.finishPlot(plot);
-                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Finished plot with the ID §6#" + plot.getID()));
-                            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
-                        } else {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to finish this plot!"));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        }
-                    } catch (Exception ex) {
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while completing the selected plot! Please try again or contact a staff member."));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while completing a plot (ID: " + plot.getID() + ")!", ex);
-                    }
                     clickPlayer.closeInventory();
+                    clickPlayer.performCommand("submit " + plot.getID());
                 });
             }
         } catch (SQLException ex) {
@@ -115,8 +88,8 @@ public class PlotActionsMenu {
                                 .build())
                         .build());
         menu.getSlot(additionalSlot ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
-            PlotHandler.teleportPlayer(plot, player);
             clickPlayer.closeInventory();
+            PlotHandler.teleportPlayer(plot, clickPlayer);
         });
 
         // Set Abandon Plot Item
@@ -129,21 +102,8 @@ public class PlotActionsMenu {
                                 .build())
                         .build());
         menu.getSlot(additionalSlot ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
-            try {
-                if (plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
-                    PlotHandler.abandonPlot(plot);
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.AbandonPlotSound, 1, 1);
-                } else {
-                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                }
-            } catch (Exception ex) {
-                clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while abandoning the selected plot! Please try again or contact a staff member."));
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while abandoning a plot (ID: " + plot.getID() + ")!", ex);
-            }
             clickPlayer.closeInventory();
+            clickPlayer.performCommand("abandon " + plot.getID());
         });
 
         // Set Feedback Item
@@ -155,13 +115,8 @@ public class PlotActionsMenu {
                                     .build())
                             .build());
             menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
-                try {
-                    new FeedbackMenu(clickPlayer, plot.getReview().getReviewID());
-                } catch (Exception ex) {
-                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred while opening the feedback menu! Please try again or contact a staff member."));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                    Bukkit.getLogger().log(Level.SEVERE, "An database error occurred while opening the feedback menu! (ID: " + plot.getID() + ")!", ex);
-                };
+                clickPlayer.closeInventory();
+                clickPlayer.performCommand("feedback " + plot.getID());
             });
         }
     }
