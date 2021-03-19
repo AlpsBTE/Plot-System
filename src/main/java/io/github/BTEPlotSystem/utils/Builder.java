@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.utils;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.utils.enums.Slot;
@@ -90,6 +91,7 @@ public class Builder {
         DatabaseConnection.prepareStatement(
                 "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + getUUID() + "'"
         ).executeUpdate();
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
     }
 
     public void addCompletedBuild() throws SQLException {
