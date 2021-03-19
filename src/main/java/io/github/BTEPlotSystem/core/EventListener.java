@@ -37,24 +37,6 @@ public class EventListener extends SpecialBlocks implements Listener {
         event.setJoinMessage(null);
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
-        try {
-            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
-
-            for(Plot plot : plots) {
-                if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
-                    TextComponent tc = new TextComponent();
-                    tc.setText(Utils.getInfoMessageFormat("Your plot with the ID §6#" + plot.getID() + " §7has been reviewed! Click Here to check your feedback."));
-                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "feedback " + plot.getID()));
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
-
-                    event.getPlayer().spigot().sendMessage(tc);
-                    event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1, 1);
-                }
-            }
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
-        }
-
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
         }
@@ -73,6 +55,31 @@ public class EventListener extends SpecialBlocks implements Listener {
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Could not add player [" + event.getPlayer().getName() + "] to database!", ex);
             }
+        }
+
+        try {
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
+
+            boolean newMessage = false;
+            for(Plot plot : plots) {
+                System.out.println(plot.isReviewed() + " | " + plot.getReview().isFeedbackSent());
+                if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
+                    TextComponent tc = new TextComponent();
+                    tc.setText(Utils.getInfoMessageFormat("Your plot with the ID §6#" + plot.getID() + " §ahas been reviewed! §6Click Here §ato check your feedback."));
+                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feedback " + plot.getID()));
+                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
+
+                    event.getPlayer().spigot().sendMessage(tc);
+                    plot.getReview().setFeedbackSent(true);
+                    newMessage = true;
+                }
+            }
+
+            if(newMessage) {
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1, 1);
+            }
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
         }
     }
 
