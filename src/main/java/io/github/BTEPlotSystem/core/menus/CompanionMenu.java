@@ -49,6 +49,7 @@ public class CompanionMenu {
 
     public void setMenuItems() throws SQLException {
 
+        // Set Navigator Menu Item
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.COMPASS,1)
                 .setName("§6§lNavigator").setLore(new LoreBuilder()
@@ -100,48 +101,6 @@ public class CompanionMenu {
                                 .build());
             }
         }
-
-        // Set Custom Heads Item
-        menu.getSlot(50)
-                .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
-                .setName("§b§lCUSTOM HEADS")
-                .setLore(new LoreBuilder().description("Open the head menu to get a variety of custom heads.").build())
-                .build());
-        menu.getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
-            if (clickPlayer.getWorld().getName().startsWith("P-")){
-                clickPlayer.performCommand("hdb");
-            } else {
-                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this"));
-            }
-        });
-
-        // Set Banner Maker Item
-        menu.getSlot(51)
-                .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
-                .setName("§b§lBANNER MAKER")
-                .setLore(new LoreBuilder().description("Open the banner maker menu to create your own custom banners.").build())
-                .build());
-        menu.getSlot(51).setClickHandler((clickPlayer, clickInformation) -> {
-            if (clickPlayer.getWorld().getName().startsWith("P-")){
-                clickPlayer.performCommand("bm");
-            } else {
-                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this"));
-            }
-        });
-
-        // Set Custom Blocks Item
-        menu.getSlot(52)
-                .setItem(new ItemBuilder(Material.GOLD_BLOCK ,1)
-                .setName("§b§lSPECIAL BLOCKS")
-                .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
-                .build());
-        menu.getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            if(clickPlayer.getWorld().getName().startsWith("P-")){
-                new SpecialBlocksMenu().getUI().open(clickPlayer);
-            } else {
-                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this"));
-            }
-        });
 
         // Set City Projects Items
         List<CityProject> cities = CityProject.getCityProjects();
@@ -201,6 +160,44 @@ public class CompanionMenu {
                                     .build())
                             .build());
         }
+
+        // Set Builder Utilities Menu Item
+        menu.getSlot(50)
+                .setItem(new ItemBuilder(Material.GOLD_AXE)
+                        .setName("§b§lBuilder Utilities")
+                        .setLore(new LoreBuilder()
+                                .description("Get access to custom heads, banners and special blocks.")
+                                .build())
+                        .build());
+        menu.getSlot(50).setClickHandler(((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            new BuilderUtilitiesMenu(clickPlayer);
+        }));
+
+        // Set Show Player Plots Menu Item
+        menu.getSlot(51)
+                .setItem(new ItemBuilder(Utils.headDatabaseAPI.getItemHead("9282"))
+                        .setName("§b§lShow Plots")
+                        .setLore(new LoreBuilder()
+                                .description("Show all your plots.")
+                                .build())
+                        .build());
+        menu.getSlot(51).setClickHandler(((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            clickPlayer.performCommand("plots " + clickPlayer.getName());
+        }));
+
+        // Set Player Settings Menu Item
+        menu.getSlot(52)
+                .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
+                        .setName("§b§lSettings")
+                        .setLore(new LoreBuilder()
+                                .description("Modify your user settings.")
+                                .build())
+                        .build());
+        menu.getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> {
+
+        }));
     }
 
     private ItemStack getCityProjectItem(String HeadID) {
