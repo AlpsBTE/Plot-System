@@ -1,7 +1,6 @@
 package github.BTEPlotSystem.core.plots;
 
 import com.sk89q.worldedit.Vector;;
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.CityProject;
@@ -111,7 +110,12 @@ public class Plot extends PlotPermissions {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
 
         if(rs.next()) {
-            return rs.getInt("score");
+            int score = rs.getInt(1);
+            if(rs.wasNull()) {
+                return -1;
+            } else {
+                return score;
+            }
         }
         return 0;
     }
@@ -157,10 +161,14 @@ public class Plot extends PlotPermissions {
     }
 
     public void setScore(int score) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
-        statement.setInt(1, score);
+        PreparedStatement statement;
+        if(score == -1) {
+          statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = DEFAULT(score) WHERE idplot = '" + getID() + "'");
+        } else {
+            statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
+            statement.setInt(1, score);
+        }
         statement.executeUpdate();
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
     }
 
     public void setStatus(Status status) throws SQLException {
@@ -200,6 +208,6 @@ public class Plot extends PlotPermissions {
     }
 
     public boolean wasRejected() throws SQLException {
-        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != 0;
+        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != -1; // -1 == null
     }
 }
