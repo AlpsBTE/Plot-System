@@ -83,17 +83,19 @@ public class PlotHandler {
         plot.getBuilder().removePlot(plot.getSlot());
         plot.setBuilder(null);
         plot.setLastActivity(true);
-        plot.setStatus(Status.unclaimed);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
 
         if(plot.isReviewed()) {
             PreparedStatement stmt_reviews = DatabaseConnection.prepareStatement("DELETE FROM reviews WHERE id_review = '" + plot.getReview().getReviewID() + "'");
-            stmt_reviews.execute();
+            stmt_reviews.executeUpdate();
 
             PreparedStatement stmt_plots = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = '" + plot.getID() + "'");
             stmt_plots.executeUpdate();
         }
+
+        plot.setScore(-1);
+        plot.setStatus(Status.unclaimed);
 
         FileUtils.deleteDirectory(new File(getWorldGuardConfigPath(plot.getID())));
         FileUtils.deleteDirectory(new File(getMultiverseInventoriesConfigPath(plot.getID())));
