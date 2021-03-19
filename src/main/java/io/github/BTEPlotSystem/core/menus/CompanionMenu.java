@@ -4,6 +4,7 @@ import github.BTEPlotSystem.core.plots.Plot;
 import github.BTEPlotSystem.core.plots.PlotGenerator;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.*;
+import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -156,7 +157,9 @@ public class CompanionMenu {
                                             "",
                                             "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + " §7Plots Open",
                                             "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + " §7Plots In Progress",
-                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + " §7Plots Completed")
+                                            "§6" + PlotManager.getPlots(cityID, Status.complete).size() + " §7Plots Completed",
+                                            "",
+                                            getAverageCityProjectDifficultyFormat(i))
                                     .build())
                             .build());
         }
@@ -202,6 +205,21 @@ public class CompanionMenu {
 
     private ItemStack getCityProjectItem(String HeadID) {
         return (headDB != null) ? headDB.getItemHead(HeadID) : new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+    }
+
+    private String getAverageCityProjectDifficultyFormat(int cityID) throws SQLException {
+        int diff_ID = new CityProject(cityID).getAverageDifficulty().ordinal();
+
+        switch (diff_ID) {
+            case 1:
+                return "§a§lEASY";
+            case 2:
+                return "§6§lMEDIUM";
+            case 3:
+                return "§c§lHARD";
+            default:
+                return "";
+        }
     }
 
     public static ItemStack getItem(){
