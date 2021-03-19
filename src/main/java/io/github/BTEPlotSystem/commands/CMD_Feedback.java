@@ -38,7 +38,7 @@ public class CMD_Feedback implements CommandExecutor {
                                 sender.sendMessage(Utils.getErrorMessageFormat("This plot has not yet been reviewed!"));
                             }
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plot.getID() + "!"));
+                            sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot feedback with ID #" + plot.getID() + "!"));
                         }
                     } catch (SQLException ex) {
                         sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));

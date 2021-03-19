@@ -1,15 +1,17 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class CMD_SendFeedback implements CommandExecutor {
     @Override
@@ -17,36 +19,43 @@ public class CMD_SendFeedback implements CommandExecutor {
         if (sender instanceof Player){
             Player player = (Player)sender;
             if (player.hasPermission("alpsbte.review")){
-                if (args.length == 2){
+                if (args.length >= 2){
                     if (Utils.TryParseInt(args[0]) != null){
                         try {
-                            Plot plot = new Plot(Integer.parseInt(args[0]));
-                            if (plot.getReview().getReviewer().equals(new Builder(player.getUniqueId())) || player.hasPermission("alpsbte.admin")){
-                                if (plot.getStatus().equals(Status.complete) || plot.getStatus().equals(Status.unfinished) && plot.isReviewed()){
-                                    plot.getReview().setFeedback(args[1]);
-                                    player.sendMessage(Utils.getInfoMessageFormat("The feedback for your plot #"+plot.getID()+" has been updated! [Click to view]"));
-                                    //TODO: Click event
+                            if(PlotManager.plotExists(Integer.parseInt(args[0]))) {
+                                Plot plot = new Plot(Integer.parseInt(args[0]));
+                                if (plot.isReviewed() || plot.wasRejected()) {
+                                    if (plot.getReview().getReviewer().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")){
+
+                                        StringBuilder feedback = new StringBuilder();
+
+                                        for(int i = 2; i <= args.length; i++) {
+                                            feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
+                                        }
+
+                                        plot.getReview().setFeedback(feedback.toString());
+
+                                        player.sendMessage(Utils.getInfoMessageFormat("The feedback for the plot §6#" + plot.getID() + " §ahas been updated!"));
+
+
+                                    } else {
+                                        sender.sendMessage(Utils.getErrorMessageFormat("You cannot send feedback to a plot that you haven't reviewed yourself!"));
+                                    }
                                 } else {
-                                    Error(player,"Plot is either unclaimed or hasn't been reviewed yet!");
+                                    sender.sendMessage(Utils.getErrorMessageFormat("Plot is either unclaimed or hasn't been reviewed yet!"));
                                 }
                             } else {
-                                Error(player,"You cannot send feedback to a plot that you haven't reviewed yourself!");
+                                sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                             }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            Error(player,"SQL Error! /sendfeedback <id> <text>");
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                         }
                     }
                 } else {
-                    Error(player,"Invalid arguments! /sendfeedback <id> <text>");
+                    sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sendfeedback <ID> <Text>"));
                 }
             }
         }
         return true;
-    }
-
-    private void Error(Player player, String text){
-        player.sendMessage(Utils.getErrorMessageFormat(text));
-        player.playSound(player.getLocation(), Utils.ErrorSound, 1, 1);
     }
 }
