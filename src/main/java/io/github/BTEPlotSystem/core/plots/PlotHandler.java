@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
 public class PlotHandler {
@@ -160,6 +161,26 @@ public class PlotHandler {
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§7--------------------");
+    }
+
+    public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
+        player.sendMessage("§7--------------------");
+        for(Plot plot : plots) {
+            player.sendMessage("§aYour plot with the ID §6#" + plot.getID() + " §ahas been reviewed!");
+            TextComponent tc = new TextComponent();
+            tc.setText("§6Click Here §ato check your feedback.");
+            tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feedback " + plot.getID()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
+            player.spigot().sendMessage(tc);
+
+            if(plots.size() != plots.indexOf(plot) + 1) {
+                player.sendMessage("");
+            }
+
+            plot.getReview().setFeedbackSent(true);
+        }
+        player.sendMessage("§7--------------------");
+        player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
     }
 
     public static String getWorldGuardConfigPath(int plotID) {
