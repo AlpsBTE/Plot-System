@@ -45,7 +45,8 @@ public class FeedbackMenu {
             .setName("§b§lScore")
             .setLore(new LoreBuilder()
                 .description(
-                        "§7Total Points: §f" + plot.getScore(),
+                        "§7",
+                        "Total Points: §f" + plot.getScore(),
                         "",
                         "§7Accuracy: " + Utils.getPointsByColor(review.getRating(Category.ACCURACY)) + "§8/§a5",
                         "§7Block Palette: " + Utils.getPointsByColor(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
@@ -61,7 +62,7 @@ public class FeedbackMenu {
         menu.getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
             .setName("§b§lFeedback")
             .setLore(new LoreBuilder()
-                .description("§f" + plot.getReview().getFeedback())
+                .description("§f", plot.getReview().getFeedback())
                 .build())
         .build());
 
@@ -69,7 +70,7 @@ public class FeedbackMenu {
         menu.getSlot(16).setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
             .setName("§b§lReviewer")
             .setLore(new LoreBuilder()
-                .description("§f" + review.getReviewer().getName())
+                .description("§f", review.getReviewer().getName())
             .build())
         .build());
     }

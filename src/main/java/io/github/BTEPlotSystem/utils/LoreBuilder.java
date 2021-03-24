@@ -7,30 +7,13 @@ public class LoreBuilder {
 
     private final List<String> lore = new ArrayList<String>();
 
-    public LoreBuilder description(String... lines) {
+    public LoreBuilder description(String color, String... lines) {
         for (String line : lines) {
             String[] newLines = line.split("//");
 
             for(String newLine : newLines) {
-                lore.add("§7" + newLine.replace("//", ""));
+                lore.add(color + newLine.replace("//", ""));
             }
-        }
-        return this;
-    }
-
-    public LoreBuilder server(int player, boolean available) {
-        if (available) {
-            lore.add("§a>> Connect To Server <<");
-            lore.add("§6" + player + " §7currently playing");
-        } else {
-            lore.add("§c>> Server is offline <<");
-        }
-        return this;
-    }
-
-    public LoreBuilder features(String... lines) {
-        for (String line : lines) {
-            lore.add("§e>> §f" + line);
         }
         return this;
     }

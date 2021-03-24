@@ -52,7 +52,7 @@ public class PlotActionsMenu {
                 menu.getSlot(10)
                         .setItem(new ItemBuilder(Material.FIREBALL, 1)
                                 .setName("§c§lUndo Submit").setLore(new LoreBuilder()
-                                        .description("Click to undo your submission.")
+                                        .description("§7", "Click to undo your submission.")
                                         .build())
                                 .build());
                 menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
@@ -64,7 +64,7 @@ public class PlotActionsMenu {
                 menu.getSlot(10)
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
                                 .setName("§a§lSubmit").setLore(new LoreBuilder()
-                                        .description("Click to complete the selected plot and submit it to be reviewed.",
+                                        .description("§7", "Click to complete the selected plot and submit it to be reviewed.",
                                                 "",
                                                 "§c§lNote: §7You won't be able to continue building on your plot!")
                                         .build())
@@ -83,7 +83,7 @@ public class PlotActionsMenu {
         menu.getSlot(additionalSlot ? 12 : 13)
                 .setItem(new ItemBuilder(Material.COMPASS, 1)
                         .setName("§6§lTeleport").setLore(new LoreBuilder()
-                                .description("Click to teleport to the plot.")
+                                .description("§7", "Click to teleport to the plot.")
                                 .build())
                         .build());
         menu.getSlot(additionalSlot ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
@@ -95,7 +95,8 @@ public class PlotActionsMenu {
         menu.getSlot(additionalSlot ? 14 : 16)
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
                         .setName("§c§lAbandon").setLore(new LoreBuilder()
-                                .description("Click to reset your plot and give it to someone else.",
+                                .description("§7",
+                                        "Click to reset your plot and give it to someone else.",
                                         "",
                                         "§c§lNote: §7You won't be able to continue building on your plot!")
                                 .build())
@@ -110,7 +111,7 @@ public class PlotActionsMenu {
             menu.getSlot(16)
                     .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
                             .setName("§b§lFeedback").setLore(new LoreBuilder()
-                                    .description("Click to view your plot review feedback.")
+                                    .description("§7", "Click to view your plot review feedback.")
                                     .build())
                             .build());
             menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {

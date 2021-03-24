@@ -98,7 +98,7 @@ public class BTEPlotSystem extends JavaPlugin {
 
         new PortalManager().start();
 
-        PlotManager.checkPlotsForLastActivity();
+       // PlotManager.checkPlotsForLastActivity();
 
         getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
     }

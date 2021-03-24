@@ -162,7 +162,7 @@ public class SpecialBlocksMenu extends SpecialBlocks {
     public static ItemStack getItem() {
         return new ItemBuilder(Material.GOLD_BLOCK ,1)
                 .setName("§b§lSPECIAL BLOCKS")
-                .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
+                .setLore(new LoreBuilder().description("§7", "Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build();
     }
 }

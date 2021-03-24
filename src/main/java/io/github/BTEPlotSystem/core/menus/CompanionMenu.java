@@ -54,7 +54,7 @@ public class CompanionMenu {
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.COMPASS,1)
                 .setName("§6§lNavigator").setLore(new LoreBuilder()
-                                .description("Open the navigator menu.")
+                                .description("§7", "Open the navigator menu.")
                                 .build())
                 .build());
         menu.getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
@@ -72,7 +72,8 @@ public class CompanionMenu {
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
                                         .description(
-                                                     "§7ID: §f" + plot.getID(),
+                                                     "§7",
+                                                     "ID: §f" + plot.getID(),
                                                      "§7City: §f" + plot.getCity().getName(),
                                                      "§7Difficulty: §f" +  plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(),
                                                      "",
@@ -95,7 +96,8 @@ public class CompanionMenu {
                         .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
-                                        .description("§7Click on a city project to create a new plot.",
+                                        .description("§7",
+                                                "§7Click on a city project to create a new plot.",
                                                      "",
                                                      "§6§lStatus: §7§lUnassigned")
                                         .build())
@@ -112,12 +114,18 @@ public class CompanionMenu {
             menu.getSlot(9+i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
                     clickPlayer.closeInventory();
-                    if (new Builder(clickPlayer.getUniqueId()).getFreeSlot() != null){
+                    Builder builder = new Builder(clickPlayer.getUniqueId());
+                    if (builder.getFreeSlot() != null){
                         if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
-                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                            if(PlotManager.getPlotDifficultyForBuilder(cityID, builder) != null) {
+                                clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
+                                clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
-                            new PlotGenerator(cityID, new Builder(clickPlayer.getUniqueId()));
+                                new PlotGenerator(cityID, PlotManager.getPlotDifficultyForBuilder(cityID, builder), builder);
+                            } else {
+                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project has no open plots available for your difficulty level! Please select another project!"));
+                                clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                            }
                         } else {
                             clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -153,13 +161,14 @@ public class CompanionMenu {
                             .setName("§b§l" + cities.get(i).getName())
                             .setLore(new LoreBuilder()
                                     .description(
+                                            "§7",
                                             cities.get(i).getDescription(),
                                             "",
                                             "§6" + PlotManager.getPlots(cityID, Status.unclaimed).size() + " §7Plots Open",
-                                            "§6" + PlotManager.getPlots(cityID, Status.unfinished).size() + " §7Plots In Progress",
+                                            "§6" + PlotManager.getPlots(cityID, Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
                                             "§6" + PlotManager.getPlots(cityID, Status.complete).size() + " §7Plots Completed",
                                             "",
-                                            getAverageCityProjectDifficultyFormat(i))
+                                            getCityDifficultyForBuilder(cityID, new Builder(player.getUniqueId())))
                                     .build())
                             .build());
         }
@@ -169,7 +178,7 @@ public class CompanionMenu {
                 .setItem(new ItemBuilder(Material.GOLD_AXE)
                         .setName("§b§lBuilder Utilities")
                         .setLore(new LoreBuilder()
-                                .description("Get access to custom heads, banners and special blocks.")
+                                .description("§7", "Get access to custom heads, banners and special blocks.")
                                 .build())
                         .build());
         menu.getSlot(50).setClickHandler(((clickPlayer, clickInformation) -> {
@@ -182,7 +191,7 @@ public class CompanionMenu {
                 .setItem(new ItemBuilder(Utils.headDatabaseAPI.getItemHead("9282"))
                         .setName("§b§lShow Plots")
                         .setLore(new LoreBuilder()
-                                .description("Show all your plots.")
+                                .description("§7", "Show all your plots.")
                                 .build())
                         .build());
         menu.getSlot(51).setClickHandler(((clickPlayer, clickInformation) -> {
@@ -195,7 +204,7 @@ public class CompanionMenu {
                 .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
                         .setName("§b§lSettings")
                         .setLore(new LoreBuilder()
-                                .description("Modify your user settings.")
+                                .description("§7", "Modify your user settings.")
                                 .build())
                         .build());
         menu.getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> {
@@ -207,8 +216,11 @@ public class CompanionMenu {
         return (headDB != null) ? headDB.getItemHead(HeadID) : new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
     }
 
-    private String getAverageCityProjectDifficultyFormat(int cityID) throws SQLException {
-        int diff_ID = new CityProject(cityID).getAverageDifficulty().ordinal();
+    private String getCityDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+        int diff_ID = 0;
+        if(PlotManager.getPlotDifficultyForBuilder(cityID, builder) != null) {
+            diff_ID = PlotManager.getPlotDifficultyForBuilder(cityID, builder).ordinal() + 1;
+        }
 
         switch (diff_ID) {
             case 1:
@@ -218,7 +230,7 @@ public class CompanionMenu {
             case 3:
                 return "§c§lHARD";
             default:
-                return "";
+                return "§f§lNo Plots Available";
         }
     }
 

@@ -39,7 +39,7 @@ public class BuilderUtilitiesMenu {
         menu.getSlot(10)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
                         .setName("§b§lCUSTOM HEADS")
-                        .setLore(new LoreBuilder().description("Open the head menu to get a variety of custom heads.").build())
+                        .setLore(new LoreBuilder().description("§7", "Open the head menu to get a variety of custom heads.").build())
                         .build());
         menu.getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.performCommand("hdb");
@@ -49,7 +49,7 @@ public class BuilderUtilitiesMenu {
         menu.getSlot(13)
                 .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
                         .setName("§b§lBANNER MAKER")
-                        .setLore(new LoreBuilder().description("Open the banner maker menu to create your own custom banners.").build())
+                        .setLore(new LoreBuilder().description("§7", "Open the banner maker menu to create your own custom banners.").build())
                         .build());
         menu.getSlot(13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.performCommand("bm");
@@ -59,7 +59,7 @@ public class BuilderUtilitiesMenu {
         menu.getSlot(16)
                 .setItem(new ItemBuilder(Material.GOLD_BLOCK ,1)
                         .setName("§b§lSPECIAL BLOCKS")
-                        .setLore(new LoreBuilder().description("Open the special blocks menu to get a variety of inaccessible blocks.").build())
+                        .setLore(new LoreBuilder().description("§7", "Open the special blocks menu to get a variety of inaccessible blocks.").build())
                         .build());
         menu.getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             new SpecialBlocksMenu().getUI().open(clickPlayer);

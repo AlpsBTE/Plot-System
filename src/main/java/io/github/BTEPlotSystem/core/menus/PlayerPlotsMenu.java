@@ -51,7 +51,7 @@ public class PlayerPlotsMenu {
         menu.getSlot(4)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
                         .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
-                                .description("§7Points: §f" + builder.getScore(), "§7Completed Buildings: §f" + builder.getCompletedBuilds())
+                                .description("§7", "Points: §f" + builder.getScore(), "§7Completed Buildings: §f" + builder.getCompletedBuilds())
                                 .build())
                         .build());
 
@@ -59,7 +59,7 @@ public class PlayerPlotsMenu {
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
                         .setName("§c§lCLOSE")
                         .setLore(new LoreBuilder()
-                                .description("§7Close the menu")
+                                .description("§7", "Close the menu")
                                 .build())
                         .build());
         menu.getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
@@ -113,8 +113,8 @@ public class PlayerPlotsMenu {
             lines.add("§7Detailing: " + Utils.getPointsByColor(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
             lines.add("§7Technique: " + Utils.getPointsByColor(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
             lines.add("");
-            lines.add("§7Feedback:");
-            lines.add("§f" + plot.getReview().getFeedback());
+            lines.add("§7Feedback:§f");
+            lines.addAll(Utils.splitText(plot.getReview().getFeedback()));
         }
         lines.add("");
         lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
