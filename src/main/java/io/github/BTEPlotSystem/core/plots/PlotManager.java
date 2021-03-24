@@ -3,6 +3,7 @@ package github.BTEPlotSystem.core.plots;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -36,27 +37,44 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder, Status... status) throws SQLException {
-        StringBuilder query = new StringBuilder("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' AND status = ");
+        StringBuilder query = new StringBuilder("SELECT idplot FROM plots WHERE status = ");
 
         for(int i = 0; i < status.length; i++) {
-            query.append("'").append(status[i].name()).append("'");
+            query.append("'").append(status[i].name()).append("' AND uuidplayer = '").append(builder.getUUID()).append("'");
 
             query.append((i != status.length - 1) ? " OR status = " : "");
         }
         return listPlots(DatabaseConnection.createStatement().executeQuery(query.toString()));
     }
 
-    public static List<Plot> getPlots(int cityID, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND status = '" + status.name() + "'"));
+    public static List<Plot> getPlots(int cityID, Status... status) throws SQLException {
+        StringBuilder query = new StringBuilder("SELECT idplot FROM plots WHERE status = ");
+
+        for(int i = 0; i < status.length; i++) {
+            query.append("'").append(status[i].name()).append("' AND idcity = '").append(cityID).append("'");
+
+            query.append((i != status.length - 1) ? " OR status = " : "");
+        }
+
+        return listPlots(DatabaseConnection.createStatement().executeQuery(query.toString()));
+    }
+
+    public static List<Plot> getPlots(int cityID, Difficulty difficulty, Status status) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND iddifficulty = '" + (difficulty.ordinal() + 1) + "' AND status = '" + status.name() + "'"));
     }
 
     public static double getMultiplierByDifficulty(Difficulty difficulty) throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + difficulty.name() + "'");
+        rs.next();
 
-        if(rs.next()) {
-            return rs.getDouble(1);
-        }
-        return 1;
+        return rs.getDouble(1);
+    }
+
+    public static int getScoreRequirementByDifficulty(Difficulty difficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT scoreRequirement FROM difficulties WHERE iddifficulty = '" + (difficulty.ordinal() + 1) + "'");
+        rs.next();
+
+        return rs.getInt(1);
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
@@ -81,7 +99,8 @@ public class PlotManager {
                     if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn30Days)) {
                         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                             try {
-                                PlotHandler.abandonPlot(plot);
+                                //PlotHandler.abandonPlot(plot);
+                                Bukkit.getLogger().log(Level.INFO, "Called event to abandon plot #" + plot.getID() + " after 30 days of inactivity!");
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "A unknown error occurred!", ex);
                             }
@@ -101,6 +120,44 @@ public class PlotManager {
     public static boolean plotExists(int ID) {
         String worldName = "P-" + ID;
         return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
+    }
+
+    public static Difficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+        int playerScore = builder.getScore();
+        int easyScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.HARD);
+        boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
+
+        if(PlotManager.getPlots(cityID, Difficulty.EASY, Status.unclaimed).size() != 0) {
+            easyHasPlots = true;
+        }
+
+        if(PlotManager.getPlots(cityID, Difficulty.MEDIUM, Status.unclaimed).size() != 0) {
+            mediumHasPlots = true;
+        }
+
+        if(PlotManager.getPlots(cityID, Difficulty.HARD, Status.unclaimed).size() != 0) {
+            hardHasPlots = true;
+        }
+
+        if(playerScore >= easyScore && playerScore < mediumScore && easyHasPlots) {
+            return Difficulty.EASY;
+        } else {
+            if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
+                return Difficulty.MEDIUM;
+            } else if(!mediumHasPlots && easyHasPlots && playerScore >= mediumScore && playerScore < hardScore) {
+                return Difficulty.EASY;
+            } else {
+                if(playerScore >= hardScore && hardHasPlots) {
+                    return Difficulty.HARD;
+                } else if(mediumHasPlots && playerScore >= hardScore) {
+                    return Difficulty.MEDIUM;
+                } else if(easyHasPlots && playerScore >= hardScore) {
+                    return Difficulty.EASY;
+                } else {
+                    return null;
+                }
+            }
+        }
     }
 
     public static boolean isPlotWorld(World world) {
