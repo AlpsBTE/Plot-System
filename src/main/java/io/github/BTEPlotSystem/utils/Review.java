@@ -115,7 +115,7 @@ public class Review {
                 finalFeedback.append(lineLength == 0 ? "" : " ").append(word);
                 lineLength += word.length();
             } else {
-                finalFeedback.append("//");
+                finalFeedback.append("//").append(word);
                 lineLength = 0;
             }
         }
