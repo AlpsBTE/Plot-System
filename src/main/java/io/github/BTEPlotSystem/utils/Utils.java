@@ -7,6 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Utils {
 
     // Head Database API
@@ -77,5 +80,16 @@ public class Utils {
             default:
                 return "§a" + points;
         }
+    }
+
+    public static List<String> splitText(String text) {
+        List<String> newText = new ArrayList<>();
+        String[] splitedText = text.split("//");
+
+        for(String line : splitedText) {
+            newText.add(line.replace("//", ""));
+        }
+
+        return newText;
     }
 }
