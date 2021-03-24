@@ -4,6 +4,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +21,7 @@ public class CMD_Review implements CommandExecutor {
             if (sender.hasPermission("alpsbte.review")){
                 try {
                     Player player = (Player) sender;
-                    if(PlotManager.isPlotWorld(player.getWorld())) {
+                    if(PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getPlotByWorld(player.getWorld()).getStatus() == Status.unreviewed) {
                         Bukkit.getPluginManager().registerEvents(new ReviewMenu(player, PlotManager.getPlotByWorld(player.getWorld())), BTEPlotSystem.getPlugin());
                     } else {
                         Bukkit.getPluginManager().registerEvents(new ReviewMenu(player), BTEPlotSystem.getPlugin());

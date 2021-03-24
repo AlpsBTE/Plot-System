@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -59,24 +60,20 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         try {
             List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
+            List<Plot> reviewedPlots = new ArrayList<>();
 
-            boolean newMessage = false;
             for(Plot plot : plots) {
                 if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
-                    TextComponent tc = new TextComponent();
-                    tc.setText(Utils.getInfoMessageFormat("Your plot with the ID §6#" + plot.getID() + " §ahas been reviewed! §6Click Here §ato check your feedback."));
-                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feedback " + plot.getID()));
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
-
-                    event.getPlayer().spigot().sendMessage(tc);
-                    plot.getReview().setFeedbackSent(true);
-                    newMessage = true;
+                    reviewedPlots.add(plot);
                 }
             }
 
-            if(newMessage) {
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1, 1);
+            if(reviewedPlots.size() >= 1) {
+                PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
+                event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
             }
+
+            plots.clear(); reviewedPlots.clear();
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
         }
