@@ -21,6 +21,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.utils.Builder;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.*;
 
@@ -44,10 +45,10 @@ public final class PlotGenerator {
     private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
 
     private final Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
-    private final Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/finish", "/abandon", "//undo", "//redo", "/plot", "/navigator", "/plots", "/review", "/tpp", "/tp", "/hdb", "/bannermaker", "/repl", "/we", "//sel", "/;", "/br", "/brush", "/gamemode spectator", "//br", "//brush", "/gamemode creative", "//repl", "//we", "//rotate", "/up", "//up", "/edit", "/link", "/feedback", "/sendfeedback", "//wand"));
+    private final Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/submit", "/abandon", "//undo", "//redo", "/plot", "/navigator", "/plots", "/review", "/tpp", "/tp", "/hdb", "/bannermaker", "/repl", "/we", "//sel", "/;", "/br", "/brush", "/gamemode spectator", "//br", "//brush", "/gamemode creative", "//repl", "//we", "//rotate", "/up", "//up", "/edit", "/link", "/feedback", "/sendfeedback", "//wand", "/undosubmit"));
 
-    public PlotGenerator(int cityID, Builder builder) throws SQLException {
-        this(getPlots(cityID, Status.unclaimed).get(random.nextInt(getPlots(cityID, Status.unclaimed).size())), builder);
+    public PlotGenerator(int cityID, Difficulty difficulty, Builder builder) throws SQLException {
+        this(getPlots(cityID, difficulty, Status.unclaimed).get(random.nextInt(getPlots(cityID, difficulty, Status.unclaimed).size())), builder);
     }
 
     public PlotGenerator(Plot plot, Builder builder) {
@@ -71,7 +72,10 @@ public final class PlotGenerator {
                    plot.setBuilder(builder.getPlayer().getUniqueId().toString());
                    plot.setLastActivity(false);
 
-                   Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> PlotHandler.teleportPlayer(plot, builder.getPlayer()));
+                   Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                       PlotHandler.teleportPlayer(plot, builder.getPlayer());
+                       Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getBuilder().getName() + "§a!"));
+                   });
 
                } catch (IOException | SQLException ex) {
                    builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating a new plot!"));
@@ -108,7 +112,7 @@ public final class PlotGenerator {
         mvWorld.setGameMode(GameMode.CREATIVE);
         mvWorld.setEnableWeather(false);
         mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(world));
-        mvWorld.setDifficulty(Difficulty.PEACEFUL);
+        mvWorld.setDifficulty(org.bukkit.Difficulty.PEACEFUL);
         mvWorld.setAllowAnimalSpawn(false);
         mvWorld.setAllowMonsterSpawn(false);
         mvWorld.setAutoLoad(false);
