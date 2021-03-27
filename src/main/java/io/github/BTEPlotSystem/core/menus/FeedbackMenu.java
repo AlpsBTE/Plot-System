@@ -1,9 +1,9 @@
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.Review;
+import github.BTEPlotSystem.core.system.Review;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Category;
 import org.bukkit.Material;

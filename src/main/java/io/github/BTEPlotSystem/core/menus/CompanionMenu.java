@@ -1,10 +1,11 @@
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotGenerator;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.core.system.CityProject;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotGenerator;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.*;
-import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;

@@ -1,10 +1,10 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldedit.Vector;;
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.utils.Builder;
-import github.BTEPlotSystem.utils.CityProject;
-import github.BTEPlotSystem.utils.Review;
+import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.core.system.CityProject;
+import github.BTEPlotSystem.core.system.Review;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.Difficulty;

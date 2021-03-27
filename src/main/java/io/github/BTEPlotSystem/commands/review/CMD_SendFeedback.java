@@ -1,7 +1,7 @@
 package github.BTEPlotSystem.commands.review;
 
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

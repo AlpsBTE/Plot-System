@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;

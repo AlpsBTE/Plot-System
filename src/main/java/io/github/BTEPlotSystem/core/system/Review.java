@@ -1,6 +1,7 @@
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.enums.Category;
 
 import java.sql.PreparedStatement;

@@ -1,8 +1,9 @@
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotHandler;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.system.Review;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotHandler;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;

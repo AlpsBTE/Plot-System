@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.enums.Country;

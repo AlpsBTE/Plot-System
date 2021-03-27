@@ -1,8 +1,8 @@
 package github.BTEPlotSystem.commands.plot;
 
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotGenerator;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotGenerator;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

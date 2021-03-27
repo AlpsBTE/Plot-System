@@ -1,9 +1,8 @@
 package github.BTEPlotSystem.core.holograms;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.Builder;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;

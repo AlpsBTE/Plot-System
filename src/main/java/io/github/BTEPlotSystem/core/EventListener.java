@@ -2,10 +2,10 @@ package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotHandler;
-import github.BTEPlotSystem.core.plots.PlotManager;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotHandler;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.SpecialBlocks;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;

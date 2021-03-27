@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -19,7 +19,7 @@ import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
-import static github.BTEPlotSystem.core.plots.PlotManager.getPlots;
+import static github.BTEPlotSystem.core.system.plot.PlotManager.getPlots;
 
 public final class PlotGenerator {
 

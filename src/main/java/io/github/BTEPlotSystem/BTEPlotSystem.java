@@ -18,7 +18,6 @@ import github.BTEPlotSystem.core.holograms.EventHologram;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ParkourLeaderboard;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
-import github.BTEPlotSystem.core.plots.PlotManager;
 import github.BTEPlotSystem.utils.PortalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;

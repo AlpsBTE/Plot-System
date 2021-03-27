@@ -1,9 +1,8 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.utils.Builder;
-import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;

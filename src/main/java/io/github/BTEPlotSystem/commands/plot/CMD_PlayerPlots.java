@@ -1,7 +1,7 @@
 package github.BTEPlotSystem.commands.plot;
 
 import github.BTEPlotSystem.core.menus.PlayerPlotsMenu;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
