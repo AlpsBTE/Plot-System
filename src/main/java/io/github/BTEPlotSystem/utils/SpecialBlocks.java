@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.core;
+package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;

@@ -56,10 +56,10 @@ public class PlayerPlotsMenu {
                         .build());
 
         menu.getSlot(49)
-                .setItem(new ItemBuilder(Material.BARRIER, 1)
-                        .setName("§c§lCLOSE")
+                .setItem(new ItemBuilder(Utils.headDatabaseAPI.getItemHead("9219"))
+                        .setName("§6§lBACK")
                         .setLore(new LoreBuilder()
-                                .description("§7", "Close the menu")
+                                .description("§7", "Back to the Companion Menu")
                                 .build())
                         .build());
         menu.getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
