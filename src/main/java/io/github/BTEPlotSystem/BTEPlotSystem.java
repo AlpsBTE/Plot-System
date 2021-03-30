@@ -4,7 +4,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
-import github.BTEPlotSystem.commands.admin.CMD_CleanUp;
 import github.BTEPlotSystem.commands.admin.CMD_Reload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologramPosition;
 import github.BTEPlotSystem.commands.plot.*;
@@ -82,8 +81,6 @@ public class BTEPlotSystem extends JavaPlugin {
 
         this.getCommand("sethologram").setExecutor(new CMD_SetHologramPosition());
         this.getCommand("reloadhologram").setExecutor(new CMD_Reload());
-
-        this.getCommand("cleanup").setExecutor(new CMD_CleanUp());
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
