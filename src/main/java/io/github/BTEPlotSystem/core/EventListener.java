@@ -12,6 +12,7 @@ import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -83,6 +84,13 @@ public class EventListener extends SpecialBlocks implements Listener {
             } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
+        if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
+            event.getPlayer().performCommand("plots " + new Builder(event.getRightClicked().getUniqueId()).getName());
         }
     }
 
