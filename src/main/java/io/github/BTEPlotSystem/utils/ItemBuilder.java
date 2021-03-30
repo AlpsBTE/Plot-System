@@ -10,31 +10,27 @@ import java.util.List;
 
 public class ItemBuilder {
 
-    private ItemStack item;
-    private ItemMeta itemMeta;
+    private final ItemStack item;
+    private final ItemMeta itemMeta;
 
-    public ItemBuilder(Material material) {
-        item = new ItemStack(material);
+    public ItemBuilder(ItemStack item) {
         itemMeta = item.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-    }
-
-    public ItemBuilder(Material material, int amount) {
-        item = new ItemStack(material, amount);
-        itemMeta = item.getItemMeta();
-        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        this.item = item;
     }
 
     public ItemBuilder(Material material, int amount, byte color) {
-        item = new ItemStack(material, amount, (byte) color);
+        item = new ItemStack(material, amount, color);
         itemMeta = item.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
-    public ItemBuilder(ItemStack item) {
-        this.item = item;
-        itemMeta = this.item.getItemMeta();
-        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+    public ItemBuilder(Material material) {
+        this(material, 1, (byte) 0);
+    }
+
+    public ItemBuilder(Material material, int amount) {
+        this(material, amount, (byte) 0);
     }
 
     public ItemBuilder setName(String name) {
@@ -47,13 +43,12 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setEnchantment(Enchantment enchantment) {
-        itemMeta.addEnchant(enchantment,1,true);
-        return this;
-    }
-
-    public ItemBuilder setItemFlag(ItemFlag itemFlag) {
-        itemMeta.addItemFlags(itemFlag);
+    public ItemBuilder setEnchantment(boolean setEnchanted) {
+        if(setEnchanted) {
+            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE,1,true);
+        } else {
+            itemMeta.removeEnchant(Enchantment.ARROW_DAMAGE);
+        }
         return this;
     }
 
