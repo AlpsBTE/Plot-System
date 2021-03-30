@@ -14,11 +14,7 @@ public class CMD_Companion implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender instanceof Player){
-            try {
-                new CompanionMenu((Player) sender);
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+            new CompanionMenu((Player) sender);
         }
         return true;
     }

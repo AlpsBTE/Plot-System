@@ -22,12 +22,12 @@ public class CMD_PlayerPlots implements CommandExecutor {
                     if(args.length >= 1) {
                         Builder builder = Builder.getBuilderByName(args[0]);
                         if (builder != null){
-                            new PlayerPlotsMenu(builder, player);
+                            new PlayerPlotsMenu(player, builder);
                         } else {
                             player.sendMessage(Utils.getErrorMessageFormat("Could not find that player!"));
                         }
                     } else {
-                        new PlayerPlotsMenu(new Builder(player.getUniqueId()));
+                        new PlayerPlotsMenu(player, new Builder(player.getUniqueId()));
                     }
                 } catch (SQLException ex) {
                     player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));

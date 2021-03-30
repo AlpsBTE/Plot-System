@@ -7,162 +7,112 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-import org.ipvp.canvas.slot.Slot;
-import org.ipvp.canvas.type.ChestMenu;
 
-public class SpecialBlocksMenu extends SpecialBlocks {
-    public Menu getUI() {
-        Menu specialBlocksMenu = ChestMenu.builder(3).title("Special Blocks").redraw(true).build();
+public class SpecialBlocksMenu extends AbstractMenu {
+    public SpecialBlocksMenu(Player player) {
+        super(3, "Special Blocks", player);
 
-        // Set bottom glass border
-        Mask mask = BinaryMask.builder(specialBlocksMenu)
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte)7).setName(" ").build())
-                .pattern("000000000") // First row
-                .pattern("000000000") // Second row
-                .pattern("111101111").build(); // Third row
-        mask.apply(specialBlocksMenu);
+        Mask mask = BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("111101111")
+                .build();
+        mask.apply(getMenu());
 
-        // Set close button item
-        specialBlocksMenu.getSlot(22).setItem(new ItemBuilder(Material.BARRIER, 1)
-                .setName("§6§lCLOSE")
-                .build());
+        addMenuItems();
+        setItemClickEvents();
 
-        specialBlocksMenu.getSlot(22).setClickHandler((player, clickInformation) -> {
-            player.closeInventory();
+        getMenu().open(getMenuPlayer());
+    }
+
+    @Override
+    protected void addMenuItems() {
+        // Add Special Blocks
+        for(int i = 0; i < 13; i++) {
+            getMenu().getSlot(i).setItem(getSpecialBlock(i));
+        }
+
+        // Add Back Button Item
+        getMenu().getSlot(22).setItem(backMenuItem());
+    }
+
+    @Override
+    protected void setItemClickEvents() {
+        // Add Click Event For Special Blocks
+        for(int i = 0; i < 13; i++) {
+            int specialBlockID = i;
+            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+                if(!clickPlayer.getInventory().contains(getSpecialBlock(specialBlockID))) {
+                    clickPlayer.getInventory().addItem(getSpecialBlock(specialBlockID));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
+                }
+            });
+        }
+
+        // Add Click Event For Back Button
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            clickPlayer.performCommand("companion");
         });
-
-        // Set special blocks items
-        for(int i = 0; i <= 14; i++) {
-            Slot slot = specialBlocksMenu.getSlot(i);
-
-            switch (i) {
-                // First Row
-                // Seamless Sandstone
-                case 0:
-                    slot.setItem(SeamlessSandstone);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, SeamlessSandstone);
-                    });
-                    break;
-                // Seamless Stone
-                case 1:
-                    slot.setItem(SeamlessStone);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, SeamlessStone);
-                    });
-                    break;
-                // Red Mushroom
-                case 2:
-                    slot.setItem(RedMushroom);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, RedMushroom);
-                    });
-                    break;
-                // Mushroom Stem
-                case 3:
-                    slot.setItem(MushroomStem);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, MushroomStem);
-                    });
-                    break;
-                // Brown Mushroom
-                case 4:
-                    slot.setItem(BrownMushroom);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BrownMushroom);
-                    });
-                    break;
-                // Light Brown Mushroom
-                case 5:
-                    slot.setItem(LightBrownMushroom);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, LightBrownMushroom);
-                    });
-                    break;
-                // Barrier
-                case 6:
-                    slot.setItem(Barrier);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, Barrier);
-                    });
-                    break;
-
-                // Second Row
-                // Bark Oak Log
-                case 9:
-                    slot.setItem(BarkOakLog);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BarkOakLog);
-                    });
-                    break;
-                // Bark Spruce Log
-                case 10:
-                    slot.setItem(BarkSpruceLog);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BarkSpruceLog);
-                    });
-                    break;
-                // Bark Birch Log
-                case 11:
-                    slot.setItem(BarkBirchLog);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BarkBirchLog);
-                    });
-                    break;
-                // Bark Jungle Log
-                case 12:
-                    slot.setItem(BarkJungleLog);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BarkJungleLog);
-                    });
-                    break;
-                // Bark Acacia Log
-                case 13:
-                    slot.setItem(BarkAcaciaLog);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BarkAcaciaLog);
-                    });
-                    break;
-                // Bark Dark Oak Log
-                case 14:
-                    slot.setItem(BarkDarkOakLog);
-
-                    slot.setClickHandler((player, clickInformation) -> {
-                        giveItemToPlayer(player, BarkDarkOakLog);
-                    });
-                    break;
-            }
-        }
-
-        return specialBlocksMenu;
     }
 
-    private void giveItemToPlayer(Player player, ItemStack item) {
-        if(!player.getInventory().contains(item)) {
-            player.getInventory().addItem(item);
-            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
-        }
-    }
-
-    public static ItemStack getItem() {
+    public static ItemStack getMenuItem() {
         return new ItemBuilder(Material.GOLD_BLOCK ,1)
                 .setName("§b§lSPECIAL BLOCKS")
-                .setLore(new LoreBuilder().description("§7", "Open the special blocks menu to get a variety of inaccessible blocks.").build())
+                .setLore(new LoreBuilder()
+                        .addLine("Open the special blocks menu to get a variety of inaccessible blocks.").build())
                 .build();
+    }
+
+    private ItemStack getSpecialBlock(int ID) {
+        switch (ID) {
+            // First Row
+            // Seamless Sandstone
+            case 0:
+                return SpecialBlocks.SeamlessSandstone;
+            // Seamless Stone
+            case 1:
+                return SpecialBlocks.SeamlessStone;
+            // Red Mushroom
+            case 2:
+                return SpecialBlocks.RedMushroom;
+            // Mushroom Stem
+            case 3:
+                return SpecialBlocks.MushroomStem;
+            // Brown Mushroom
+            case 4:
+                return SpecialBlocks.BrownMushroom;
+            // Light Brown Mushroom
+            case 5:
+                return SpecialBlocks.LightBrownMushroom;
+            // Barrier
+            case 6:
+                return SpecialBlocks.Barrier;
+
+            // Second Row
+            // Bark Oak Log
+            case 9:
+                return SpecialBlocks.BarkOakLog;
+            // Bark Spruce Log
+            case 10:
+               return SpecialBlocks.BarkSpruceLog;
+            // Bark Birch Log
+            case 11:
+                return SpecialBlocks.BarkBirchLog;
+            // Bark Jungle Log
+            case 12:
+                return SpecialBlocks.BarkJungleLog;
+            // Bark Acacia Log
+            case 13:
+                return SpecialBlocks.BarkAcaciaLog;
+            // Bark Dark Oak Log
+            case 14:
+                return SpecialBlocks.BarkDarkOakLog;
+            default:
+                return errorItem();
+        }
     }
 }
