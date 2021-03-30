@@ -90,9 +90,8 @@ public class CompanionMenu extends AbstractMenu {
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
-                                                    "")
-                                                    //getCityDifficultyForBuilder(cityProjects.get(j).getID(), new Builder(getMenuPlayer().getUniqueId())))
-                                                    // TODO: Show difficulty for player
+                                                    "",
+                                                    getCityDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId())))
                                             .build())
                                     .build());
                 } catch (SQLException ex) {
@@ -163,16 +162,10 @@ public class CompanionMenu extends AbstractMenu {
                         int cityID = cityProjects.get(itemSlot).getID();
                         if (builder.getFreeSlot() != null){
                             if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
-                                if(PlotManager.getPlotDifficultyForBuilder(cityID, builder) != null) {
-                                    // TODO: Change to select best plot for player by difficulty
                                     clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
                                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
                                     new PlotGenerator(cityID, PlotManager.getPlotDifficultyForBuilder(cityID, builder), builder);
-                                } else {
-                                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project has no open plots available for your difficulty level! Please select another project!"));
-                                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                                }
                             } else {
                                 clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -231,4 +224,22 @@ public class CompanionMenu extends AbstractMenu {
                .setEnchantment(true)
                .build();
    }
+
+    private String getCityDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+        int diff_ID = 0;
+        if(PlotManager.getPlotDifficultyForBuilder(cityID, builder) != null) {
+            diff_ID = PlotManager.getPlotDifficultyForBuilder(cityID, builder).ordinal() + 1;
+        }
+
+        switch (diff_ID) {
+            case 1:
+                return "§a§lEASY";
+            case 2:
+                return "§6§lMEDIUM";
+            case 3:
+                return "§c§lHARD";
+            default:
+                return "§f§lNo Plots Available";
+        }
+    }
 }

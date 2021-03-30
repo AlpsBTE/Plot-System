@@ -140,22 +140,22 @@ public class PlotManager {
 
         if(playerScore >= easyScore && playerScore < mediumScore && easyHasPlots) {
             return Difficulty.EASY;
+        } else if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
+            return Difficulty.MEDIUM;
+        } else if(playerScore >= hardScore && hardHasPlots) {
+            return Difficulty.HARD;
+        } else if(easyHasPlots && playerScore >= mediumScore && playerScore < hardScore ) {
+            return Difficulty.EASY;
+        } else if(mediumHasPlots && playerScore >= easyScore && playerScore < mediumScore) {
+            return Difficulty.MEDIUM;
+        } else if(hardHasPlots) {
+            return Difficulty.HARD;
+        } else if(mediumHasPlots) {
+            return Difficulty.MEDIUM;
+        } else if(easyHasPlots) {
+            return Difficulty.EASY;
         } else {
-            if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
-                return Difficulty.MEDIUM;
-            } else if(!mediumHasPlots && easyHasPlots && playerScore >= mediumScore && playerScore < hardScore) {
-                return Difficulty.EASY;
-            } else {
-                if(playerScore >= hardScore && hardHasPlots) {
-                    return Difficulty.HARD;
-                } else if(mediumHasPlots && playerScore >= hardScore) {
-                    return Difficulty.MEDIUM;
-                } else if(easyHasPlots && playerScore >= hardScore) {
-                    return Difficulty.EASY;
-                } else {
-                    return null;
-                }
-            }
+            return null;
         }
     }
 

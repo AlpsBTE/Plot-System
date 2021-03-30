@@ -80,9 +80,14 @@ public class Builder {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + getUUID() + "'");
 
         if (rs.next()) {
-            return new Plot(rs.getInt(slot.name()));
-        }
+            int plotID = rs.getInt(1);
 
+            if(!rs.wasNull()) {
+                return new Plot(plotID);
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 

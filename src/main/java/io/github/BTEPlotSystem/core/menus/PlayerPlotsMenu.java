@@ -97,10 +97,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 getMenu().getSlot(9 + i).setItem(errorItem());
             }
-
-            // Add Back Button Item
-            getMenu().getSlot(49).setItem(backMenuItem());
         }
+
+        // Add Back Button Item
+        getMenu().getSlot(49).setItem(backMenuItem());
     }
 
     @Override

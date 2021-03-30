@@ -53,10 +53,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
         }
 
         // Add Click Event For Back Button
-        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand("companion");
-        });
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer));
     }
 
     public static ItemStack getMenuItem() {
