@@ -1,13 +1,19 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Country;
 import github.BTEPlotSystem.utils.enums.Difficulty;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.List;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class CityProject {
 
@@ -55,45 +61,19 @@ public class CityProject {
         return tags;
     }
 
-    public Difficulty getAverageDifficulty() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT iddifficulty FROM plots WHERE idcity = '" + getID() + "'");
+    public static List<CityProject> getCityProjects() {
+        try {
+            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects");
+            List<CityProject> cityProjects = new ArrayList<>();
 
-        int diff_easy = 0, diff_medium = 0, diff_hard = 0;
-
-        while (rs.next()) {
-            switch (rs.getInt(1)) {
-                case 1:
-                    diff_easy++;
-                    break;
-                case 2:
-                    diff_medium++;
-                    break;
-                case 3:
-                    diff_hard++;
-                    break;
+            while (rs.next()) {
+                cityProjects.add(new CityProject(rs.getInt(1)));
             }
+
+            return cityProjects;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        int i = Math.max(diff_easy, diff_medium);
-        int max = Math.max(i, diff_hard);
-
-        if(max == diff_easy) {
-            return Difficulty.EASY;
-        } else if(max == diff_medium) {
-            return Difficulty.MEDIUM;
-        } else {
-            return Difficulty.HARD;
-        }
-    }
-
-    public static List<CityProject> getCityProjects() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects");
-        List<CityProject> cityProjects = new ArrayList<>();
-
-        while (rs.next()) {
-            cityProjects.add(new CityProject(rs.getInt(1)));
-        }
-
-        return cityProjects;
+        return null;
     }
 }
