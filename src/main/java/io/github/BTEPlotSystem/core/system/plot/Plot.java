@@ -24,8 +24,8 @@ import java.util.logging.Level;
 public class Plot extends PlotPermissions {
 
     private final int ID;
-    private final CityProject cityProject;
-    private final Difficulty difficulty;
+    private CityProject cityProject;
+    private Difficulty difficulty;
 
     public Plot(int ID) throws SQLException {
         super(ID);
@@ -33,13 +33,13 @@ public class Plot extends PlotPermissions {
         this.ID = ID;
 
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcity, iddifficulty FROM plots WHERE idplot = '" + getID() + "'");
-        rs.next();
 
-        // City ID
-        this.cityProject = new CityProject(rs.getInt(1));
+        if(rs.next()) {
+            this.cityProject = new CityProject(rs.getInt(1));
 
-        // Set Plot Difficulty
-        this.difficulty = Difficulty.values()[rs.getInt(2) - 1];
+            // Set Plot Difficulty
+            this.difficulty = Difficulty.values()[rs.getInt(2) - 1];
+        }
     }
 
     public int getID() { return ID; }
