@@ -7,10 +7,7 @@ import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.commands.admin.CMD_Reload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologramPosition;
 import github.BTEPlotSystem.commands.plot.*;
-import github.BTEPlotSystem.commands.review.CMD_Edit;
-import github.BTEPlotSystem.commands.review.CMD_Feedback;
-import github.BTEPlotSystem.commands.review.CMD_Review;
-import github.BTEPlotSystem.commands.review.CMD_SendFeedback;
+import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.holograms.EventHologram;
@@ -75,6 +72,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
         this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
         this.getCommand("edit").setExecutor(new CMD_Edit());
+        this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
 
         this.getCommand("tpp").setExecutor(new CMD_Tpp());
         this.getCommand("spawn").setExecutor(new CMD_Spawn());

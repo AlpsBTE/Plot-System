@@ -93,9 +93,9 @@ public class Builder {
         BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
     }
 
-    public void addCompletedBuild() throws SQLException {
+    public void addCompletedBuild(int amount) throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + 1) + "' WHERE uuid = '" + getUUID() + "'"
+                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + amount) + "' WHERE uuid = '" + getUUID() + "'"
         ).executeUpdate();
     }
 

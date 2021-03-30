@@ -63,14 +63,14 @@ commands:
     description: sets the feedback of a plot
     permission: alpsbte.review
     usage: /sendfeedback <ID> <Text>
-  cleanup:
-    description: temporary command for database clean up
-    permission: alpsbte.admin
-    usage: /cleanup
   edit:
     description: enable/disble build permissions for reviewers on plots
     permission: alpsbte.review
     usage: /edit
+  undoreview:
+    description: undo a review of a plot
+    permission: alpsbte.review
+    usage: /undoreview <ID>
 permissions:
   alpsbte.admin:
     description: manager permissions

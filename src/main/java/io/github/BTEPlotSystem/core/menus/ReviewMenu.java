@@ -387,7 +387,7 @@ public class ReviewMenu implements Listener {
                             selectedPlot.getReview().setFeedbackSent(false);
                             selectedPlot.setStatus(Status.complete);
                             selectedPlot.getBuilder().addScore(totalRating);
-                            selectedPlot.getBuilder().addCompletedBuild();
+                            selectedPlot.getBuilder().addCompletedBuild(1);
                             try {
                                 selectedPlot.getBuilder().removePlot(selectedPlot.getSlot());
                             } catch (Exception ex) {
