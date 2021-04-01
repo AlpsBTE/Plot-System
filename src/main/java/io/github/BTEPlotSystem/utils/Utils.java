@@ -89,15 +89,4 @@ public class Utils {
                 return "§a" + points;
         }
     }
-
-    public static List<String> splitText(String text) {
-        List<String> newText = new ArrayList<>();
-        String[] splitedText = text.split("//");
-
-        for(String line : splitedText) {
-            newText.add(line.replace("//", ""));
-        }
-
-        return newText;
-    }
 }
