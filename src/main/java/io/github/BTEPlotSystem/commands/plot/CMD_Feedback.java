@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.commands.review;
+package github.BTEPlotSystem.commands.plot;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.FeedbackMenu;

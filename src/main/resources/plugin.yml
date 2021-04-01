@@ -6,71 +6,75 @@ author: R3tuxn & Cinnazeyy
 depend: [HeadDatabase, HolographicDisplays]
 
 commands:
-  plot:
-    description: teleport to a plot
-    permission: alpsbte.admin
-    usage: /plot <ID>
+  spawn:
+    description: Teleport to the spawn
+    usage: /spawn
+  hub:
+    description: Alternative to the spawn command
+    usage: /hub
+  tpp:
+    description: Teleport to a player
+    usage: /tpp <Player>
+  companion:
+    description: Open the Companion menu
+    permission: alpsbte.plot
+    usage: /companion
+  link:
+    description: Sends you the links of the plot you are currently on
+    permission: alpsbte.plot
+    usage: /link
   submit:
-    description: submit a plot
+    description: Submit a unfinished plot
     permission: alpsbte.plot
     usage: /submit, /submit <ID>
   abandon:
-    description: abandon a plot
+    description: Abandon a unfinished plot
     permission: alpsbte.plot
     usage: /abandon, /abandon <ID>
   undosubmit:
-    description: undo a submission of a plot
+    description: Undo a submission of a unreviewed plot
     permission: alpsbte.plot
     usage: /undosubmit, /undosubmit <ID>
-  review:
-    description: review unreviewed plots
-    permission: alpsbte.review
-    usage: /review
-  companion:
-    description: opens the companion menu UI
-    permission: alpsbte.companion
-    usage: /companion
-  generateplot:
-    description: generate a new plot
-    permission: alpsbte.admin
-    usage: /generateplot <ID>
-  sethologram:
-    description: sets the position of a hologram
-    permission: alpsbte.admin
-    usage: /sethologram <name>
-  reloadhologram:
-    description: reloads all holograms
-    permission: alpsbte.admin
-    usage: /reloadhologram
-  spawn:
-    description: teleports you back to the spawn location
-    usage: /spawn
-  tpp:
-    description: teleport to a player
-    usage: /tpp <Player>
-  link:
-    description: sends you the links of the plot you are currently on
-    usage: /link
-  plots:
-    description: shows all plots of the given player
-    permission: alpsbte.plot
-    usage: /plots, /plots <Player>
   feedback:
-    description: shows all feedback information of a plot
+    description: Shows all feedback information of a plot
     permission: alpsbte.plot
     usage: /feedback <ID>
+  plots:
+    description: Shows all plots of the given player
+    permission: alpsbte.plot
+    usage: /plots, /plots <Player>
+  review:
+    description: Open the review or review plot menu
+    permission: alpsbte.review
+    usage: /review
+  undoreview:
+    description: Undo a review of a plot
+    permission: alpsbte.review
+    usage: /undoreview <ID>
   sendfeedback:
-    description: sets the feedback of a plot
+    description: Sets the feedback of a plot
     permission: alpsbte.review
     usage: /sendfeedback <ID> <Text>
   edit:
-    description: enable/disble build permissions for reviewers on plots
+    description: Enable/disble build permissions for reviewers on a plot
     permission: alpsbte.review
     usage: /edit
-  undoreview:
-    description: undo a review of a plot
-    permission: alpsbte.review
-    usage: /undoreview <ID>
+  plot:
+    description: Teleport to a plot
+    permission: alpsbte.admin
+    usage: /plot <ID>
+  generateplot:
+    description: Generate a new plot
+    permission: alpsbte.admin
+    usage: /generateplot <ID>
+  sethologram:
+    description: Sets the position of a hologram
+    permission: alpsbte.admin
+    usage: /sethologram <name>
+  preload:
+    description: Reload config and holograms
+    permission: alpsbte.admin
+    usage: /preload
 permissions:
   alpsbte.admin:
-    description: manager permissions
+    description: Manager permissions
