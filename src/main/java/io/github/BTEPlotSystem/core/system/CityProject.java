@@ -1,12 +1,8 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Country;
-import github.BTEPlotSystem.utils.enums.Difficulty;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -22,6 +18,7 @@ public class CityProject {
     private Country country;
     private String description;
     private String tags;
+    private boolean visible;
 
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
@@ -40,6 +37,9 @@ public class CityProject {
 
             // Tags
             this.tags = rs.getString("tags");
+
+            // Visible
+            this.visible = rs.getInt("visible") == 1;
         }
     }
 
@@ -61,13 +61,18 @@ public class CityProject {
         return tags;
     }
 
+    public boolean isVisible() { return visible; }
+
     public static List<CityProject> getCityProjects() {
         try {
             ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects ORDER BY CAST(country AS CHAR)");
             List<CityProject> cityProjects = new ArrayList<>();
 
             while (rs.next()) {
-                cityProjects.add(new CityProject(rs.getInt(1)));
+                CityProject city = new CityProject(rs.getInt(1));
+                if(city.isVisible()) {
+                    cityProjects.add(city);
+                }
             }
 
             return cityProjects;
