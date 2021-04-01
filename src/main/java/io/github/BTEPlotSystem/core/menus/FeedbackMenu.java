@@ -34,7 +34,6 @@ public class FeedbackMenu extends AbstractMenu {
         mask.apply(getMenu());
 
         addMenuItems();
-        setItemClickEvents();
 
         getMenu().open(getMenuPlayer());
     }
