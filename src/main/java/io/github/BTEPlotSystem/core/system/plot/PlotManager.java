@@ -1,9 +1,8 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.utils.Builder;
-import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.enums.Difficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -141,22 +140,22 @@ public class PlotManager {
 
         if(playerScore >= easyScore && playerScore < mediumScore && easyHasPlots) {
             return Difficulty.EASY;
+        } else if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
+            return Difficulty.MEDIUM;
+        } else if(playerScore >= hardScore && hardHasPlots) {
+            return Difficulty.HARD;
+        } else if(easyHasPlots && playerScore >= mediumScore && playerScore < hardScore ) {
+            return Difficulty.EASY;
+        } else if(mediumHasPlots && playerScore >= easyScore && playerScore < mediumScore) {
+            return Difficulty.MEDIUM;
+        } else if(hardHasPlots) {
+            return Difficulty.HARD;
+        } else if(mediumHasPlots) {
+            return Difficulty.MEDIUM;
+        } else if(easyHasPlots) {
+            return Difficulty.EASY;
         } else {
-            if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
-                return Difficulty.MEDIUM;
-            } else if(!mediumHasPlots && easyHasPlots && playerScore >= mediumScore && playerScore < hardScore) {
-                return Difficulty.EASY;
-            } else {
-                if(playerScore >= hardScore && hardHasPlots) {
-                    return Difficulty.HARD;
-                } else if(mediumHasPlots && playerScore >= hardScore) {
-                    return Difficulty.MEDIUM;
-                } else if(easyHasPlots && playerScore >= hardScore) {
-                    return Difficulty.EASY;
-                } else {
-                    return null;
-                }
-            }
+            return null;
         }
     }
 

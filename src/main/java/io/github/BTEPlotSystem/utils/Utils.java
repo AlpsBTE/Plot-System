@@ -4,16 +4,24 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Utils {
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
+
+    public static ItemStack getItemHead(String headID) {
+        return headDatabaseAPI != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+    }
 
     // Sounds
     public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
@@ -80,16 +88,5 @@ public class Utils {
             default:
                 return "§a" + points;
         }
-    }
-
-    public static List<String> splitText(String text) {
-        List<String> newText = new ArrayList<>();
-        String[] splitedText = text.split("//");
-
-        for(String line : splitedText) {
-            newText.add(line.replace("//", ""));
-        }
-
-        return newText;
     }
 }

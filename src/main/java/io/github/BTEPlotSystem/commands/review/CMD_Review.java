@@ -2,7 +2,7 @@ package github.BTEPlotSystem.commands.review;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;

@@ -1,21 +1,18 @@
 package github.BTEPlotSystem.core;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotHandler;
-import github.BTEPlotSystem.core.plots.PlotManager;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotHandler;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
+import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.utils.SpecialBlocks;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -38,12 +35,12 @@ public class EventListener extends SpecialBlocks implements Listener {
         event.setJoinMessage(null);
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
-        if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
-            event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
+        if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
+            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
         }
         if (event.getPlayer().hasPermission("alpsbte.review")){
-            if (!event.getPlayer().getInventory().contains(ReviewMenu.getItem())){
-                event.getPlayer().getInventory().setItem(7, ReviewMenu.getItem());
+            if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
             }
         }
 
@@ -80,13 +77,20 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event) throws SQLException {
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getItem())){
+            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem())){
                 new CompanionMenu(event.getPlayer());
-            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getItem())){
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
+        if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
+            event.getPlayer().performCommand("plots " + new Builder(event.getRightClicked().getUniqueId()).getName());
         }
     }
 
@@ -108,20 +112,20 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event){
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem())){
             event.setCancelled(true);
         }
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem())){
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem())) {
             event.setCancelled(true);
         }
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem())) {
             event.setCancelled(true);
         }
     }

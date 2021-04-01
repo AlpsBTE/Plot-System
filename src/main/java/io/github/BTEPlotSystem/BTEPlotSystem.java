@@ -4,21 +4,17 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
-import github.BTEPlotSystem.commands.admin.CMD_CleanUp;
 import github.BTEPlotSystem.commands.admin.CMD_Reload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologramPosition;
 import github.BTEPlotSystem.commands.plot.*;
-import github.BTEPlotSystem.commands.review.CMD_Edit;
-import github.BTEPlotSystem.commands.review.CMD_Feedback;
-import github.BTEPlotSystem.commands.review.CMD_Review;
-import github.BTEPlotSystem.commands.review.CMD_SendFeedback;
+import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.holograms.EventHologram;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ParkourLeaderboard;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.PortalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -56,35 +52,39 @@ public class BTEPlotSystem extends JavaPlugin {
 
         reloadConfig();
 
-        // Connect to Database
+        // Connect to database
         DatabaseConnection.ConnectToDatabase();
 
-        // Add Listener
+        // Add listeners
         this.getServer().getPluginManager().registerEvents(new EventListener(), plugin);
         this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), plugin);
 
-        // Add Commands
-        this.getCommand("plot").setExecutor(new CMD_Plot());
-        this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
+        // Add default commands [No Permissions]
+        this.getCommand("spawn").setExecutor(new CMD_Spawn());
+        this.getCommand("hub").setExecutor(new CMD_Spawn());
+        this.getCommand("tpp").setExecutor(new CMD_Tpp());
+
+        // Add plot commands [alpsbte.plot Permission]
+        this.getCommand("companion").setExecutor(new CMD_Companion());
+        this.getCommand("link").setExecutor(new CMD_Link());
         this.getCommand("submit").setExecutor(new CMD_Submit());
         this.getCommand("abandon").setExecutor(new CMD_Abandon());
         this.getCommand("undosubmit").setExecutor(new CMD_UndoSubmit());
-        this.getCommand("link").setExecutor(new CMD_Link());
-
-        this.getCommand("companion").setExecutor(new CMD_Companion());
-        this.getCommand("review").setExecutor(new CMD_Review());
-        this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
+        this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
+
+        // Add reviewer commands [alpsbte.review Permission]
+        this.getCommand("review").setExecutor(new CMD_Review());
+        this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
         this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
         this.getCommand("edit").setExecutor(new CMD_Edit());
 
-        this.getCommand("tpp").setExecutor(new CMD_Tpp());
-        this.getCommand("spawn").setExecutor(new CMD_Spawn());
-
+        // Add admin commands [alpsbte.admin Permission]
+        this.getCommand("plot").setExecutor(new CMD_Plot());
+        this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
         this.getCommand("sethologram").setExecutor(new CMD_SetHologramPosition());
-        this.getCommand("reloadhologram").setExecutor(new CMD_Reload());
+        this.getCommand("preload").setExecutor(new CMD_Reload());
 
-        this.getCommand("cleanup").setExecutor(new CMD_CleanUp());
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
@@ -98,9 +98,9 @@ public class BTEPlotSystem extends JavaPlugin {
 
         new PortalManager().start();
 
-       // PlotManager.checkPlotsForLastActivity();
+        PlotManager.checkPlotsForLastActivity();
 
-        getLogger().log(Level.INFO, "Successfully enabled BTEPlotSystem plugin.");
+        getLogger().log(Level.INFO, "Successfully enabled AlpsBTE-PlotSystem plugin.");
     }
 
     public static BTEPlotSystem getPlugin() {

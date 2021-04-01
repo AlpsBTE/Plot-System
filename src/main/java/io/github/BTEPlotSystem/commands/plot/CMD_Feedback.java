@@ -1,9 +1,9 @@
-package github.BTEPlotSystem.commands.review;
+package github.BTEPlotSystem.commands.plot;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.FeedbackMenu;
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotManager;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

@@ -1,4 +1,4 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
@@ -38,8 +38,8 @@ public class PlotHandler {
         player.setAllowFlight(true);
         player.setFlying(true);
 
-        player.getInventory().setItem(8, CompanionMenu.getItem());
-        player.getInventory().setItem(7, ReviewMenu.getItem());
+        player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+        player.getInventory().setItem(7, ReviewMenu.getMenuItem());
 
         sendLinkMessages(plot, player);
 

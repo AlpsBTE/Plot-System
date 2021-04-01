@@ -1,13 +1,18 @@
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.Category;
+import github.BTEPlotSystem.utils.enums.Status;
+import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Review {
 
@@ -109,14 +114,16 @@ public class Review {
         String[] feedbackArr = feedback.split(" ");
         StringBuilder finalFeedback = new StringBuilder();
         int lineLength = 0;
+        int lines = 0;
 
         for (String word : feedbackArr) {
             if((lineLength + word.length()) <= 60) {
-                finalFeedback.append(lineLength == 0 ? "" : " ").append(word);
+                finalFeedback.append((lines == 0 && lineLength == 0) ? "" : " ").append(word);
                 lineLength += word.length();
             } else {
                 finalFeedback.append("//").append(word);
                 lineLength = 0;
+                lines++;
             }
         }
 
@@ -139,5 +146,24 @@ public class Review {
         }
 
         return false;
+    }
+
+    public static void undoReview(Review review) throws SQLException {
+        Plot plot = new Plot(review.getPlotID());
+
+        PreparedStatement ps_review = DatabaseConnection.prepareStatement("DELETE FROM reviews WHERE id_review = '" + review.getReviewID() + "'");
+        PreparedStatement ps_plot = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = '" + plot.getID() + "'");
+
+        plot.getBuilder().addScore(-plot.getScore());
+        plot.getBuilder().addCompletedBuild(-1);
+        plot.setScore(-1);
+        plot.setStatus(Status.unreviewed);
+
+        if(plot.getBuilder().getFreeSlot() != null) {
+            plot.getBuilder().setPlot(plot.getID(), plot.getBuilder().getFreeSlot());
+        }
+
+        ps_review.execute();
+        ps_plot.executeUpdate();
     }
 }

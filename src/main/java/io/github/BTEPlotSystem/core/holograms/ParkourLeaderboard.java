@@ -1,7 +1,7 @@
 package github.BTEPlotSystem.core.holograms;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.Builder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;

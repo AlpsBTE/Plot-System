@@ -18,8 +18,8 @@ public class CMD_Tpp implements CommandExecutor {
                 player.teleport(targetPlayer);
                 player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
 
-                player.getInventory().setItem(8, CompanionMenu.getItem());
-                player.getInventory().setItem(7, ReviewMenu.getItem());
+                player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+                player.getInventory().setItem(7, ReviewMenu.getMenuItem());
             } catch (Exception ignore) {
                 sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpp <Player>"));
             }

@@ -1,9 +1,7 @@
 package github.BTEPlotSystem.commands.review;
 
-import github.BTEPlotSystem.core.plots.Plot;
-import github.BTEPlotSystem.core.plots.PlotHandler;
-import github.BTEPlotSystem.core.plots.PlotManager;
-import github.BTEPlotSystem.utils.Builder;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -12,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class CMD_Edit implements CommandExecutor {
