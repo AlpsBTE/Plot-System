@@ -142,8 +142,12 @@ public class PlayerPlotsMenu extends AbstractMenu {
             lines.add("§7Detailing: " + Utils.getPointsByColor(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
             lines.add("§7Technique: " + Utils.getPointsByColor(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
             lines.add("");
-            lines.add("§7Feedback:§f");
-            lines.addAll(Utils.splitText(plot.getReview().getFeedback()));
+            lines.add("§7Feedback:");
+
+            String[] splitText = plot.getReview().getFeedback().split("//");
+            for(String line : splitText) {
+                lines.add("§f" + line.replace("//", ""));
+            }
         }
         lines.add("");
         lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
