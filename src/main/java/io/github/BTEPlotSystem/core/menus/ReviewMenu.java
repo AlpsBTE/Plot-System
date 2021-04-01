@@ -359,7 +359,7 @@ public class ReviewMenu implements Listener {
                             sentWarning = true;
                             event.setCancelled(true);
                             return;
-                        } else if(totalRating <= 8 && !sentWarning) {
+                        } else if(isRejected && !sentWarning) {
                             player.sendMessage(Utils.getInfoMessageFormat("§c§lWARNING: §cThis plot will get rejected!"));
                             player.playSound(player.getLocation(), Utils.CreatePlotSound, 1, 1);
                             sentWarning = true;
