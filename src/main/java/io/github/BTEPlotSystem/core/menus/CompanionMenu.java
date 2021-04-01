@@ -88,6 +88,7 @@ public class CompanionMenu extends AbstractMenu {
                                             .addLines(cityProjects.get(i).getDescription(),
                                                     "",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
+                                                    "§f---------------------",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
                                                     "",
