@@ -114,14 +114,16 @@ public class Review {
         String[] feedbackArr = feedback.split(" ");
         StringBuilder finalFeedback = new StringBuilder();
         int lineLength = 0;
+        int lines = 0;
 
         for (String word : feedbackArr) {
             if((lineLength + word.length()) <= 60) {
-                finalFeedback.append(lineLength == 0 ? "" : " ").append(word);
+                finalFeedback.append((lines == 0 && lineLength == 0) ? "" : " ").append(word);
                 lineLength += word.length();
             } else {
                 finalFeedback.append("//").append(word);
                 lineLength = 0;
+                lines++;
             }
         }
 
