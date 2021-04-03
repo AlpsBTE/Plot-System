@@ -17,7 +17,7 @@
   <h3 align="center">Alps BTE - Plot System</h3>
 
   <p align="center">
-    An easy to use building system for the Alps BTE server.
+    An easy to use building system for the Alps BTE server
     <br />
     <a href="https://github.com/AlpsBTE/AlpsBTE-PlotSystem/wiki"><strong>Explore the docs »</strong></a>
     <br />
@@ -35,11 +35,19 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The Plot System is an essential part of the Alps BTE server system, along with the Terra and Event Server. The plot system gives every player the opportunity to participate in the project with Minecraft versions 1.12-1.16 (Vanilla). After jumping into the "Create Plot Portal", a selection window appears where you can choose a city from the list. If you now click on one of these cities, you will get to a random plot of this city and you can immediately start building. Links to Google Maps, Google Earth Web & OpenStreetMap appear when you enter the plot and allow you to quickly find your way around. The system is designed to make it easier for unexperienced people, casual players and applicants to start building in BTE and to massively shorten application times.  
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=DblJmUxUck8
+" target="_blank"><img src="http://img.youtube.com/vi/DblJmUxUck8/0.jpg" 
+alt="IMAGE ALT TEXT HERE" width="480" height="360" border="10" /></a>
+
+The Plot System is an essential part of the Alps BTE server system, along with the Terra and Event Server. The plot system gives every player the opportunity to participate in the project with Minecraft versions 1.12-1.16 (Vanilla).
+
+After jumping into the "Create Plot Portal", a selection window appears where you can choose a city from the list. If you now click on one of these cities, you will get to a random plot of this city and you can immediately start building. Links to Google Maps, Google Earth Web & OpenStreetMap appear when you enter the plot and allow you to quickly find your way around.
+
+The system is designed to make it easier for unexperienced people, casual players and applicants to start building in BTE and to massively shorten application times.  
 
 The plugin was programmed for the Alps BTE server, but it can be further developed or adapted by other build teams / persons.
 
-A list of all used library and apis is listed below.
+All used Library and APIs are listed below.
 
 
 
@@ -66,8 +74,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 
 
-<!-- CONTACT -->
-## Contact
+<!-- CONTACTS -->
+## Contacts
 
 - R3tuxn - [R3tuxn#7169](https://discord.com/invite/vgkspay)
 - Cinnazeyy - [Cinnazeyy#2440](https://discord.com/invite/vgkspay)
