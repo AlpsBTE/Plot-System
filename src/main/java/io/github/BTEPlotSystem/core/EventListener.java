@@ -2,11 +2,17 @@ package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
-import github.BTEPlotSystem.core.plots.PlotHandler;
+import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotHandler;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
+import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.utils.SpecialBlocks;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
@@ -27,18 +35,14 @@ public class EventListener extends SpecialBlocks implements Listener {
         event.setJoinMessage(null);
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
-
-
-        if (!event.getPlayer().getInventory().contains(CompanionMenu.getItem())){
-            event.getPlayer().getInventory().setItem(8, CompanionMenu.getItem());
+        if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
+            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
         }
         if (event.getPlayer().hasPermission("alpsbte.review")){
-            if (!event.getPlayer().getInventory().contains(ReviewMenu.getItem())){
-                event.getPlayer().getInventory().setItem(7, ReviewMenu.getItem());
+            if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
             }
         }
-
-
 
         if(!event.getPlayer().hasPlayedBefore()) {
             try {
@@ -50,46 +54,78 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Bukkit.getLogger().log(Level.SEVERE, "Could not add player [" + event.getPlayer().getName() + "] to database!", ex);
             }
         }
+
+        try {
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
+            List<Plot> reviewedPlots = new ArrayList<>();
+
+            for(Plot plot : plots) {
+                if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
+                    reviewedPlots.add(plot);
+                }
+            }
+
+            if(reviewedPlots.size() >= 1) {
+                PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
+                event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
+            }
+
+            plots.clear(); reviewedPlots.clear();
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
+        }
     }
 
     @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event) throws SQLException {
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getItem())){
+            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem())){
                 new CompanionMenu(event.getPlayer());
-            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getItem())){
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
             }
         }
     }
 
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
+        if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
+            event.getPlayer().performCommand("plots " + new Builder(event.getRightClicked().getUniqueId()).getName());
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+    public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
         event.setQuitMessage(null);
-        PlotHandler.unloadPlot(event.getPlayer());
+
+        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
-        PlotHandler.unloadPlot(event.getPlayer());
+    public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
+        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
+        }
     }
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event){
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem())){
             event.setCancelled(true);
         }
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem())){
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem())) {
             event.setCancelled(true);
         }
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem())) {
             event.setCancelled(true);
         }
     }

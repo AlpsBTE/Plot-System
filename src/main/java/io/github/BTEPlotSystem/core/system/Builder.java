@@ -1,7 +1,8 @@
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.core.system;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.core.plots.Plot;
+import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +40,8 @@ public class Builder {
     public String getName() {
         return name;
     }
+
+    public boolean isOnline() { return Bukkit.getPlayer(UUID) != null; }
 
     public int getScore() throws SQLException {
         ResultSet rs =  DatabaseConnection.createStatement().executeQuery("SELECT score FROM players WHERE uuid = '" + getUUID() + "'");
@@ -78,9 +80,14 @@ public class Builder {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT " + slot.name() +" FROM players WHERE uuid = '" + getUUID() + "'");
 
         if (rs.next()) {
-            return new Plot(rs.getInt(slot.name()));
-        }
+            int plotID = rs.getInt(1);
 
+            if(!rs.wasNull()) {
+                return new Plot(plotID);
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 
@@ -88,11 +95,12 @@ public class Builder {
         DatabaseConnection.prepareStatement(
                 "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + getUUID() + "'"
         ).executeUpdate();
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
     }
 
-    public void addCompletedBuild() throws SQLException {
+    public void addCompletedBuild(int amount) throws SQLException {
         DatabaseConnection.prepareStatement(
-                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + 1) + "' WHERE uuid = '" + getUUID() + "'"
+                "UPDATE players SET completedBuilds = '" + (getCompletedBuilds() + amount) + "' WHERE uuid = '" + getUUID() + "'"
         ).executeUpdate();
     }
 
@@ -103,6 +111,18 @@ public class Builder {
     public void removePlot(Slot slot) throws SQLException {
        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE players SET " + slot.name() + " = DEFAULT(firstSlot) WHERE uuid = '" + getUUID() + "'");
        statement.executeUpdate();
+    }
+
+    public static Builder getBuilderByName(String name) {
+        try {
+            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid FROM players WHERE name = '" + name + "'");
+
+            if(rs.next()) {
+                return new Builder(java.util.UUID.fromString(rs.getString("uuid")));
+            }
+            return null;
+        } catch (Exception ignore) { }
+        return null;
     }
 
     public static List<String> getBuildersByScore(int limit) throws SQLException {

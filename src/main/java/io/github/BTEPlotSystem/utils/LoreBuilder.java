@@ -1,42 +1,29 @@
 package github.BTEPlotSystem.utils;
 
+import javafx.scene.control.MenuItem;
+import org.bukkit.ChatColor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoreBuilder {
 
-    private List<String> lore = new ArrayList<String>();
+    private final List<String> lore = new ArrayList<String>();
+    private String defaultColor = "§7";
 
-    public LoreBuilder description(String... lines) {
+    public LoreBuilder addLine(String line) {
+        String[] splitLines = line.split("//");
+
+        for(String textLine : splitLines) {
+            lore.add(defaultColor + textLine.replace("//", ""));
+        }
+        return this;
+    }
+
+    public LoreBuilder addLines(String... lines) {
         for (String line : lines) {
-            String[] newLines = line.split("/");
-
-            for(String newLine : newLines) {
-                lore.add("§7" + newLine.replace("/", ""));
-            }
+            addLine(line);
         }
-        return this;
-    }
-
-    public LoreBuilder server(int player, boolean available) {
-        if (available) {
-            lore.add("§a>> Connect To Server <<");
-            lore.add("§6" + player + " §7currently playing");
-        } else {
-            lore.add("§c>> Server is offline <<");
-        }
-        return this;
-    }
-
-    public LoreBuilder features(String... lines) {
-        for (String line : lines) {
-            lore.add("§e>> §f" + line);
-        }
-        return this;
-    }
-
-    public LoreBuilder version(String version) {
-        lore.add("§7Version: §6" + version);
         return this;
     }
 
@@ -45,8 +32,12 @@ public class LoreBuilder {
         return this;
     }
 
+    public LoreBuilder setDefaultColor(ChatColor defaultColor) {
+        this.defaultColor = "§" + defaultColor.getChar();
+        return this;
+    }
+
     public List<String> build() {
         return lore;
     }
-
 }

@@ -4,15 +4,24 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import java.rmi.registry.Registry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class Utils {
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
+
+    public static ItemStack getItemHead(String headID) {
+        return headDatabaseAPI != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+    }
 
     // Sounds
     public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
@@ -54,4 +63,30 @@ public class Utils {
     public final static String EVENT_SERVER = "ALPS-3";
 
     public final static String TEST_SERVER = "ALPS-4";
+
+    // Integer Try Parser
+    public static Integer TryParseInt(String someText) {
+        try {
+            return Integer.parseInt(someText);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    public static String getPointsByColor(int points) {
+        switch (points) {
+            case 0:
+                return "§7" + points;
+            case 1:
+                return "§4" + points;
+            case 2:
+                return "§6" + points;
+            case 3:
+                return "§e" + points;
+            case 4:
+                return "§2" + points;
+            default:
+                return "§a" + points;
+        }
+    }
 }

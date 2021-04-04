@@ -1,12 +1,9 @@
-package github.BTEPlotSystem.core.plots;
+package github.BTEPlotSystem.core.system.plot;
 
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
+import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -15,20 +12,20 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.multiverse.io.FileUtils;
 import org.bukkit.*;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
 public class PlotHandler {
 
     public static void teleportPlayer(Plot plot, Player player) {
-        player.sendMessage("§7>> §aTeleporting to plot §6#" + plot.getID());
+        player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) == null) {
@@ -41,22 +38,26 @@ public class PlotHandler {
         player.setAllowFlight(true);
         player.setFlying(true);
 
-        player.getInventory().setItem(8, CompanionMenu.getItem());
+        player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+        player.getInventory().setItem(7, ReviewMenu.getMenuItem());
 
         sendLinkMessages(plot, player);
+
+        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+            try {
+                plot.setLastActivity(false);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }
     }
 
-    public static void finishPlot(Plot plot) throws Exception {
+    public static void submitPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
-        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
-        }
+        loadPlot(plot);
 
-        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
-        RegionManager regionManager = container.get(Bukkit.getWorld("P-" + plot.getID()));
-        ProtectedRegion region = regionManager.getRegion("p-" + plot.getID());
-        region.getOwners().removePlayer(plot.getBuilder().getUUID());
+        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
 
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
@@ -66,9 +67,13 @@ public class PlotHandler {
         }
     }
 
-    public static void abandonPlot(Plot plot) throws Exception {
-        plot.setStatus(Status.unclaimed);
+    public static void undoSubmit(Plot plot) throws SQLException {
+        plot.setStatus(Status.unfinished);
 
+        plot.addBuilderPerms(plot.getBuilder().getUUID()).save();
+    }
+
+    public static void abandonPlot(Plot plot) throws Exception {
         String worldName = "P-" + plot.getID();
         if(Bukkit.getWorld(worldName) != null) {
             for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
@@ -78,8 +83,20 @@ public class PlotHandler {
 
         plot.getBuilder().removePlot(plot.getSlot());
         plot.setBuilder(null);
+        plot.setLastActivity(true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
+
+        if(plot.isReviewed()) {
+            PreparedStatement stmt_reviews = DatabaseConnection.prepareStatement("DELETE FROM reviews WHERE id_review = '" + plot.getReview().getReviewID() + "'");
+            stmt_reviews.executeUpdate();
+
+            PreparedStatement stmt_plots = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = '" + plot.getID() + "'");
+            stmt_plots.executeUpdate();
+        }
+
+        plot.setScore(-1);
+        plot.setStatus(Status.unclaimed);
 
         FileUtils.deleteDirectory(new File(getWorldGuardConfigPath(plot.getID())));
         FileUtils.deleteDirectory(new File(getMultiverseInventoriesConfigPath(plot.getID())));
@@ -95,9 +112,15 @@ public class PlotHandler {
         statement.execute();
     }
 
-    public static void unloadPlot(Player player) {
-        World world = player.getWorld();
-        if(world.getName().startsWith("P-") && world.getPlayers().size() - 1 == 0) {
+    public static void loadPlot(Plot plot) {
+        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
+        }
+    }
+
+    public static void unloadPlot(Plot plot) {
+        World world = Bukkit.getWorld("P-" + plot.getID());
+        if(world.getPlayers().size() - 1 == 0) {
             try {
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(world, true), 1, 20*3);
             } catch (Exception ex) {
@@ -138,6 +161,26 @@ public class PlotHandler {
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§7--------------------");
+    }
+
+    public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
+        player.sendMessage("§7--------------------");
+        for(Plot plot : plots) {
+            player.sendMessage("§aYour plot with the ID §6#" + plot.getID() + " §ahas been reviewed!");
+            TextComponent tc = new TextComponent();
+            tc.setText("§6Click Here §ato check your feedback.");
+            tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feedback " + plot.getID()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
+            player.spigot().sendMessage(tc);
+
+            if(plots.size() != plots.indexOf(plot) + 1) {
+                player.sendMessage("");
+            }
+
+            plot.getReview().setFeedbackSent(true);
+        }
+        player.sendMessage("§7--------------------");
+        player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
     }
 
     public static String getWorldGuardConfigPath(int plotID) {

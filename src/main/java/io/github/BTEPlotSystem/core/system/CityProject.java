@@ -1,13 +1,15 @@
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.enums.Country;
-import github.BTEPlotSystem.utils.enums.Difficulty;
+import org.bukkit.Bukkit;
+
+import java.util.List;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.logging.Level;
 
 public class CityProject {
 
@@ -16,7 +18,7 @@ public class CityProject {
     private Country country;
     private String description;
     private String tags;
-    private Difficulty difficulty;
+    private boolean visible;
 
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
@@ -36,8 +38,8 @@ public class CityProject {
             // Tags
             this.tags = rs.getString("tags");
 
-            // Difficulty
-            this.difficulty = Difficulty.values()[rs.getInt("idDifficulty") - 1];
+            // Visible
+            this.visible = rs.getInt("visible") == 1;
         }
     }
 
@@ -53,35 +55,30 @@ public class CityProject {
         return country;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
     public String getTags() {
         return tags;
     }
 
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
+    public boolean isVisible() { return visible; }
 
-    public static int getPlotsCount(int cityID) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT COUNT(idplot) FROM plots WHERE idcity = '" + cityID + "'");
+    public static List<CityProject> getCityProjects() {
+        try {
+            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects ORDER BY CAST(country AS CHAR)");
+            List<CityProject> cityProjects = new ArrayList<>();
 
-        if(rs.next()) {
-            return rs.getInt(1);
+            while (rs.next()) {
+                CityProject city = new CityProject(rs.getInt(1));
+                if(city.isVisible()) {
+                    cityProjects.add(city);
+                }
+            }
+
+            return cityProjects;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return 0;
-    }
-
-    public static List<CityProject> getCityProjects() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects");
-        List<CityProject> cityProjects = new ArrayList<>();
-
-        while (rs.next()) {
-            cityProjects.add(new CityProject(rs.getInt("idcityProject")));
-        }
-
-        return cityProjects;
+        return null;
     }
 }
