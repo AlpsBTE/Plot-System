@@ -105,7 +105,7 @@ Project Link: [https://github.com/AlpsBTE/AlpsBTE-PlotSystem](https://github.com
 [forks-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/network/members
 [stars-shield]: https://img.shields.io/github/stars/AlpsBTE/AlpsBTE-PlotSystem.svg?style=for-the-badge
 [stars-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/stargazers
-[issues-shield]: https://img.shields.io/github/license/AlpsBTE/AlpsBTE-PlotSystem.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/AlpsBTE/AlpsBTE-PlotSystem.svg?style=for-the-badge
 [issues-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/issues
 [license-shield]: https://img.shields.io/github/license/AlpsBTE/AlpsBTE-PlotSystem.svg?style=for-the-badge
 [license-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/blob/main/LICENSE.txt
