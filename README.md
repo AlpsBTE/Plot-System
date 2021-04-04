@@ -23,7 +23,9 @@
     <br />
     <br />
     <a href="mc.alps-bte.com">Check Out Now</a>
+    ·
     <a href="https://github.com/AlpsBTE/AlpsBTE-PlotSystem/wiki">Report Bug</a>
+    ·
     <a href="https://github.com/AlpsBTE/AlpsBTE-PlotSystem/wiki">Request Feature</a>
   </p>
 </p>
@@ -35,9 +37,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=DblJmUxUck8
-" target="_blank"><img src="http://img.youtube.com/vi/DblJmUxUck8/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="480" height="360" border="10" /></a>
+**VIDEO**
 
 The Plot System is an essential part of the Alps BTE server system, along with the Terra and Event Server. The plot system gives every player the opportunity to participate in the project with Minecraft versions 1.12-1.16 (Vanilla).
 
@@ -108,4 +108,4 @@ Project Link: [https://github.com/AlpsBTE/AlpsBTE-PlotSystem](https://github.com
 [issues-shield]: https://img.shields.io/github/issues/AlpsBTE/AlpsBTE-PlotSystem.svg?style=for-the-badge
 [issues-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/issues
 [license-shield]: https://img.shields.io/github/license/AlpsBTE/AlpsBTE-PlotSystem.svg?style=for-the-badge
-[license-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/dev/LICENSE.txt
+[license-url]: https://github.com/AlpsBTE/AlpsBTE-PlotSystem/blob/main/LICENSE.txt
