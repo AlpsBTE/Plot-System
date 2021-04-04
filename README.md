@@ -37,7 +37,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-**VIDEO**
+![PlotSystemTrailer](https://user-images.githubusercontent.com/64250550/113524662-7c78b400-95b0-11eb-98dd-753600fb6f17.gif)
 
 The Plot System is an essential part of the Alps BTE server system, along with the Terra and Event Server. The plot system gives every player the opportunity to participate in the project with Minecraft versions 1.12-1.16 (Vanilla).
 
@@ -56,6 +56,9 @@ All used Library and APIs are listed below.
 ## Usage
 
 Check out the [Documentation](https://github.com/AlpsBTE/AlpsBTE-PlotSystem/wiki) for detailed examples and tutorials.
+
+https://user-images.githubusercontent.com/64250550/113524537-9a91e480-95af-11eb-9adf-8d2676948688.mp4
+
 
 
 
