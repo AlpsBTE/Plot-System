@@ -57,8 +57,6 @@ All used Library and APIs are listed below.
 
 Check out the [Documentation](https://github.com/AlpsBTE/AlpsBTE-PlotSystem/wiki) for detailed examples and tutorials.
 
-https://user-images.githubusercontent.com/64250550/113524537-9a91e480-95af-11eb-9adf-8d2676948688.mp4
-
 
 
 
