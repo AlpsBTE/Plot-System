@@ -63,6 +63,10 @@ commands:
     description: Teleport to a plot
     permission: alpsbte.admin
     usage: /plot <ID>
+  deleteplot:
+    description: Delete a plot
+    permission: alpsbte.admin
+    usage: /deleteplot <ID>
   generateplot:
     description: Generate a new plot
     permission: alpsbte.admin
