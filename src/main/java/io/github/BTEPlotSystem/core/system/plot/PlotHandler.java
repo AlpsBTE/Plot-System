@@ -39,7 +39,10 @@ public class PlotHandler {
         player.setFlying(true);
 
         player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-        player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+
+        if(player.hasPermission("alpsbte.review")) {
+            player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+        }
 
         sendLinkMessages(plot, player);
 
