@@ -42,6 +42,8 @@ public class PlotHandler {
 
         if(player.hasPermission("alpsbte.review")) {
             player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+        } else if(player.getInventory().contains(ReviewMenu.getMenuItem())) {
+            player.getInventory().remove(ReviewMenu.getMenuItem());
         }
 
         sendLinkMessages(plot, player);
