@@ -63,6 +63,10 @@ commands:
     description: Teleport to a plot
     permission: alpsbte.admin
     usage: /plot <ID>
+  cleanplot:
+    description: Clean up plot data after a update/bug
+    permission: alpsbte.admin
+    usage: /cleanplot, /cleanplot <ID>
   deleteplot:
     description: Delete a plot
     permission: alpsbte.admin
