@@ -49,7 +49,25 @@ public class Plot extends PlotPermissions {
 
     public Difficulty getDifficulty() { return difficulty; }
 
-    public File getSchematic() { return Paths.get(PlotManager.getSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile(); }
+    public File getOutlinesSchematic() throws IOException {
+        File file = Paths.get(PlotManager.getOutlinesSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
+        if(!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+
+        return file;
+    }
+
+    public File getFinishedSchematic() throws IOException {
+        File file = Paths.get(PlotManager.getFinishedSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
+        if(!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+
+        return file;
+    }
 
     public Builder getBuilder() {
         try {
