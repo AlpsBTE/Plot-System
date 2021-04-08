@@ -135,12 +135,17 @@ public class PlotHandler {
     }
 
     public static Location getPlotSpawnPoint(World world) {
-        return new Location(world,
-                (double) (PlotManager.getPlotSize() / 2) + 0.5,
-                30,
-                (double) (PlotManager.getPlotSize() / 2) + 0.5,
-                -90,
-                90);
+        try {
+            return new Location(world,
+                    (double) (PlotManager.getPlotSize(PlotManager.getPlotByWorld(world)) / 2) + 0.5,
+                    30, // TODO: Fit Y value to schematic height to prevent collision
+                    (double) (PlotManager.getPlotSize(PlotManager.getPlotByWorld(world)) / 2) + 0.5,
+                    -90,
+                    90);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return world.getSpawnLocation();
+        }
     }
 
     public static void sendLinkMessages(Plot plot, Player player){

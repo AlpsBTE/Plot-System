@@ -92,7 +92,6 @@ public class PlotManager {
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
         List<Plot> plots = new ArrayList<>();
 
-        // Get plot
         while (rs.next()) {
            plots.add(new Plot(rs.getInt("idplot")));
         }
@@ -101,63 +100,58 @@ public class PlotManager {
     }
 
     public static void savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
-
-        Vector terraOrigin = plot.getMinecraftCoordinates();
-        Bukkit.getLogger().log(Level.INFO, "Terra Origin: " + terraOrigin.toString());
-
-        double schematicOriginX, schematicOriginY, schematicOriginZ;
-        double plotOriginX, plotOriginY, plotOriginZ;
+        Vector terraOrigin, schematicOrigin, plotOrigin;
+        Vector schematicMinPoint, schematicMaxPoint;
+        Vector plotCenter;
 
         // Load plot outlines schematic as clipboard
         Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
 
-        Vector plotCenter = Vector.toBlockPoint(
-                PlotManager.getPlotSize() / 2f,
-                15,
-                PlotManager.getPlotSize() / 2f
-        );
-        Bukkit.getLogger().log(Level.INFO, "Plot Center: " + plotCenter);
 
-        // Calculate min and max plot region vectors
-        int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2f);
-        int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2f);
+        // Get player origin coordinates on terra
+        terraOrigin = plot.getMinecraftCoordinates();
 
-        Vector minPoint = new Vector(
+
+        // Get plot center
+        plotCenter = PlotManager.getPlotCenter(plot);
+
+
+        // Calculate min and max points of schematic
+        int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
+        int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
+
+        schematicMinPoint = Vector.toBlockPoint(
                 plotCenter.getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
                 0,
                 plotCenter.getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
         );
-        Bukkit.getLogger().log(Level.INFO, "Finished Plot Min Point: " + minPoint.toString());
 
-
-        Vector maxPoint = new Vector(
-                plotCenter.getX() + Math.ceil(outlinesClipboardCenterX),
+        schematicMaxPoint = Vector.toBlockPoint(
+                plotCenter.getX() + outlinesClipboardCenterX,
                 256,
-                plotCenter.getZ() + Math.ceil(outlinesClipboardCenterZ));
-        Bukkit.getLogger().log(Level.INFO, "Finished Plot Max Point: " + maxPoint.toString());
+                plotCenter.getZ() + outlinesClipboardCenterZ
+        );
+
+
+        // Convert terra schematic coordinates into relative plot schematic coordinates
+        schematicOrigin = Vector.toBlockPoint(
+                Math.floor(terraOrigin.getX()) - Math.floor(outlinesClipboard.getMinimumPoint().getX()),
+                Math.floor(terraOrigin.getY()) - Math.floor(outlinesClipboard.getMinimumPoint().getY()),
+                Math.floor(terraOrigin.getZ()) - Math.floor(outlinesClipboard.getMinimumPoint().getZ())
+        );
+
+
+        // Add additional plot sizes to relative plot schematic coordinates
+        plotOrigin = Vector.toBlockPoint(
+                schematicOrigin.getX() + schematicMinPoint.getX(),
+                schematicOrigin.getY() + 15 - Math.floor(outlinesClipboard.getRegion().getHeight() / 2f) + (outlinesClipboard.getRegion().getHeight() % 2 == 0 ? 1 : 0),
+                schematicOrigin.getZ() + schematicMinPoint.getZ()
+        );
 
 
         // Load finished plot region as cuboid region
         PlotHandler.loadPlot(plot);
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(Bukkit.getWorld("P-" + plot.getID())), minPoint, maxPoint);
-
-        Bukkit.getLogger().log(Level.INFO, "Schematic Info: Length: " + outlinesClipboard.getRegion().getLength() + " | Width: " + outlinesClipboard.getRegion().getWidth() + " | Height: " + outlinesClipboard.getRegion().getHeight());
-
-        // Convert origin terra coords into relative schematic coords
-        schematicOriginX = Math.floor(terraOrigin.getX()) - Math.floor(outlinesClipboard.getMinimumPoint().getX());
-        schematicOriginY = Math.floor(terraOrigin.getY()) - Math.floor(outlinesClipboard.getMinimumPoint().getY()); // Removed .getRegion()
-        schematicOriginZ = Math.floor(terraOrigin.getZ()) - Math.floor(outlinesClipboard.getMinimumPoint().getZ());
-        Bukkit.getLogger().log(Level.INFO, "Outlines Clipboard Min Point: " + outlinesClipboard.getMinimumPoint().toString());
-        Bukkit.getLogger().log(Level.INFO, "Schematic Origin Point: " + new Vector(schematicOriginX, schematicOriginY, schematicOriginZ).toString());
-
-
-        // Convert schematic coords into relative plot coords
-        plotOriginX = schematicOriginX + minPoint.getX();
-        plotOriginY = schematicOriginY + (15 - Math.floor(outlinesClipboard.getRegion().getHeight() / 2f)) + (outlinesClipboard.getRegion().getHeight() % 2 == 0 ? 1 : 0);
-        plotOriginZ = schematicOriginZ + minPoint.getZ();
-
-        Vector plotOrigin = new Vector(plotOriginX, plotOriginY, plotOriginZ);
-        Bukkit.getLogger().log(Level.INFO, "Plot Origin Point: " + plotOrigin.toString());
+        CuboidRegion region = new CuboidRegion(new BukkitWorld(Bukkit.getWorld("P-" + plot.getID())), schematicMinPoint, schematicMaxPoint);
 
 
         // Copy finished plot region to clipboard
@@ -166,6 +160,7 @@ public class PlotManager {
         EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(region.getWorld(), -1);
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
+
 
         // Write finished plot clipboard to schematic file
         try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(), false))) {
@@ -249,8 +244,24 @@ public class PlotManager {
         return BTEPlotSystem.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
     }
 
-    public static int getPlotSize() {
+    public static int getPlotSize(Plot plot) {
+       if(plot.getPlotRegion() != null) {
+           if(plot.getPlotRegion().contains(150, 15, 150)) {
+               return 150;
+           } else {
+               return 100;
+           }
+       } else {
         return 150;
+       }
+    }
+
+    public static Vector getPlotCenter(Plot plot) {
+        return Vector.toBlockPoint(
+                getPlotSize(plot) / 2d + 0.5,
+                15, // TODO: Change Y value to the bottom of the schematic
+                getPlotSize(plot) / 2d + 0.5
+        );
     }
 
     public static String getOutlinesSchematicPath() {

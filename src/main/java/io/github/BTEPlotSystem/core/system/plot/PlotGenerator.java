@@ -131,11 +131,7 @@ public final class PlotGenerator {
     }
 
     private void generateBuildingOutlines() throws IOException {
-        Vector buildingOutlinesCoordinates = Vector.toBlockPoint(
-                (double) (PlotManager.getPlotSize() / 2) + 0.5,
-                15,
-                (double) (PlotManager.getPlotSize() / 2) + 0.5
-        );
+        Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot); // TODO: Set Plot to the bottom of the schematic
 
         EditSession editSession = Objects.requireNonNull(
                 ClipboardFormat.findByFile(plot.getOutlinesSchematic()))
@@ -155,9 +151,9 @@ public final class PlotGenerator {
                 0
         );
         BlockVector max = BlockVector.toBlockPoint(
-                PlotManager.getPlotSize(),
+                PlotManager.getPlotSize(plot),
                 256,
-                PlotManager.getPlotSize()
+                PlotManager.getPlotSize(plot)
         );
 
         ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(
