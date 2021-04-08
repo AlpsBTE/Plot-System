@@ -22,7 +22,7 @@ public class CMD_UndoReview implements CommandExecutor {
                     int plotID = Integer.parseInt(args[0]);
                     if(PlotManager.plotExists(plotID)) {
                         Plot plot = new Plot(plotID);
-                        if(plot.isReviewed() && !plot.wasRejected()) {
+                        if(plot.isReviewed() && !plot.isRejected()) {
                             if(plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId()) || sender.hasPermission("alpsbte.admin")) {
                                 Review.undoReview(plot.getReview());
                                 sender.sendMessage((Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been unreviewed!")));

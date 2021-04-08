@@ -23,7 +23,7 @@ public class CMD_SendFeedback implements CommandExecutor {
                         try {
                             if(PlotManager.plotExists(Integer.parseInt(args[0]))) {
                                 Plot plot = new Plot(Integer.parseInt(args[0]));
-                                if (plot.isReviewed() || plot.wasRejected()) {
+                                if (plot.isReviewed() || plot.isRejected()) {
                                     if (plot.getReview().getReviewer().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")){
 
                                         StringBuilder feedback = new StringBuilder();

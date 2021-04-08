@@ -52,7 +52,7 @@ public class FeedbackMenu extends AbstractMenu {
                                     "§7Detailing: " + Utils.getPointsByColor(review.getRating(Category.DETAILING)) + "§8/§a5",
                                     "§7Technique: " + Utils.getPointsByColor(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
                                     "",
-                                    plot.wasRejected() ? "§c§lRejected" : "§a§lAccepted")
+                                    plot.isRejected() ? "§c§lRejected" : "§a§lAccepted")
                             .build())
                     .build());
         } catch (SQLException ex) {

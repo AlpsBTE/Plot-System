@@ -32,7 +32,7 @@ public class PlotActionsMenu extends AbstractMenu {
                 .build();
         mask.apply(getMenu());
 
-        hasFeedback = plot.isReviewed() || plot.wasRejected();
+        hasFeedback = plot.isReviewed() || plot.isRejected();
 
         addMenuItems();
         setItemClickEvents();

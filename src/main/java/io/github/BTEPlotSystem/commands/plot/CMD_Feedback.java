@@ -26,7 +26,7 @@ public class CMD_Feedback implements CommandExecutor {
                             Plot plot = new Plot(Integer.parseInt(args[0]));
 
                             if(PlotManager.plotExists(plot.getID())) {
-                                if(plot.isReviewed() || plot.wasRejected()) {
+                                if(plot.isReviewed() || plot.isRejected()) {
                                     if(plot.getBuilder().getUUID().equals(((Player) sender).getUniqueId()) || sender.hasPermission("alpsbte.review")) {
                                         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + plot.getID() + "'");
                                         rs.next();

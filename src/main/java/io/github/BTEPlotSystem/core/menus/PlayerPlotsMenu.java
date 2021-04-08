@@ -135,7 +135,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     private List<String> getDescription(Plot plot) throws SQLException {
         List<String> lines = new ArrayList<>();
         lines.add("§7Total Points: §f" + (plot.getScore() == -1 ? 0 : plot.getScore()));
-        if (plot.isReviewed() || plot.wasRejected()) {
+        if (plot.isReviewed() || plot.isRejected()) {
             lines.add("");
             lines.add("§7Accuracy: " + Utils.getPointsByColor(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
             lines.add("§7Block Palette: " + Utils.getPointsByColor(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");

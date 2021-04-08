@@ -13,6 +13,7 @@ import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -66,7 +67,7 @@ public class Plot extends PlotPermissions {
 
     public Review getReview() {
         try {
-            if(getStatus() == Status.complete || wasRejected()) {
+            if(getStatus() == Status.complete || isRejected()) {
                 ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + getID() + "'");
                 rs.next();
 
@@ -80,21 +81,8 @@ public class Plot extends PlotPermissions {
 
     public String getGeoCoordinatesNumeric() {
         try {
-            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT mcCoordinates FROM plots WHERE idplot = '" + getID() + "'");
-            rs.next();
-
-            // Player MC Coordinates
-            String[] mcLocation = rs.getString(1).split(",");
-
-            // Added support for the recently added Y plot coordinate
-            Vector mcCoordinates;
-            if(mcLocation.length == 2) {
-                mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
-            } else {
-                mcCoordinates = new Vector(Double.parseDouble(mcLocation[0]),Double.parseDouble(mcLocation[1]),Double.parseDouble(mcLocation[2]));
-            }
-
             // Convert MC coordinates to geo coordinates
+            Vector mcCoordinates = getMinecraftCoordinates();
             try {
                 return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
             } catch (OutOfProjectionBoundsException ex) {
@@ -149,6 +137,18 @@ public class Plot extends PlotPermissions {
         return null;
     }
 
+    public String getOSMMapsLink() {
+        return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinatesNumeric().replace(",", "/");
+    }
+
+    public String getGoogleMapsLink() {
+        return "https://www.google.com/maps/place/"+ getGeoCoordinatesNumeric();
+    }
+
+    public String getGoogleEarthLink() {
+        return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
+    }
+
     public void setBuilder(String UUID) throws SQLException {
         PreparedStatement statement;
         if(UUID != null) {
@@ -188,26 +188,18 @@ public class Plot extends PlotPermissions {
         statement.executeUpdate();
     }
 
-    // Get Open Street Maps link
-    public String getOSMMapsLink() {
-        return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinatesNumeric().replace(",", "/");
-    }
+    public boolean isPasted() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT isPasted FROM plots WHERE idplot = '" + getID() + "'");
+        rs.next();
 
-    // Get Google Maps link
-    public String getGoogleMapsLink() {
-        return "https://www.google.com/maps/place/"+ getGeoCoordinatesNumeric();
-    }
-
-    // Get Google Earth Web link
-    public String getGoogleEarthLink() {
-        return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
+        return rs.getBoolean(1);
     }
 
     public boolean isReviewed(){
         return getReview() != null;
     }
 
-    public boolean wasRejected() throws SQLException {
+    public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != -1; // -1 == null
     }
 }

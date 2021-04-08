@@ -138,8 +138,8 @@ public final class PlotGenerator {
         );
 
         EditSession editSession = Objects.requireNonNull(
-                ClipboardFormat.findByFile(plot.getSchematic()))
-                .load(plot.getSchematic())
+                ClipboardFormat.findByFile(plot.getOutlinesSchematic()))
+                .load(plot.getOutlinesSchematic())
                 .paste(weWorld, buildingOutlinesCoordinates, false, false, null);
         editSession.flushQueue();
 
