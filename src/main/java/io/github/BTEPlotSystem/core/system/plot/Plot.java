@@ -112,6 +112,21 @@ public class Plot extends PlotPermissions {
         return null;
     }
 
+    public Vector getMinecraftCoordinates() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT mcCoordinates FROM plots WHERE idplot = '" + getID() + "'");
+        rs.next();
+
+        // Player MC Coordinates
+        String[] mcLocation = rs.getString(1).split(",");
+
+        // Added support for the lately implemented Y plot coordinate
+        if(mcLocation.length == 2) {
+            return new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
+        } else {
+            return new Vector(Double.parseDouble(mcLocation[0]),Double.parseDouble(mcLocation[1]),Double.parseDouble(mcLocation[2]));
+        }
+    }
+
     public int getScore() throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
 
