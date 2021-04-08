@@ -385,6 +385,7 @@ public class ReviewMenu implements Listener {
                             player.sendMessage("§7>> §aPlot §6#" + selectedPlot.getID() + " §aby §6" + selectedPlot.getBuilder().getName() + " §amarked as reviewed!");
 
                             selectedPlot.getReview().setFeedbackSent(false);
+                            selectedPlot.getReview().setFeedback("No Feedback");
                             selectedPlot.setStatus(Status.complete);
                             selectedPlot.getBuilder().addScore(totalRating);
                             selectedPlot.getBuilder().addCompletedBuild(1);
@@ -393,6 +394,8 @@ public class ReviewMenu implements Listener {
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
                             }
+
+                            PlotManager.savePlotAsSchematic(selectedPlot);
                         } else {
                             player.sendMessage("§7>> §aPlot §6#" + selectedPlot.getID() + " §aby §6" + selectedPlot.getBuilder().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
 
