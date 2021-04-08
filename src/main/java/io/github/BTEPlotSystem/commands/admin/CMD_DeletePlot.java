@@ -22,6 +22,7 @@ public class CMD_DeletePlot implements CommandExecutor {
                     if(PlotManager.plotExists(plotID)) {
                         try {
                             PlotHandler.deletePlot(new Plot(plotID));
+                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
                         } catch (Exception ex) {
                             sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

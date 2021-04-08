@@ -3,7 +3,8 @@ database:
   name: name
   username: username
   password: password
-schematic-path: null
+outlines-schematic-path: null
+finished-schematic-path: null
 spawn-point:
   x: 0
   y: 0
