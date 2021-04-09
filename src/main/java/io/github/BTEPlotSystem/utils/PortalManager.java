@@ -29,8 +29,13 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import github.BTEPlotSystem.BTEPlotSystem;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import xyz.xenondevs.particle.ParticleBuilder;
+import xyz.xenondevs.particle.ParticleEffect;
 
 import java.util.logging.Level;
 
@@ -45,6 +50,10 @@ public class PortalManager extends Thread {
 
     public void run() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+
+            spawnPlotParticles(Portal_Plot.getMinimumPoint(), Portal_Plot.getMaximumPoint());
+            spawnPlotParticles(Portal_Terra.getMinimumPoint(), Portal_Terra.getMaximumPoint());
+            spawnPlotParticles(Portal_Event.getMinimumPoint(), Portal_Event.getMaximumPoint());
 
             for(Player player : Bukkit.getOnlinePlayers()) {
                 try {
@@ -68,5 +77,19 @@ public class PortalManager extends Thread {
                 }
             }
         }, 1, 15);
+    }
+
+    public void spawnPlotParticles(Vector min, Vector max) {
+        for (int i = min.getBlockX(); i <= max.getBlockX();i++) {
+            for (int j = min.getBlockY(); j <= max.getBlockY(); j++) {
+                for (int k = min.getBlockZ(); k <= max.getBlockZ();k++) {
+                    new ParticleBuilder(ParticleEffect.CLOUD, new Location(Bukkit.getWorld("Terra"), i, j, k))
+                            .setOffsetX(0.5f)
+                            .setOffsetZ(0.5f)
+                            .setSpeed(0.05f) // TODO: Improve Performance
+                            .display();
+                }
+            }
+        }
     }
 }
