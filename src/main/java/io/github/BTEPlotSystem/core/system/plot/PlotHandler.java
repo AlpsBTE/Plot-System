@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package github.BTEPlotSystem.core.system.plot;
 
 import github.BTEPlotSystem.BTEPlotSystem;
@@ -39,7 +63,12 @@ public class PlotHandler {
         player.setFlying(true);
 
         player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-        player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+
+        if(player.hasPermission("alpsbte.review")) {
+            player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+        } else if(player.getInventory().contains(ReviewMenu.getMenuItem())) {
+            player.getInventory().remove(ReviewMenu.getMenuItem());
+        }
 
         sendLinkMessages(plot, player);
 
@@ -105,7 +134,7 @@ public class PlotHandler {
     public static void deletePlot(Plot plot) throws Exception {
         abandonPlot(plot);
 
-        Files.deleteIfExists(Paths.get(PlotManager.getSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+        Files.deleteIfExists(Paths.get(PlotManager.getOutlinesSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
         String query = "DELETE FROM plots WHERE idplot = '" + plot.getID() + "'";
         PreparedStatement statement = DatabaseConnection.prepareStatement(query);
@@ -130,12 +159,17 @@ public class PlotHandler {
     }
 
     public static Location getPlotSpawnPoint(World world) {
-        return new Location(world,
-                (double) (PlotManager.getPlotSize() / 2) + 0.5,
-                30,
-                (double) (PlotManager.getPlotSize() / 2) + 0.5,
-                -90,
-                90);
+        try {
+            return new Location(world,
+                    (double) (PlotManager.getPlotSize(PlotManager.getPlotByWorld(world)) / 2) + 0.5,
+                    30, // TODO: Fit Y value to schematic height to prevent collision
+                    (double) (PlotManager.getPlotSize(PlotManager.getPlotByWorld(world)) / 2) + 0.5,
+                    -90,
+                    90);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return world.getSpawnLocation();
+        }
     }
 
     public static void sendLinkMessages(Plot plot, Player player){
