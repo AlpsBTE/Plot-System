@@ -217,6 +217,15 @@ public class PlotHandler {
         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
     }
 
+    public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
+        player.sendMessage("§aYou still have §6" + plots.size() + " §aunfinished plots!");
+        TextComponent tc = new TextComponent();
+        tc.setText("§6Click Here §ato open your plots menu.");
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show my plots").create()));
+        player.spigot().sendMessage(tc);
+    }
+
     public static String getWorldGuardConfigPath(int plotID) {
         return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/P-" + plotID;
     }
