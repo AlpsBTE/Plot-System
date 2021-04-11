@@ -56,9 +56,12 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event){
+        // Remove Default Join Message
         event.setJoinMessage(null);
+        // Teleport Player to the spawn
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
+        // Add Items
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
         }
@@ -132,7 +135,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
         event.setQuitMessage(null);
-
+        
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
         }

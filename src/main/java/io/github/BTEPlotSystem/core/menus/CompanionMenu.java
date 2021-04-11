@@ -89,7 +89,7 @@ public class CompanionMenu extends AbstractMenu {
         // Add "Player Plots Slots" Items
         for(int i = 0; i < cityProjects.size(); i++) {
             if(i <= 28) {
-                ItemStack cityProjectItem = null;
+                ItemStack cityProjectItem;
                 switch (cityProjects.get(i).getCountry()) {
                     case AT:
                         cityProjectItem = Utils.getItemHead("4397");
@@ -102,6 +102,9 @@ public class CompanionMenu extends AbstractMenu {
                         break;
                     case IT:
                         cityProjectItem = Utils.getItemHead("21903");
+                    default:
+                        // Set Error Item
+                        cityProjectItem = errorItem();
                 }
 
                 try {
