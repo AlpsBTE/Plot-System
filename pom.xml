@@ -130,6 +130,13 @@
             </exclusions>
         </dependency>
 
+        <!-- Anvil GUI -->
+        <dependency>
+            <groupId>xyz.upperlevel.spigot.anvilgui</groupId>
+            <artifactId>spigot-anvil-gui</artifactId>
+            <version>1.3</version>
+        </dependency>
+
         <!-- Discord JDA API [V4.2.0_168]-->
         <!--<dependency>
             <groupId>net.dv8tion</groupId>
