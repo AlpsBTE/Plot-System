@@ -28,6 +28,7 @@ import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,7 +53,7 @@ public class PlotActionsMenu extends AbstractMenu {
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
-                .pattern("111111111")
+                .pattern("111101111")
                 .build();
         mask.apply(getMenu());
 
@@ -114,6 +115,16 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .addLine("Click to view your plot review feedback").build())
                             .build());
         }
+
+        // Add Plot Member Button
+        getMenu().getSlot(22)
+                .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                        .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
+                                .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
+                                        "",
+                                        "§c§lNote: §7Points will be split between all Members when reviewed!")
+                                .build())
+                        .build());
     }
 
     @Override
@@ -147,5 +158,11 @@ public class PlotActionsMenu extends AbstractMenu {
                 clickPlayer.performCommand("feedback " + plot.getID());
             });
         }
+
+        // Set click event for Plot Member button
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            new PlotMemberMenu(plot,clickPlayer);
+        });
     }
 }
