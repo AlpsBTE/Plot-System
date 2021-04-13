@@ -241,24 +241,6 @@ public class CompanionMenu extends AbstractMenu {
                .build();
    }
 
-    private String getCityDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
-        int diff_ID = 0;
-        if(PlotManager.getPlotDifficultyForBuilder(cityID, builder) != null) {
-            diff_ID = PlotManager.getPlotDifficultyForBuilder(cityID, builder).ordinal() + 1;
-        }
-
-        switch (diff_ID) {
-            case 1:
-                return "§a§lEASY";
-            case 2:
-                return "§6§lMEDIUM";
-            case 3:
-                return "§c§lHARD";
-            default:
-                return "§f§lNo Plots Available";
-        }
-    }
-
     // Set city project items
     private void setCityProjectItems() {
         for(int i = 0; i < cityProjects.size(); i++) {
