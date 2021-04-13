@@ -31,7 +31,7 @@ import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
-import github.BTEPlotSystem.utils.enums.Difficulty;
+import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -50,7 +50,7 @@ public class Plot extends PlotPermissions {
 
     private final int ID;
     private CityProject cityProject;
-    private Difficulty difficulty;
+    private PlotDifficulty plotDifficulty;
 
     public Plot(int ID) throws SQLException {
         super(ID);
@@ -63,7 +63,7 @@ public class Plot extends PlotPermissions {
             this.cityProject = new CityProject(rs.getInt(1));
 
             // Set Plot Difficulty
-            this.difficulty = Difficulty.values()[rs.getInt(2) - 1];
+            this.plotDifficulty = PlotDifficulty.values()[rs.getInt(2) - 1];
         }
     }
 
@@ -71,7 +71,7 @@ public class Plot extends PlotPermissions {
 
     public CityProject getCity() { return cityProject; }
 
-    public Difficulty getDifficulty() { return difficulty; }
+    public PlotDifficulty getDifficulty() { return plotDifficulty; }
 
     public File getOutlinesSchematic() throws IOException {
         File file = Paths.get(PlotManager.getOutlinesSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();

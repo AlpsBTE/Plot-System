@@ -37,7 +37,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.enums.Difficulty;
+import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -69,7 +69,7 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
     }
 
     public static List<Plot> getPlots(Builder builder, Status... status) throws SQLException {
@@ -95,19 +95,19 @@ public class PlotManager {
         return listPlots(DatabaseConnection.createStatement().executeQuery(query.toString()));
     }
 
-    public static List<Plot> getPlots(int cityID, Difficulty difficulty, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND iddifficulty = '" + (difficulty.ordinal() + 1) + "' AND status = '" + status.name() + "'"));
+    public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND iddifficulty = '" + (plotDifficulty.ordinal() + 1) + "' AND status = '" + status.name() + "'"));
     }
 
-    public static double getMultiplierByDifficulty(Difficulty difficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + difficulty.name() + "'");
+    public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + plotDifficulty.name() + "'");
         rs.next();
 
         return rs.getDouble(1);
     }
 
-    public static int getScoreRequirementByDifficulty(Difficulty difficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT scoreRequirement FROM difficulties WHERE iddifficulty = '" + (difficulty.ordinal() + 1) + "'");
+    public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT scoreRequirement FROM difficulties WHERE iddifficulty = '" + (plotDifficulty.ordinal() + 1) + "'");
         rs.next();
 
         return rs.getInt(1);
@@ -226,39 +226,39 @@ public class PlotManager {
         return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
-    public static Difficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+    public static PlotDifficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
         int playerScore = builder.getScore();
-        int easyScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.HARD);
+        int easyScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.HARD);
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
 
-        if(PlotManager.getPlots(cityID, Difficulty.EASY, Status.unclaimed).size() != 0) {
+        if(PlotManager.getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) {
             easyHasPlots = true;
         }
 
-        if(PlotManager.getPlots(cityID, Difficulty.MEDIUM, Status.unclaimed).size() != 0) {
+        if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) {
             mediumHasPlots = true;
         }
 
-        if(PlotManager.getPlots(cityID, Difficulty.HARD, Status.unclaimed).size() != 0) {
+        if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) {
             hardHasPlots = true;
         }
 
         if(playerScore >= easyScore && playerScore < mediumScore && easyHasPlots) {
-            return Difficulty.EASY;
+            return PlotDifficulty.EASY;
         } else if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
-            return Difficulty.MEDIUM;
+            return PlotDifficulty.MEDIUM;
         } else if(playerScore >= hardScore && hardHasPlots) {
-            return Difficulty.HARD;
+            return PlotDifficulty.HARD;
         } else if(easyHasPlots && playerScore >= mediumScore && playerScore < hardScore ) {
-            return Difficulty.EASY;
+            return PlotDifficulty.EASY;
         } else if(mediumHasPlots && playerScore >= easyScore && playerScore < mediumScore) {
-            return Difficulty.MEDIUM;
+            return PlotDifficulty.MEDIUM;
         } else if(hardHasPlots) {
-            return Difficulty.HARD;
+            return PlotDifficulty.HARD;
         } else if(mediumHasPlots) {
-            return Difficulty.MEDIUM;
+            return PlotDifficulty.MEDIUM;
         } else if(easyHasPlots) {
-            return Difficulty.EASY;
+            return PlotDifficulty.EASY;
         } else {
             return null;
         }
