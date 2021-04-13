@@ -27,6 +27,7 @@ package github.BTEPlotSystem.core.system;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -113,6 +114,19 @@ public class Builder {
             }
         }
         return null;
+    }
+
+    public PlotDifficulty getSelectedDifficulty() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT selectedDifficulty FROM players WHERE uuid = '" + getUUID() + "'");
+        rs.next();
+
+        return PlotDifficulty.values()[(rs.getInt(1) - 1)];
+    }
+
+    public void setSelectedDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        PreparedStatement ps = DatabaseConnection.prepareStatement("UPDATE players SET selectedDifficulty = ? WHERE uuid = '" + getUUID() + "'");
+        ps.setInt(1, plotDifficulty.ordinal() + 1);
+        ps.executeUpdate();
     }
 
     public void addScore(int score) throws SQLException {
