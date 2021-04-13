@@ -308,4 +308,29 @@ public class CompanionMenu extends AbstractMenu {
             }
         }
     }
+
+    // Get selected plot difficulty item of player
+    private ItemStack getSelectedDifficultyItem() throws SQLException {
+        PlotDifficulty selectedDifficulty = new Builder(getMenuPlayer().getUniqueId()).getSelectedDifficulty();
+        ItemStack item = Utils.getItemHead("9248");
+
+        switch (selectedDifficulty) {
+            case EASY:
+                item = Utils.getItemHead("10220");
+            case MEDIUM:
+                item = Utils.getItemHead("9680");
+            case HARD:
+                item = Utils.getItemHead("9356");
+        }
+
+        return new ItemBuilder(item)
+                .setName("§b§lPLOT DIFFICULTY")
+                .setLore(new LoreBuilder()
+                        .addLines("",
+                                Utils.getFormattedDifficulty(selectedDifficulty),
+                                "",
+                                "§7Click To Switch...")
+                        .build())
+                .build();
+    }
 }
