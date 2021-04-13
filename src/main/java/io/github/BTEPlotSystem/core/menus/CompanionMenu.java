@@ -126,7 +126,10 @@ public class CompanionMenu extends AbstractMenu {
             }
         }
 
-        // Add "City Projects" Items
+        // Set city project items
+        setCityProjectItems();
+
+        // Set player slots items
         for (int i = 0; i < 3 ; i++) {
             try {
                 getMenu().getSlot(46 + i)
@@ -265,6 +268,57 @@ public class CompanionMenu extends AbstractMenu {
                 return "§c§lHARD";
             default:
                 return "§f§lNo Plots Available";
+        }
+    }
+
+    // Set city project items
+    private void setCityProjectItems() {
+        for(int i = 0; i < cityProjects.size(); i++) {
+            if(i <= 28) {
+                ItemStack cityProjectItem = errorItem();
+                switch (cityProjects.get(i).getCountry()) {
+                    case AT:
+                        cityProjectItem = Utils.getItemHead("4397");
+                        break;
+                    case CH:
+                        cityProjectItem = Utils.getItemHead("32348");
+                        break;
+                    case LI:
+                        cityProjectItem = Utils.getItemHead("26174");
+                        break;
+                    case IT:
+                        cityProjectItem = Utils.getItemHead("21903");
+                }
+
+                try {
+                    Builder builder = new Builder(getMenuPlayer().getUniqueId());
+                    PlotDifficulty selectedPlayerDifficulty, plotDifficulty;
+                    if((selectedPlayerDifficulty = new Builder(getMenuPlayer().getUniqueId()).getSelectedDifficulty()) != PlotDifficulty.AUTOMATIC) {
+                        plotDifficulty = PlotDifficulty.values()[selectedPlayerDifficulty.ordinal()];
+                    } else {
+                        plotDifficulty = PlotManager.getPlotDifficultyForBuilder(cityProjects.get(i).getID(), builder);
+                    }
+
+                    getMenu().getSlot(9 + i)
+                            .setItem(new ItemBuilder(cityProjectItem)
+                                    .setName("§b§l" + cityProjects.get(i).getName())
+                                    .setLore(new LoreBuilder()
+                                            .addLines(cityProjects.get(i).getDescription(),
+                                                    "",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
+                                                    "§f---------------------",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
+                                                    "",
+                                                    plotDifficulty != null ? Utils.getFormattedDifficulty(plotDifficulty) : "§f§lNo Plots Available"
+                                                    )
+                                            .build())
+                                    .build());
+                } catch (SQLException ex) {
+                    getMenu().getSlot(9 + i).setItem(errorItem());
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            }
         }
     }
 }
