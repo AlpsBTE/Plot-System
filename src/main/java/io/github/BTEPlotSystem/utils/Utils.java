@@ -25,18 +25,14 @@
 package github.BTEPlotSystem.utils;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 
 public class Utils {
 
@@ -111,6 +107,19 @@ public class Utils {
                 return "§2" + points;
             default:
                 return "§a" + points;
+        }
+    }
+
+    public static String getFormattedDifficulty(PlotDifficulty plotDifficulty) {
+        switch (plotDifficulty) {
+            case EASY:
+                return "§a§lEasy";
+            case MEDIUM:
+                return "§6§lMedium";
+            case HARD:
+                return "§c§lHard";
+            default:
+                return "";
         }
     }
 }
