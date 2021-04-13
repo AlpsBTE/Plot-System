@@ -64,6 +64,7 @@ public class CompanionMenu extends AbstractMenu {
         mask.apply(getMenu());
 
         try {
+            // Get player slots of player
             Builder builder = new Builder(getMenuPlayer().getUniqueId());
             for(int i = 0; i < 3; i++) {
                 slots[i] = builder.getPlot(Slot.values()[i]);
@@ -80,7 +81,7 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void addMenuItems() {
-        // Add Navigator Item
+        // Set navigator item
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(Material.COMPASS,1)
                         .setName("§6§lNavigator").setLore(new LoreBuilder()
@@ -125,13 +126,13 @@ public class CompanionMenu extends AbstractMenu {
             }
         }
 
-        // Add "Builder Utilities Menu" Item
+        // Set builder utilities item
         getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem());
 
-        // Add "Show Plots Menu" Item
+        // Set show plots item
         getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem());
 
-        // Add "Player Settings Menu" Item
+        // Set player settings item
         getMenu().getSlot(52)
                 .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
                         .setName("§b§lSettings")
@@ -142,7 +143,7 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEvents() {
-        // Add Click Event for Navigator Item
+        // Add click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("navigator");
@@ -200,7 +201,7 @@ public class CompanionMenu extends AbstractMenu {
             });
         }
 
-        // Add Click Event For Player Plot Slots
+        // Add click event for player slot items
         for(int i = 0; i < 3; i++) {
             if(slots[i] != null) {
                 int itemSlot = i;
@@ -217,19 +218,19 @@ public class CompanionMenu extends AbstractMenu {
             }
         }
 
-        // Add Click Event For Builder Utilities Menu
+        // Add click event for builder utilities item
         getMenu().getSlot(50).setClickHandler(((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             new BuilderUtilitiesMenu(clickPlayer);
         }));
 
-        // Add Click Event For Show Plots Menu
+        // Add click event for show plots item
         getMenu().getSlot(51).setClickHandler(((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("plots " + clickPlayer.getName());
         }));
 
-        // Add Click Event For Player Settings Menu
+        // Add click event for player settings item
         getMenu().getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1)));
     }
 
