@@ -50,6 +50,11 @@ public class CMD_SetHologramPosition implements CommandExecutor {
                     }
                 } else {
                     player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sethologram <name>"));
+                    player.sendMessage("§7------- §6§lHologram List §7-------");
+                    for(HolographicDisplay holo : BTEPlotSystem.getHolograms()) {
+                        player.sendMessage(Utils.getInfoMessageFormat(holo.getHologramName()));
+                    }
+                    player.sendMessage("§7-----------------------------");
                 }
 
             }
