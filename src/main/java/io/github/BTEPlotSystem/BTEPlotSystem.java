@@ -36,10 +36,7 @@ import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
-import github.BTEPlotSystem.core.holograms.EventHologram;
-import github.BTEPlotSystem.core.holograms.HolographicDisplay;
-import github.BTEPlotSystem.core.holograms.ParkourLeaderboard;
-import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
+import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.PortalManager;
 import org.bukkit.Bukkit;
@@ -120,7 +117,8 @@ public class BTEPlotSystem extends JavaPlugin {
         holograms.addAll(Arrays.asList(
                 new ScoreLeaderboard(),
                 new ParkourLeaderboard(),
-                new EventHologram()
+                new EventHologram(),
+                new CompletedBuildsLeaderboard()
         ));
         holograms.forEach(Thread::start);
 

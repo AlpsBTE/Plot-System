@@ -34,21 +34,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class ScoreLeaderboard extends HolographicDisplay {
+public class CompletedBuildsLeaderboard extends HolographicDisplay {
 
-    public ScoreLeaderboard() {
-        super("ScoreLeaderboard");
+    public CompletedBuildsLeaderboard() {
+        super("BuildsLeaderboard");
     }
 
     @Override
     protected String getTitle() {
-        return "§b§lTOP SCORE";
+        return "§b§lCOMPLETED PLOTS";
     }
 
     @Override
     protected List<String> getDataLines() {
         try {
-            return Builder.getBuildersByScore(10);
+            return Builder.getBuildersByCompletedBuilds(10);
         } catch (SQLException ex) {
             BTEPlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
