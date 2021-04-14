@@ -116,19 +116,6 @@ public class Builder {
         return null;
     }
 
-    public PlotDifficulty getSelectedDifficulty() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT selectedDifficulty FROM players WHERE uuid = '" + getUUID() + "'");
-        rs.next();
-
-        return PlotDifficulty.values()[(rs.getInt(1) - 1)];
-    }
-
-    public void setSelectedDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        PreparedStatement ps = DatabaseConnection.prepareStatement("UPDATE players SET selectedDifficulty = ? WHERE uuid = '" + getUUID() + "'");
-        ps.setInt(1, plotDifficulty.ordinal() + 1);
-        ps.executeUpdate();
-    }
-
     public void addScore(int score) throws SQLException {
         DatabaseConnection.prepareStatement(
                 "UPDATE players SET score = " + (getScore() + score) + " WHERE uuid = '" + getUUID() + "'"
