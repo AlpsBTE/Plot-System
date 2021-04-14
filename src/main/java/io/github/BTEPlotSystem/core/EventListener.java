@@ -104,8 +104,10 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         // Informing player about unfinished plots
         try {
-            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()),Status.unfinished);
-            PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
+            if(plots.size() >= 1) {
+                PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+            }
         } catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about his unfinished plots!", ex);
         }
