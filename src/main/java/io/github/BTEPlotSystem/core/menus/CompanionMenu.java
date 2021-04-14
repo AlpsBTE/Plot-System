@@ -49,6 +49,8 @@ public class CompanionMenu extends AbstractMenu {
     private final Plot[] slots = new Plot[3];
     private final List<CityProject> cityProjects = CityProject.getCityProjects();
 
+    private PlotDifficulty selectedPlotDifficulty = null;
+
     public CompanionMenu(Player player) {
         super(6, "Companion", player);
 
@@ -152,11 +154,9 @@ public class CompanionMenu extends AbstractMenu {
         // Add click event for switch plots difficulty item
         getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                Builder builder = new Builder(getMenuPlayer().getUniqueId());
-                PlotDifficulty currentDifficulty = builder.getSelectedDifficulty();
-
-                builder.setSelectedDifficulty(currentDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
-                        PlotDifficulty.values()[currentDifficulty.ordinal() + 1] : PlotDifficulty.values()[0]);
+                selectedPlotDifficulty = (selectedPlotDifficulty == null ?
+                        PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
+                        PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
                 getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
                 setCityProjectItems();
 
@@ -177,11 +177,12 @@ public class CompanionMenu extends AbstractMenu {
                         Builder builder = new Builder(clickPlayer.getUniqueId());
                         int cityID = cityProjects.get(itemSlot).getID();
                         if (builder.getFreeSlot() != null){
-                            if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
-                                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
-                                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                            PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder);
+                            if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0){
+                                clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
+                                clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
-                                    new PlotGenerator(cityID, PlotManager.getPlotDifficultyForBuilder(cityID, builder), builder);
+                                new PlotGenerator(cityID, plotDifficultyForCity, builder);
                             } else {
                                 clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -261,13 +262,8 @@ public class CompanionMenu extends AbstractMenu {
                 }
 
                 try {
-                    Builder builder = new Builder(getMenuPlayer().getUniqueId());
-                    PlotDifficulty selectedPlayerDifficulty, plotDifficulty;
-                    if((selectedPlayerDifficulty = new Builder(getMenuPlayer().getUniqueId()).getSelectedDifficulty()) != PlotDifficulty.AUTOMATIC) {
-                        plotDifficulty = PlotDifficulty.values()[selectedPlayerDifficulty.ordinal()];
-                    } else {
-                        plotDifficulty = PlotManager.getPlotDifficultyForBuilder(cityProjects.get(i).getID(), builder);
-                    }
+                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ?
+                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId()));
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(cityProjectItem)
@@ -280,7 +276,8 @@ public class CompanionMenu extends AbstractMenu {
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
                                                     "",
-                                                    plotDifficulty != null ? Utils.getFormattedDifficulty(plotDifficulty) : "§f§lNo Plots Available"
+                                                    PlotManager.getPlots(cityProjects.get(i).getID(), plotDifficultyForCity, Status.unclaimed).size() != 0 ?
+                                                            Utils.getFormattedDifficulty(plotDifficultyForCity) : "§f§lNo Plots Available"
                                                     )
                                             .build())
                                     .build());
@@ -294,23 +291,23 @@ public class CompanionMenu extends AbstractMenu {
 
     // Get selected plot difficulty item of player
     private ItemStack getSelectedDifficultyItem() throws SQLException {
-        PlotDifficulty selectedDifficulty = new Builder(getMenuPlayer().getUniqueId()).getSelectedDifficulty();
         ItemStack item = Utils.getItemHead("9248");
 
-        switch (selectedDifficulty) {
-            case EASY:
+        if(selectedPlotDifficulty != null) {
+            if(selectedPlotDifficulty == PlotDifficulty.EASY) {
                 item = Utils.getItemHead("10220");
-            case MEDIUM:
+            } else if(selectedPlotDifficulty == PlotDifficulty.MEDIUM) {
                 item = Utils.getItemHead("9680");
-            case HARD:
+            } else if(selectedPlotDifficulty == PlotDifficulty.HARD){
                 item = Utils.getItemHead("9356");
+            }
         }
 
         return new ItemBuilder(item)
                 .setName("§b§lPLOT DIFFICULTY")
                 .setLore(new LoreBuilder()
                         .addLines("",
-                                Utils.getFormattedDifficulty(selectedDifficulty),
+                                selectedPlotDifficulty != null ? Utils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§lAutomatic",
                                 "",
                                 "§7Click To Switch...")
                         .build())
