@@ -192,19 +192,18 @@ public class PlotManager {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static void checkPlotsForLastActivity() {
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
-                long millisIn30Days = 30L * 24 * 60 * 60 * 1000;
+                long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
 
                 for(Plot plot : plots) {
-                    if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn30Days)) {
+                    if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
                         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                             try {
-                                //PlotHandler.abandonPlot(plot);
-                                Bukkit.getLogger().log(Level.INFO, "Called event to abandon plot #" + plot.getID() + " after 30 days of inactivity!");
+                                PlotHandler.abandonPlot(plot);
+                                Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "A unknown error occurred!", ex);
                             }
@@ -214,7 +213,7 @@ public class PlotManager {
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-        }, 0L, 20 * 60 * 60); // 1 Hour
+        }, 0L, 20 * 60 * 60); // Check every hour
     }
 
     public static Plot getPlotByWorld(World plotWorld) throws SQLException {
