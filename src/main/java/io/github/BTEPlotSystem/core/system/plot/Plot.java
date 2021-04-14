@@ -63,7 +63,7 @@ public class Plot extends PlotPermissions {
             this.cityProject = new CityProject(rs.getInt(1));
 
             // Set Plot Difficulty
-            this.plotDifficulty = PlotDifficulty.values()[rs.getInt(2)];
+            this.plotDifficulty = PlotDifficulty.values()[rs.getInt(2) - 1];
         }
     }
 

@@ -100,7 +100,7 @@ public class PlotManager {
     }
 
     public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + plotDifficulty.name() + "'");
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties WHERE iddifficulty = '" + (plotDifficulty.ordinal() + 1) + "'");
         rs.next();
 
         return rs.getDouble(1);
@@ -226,6 +226,7 @@ public class PlotManager {
         return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
+    // TODO: Make this function more efficient :eyes:
     public static PlotDifficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
         int playerScore = builder.getScore();
         int easyScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.HARD);
@@ -257,10 +258,8 @@ public class PlotManager {
             return PlotDifficulty.HARD;
         } else if(mediumHasPlots) {
             return PlotDifficulty.MEDIUM;
-        } else if(easyHasPlots) {
-            return PlotDifficulty.EASY;
         } else {
-            return null;
+            return PlotDifficulty.EASY;
         }
     }
 

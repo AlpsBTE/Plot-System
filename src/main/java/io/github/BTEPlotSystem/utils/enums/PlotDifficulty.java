@@ -25,5 +25,5 @@
 package github.BTEPlotSystem.utils.enums;
 
 public enum PlotDifficulty {
-    AUTOMATIC, EASY, MEDIUM, HARD
+    EASY, MEDIUM, HARD
 }
