@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.utils;
 
+import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -34,6 +35,8 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.UUID;
+
 public class Utils {
 
     // Head Database API
@@ -41,6 +44,11 @@ public class Utils {
 
     public static ItemStack getItemHead(String headID) {
         return headDatabaseAPI != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+    }
+
+    // Get player head by UUID
+    public static ItemStack getPlayerHead(UUID playerUUID) {
+        return SkullCreator.itemFromUuid(playerUUID) != null ? SkullCreator.itemFromUuid(playerUUID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
     }
 
     // Sounds

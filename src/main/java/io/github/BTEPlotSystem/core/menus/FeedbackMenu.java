@@ -98,7 +98,7 @@ public class FeedbackMenu extends AbstractMenu {
 
         // Add Reviewer Item
         try {
-            getMenu().getSlot(16).setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+            getMenu().getSlot(16).setItem(new ItemBuilder(Utils.getPlayerHead(review.getReviewer().getUUID()))
                     .setName("§b§lReviewer")
                     .setLore(new LoreBuilder()
                             .addLine(review.getReviewer().getName()).build())

@@ -78,7 +78,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
         // Add player stats item
         try {
             getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3) // TODO: Get players head
+                    .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
                             .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
                                     .addLines("Points: §f" + builder.getScore(),
                                             "§7Completed Buildings: §f" + builder.getCompletedBuilds())

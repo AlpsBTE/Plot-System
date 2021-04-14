@@ -6,10 +6,9 @@
 
     <groupId>org.example</groupId>
     <artifactId>BTEPlotSystem</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1</version>
 
     <repositories>
-
         <!-- Spigot & Bukkit API -->
         <repository>
             <id>spigot-repo</id>
@@ -28,16 +27,19 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
 
+        <!-- World Edit / World Guard API -->
         <repository>
             <id>enginehub-maven</id>
             <url>http://maven.enginehub.org/repo/</url>
         </repository>
 
+        <!-- Fast Async World Edit API -->
         <repository>
             <id>fawe-repo</id>
             <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
         </repository>
 
+        <!-- World Edit / World Guard API -->
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
@@ -50,27 +52,35 @@
             <url>https://jcenter.bintray.com</url>
         </repository>
 
+        <!-- Multiverse Core API -->
         <repository>
             <id>Multiverse-Core</id>
             <url>http://repo.onarandombox.com/content/repositories/multiverse/</url>
         </repository>
+
+        <!-- Skull Creator Library -->
+        <repository>
+            <id>skullcreator-repo</id>
+            <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
+        </repository>
     </repositories>
 
     <dependencies>
-        <!-- Spigot API -->
+        <!-- Spigot API [1.12.2-R0.1-SNAPSHOT] -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
         </dependency>
-        <!-- Bukkit API -->
+
+        <!-- Bukkit API [1.12.2-R0.1-SNAPSHOT] -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- Holographic Displays -->
+        <!-- Holographic Displays API [2.4.0] -->
         <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
@@ -78,7 +88,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Fast Async World Edit API [VLatest]-->
+        <!-- Fast Async World Edit API [Latest]-->
         <dependency>
             <groupId>com.boydti</groupId>
             <artifactId>fawe-api</artifactId>
@@ -86,7 +96,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- World Edit API [V1.6.9]-->
+        <!-- World Edit API [6.1.9]-->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
@@ -110,14 +120,14 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- ParticleLib -->
+        <!-- ParticleLib [1.5.1] -->
         <dependency>
             <groupId>xyz.xenondevs</groupId>
             <artifactId>particle</artifactId>
             <version>1.5.1</version>
         </dependency>
 
-        <!-- Multiverse API -->
+        <!-- Multiverse Core API [2.5.0] -->
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
@@ -130,32 +140,25 @@
             </exclusions>
         </dependency>
 
-        <!-- Discord JDA API [V4.2.0_168]-->
-        <!--<dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>4.2.0_168</version>
-        </dependency>-->
-
-        <!-- HeadDB API -->
+        <!-- HeadDB API [1.0] -->
         <dependency>
             <groupId>com.github.shynixn.headdatabase</groupId>
             <artifactId>hdb-api</artifactId>
             <version>1.0</version>
         </dependency>
 
-        <!-- ASYNC Database API -->
-        <!--<dependency>
-            <groupId>org.mariadb</groupId>
-            <artifactId>r2dbc-mariadb</artifactId>
-            <version>1.0.0</version>
-        </dependency>-->
-
         <!-- MariaDB Connector API [V2.7.1]-->
          <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>2.7.1</version>
+        </dependency>
+
+        <!-- Skull Creator Library [3.0.0] -->
+        <dependency>
+            <groupId>dev.dbassett</groupId>
+            <artifactId>skullcreator</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
@@ -173,11 +176,12 @@
         <!-- IMPORTANT: Plugin Building Path -->
         <sourceDirectory>src/main/java/io</sourceDirectory>
         <!-- IMPORTANT: Output File Name -->
-        <finalName>BTE-PlotSystem V1.0</finalName>
+        <finalName>AlpsBTE-PlotSystem V${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -186,7 +190,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
