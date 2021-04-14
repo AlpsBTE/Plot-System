@@ -308,6 +308,7 @@ public class CompanionMenu extends AbstractMenu {
                 .setLore(new LoreBuilder()
                         .addLines("",
                                 selectedPlotDifficulty != null ? Utils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§lAutomatic",
+                                selectedPlotDifficulty != null ? "§7Score Multiplier: §fx" + PlotManager.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
                                 "",
                                 "§7Click To Switch...")
                         .build())
