@@ -95,6 +95,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("undosubmit").setExecutor(new CMD_UndoSubmit());
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
         this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
+        this.getCommand("tpll").setExecutor(new CMD_Tpll());
 
         // Add reviewer commands [alpsbte.review Permission]
         this.getCommand("review").setExecutor(new CMD_Review());

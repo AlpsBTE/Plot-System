@@ -62,6 +62,17 @@ public class CoordinateConversion {
     }
 
     /**
+     * Gets in-game coordinates from geographical location
+     *
+     * @param lon Geographical Longitude
+     * @param lat Geographic Latitude
+     * @return The in-game coordinates (x, z)
+     */
+    public static double[] convertFromGeo(double lon, double lat) throws OutOfProjectionBoundsException {
+        return projection.fromGeo(lon, lat);
+    }
+
+    /**
      * Get formatted numeric geographic coordinates
      *
      * @param coordinates - WG84 EPSG:4979 coordinates as double array

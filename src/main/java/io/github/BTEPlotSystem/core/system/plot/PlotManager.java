@@ -192,6 +192,36 @@ public class PlotManager {
         }
     }
 
+    public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws SQLException, IOException {
+
+        // Load plot outlines schematic as clipboard
+        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
+
+        // Calculate min and max points of schematic
+        int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
+        int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
+
+        double[] schematicMinPoint = {
+                PlotManager.getPlotCenter(plot).getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
+                PlotManager.getPlotCenter(plot).getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+        };
+
+        // Convert terra schematic coordinates into relative plot schematic coordinates
+        double[] schematicCoords = {
+                terraCoords[0] - outlinesClipboard.getMinimumPoint().getX(),
+                terraCoords[1] - outlinesClipboard.getMinimumPoint().getZ()
+        };
+
+        // Add additional plot sizes to relative plot schematic coordinates
+        double[] plotCoords = {
+                schematicCoords[0] + schematicMinPoint[0],
+                schematicCoords[1] + schematicMinPoint[1]
+        };
+
+        return plotCoords;
+    }
+
+    @SuppressWarnings("deprecation")
     public static void checkPlotsForLastActivity() {
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
             try {
