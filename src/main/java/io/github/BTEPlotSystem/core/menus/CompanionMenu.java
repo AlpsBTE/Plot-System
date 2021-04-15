@@ -68,7 +68,7 @@ public class CompanionMenu extends AbstractMenu {
         try {
             // Get player slots of player
             Builder builder = new Builder(getMenuPlayer().getUniqueId());
-            for(int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 slots[i] = builder.getPlot(Slot.values()[i]);
             }
         } catch (SQLException ex) {
@@ -85,7 +85,7 @@ public class CompanionMenu extends AbstractMenu {
     protected void addMenuItems() {
         // Set navigator item
         getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.COMPASS,1)
+                .setItem(new ItemBuilder(Material.COMPASS, 1)
                         .setName("§6§lNavigator").setLore(new LoreBuilder()
                                 .addLine("Open the navigator menu").build())
                         .build());
@@ -96,75 +96,33 @@ public class CompanionMenu extends AbstractMenu {
         } catch (SQLException ex) {
             getMenu().getSlot(7).setItem(MenuItems.errorItem());
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-          
-        // Add "Player Plots Slots" Items
-        for(int i = 0; i < cityProjects.size(); i++) {
-            if(i <= 28) {
-                ItemStack cityProjectItem;
-                switch (cityProjects.get(i).getCountry()) {
-                    case AT:
-                        cityProjectItem = Utils.getItemHead("4397");
-                        break;
-                    case CH:
-                        cityProjectItem = Utils.getItemHead("32348");
-                        break;
-                    case LI:
-                        cityProjectItem = Utils.getItemHead("26174");
-                        break;
-                    case IT:
-                        cityProjectItem = Utils.getItemHead("21903");
-                    default:
-                        // Set Error Item
-                        cityProjectItem = errorItem();
-                }
-
-                try {
-                    getMenu().getSlot(9 + i)
-                            .setItem(new ItemBuilder(cityProjectItem)
-                                    .setName("§b§l" + cityProjects.get(i).getName())
-                                    .setLore(new LoreBuilder()
-                                            .addLines(cityProjects.get(i).getDescription(),
-                                                    "",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
-                                                    "§f---------------------",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
-                                                    "",
-                                                    getCityDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId())))
-                                            .build())
-                                    .build());
-                } catch (SQLException ex) {
-                    getMenu().getSlot(9 + i).setItem(errorItem());
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                }
-            }
         }
 
         // Set city project items
         setCityProjectItems();
 
         // Set player slots items
-        for (int i = 0; i < 3 ; i++) {
+        for (int i = 0; i < 3; i++) {
             try {
                 getMenu().getSlot(46 + i)
-                        .setItem(new ItemBuilder(Material.MAP,1 + i)
+                        .setItem(new ItemBuilder(Material.MAP, 1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
                                         .addLines("§7ID: §f" + slots[i].getID(),
-                                                  "§7City: §f" + slots[i].getCity().getName(),
-                                                  "§7Difficulty: §f" +  slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
-                                                  "",
-                                                  "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
+                                                "§7City: §f" + slots[i].getCity().getName(),
+                                                "§7Difficulty: §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
+                                                "",
+                                                "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
                                         ).build())
                                 .build());
             } catch (Exception ex) {
                 getMenu().getSlot(46 + i)
-                        .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
+                        .setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
                                         .addLines("§7Click on a city project to create a new plot",
-                                                  "",
-                                                  "§6§lStatus: §7§lUnassigned")
+                                                "",
+                                                "§6§lStatus: §7§lUnassigned")
                                         .build())
                                 .build());
             }

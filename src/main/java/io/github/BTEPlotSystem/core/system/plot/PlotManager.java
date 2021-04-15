@@ -223,7 +223,6 @@ public class PlotManager {
         return plotCoords;
     }
 
-    @SuppressWarnings("deprecation")
     public static void checkPlotsForLastActivity() {
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
             try {
