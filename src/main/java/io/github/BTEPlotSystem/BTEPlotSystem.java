@@ -89,6 +89,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("spawn").setExecutor(new CMD_Spawn());
         this.getCommand("hub").setExecutor(new CMD_Spawn());
         this.getCommand("tpp").setExecutor(new CMD_Tpp());
+        this.getCommand("tpll").setExecutor(new CMD_Tpll());
 
         // Add plot commands [alpsbte.plot Permission]
         this.getCommand("companion").setExecutor(new CMD_Companion());
