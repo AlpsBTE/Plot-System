@@ -124,6 +124,8 @@ public class PlotManager {
     }
 
     public static void savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
+        // TODO: MOVE CONVERSION TO SEPERATE METHODS
+
         Vector terraOrigin, schematicOrigin, plotOrigin;
         Vector schematicMinPoint, schematicMaxPoint;
         Vector plotCenter;
