@@ -34,6 +34,7 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
@@ -194,7 +195,7 @@ public class PlotManager {
         }
     }
 
-    public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws SQLException, IOException {
+    public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
 
         // Load plot outlines schematic as clipboard
         Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
@@ -203,10 +204,17 @@ public class PlotManager {
         int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
-        double[] schematicMinPoint = {
+        Vector schematicMinPoint = Vector.toBlockPoint(
                 PlotManager.getPlotCenter(plot).getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
+                0,
                 PlotManager.getPlotCenter(plot).getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
-        };
+        );
+
+        Vector schematicMaxPoint = Vector.toBlockPoint(
+                PlotManager.getPlotCenter(plot).getX() + outlinesClipboardCenterX,
+                256,
+                PlotManager.getPlotCenter(plot).getZ() + outlinesClipboardCenterZ
+        );
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
         double[] schematicCoords = {
@@ -216,11 +224,16 @@ public class PlotManager {
 
         // Add additional plot sizes to relative plot schematic coordinates
         double[] plotCoords = {
-                schematicCoords[0] + schematicMinPoint[0],
-                schematicCoords[1] + schematicMinPoint[1]
+                schematicCoords[0] + schematicMinPoint.getX(),
+                schematicCoords[1] + schematicMinPoint.getZ()
         };
 
-        return plotCoords;
+        // Return coordinates if they are in the schematic plot region
+        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains((int)plotCoords[0], (int)plotCoords[1])) {
+            return plotCoords;
+        }
+
+       return null;
     }
 
     public static void checkPlotsForLastActivity() {
