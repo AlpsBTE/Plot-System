@@ -326,7 +326,7 @@ public class ReviewMenu implements Listener {
     public void onPlayerInventoryClickEvent(InventoryClickEvent event) {
         try {
             if (event.getWhoClicked().equals(player)) {
-                if (event.getClickedInventory().equals(reviewMenu)) {
+                if (event.getClickedInventory() != null && event.getClickedInventory().equals(reviewMenu)) {
 
                     if (event.getCurrentItem().equals(itemClose)) {
                         event.getWhoClicked().closeInventory();
