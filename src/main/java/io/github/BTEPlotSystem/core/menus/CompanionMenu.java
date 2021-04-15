@@ -94,7 +94,7 @@ public class CompanionMenu extends AbstractMenu {
         try {
             getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
         } catch (SQLException ex) {
-            getMenu().getSlot(7).setItem(errorItem());
+            getMenu().getSlot(7).setItem(MenuItems.errorItem());
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
 
@@ -171,7 +171,7 @@ public class CompanionMenu extends AbstractMenu {
         for(int i = 0; i < cityProjects.size(); i++) {
             int itemSlot = i;
             getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                if(!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(errorItem())) {
+                if(!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(MenuItems.errorItem())) {
                     try {
                         clickPlayer.closeInventory();
                         Builder builder = new Builder(clickPlayer.getUniqueId());
@@ -246,7 +246,7 @@ public class CompanionMenu extends AbstractMenu {
     private void setCityProjectItems() {
         for(int i = 0; i < cityProjects.size(); i++) {
             if(i <= 28) {
-                ItemStack cityProjectItem = errorItem();
+                ItemStack cityProjectItem = MenuItems.errorItem();
                 switch (cityProjects.get(i).getCountry()) {
                     case AT:
                         cityProjectItem = Utils.getItemHead("4397");
@@ -282,7 +282,7 @@ public class CompanionMenu extends AbstractMenu {
                                             .build())
                                     .build());
                 } catch (SQLException ex) {
-                    getMenu().getSlot(9 + i).setItem(errorItem());
+                    getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
             }

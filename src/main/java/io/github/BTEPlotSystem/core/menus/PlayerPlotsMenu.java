@@ -29,6 +29,7 @@ import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Category;
 import org.bukkit.Bukkit;
@@ -86,7 +87,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                             .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(4).setItem(errorItem());
+            getMenu().getSlot(4).setItem(MenuItems.errorItem());
         }
 
         // Add player plots items
@@ -119,12 +120,12 @@ public class PlayerPlotsMenu extends AbstractMenu {
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                getMenu().getSlot(9 + i).setItem(errorItem());
+                getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
             }
         }
 
         // Add Back Button Item
-        getMenu().getSlot(49).setItem(backMenuItem());
+        getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
     }
 
     @Override

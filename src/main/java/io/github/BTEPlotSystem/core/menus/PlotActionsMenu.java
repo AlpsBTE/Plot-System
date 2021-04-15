@@ -28,6 +28,7 @@ import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -86,7 +87,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(10).setItem(errorItem());
+            getMenu().getSlot(10).setItem(MenuItems.errorItem());
         }
 
         // Add teleport to plot button
