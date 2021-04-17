@@ -31,6 +31,7 @@ import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -101,18 +102,18 @@ public class ReviewMenuNew extends AbstractMenu {
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                getMenu().getSlot(i).setItem(errorItem());
+                getMenu().getSlot(i).setItem(MenuItems.errorItem());
             }
         }
 
         // Add previous page button
-        getMenu().getSlot(42).setItem(previousPageItem());
+        getMenu().getSlot(42).setItem(MenuItems.previousPageItem());
 
         // Add close menu button
-        getMenu().getSlot(45).setItem(closeMenuItem());
+        getMenu().getSlot(45).setItem(MenuItems.closeMenuItem());
 
         // Add next page button
-        getMenu().getSlot(48).setItem(nextPageItem());
+        getMenu().getSlot(48).setItem(MenuItems.nextPageItem());
     }
 
     @Override

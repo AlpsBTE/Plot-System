@@ -36,10 +36,7 @@ import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
-import github.BTEPlotSystem.core.holograms.EventHologram;
-import github.BTEPlotSystem.core.holograms.HolographicDisplay;
-import github.BTEPlotSystem.core.holograms.ParkourLeaderboard;
-import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
+import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.PortalManager;
 import org.bukkit.Bukkit;
@@ -89,6 +86,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("spawn").setExecutor(new CMD_Spawn());
         this.getCommand("hub").setExecutor(new CMD_Spawn());
         this.getCommand("tpp").setExecutor(new CMD_Tpp());
+        this.getCommand("tpll").setExecutor(new CMD_Tpll());
 
         // Add plot commands [alpsbte.plot Permission]
         this.getCommand("companion").setExecutor(new CMD_Companion());
@@ -98,6 +96,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("undosubmit").setExecutor(new CMD_UndoSubmit());
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
         this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
+        this.getCommand("tpll").setExecutor(new CMD_Tpll());
 
         // Add reviewer commands [alpsbte.review Permission]
         this.getCommand("review").setExecutor(new CMD_Review());
@@ -120,7 +119,8 @@ public class BTEPlotSystem extends JavaPlugin {
         holograms.addAll(Arrays.asList(
                 new ScoreLeaderboard(),
                 new ParkourLeaderboard(),
-                new EventHologram()
+                new EventHologram(),
+                new CompletedBuildsLeaderboard()
         ));
         holograms.forEach(Thread::start);
 

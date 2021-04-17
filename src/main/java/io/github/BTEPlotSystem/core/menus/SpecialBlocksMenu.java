@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.SpecialBlocks;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
@@ -60,7 +61,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
         }
 
         // Add Back Button Item
-        getMenu().getSlot(22).setItem(backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
     }
 
     @Override
@@ -133,7 +134,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
             case 14:
                 return SpecialBlocks.BarkDarkOakLog;
             default:
-                return errorItem();
+                return MenuItems.errorItem();
         }
     }
 }

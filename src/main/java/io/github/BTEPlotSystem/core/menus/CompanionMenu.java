@@ -30,6 +30,7 @@ import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.*;
+import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -48,6 +49,8 @@ public class CompanionMenu extends AbstractMenu {
     private final Plot[] slots = new Plot[3];
     private final List<CityProject> cityProjects = CityProject.getCityProjects();
 
+    private PlotDifficulty selectedPlotDifficulty = null;
+
     public CompanionMenu(Player player) {
         super(6, "Companion", player);
 
@@ -63,8 +66,9 @@ public class CompanionMenu extends AbstractMenu {
         mask.apply(getMenu());
 
         try {
+            // Get player slots of player
             Builder builder = new Builder(getMenuPlayer().getUniqueId());
-            for(int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 slots[i] = builder.getPlot(Slot.values()[i]);
             }
         } catch (SQLException ex) {
@@ -79,87 +83,58 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void addMenuItems() {
-        // Add Navigator Item
+        // Set navigator item
         getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.COMPASS,1)
+                .setItem(new ItemBuilder(Material.COMPASS, 1)
                         .setName("§6§lNavigator").setLore(new LoreBuilder()
                                 .addLine("Open the navigator menu").build())
                         .build());
 
-        // Add "Player Plots Slots" Items
-        for(int i = 0; i < cityProjects.size(); i++) {
-            if(i <= 28) {
-                ItemStack cityProjectItem = null;
-                switch (cityProjects.get(i).getCountry()) {
-                    case AT:
-                        cityProjectItem = Utils.getItemHead("4397");
-                        break;
-                    case CH:
-                        cityProjectItem = Utils.getItemHead("32348");
-                        break;
-                    case LI:
-                        cityProjectItem = Utils.getItemHead("26174");
-                        break;
-                    case IT:
-                        cityProjectItem = Utils.getItemHead("21903");
-                }
-
-                try {
-                    getMenu().getSlot(9 + i)
-                            .setItem(new ItemBuilder(cityProjectItem)
-                                    .setName("§b§l" + cityProjects.get(i).getName())
-                                    .setLore(new LoreBuilder()
-                                            .addLines(cityProjects.get(i).getDescription(),
-                                                    "",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
-                                                    "§f---------------------",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
-                                                    "",
-                                                    getCityDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId())))
-                                            .build())
-                                    .build());
-                } catch (SQLException ex) {
-                    getMenu().getSlot(9 + i).setItem(errorItem());
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                }
-            }
+        // Set switch plots difficulty item
+        try {
+            getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
+        } catch (SQLException ex) {
+            getMenu().getSlot(7).setItem(MenuItems.errorItem());
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
 
-        // Add "City Projects" Items
-        for (int i = 0; i < 3 ; i++) {
+        // Set city project items
+        setCityProjectItems();
+
+        // Set player slots items
+        for (int i = 0; i < 3; i++) {
             try {
                 getMenu().getSlot(46 + i)
-                        .setItem(new ItemBuilder(Material.MAP,1 + i)
+                        .setItem(new ItemBuilder(Material.MAP, 1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
                                         .addLines("§7ID: §f" + slots[i].getID(),
-                                                  "§7City: §f" + slots[i].getCity().getName(),
-                                                  "§7Difficulty: §f" +  slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
-                                                  "",
-                                                  "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
+                                                "§7City: §f" + slots[i].getCity().getName(),
+                                                "§7Difficulty: §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
+                                                "",
+                                                "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
                                         ).build())
                                 .build());
             } catch (Exception ex) {
                 getMenu().getSlot(46 + i)
-                        .setItem(new ItemBuilder(Material.EMPTY_MAP,1+i)
+                        .setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
                                 .setName("§b§lSLOT " + (i + 1))
                                 .setLore(new LoreBuilder()
                                         .addLines("§7Click on a city project to create a new plot",
-                                                  "",
-                                                  "§6§lStatus: §7§lUnassigned")
+                                                "",
+                                                "§6§lStatus: §7§lUnassigned")
                                         .build())
                                 .build());
             }
         }
 
-        // Add "Builder Utilities Menu" Item
+        // Set builder utilities item
         getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem());
 
-        // Add "Show Plots Menu" Item
+        // Set show plots item
         getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem());
 
-        // Add "Player Settings Menu" Item
+        // Set player settings item
         getMenu().getSlot(52)
                 .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
                         .setName("§b§lSettings")
@@ -170,27 +145,44 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEvents() {
-        // Add Click Event for Navigator Item
+        // Add click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("navigator");
         });
 
-        // Add Click Event For City Projects
+        // Add click event for switch plots difficulty item
+        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
+            try {
+                selectedPlotDifficulty = (selectedPlotDifficulty == null ?
+                        PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
+                        PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
+                getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
+                setCityProjectItems();
+
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.Done, 1, 1);
+            } catch (SQLException ex) {
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        });
+
+        // Add click event for city projects items
         for(int i = 0; i < cityProjects.size(); i++) {
             int itemSlot = i;
             getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                if(!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(errorItem())) {
+                if(!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(MenuItems.errorItem())) {
                     try {
                         clickPlayer.closeInventory();
                         Builder builder = new Builder(clickPlayer.getUniqueId());
                         int cityID = cityProjects.get(itemSlot).getID();
                         if (builder.getFreeSlot() != null){
-                            if (PlotManager.getPlots(cityID, Status.unclaimed).size() != 0){
-                                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
-                                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                            PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder);
+                            if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0){
+                                clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
+                                clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
-                                    new PlotGenerator(cityID, PlotManager.getPlotDifficultyForBuilder(cityID, builder), builder);
+                                new PlotGenerator(cityID, plotDifficultyForCity, builder);
                             } else {
                                 clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -210,7 +202,7 @@ public class CompanionMenu extends AbstractMenu {
             });
         }
 
-        // Add Click Event For Player Plot Slots
+        // Add click event for player slot items
         for(int i = 0; i < 3; i++) {
             if(slots[i] != null) {
                 int itemSlot = i;
@@ -227,19 +219,19 @@ public class CompanionMenu extends AbstractMenu {
             }
         }
 
-        // Add Click Event For Builder Utilities Menu
+        // Add click event for builder utilities item
         getMenu().getSlot(50).setClickHandler(((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             new BuilderUtilitiesMenu(clickPlayer);
         }));
 
-        // Add Click Event For Show Plots Menu
+        // Add click event for show plots item
         getMenu().getSlot(51).setClickHandler(((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("plots " + clickPlayer.getName());
         }));
 
-        // Add Click Event For Player Settings Menu
+        // Add click event for player settings item
         getMenu().getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1)));
     }
 
@@ -250,21 +242,76 @@ public class CompanionMenu extends AbstractMenu {
                .build();
    }
 
-    private String getCityDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
-        int diff_ID = 0;
-        if(PlotManager.getPlotDifficultyForBuilder(cityID, builder) != null) {
-            diff_ID = PlotManager.getPlotDifficultyForBuilder(cityID, builder).ordinal() + 1;
+    // Set city project items
+    private void setCityProjectItems() {
+        for(int i = 0; i < cityProjects.size(); i++) {
+            if(i <= 28) {
+                ItemStack cityProjectItem = MenuItems.errorItem();
+                switch (cityProjects.get(i).getCountry()) {
+                    case AT:
+                        cityProjectItem = Utils.getItemHead("4397");
+                        break;
+                    case CH:
+                        cityProjectItem = Utils.getItemHead("32348");
+                        break;
+                    case LI:
+                        cityProjectItem = Utils.getItemHead("26174");
+                        break;
+                    case IT:
+                        cityProjectItem = Utils.getItemHead("21903");
+                }
+
+                try {
+                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ?
+                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId()));
+
+                    getMenu().getSlot(9 + i)
+                            .setItem(new ItemBuilder(cityProjectItem)
+                                    .setName("§b§l" + cityProjects.get(i).getName())
+                                    .setLore(new LoreBuilder()
+                                            .addLines(cityProjects.get(i).getDescription(),
+                                                    "",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
+                                                    "§f---------------------",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
+                                                    "",
+                                                    PlotManager.getPlots(cityProjects.get(i).getID(), plotDifficultyForCity, Status.unclaimed).size() != 0 ?
+                                                            Utils.getFormattedDifficulty(plotDifficultyForCity) : "§f§lNo Plots Available"
+                                                    )
+                                            .build())
+                                    .build());
+                } catch (SQLException ex) {
+                    getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            }
+        }
+    }
+
+    // Get selected plot difficulty item of player
+    private ItemStack getSelectedDifficultyItem() throws SQLException {
+        ItemStack item = Utils.getItemHead("9248");
+
+        if(selectedPlotDifficulty != null) {
+            if(selectedPlotDifficulty == PlotDifficulty.EASY) {
+                item = Utils.getItemHead("10220");
+            } else if(selectedPlotDifficulty == PlotDifficulty.MEDIUM) {
+                item = Utils.getItemHead("9680");
+            } else if(selectedPlotDifficulty == PlotDifficulty.HARD){
+                item = Utils.getItemHead("9356");
+            }
         }
 
-        switch (diff_ID) {
-            case 1:
-                return "§a§lEASY";
-            case 2:
-                return "§6§lMEDIUM";
-            case 3:
-                return "§c§lHARD";
-            default:
-                return "§f§lNo Plots Available";
-        }
+        return new ItemBuilder(item)
+                .setName("§b§lPLOT DIFFICULTY")
+                .setLore(new LoreBuilder()
+                        .addLines("",
+                                selectedPlotDifficulty != null ? Utils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§lAutomatic",
+                                selectedPlotDifficulty != null ? "§7Score Multiplier: §fx" + PlotManager.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
+                                "",
+                                "§7Click To Switch...")
+                        .build())
+                .build();
     }
 }

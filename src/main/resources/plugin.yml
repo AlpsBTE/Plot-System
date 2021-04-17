@@ -58,7 +58,7 @@ commands:
   edit:
     description: Enable/disble build permissions for reviewers on a plot
     permission: alpsbte.review
-    usage: /edit
+    usage: /editr
   plot:
     description: Teleport to a plot
     permission: alpsbte.admin
@@ -83,6 +83,9 @@ commands:
     description: Reload config and holograms
     permission: alpsbte.admin
     usage: /preload
+  tpll:
+    description: teleport to a position in the plot, using irl coordinates
+    usage: /tpll <long> <lat>
 permissions:
   alpsbte.admin:
     description: Manager permissions

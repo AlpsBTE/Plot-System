@@ -34,10 +34,11 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.enums.Difficulty;
+import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -69,7 +70,7 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "'"));
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
     }
 
     public static List<Plot> getPlots(Builder builder, Status... status) throws SQLException {
@@ -95,19 +96,19 @@ public class PlotManager {
         return listPlots(DatabaseConnection.createStatement().executeQuery(query.toString()));
     }
 
-    public static List<Plot> getPlots(int cityID, Difficulty difficulty, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND iddifficulty = '" + (difficulty.ordinal() + 1) + "' AND status = '" + status.name() + "'"));
+    public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idcity = '" + cityID + "' AND iddifficulty = '" + (plotDifficulty.ordinal() + 1) + "' AND status = '" + status.name() + "'"));
     }
 
-    public static double getMultiplierByDifficulty(Difficulty difficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties where name = '" + difficulty.name() + "'");
+    public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT multiplier FROM difficulties WHERE iddifficulty = '" + (plotDifficulty.ordinal() + 1) + "'");
         rs.next();
 
         return rs.getDouble(1);
     }
 
-    public static int getScoreRequirementByDifficulty(Difficulty difficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT scoreRequirement FROM difficulties WHERE iddifficulty = '" + (difficulty.ordinal() + 1) + "'");
+    public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT scoreRequirement FROM difficulties WHERE iddifficulty = '" + (plotDifficulty.ordinal() + 1) + "'");
         rs.next();
 
         return rs.getInt(1);
@@ -124,6 +125,8 @@ public class PlotManager {
     }
 
     public static void savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
+        // TODO: MOVE CONVERSION TO SEPERATE METHODS
+
         Vector terraOrigin, schematicOrigin, plotOrigin;
         Vector schematicMinPoint, schematicMaxPoint;
         Vector plotCenter;
@@ -192,19 +195,59 @@ public class PlotManager {
         }
     }
 
-    @SuppressWarnings("deprecation")
+    public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
+
+        // Load plot outlines schematic as clipboard
+        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
+
+        // Calculate min and max points of schematic
+        int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
+        int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
+
+        Vector schematicMinPoint = Vector.toBlockPoint(
+                PlotManager.getPlotCenter(plot).getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
+                0,
+                PlotManager.getPlotCenter(plot).getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+        );
+
+        Vector schematicMaxPoint = Vector.toBlockPoint(
+                PlotManager.getPlotCenter(plot).getX() + outlinesClipboardCenterX,
+                256,
+                PlotManager.getPlotCenter(plot).getZ() + outlinesClipboardCenterZ
+        );
+
+        // Convert terra schematic coordinates into relative plot schematic coordinates
+        double[] schematicCoords = {
+                terraCoords[0] - outlinesClipboard.getMinimumPoint().getX(),
+                terraCoords[1] - outlinesClipboard.getMinimumPoint().getZ()
+        };
+
+        // Add additional plot sizes to relative plot schematic coordinates
+        double[] plotCoords = {
+                schematicCoords[0] + schematicMinPoint.getX(),
+                schematicCoords[1] + schematicMinPoint.getZ()
+        };
+
+        // Return coordinates if they are in the schematic plot region
+        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains((int)plotCoords[0], (int)plotCoords[1])) {
+            return plotCoords;
+        }
+
+       return null;
+    }
+
     public static void checkPlotsForLastActivity() {
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
-                long millisIn30Days = 30L * 24 * 60 * 60 * 1000;
+                long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
 
                 for(Plot plot : plots) {
-                    if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn30Days)) {
+                    if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
                         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                             try {
-                                //PlotHandler.abandonPlot(plot);
-                                Bukkit.getLogger().log(Level.INFO, "Called event to abandon plot #" + plot.getID() + " after 30 days of inactivity!");
+                                PlotHandler.abandonPlot(plot);
+                                Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "A unknown error occurred!", ex);
                             }
@@ -214,7 +257,7 @@ public class PlotManager {
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-        }, 0L, 20 * 60 * 60); // 1 Hour
+        }, 0L, 20 * 60 * 60); // Check every hour
     }
 
     public static Plot getPlotByWorld(World plotWorld) throws SQLException {
@@ -226,41 +269,40 @@ public class PlotManager {
         return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
-    public static Difficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+    // TODO: Make this function more efficient :eyes:
+    public static PlotDifficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
         int playerScore = builder.getScore();
-        int easyScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(Difficulty.HARD);
+        int easyScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.HARD);
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
 
-        if(PlotManager.getPlots(cityID, Difficulty.EASY, Status.unclaimed).size() != 0) {
+        if(PlotManager.getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) {
             easyHasPlots = true;
         }
 
-        if(PlotManager.getPlots(cityID, Difficulty.MEDIUM, Status.unclaimed).size() != 0) {
+        if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) {
             mediumHasPlots = true;
         }
 
-        if(PlotManager.getPlots(cityID, Difficulty.HARD, Status.unclaimed).size() != 0) {
+        if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) {
             hardHasPlots = true;
         }
 
         if(playerScore >= easyScore && playerScore < mediumScore && easyHasPlots) {
-            return Difficulty.EASY;
+            return PlotDifficulty.EASY;
         } else if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
-            return Difficulty.MEDIUM;
+            return PlotDifficulty.MEDIUM;
         } else if(playerScore >= hardScore && hardHasPlots) {
-            return Difficulty.HARD;
+            return PlotDifficulty.HARD;
         } else if(easyHasPlots && playerScore >= mediumScore && playerScore < hardScore ) {
-            return Difficulty.EASY;
+            return PlotDifficulty.EASY;
         } else if(mediumHasPlots && playerScore >= easyScore && playerScore < mediumScore) {
-            return Difficulty.MEDIUM;
+            return PlotDifficulty.MEDIUM;
         } else if(hardHasPlots) {
-            return Difficulty.HARD;
+            return PlotDifficulty.HARD;
         } else if(mediumHasPlots) {
-            return Difficulty.MEDIUM;
-        } else if(easyHasPlots) {
-            return Difficulty.EASY;
+            return PlotDifficulty.MEDIUM;
         } else {
-            return null;
+            return PlotDifficulty.EASY;
         }
     }
 

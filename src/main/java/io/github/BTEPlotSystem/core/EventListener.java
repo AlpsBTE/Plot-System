@@ -56,9 +56,12 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event){
+        // Remove Default Join Message
         event.setJoinMessage(null);
+        // Teleport Player to the spawn
         event.getPlayer().teleport(Utils.getSpawnPoint());
 
+        // Add Items
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
         }
@@ -68,6 +71,8 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
         }
 
+        // User has joined for the first time
+        // Adding user to the database
         if(!event.getPlayer().hasPlayedBefore()) {
             try {
                 PreparedStatement statement = DatabaseConnection.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
@@ -79,6 +84,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
         }
 
+        // Informing player about new feedback
         try {
             List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
             List<Plot> reviewedPlots = new ArrayList<>();
@@ -97,6 +103,16 @@ public class EventListener extends SpecialBlocks implements Listener {
             plots.clear(); reviewedPlots.clear();
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
+        }
+
+        // Informing player about unfinished plots
+        try {
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
+            if(plots.size() >= 1) {
+                PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+            }
+        } catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about his unfinished plots!", ex);
         }
     }
 
@@ -121,7 +137,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
         event.setQuitMessage(null);
-
+        
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
         }

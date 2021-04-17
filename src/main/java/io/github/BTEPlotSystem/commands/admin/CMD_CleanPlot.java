@@ -25,7 +25,13 @@
 package github.BTEPlotSystem.commands.admin;
 
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.RegionGroup;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotGenerator;
+import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -41,7 +47,7 @@ import java.util.logging.Level;
 
 public class CMD_CleanPlot implements CommandExecutor {
 
-    private Plot[] plots;
+    private Plot[] plots = new Plot[1];
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
@@ -64,8 +70,6 @@ public class CMD_CleanPlot implements CommandExecutor {
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                             player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                         }
-                    } else {
-                        player.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
                 } else if(args.length == 1 && args[0].equalsIgnoreCase("all")) {
                     try {
@@ -78,15 +82,16 @@ public class CMD_CleanPlot implements CommandExecutor {
                     player.sendMessage(Utils.getErrorMessageFormat("Usage: /cleanplot, /cleanplot <ID>"));
                 }
 
-                if(plots != null) {
+                if(plots[0] != null) {
                     try {
                         checkForFinishedSchematic();
+                        refreshPlotPermissions();
+                        player.sendMessage(Utils.getInfoMessageFormat("Successfully cleaned §6" + plots.length + " §aplots!"));
+                        player.playSound(player.getLocation(), Utils.Done, 1, 1);
                     } catch (SQLException | IOException | WorldEditException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "An error occurred!", ex);
                         player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                     }
-                } else {
-                    player.sendMessage(Utils.getErrorMessageFormat("Usage: /cleanplot, /cleanplot <ID>"));
                 }
             }
         }
@@ -99,6 +104,30 @@ public class CMD_CleanPlot implements CommandExecutor {
                 if(plot.getFinishedSchematic().length() == 0) {
                     PlotManager.savePlotAsSchematic(plot);
                 }
+            }
+        }
+    }
+
+    private void refreshPlotPermissions() throws SQLException {
+        for(Plot plot : plots) {
+            if(plot.getStatus() == Status.unfinished) {
+                plot.clearAllPerms().save();
+                ProtectedRegion region = plot.getPlotRegion();
+
+                // Add builder perms to plot
+                DefaultDomain owner = region.getOwners();
+                owner.addPlayer(plot.getBuilder().getUUID());
+                region.setOwners(owner);
+
+                // Refresh plot command permissions
+                region.setFlag(DefaultFlag.BLOCKED_CMDS, PlotGenerator.blockedCommandsNonBuilder);
+                region.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+
+                region.setFlag(DefaultFlag.ALLOWED_CMDS, PlotGenerator.allowedCommandsBuilder);
+                region.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+
+                // Save & Unload plot
+                PlotHandler.unloadPlot(plot);
             }
         }
     }

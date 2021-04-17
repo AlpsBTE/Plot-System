@@ -28,6 +28,7 @@ import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.core.system.Review;
+import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Category;
 import org.bukkit.Bukkit;
@@ -81,7 +82,7 @@ public class FeedbackMenu extends AbstractMenu {
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(10).setItem(errorItem());
+            getMenu().getSlot(10).setItem(MenuItems.errorItem());
         }
 
         // Add Feedback Item
@@ -93,19 +94,19 @@ public class FeedbackMenu extends AbstractMenu {
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(13).setItem(errorItem());
+            getMenu().getSlot(13).setItem(MenuItems.errorItem());
         }
 
         // Add Reviewer Item
         try {
-            getMenu().getSlot(16).setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+            getMenu().getSlot(16).setItem(new ItemBuilder(Utils.getPlayerHead(review.getReviewer().getUUID()))
                     .setName("§b§lReviewer")
                     .setLore(new LoreBuilder()
                             .addLine(review.getReviewer().getName()).build())
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(13).setItem(errorItem());
+            getMenu().getSlot(13).setItem(MenuItems.errorItem());
         }
     }
 
