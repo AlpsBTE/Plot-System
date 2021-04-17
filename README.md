@@ -13,6 +13,7 @@
   <a href="https://github.com/AlpsBTE/AlpsBTE-PlotSystem">
     <img src="https://cdn.discordapp.com/attachments/697504468299808819/762357721676644412/server_icon_transparent_bloom.png" alt="Logo" width="200" height="120">
   </a>
+</p>
 
   <h3 align="center">Alps BTE - Plot System</h3>
 
@@ -28,8 +29,6 @@
     ·
     <a href="https://github.com/AlpsBTE/AlpsBTE-PlotSystem/wiki">Request Feature</a>
   </p>
-</p>
-
 
 
 
@@ -92,6 +91,8 @@ Project Link: [https://github.com/AlpsBTE/AlpsBTE-PlotSystem](https://github.com
 * [Fast Async WorldEdit](http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/)
 * [Multiverse](http://repo.onarandombox.com/content/repositories/multiverse/)
 * [Holographic Displays](https://repo.codemc.io/repository/maven-public/)
+* [Skull Creator](https://dl.bintray.com/deanveloper/SkullCreator)
+* [ParticleLIB](https://github.com/ByteZ1337/ParticleLib)  
 * [HeadDB](https://github.com/Arcaniax-Development/HeadDatabase-API)
 * [Canvas - Inventory Menu Builder](https://github.com/IPVP-MC/canvas)
 * [MariaDB](https://mariadb.com/kb/en/about-mariadb-connector-j/)

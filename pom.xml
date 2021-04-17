@@ -63,12 +63,6 @@
             <id>skullcreator-repo</id>
             <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
         </repository>
-      
-        <!-- Anvil GUI -->
-        <repository>
-            <id>codemc-snapshots</id>
-            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -144,13 +138,6 @@
                     <artifactId>craftbukkit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-      
-        <!-- Anvil GUI -->
-        <dependency>
-            <groupId>net.wesjd</groupId>
-            <artifactId>anvilgui</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
         </dependency>
 
          <!-- HeadDB API [1.0] -->
