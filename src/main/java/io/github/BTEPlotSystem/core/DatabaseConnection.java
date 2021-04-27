@@ -34,6 +34,7 @@ public class DatabaseConnection {
 
     //private static Connection connection;
 
+
     public static void InitializeDatabase() {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
