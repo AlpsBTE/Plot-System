@@ -99,8 +99,6 @@ public class EventListener extends SpecialBlocks implements Listener {
                 PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
                 event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
             }
-
-            plots.clear(); reviewedPlots.clear();
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
         }
@@ -110,9 +108,23 @@ public class EventListener extends SpecialBlocks implements Listener {
             List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
             if(plots.size() >= 1) {
                 PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+                event.getPlayer().sendMessage("");
             }
         } catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about his unfinished plots!", ex);
+        }
+
+        // Informing reviewer about new reviews
+        if(event.getPlayer().hasPermission("alpsbte.review")) {
+            try {
+                List<Plot> unreviewedPlots = PlotManager.getPlots(Status.unreviewed);
+
+                if(unreviewedPlots.size() != 0) {
+                    PlotHandler.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
+                }
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
+            }
         }
     }
 

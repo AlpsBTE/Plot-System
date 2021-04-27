@@ -218,11 +218,25 @@ public class PlotHandler {
     }
 
     public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-        player.sendMessage("§aYou still have §6" + plots.size() + " §aunfinished plots!");
+        player.sendMessage("§aYou still have §6" + plots.size() + " §aunfinished plot" + (plots.size() <= 1 ? "!" : "s!"));
         TextComponent tc = new TextComponent();
         tc.setText("§6Click Here §ato open your plots menu.");
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show my plots").create()));
+        player.spigot().sendMessage(tc);
+    }
+
+    public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
+        if(plots.size() <= 1) {
+            player.sendMessage("§aThere is §6" + plots.size() + " §aunreviewed plot!");
+        } else {
+            player.sendMessage("§aThere are §6" + plots.size() + " §aunreviewed plots!");
+        }
+
+        TextComponent tc = new TextComponent();
+        tc.setText("§6Click Here §ato open the review menu.");
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show unreviewed plots").create()));
         player.spigot().sendMessage(tc);
     }
 
