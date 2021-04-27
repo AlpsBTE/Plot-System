@@ -75,8 +75,8 @@ public class BTEPlotSystem extends JavaPlugin {
 
         reloadConfig();
 
-        // Connect to database
-        DatabaseConnection.ConnectToDatabase();
+        // Initialize database
+        DatabaseConnection.InitializeDatabase();
 
         // Add listeners
         this.getServer().getPluginManager().registerEvents(new EventListener(), plugin);

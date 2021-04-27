@@ -32,35 +32,36 @@ import java.util.logging.Level;
 
 public class DatabaseConnection {
 
-    private static Connection connection;
+    //private static Connection connection;
 
-    public static void ConnectToDatabase() {
+    public static void InitializeDatabase() {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            System.out.println("MariaDB JDBC Driver Registered!");
+            Bukkit.getLogger().log(Level.INFO, "Successfully registered MariaDB JDBC Driver!");
 
-            try {
-                FileConfiguration config = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
-
-                connection = DriverManager.getConnection(
-                        "jdbc:mariadb://172.18.0.1:3306/" + config.getString("database.name"),
-                        config.getString("database.username"),
-                        config.getString("database.password"));
-
-                Bukkit.getLogger().log(Level.INFO, "SQL Connection to database established!");
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Connection Failed!", ex);
-            }
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "MySQL JDBC Driver not found!", ex);
         }
     }
 
     public static Connection getConnection() {
-        return connection;
+        int retries = 3;
+        while (retries > 0) {
+            try {
+                FileConfiguration config = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
+
+                return DriverManager.getConnection(config.getString("database.url") + config.getString("database.name"),
+                        config.getString("database.username"),
+                        config.getString("database.password"));
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "Database connection failed!\n\n" + ex.getMessage());
+            }
+            retries--;
+        }
+        return null;
     }
 
-    public static Statement createStatement() throws SQLException {
+/*    public static Statement createStatement() throws SQLException {
         if (getConnection().isClosed()) {
             ConnectToDatabase();
         }
@@ -69,5 +70,5 @@ public class DatabaseConnection {
 
     public static PreparedStatement prepareStatement(String query) throws SQLException {
         return getConnection().prepareStatement(query);
-    }
+    }*/
 }
