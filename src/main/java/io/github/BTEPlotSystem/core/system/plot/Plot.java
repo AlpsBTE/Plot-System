@@ -39,6 +39,7 @@ import org.bukkit.Bukkit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,16 +55,17 @@ public class Plot extends PlotPermissions {
 
     public Plot(int ID) throws SQLException {
         super(ID);
-
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcity, iddifficulty FROM plots WHERE idplot = '" + getID() + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT idcity, iddifficulty FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
 
-        if(rs.next()) {
-            this.cityProject = new CityProject(rs.getInt(1));
-
-            // Set Plot Difficulty
-            this.plotDifficulty = PlotDifficulty.values()[rs.getInt(2) - 1];
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                this.cityProject = new CityProject(rs.getInt(1));
+                this.plotDifficulty = PlotDifficulty.values()[rs.getInt(2) - 1];
+            }
         }
     }
 
@@ -93,166 +95,147 @@ public class Plot extends PlotPermissions {
         return file;
     }
 
-    public Builder getBuilder() {
-        try {
-            if(getStatus() != Status.unclaimed) {
-                ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuidplayer FROM plots WHERE idplot = '" + getID() + "'");
-                rs.next();
-
-                return new Builder(UUID.fromString(rs.getString(1)));
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+    public Builder getBuilder() throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT uuidplayer FROM plots WHERE idplot = '" + getID() + "'");
+            rs.next();
+            return new Builder(UUID.fromString(rs.getString(1)));
         }
-        return null;
     }
 
-    public Review getReview() {
-        try {
-            if(getStatus() == Status.complete || isRejected()) {
-                ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + getID() + "'");
-                rs.next();
-
-                return new Review(rs.getInt(1));
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+    public Review getReview() throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + getID() + "'");
+            rs.next();
+            return new Review(rs.getInt(1));
         }
-        return null;
     }
 
-    public String getGeoCoordinatesNumeric() {
+    public String getGeoCoordinatesNumeric() throws SQLException {
+        // Convert MC coordinates to geo coordinates
+        Vector mcCoordinates = getMinecraftCoordinates();
         try {
-            // Convert MC coordinates to geo coordinates
-            Vector mcCoordinates = getMinecraftCoordinates();
-            try {
-                return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
-            } catch (OutOfProjectionBoundsException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Could not convert MC coordinates to geo coordinates!", ex);
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
+        } catch (OutOfProjectionBoundsException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not convert MC coordinates to geo coordinates!", ex);
         }
         return null;
     }
 
     public Vector getMinecraftCoordinates() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT mcCoordinates FROM plots WHERE idplot = '" + getID() + "'");
-        rs.next();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT mcCoordinates FROM plots WHERE idplot = '" + getID() + "'");
+            rs.next();
 
-        // Player MC Coordinates
-        String[] mcLocation = rs.getString(1).split(",");
-
-        // Added support for the lately implemented Y plot coordinate
-        if(mcLocation.length == 2) {
-            return new Vector(Double.parseDouble(mcLocation[0]),0,Double.parseDouble(mcLocation[1]));
-        } else {
+            // Player MC Coordinates
+            String[] mcLocation = rs.getString(1).split(",");
             return new Vector(Double.parseDouble(mcLocation[0]),Double.parseDouble(mcLocation[1]),Double.parseDouble(mcLocation[2]));
         }
     }
 
     public int getScore() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
 
-        if(rs.next()) {
-            int score = rs.getInt(1);
-            if(rs.wasNull()) {
-                return -1;
-            } else {
-                return score;
+            if(rs.next()) {
+                int score = rs.getInt(1);
+                if(!rs.wasNull()) {
+                    return score;
+                }
             }
+            return -1;
         }
-        return 0;
     }
 
     public Status getStatus() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
-        rs.next();
-
-        return Status.valueOf(rs.getString("status"));
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
+            rs.next();
+            return Status.valueOf(rs.getString(1));
+        }
     }
 
     public Date getLastActivity() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT lastActivity FROM plots WHERE idplot = '" + getID() + "'");
-        rs.next();
-
-        return rs.getDate(1);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT lastActivity FROM plots WHERE idplot = '" + getID() + "'");
+            rs.next();
+            return rs.getDate(1);
+        }
     }
 
     public Slot getSlot() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT firstSlot,secondSlot,thirdSlot FROM players WHERE uuid = '" + getBuilder().getUUID() + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + getBuilder().getUUID() + "'");
 
-        if(rs.next()) {
-            if (rs.getInt(1) == getID()) {
-                return Slot.firstSlot;
-            } else if (rs.getInt(2) == getID()) {
-                return Slot.secondSlot;
-            } else if (rs.getInt(3) == getID()) {
-                return Slot.thirdSlot;
+            if(rs.next()) {
+                for(int i = 1; i <= 3; i++) {
+                    if(rs.getInt(i) == getID()) {
+                        return Slot.values()[i - 1];
+                    }
+                }
             }
         }
         return null;
     }
 
-    public String getOSMMapsLink() {
+    public String getOSMMapsLink() throws SQLException {
         return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinatesNumeric().replace(",", "/");
     }
 
-    public String getGoogleMapsLink() {
+    public String getGoogleMapsLink() throws SQLException {
         return "https://www.google.com/maps/place/"+ getGeoCoordinatesNumeric();
     }
 
-    public String getGoogleEarthLink() {
+    public String getGoogleEarthLink() throws SQLException {
         return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
     }
 
     public void setBuilder(String UUID) throws SQLException {
-        PreparedStatement statement;
-        if(UUID != null) {
-            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
-            statement.setString(1, UUID);
-        } else {
-            statement = DatabaseConnection.prepareStatement("UPDATE plots SET uuidplayer = DEFAULT(uuidplayer) WHERE idplot = '" + getID() + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
+            ps.setString(1, UUID != null ? "DEFAULT(uuidplayer)" : UUID);
+            ps.executeUpdate();
         }
-        statement.executeUpdate();
     }
 
     public void setScore(int score) throws SQLException {
-        PreparedStatement statement;
-        if(score == -1) {
-          statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = DEFAULT(score) WHERE idplot = '" + getID() + "'");
-        } else {
-            statement = DatabaseConnection.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
-            statement.setInt(1, score);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
+            ps.setString(1, score == -1 ? "DEFAULT(score)" : String.valueOf(score));
+            ps.executeUpdate();
         }
-        statement.executeUpdate();
     }
 
     public void setStatus(Status status) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
-        statement.setString(1, status.name());
-        statement.executeUpdate();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
+            ps.setString(1, status.name());
+            ps.executeUpdate();
+        }
     }
 
     public void setLastActivity(boolean setNull) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = '" + getID() + "'");
-        statement.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
-
-        if(setNull) {
-            statement = DatabaseConnection.prepareStatement("UPDATE plots SET lastActivity = DEFAULT(lastActivity) WHERE idplot = '" + getID() + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps;
+            if(!setNull) {
+               ps = con.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplots = '" + getID() + "'");
+               ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
+            } else {
+                ps = con.prepareStatement("UPDATE plots SET lastActivity = DEFAULT(lastActivity) WHERE idplot = '" + getID() + "'");
+            }
+            ps.executeUpdate();
         }
-
-        statement.executeUpdate();
     }
 
     public boolean isPasted() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT isPasted FROM plots WHERE idplot = '" + getID() + "'");
-        rs.next();
-
-        return rs.getBoolean(1);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT isPasted FROM plots WHERE idplot = '" + getID() + "'");
+            rs.next();
+            return rs.getBoolean(1);
+        }
     }
 
-    public boolean isReviewed(){
+    public boolean isReviewed() throws SQLException {
         return getReview() != null;
     }
 
