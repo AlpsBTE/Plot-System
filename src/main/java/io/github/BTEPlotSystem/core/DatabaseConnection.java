@@ -24,6 +24,8 @@
 
 package github.BTEPlotSystem.core;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -32,16 +34,26 @@ import java.util.logging.Level;
 
 public class DatabaseConnection {
 
-    //private static Connection connection;
-
+    private final static HikariConfig config = new HikariConfig();
+    private static HikariDataSource dataSource;
 
     public static void InitializeDatabase() {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             Bukkit.getLogger().log(Level.INFO, "Successfully registered MariaDB JDBC Driver!");
 
+            FileConfiguration configFile = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
+
+            config.setJdbcUrl(configFile.getString("database.url") + configFile.getString("database.name"));
+            config.setUsername(configFile.getString("database.username"));
+            config.setPassword(configFile.getString("database.password"));
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+            dataSource = new HikariDataSource(config);
         } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "MySQL JDBC Driver not found!", ex);
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while initializing database!", ex);
         }
     }
 
@@ -49,11 +61,7 @@ public class DatabaseConnection {
         int retries = 3;
         while (retries > 0) {
             try {
-                FileConfiguration config = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
-
-                return DriverManager.getConnection(config.getString("database.url") + config.getString("database.name"),
-                        config.getString("database.username"),
-                        config.getString("database.password"));
+                return dataSource.getConnection();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Database connection failed!\n\n" + ex.getMessage());
             }
@@ -61,15 +69,4 @@ public class DatabaseConnection {
         }
         return null;
     }
-
-/*    public static Statement createStatement() throws SQLException {
-        if (getConnection().isClosed()) {
-            ConnectToDatabase();
-        }
-        return getConnection().createStatement();
-    }
-
-    public static PreparedStatement prepareStatement(String query) throws SQLException {
-        return getConnection().prepareStatement(query);
-    }*/
 }

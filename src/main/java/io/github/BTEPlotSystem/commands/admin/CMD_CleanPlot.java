@@ -24,23 +24,25 @@
 
 package github.BTEPlotSystem.commands.admin;
 
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
+import org.apache.commons.multiverse.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -54,15 +56,15 @@ public class CMD_CleanPlot implements CommandExecutor {
         if(sender instanceof Player) {
             if(sender.hasPermission("alpsbte.admin")) {
                 Player player = (Player)sender;
-                if(args.length == 0 && PlotManager.isPlotWorld(player.getWorld())) {
+                if(args.length == 1 && PlotManager.isPlotWorld(player.getWorld())) {
                     try {
                         plots[0] = PlotManager.getPlotByWorld(player.getWorld());
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                         player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                     }
-                } else if(args.length == 1 && Utils.TryParseInt(args[0]) != null) {
-                    int plotID = Integer.parseInt(args[0]);
+                } else if(args.length == 2 && Utils.TryParseInt(args[1]) != null) {
+                    int plotID = Integer.parseInt(args[1]);
                     if (PlotManager.plotExists(plotID)) {
                         try {
                             plots[0] = new Plot(plotID);
@@ -71,7 +73,7 @@ public class CMD_CleanPlot implements CommandExecutor {
                             player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                         }
                     }
-                } else if(args.length == 1 && args[0].equalsIgnoreCase("all")) {
+                } else if(args.length == 2 && args[1].equalsIgnoreCase("all")) {
                     try {
                         plots = PlotManager.getPlots().toArray(new Plot[0]);
                     } catch (SQLException ex) {
@@ -83,51 +85,68 @@ public class CMD_CleanPlot implements CommandExecutor {
                 }
 
                 if(plots[0] != null) {
-                    try {
-                        checkForFinishedSchematic();
-                        refreshPlotPermissions();
-                        player.sendMessage(Utils.getInfoMessageFormat("Successfully cleaned §6" + plots.length + " §aplots!"));
-                        player.playSound(player.getLocation(), Utils.Done, 1, 1);
-                    } catch (SQLException | IOException | WorldEditException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred!", ex);
-                        player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
+                    switch (args[0].toLowerCase()) {
+                        case "permission":
+                            cleanUpPlotPermissions();
+                            break;
+                        case "files":
+                            cleanUpPlotFiles();
+                            break;
+                        default:
+                            return true;
                     }
+                    player.sendMessage(Utils.getInfoMessageFormat("Successfully cleaned §6" + plots.length + " §aplots!"));
+                    player.playSound(player.getLocation(), Utils.Done, 1, 1);
                 }
             }
         }
         return true;
     }
 
-    private void checkForFinishedSchematic() throws SQLException, IOException, WorldEditException {
+    private void cleanUpPlotPermissions() {
         for(Plot plot : plots) {
-            if(plot.getStatus() == Status.complete && !plot.isPasted()) {
-                if(plot.getFinishedSchematic().length() == 0) {
-                    PlotManager.savePlotAsSchematic(plot);
+            try {
+                if(plot.getStatus() == Status.unfinished) {
+                    plot.clearAllPerms().save();
+                    ProtectedRegion region = plot.getPlotRegion();
+
+                    // Add builder perms to plot
+                    DefaultDomain owner = region.getOwners();
+                    owner.addPlayer(plot.getBuilder().getUUID());
+                    region.setOwners(owner);
+
+                    // Refresh plot command permissions
+                    region.setFlag(DefaultFlag.BLOCKED_CMDS, PlotGenerator.blockedCommandsNonBuilder);
+                    region.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+
+                    region.setFlag(DefaultFlag.ALLOWED_CMDS, PlotGenerator.allowedCommandsBuilder);
+                    region.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+
+                    // Save & Unload plot
+                    PlotHandler.unloadPlot(plot);
                 }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }
     }
 
-    private void refreshPlotPermissions() throws SQLException {
+    private void cleanUpPlotFiles() {
         for(Plot plot : plots) {
-            if(plot.getStatus() == Status.unfinished) {
-                plot.clearAllPerms().save();
-                ProtectedRegion region = plot.getPlotRegion();
+            try {
+                if(plot.getStatus() == Status.unclaimed) {
+                    if(BTEPlotSystem.getMultiverseCore().getMVWorldManager().isMVWorld("P-" + plot.getID())) {
+                        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld("P-" + plot.getID(), true, true);
+                    }
+                    BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig("P-" + plot.getID());
 
-                // Add builder perms to plot
-                DefaultDomain owner = region.getOwners();
-                owner.addPlayer(plot.getBuilder().getUUID());
-                region.setOwners(owner);
-
-                // Refresh plot command permissions
-                region.setFlag(DefaultFlag.BLOCKED_CMDS, PlotGenerator.blockedCommandsNonBuilder);
-                region.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
-
-                region.setFlag(DefaultFlag.ALLOWED_CMDS, PlotGenerator.allowedCommandsBuilder);
-                region.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-
-                // Save & Unload plot
-                PlotHandler.unloadPlot(plot);
+                    FileUtils.deleteDirectory(new File(PlotHandler.getWorldGuardConfigPath(plot.getID())));
+                    FileUtils.deleteDirectory(new File(PlotHandler.getMultiverseInventoriesConfigPath(plot.getID())));
+                }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            } catch (IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "Could not clean up file!", ex);
             }
         }
     }

@@ -24,7 +24,6 @@
 
 package github.BTEPlotSystem.commands.plot;
 
-import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.FeedbackMenu;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
@@ -35,7 +34,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -52,10 +50,7 @@ public class CMD_Feedback implements CommandExecutor {
                             if(PlotManager.plotExists(plot.getID())) {
                                 if(plot.isReviewed() || plot.isRejected()) {
                                     if(plot.getBuilder().getUUID().equals(((Player) sender).getUniqueId()) || sender.hasPermission("alpsbte.review")) {
-                                        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + plot.getID() + "'");
-                                        rs.next();
-
-                                        new FeedbackMenu((Player) sender, rs.getInt(1));
+                                        new FeedbackMenu((Player) sender, plot.getID());
                                     } else {
                                         sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to see this feedback!"));
                                     }

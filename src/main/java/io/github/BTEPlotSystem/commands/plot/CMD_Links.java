@@ -22,34 +22,36 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.commands.admin;
+package github.BTEPlotSystem.commands.plot;
 
-import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.holograms.HolographicDisplay;
+import github.BTEPlotSystem.core.system.plot.PlotHandler;
+import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_Reload implements CommandExecutor {
-
+public class CMD_Links implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission("alpsbte.admin")){
-            try {
-                BTEPlotSystem.getPlugin().saveConfig();
-                BTEPlotSystem.getPlugin().reloadConfig();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
-
-                BTEPlotSystem.getHolograms().forEach(HolographicDisplay::updateLeaderboard);
-
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
-            } catch (Exception ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while reloading!"));
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading!", ex);
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        if (sender instanceof Player){
+            if(sender.hasPermission("alpsbte.plot")) {
+                Player player = (Player)sender;
+                if (PlotManager.isPlotWorld(player.getWorld())){
+                    try {
+                        PlotHandler.sendLinkMessages(PlotManager.getPlotByWorld(player.getWorld()),player);
+                    } catch (SQLException ex) {
+                        player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    }
+                } else {
+                    player.sendMessage(Utils.getErrorMessageFormat("You must be on a plot to use this command!"));
+                }
             }
         }
         return true;

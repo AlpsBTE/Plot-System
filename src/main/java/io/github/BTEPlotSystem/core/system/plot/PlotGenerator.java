@@ -65,7 +65,6 @@ public final class PlotGenerator {
     private World weWorld;
     private RegionManager regionManager;
 
-    private final String worldName;
     private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
 
     public static Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
@@ -79,13 +78,11 @@ public final class PlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        worldName = "P-" + plot.getID();
-
-        if(Bukkit.getWorld(worldName) == null) {
+        if(Bukkit.getWorld(plot.getWorldName()) == null) {
 
            Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
                try {
-                   generateWorld();
+                   generateWorld(plot.getWorldName());
 
                    generateBuildingOutlines();
 
@@ -98,7 +95,11 @@ public final class PlotGenerator {
 
                    Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                        PlotHandler.teleportPlayer(plot, builder.getPlayer());
-                       Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getBuilder().getName() + "§a!"));
+                       try {
+                           Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getBuilder().getName() + "§a!"));
+                       } catch (SQLException ex) {
+                           Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                       }
                    });
 
                } catch (IOException | SQLException ex) {
@@ -112,7 +113,7 @@ public final class PlotGenerator {
         }
     }
 
-    private void generateWorld() {
+    private void generateWorld(String worldName) {
         WorldCreator wc = new WorldCreator(worldName);
         wc.environment(org.bukkit.World.Environment.NORMAL);
         wc.type(WorldType.FLAT);
@@ -135,7 +136,7 @@ public final class PlotGenerator {
         mvWorld.setAllowFlight(true);
         mvWorld.setGameMode(GameMode.CREATIVE);
         mvWorld.setEnableWeather(false);
-        mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(world));
+        mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
         mvWorld.setDifficulty(org.bukkit.Difficulty.PEACEFUL);
         mvWorld.setAllowAnimalSpawn(false);
         mvWorld.setAllowMonsterSpawn(false);

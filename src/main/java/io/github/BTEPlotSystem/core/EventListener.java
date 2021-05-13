@@ -46,6 +46,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -74,13 +75,13 @@ public class EventListener extends SpecialBlocks implements Listener {
         // User has joined for the first time
         // Adding user to the database
         if(!event.getPlayer().hasPlayedBefore()) {
-            try {
-                PreparedStatement statement = DatabaseConnection.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
-                statement.setString(1, event.getPlayer().getUniqueId().toString());
-                statement.setString(2, event.getPlayer().getName());
-                statement.execute();
+            try (Connection con = DatabaseConnection.getConnection()) {
+                PreparedStatement ps = con.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
+                ps.setString(1, event.getPlayer().getUniqueId().toString());
+                ps.setString(2, event.getPlayer().getName());
+                ps.execute();
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Could not add player [" + event.getPlayer().getName() + "] to database!", ex);
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }
 

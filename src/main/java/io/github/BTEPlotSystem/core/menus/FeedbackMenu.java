@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
@@ -37,6 +38,9 @@ import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -45,10 +49,17 @@ public class FeedbackMenu extends AbstractMenu {
     private final Review review;
     private final Plot plot;
 
-    public FeedbackMenu(Player player, int reviewID) throws SQLException {
-        super(3, "Feedback | Review #" + reviewID, player);
-        this.review = new Review(reviewID);
-        this.plot = new Plot(review.getPlotID());
+    public FeedbackMenu(Player player, int plotID) throws SQLException {
+        super(3, "Feedback | Review #" + plotID, player);
+
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT idreview FROM plots WHERE idplot = ?");
+            ps.setInt(1, plotID);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            this.review = new Review(rs.getInt(1));
+        }
+        this.plot = new Plot(plotID);
 
         Mask mask = BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
