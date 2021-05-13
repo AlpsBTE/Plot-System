@@ -101,7 +101,7 @@ public class PlotManager {
 
         for(int i = 0; i < statuses.length; i++) {
             query.append("'").append(statuses[i].name()).append(additionalQuery).append("'");
-            query.append((i != statuses.length - 1) ? " OR status = " : "");
+            query.append((i != statuses.length - 1) ? " OR status = " : ""); // TODO: Try to change OR to AND
         }
         return query.toString();
     }
