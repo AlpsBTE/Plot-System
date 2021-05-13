@@ -28,6 +28,8 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.enums.Country;
 import org.bukkit.Bukkit;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 import java.sql.ResultSet;
@@ -47,23 +49,18 @@ public class CityProject {
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT * FROM cityProjects WHERE idcityProject = '" + ID + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM cityProjects WHERE idcityProject = ?");
+            ps.setInt(1, ID);
+            ResultSet rs = ps.executeQuery();
 
-        if(rs.next()) {
-            // Name
-            this.name = rs.getString("name");
-
-            // Country
-            this.country = Country.valueOf(rs.getString("country"));
-
-            // Description
-            this.description = rs.getString("description");
-
-            // Tags
-            this.tags = rs.getString("tags");
-
-            // Visible
-            this.visible = rs.getInt("visible") == 1;
+            if(rs.next()) {
+                this.name = rs.getString("name");
+                this.country = Country.valueOf(rs.getString("country"));
+                this.description = rs.getString("description");
+                this.tags = rs.getString("tags");
+                this.visible = rs.getInt("visible") == 1;
+            }
         }
     }
 
@@ -88,21 +85,20 @@ public class CityProject {
     public boolean isVisible() { return visible; }
 
     public static List<CityProject> getCityProjects() {
-        try {
-            ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idcityProject FROM cityProjects ORDER BY CAST(country AS CHAR)");
-            List<CityProject> cityProjects = new ArrayList<>();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT idcityProject FROM cityProjects ORDER BY CAST(country AS CHAR)");
 
+            List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {
                 CityProject city = new CityProject(rs.getInt(1));
                 if(city.isVisible()) {
                     cityProjects.add(city);
                 }
             }
-
             return cityProjects;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return null;
+        return new ArrayList<>();
     }
 }
