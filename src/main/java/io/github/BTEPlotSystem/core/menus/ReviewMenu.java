@@ -166,9 +166,13 @@ public class ReviewMenu implements Listener {
         this.player = player;
         selectedPlot = plot;
 
-        if (selectedPlot.getBuilder().getUUID().equals(player.getUniqueId())){
-            player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
-            return;
+        try {
+            if (selectedPlot.getBuilder().getUUID().equals(player.getUniqueId())){
+                player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+                return;
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
 
         ReviewPlot(plot);
@@ -182,16 +186,21 @@ public class ReviewMenu implements Listener {
 
             switch (i) {
                 case 4:
-                    itemMap = new ItemBuilder(Material.MAP, 1)
-                            .setName("§b§lReview Plot")
-                            .setLore(new LoreBuilder()
-                                    .addLines("ID: §f" + plot.getID(),
-                                              "",
-                                              "§7Builder: §f" + plot.getBuilder().getName(),
-                                              "§7City: §f" + plot.getCity().getName(),
-                                              "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
-                                    .build())
-                            .build();
+                    try {
+                        itemMap = new ItemBuilder(Material.MAP, 1)
+                                .setName("§b§lReview Plot")
+                                .setLore(new LoreBuilder()
+                                        .addLines("ID: §f" + plot.getID(),
+                                                  "",
+                                                  "§7Builder: §f" + plot.getBuilder().getName(),
+                                                  "§7City: §f" + plot.getCity().getName(),
+                                                  "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
+                                        .build())
+                                .build();
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        reviewPlotMenu.setItem(i, MenuItems.errorItem());
+                    }
                     reviewPlotMenu.setItem(i, itemMap);
                     break;
                 case 10:

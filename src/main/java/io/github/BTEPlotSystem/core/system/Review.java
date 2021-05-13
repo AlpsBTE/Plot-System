@@ -25,75 +25,76 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.Category;
 import github.BTEPlotSystem.utils.enums.Status;
-import org.bukkit.Bukkit;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Review {
 
-    private int reviewID;
+    private final int reviewID;
 
-    public Review(int reviewID) throws SQLException {
+    public Review(int reviewID) {
         this.reviewID = reviewID;
     }
 
     public Review(int plotID, UUID reviewer, String rating) throws SQLException {
-        ResultSet rs_reviewID = DatabaseConnection.createStatement().executeQuery("SELECT (t1.id_review + 1) AS firstID FROM reviews t1 " +
-                "WHERE NOT EXISTS (SELECT t2.id_review FROM reviews t2 WHERE t2.id_review = t1.id_review + 1)");
-        rs_reviewID.next();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps; ResultSet rs;
+            /*rs = con.createStatement().executeQuery("SELECT (t1.id_review + 1) AS firstID FROM reviews t1 " +
+                    "WHERE NOT EXISTS (SELECT t2.id_review FROM reviews t2 WHERE t2.id_review = t1.id_review + 1)");*/
+            rs = con.createStatement().executeQuery(
+                    "SELECT id_review + 1 available_id FROM reviews t WHERE NOT EXISTS (SELECT * FROM reviews WHERE id_review = t.id_review + 1) ORDER BY id_review LIMIT 1"
+                    // TODO: Try to remove available_id
+            );
+            rs.next();
+            this.reviewID = rs.getInt(1);
 
-        try {
-            this.reviewID = rs_reviewID.getInt(1);
-        } catch (SQLDataException ex) {
-            this.reviewID = 1;
+            ps = con.prepareStatement("INSERT INTO reviews (id_review, uuid_reviewer, rating) VALUES (?, ?, ?)");
+            ps.setInt(1, reviewID);
+            ps.setString(2, reviewer.toString());
+            ps.setString(3, rating);
+            ps.execute();
+
+            ps = con.prepareStatement("UPDATE plots SET idreview = ? WHERE idplot = ?");
+            ps.setInt(1, reviewID);
+            ps.setInt(2, plotID);
+            ps.executeUpdate();
         }
-
-        PreparedStatement ps_reviews = DatabaseConnection.prepareStatement("INSERT INTO reviews (id_review, uuid_reviewer, rating) VALUES (?, ?, ?)");
-        ps_reviews.setInt(1, reviewID);
-        ps_reviews.setString(2, reviewer.toString());
-        ps_reviews.setString(3, rating);
-
-        PreparedStatement ps_plots = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = ? WHERE idplot = '" + plotID + "'");
-        ps_plots.setInt(1, reviewID);
-
-        ps_reviews.execute();
-        ps_plots.executeUpdate();
     }
 
     public int getReviewID() { return reviewID; }
 
     public int getPlotID() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT idplot FROM plots WHERE idreview = '" + getReviewID() + "'");
-        if(rs.next()) {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT idplot FROM plots WHERE idreview = ?");
+            ps.setInt(1, getReviewID());
+            ResultSet rs = ps.executeQuery();
+            rs.next();
             return rs.getInt(1);
         }
-        return 0;
     }
 
     public Builder getReviewer() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT uuid_reviewer FROM reviews WHERE id_review = '" + getReviewID() + "'");
-        if(rs.next()) {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT uuid_reviewer FROM reviews WHERE id_review = ?");
+            ps.setInt(1, getReviewID());
+            ResultSet rs = ps.executeQuery();
+            rs.next();
             return new Builder(UUID.fromString(rs.getString(1)));
         }
-        return null;
     }
 
-    // Get rating by category
     public int getRating(Category category) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT rating FROM reviews WHERE id_review = '" + getReviewID() + "'");
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT rating FROM reviews WHERE id_review = ?");
+            ps.setInt(1, getReviewID());
+            ResultSet rs = ps.executeQuery();
+            rs.next();
 
-        if(rs.next()) {
             String[] scoreAsString = rs.getString("rating").split(",");
-
             switch (category) {
                 case ACCURACY:
                     return Integer.parseInt(scoreAsString[0]);
@@ -105,33 +106,38 @@ public class Review {
                     return Integer.parseInt(scoreAsString[3]);
                 case ALL:
                     return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
+                default:
+                    return 0;
             }
         }
-        return 0;
     }
 
     public String getFeedback() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT feedbackText FROM reviews WHERE id_review = '" + getReviewID() + "'");
-        rs.next();
-
-        return rs.getString(1);
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT feedbackText FROM reviews WHERE id_review = ?");
+            ps.setInt(1, getReviewID());
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return rs.getString(1);
+        }
     }
 
     public void setReviewer(UUID reviewer) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET uuid_reviewer = ? WHERE id_review = '" + getReviewID() + "'");
-        statement.setString(1, reviewer.toString());
-        statement.executeUpdate();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE reviews SET uuid_reviewer = ? WHERE id_review = ?");
+            ps.setString(1, reviewer.toString());
+            ps.setInt(2, getReviewID());
+            ps.executeUpdate();
+        }
     }
 
-    /**
-     * Set plot rating [Accuracy, Blockpalette, Detailing, Technique]
-     *
-     * @param ratingFormat Format: 0,0,0,0
-     */
     public void setRating(String ratingFormat) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET rating = ? WHERE id_review = '" + getReviewID() + "'");
-        statement.setString(1, ratingFormat);
-        statement.executeUpdate();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE reviews SET rating = ? WHERE id_review = ?");
+            ps.setString(1, ratingFormat);
+            ps.setInt(2, getReviewID());
+            ps.executeUpdate();
+        }
     }
 
     public void setFeedback(String feedback) throws SQLException {
@@ -151,32 +157,35 @@ public class Review {
             }
         }
 
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET feedbackText = ? WHERE id_review = '" + getReviewID() + "'");
-        statement.setString(1, finalFeedback.toString());
-        statement.executeUpdate();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE reviews SET feedbackText = ? WHERE id_review = ?");
+            ps.setString(1, finalFeedback.toString());
+            ps.setInt(2, getReviewID());
+            ps.executeUpdate();
+        }
     }
 
     public void setFeedbackSent(boolean isSent) throws SQLException {
-        PreparedStatement statement = DatabaseConnection.prepareStatement("UPDATE reviews SET isSent = ? WHERE id_review = '" + getReviewID() + "'");
-        statement.setInt(1, isSent ? 1 : 0);
-        statement.executeUpdate();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("UPDATE reviews SET isSent = ? WHERE id_review = ?");
+            ps.setInt(1, isSent ? 1 : 0);
+            ps.setInt(2, getReviewID());
+            ps.executeUpdate();
+        }
     }
 
     public boolean isFeedbackSent() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement().executeQuery("SELECT isSent FROM reviews WHERE id_review = '" + getReviewID() + "'");
-
-        if(rs.next()) {
-            return rs.getInt("isSent") != 0;
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT isSent FROM reviews WHERE id_review = ?");
+            ps.setInt(1, getReviewID());
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return rs.getInt(1) != 0;
         }
-
-        return false;
     }
 
     public static void undoReview(Review review) throws SQLException {
         Plot plot = new Plot(review.getPlotID());
-
-        PreparedStatement ps_review = DatabaseConnection.prepareStatement("DELETE FROM reviews WHERE id_review = '" + review.getReviewID() + "'");
-        PreparedStatement ps_plot = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = '" + plot.getID() + "'");
 
         plot.getBuilder().addScore(-plot.getScore());
         plot.getBuilder().addCompletedBuild(-1);
@@ -187,7 +196,14 @@ public class Review {
             plot.getBuilder().setPlot(plot.getID(), plot.getBuilder().getFreeSlot());
         }
 
-        ps_review.execute();
-        ps_plot.executeUpdate();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
+            ps.setInt(1, review.getReviewID());
+            ps.execute();
+
+            ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
+            ps.setInt(1, review.getPlotID());
+            ps.executeUpdate();
+        }
     }
 }

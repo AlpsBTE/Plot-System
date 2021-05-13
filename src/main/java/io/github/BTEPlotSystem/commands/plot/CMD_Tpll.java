@@ -71,6 +71,7 @@ public class CMD_Tpll implements CommandExecutor {
                                 return true;
                             }
 
+                            // TODO: Support to insert own height as parameter
                             // Get Highest Y
                             int highestY = 0;
                             Location block = new Location(playerWorld, plotCoords[0], 0, plotCoords[1]);
