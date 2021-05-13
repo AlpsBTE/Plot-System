@@ -81,7 +81,6 @@ public class Plot extends PlotPermissions {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-
         return file;
     }
 
@@ -91,24 +90,33 @@ public class Plot extends PlotPermissions {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-
         return file;
     }
 
     public Builder getBuilder() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT uuidplayer FROM plots WHERE idplot = '" + getID() + "'");
-            rs.next();
-            return new Builder(UUID.fromString(rs.getString(1)));
+        if(getStatus() != Status.unclaimed) {
+            try (Connection con = DatabaseConnection.getConnection()) {
+                PreparedStatement ps = con.prepareStatement("SELECT uuidplayer FROM plots WHERE idplot = ?");
+                ps.setInt(1, getID());
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                return new Builder(UUID.fromString(rs.getString(1)));
+            }
         }
+        return null;
     }
 
     public Review getReview() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT idreview FROM plots WHERE idplot = '" + getID() + "'");
-            rs.next();
-            return new Review(rs.getInt(1));
+        if(getStatus() == Status.complete || isRejected()) {
+            try (Connection con = DatabaseConnection.getConnection()) {
+                PreparedStatement ps = con.prepareStatement("SELECT idreview FROM plots WHERE idplot = ?");
+                ps.setInt(1, getID());
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                return new Review(rs.getInt(1));
+            }
         }
+        return null;
     }
 
     public String getGeoCoordinatesNumeric() throws SQLException {
@@ -124,7 +132,9 @@ public class Plot extends PlotPermissions {
 
     public Vector getMinecraftCoordinates() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT mcCoordinates FROM plots WHERE idplot = '" + getID() + "'");
+            PreparedStatement ps = con.prepareStatement("SELECT mcCoordinates FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
+            ResultSet rs = ps.executeQuery();
             rs.next();
 
             // Player MC Coordinates
@@ -135,7 +145,9 @@ public class Plot extends PlotPermissions {
 
     public int getScore() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT score FROM plots WHERE idplot = '" + getID() + "'");
+            PreparedStatement ps = con.prepareStatement("SELECT score FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
+            ResultSet rs = ps.executeQuery();
 
             if(rs.next()) {
                 int score = rs.getInt(1);
@@ -149,7 +161,9 @@ public class Plot extends PlotPermissions {
 
     public Status getStatus() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT status FROM plots WHERE idplot = '" + getID() + "'");
+            PreparedStatement ps = con.prepareStatement("SELECT status FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
+            ResultSet rs = ps.executeQuery();
             rs.next();
             return Status.valueOf(rs.getString(1));
         }
@@ -157,7 +171,9 @@ public class Plot extends PlotPermissions {
 
     public Date getLastActivity() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT lastActivity FROM plots WHERE idplot = '" + getID() + "'");
+            PreparedStatement ps = con.prepareStatement("SELECT lastActivity FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
+            ResultSet rs = ps.executeQuery();
             rs.next();
             return rs.getDate(1);
         }
@@ -165,7 +181,9 @@ public class Plot extends PlotPermissions {
 
     public Slot getSlot() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = '" + getBuilder().getUUID() + "'");
+            PreparedStatement ps = con.prepareStatement("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = ?");
+            ps.setString(1, getBuilder().getUUID().toString());
+            ResultSet rs = ps.executeQuery();
 
             if(rs.next()) {
                 for(int i = 1; i <= 3; i++) {
@@ -190,18 +208,36 @@ public class Plot extends PlotPermissions {
         return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
     }
 
+    public String getWorldName() {
+        return "P-" + getID();
+    }
+
     public void setBuilder(String UUID) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = '" + getID() + "'");
-            ps.setString(1, UUID != null ? "DEFAULT(uuidplayer)" : UUID);
+            PreparedStatement ps;
+            if(UUID == null) {
+                ps = con.prepareStatement("UPDATE plots SET uuidplayer = DEFAULT(uuidplayer) WHERE idplot = ?");
+                ps.setInt(1, getID());
+            } else {
+                ps = con.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = ?");
+                ps.setString(1, UUID);
+                ps.setInt(2, getID());
+            }
             ps.executeUpdate();
         }
     }
 
     public void setScore(int score) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE plots SET score = ? WHERE idplot = '" + getID() + "'");
-            ps.setString(1, score == -1 ? "DEFAULT(score)" : String.valueOf(score));
+            PreparedStatement ps;
+            if(score == -1) {
+                ps = con.prepareStatement("UPDATE plots SET score = DEFAULT(score) WHERE idplot = ?");
+                ps.setInt(1, getID());
+            } else {
+                ps = con.prepareStatement("UPDATE plots SET score = ? WHERE idplot = ?");
+                ps.setInt(1, score);
+                ps.setInt(2, getID());
+            }
             ps.executeUpdate();
         }
     }
@@ -217,11 +253,13 @@ public class Plot extends PlotPermissions {
     public void setLastActivity(boolean setNull) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps;
-            if(!setNull) {
-               ps = con.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplots = '" + getID() + "'");
-               ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
+            if(setNull) {
+                ps = con.prepareStatement("UPDATE plots SET lastActivity = DEFAULT(lastActivity) WHERE idplot = ?");
+                ps.setInt(1, getID());
             } else {
-                ps = con.prepareStatement("UPDATE plots SET lastActivity = DEFAULT(lastActivity) WHERE idplot = '" + getID() + "'");
+                ps = con.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = ?");
+                ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
+                ps.setInt(2, getID());
             }
             ps.executeUpdate();
         }
