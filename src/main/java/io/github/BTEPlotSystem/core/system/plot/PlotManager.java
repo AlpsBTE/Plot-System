@@ -255,7 +255,7 @@ public class PlotManager {
                 long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
 
                 for(Plot plot : plots) {
-                    if(plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
+                    if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
                         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                             try {
                                 PlotHandler.abandonPlot(plot);
