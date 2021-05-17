@@ -24,6 +24,8 @@
 
 package github.BTEPlotSystem.core;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -32,42 +34,39 @@ import java.util.logging.Level;
 
 public class DatabaseConnection {
 
-    private static Connection connection;
+    private final static HikariConfig config = new HikariConfig();
+    private static HikariDataSource dataSource;
 
-    public static void ConnectToDatabase() {
+    public static void InitializeDatabase() {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-            System.out.println("MariaDB JDBC Driver Registered!");
+            Bukkit.getLogger().log(Level.INFO, "Successfully registered MariaDB JDBC Driver!");
 
-            try {
-                FileConfiguration config = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
+            FileConfiguration configFile = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
 
-                connection = DriverManager.getConnection(
-                        "jdbc:mariadb://172.18.0.1:3306/" + config.getString("database.name"),
-                        config.getString("database.username"),
-                        config.getString("database.password"));
+            config.setJdbcUrl(configFile.getString("database.url") + configFile.getString("database.name"));
+            config.setUsername(configFile.getString("database.username"));
+            config.setPassword(configFile.getString("database.password"));
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
-                Bukkit.getLogger().log(Level.INFO, "SQL Connection to database established!");
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Connection Failed!", ex);
-            }
+            dataSource = new HikariDataSource(config);
         } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "MySQL JDBC Driver not found!", ex);
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while initializing database!", ex);
         }
     }
 
     public static Connection getConnection() {
-        return connection;
-    }
-
-    public static Statement createStatement() throws SQLException {
-        if (getConnection().isClosed()) {
-            ConnectToDatabase();
+        int retries = 3;
+        while (retries > 0) {
+            try {
+                return dataSource.getConnection();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "Database connection failed!\n\n" + ex.getMessage());
+            }
+            retries--;
         }
-        return getConnection().createStatement();
-    }
-
-    public static PreparedStatement prepareStatement(String query) throws SQLException {
-        return getConnection().prepareStatement(query);
+        return null;
     }
 }

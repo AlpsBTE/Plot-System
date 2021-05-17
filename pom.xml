@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>BTEPlotSystem</artifactId>
-    <version>1.1</version>
+    <version>1.1.1</version>
 
     <repositories>
         <!-- Spigot & Bukkit API -->
@@ -71,6 +71,12 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
         </dependency>
 
         <!-- Bukkit API [1.12.2-R0.1-SNAPSHOT] -->

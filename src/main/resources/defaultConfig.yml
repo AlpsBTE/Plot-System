@@ -1,5 +1,6 @@
 #BTE-PlotSystem Configuration File
 database:
+  url: jdbc:mariadb://IP:PORT/
   name: name
   username: username
   password: password

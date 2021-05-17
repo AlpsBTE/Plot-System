@@ -41,6 +41,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -51,12 +52,11 @@ public class PlotHandler {
     public static void teleportPlayer(Plot plot, Player player) {
         player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-        String worldName = "P-" + plot.getID();
-        if(Bukkit.getWorld(worldName) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(worldName);
+        if(Bukkit.getWorld(plot.getWorldName()) == null) {
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
         }
 
-        player.teleport(getPlotSpawnPoint(Bukkit.getWorld(worldName)));
+        player.teleport(getPlotSpawnPoint(plot));
 
         player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
         player.setAllowFlight(true);
@@ -72,25 +72,22 @@ public class PlotHandler {
 
         sendLinkMessages(plot, player);
 
-        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
-            try {
+        try {
+            if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
                 plot.setLastActivity(false);
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }
 
     public static void submitPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
-        loadPlot(plot);
-
         plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
 
-        String worldName = "P-" + plot.getID();
-        if(Bukkit.getWorld(worldName) != null) {
-            for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
+        if(Bukkit.getWorld(plot.getWorldName()) != null) {
+            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
             }
         }
@@ -103,9 +100,8 @@ public class PlotHandler {
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
-        String worldName = "P-" + plot.getID();
-        if(Bukkit.getWorld(worldName) != null) {
-            for(Player player : Bukkit.getWorld(worldName).getPlayers()) {
+        if(Bukkit.getWorld(plot.getWorldName()) != null) {
+            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
             }
         }
@@ -113,15 +109,19 @@ public class PlotHandler {
         plot.getBuilder().removePlot(plot.getSlot());
         plot.setBuilder(null);
         plot.setLastActivity(true);
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(worldName, true, true);
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(worldName);
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(plot.getWorldName());
 
         if(plot.isReviewed()) {
-            PreparedStatement stmt_reviews = DatabaseConnection.prepareStatement("DELETE FROM reviews WHERE id_review = '" + plot.getReview().getReviewID() + "'");
-            stmt_reviews.executeUpdate();
+            try (Connection con = DatabaseConnection.getConnection()) {
+                PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
+                ps.setInt(1, plot.getReview().getReviewID());
+                ps.executeUpdate();
 
-            PreparedStatement stmt_plots = DatabaseConnection.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = '" + plot.getID() + "'");
-            stmt_plots.executeUpdate();
+                ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
+                ps.setInt(1, plot.getID());
+                ps.executeUpdate();
+            }
         }
 
         plot.setScore(-1);
@@ -136,40 +136,36 @@ public class PlotHandler {
 
         Files.deleteIfExists(Paths.get(PlotManager.getOutlinesSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
-        String query = "DELETE FROM plots WHERE idplot = '" + plot.getID() + "'";
-        PreparedStatement statement = DatabaseConnection.prepareStatement(query);
-        statement.execute();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("DELETE FROM plots WHERE idplot = ?");
+            ps.setInt(1, plot.getID());
+            ps.execute();
+        }
     }
 
     public static void loadPlot(Plot plot) {
-        if(Bukkit.getWorld("P-" + plot.getID()) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld("P-" + plot.getID());
+        if(Bukkit.getWorld(plot.getWorldName()) == null) {
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
         }
     }
 
     public static void unloadPlot(Plot plot) {
-        World world = Bukkit.getWorld("P-" + plot.getID());
-        if(world.getPlayers().size() - 1 == 0) {
+        if(Bukkit.getWorld(plot.getWorldName()).getPlayers().size() - 1 == 0) {
             try {
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(world, true), 1, 20*3);
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(Bukkit.getWorld(plot.getWorldName()), true), 1, 20*3);
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
             }
         }
     }
 
-    public static Location getPlotSpawnPoint(World world) {
-        try {
-            return new Location(world,
-                    (double) (PlotManager.getPlotSize(PlotManager.getPlotByWorld(world)) / 2) + 0.5,
-                    30, // TODO: Fit Y value to schematic height to prevent collision
-                    (double) (PlotManager.getPlotSize(PlotManager.getPlotByWorld(world)) / 2) + 0.5,
-                    -90,
-                    90);
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return world.getSpawnLocation();
-        }
+    public static Location getPlotSpawnPoint(Plot plot) {
+        return new Location(Bukkit.getWorld(plot.getWorldName()),
+                (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
+                30, // TODO: Fit Y value to schematic height to prevent collision
+                (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
+                -90,
+                90);
     }
 
     public static void sendLinkMessages(Plot plot, Player player){
@@ -182,9 +178,13 @@ public class PlotHandler {
         tc[1].setText("§7>> Click me to open the §aGoogle Earth Web §7link....");
         tc[2].setText("§7>> Click me to open the §aOpen Street Map §7link....");
 
-        tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
-        tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
-        tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
+        try {
+            tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
+            tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
+            tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", ex);
+        }
 
         tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Maps").create()));
         tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Earth Web").create()));
@@ -218,11 +218,25 @@ public class PlotHandler {
     }
 
     public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-        player.sendMessage("§aYou still have §6" + plots.size() + " §aunfinished plots!");
+        player.sendMessage("§aYou still have §6" + plots.size() + " §aunfinished plot" + (plots.size() <= 1 ? "!" : "s!"));
         TextComponent tc = new TextComponent();
         tc.setText("§6Click Here §ato open your plots menu.");
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show my plots").create()));
+        player.spigot().sendMessage(tc);
+    }
+
+    public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
+        if(plots.size() <= 1) {
+            player.sendMessage("§aThere is §6" + plots.size() + " §aunreviewed plot!");
+        } else {
+            player.sendMessage("§aThere are §6" + plots.size() + " §aunreviewed plots!");
+        }
+
+        TextComponent tc = new TextComponent();
+        tc.setText("§6Click Here §ato open the review menu.");
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show unreviewed plots").create()));
         player.spigot().sendMessage(tc);
     }
 

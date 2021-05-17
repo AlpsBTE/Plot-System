@@ -30,8 +30,8 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.commands.admin.CMD_CleanPlot;
 import github.BTEPlotSystem.commands.admin.CMD_DeletePlot;
-import github.BTEPlotSystem.commands.admin.CMD_Reload;
-import github.BTEPlotSystem.commands.admin.CMD_SetHologramPosition;
+import github.BTEPlotSystem.commands.admin.CMD_PReload;
+import github.BTEPlotSystem.commands.admin.CMD_SetHologram;
 import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
@@ -75,8 +75,8 @@ public class BTEPlotSystem extends JavaPlugin {
 
         reloadConfig();
 
-        // Connect to database
-        DatabaseConnection.ConnectToDatabase();
+        // Initialize database
+        DatabaseConnection.InitializeDatabase();
 
         // Add listeners
         this.getServer().getPluginManager().registerEvents(new EventListener(), plugin);
@@ -90,27 +90,27 @@ public class BTEPlotSystem extends JavaPlugin {
 
         // Add plot commands [alpsbte.plot Permission]
         this.getCommand("companion").setExecutor(new CMD_Companion());
-        this.getCommand("link").setExecutor(new CMD_Link());
+        this.getCommand("link").setExecutor(new CMD_Links());
         this.getCommand("submit").setExecutor(new CMD_Submit());
         this.getCommand("abandon").setExecutor(new CMD_Abandon());
         this.getCommand("undosubmit").setExecutor(new CMD_UndoSubmit());
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
-        this.getCommand("plots").setExecutor(new CMD_PlayerPlots());
+        this.getCommand("plots").setExecutor(new CMD_Plots());
         this.getCommand("tpll").setExecutor(new CMD_Tpll());
 
         // Add reviewer commands [alpsbte.review Permission]
         this.getCommand("review").setExecutor(new CMD_Review());
         this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
         this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
-        this.getCommand("edit").setExecutor(new CMD_Edit());
+        this.getCommand("editplot").setExecutor(new CMD_EditPlot());
 
         // Add admin commands [alpsbte.admin Permission]
         this.getCommand("plot").setExecutor(new CMD_Plot());
         this.getCommand("cleanplot").setExecutor(new CMD_CleanPlot());
         this.getCommand("deleteplot").setExecutor(new CMD_DeletePlot());
         this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
-        this.getCommand("sethologram").setExecutor(new CMD_SetHologramPosition());
-        this.getCommand("preload").setExecutor(new CMD_Reload());
+        this.getCommand("sethologram").setExecutor(new CMD_SetHologram());
+        this.getCommand("preload").setExecutor(new CMD_PReload());
 
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

@@ -77,12 +77,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                         .build());
 
         // Add special blocks menu item
-        getMenu().getSlot(16)
-                .setItem(new ItemBuilder(Material.GOLD_BLOCK ,1)
-                        .setName("§b§lSPECIAL BLOCKS")
-                        .setLore(new LoreBuilder()
-                                .addLine("Open the special blocks menu to get a variety of inaccessible blocks.").build())
-                        .build());
+        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
 
         // Add back button item
         getMenu().getSlot(22).setItem(MenuItems.backMenuItem());

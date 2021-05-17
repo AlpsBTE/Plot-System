@@ -1,5 +1,5 @@
 main: github.BTEPlotSystem.BTEPlotSystem
-version: 1.0
+version: 1.1.1
 api-version: 1.12.2
 name: AlpsBTE-PlotSystem
 author: R3tuxn & Cinnazeyy
@@ -55,10 +55,10 @@ commands:
     description: Sets the feedback of a plot
     permission: alpsbte.review
     usage: /sendfeedback <ID> <Text>
-  edit:
+  editplot:
     description: Enable/disble build permissions for reviewers on a plot
     permission: alpsbte.review
-    usage: /editr
+    usage: /editplot
   plot:
     description: Teleport to a plot
     permission: alpsbte.admin

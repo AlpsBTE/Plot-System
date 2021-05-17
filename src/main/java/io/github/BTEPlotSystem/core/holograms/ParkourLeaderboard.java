@@ -59,7 +59,8 @@ public class ParkourLeaderboard extends HolographicDisplay {
             }
 
             try {
-                parkourScores.add(new Builder(UUID.fromString(uuid)).getName() + "," + score);
+                String playerName = new Builder(UUID.fromString(uuid)).getName();
+                parkourScores.add((playerName == null ? "Player" : playerName) + "," + score);
             } catch (SQLException ex) {
                 BTEPlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not convert parkour player to builder!", ex);
             }
