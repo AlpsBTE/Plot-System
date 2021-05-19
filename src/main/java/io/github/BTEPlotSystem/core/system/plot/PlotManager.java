@@ -40,7 +40,6 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
-import jdk.internal.jline.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -145,7 +144,6 @@ public class PlotManager {
 
         // Load plot outlines schematic as clipboard
         Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
-
 
         // Get player origin coordinates on terra
         terraOrigin = plot.getMinecraftCoordinates();
