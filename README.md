@@ -44,7 +44,7 @@ After jumping into the "Create Plot Portal", a selection window appears where yo
 
 The system is designed to make it easier for unexperienced people, casual players and applicants to start building in BTE and to massively shorten application times.  
 
-The plugin was programmed for the Alps BTE server, but it can be further developed or adapted by other build teams / persons.
+The plugin was programmed for the Alps BTE server, but it can be further developed or adapted by other build teams / people.
 
 All used Library and APIs are listed below.
 
