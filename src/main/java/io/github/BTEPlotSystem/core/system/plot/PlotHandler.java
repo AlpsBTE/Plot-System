@@ -52,8 +52,8 @@ public class PlotHandler {
     public static void teleportPlayer(Plot plot, Player player) {
         player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-        if(Bukkit.getWorld(plot.getWorldName()) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
+        if(plot.getPlotWorld() == null) {
+            loadPlot(plot);
         }
 
         player.teleport(getPlotSpawnPoint(plot));
@@ -66,8 +66,6 @@ public class PlotHandler {
 
         if(player.hasPermission("alpsbte.review")) {
             player.getInventory().setItem(7, ReviewMenu.getMenuItem());
-        } else if(player.getInventory().contains(ReviewMenu.getMenuItem())) {
-            player.getInventory().remove(ReviewMenu.getMenuItem());
         }
 
         sendLinkMessages(plot, player);
@@ -100,18 +98,6 @@ public class PlotHandler {
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
-        if(Bukkit.getWorld(plot.getWorldName()) != null) {
-            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
-                player.teleport(Utils.getSpawnPoint());
-            }
-        }
-
-        plot.getBuilder().removePlot(plot.getSlot());
-        plot.setBuilder(null);
-        plot.setLastActivity(true);
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(plot.getWorldName());
-
         if(plot.isReviewed()) {
             try (Connection con = DatabaseConnection.getConnection()) {
                 PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
@@ -124,6 +110,15 @@ public class PlotHandler {
             }
         }
 
+        if(plot.getPlotWorld() != null) {
+            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
+                player.teleport(Utils.getSpawnPoint());
+            }
+        }
+
+        if(plot.getSlot() != null) plot.getBuilder().removePlot(plot.getSlot());
+        plot.setBuilder(null);
+        plot.setLastActivity(true);
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);
 
