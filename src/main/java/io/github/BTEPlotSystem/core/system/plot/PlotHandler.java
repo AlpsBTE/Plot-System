@@ -127,6 +127,10 @@ public class PlotHandler {
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);
 
+        loadPlot(plot); // Load Plot to be listed by Multiverse
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
+
         FileUtils.deleteDirectory(new File(getWorldGuardConfigPath(plot.getID())));
         FileUtils.deleteDirectory(new File(getMultiverseInventoriesConfigPath(plot.getID())));
     }
