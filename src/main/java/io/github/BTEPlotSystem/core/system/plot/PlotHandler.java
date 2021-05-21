@@ -150,9 +150,11 @@ public class PlotHandler {
     }
 
     public static void unloadPlot(Plot plot) {
-        if(Bukkit.getWorld(plot.getWorldName()).getPlayers().size() - 1 == 0) {
+        if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().size() - 1 == 0) {
             try {
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(Bukkit.getWorld(plot.getWorldName()), true), 1, 20*3);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), () -> {
+                    Bukkit.getServer().unloadWorld(Bukkit.getWorld(plot.getWorldName()), true);
+                }, 20*3);
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
             }
