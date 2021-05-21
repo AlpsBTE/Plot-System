@@ -27,6 +27,7 @@ package github.BTEPlotSystem.core;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
@@ -154,6 +155,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
         }
+        PlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

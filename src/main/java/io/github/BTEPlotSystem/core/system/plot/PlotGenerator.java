@@ -39,6 +39,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -51,6 +52,7 @@ import org.bukkit.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -70,6 +72,8 @@ public final class PlotGenerator {
     public static Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
     public static Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/submit", "/abandon", "//undo", "//redo", "/plot", "/navigator", "/plots", "/review", "/tpp", "/tp", "/hdb", "/bannermaker", "/repl", "/we", "//sel", "/;", "/br", "/brush", "/gamemode spectator", "//br", "//brush", "/gamemode creative", "//repl", "//we", "//rotate", "/up", "//up", "/edit", "/link", "/feedback", "/sendfeedback", "//wand", "/undosubmit", "/tpll", "/cleanplot", "/hub", "/companion", "/undoreview", "/generateplot", "/deleteplot"));
 
+    public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
+
     public PlotGenerator(int cityID, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
         this(getPlots(cityID, plotDifficulty, Status.unclaimed).get(random.nextInt(getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
@@ -79,33 +83,42 @@ public final class PlotGenerator {
         this.builder = builder;
 
         if(Bukkit.getWorld(plot.getWorldName()) == null) {
+           playerPlotGenerationHistory.put(builder.getUUID(), LocalDateTime.now());
 
            Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
                try {
-                   generateWorld(plot.getWorldName());
+                       generateWorld(plot.getWorldName());
 
-                   generateBuildingOutlines();
+                       generateBuildingOutlines();
 
-                   createPlotProtection();
+                       createPlotProtection();
 
-                   builder.setPlot(plot.getID(), builder.getFreeSlot());
-                   plot.setStatus(Status.unfinished);
-                   plot.setBuilder(builder.getPlayer().getUniqueId().toString());
-                   plot.setLastActivity(false);
+                       plot.setStatus(Status.unfinished);
+                       plot.setBuilder(builder.getPlayer().getUniqueId().toString());
+                       plot.setLastActivity(false);
 
-                   Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-                       PlotHandler.teleportPlayer(plot, builder.getPlayer());
-                       try {
-                           Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getBuilder().getName() + "§a!"));
-                       } catch (SQLException ex) {
-                           Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                       // Check if player has all slots occupied to prevent an error
+                       if(builder.getFreeSlot() != null) {
+                           builder.setPlot(plot.getID(), builder.getFreeSlot());
+                       } else {
+                           PlotHandler.abandonPlot(plot);
+                           return;
                        }
-                   });
 
-               } catch (IOException | SQLException ex) {
+                       Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                           PlotHandler.teleportPlayer(plot, builder.getPlayer());
+                           try {
+                               Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getBuilder().getName() + "§a!"));
+                           } catch (SQLException ex) {
+                               Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                           }
+                       });
+
+               } catch (Exception ex) {
                    builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating a new plot!"));
                    builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while a generating plot!", ex);
+                   playerPlotGenerationHistory.remove(builder.getUUID());
                }
            });
         } else {
@@ -169,7 +182,7 @@ public final class PlotGenerator {
         MCEditSchematicFormat.getFormat(plot.getSchematic()).load(plot.getSchematic()).paste(session, buildingOutlinesCoordinates, false);*/
     }
 
-    private void createPlotProtection() {
+    private void createPlotProtection() throws StorageException {
         BlockVector min = BlockVector.toBlockPoint(
                 0,
                 1,
@@ -206,5 +219,6 @@ public final class PlotGenerator {
         protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
 
         regionManager.addRegion(protectedPlotRegion);
+        regionManager.save();
     }
 }

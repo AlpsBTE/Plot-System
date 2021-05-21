@@ -41,6 +41,7 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -176,9 +177,20 @@ public class CompanionMenu extends AbstractMenu {
                         clickPlayer.closeInventory();
                         Builder builder = new Builder(clickPlayer.getUniqueId());
                         int cityID = cityProjects.get(itemSlot).getID();
+
                         if (builder.getFreeSlot() != null){
                             PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder);
                             if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0){
+                                if(PlotGenerator.playerPlotGenerationHistory.containsKey(builder.getUUID())) {
+                                    if(PlotGenerator.playerPlotGenerationHistory.get(builder.getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
+                                        PlotGenerator.playerPlotGenerationHistory.remove(builder.getUUID());
+                                    } else {
+                                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("Please wait few seconds before creating a new plot!"));
+                                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                                        return;
+                                    }
+                                }
+
                                 clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
