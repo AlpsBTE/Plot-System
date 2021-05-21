@@ -120,7 +120,7 @@ public final class PlotGenerator {
         wc.generatorSettings("2;0;1;");
         wc.createWorld();
 
-        worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidWorld", false);
+        worldManager.addWorld(worldName, wc.environment(), null, wc.type(), false, "VoidGenerator");
 
         org.bukkit.World world = Bukkit.getWorld(worldName);
         world.setGameRuleValue("randomTickSpeed", "0");
