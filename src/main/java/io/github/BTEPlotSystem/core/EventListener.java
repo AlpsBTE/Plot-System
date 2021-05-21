@@ -158,7 +158,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+        if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
         }
     }
