@@ -43,6 +43,10 @@ commands:
     description: Shows all plots of the given player
     permission: alpsbte.plot
     usage: /plots, /plots <Player>
+  plot:
+    description: Teleport to a plot
+    permission: alpsbte.review
+    usage: /plot <ID>
   review:
     description: Open the review or review plot menu
     permission: alpsbte.review
