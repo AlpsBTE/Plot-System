@@ -75,10 +75,8 @@ public class PlotHandler {
     public static void submitPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
-
-        if(Bukkit.getWorld(plot.getWorldName()) != null) {
-            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
+        if(plot.getPlotWorld() != null) {
+            for(Player player : plot.getPlotWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
             }
         }
@@ -105,19 +103,17 @@ public class PlotHandler {
             }
         }
 
-        if(plot.getPlotWorld() != null) {
-            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
-                player.teleport(Utils.getSpawnPoint());
-            }
+        loadPlot(plot); // Load Plot to be listed by Multiverse
+        for(Player player : plot.getPlotWorld().getPlayers()) {
+            player.teleport(Utils.getSpawnPoint());
         }
 
-        if(plot.getSlot() != null) plot.getBuilder().removePlot(plot.getSlot());
+        plot.getBuilder().removePlot(plot.getSlot());
         plot.setBuilder(null);
         plot.setLastActivity(true);
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);
 
-        loadPlot(plot); // Load Plot to be listed by Multiverse
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
         BTEPlotSystem.getMultiverseCore().saveWorldConfig();
 
@@ -138,7 +134,7 @@ public class PlotHandler {
     }
 
     public static void loadPlot(Plot plot) {
-        if(Bukkit.getWorld(plot.getWorldName()) == null) {
+        if(plot.getPlotWorld() == null) {
             BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
         }
     }
@@ -151,7 +147,7 @@ public class PlotHandler {
     }
 
     public static Location getPlotSpawnPoint(Plot plot) {
-        return new Location(Bukkit.getWorld(plot.getWorldName()),
+        return new Location(plot.getPlotWorld(),
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
                 30, // TODO: Fit Y value to schematic height to prevent collision
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
@@ -229,13 +225,5 @@ public class PlotHandler {
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show unreviewed plots").create()));
         player.spigot().sendMessage(tc);
-    }
-
-    public static String getWorldGuardConfigPath(int plotID) {
-        return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/P-" + plotID;
-    }
-
-    public static String getMultiverseInventoriesConfigPath(int plotID) {
-        return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/P-" + plotID;
     }
 }
