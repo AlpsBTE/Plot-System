@@ -28,7 +28,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
-import github.BTEPlotSystem.commands.admin.CMD_CleanPlot;
 import github.BTEPlotSystem.commands.admin.CMD_DeletePlot;
 import github.BTEPlotSystem.commands.admin.CMD_PReload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologram;
@@ -99,14 +98,13 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("tpll").setExecutor(new CMD_Tpll());
 
         // Add reviewer commands [alpsbte.review Permission]
+        this.getCommand("plot").setExecutor(new CMD_Plot());
         this.getCommand("review").setExecutor(new CMD_Review());
         this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
         this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
         this.getCommand("editplot").setExecutor(new CMD_EditPlot());
 
         // Add admin commands [alpsbte.admin Permission]
-        this.getCommand("plot").setExecutor(new CMD_Plot());
-        this.getCommand("cleanplot").setExecutor(new CMD_CleanPlot());
         this.getCommand("deleteplot").setExecutor(new CMD_DeletePlot());
         this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
         this.getCommand("sethologram").setExecutor(new CMD_SetHologram());

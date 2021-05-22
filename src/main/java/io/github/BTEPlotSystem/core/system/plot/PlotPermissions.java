@@ -73,12 +73,10 @@ public class PlotPermissions {
 
 
     public void save() {
-        if(Bukkit.getWorld("P-" + plotID) != null) {
-            try {
-                PlotHandler.unloadPlot(new Plot(plotID));
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+        try {
+            PlotHandler.unloadPlot(new Plot(plotID));
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }
 
@@ -86,12 +84,10 @@ public class PlotPermissions {
         RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
 
         String worldName = "P-" + plotID;
-        if(Bukkit.getWorld(worldName) == null) {
-            try {
-                PlotHandler.loadPlot(new Plot(plotID));
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+        try {
+            PlotHandler.loadPlot(new Plot(plotID));
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
 
         RegionManager regionManager = container.get(Bukkit.getWorld(worldName));

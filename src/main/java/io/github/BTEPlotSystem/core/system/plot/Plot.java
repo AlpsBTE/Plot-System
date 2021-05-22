@@ -35,6 +35,7 @@ import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.io.File;
 import java.io.IOException;
@@ -211,6 +212,8 @@ public class Plot extends PlotPermissions {
     public String getWorldName() {
         return "P-" + getID();
     }
+
+    public World getPlotWorld() { return Bukkit.getWorld(getWorldName()); }
 
     public void setBuilder(String UUID) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {

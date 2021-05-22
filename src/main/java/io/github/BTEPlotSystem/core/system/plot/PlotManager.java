@@ -340,6 +340,14 @@ public class PlotManager {
         );
     }
 
+    public static String getWorldGuardConfigPath(String worldName) {
+        return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/" + worldName;
+    }
+
+    public static String getMultiverseInventoriesConfigPath(String worldName) {
+        return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName;
+    }
+
     public static String getOutlinesSchematicPath() {
         return BTEPlotSystem.getPlugin().getConfig().getString("outlines-schematic-path");
     }

@@ -49,13 +49,10 @@ import java.util.logging.Level;
 
 public class PlotHandler {
 
-    public static void teleportPlayer(Plot plot, Player player) {
+    public static void teleportPlayer(Plot plot, Player player) throws SQLException {
         player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-        if(Bukkit.getWorld(plot.getWorldName()) == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
-        }
-
+        loadPlot(plot);
         player.teleport(getPlotSpawnPoint(plot));
 
         player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
@@ -66,31 +63,25 @@ public class PlotHandler {
 
         if(player.hasPermission("alpsbte.review")) {
             player.getInventory().setItem(7, ReviewMenu.getMenuItem());
-        } else if(player.getInventory().contains(ReviewMenu.getMenuItem())) {
-            player.getInventory().remove(ReviewMenu.getMenuItem());
         }
 
         sendLinkMessages(plot, player);
 
-        try {
-            if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
-                plot.setLastActivity(false);
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+            plot.setLastActivity(false);
         }
     }
 
     public static void submitPlot(Plot plot) throws Exception {
         plot.setStatus(Status.unreviewed);
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
-
-        if(Bukkit.getWorld(plot.getWorldName()) != null) {
-            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
+        if(plot.getPlotWorld() != null) {
+            for(Player player : plot.getPlotWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnPoint());
             }
         }
+
+        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {
@@ -100,18 +91,6 @@ public class PlotHandler {
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
-        if(Bukkit.getWorld(plot.getWorldName()) != null) {
-            for(Player player : Bukkit.getWorld(plot.getWorldName()).getPlayers()) {
-                player.teleport(Utils.getSpawnPoint());
-            }
-        }
-
-        plot.getBuilder().removePlot(plot.getSlot());
-        plot.setBuilder(null);
-        plot.setLastActivity(true);
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().removeWorldFromConfig(plot.getWorldName());
-
         if(plot.isReviewed()) {
             try (Connection con = DatabaseConnection.getConnection()) {
                 PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
@@ -124,11 +103,22 @@ public class PlotHandler {
             }
         }
 
+        loadPlot(plot); // Load Plot to be listed by Multiverse
+        for(Player player : plot.getPlotWorld().getPlayers()) {
+            player.teleport(Utils.getSpawnPoint());
+        }
+
+        plot.getBuilder().removePlot(plot.getSlot());
+        plot.setBuilder(null);
+        plot.setLastActivity(true);
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);
 
-        FileUtils.deleteDirectory(new File(getWorldGuardConfigPath(plot.getID())));
-        FileUtils.deleteDirectory(new File(getMultiverseInventoriesConfigPath(plot.getID())));
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
+
+        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
+        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
     }
 
     public static void deletePlot(Plot plot) throws Exception {
@@ -144,23 +134,20 @@ public class PlotHandler {
     }
 
     public static void loadPlot(Plot plot) {
-        if(Bukkit.getWorld(plot.getWorldName()) == null) {
+        if(plot.getPlotWorld() == null) {
             BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
         }
     }
 
     public static void unloadPlot(Plot plot) {
-        if(Bukkit.getWorld(plot.getWorldName()).getPlayers().size() - 1 == 0) {
-            try {
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> Bukkit.getServer().unloadWorld(Bukkit.getWorld(plot.getWorldName()), true), 1, 20*3);
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
-            }
+        if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), () ->
+                    BTEPlotSystem.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
         }
     }
 
     public static Location getPlotSpawnPoint(Plot plot) {
-        return new Location(Bukkit.getWorld(plot.getWorldName()),
+        return new Location(plot.getPlotWorld(),
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
                 30, // TODO: Fit Y value to schematic height to prevent collision
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
@@ -238,13 +225,5 @@ public class PlotHandler {
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show unreviewed plots").create()));
         player.spigot().sendMessage(tc);
-    }
-
-    public static String getWorldGuardConfigPath(int plotID) {
-        return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/P-" + plotID;
-    }
-
-    public static String getMultiverseInventoriesConfigPath(int plotID) {
-        return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/P-" + plotID;
     }
 }
