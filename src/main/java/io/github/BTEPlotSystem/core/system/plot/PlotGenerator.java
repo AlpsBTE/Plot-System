@@ -135,7 +135,6 @@ public final class PlotGenerator {
         mvWorld.setAllowFlight(true);
         mvWorld.setGameMode(GameMode.CREATIVE);
         mvWorld.setEnableWeather(false);
-        mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
         mvWorld.setDifficulty(Difficulty.PEACEFUL);
         mvWorld.setAllowAnimalSpawn(false);
         mvWorld.setAllowMonsterSpawn(false);
