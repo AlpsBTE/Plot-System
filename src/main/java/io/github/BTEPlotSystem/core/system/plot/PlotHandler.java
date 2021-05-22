@@ -126,8 +126,8 @@ public class PlotHandler {
         BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
         BTEPlotSystem.getMultiverseCore().saveWorldConfig();
 
-        FileUtils.deleteDirectory(new File(getWorldGuardConfigPath(plot.getID())));
-        FileUtils.deleteDirectory(new File(getMultiverseInventoriesConfigPath(plot.getID())));
+        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
+        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
     }
 
     public static void deletePlot(Plot plot) throws Exception {
