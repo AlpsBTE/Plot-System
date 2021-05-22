@@ -149,14 +149,9 @@ public class PlotHandler {
     }
 
     public static void unloadPlot(Plot plot) {
-        if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().size() - 1 == 0) {
-            try {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), () -> {
-                    Bukkit.getServer().unloadWorld(Bukkit.getWorld(plot.getWorldName()), true);
-                }, 20*3);
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading plot world!", ex);
-            }
+        if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), () ->
+                    BTEPlotSystem.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
         }
     }
 
