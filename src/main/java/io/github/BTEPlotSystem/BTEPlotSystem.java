@@ -114,12 +114,10 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         // Set holograms
-        holograms.addAll(Arrays.asList(
-                new ScoreLeaderboard(),
-                new ParkourLeaderboard(),
-                new EventHologram(),
-                new CompletedBuildsLeaderboard()
-        ));
+        if(config.getBoolean("holograms.ScoreLeaderboard.enabled")) holograms.add(new ScoreLeaderboard());
+        if(config.getBoolean("holograms.ParkourLeaderboard.enabled")) holograms.add(new ParkourLeaderboard());
+        if(config.getBoolean("holograms.EventHologram.enabled")) holograms.add(new EventHologram());
+        if(config.getBoolean("holograms.BuildsLeaderboard.enabled")) holograms.add(new CompletedBuildsLeaderboard());
         holograms.forEach(Thread::start);
 
         new PortalManager().start();

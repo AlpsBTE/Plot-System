@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.plot.Plot;
@@ -149,7 +150,7 @@ public class CompanionMenu extends AbstractMenu {
         // Add click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand("navigator");
+            clickPlayer.performCommand(BTEPlotSystem.getPlugin().getConfig().getString("navigator-command"));
         });
 
         // Add click event for switch plots difficulty item
@@ -259,20 +260,7 @@ public class CompanionMenu extends AbstractMenu {
         for(int i = 0; i < cityProjects.size(); i++) {
             if(i <= 28) {
                 ItemStack cityProjectItem = MenuItems.errorItem();
-                switch (cityProjects.get(i).getCountry()) {
-                    case AT:
-                        cityProjectItem = Utils.getItemHead("4397");
-                        break;
-                    case CH:
-                        cityProjectItem = Utils.getItemHead("32348");
-                        break;
-                    case LI:
-                        cityProjectItem = Utils.getItemHead("26174");
-                        break;
-                    case IT:
-                        cityProjectItem = Utils.getItemHead("21903");
-                }
-
+                cityProjectItem = Utils.getItemHead(Integer.toString(cityProjects.get(i).getCountry().getHeadID()));
                 try {
                     PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ?
                             selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId()));

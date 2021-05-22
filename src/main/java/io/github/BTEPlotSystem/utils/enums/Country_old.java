@@ -24,6 +24,6 @@
 
 package github.BTEPlotSystem.utils.enums;
 
-public enum Country {
+public enum Country_old {
     AT, CH, LI, IT
 }

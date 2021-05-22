@@ -34,10 +34,11 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.core.system.Country;
+import github.BTEPlotSystem.utils.enums.Country_old;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -352,7 +353,7 @@ public class PlotManager {
         return BTEPlotSystem.getPlugin().getConfig().getString("outlines-schematic-path");
     }
 
-    public static String getFinishedSchematicPath() {
-        return BTEPlotSystem.getPlugin().getConfig().getString("finished-schematic-path");
+    public static String getFinishedSchematicPath(Country country) {
+        return BTEPlotSystem.getPlugin().getConfig().getString(country.getFinishedSchematicPath());
     }
 }

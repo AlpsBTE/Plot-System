@@ -63,7 +63,7 @@ public class Utils {
     public static Location getSpawnPoint() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        return new Location(Bukkit.getWorld("Hub"),
+        return new Location(Bukkit.getWorld(config.getString("lobby-world")),
                 config.getDouble("spawn-point.x"),
                 config.getDouble("spawn-point.y"),
                 config.getDouble("spawn-point.z"),

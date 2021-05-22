@@ -54,7 +54,7 @@ public abstract class HolographicDisplay extends Thread {
         try {
             FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-            return new Location(Bukkit.getWorld("Hub"),
+            return new Location(Bukkit.getWorld(config.getString("lobby-world")),
                     config.getDouble(getDefaultPath() + "x"),
                     config.getDouble(getDefaultPath() + "y"),
                     config.getDouble(getDefaultPath() + "z")

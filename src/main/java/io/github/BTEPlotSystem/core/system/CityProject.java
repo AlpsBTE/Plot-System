@@ -25,7 +25,7 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.utils.enums.Country;
+import github.BTEPlotSystem.utils.enums.Country_old;
 import org.bukkit.Bukkit;
 
 import java.sql.Connection;
@@ -50,13 +50,14 @@ public class CityProject {
         this.ID = ID;
 
         try (Connection con = DatabaseConnection.getConnection()) {
+            assert con != null;
             PreparedStatement ps = con.prepareStatement("SELECT * FROM cityProjects WHERE idcityProject = ?");
             ps.setInt(1, ID);
             ResultSet rs = ps.executeQuery();
 
             if(rs.next()) {
                 this.name = rs.getString("name");
-                this.country = Country.valueOf(rs.getString("country"));
+                this.country = new Country(rs.getString("country"));
                 this.description = rs.getString("description");
                 this.tags = rs.getString("tags");
                 this.visible = rs.getInt("visible") == 1;
@@ -86,6 +87,7 @@ public class CityProject {
 
     public static List<CityProject> getCityProjects() {
         try (Connection con = DatabaseConnection.getConnection()) {
+            assert con != null;
             ResultSet rs = con.createStatement().executeQuery("SELECT idcityProject FROM cityProjects ORDER BY CAST(country AS CHAR)");
 
             List<CityProject> cityProjects = new ArrayList<>();
