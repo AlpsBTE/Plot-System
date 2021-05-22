@@ -49,13 +49,10 @@ import java.util.logging.Level;
 
 public class PlotHandler {
 
-    public static void teleportPlayer(Plot plot, Player player) {
+    public static void teleportPlayer(Plot plot, Player player) throws SQLException {
         player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-        if(plot.getPlotWorld() == null) {
-            loadPlot(plot);
-        }
-
+        loadPlot(plot);
         player.teleport(getPlotSpawnPoint(plot));
 
         player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
@@ -70,12 +67,8 @@ public class PlotHandler {
 
         sendLinkMessages(plot, player);
 
-        try {
-            if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
-                plot.setLastActivity(false);
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+            plot.setLastActivity(false);
         }
     }
 
@@ -89,6 +82,8 @@ public class PlotHandler {
                 player.teleport(Utils.getSpawnPoint());
             }
         }
+
+        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {

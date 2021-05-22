@@ -29,7 +29,6 @@ import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.MenuItems;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -133,7 +132,11 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for teleport to plot button
         getMenu().getSlot(hasFeedback ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            PlotHandler.teleportPlayer(plot, clickPlayer);
+            try {
+                PlotHandler.teleportPlayer(plot, clickPlayer);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         });
 
         // Set click event for abandon plot button

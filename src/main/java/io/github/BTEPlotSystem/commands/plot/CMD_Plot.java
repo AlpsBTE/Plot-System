@@ -40,17 +40,13 @@ public class CMD_Plot implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender instanceof Player) {
-            if(sender.hasPermission("alpsbte.admin")) {
+            if(sender.hasPermission("alpsbte.review")) {
                 if(args.length == 1 || args.length == 2) {
                     if(Utils.TryParseInt(args[0]) != null) {
                         int ID = Integer.parseInt(args[0]);
                         if(PlotManager.plotExists(ID)) {
                             try {
-                                if(args.length == 2 && args[1].equalsIgnoreCase("delete")) {
-                                    PlotHandler.deletePlot(new Plot(ID));
-                                } else {
-                                    PlotHandler.teleportPlayer(new Plot(ID), (Player) sender);
-                                }
+                                PlotHandler.teleportPlayer(new Plot(ID), (Player) sender);
                             } catch (Exception ex) {
                                 sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
