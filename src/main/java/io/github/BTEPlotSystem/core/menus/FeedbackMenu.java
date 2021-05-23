@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
@@ -42,85 +43,88 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class FeedbackMenu extends AbstractMenu {
 
-    private final Review review;
-    private final Plot plot;
+    private final int plotID;
 
     public FeedbackMenu(Player player, int plotID) throws SQLException {
         super(3, "Feedback | Review #" + plotID, player);
+        this.plotID = plotID;
+    }
+
+    @Override
+    protected void setMenuItems() {
+        Plot plot; Review review;
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT idreview FROM plots WHERE idplot = ?");
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT idreview FROM plots WHERE idplot = ?");
             ps.setInt(1, plotID);
             ResultSet rs = ps.executeQuery();
             rs.next();
-            this.review = new Review(rs.getInt(1));
+            review = new Review(rs.getInt(1));
+            plot = new Plot(plotID);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return;
         }
-        this.plot = new Plot(plotID);
 
-        Mask mask = BinaryMask.builder(getMenu())
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            try {
+                getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
+                        .setName("§b§lScore")
+                        .setLore(new LoreBuilder()
+                                .addLines("Total Points: §f" + plot.getScore(),
+                                        "",
+                                        "§7Accuracy: " + Utils.getPointsByColor(review.getRating(Category.ACCURACY)) + "§8/§a5",
+                                        "§7Block Palette: " + Utils.getPointsByColor(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
+                                        "§7Detailing: " + Utils.getPointsByColor(review.getRating(Category.DETAILING)) + "§8/§a5",
+                                        "§7Technique: " + Utils.getPointsByColor(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
+                                        "",
+                                        plot.isRejected() ? "§c§lRejected" : "§a§lAccepted")
+                                .build())
+                        .build());
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                getMenu().getSlot(10).setItem(MenuItems.errorItem());
+            }
+
+            try {
+                getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+                        .setName("§b§lFeedback")
+                        .setLore(new LoreBuilder()
+                                .addLine(plot.getReview().getFeedback()).build())
+                        .build());
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                getMenu().getSlot(13).setItem(MenuItems.errorItem());
+            }
+
+            try {
+                getMenu().getSlot(16).setItem(new ItemBuilder(Utils.getPlayerHead(review.getReviewer().getUUID()))
+                        .setName("§b§lReviewer")
+                        .setLore(new LoreBuilder()
+                                .addLine(review.getReviewer().getName()).build())
+                        .build());
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                getMenu().getSlot(13).setItem(MenuItems.errorItem());
+            }
+        });
+    }
+
+    @Override
+    protected void setItemClickEvents() {}
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")
                 .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-
-        getMenu().open(getMenuPlayer());
     }
-
-    @Override
-    protected void addMenuItems() {
-        // Add Points Item
-        try {
-            getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
-                    .setName("§b§lScore")
-                    .setLore(new LoreBuilder()
-                            .addLines("Total Points: §f" + plot.getScore(),
-                                    "",
-                                    "§7Accuracy: " + Utils.getPointsByColor(review.getRating(Category.ACCURACY)) + "§8/§a5",
-                                    "§7Block Palette: " + Utils.getPointsByColor(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
-                                    "§7Detailing: " + Utils.getPointsByColor(review.getRating(Category.DETAILING)) + "§8/§a5",
-                                    "§7Technique: " + Utils.getPointsByColor(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
-                                    "",
-                                    plot.isRejected() ? "§c§lRejected" : "§a§lAccepted")
-                            .build())
-                    .build());
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(10).setItem(MenuItems.errorItem());
-        }
-
-        // Add Feedback Item
-        try {
-            getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
-                    .setName("§b§lFeedback")
-                    .setLore(new LoreBuilder()
-                            .addLine(plot.getReview().getFeedback()).build())
-                    .build());
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(13).setItem(MenuItems.errorItem());
-        }
-
-        // Add Reviewer Item
-        try {
-            getMenu().getSlot(16).setItem(new ItemBuilder(Utils.getPlayerHead(review.getReviewer().getUUID()))
-                    .setName("§b§lReviewer")
-                    .setLore(new LoreBuilder()
-                            .addLine(review.getReviewer().getName()).build())
-                    .build());
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(13).setItem(MenuItems.errorItem());
-        }
-    }
-
-    @Override
-    protected void setItemClickEvents() {}
 }

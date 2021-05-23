@@ -49,100 +49,112 @@ import java.util.logging.Level;
 public class CompanionMenu extends AbstractMenu {
 
     private final Plot[] slots = new Plot[3];
-    private final List<CityProject> cityProjects = CityProject.getCityProjects();
+    private List<CityProject> cityProjects;
 
     private PlotDifficulty selectedPlotDifficulty = null;
 
     public CompanionMenu(Player player) {
         super(6, "Companion", player);
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("100010001")
-                .build();
-        mask.apply(getMenu());
-
-        try {
-            // Get player slots of player
-            Builder builder = new Builder(getMenuPlayer().getUniqueId());
-            for (int i = 0; i < 3; i++) {
-                slots[i] = builder.getPlot(Slot.values()[i]);
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
-        // Set navigator item
-        getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.COMPASS, 1)
-                        .setName("§6§lNavigator").setLore(new LoreBuilder()
-                                .addLine("Open the navigator menu").build())
-                        .build());
+    protected void setMenuItems() {
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            getMenu().getSlot(4)
+                    .setItem(new ItemBuilder(Material.COMPASS, 1)
+                            .setName("§6§lNavigator").setLore(new LoreBuilder()
+                                    .addLine("Open the navigator menu").build())
+                            .build());
 
-        // Set switch plots difficulty item
-        try {
-            getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
-        } catch (SQLException ex) {
-            getMenu().getSlot(7).setItem(MenuItems.errorItem());
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
+            try {
+                getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
+            } catch (SQLException ex) {
+                getMenu().getSlot(7).setItem(MenuItems.errorItem());
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+
+            getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem());
+
+            getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem());
+
+            getMenu().getSlot(52)
+                    .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
+                            .setName("§b§lSettings")
+                            .setLore(new LoreBuilder()
+                                    .addLine("Modify your user settings").build())
+                            .build());
+
+            // Set player slots items
+            for (int i = 0; i < 3; i++) {
+                try {
+                    Builder builder = new Builder(getMenuPlayer().getUniqueId());
+                    slots[i] = builder.getPlot(Slot.values()[i]);
+                        try {
+                            getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.MAP, 1 + i)
+                                    .setName("§b§lSLOT " + (i + 1))
+                                    .setLore(new LoreBuilder()
+                                            .addLines("§7ID: §f" + slots[i].getID(),
+                                                      "§7City: §f" + slots[i].getCity().getName(),
+                                                      "§7Difficulty: §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
+                                                      "",
+                                                      "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
+                                            ).build())
+                                    .build());
+                        } catch (Exception ex) {
+                            getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
+                                    .setName("§b§lSLOT " + (i + 1))
+                                    .setLore(new LoreBuilder()
+                                            .addLines("§7Click on a city project to create a new plot",
+                                                      "",
+                                                      "§6§lStatus: §7§lUnassigned")
+                                            .build())
+                                    .build());
+                        }
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            }
+        });
 
         // Set city project items
-        setCityProjectItems();
+        cityProjects = CityProject.getCityProjects();
 
-        // Set player slots items
-        for (int i = 0; i < 3; i++) {
-            try {
-                getMenu().getSlot(46 + i)
-                        .setItem(new ItemBuilder(Material.MAP, 1 + i)
-                                .setName("§b§lSLOT " + (i + 1))
-                                .setLore(new LoreBuilder()
-                                        .addLines("§7ID: §f" + slots[i].getID(),
-                                                "§7City: §f" + slots[i].getCity().getName(),
-                                                "§7Difficulty: §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
-                                                "",
-                                                "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
-                                        ).build())
-                                .build());
-            } catch (Exception ex) {
-                getMenu().getSlot(46 + i)
-                        .setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
-                                .setName("§b§lSLOT " + (i + 1))
-                                .setLore(new LoreBuilder()
-                                        .addLines("§7Click on a city project to create a new plot",
-                                                "",
-                                                "§6§lStatus: §7§lUnassigned")
-                                        .build())
-                                .build());
+        for(int i = 0; i < cityProjects.size(); i++) {
+            if(i <= 28) {
+                CityProject cp = cityProjects.get(i);
+                ItemStack cpItem = Utils.getItemHead(Integer.toString(cp.getCountry().getHeadID()));
+
+                try {
+                    PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
+                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), new Builder(getMenuPlayer().getUniqueId()));
+
+                    int plotsOpen = PlotManager.getPlots(cp.getID(), Status.unclaimed).size();
+                    int plotsInProgress = PlotManager.getPlots(cp.getID(), Status.unfinished, Status.unreviewed).size();
+                    int plotsCompleted = PlotManager.getPlots(cp.getID(), Status.complete).size();
+                    int plotsUnclaimed = PlotManager.getPlots(cp.getID(), cpPlotDifficulty, Status.unclaimed).size();
+
+                    Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () ->
+                        getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(new ItemBuilder(cpItem)
+                            .setName("§b§l" + cp.getName())
+                            .setLore(new LoreBuilder()
+                                .addLines(cp.getDescription(),
+                                          "",
+                                          "§6" + plotsOpen + " §7Plots Open",
+                                          "§f---------------------",
+                                          "§6" + plotsInProgress + " §7Plots In Progress",
+                                          "§6" + plotsCompleted + " §7Plots Completed",
+                                          "",
+                                          plotsUnclaimed != 0 ? Utils.getFormattedDifficulty(cpPlotDifficulty) : "§f§lNo Plots Available"
+                                ).build())
+                        .build()));
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () ->
+                            getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(MenuItems.errorItem())
+                    );
+                }
             }
         }
-
-        // Set builder utilities item
-        getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem());
-
-        // Set show plots item
-        getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem());
-
-        // Set player settings item
-        getMenu().getSlot(52)
-                .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
-                        .setName("§b§lSettings")
-                        .setLore(new LoreBuilder()
-                                .addLine("Modify your user settings").build())
-                        .build());
     }
 
     @Override
@@ -160,7 +172,7 @@ public class CompanionMenu extends AbstractMenu {
                         PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
                         PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
                 getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
-                setCityProjectItems();
+                //setCityProjectItems();
 
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.Done, 1, 1);
             } catch (SQLException ex) {
@@ -248,7 +260,20 @@ public class CompanionMenu extends AbstractMenu {
         getMenu().getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1)));
     }
 
-   public static ItemStack getMenuItem() {
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111101111")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("100010001")
+                .build();
+    }
+
+    public static ItemStack getMenuItem() {
        return new ItemBuilder(Material.NETHER_STAR, 1)
                .setName("§b§lCompanion §7(Right Click)")
                .setEnchantment(true)

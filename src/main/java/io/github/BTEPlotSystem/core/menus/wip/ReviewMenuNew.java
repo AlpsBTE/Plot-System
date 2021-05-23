@@ -52,26 +52,10 @@ public class ReviewMenuNew extends AbstractMenu {
 
     public ReviewMenuNew(Player player) throws SQLException {
         super(6, "Review & Manage Plots", player);
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("101101101")
-                .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
+    protected void setMenuItems() {
         // Add plot items
         plotDisplayCount = Math.min(plots.size(), 40);
         for(int i = 0; i < plotDisplayCount; i++) {
@@ -106,13 +90,10 @@ public class ReviewMenuNew extends AbstractMenu {
             }
         }
 
-        // Add previous page button
         getMenu().getSlot(42).setItem(MenuItems.previousPageItem());
 
-        // Add close menu button
         getMenu().getSlot(45).setItem(MenuItems.closeMenuItem());
 
-        // Add next page button
         getMenu().getSlot(48).setItem(MenuItems.nextPageItem());
     }
 
@@ -136,17 +117,27 @@ public class ReviewMenuNew extends AbstractMenu {
             }
         }
 
-        // Set click event for previous page button
         getMenu().getSlot(42).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
         });
 
-        // Set click event for close menu button
         getMenu().getSlot(45).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
-        // Set click event for next page button
         getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
         });
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("101101101")
+                .build();
     }
 }

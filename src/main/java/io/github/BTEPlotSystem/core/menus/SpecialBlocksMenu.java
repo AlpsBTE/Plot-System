@@ -24,10 +24,12 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.SpecialBlocks;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -38,30 +40,17 @@ import org.ipvp.canvas.mask.Mask;
 public class SpecialBlocksMenu extends AbstractMenu {
     public SpecialBlocksMenu(Player player) {
         super(3, "Special Blocks", player);
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("111101111")
-                .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add Special Blocks
-        for(int i = 0; i < 13; i++) {
-            getMenu().getSlot(i).setItem(getSpecialBlock(i));
-        }
+    protected void setMenuItems() {
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            for(int i = 0; i < 13; i++) {
+                getMenu().getSlot(i).setItem(getSpecialBlock(i));
+            }
 
-        // Add Back Button Item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+            getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        });
     }
 
     @Override
@@ -79,6 +68,16 @@ public class SpecialBlocksMenu extends AbstractMenu {
 
         // Add Click Event For Back Button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer));
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("111101111")
+                .build();
     }
 
     public static ItemStack getMenuItem() {

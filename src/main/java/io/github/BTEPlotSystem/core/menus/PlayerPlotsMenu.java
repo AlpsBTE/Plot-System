@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
@@ -47,90 +48,87 @@ import java.util.logging.Level;
 public class PlayerPlotsMenu extends AbstractMenu {
 
     private final Builder builder;
-    private final List<Plot> plots;
+    private List<Plot> plots;
 
     private int plotDisplayCount = 0;
 
     public PlayerPlotsMenu(Player menuPlayer, Builder showPlotsBuilder) throws SQLException {
         super(6, showPlotsBuilder.getName() + "'s Plots", menuPlayer);
         this.builder = showPlotsBuilder;
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("111101111")
-                .build();
-        mask.apply(getMenu());
-
-        plots = PlotManager.getPlots(builder);
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add player stats item
-        try {
-            getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                            .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
-                                    .addLines("Points: §f" + builder.getScore(),
-                                            "§7Completed Buildings: §f" + builder.getCompletedBuilds())
-                                    .build())
-                            .build());
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(4).setItem(MenuItems.errorItem());
-        }
+    protected void setMenuItems() {
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            getMenu().getSlot(4).setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+                    .setName("§6§lLoading...").build());
 
-        // Add player plots items
-        plotDisplayCount = Math.min(plots.size(), 36);
-        for (int i = 0; i < plotDisplayCount; i++) {
+            getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
+        });
+
+        // Load player head
+        ItemStack playerHead = Utils.getPlayerHead(builder.getUUID());
+
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             try {
-                Plot plot = plots.get(i);
-                switch (plot.getStatus()) {
-                    case unfinished:
-                        getMenu().getSlot(9 + i)
-                                .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 1)
-                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                        .setLore(getDescription(plot))
-                                        .build());
-                        break;
-                    case unreviewed:
-                        getMenu().getSlot(9 + i)
-                                .setItem(new ItemBuilder(Material.MAP, 1)
-                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                        .setLore(getDescription(plot))
-                                        .build());
-                        break;
-                    case complete:
-                        getMenu().getSlot(9 + i)
-                                .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 13)
-                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                        .setLore(getDescription(plot))
-                                        .build());
-                        break;
-                }
+                getMenu().getSlot(4)
+                        .setItem(new ItemBuilder(playerHead)
+                                .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
+                                        .addLines("Points: §f" + builder.getScore(),
+                                                  "§7Completed Buildings: §f" + builder.getCompletedBuilds())
+                                        .build())
+                                .build());
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
+                getMenu().getSlot(4).setItem(MenuItems.errorItem());
             }
-        }
+        });
+        try {
+            plots = PlotManager.getPlots(builder);
 
-        // Add Back Button Item
-        getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
+            // Add player plot items
+            plotDisplayCount = Math.min(plots.size(), 36);
+            for (int i = 0; i < plotDisplayCount; i++) {
+                Plot plot = plots.get(i);
+                int slot = i;
+                Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                    try {
+                        switch (plot.getStatus()) {
+                            case unfinished:
+                                getMenu().getSlot(9 + slot)
+                                        .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 1)
+                                                .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
+                                                .setLore(getDescription(plot))
+                                                .build());
+                                break;
+                            case unreviewed:
+                                getMenu().getSlot(9 + slot)
+                                        .setItem(new ItemBuilder(Material.MAP, 1)
+                                                .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
+                                                .setLore(getDescription(plot))
+                                                .build());
+                                break;
+                            case complete:
+                                getMenu().getSlot(9 + slot)
+                                        .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 13)
+                                                .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
+                                                .setLore(getDescription(plot))
+                                                .build());
+                                break;
+                        }
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        getMenu().getSlot(9 + slot).setItem(MenuItems.errorItem());
+                    }
+                });
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
     }
 
     @Override
     protected void setItemClickEvents() {
-        // Set click event for plots
         for(int i = 0; i < plotDisplayCount; i++) {
             int itemSlot = i;
             getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
@@ -142,11 +140,23 @@ public class PlayerPlotsMenu extends AbstractMenu {
             });
         }
 
-        // Set click event for back button
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("companion");
         });
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111101111")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("111101111")
+                .build();
     }
 
     public static ItemStack getMenuItem() {

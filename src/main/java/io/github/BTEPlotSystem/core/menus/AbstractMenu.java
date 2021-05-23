@@ -24,9 +24,13 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.Menu;
+import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
+
 
 public abstract class AbstractMenu {
 
@@ -36,17 +40,20 @@ public abstract class AbstractMenu {
     public AbstractMenu(int rows, String title, Player menuPlayer) {
         this.menuPlayer = menuPlayer;
         this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
+
+        if(getMask() != null) getMask().apply(getMenu());
+        getMenu().open(getMenuPlayer());
+        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+            setMenuItems();
+            setItemClickEvents();
+        });
     }
 
-    protected abstract void addMenuItems();
-
+    protected abstract void setMenuItems();
     protected abstract void setItemClickEvents();
+    protected abstract Mask getMask();
 
-    protected Menu getMenu() {
-        return menu;
-    }
+    protected Menu getMenu() { return menu; }
 
-    protected Player getMenuPlayer() {
-        return menuPlayer;
-    }
+    protected Player getMenuPlayer() { return menuPlayer; }
 }

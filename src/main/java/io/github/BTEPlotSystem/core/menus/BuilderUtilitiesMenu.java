@@ -24,11 +24,13 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,47 +42,33 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     public BuilderUtilitiesMenu(Player player) {
         super(3, "Builder Utilities", player);
 
-        if(PlotManager.isPlotWorld(player.getWorld())) {
-            Mask mask = BinaryMask.builder(getMenu())
-                    .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                    .pattern("111111111")
-                    .pattern("000000000")
-                    .pattern("111111111")
-                    .build();
-            mask.apply(getMenu());
-
-            addMenuItems();
-            setItemClickEvents();
-
-            getMenu().open(getMenuPlayer());
-        } else {
+        if(!PlotManager.isPlotWorld(player.getWorld())) {
             player.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this!"));
+            player.closeInventory();
         }
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add custom heads item
-        getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
-                        .setName("§b§lCUSTOM HEADS")
-                        .setLore(new LoreBuilder()
-                                .addLine("Open the head menu to get a variety of custom heads.").build())
-                        .build());
+    protected void setMenuItems() {
+        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            getMenu().getSlot(10)
+                    .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+                            .setName("§b§lCUSTOM HEADS")
+                            .setLore(new LoreBuilder()
+                                    .addLine("Open the head menu to get a variety of custom heads.").build())
+                            .build());
 
-        // Add banner maker item
-        getMenu().getSlot(13)
-                .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
-                        .setName("§b§lBANNER MAKER")
-                        .setLore(new LoreBuilder()
-                                .addLine("Open the banner maker menu to create your own custom banners.").build())
-                        .build());
+            getMenu().getSlot(13)
+                    .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
+                            .setName("§b§lBANNER MAKER")
+                            .setLore(new LoreBuilder()
+                                    .addLine("Open the banner maker menu to create your own custom banners.").build())
+                            .build());
 
-        // Add special blocks menu item
-        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
+            getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
 
-        // Add back button item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+            getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        });
     }
 
     @Override
@@ -96,6 +84,16 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
 
         // Set click event for back button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("111111111")
+                .build();
     }
 
     public static ItemStack getMenuItem() {
