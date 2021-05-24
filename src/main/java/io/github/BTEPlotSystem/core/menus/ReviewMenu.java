@@ -399,7 +399,7 @@ public class ReviewMenu implements Listener {
                             event.setCancelled(true);
                             return;
                         } else if(totalRating == 0) {
-                            PlotHandler.abandonPlot(selectedPlot);
+                            PlotHandler.abandonPlot(selectedPlot, false);
                             return;
                         }
 

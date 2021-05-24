@@ -147,16 +147,8 @@ public class PlotHandler {
         });
     }
 
-    public static void deletePlot(Plot plot) throws Exception {
-        abandonPlot(plot);
-
-        Files.deleteIfExists(Paths.get(PlotManager.getOutlinesSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM plots WHERE idplot = ?");
-            ps.setInt(1, plot.getID());
-            ps.execute();
-        }
+    public static void deletePlot(Plot plot) {
+        abandonPlot(plot, true);
     }
 
     public static void loadPlot(Plot plot) {

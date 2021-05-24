@@ -257,7 +257,7 @@ public class PlotManager {
                     if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
                         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                             try {
-                                PlotHandler.abandonPlot(plot);
+                                PlotHandler.abandonPlot(plot, false);
                                 Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "A unknown error occurred!", ex);
