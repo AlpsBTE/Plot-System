@@ -37,14 +37,18 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.multiverse.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotHandler {
@@ -90,35 +94,57 @@ public class PlotHandler {
         plot.addBuilderPerms(plot.getBuilder().getUUID()).save();
     }
 
-    public static void abandonPlot(Plot plot) throws Exception {
-        if(plot.isReviewed()) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
-                ps.setInt(1, plot.getReview().getReviewID());
-                ps.executeUpdate();
+    public static void abandonPlot(Plot plot, boolean deletePlot) {
+        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+            try {
+                if(plot.isReviewed()) {
+                    try (Connection con = DatabaseConnection.getConnection()) {
+                        PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("DELETE FROM reviews WHERE id_review = ?");
+                        ps.setInt(1, plot.getReview().getReviewID());
+                        ps.executeUpdate();
 
-                ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
-                ps.setInt(1, plot.getID());
-                ps.executeUpdate();
+                        ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
+                        ps.setInt(1, plot.getID());
+                        ps.executeUpdate();
+                    }
+                }
+
+                plot.getBuilder().removePlot(plot.getSlot());
+                plot.setBuilder(null);
+                plot.setLastActivity(true);
+                plot.setScore(-1);
+                plot.setStatus(Status.unclaimed);
+
+                if(deletePlot) {
+                    try (Connection con = DatabaseConnection.getConnection()) {
+                        PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("DELETE FROM plots WHERE idplot = ?");
+                        ps.setInt(1, plot.getID());
+                        ps.execute();
+                    }
+                }
+
+                Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                    loadPlot(plot);
+                    for(Player player : plot.getPlotWorld().getPlayers()) {
+                        player.teleport(Utils.getSpawnPoint());
+                    }
+
+                    try {
+                        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+                        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
+
+                        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
+                        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
+
+                        if(deletePlot) Files.deleteIfExists(Paths.get(PlotManager.getOutlinesSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                    } catch (IOException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while deleting config files!", ex);
+                    }
+                });
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-        }
-
-        loadPlot(plot); // Load Plot to be listed by Multiverse
-        for(Player player : plot.getPlotWorld().getPlayers()) {
-            player.teleport(Utils.getSpawnPoint());
-        }
-
-        plot.getBuilder().removePlot(plot.getSlot());
-        plot.setBuilder(null);
-        plot.setLastActivity(true);
-        plot.setScore(-1);
-        plot.setStatus(Status.unclaimed);
-
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
-
-        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
-        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
+        });
     }
 
     public static void deletePlot(Plot plot) throws Exception {
