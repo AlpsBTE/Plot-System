@@ -26,6 +26,7 @@ package github.BTEPlotSystem.utils;
 
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
@@ -35,9 +36,18 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Utils {
+
+    private static FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
@@ -61,7 +71,7 @@ public class Utils {
 
     // Spawn Location
     public static Location getSpawnPoint() {
-        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
+
 
         return new Location(Bukkit.getWorld(config.getString("lobby-world")),
                 config.getDouble("spawn-point.x"),
@@ -73,24 +83,18 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix = "§7§l>> ";
+    private static final String messagePrefix = config.getString("message-prefix");
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + "§a" + info;
+        return messagePrefix + config.getString("info-prefix") + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + "§c" + error;
+        return messagePrefix + config.getString("error-prefix") + error;
     }
 
     // Servers
-    public final static String PLOT_SERVER = "ALPS-1";
-
-    public final static String TERRA_SERVER = "ALPS-2";
-
-    public final static String EVENT_SERVER = "ALPS-3";
-
-    public final static String TEST_SERVER = "ALPS-4";
+    public static ArrayList<Server> SERVERS;
 
     // Integer Try Parser
     public static Integer TryParseInt(String someText) {
@@ -128,6 +132,36 @@ public class Utils {
                 return "§c§lHard";
             default:
                 return "";
+        }
+    }
+
+
+
+    public static class Server {
+        public String serverName;
+        public String finishedSchematicPath;
+        public FTPConfiguration ftpConfiguration;
+
+        public Server(String serverName, String finishedSchematicPath, FTPConfiguration ftpConfiguration) {
+            this.serverName = serverName;
+            this.finishedSchematicPath = finishedSchematicPath;
+            this.ftpConfiguration = ftpConfiguration;
+        }
+    }
+
+    public static class FTPConfiguration {
+        public String address;
+        public int port;
+        public String username;
+        public String password;
+        public boolean secureFTP;
+
+        public FTPConfiguration(String address, int port, String username, String password, boolean secureFTP) {
+            this.address = address;
+            this.port = port;
+            this.username = username;
+            this.password = password;
+            this.secureFTP = secureFTP;
         }
     }
 }

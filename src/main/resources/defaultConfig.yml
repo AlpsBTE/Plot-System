@@ -6,10 +6,49 @@ database:
   password: password
 outlines-schematic-path: null
 finished-schematic-path: null
-spawn-point:
-  x: 0
-  y: 0
-  z: 0
-  yaw: 0
-  pitch: 0
+
+message-prefix: "§7§l>>"
+
+# message-prefix + info-prefix,
+# Default: §7§l>> §a
+info-prefix: "§a"
+
+# message-prefix + error-prefix,
+# Default: §7§l>> §c
+error-prefix: "§c"
+lobby:
+  world: TerraPreGenerated
+  server: hub # Server name found on your bungeecord servers list. Case-sensitive
+  spawn-point:
+    x: 0
+    y: 0
+    z: 0
+    yaw: 0
+    pitch: 0
+ftp:
+  enabled: false
+  address: IP
+  port: 21
+  secureftp: false
+  username: username
+  password: password
+servers:
+  terra:
+    server-name: terra # Server name found on your bungeecord servers list. Case-sensitive
+    ftp:
+      enabled: true
+      address: IP
+      port: 21
+      secureftp: false
+      username: username
+      password: password
+      finished-schematic-path: ABSOLUTE/PATH/FROM/FTP/ROOT/
+countries:
+  AZ:
+    head-id: 4397
+    name: Country Name # Optional
+
+## Commands ##
+permissions:
+
 holograms:
