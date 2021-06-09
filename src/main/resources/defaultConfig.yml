@@ -49,3 +49,8 @@ countries:
   LI:
     head-id: 26174
     finished-schematic-path: path
+navigator:
+  command: navigator
+  item: COMPASS
+  name: Navigator
+  description: A neat description explaining what the navigator does
