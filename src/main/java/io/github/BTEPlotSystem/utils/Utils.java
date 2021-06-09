@@ -83,7 +83,7 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix = config.getString("message-prefix");
+    private static final String messagePrefix = config.getString("message-prefix") + " ";
 
     public static String getInfoMessageFormat(String info) {
         return messagePrefix + config.getString("info-prefix") + info;

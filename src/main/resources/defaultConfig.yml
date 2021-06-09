@@ -1,54 +1,57 @@
-#BTE-PlotSystem Configuration File
+# -------------------------------------------
+#         Plot System - by Alps BTE
+# -------------------------------------------
+# [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# -------------------------------------------
 database:
   url: jdbc:mariadb://IP:PORT/
   name: name
   username: username
   password: password
-outlines-schematic-path: null
-finished-schematic-path: null
-
-message-prefix: "§7§l>>"
-
-# message-prefix + info-prefix,
-# Default: §7§l>> §a
-info-prefix: "§a"
-
-# message-prefix + error-prefix,
-# Default: §7§l>> §c
-error-prefix: "§c"
-lobby:
-  world: TerraPreGenerated
-  server: hub # Server name found on your bungeecord servers list. Case-sensitive
-  spawn-point:
+outlines-schematic-path: path
+lobby-world: world
+spawn-point:
+  x: 0
+  y: 0
+  z: 0
+  yaw: 0
+  pitch: 0
+message-prefix:
+holograms:
+  ScoreLeaderboard:
+    enabled: true
     x: 0
     y: 0
     z: 0
-    yaw: 0
-    pitch: 0
-ftp:
-  enabled: false
-  address: IP
-  port: 21
-  secureftp: false
-  username: username
-  password: password
-servers:
-  terra:
-    server-name: terra # Server name found on your bungeecord servers list. Case-sensitive
-    ftp:
-      enabled: true
-      address: IP
-      port: 21
-      secureftp: false
-      username: username
-      password: password
-      finished-schematic-path: ABSOLUTE/PATH/FROM/FTP/ROOT/
+  ParkourLeaderboard:
+    enabled: false
+    x: 0
+    y: 0
+    z: 0
+  EventHologram:
+    enabled: false
+    x: 0
+    y: 0
+    z: 0
+  BuildsLeaderboard:
+    enabled: true
+    x: 0
+    y: 0
+    z: 0
 countries:
-  AZ:
+  AT:
     head-id: 4397
-    name: Country Name # Optional
-
-## Commands ##
-permissions:
-
-holograms:
+    finished-schematic-path: path
+  CH:
+    head-id: 32348
+    finished-schematic-path: path
+  LI:
+    head-id: 26174
+    finished-schematic-path: path
+navigator:
+  command: navigator
+  item: COMPASS
+  name: Navigator
+  description: A neat description explaining what the navigator does
