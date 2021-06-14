@@ -44,8 +44,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Plot extends PlotPermissions {
@@ -103,6 +102,24 @@ public class Plot extends PlotPermissions {
                 rs.next();
                 return new Builder(UUID.fromString(rs.getString(1)));
             }
+        }
+        return null;
+    }
+
+    public List<Builder> getPlotMembers(){
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT uuidmember FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            List<String> uuidMembers = Arrays.asList(rs.getString("uuidmember").split(","));
+            List<Builder> builders = new ArrayList<>();
+            for (String uuid : uuidMembers) {
+                builders.add(new Builder(UUID.fromString(uuid)));
+            }
+            return builders;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
