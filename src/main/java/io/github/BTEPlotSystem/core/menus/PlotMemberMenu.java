@@ -1,11 +1,13 @@
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
 import jdk.internal.jline.internal.Log;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +24,7 @@ public class PlotMemberMenu extends AbstractMenu {
     private Plot plot;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
-        super(3, "Manage Members | Plot # " + plot.getID(), menuPlayer);
+        super(3, "Manage Members | Plot #" + plot.getID(), menuPlayer);
         this.plot = plot;
         Mask mask = BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
@@ -47,7 +49,7 @@ public class PlotMemberMenu extends AbstractMenu {
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1)
                         .setName("§6§lOWNER").setLore(new LoreBuilder()
-                                .addLine("description").build())
+                                .addLine(plot.getBuilder().getName()).build())
                         .build());
 
         // Add Member Button
@@ -55,11 +57,10 @@ public class PlotMemberMenu extends AbstractMenu {
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
                         .setName("§6§lAdd Member to plot").setLore(new LoreBuilder()
-                                .addLine("description").build())
+                                .addLine("Invite your friends to your plot, and start building together!").build())
                         .build());
 
         // Member List
-        //TODO: Get Plot Members Method
         List<Builder> builders = plot.getPlotMembers();
         for (int i = 12; i < 15; i++) {
             if (builders.size() >= (i-11)) {
@@ -80,7 +81,35 @@ public class PlotMemberMenu extends AbstractMenu {
         // Add Member Button
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            // TODO: Open Anvil UI
+            new AnvilGUI.Builder()
+                    .onComplete((player, text) -> {
+                        try {
+                            if (Builder.getBuilderByName(text) != null){
+                                Builder builder = Builder.getBuilderByName(text);
+                                if (builder.isOnline()){
+                                    //TODO: Invite player
+                                    //Check if player is already a member or owner of the plot
+                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully added §6" + text + "§a to your plot!"));
+                                    return AnvilGUI.Response.close();
+                                } else {
+                                    // Builder isn't online, thus cant be asked if he/she wants to be added
+                                    player.sendMessage(Utils.getErrorMessageFormat("That player isn't online!"));
+                                    return AnvilGUI.Response.text("Player isn't online!");
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        // Input was invalid or Player hasn't joined the server yet.
+                        player.sendMessage(Utils.getErrorMessageFormat("Invalid Input! User either doesn't exist or hasn't joined the server yet!"));
+                        return AnvilGUI.Response.text("Invalid Input!");
+                    })
+                    .text("Player Name...")
+                    .itemLeft(new ItemStack(Material.NAME_TAG))
+                    .itemRight(new ItemStack(Material.SKULL))
+                    .title("Enter player name.")
+                    .plugin(BTEPlotSystem.getPlugin())
+                    .open(clickPlayer);
         });
     }
 }
