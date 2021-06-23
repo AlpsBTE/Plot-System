@@ -7,6 +7,10 @@ import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
 import jdk.internal.jline.internal.Log;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -87,8 +91,8 @@ public class PlotMemberMenu extends AbstractMenu {
                             if (Builder.getBuilderByName(text) != null){
                                 Builder builder = Builder.getBuilderByName(text);
                                 if (builder.isOnline()){
-                                    //TODO: Invite player
-                                    //Check if player is already a member or owner of the plot
+                                    //TODO: Check if player is already a member or owner of the plot
+                                    sendInvite(builder.getPlayer());
                                     player.sendMessage(Utils.getInfoMessageFormat("Successfully added §6" + text + "§a to your plot!"));
                                     return AnvilGUI.Response.close();
                                 } else {
@@ -111,5 +115,17 @@ public class PlotMemberMenu extends AbstractMenu {
                     .plugin(BTEPlotSystem.getPlugin())
                     .open(clickPlayer);
         });
+    }
+
+    private void sendInvite(Player invitee) throws SQLException {
+        TextComponent tc = new TextComponent();
+        tc.setText(Utils.getInfoMessageFormat(plot.getBuilder().getName() + " has invited you to help building Plot #" + plot.getID()));
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,""));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("").create()));
+
+        invitee.sendMessage("§7--------------------");
+        invitee.spigot().sendMessage(tc);
+        invitee.sendMessage("§7--------------------");
+        //TODO: Invite player
     }
 }

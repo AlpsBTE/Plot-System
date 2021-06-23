@@ -170,4 +170,5 @@ public class PlotActionsMenu extends AbstractMenu {
             new PlotMemberMenu(plot,clickPlayer);
         });
     }
+
 }
