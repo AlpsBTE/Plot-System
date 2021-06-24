@@ -107,21 +107,21 @@ public class Plot extends PlotPermissions {
     }
 
     public List<Builder> getPlotMembers(){
+        List<Builder> builders = new ArrayList<>();
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT uuidmember FROM plots WHERE idplot = ?");
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT uuidMembers FROM plots WHERE idplot = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
             rs.next();
-            List<String> uuidMembers = Arrays.asList(rs.getString("uuidmember").split(","));
-            List<Builder> builders = new ArrayList<>();
+            List<String> uuidMembers = Arrays.asList(rs.getString("uuidMembers").split(","));
+
             for (String uuid : uuidMembers) {
                 builders.add(new Builder(UUID.fromString(uuid)));
             }
-            return builders;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return builders;
     }
 
     public Review getReview() throws SQLException {

@@ -82,6 +82,9 @@ commands:
   tpll:
     description: teleport to a position in the plot, using irl coordinates
     usage: /tpll <long> <lat>
+  invite:
+    description: accept or deny an incoming invite
+    usage: /invite accept/deny <PlotID>
 permissions:
   alpsbte.admin:
     description: Manager permissions

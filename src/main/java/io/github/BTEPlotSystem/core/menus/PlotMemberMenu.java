@@ -3,10 +3,10 @@ package github.BTEPlotSystem.core.menus;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.utils.Invitation;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.Utils;
-import jdk.internal.jline.internal.Log;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -51,8 +51,8 @@ public class PlotMemberMenu extends AbstractMenu {
     protected void addMenuItems() throws SQLException {
         // Plot Owner Item
         getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Material.SKULL_ITEM, 1)
-                        .setName("§6§lOWNER").setLore(new LoreBuilder()
+                .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getBuilder().getUUID()))
+                        .setName("§6§lOWNER - " + plot.getBuilder().getName()).setLore(new LoreBuilder()
                                 .addLine(plot.getBuilder().getName()).build())
                         .build());
 
@@ -68,7 +68,7 @@ public class PlotMemberMenu extends AbstractMenu {
         List<Builder> builders = plot.getPlotMembers();
         for (int i = 12; i < 15; i++) {
             if (builders.size() >= (i-11)) {
-                Builder builder = builders.get(i-11);
+                Builder builder = builders.get(i-12);
                 getMenu().getSlot(i)
                         .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
                                 .setName("§2" + builder.getName() + " - Member")
@@ -91,9 +91,10 @@ public class PlotMemberMenu extends AbstractMenu {
                             if (Builder.getBuilderByName(text) != null){
                                 Builder builder = Builder.getBuilderByName(text);
                                 if (builder.isOnline()){
+
                                     //TODO: Check if player is already a member or owner of the plot
-                                    sendInvite(builder.getPlayer());
-                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully added §6" + text + "§a to your plot!"));
+                                    new Invitation(builder.getPlayer(),plot);
+                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully sent an invitation to §6" + text + "§a, to join your plot!"));
                                     return AnvilGUI.Response.close();
                                 } else {
                                     // Builder isn't online, thus cant be asked if he/she wants to be added
@@ -115,17 +116,5 @@ public class PlotMemberMenu extends AbstractMenu {
                     .plugin(BTEPlotSystem.getPlugin())
                     .open(clickPlayer);
         });
-    }
-
-    private void sendInvite(Player invitee) throws SQLException {
-        TextComponent tc = new TextComponent();
-        tc.setText(Utils.getInfoMessageFormat(plot.getBuilder().getName() + " has invited you to help building Plot #" + plot.getID()));
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,""));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("").create()));
-
-        invitee.sendMessage("§7--------------------");
-        invitee.spigot().sendMessage(tc);
-        invitee.sendMessage("§7--------------------");
-        //TODO: Invite player
     }
 }
