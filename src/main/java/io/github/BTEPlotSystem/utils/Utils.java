@@ -73,7 +73,7 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix = "§7§l>> ";
+    private static final String messagePrefix = BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
 
     public static String getInfoMessageFormat(String info) {
         return messagePrefix + "§a" + info;
