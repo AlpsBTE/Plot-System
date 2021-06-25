@@ -30,10 +30,12 @@ import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.MenuItems;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
@@ -43,6 +45,7 @@ import java.util.logging.Level;
 public class PlotActionsMenu extends AbstractMenu {
 
     private final Plot plot;
+    private ItemStack plotMemberButton;
 
     private final boolean hasFeedback;
 
@@ -51,12 +54,14 @@ public class PlotActionsMenu extends AbstractMenu {
 
         this.plot = plot;
         hasFeedback = plot.isReviewed() || plot.isRejected();
-
     }
 
     @Override
     protected void setMenuItems() {
+        plotMemberButton = Utils.getItemHead("9237");
+
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            // Add submit/undo submit plot button
             try {
                 if (plot.getStatus().equals(Status.unreviewed)) {
                     getMenu().getSlot(10)
@@ -79,12 +84,14 @@ public class PlotActionsMenu extends AbstractMenu {
                 getMenu().getSlot(10).setItem(MenuItems.errorItem());
             }
 
+            // Add teleport to plot button
             getMenu().getSlot(hasFeedback ? 12 : 13)
                     .setItem(new ItemBuilder(Material.COMPASS, 1)
                             .setName("§6§lTeleport").setLore(new LoreBuilder()
                                     .addLine("Click to teleport to the plot").build())
                             .build());
 
+            // Add abandon plot button
             getMenu().getSlot(hasFeedback ? 14 : 16)
                     .setItem(new ItemBuilder(Material.BARRIER, 1)
                             .setName("§c§lAbandon").setLore(new LoreBuilder()
@@ -94,6 +101,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .build())
                             .build());
 
+            // Add feedback menu button
             if (hasFeedback) {
                 getMenu().getSlot(16)
                         .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
@@ -101,11 +109,22 @@ public class PlotActionsMenu extends AbstractMenu {
                                         .addLine("Click to view your plot review feedback").build())
                                 .build());
             }
+
+            // Add Plot Member Button
+            getMenu().getSlot(22)
+                    .setItem(new ItemBuilder(plotMemberButton)
+                            .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
+                                    .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
+                                            "",
+                                            "§c§lNote: §7Points will be split between all Members when reviewed!")
+                                    .build())
+                            .build());
         });
     }
 
     @Override
     protected void setItemClickEvents() {
+        // Set click event for submit/undo submit button
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
@@ -115,6 +134,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         });
 
+        // Set click event for teleport to plot button
         getMenu().getSlot(hasFeedback ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
@@ -124,17 +144,25 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         });
 
+        // Set click event for abandon plot button
         getMenu().getSlot(hasFeedback ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("abandon " + plot.getID());
         });
 
+        // Set click event for feedback menu button
         if(hasFeedback) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
                 clickPlayer.performCommand("feedback " + plot.getID());
             });
         }
+
+        // Set click event for Plot Member button
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            new PlotMemberMenu(plot,clickPlayer);
+        });
     }
 
     @Override

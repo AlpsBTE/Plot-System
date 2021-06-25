@@ -34,7 +34,6 @@ import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
-import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,9 +61,9 @@ public class CompanionMenu extends AbstractMenu {
     protected void setMenuItems() {
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(Material.COMPASS, 1)
-                            .setName("§6§lNavigator").setLore(new LoreBuilder()
-                                    .addLine("Open the navigator menu").build())
+                    .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString("navigator.item")), 1)
+                            .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString("navigator.name")).setLore(new LoreBuilder()
+                                    .addLine(BTEPlotSystem.getPlugin().getConfig().getString("navigator.description")).build())
                             .build());
 
             try {
