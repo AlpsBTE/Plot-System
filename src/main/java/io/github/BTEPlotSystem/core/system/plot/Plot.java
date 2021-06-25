@@ -112,14 +112,18 @@ public class Plot extends PlotPermissions {
             PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT uuidMembers FROM plots WHERE idplot = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
-            rs.next();
-            List<String> uuidMembers = Arrays.asList(rs.getString("uuidMembers").split(","));
+            if(rs.next()) {
+                String members = rs.getString(1);
+                if(!rs.wasNull()) {
+                    String[] uuidMembers = members.split(",");
 
-            for (String uuid : uuidMembers) {
-                builders.add(new Builder(UUID.fromString(uuid)));
+                    for (String uuid : uuidMembers) {
+                        builders.add(new Builder(UUID.fromString(uuid)));
+                    }
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return builders;
     }
