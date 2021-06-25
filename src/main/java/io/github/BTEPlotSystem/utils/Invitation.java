@@ -8,10 +8,11 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Invitation {
-    public static List<Invitation> invitationsList;
+    public static List<Invitation> invitationsList = new ArrayList<>();
 
     public Player invitee;
     public Plot plot;
