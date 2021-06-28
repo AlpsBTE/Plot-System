@@ -37,7 +37,6 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
-import github.BTEPlotSystem.utils.PortalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -119,8 +118,6 @@ public class BTEPlotSystem extends JavaPlugin {
         if(config.getBoolean("holograms.EventHologram.enabled")) holograms.add(new EventHologram());
         if(config.getBoolean("holograms.BuildsLeaderboard.enabled")) holograms.add(new CompletedBuildsLeaderboard());
         holograms.forEach(Thread::start);
-
-        new PortalManager().start();
 
         PlotManager.checkPlotsForLastActivity();
 
