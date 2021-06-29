@@ -21,15 +21,15 @@ public class Invitation {
         this.invitee = invitee;
         this.plot = plot;
 
-        //Check if player has already been invited
+        // Check if player has already been invited
         for (Invitation item : invitationsList) {
             if (item.invitee == invitee) {
-                plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat("User has already gotten an Invite from a plot!"));
+                plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has already gotten an Invite from a plot!"));
                 return;
             }
         }
 
-        //construct and send message
+        // Construct and send message
         TextComponent tc = new TextComponent();
         tc.setText(Utils.getInfoMessageFormat(plot.getBuilder().getName() + " has invited you to help building Plot #" + plot.getID()));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,""));
@@ -39,15 +39,17 @@ public class Invitation {
         invitee.spigot().sendMessage(tc);
         invitee.sendMessage("§7--------------------");
 
-        //add invitation to static list
+        // Add invitation to static list
         invitationsList.add(this);
     }
 
-    public void AcceptInvite() {
-
+    public void AcceptInvite() throws SQLException {
+        //TODO: Add Plot Member
+        //TODO: Set Permissions
+        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been successfully added!"));
     }
 
-    public void RejectInvite() {
-
+    public void RejectInvite() throws SQLException {
+        plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has rejected your Invite!"));
     }
 }

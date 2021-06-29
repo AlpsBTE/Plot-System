@@ -71,7 +71,8 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(i-12);
                 getMenu().getSlot(i)
                         .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                .setName("§2" + builder.getName() + " - Member")
+                                .setName(builder.getName() + " - Member")
+                                .setLore(new LoreBuilder().addLine("§cclick to remove...").build())
                                 .build());
             } else {
                 getMenu().getSlot(i)
@@ -91,8 +92,20 @@ public class PlotMemberMenu extends AbstractMenu {
                             if (Builder.getBuilderByName(text) != null){
                                 Builder builder = Builder.getBuilderByName(text);
                                 if (builder.isOnline()){
+                                    // Check if player is owner of plot
+                                    if (builder.getPlayer() != plot.getBuilder().getPlayer()){
+                                        player.sendMessage(Utils.getErrorMessageFormat("You cannot add the plot owner as a member!"));
+                                        return AnvilGUI.Response.text("Player is already the owner!");
+                                    }
 
-                                    //TODO: Check if player is already a member or owner of the plot
+                                    // Check if player is already a member of the plot
+                                    for (Builder item : plot.getPlotMembers()) {
+                                        if (builder.getPlayer() == item.getPlayer()) {
+                                            player.sendMessage(Utils.getErrorMessageFormat("Player is already a member of that plot!"));
+                                            return AnvilGUI.Response.text("Player already added!");
+                                        }
+                                    }
+
                                     new Invitation(builder.getPlayer(),plot);
                                     player.sendMessage(Utils.getInfoMessageFormat("Successfully sent an invitation to §6" + text + "§a, to join your plot!"));
                                     return AnvilGUI.Response.close();
