@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.utils;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -7,6 +8,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +19,9 @@ public class Invitation {
 
     public Player invitee;
     public Plot plot;
+
+    private BukkitScheduler scheduler = BTEPlotSystem.getPlugin().getServer().getScheduler();
+    private int taskID;
 
     public Invitation(Player invitee, Plot plot) throws SQLException {
         this.invitee = invitee;
@@ -30,7 +35,7 @@ public class Invitation {
             }
         }
 
-        // Construct and send message
+        // Construct and send messages
         TextComponent tc = new TextComponent();
         tc.setText(Utils.getInfoMessageFormat("[CLICK TO ACCEPT]"));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/invite accept"));
@@ -41,8 +46,25 @@ public class Invitation {
         invitee.spigot().sendMessage(tc);
         invitee.sendMessage("§7--------------------");
 
+        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Sent an invitation to §6" + invitee.getName() + "§a, to join your plot!"));
+
         // Add invitation to static list
         invitationsList.add(this);
+
+        // Schedule expiry in 30 seconds
+        Invitation invitation = this;
+        taskID = scheduler.scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                invitationsList.remove(invitation);
+                try {
+                    invitee.sendMessage(Utils.getErrorMessageFormat("Invitation from " + plot.getBuilder().getName() + " expired!"));
+                    plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat("The invitation you sent to " + invitee.getName() + " expired!"));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }, 20 * 30);
     }
 
     public void AcceptInvite() throws SQLException {
@@ -59,9 +81,12 @@ public class Invitation {
         // Messages Sender
         plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
         plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
+
+        scheduler.cancelTask(taskID);
     }
 
     public void RejectInvite() throws SQLException {
         plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has rejected your Invite!"));
+        scheduler.cancelTask(taskID);
     }
 }

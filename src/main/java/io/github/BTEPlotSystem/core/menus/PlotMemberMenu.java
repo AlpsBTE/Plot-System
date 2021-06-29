@@ -109,7 +109,6 @@ public class PlotMemberMenu extends AbstractMenu {
                                     }
 
                                     new Invitation(builder.getPlayer(),plot);
-                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully sent an invitation to §6" + text + "§a, to join your plot!"));
                                     return AnvilGUI.Response.close();
                                 } else {
                                     // Builder isn't online, thus cant be asked if he/she wants to be added
