@@ -32,11 +32,12 @@ public class Invitation {
 
         // Construct and send message
         TextComponent tc = new TextComponent();
-        tc.setText(Utils.getInfoMessageFormat(plot.getBuilder().getName() + " has invited you to help building Plot #" + plot.getID()));
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,""));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("").create()));
+        tc.setText(Utils.getInfoMessageFormat("[CLICK TO ACCEPT]"));
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/invite accept"));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Accept Invite").create()));
 
         invitee.sendMessage("§7--------------------");
+        invitee.sendMessage(Utils.getInfoMessageFormat(plot.getBuilder().getName() + " has invited you to help building Plot #" + plot.getID()));
         invitee.spigot().sendMessage(tc);
         invitee.sendMessage("§7--------------------");
 

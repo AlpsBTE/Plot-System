@@ -32,7 +32,8 @@ public class CMD_Invite implements CommandExecutor {
                                         item.RejectInvite();
                                         break;
                                     default:
-                                        player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <add/accept>"));
+                                        player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <accept/deny>"));
+                                        invite = null;
                                         break;
                                 }
                             } catch (SQLException throwables) {
@@ -46,7 +47,7 @@ public class CMD_Invite implements CommandExecutor {
                         player.sendMessage(Utils.getErrorMessageFormat("You have no unanswered invitations!"));
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <add/accept>"));
+                    player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <accept/deny>"));
                 }
             }
         }
