@@ -46,6 +46,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Plot extends PlotPermissions {
 
@@ -284,6 +285,24 @@ public class Plot extends PlotPermissions {
                 ps = con.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = ?");
                 ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
                 ps.setInt(2, getID());
+            }
+            ps.executeUpdate();
+        }
+    }
+
+    public void setPlotMembers(List<Builder> plotMembers) throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            // Convert plot member list to string
+            String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
+
+            PreparedStatement ps;
+            if(!plotMembers.isEmpty()) {
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = ? WHERE idplot = ?");
+                ps.setString(1, plotMemberAsString);
+                ps.setInt(2, getID());
+            } else {
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = DEFAULT(uuidMembers) WHERE idplot = ?");
+                ps.setInt(1, getID());
             }
             ps.executeUpdate();
         }
