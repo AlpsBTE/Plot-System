@@ -23,16 +23,20 @@ public class CMD_Invite implements CommandExecutor {
                     for (Invitation item : Invitation.invitationsList) {
                         if (item.invitee == player){
                             invite = item;
-                            switch (args[0]){
-                                case "accept":
-                                    item.AcceptInvite();
-                                    break;
-                                case "deny":
-                                    item.RejectInvite();
-                                    break;
-                                default:
-                                    player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <add/accept>"));
-                                    break;
+                            try {
+                                switch (args[0]){
+                                    case "accept":
+                                        item.AcceptInvite();
+                                        break;
+                                    case "deny":
+                                        item.RejectInvite();
+                                        break;
+                                    default:
+                                        player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <add/accept>"));
+                                        break;
+                                }
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
                             }
                         }
                     }

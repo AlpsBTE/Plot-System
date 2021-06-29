@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.utils;
 
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -44,9 +45,19 @@ public class Invitation {
     }
 
     public void AcceptInvite() throws SQLException {
-        //TODO: Add Plot Member
+        List<Builder> builders = plot.getPlotMembers();
+        builders.add(new Builder(invitee.getUniqueId()));
+        plot.setPlotMembers(builders);
+
         //TODO: Set Permissions
-        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been successfully added!"));
+
+        // Messages Receiver
+        invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getBuilder().getName() + "'s invite!"));
+        invitee.sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
+
+        // Messages Sender
+        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
+        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
     }
 
     public void RejectInvite() throws SQLException {

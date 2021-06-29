@@ -27,6 +27,9 @@ public class PlotMemberMenu extends AbstractMenu {
 
     private Plot plot;
 
+    private ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2Empty Member Slot").build();
+    private List<Builder> builders;
+
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
         super(3, "Manage Members | Plot #" + plot.getID(), menuPlayer);
         this.plot = plot;
@@ -65,7 +68,7 @@ public class PlotMemberMenu extends AbstractMenu {
                         .build());
 
         // Member List
-        List<Builder> builders = plot.getPlotMembers();
+        builders = plot.getPlotMembers();
         for (int i = 12; i < 15; i++) {
             if (builders.size() >= (i-11)) {
                 Builder builder = builders.get(i-12);
@@ -75,8 +78,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 .setLore(new LoreBuilder().addLine("§cclick to remove...").build())
                                 .build());
             } else {
-                getMenu().getSlot(i)
-                        .setItem(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2Empty Member Slot").build());
+                getMenu().getSlot(i).setItem(emptyMemberSlotItem);
             }
         }
     }
@@ -129,5 +131,29 @@ public class PlotMemberMenu extends AbstractMenu {
                     .plugin(BTEPlotSystem.getPlugin())
                     .open(clickPlayer);
         });
+
+        // Member Slots
+        for (int i = 12; i < 15; i++) {
+            int itemSlot = i;
+            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+                if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) {
+                    Builder builder = builders.get(itemSlot-12);
+                    // Used Member Slot
+                    builders.remove(builder);
+                    try {
+                        plot.setPlotMembers(builders);
+
+                        //TODO: Remove Permissions
+
+                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(builder.getName() + " has been removed from plot #" + plot.getID()));
+
+                        // Reopen menu to refresh everything
+                        new PlotMemberMenu(plot,clickPlayer);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 }
