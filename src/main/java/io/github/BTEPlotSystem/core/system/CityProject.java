@@ -24,9 +24,12 @@
 
 package github.BTEPlotSystem.core.system;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Country_old;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,6 +48,7 @@ public class CityProject {
     private String description;
     private String tags;
     private boolean visible;
+
 
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
@@ -84,6 +88,19 @@ public class CityProject {
     }
 
     public boolean isVisible() { return visible; }
+
+    public Utils.Server getServer() {
+        Utils.Server server = null;
+        try {
+            server = Utils.parseServer(this);
+        } catch (Exception exception) {
+            Bukkit.getLogger().log(Level.SEVERE, "Unable to find server in config file," +
+                    " it might be that the country's server value is not the same as the server." +
+                    " (Capitalisation Matters)");
+        }
+        return server;
+    } // TODO: Prevent multiple servers of same name from being created.
+
 
     public static List<CityProject> getCityProjects() {
         try (Connection con = DatabaseConnection.getConnection()) {

@@ -24,8 +24,10 @@
 
 package github.BTEPlotSystem.utils;
 
+import com.sun.istack.internal.Nullable;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -135,14 +137,40 @@ public class Utils {
         }
     }
 
+    public static Server parseServer(CityProject cityProject) throws Exception {
+
+        String serverShortName = config.getString("countries." + cityProject.getCountry().name + ".server");
+        if(serverShortName == null)
+            throw new Exception("Server Not Found");
+        else {
+            String configServer = "servers."+ serverShortName;
+            FTPConfiguration ftpConfiguration = null;
+            if (config.getBoolean(configServer + ".ftp.enabled")) {
+                ftpConfiguration = new FTPConfiguration(
+                    config.getString(configServer + ".ftp.address"),
+                    config.getInt(configServer + ".ftp.port"),
+                    config.getString(configServer + ".ftp.username"),
+                    config.getString(configServer + ".ftp.password"),
+                    config.getBoolean(configServer + ".ftp.secure-ftp")
+                );
+            }
+            return new Server(serverShortName,
+                    config.getString(configServer + ".server-name"),
+                    config.getString(configServer + ".finished-schematic-path"),
+                    ftpConfiguration);
+        }
+    }
 
 
     public static class Server {
+        public String shortName;
         public String serverName;
         public String finishedSchematicPath;
+
         public FTPConfiguration ftpConfiguration;
 
-        public Server(String serverName, String finishedSchematicPath, FTPConfiguration ftpConfiguration) {
+        public Server(String shortName, String serverName, String finishedSchematicPath, @Nullable FTPConfiguration ftpConfiguration) {
+            this.shortName = shortName;
             this.serverName = serverName;
             this.finishedSchematicPath = finishedSchematicPath;
             this.ftpConfiguration = ftpConfiguration;

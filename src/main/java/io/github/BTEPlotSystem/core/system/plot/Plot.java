@@ -29,6 +29,7 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -323,4 +324,5 @@ public class Plot extends PlotPermissions {
     public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != -1; // -1 == null
     }
+
 }

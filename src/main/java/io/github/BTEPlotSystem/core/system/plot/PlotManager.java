@@ -40,6 +40,8 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.Country;
+import github.BTEPlotSystem.utils.FTPManager;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Country_old;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -207,6 +209,15 @@ public class PlotManager {
         // Write finished plot clipboard to schematic file
         try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(), false))) {
             writer.write(cb, region.getWorld().getWorldData());
+        }
+
+        Utils.Server server = plot.getCity().getServer();
+
+        // Send schematic to terra server
+        if(BTEPlotSystem.getPlugin().getConfig().getBoolean("ftp-enabled") && server.ftpConfiguration != null) {
+            FTPManager.sendFileFTP(FTPManager.getFTPUrl(
+                    server, plot),
+                    plot.getFinishedSchematic());
         }
     }
 

@@ -1,5 +1,6 @@
 package github.BTEPlotSystem.utils;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.Plot;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
 
 public class FTPManager {
 
@@ -37,7 +39,7 @@ public class FTPManager {
             FileInputStream inputStream = new FileInputStream(schematic);
 
             byte[] buffer = new byte[BUFFER_SIZE];
-            @SuppressWarnings("UnusedAssignment") int bytesRead = -1;
+            int bytesRead = -1;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
@@ -45,7 +47,7 @@ public class FTPManager {
             inputStream.close();
             outputStream.close();
 
-            System.out.println("File uploaded");
+            BTEPlotSystem.getPlugin().getLogger().log(Level.INFO, "File uploaded successfully!");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
