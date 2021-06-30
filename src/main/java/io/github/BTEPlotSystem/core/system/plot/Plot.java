@@ -44,9 +44,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Plot extends PlotPermissions {
 
@@ -105,6 +105,28 @@ public class Plot extends PlotPermissions {
             }
         }
         return null;
+    }
+
+    public List<Builder> getPlotMembers(){
+        List<Builder> builders = new ArrayList<>();
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT uuidMembers FROM plots WHERE idplot = ?");
+            ps.setInt(1, getID());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                String members = rs.getString(1);
+                if(!rs.wasNull()) {
+                    String[] uuidMembers = members.split(",");
+
+                    for (String uuid : uuidMembers) {
+                        builders.add(new Builder(UUID.fromString(uuid)));
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+        return builders;
     }
 
     public Review getReview() throws SQLException {
@@ -263,6 +285,24 @@ public class Plot extends PlotPermissions {
                 ps = con.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = ?");
                 ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
                 ps.setInt(2, getID());
+            }
+            ps.executeUpdate();
+        }
+    }
+
+    public void setPlotMembers(List<Builder> plotMembers) throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            // Convert plot member list to string
+            String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
+
+            PreparedStatement ps;
+            if(!plotMembers.isEmpty()) {
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = ? WHERE idplot = ?");
+                ps.setString(1, plotMemberAsString);
+                ps.setInt(2, getID());
+            } else {
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = DEFAULT(uuidMembers) WHERE idplot = ?");
+                ps.setInt(1, getID());
             }
             ps.executeUpdate();
         }

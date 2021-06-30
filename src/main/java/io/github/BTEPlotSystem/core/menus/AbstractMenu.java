@@ -28,6 +28,8 @@ import org.bukkit.entity.Player;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.type.ChestMenu;
 
+import java.sql.SQLException;
+
 public abstract class AbstractMenu {
 
     private final Menu menu;
@@ -38,7 +40,7 @@ public abstract class AbstractMenu {
         this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
     }
 
-    protected abstract void addMenuItems();
+    protected abstract void addMenuItems() throws SQLException;
 
     protected abstract void setItemClickEvents();
 

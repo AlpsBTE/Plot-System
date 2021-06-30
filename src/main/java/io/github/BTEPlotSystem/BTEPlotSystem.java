@@ -94,6 +94,7 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("feedback").setExecutor(new CMD_Feedback());
         this.getCommand("plots").setExecutor(new CMD_Plots());
         this.getCommand("tpll").setExecutor(new CMD_Tpll());
+        this.getCommand("invite").setExecutor(new CMD_Invite());
 
         // Add reviewer commands [alpsbte.review Permission]
         this.getCommand("plot").setExecutor(new CMD_Plot());
