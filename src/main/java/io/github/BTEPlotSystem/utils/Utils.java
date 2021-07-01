@@ -49,7 +49,7 @@ import java.util.UUID;
 
 public class Utils {
 
-    private static FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
+
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
@@ -73,7 +73,7 @@ public class Utils {
 
     // Spawn Location
     public static Location getSpawnPoint() {
-
+        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
         return new Location(Bukkit.getWorld(config.getString("lobby-world")),
                 config.getDouble("spawn-point.x"),
@@ -85,18 +85,15 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix = config.getString("message-prefix") + " ";
+    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + config.getString("info-prefix") + info;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("info-prefix") + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + config.getString("error-prefix") + error;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("error-prefix") + error;
     }
-
-    // Servers
-    public static ArrayList<Server> SERVERS;
 
     // Integer Try Parser
     public static Integer TryParseInt(String someText) {
@@ -138,7 +135,7 @@ public class Utils {
     }
 
     public static Server parseServer(CityProject cityProject) throws Exception {
-
+        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
         String serverShortName = config.getString("countries." + cityProject.getCountry().name + ".server");
         if(serverShortName == null)
             throw new Exception("Server Not Found");
@@ -169,7 +166,8 @@ public class Utils {
 
         public FTPConfiguration ftpConfiguration;
 
-        public Server(String shortName, String serverName, String finishedSchematicPath, @Nullable FTPConfiguration ftpConfiguration) {
+        public Server(String shortName, String serverName, String finishedSchematicPath,
+                      @Nullable FTPConfiguration ftpConfiguration) {
             this.shortName = shortName;
             this.serverName = serverName;
             this.finishedSchematicPath = finishedSchematicPath;
