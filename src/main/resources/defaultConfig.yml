@@ -5,23 +5,36 @@
 # [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # -------------------------------------------
+
+# Your database credentials
 database:
-  url: jdbc:mariadb://IP:PORT/
-  name: name
-  username: username
-  password: password
+  url: jdbc:mariadb://adress:port/
+  name: databasename
+  username: user
+  password: paswd
+
+# The path on your server, where all outline plot schematics are saved.
 outlines-schematic-path: path
-lobby-world: world
+
+# Set to true if one or more of your servers requires you to transfer using FTP.
+ftp-enabled: false
+
+# The lobby world name of the plot system.
+lobby-world: HUB
+
+# The spawn coordinates on the lobby world, where all users are teleported to, whenever they join or leave a plot
 spawn-point:
   x: 0
   y: 0
   z: 0
   yaw: 0
   pitch: 0
-message-prefix:
+
+# Holograms that are placed on your Lobby server
+# ParkourLeaderboard is for using the LeakParkour plugin. Keep disabled unless you know what you are doing!
 holograms:
   ScoreLeaderboard:
-    enabled: true
+    enabled: false
     x: 0
     y: 0
     z: 0
@@ -36,22 +49,56 @@ holograms:
     y: 0
     z: 0
   BuildsLeaderboard:
-    enabled: true
+    enabled: false
     x: 0
     y: 0
     z: 0
+
+# The countries that will be assigned to your city projects
+#   - head-id: This is the Head Database ID of the head that you want to be displayed for this country/region
+#      use this website to find a Head Database head for your country.
+#      https://minecraft-heads.com/custom-heads
+#   - finished-schematic-path: The path on your server, where all finished plot schematics of that country are saved.
+#      (for when you have multiple servers for different regions)
+#   - ftp: The FTP credentials for uploading plots once complete and accepted.
+#       Requires ftp-enabled (line 20) to be set to true.
+#       for more information, view the config documentation.
 countries:
   AT:
     head-id: 4397
     finished-schematic-path: path
+    ftp:
+      enabled: true
+      secure-ftp: true
+      address: IP
+      port: 21
+      username: username
+      password: password
   CH:
     head-id: 32348
     finished-schematic-path: path
+    ftp:
+      enabled: true
+      secure-ftp: true
+      address: IP
+      port: 21
+      username: username
+      password: password
   LI:
     head-id: 26174
     finished-schematic-path: path
+    ftp:
+      enabled: true
+      secure-ftp: true
+      address: IP
+      port: 21
+      username: username
+      password: password
+
+# The command that the player will automatically execute when pressing the navigator item in the companion.
+# Note: just remove the "/" from whatever command you want to use. "/navigator" for example would just be "navigator"
 navigator:
-  command: navigator
-  item: COMPASS
-  name: Navigator
-  description: A neat description explaining what the navigator does
+  navigator-command: navigator
+  navigator-item: NETHER_STAR
+  navigator-title: Navigator
+  navigator-description: Open the navigator menu

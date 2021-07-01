@@ -24,8 +24,10 @@
 
 package github.BTEPlotSystem.core.system.plot;
 
-import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -38,6 +40,8 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.Country;
+import github.BTEPlotSystem.utils.FTPManager;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Country_old;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -51,7 +55,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 public class PlotManager {
@@ -203,6 +209,15 @@ public class PlotManager {
         // Write finished plot clipboard to schematic file
         try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(), false))) {
             writer.write(cb, region.getWorld().getWorldData());
+        }
+
+        Utils.Server server = plot.getCity().getServer();
+
+        // Send schematic to terra server
+        if(BTEPlotSystem.getPlugin().getConfig().getBoolean("ftp-enabled") && server.ftpConfiguration != null) {
+            FTPManager.sendFileFTP(FTPManager.getFTPUrl(
+                    server, plot),
+                    plot.getFinishedSchematic());
         }
     }
 
