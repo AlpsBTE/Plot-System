@@ -114,8 +114,6 @@ public class BTEPlotSystem extends JavaPlugin {
 
         // Set holograms
         if(config.getBoolean("holograms.ScoreLeaderboard.enabled")) holograms.add(new ScoreLeaderboard());
-        if(config.getBoolean("holograms.ParkourLeaderboard.enabled")) holograms.add(new ParkourLeaderboard());
-        if(config.getBoolean("holograms.EventHologram.enabled")) holograms.add(new EventHologram());
         if(config.getBoolean("holograms.BuildsLeaderboard.enabled")) holograms.add(new CompletedBuildsLeaderboard());
         holograms.forEach(Thread::start);
 
@@ -159,25 +157,6 @@ public class BTEPlotSystem extends JavaPlugin {
             reloadConfig();
         }
         return config;
-    }
-
-    public FileConfiguration getLeaderboardConfig() {
-        try{
-            leaderboardConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("LeakParkour").getDataFolder(), "history.yml"));
-        } catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reading config file!", ex);
-        }
-        return leaderboardConfig;
-    }
-
-    public FileConfiguration getNavigatorConfig() {
-        try {
-            System.out.println(Bukkit.getPluginManager().getPlugin("AlpsBTE-Navigator").getDataFolder().getAbsolutePath());
-            navigatorConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("AlpsBTE-Navigator").getDataFolder(), "config.yml"));
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reading config file!", ex);
-        }
-        return navigatorConfig;
     }
 
     @Override

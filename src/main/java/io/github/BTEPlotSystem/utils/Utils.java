@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.utils;
 
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.CityProject;
