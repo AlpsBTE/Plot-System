@@ -171,16 +171,4 @@ public class BTEPlotSystem extends JavaPlugin {
             getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
         }
     }
-
-    public void connectPlayer(Player player, String server) {
-        try{
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("ConnectOther");
-            out.writeUTF(player.getName());
-            out.writeUTF(server);
-            player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-        } catch (Exception ex){
-            getLogger().log(Level.WARNING, "Could not connect player [" + player + "] to " + server, ex);
-        }
-    }
 }
