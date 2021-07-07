@@ -30,25 +30,17 @@ spawn-point:
   yaw: 0
   pitch: 0
 
-# Holograms that are placed on your Lobby server
-# ParkourLeaderboard is for using the LeakParkour plugin. Keep disabled unless you know what you are doing!
+# Holograms that are placed on your Lobby server [Optional]
+# IMPORTANT: Requires the HolographicDisplays plugin to work
 holograms:
-  ScoreLeaderboard:
+  # Displays the top 10 builders with the highest score
+  score-leaderboard:
     enabled: false
     x: 0
     y: 0
     z: 0
-  ParkourLeaderboard:
-    enabled: false
-    x: 0
-    y: 0
-    z: 0
-  EventHologram:
-    enabled: false
-    x: 0
-    y: 0
-    z: 0
-  BuildsLeaderboard:
+  # Displays the top 10 players with the most completed buildings
+  completed-buildings-leaderboard:
     enabled: false
     x: 0
     y: 0

@@ -37,7 +37,7 @@ import java.util.logging.Level;
 public class ScoreLeaderboard extends HolographicDisplay {
 
     public ScoreLeaderboard() {
-        super("ScoreLeaderboard");
+        super("score-leaderboard");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
     }
 
     @Override
-    public void updateLeaderboard() {
+    public void updateHologram() {
         if(isPlaced()) {
             getHologram().clearLines();
             insertLines();

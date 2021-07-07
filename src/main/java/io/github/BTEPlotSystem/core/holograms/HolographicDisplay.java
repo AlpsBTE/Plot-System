@@ -29,15 +29,13 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import github.BTEPlotSystem.BTEPlotSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.logging.Level;
 
-public abstract class HolographicDisplay extends Thread {
+public abstract class HolographicDisplay {
 
     private final String hologramName;
     private Hologram hologram;
@@ -45,9 +43,18 @@ public abstract class HolographicDisplay extends Thread {
 
     public HolographicDisplay(String hologramName) {
         this.hologramName = hologramName;
+    }
 
-        placeLeaderboard();
-        updateLeaderboard();
+    public void show() {
+        placeHologram();
+        updateHologram();
+    }
+
+    public void hide() {
+        if(isPlaced()){
+            getHologram().delete();
+            isPlaced = false;
+        }
     }
 
     public Location getLocation() {
@@ -68,6 +75,7 @@ public abstract class HolographicDisplay extends Thread {
     public void setLocation(Location newLocation) {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
+        config.set(getDefaultPath() + "enabled", true);
         config.set(getDefaultPath() + "x", newLocation.getX());
         config.set(getDefaultPath() + "y", newLocation.getY() + 4);
         config.set(getDefaultPath() + "z", newLocation.getZ());
@@ -78,18 +86,16 @@ public abstract class HolographicDisplay extends Thread {
             hologram.delete();
             isPlaced = false;
         }
-        placeLeaderboard();
-        updateLeaderboard();
+
+        placeHologram();
     }
 
-    public void placeLeaderboard() {
+    public void placeHologram() {
         if(!isPlaced() && getLocation() != null) {
             hologram = HologramsAPI.createHologram(BTEPlotSystem.getPlugin(), getLocation());
             isPlaced = true;
         }
     }
-
-    protected abstract String getTitle();
 
     protected void insertLines() {
         getHologram().insertItemLine(0, getItem());
@@ -109,9 +115,9 @@ public abstract class HolographicDisplay extends Thread {
 
     protected abstract ItemStack getItem();
 
-    public void updateLeaderboard() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
-            if(isPlaced) {
+    public void updateHologram() {
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+            if(isPlaced()) {
                 hologram.clearLines();
                 insertLines();
             }
@@ -119,6 +125,8 @@ public abstract class HolographicDisplay extends Thread {
     }
 
     public String getHologramName() { return hologramName; }
+
+    protected abstract String getTitle();
 
     public Hologram getHologram() { return hologram; }
 

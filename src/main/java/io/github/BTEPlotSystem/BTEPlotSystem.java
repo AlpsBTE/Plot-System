@@ -24,8 +24,6 @@
 
 package github.BTEPlotSystem;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.commands.admin.CMD_DeletePlot;
@@ -37,10 +35,8 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 
@@ -49,21 +45,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
+    // Plugins
     private static BTEPlotSystem plugin;
-
     private static MultiverseCore multiverseCore;
 
-    private FileConfiguration leaderboardConfig;
-    private FileConfiguration navigatorConfig;
+    // Config
     private FileConfiguration config;
     private File configFile;
 
-    private final static List<HolographicDisplay> holograms = new ArrayList<>();
+    // Holograms
+    private static final List<HolographicDisplay> holograms = Arrays.asList(
+      new ScoreLeaderboard(),
+      new CompletedBuildingsLeaderboard()
+    );
 
     @Override
     public void onEnable() {
@@ -112,23 +111,11 @@ public class BTEPlotSystem extends JavaPlugin {
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        // Set holograms
-        if(config.getBoolean("holograms.ScoreLeaderboard.enabled")) holograms.add(new ScoreLeaderboard());
-        if(config.getBoolean("holograms.BuildsLeaderboard.enabled")) holograms.add(new CompletedBuildsLeaderboard());
-        holograms.forEach(Thread::start);
+        reloadHolograms();
 
         PlotManager.checkPlotsForLastActivity();
 
         getLogger().log(Level.INFO, "Successfully enabled AlpsBTE-PlotSystem plugin.");
-    }
-
-    public static BTEPlotSystem getPlugin() {
-        return plugin;
-    }
-    public static MultiverseCore getMultiverseCore() { return multiverseCore; }
-
-    public static List<HolographicDisplay> getHolograms() {
-        return holograms;
     }
 
     @Override
@@ -155,14 +142,30 @@ public class BTEPlotSystem extends JavaPlugin {
 
     @Override
     public void saveConfig() {
-        if (config == null || configFile == null) {
-            return;
-        }
-
-        try {
-            getConfig().save(configFile);
-        } catch (IOException ex) {
-            getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+        if (config != null && configFile != null) {
+            try {
+                config.save(configFile);
+            } catch (IOException ex) {
+                getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+            }
         }
     }
+
+    public static void reloadHolograms() {
+        for (HolographicDisplay hologram : holograms) {
+            if(getPlugin().getConfig().getBoolean(hologram.getDefaultPath() + "enabled")) {
+                hologram.show();
+            } else {
+                hologram.hide();
+            }
+        }
+    }
+
+    public static BTEPlotSystem getPlugin() {
+        return plugin;
+    }
+
+    public static MultiverseCore getMultiverseCore() { return multiverseCore; }
+
+    public static List<HolographicDisplay> getHolograms() { return holograms; }
 }
