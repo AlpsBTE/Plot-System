@@ -118,15 +118,6 @@ public class BTEPlotSystem extends JavaPlugin {
         getLogger().log(Level.INFO, "Successfully enabled AlpsBTE-PlotSystem plugin.");
     }
 
-    public static BTEPlotSystem getPlugin() {
-        return plugin;
-    }
-    public static MultiverseCore getMultiverseCore() { return multiverseCore; }
-
-    public static List<HolographicDisplay> getHolograms() {
-        return holograms;
-    }
-
     @Override
     public void reloadConfig() {
         try{
