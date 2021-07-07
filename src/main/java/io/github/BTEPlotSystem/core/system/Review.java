@@ -49,8 +49,11 @@ public class Review {
                     "SELECT id_review + 1 available_id FROM reviews t WHERE NOT EXISTS (SELECT * FROM reviews WHERE id_review = t.id_review + 1) ORDER BY id_review LIMIT 1"
                     // TODO: Try to remove available_id
             );
-            rs.next();
-            this.reviewID = rs.getInt(1);
+            if(rs.next()) {
+                this.reviewID = rs.getInt(1);
+            } else {
+                this.reviewID = 1;
+            }
 
             ps = con.prepareStatement("INSERT INTO reviews (id_review, uuid_reviewer, rating) VALUES (?, ?, ?)");
             ps.setInt(1, reviewID);
