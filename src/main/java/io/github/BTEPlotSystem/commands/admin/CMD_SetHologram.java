@@ -40,21 +40,29 @@ public class CMD_SetHologram implements CommandExecutor {
             Player player = (Player)sender;
             if (sender.hasPermission("alpsbte.admin")){
                 if (args.length == 1) {
-                    if(BTEPlotSystem.getHolograms().stream().anyMatch(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))) {
-                        HolographicDisplay hologram = BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0])).findFirst().get();
+                    // Find hologram by name
+                    HolographicDisplay hologram = BTEPlotSystem.getHolograms().stream()
+                            .filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))
+                            .findFirst()
+                            .orElse(null);
+
+                    // Update hologram location
+                    if(hologram != null) {
                         hologram.setLocation(player.getLocation());
-                        player.sendMessage(Utils.getInfoMessageFormat("Successfully set new hologram location of §f" + hologram.getHologramName() + "§7!"));
+                        player.sendMessage(Utils.getInfoMessageFormat("Successfully updated hologram location!"));
                         player.playSound(player.getLocation(), Utils.Done,1,1);
+
+                        BTEPlotSystem.reloadHolograms();
                     } else {
-                        player.sendMessage(Utils.getErrorMessageFormat("Could not find hologram with the name §f" + args[0] + "§7!"));
+                        player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
                     }
                 } else {
                     player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sethologram <name>"));
-                    player.sendMessage("§7------- §6§lHologram List §7-------");
+                    player.sendMessage("§7------- §6§lHolograms §7-------");
                     for(HolographicDisplay holo : BTEPlotSystem.getHolograms()) {
-                        player.sendMessage(Utils.getInfoMessageFormat(holo.getHologramName()));
+                        player.sendMessage(" §6> §f" + holo.getHologramName());
                     }
-                    player.sendMessage("§7-----------------------------");
+                    player.sendMessage("§7--------------------------");
                 }
 
             }

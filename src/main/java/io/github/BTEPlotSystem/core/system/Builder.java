@@ -26,6 +26,9 @@ package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.holograms.CompletedBuildingsLeaderboard;
+import github.BTEPlotSystem.core.holograms.HolographicDisplay;
+import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
@@ -125,7 +128,7 @@ public class Builder {
             ps.setString(2, getUUID().toString());
             ps.executeUpdate();
         }
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -135,7 +138,7 @@ public class Builder {
             ps.setString(2, getUUID().toString());
             ps.executeUpdate();
         }
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("BuildsLeaderboard")).findFirst().get().updateLeaderboard();
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof CompletedBuildingsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
