@@ -54,6 +54,18 @@ holograms:
     y: 0
     z: 0
 
+servers:
+  S1:
+    server-name: NAME-1
+    finished-schematic-path: path
+    ftp:
+      enabled: true
+      secure-ftp: true
+      address: ipadress
+      port: 21
+      username: username
+      password: password
+
 # The countries that will be assigned to your city projects
 #   - head-id: This is the Head Database ID of the head that you want to be displayed for this country/region
 #      use this website to find a Head Database head for your country.
@@ -66,34 +78,13 @@ holograms:
 countries:
   AT:
     head-id: 4397
-    finished-schematic-path: path
-    ftp:
-      enabled: true
-      secure-ftp: true
-      address: IP
-      port: 21
-      username: username
-      password: password
+    server: S1
   CH:
     head-id: 32348
-    finished-schematic-path: path
-    ftp:
-      enabled: true
-      secure-ftp: true
-      address: IP
-      port: 21
-      username: username
-      password: password
+    server: S1
   LI:
     head-id: 26174
-    finished-schematic-path: path
-    ftp:
-      enabled: true
-      secure-ftp: true
-      address: IP
-      port: 21
-      username: username
-      password: password
+    server: S1
 
 # The command that the player will automatically execute when pressing the navigator item in the companion.
 # Note: just remove the "/" from whatever command you want to use. "/navigator" for example would just be "navigator"
