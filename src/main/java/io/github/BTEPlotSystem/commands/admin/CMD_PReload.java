@@ -40,8 +40,8 @@ public class CMD_PReload implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission("alpsbte.admin")){
             try {
-                BTEPlotSystem.getPlugin().saveConfig();
                 BTEPlotSystem.getPlugin().reloadConfig();
+                BTEPlotSystem.getPlugin().saveConfig();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
                 BTEPlotSystem.getHolograms().forEach(HolographicDisplay::updateLeaderboard);
