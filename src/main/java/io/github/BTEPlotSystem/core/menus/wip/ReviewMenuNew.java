@@ -37,6 +37,7 @@ import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
@@ -51,6 +52,7 @@ public class ReviewMenuNew extends AbstractMenu {
     private int plotDisplayCount = 0;
 
     public ReviewMenuNew(Player player) throws SQLException {
+        // Opens Review Menu, showing all plots in the given round.
         super(6, "Review & Manage Plots", player);
 
         Mask mask = BinaryMask.builder(getMenu())
@@ -73,7 +75,7 @@ public class ReviewMenuNew extends AbstractMenu {
     @Override
     protected void addMenuItems() {
         // Add plot items
-        plotDisplayCount = Math.min(plots.size(), 40);
+        plotDisplayCount = Math.min(plots.size(), 45);
         for(int i = 0; i < plotDisplayCount; i++) {
             try {
                 Plot plot = plots.get(i);
@@ -89,7 +91,7 @@ public class ReviewMenuNew extends AbstractMenu {
                                     .build())
                     .build());
                 } else {
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOOL, 1, (byte) 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1)
                             .setName("§b§lManage Plot")
                             .setLore(new LoreBuilder()
                                     .addLines("ID: §f" + plot.getID(),
@@ -129,6 +131,7 @@ public class ReviewMenuNew extends AbstractMenu {
                         getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
                     }
                 } else {
+                    getMenuPlayer().closeInventory();
                     new PlotActionsMenu(getMenuPlayer(), plot);
                 }
             } catch (SQLException ex) {
