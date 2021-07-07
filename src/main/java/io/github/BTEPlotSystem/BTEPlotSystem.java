@@ -133,22 +133,16 @@ public class BTEPlotSystem extends JavaPlugin {
 
     @Override
     public void reloadConfig() {
-        try{
-            leaderboardConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("LeakParkour").getDataFolder(), "history.yml"));
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
-
+        Reader defConfigStream = new InputStreamReader(this.getResource("defaultConfig.yml"), StandardCharsets.UTF_8);
         configFile = new File(getDataFolder(), "config.yml");
+
         if (configFile.exists()) {
             config = YamlConfiguration.loadConfiguration(configFile);
         } else {
-            // Look for default configuration file
-            Reader defConfigStream = new InputStreamReader(this.getResource("defaultConfig.yml"), StandardCharsets.UTF_8);
-
             config = YamlConfiguration.loadConfiguration(defConfigStream);
         }
-        saveConfig();
+        config.options().copyDefaults(true);
+        config.setDefaults(YamlConfiguration.loadConfiguration(defConfigStream));
     }
 
     @Override
