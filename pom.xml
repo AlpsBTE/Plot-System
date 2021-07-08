@@ -185,6 +185,12 @@
             <artifactId>annotations</artifactId>
             <version>13.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.21</version>
+        </dependency>
     </dependencies>
 
     <!-- Plugin Build Settings -->
