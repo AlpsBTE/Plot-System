@@ -52,6 +52,8 @@ public class DatabaseConnection {
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
             dataSource = new HikariDataSource(config);
+
+            CreateDefaultTables();
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while initializing database!", ex);
         }
@@ -68,5 +70,75 @@ public class DatabaseConnection {
             retries--;
         }
         return null;
+    }
+
+    private static void CreateDefaultTables() {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            // Create Players table if not exists
+            PreparedStatement ps1 = con.prepareStatement("create table if not exists players" +
+                    "(" +
+                    "    uuid            varchar(36)   not null  primary key," +
+                    "    name            varchar(45)   not null," +
+                    "    score           int default 0 not null," +
+                    "    completedBuilds int default 0 not null," +
+                    "    firstSlot       int           null," +
+                    "    secondSlot      int           null," +
+                    "    thirdSlot       int           null" +
+                    ");");
+            ps1.executeUpdate();
+
+            // Create Plots table if not exists
+            PreparedStatement ps2 = con.prepareStatement("create table if not exists plots" +
+                    "(" +
+                    "    idplot        int auto_increment" +
+                    "        primary key," +
+                    "    idcity        int                                                                            not null," +
+                    "    mcCoordinates varchar(100)                                                                   not null," +
+                    "    status        enum ('unclaimed', 'unfinished', 'unreviewed', 'complete') default 'unclaimed' not null," +
+                    "    score         varchar(100)                                                                   null," +
+                    "    uuidplayer    varchar(36)                                                                    null," +
+                    "    uuidMembers   varchar(110)                                                                   null," +
+                    "    iddifficulty  int                                                        default 1           not null," +
+                    "    lastActivity  date                                                                           null," +
+                    "    idreview      int                                                                            null," +
+                    "    isPasted      tinyint                                                    default 0           not null" +
+                    ");");
+            ps2.executeUpdate();
+
+            // Create City Projects table if not exists
+            PreparedStatement ps3 = con.prepareStatement("create table if not exists cityProjects" +
+                    "(" +
+                    "    idcityProject int auto_increment primary key," +
+                    "    name          varchar(45)                   not null," +
+                    "    country       varchar(45)                   null," +
+                    "    description   varchar(255)                  null," +
+                    "    tags          varchar(45)                   null," +
+                    "    visible       tinyint default 1             not null" +
+                    ");");
+            ps3.executeUpdate();
+
+            // Create Review table if not exists
+            PreparedStatement ps4 = con.prepareStatement("create table if not exists reviews" +
+                    "(" +
+                    "    id_review     int auto_increment primary key," +
+                    "    uuid_reviewer varchar(36)                        not null," +
+                    "    rating        varchar(36)                        not null," +
+                    "    feedbackText  varchar(420) default 'No Feedback' null," +
+                    "    isSent        tinyint      default 0             null" +
+                    ");");
+            ps4.executeUpdate();
+
+            // Create Review table if not exists
+            PreparedStatement ps5 = con.prepareStatement("create table if not exists difficulties" +
+                    "(" +
+                    "    iddifficulty     int auto_increment primary key," +
+                    "    name             varchar(45)      null," +
+                    "    multiplier       double default 1 not null," +
+                    "    scoreRequirement int    default 0 not null" +
+                    ");");
+            ps5.executeUpdate();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while creating database");
+        }
     }
 }
