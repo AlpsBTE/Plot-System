@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.core.menus.wip;
+package github.BTEPlotSystem.core.menus.review;
 
 import com.sk89q.worldedit.WorldEditException;
 import github.BTEPlotSystem.core.menus.AbstractMenu;
@@ -71,11 +71,11 @@ public class ReviewPlotMenu extends AbstractMenu {
         Mask mask = BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("110111011")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("111010111")
                 .build();
         mask.apply(getMenu());
 
@@ -97,7 +97,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
     @Override
     protected void addMenuItems() {
-        for(int i = 9; i <= 40; i++) {
+        for(int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
                     try {
@@ -347,5 +347,37 @@ public class ReviewPlotMenu extends AbstractMenu {
                 e.printStackTrace();
             }
         });
+
+        // Point Selection
+        for (int i = 0; i < 54; i++) {
+            int slot = i;
+
+            int column = (slot % 9) + 1;
+            int row = (slot - (slot % 9)) / 9 + 1;
+
+            ItemMeta meta = getMenu().getSlot(slot).getItem(getMenuPlayer()).getItemMeta();
+
+            if (column > 2 && column < 9 && row > 1 && row < 6) {
+                //Go through the whole points row
+                getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+                    for (int j = 0; j < 6; j++) {
+                        if (getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
+                            ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
+                            ItemMeta metaPrevious = itemPrevious.getItemMeta();
+                            metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
+                            itemPrevious.setItemMeta(metaPrevious);
+                            getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
+                        }
+                    }
+
+                    meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+
+                    ItemStack newItem = getMenu().getSlot(slot).getItem(clickPlayer);
+                    newItem.setItemMeta(meta);
+                    getMenu().getSlot(slot).setItem(newItem);
+                    sentWarning = false;
+                });
+            }
+        }
     }
 }

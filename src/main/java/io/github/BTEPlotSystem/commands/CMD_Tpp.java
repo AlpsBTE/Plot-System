@@ -25,7 +25,7 @@
 package github.BTEPlotSystem.commands;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
-import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.menus.review.ReviewMenuNew;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,7 +43,7 @@ public class CMD_Tpp implements CommandExecutor {
                 player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
 
                 player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-                player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+                player.getInventory().setItem(7, ReviewMenuNew.getMenuItem());
             } catch (Exception ignore) {
                 sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpp <Player>"));
             }
