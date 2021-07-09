@@ -42,7 +42,6 @@ import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.Country;
 import github.BTEPlotSystem.utils.FTPManager;
 import github.BTEPlotSystem.utils.Utils;
-import github.BTEPlotSystem.utils.enums.Country_old;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;

@@ -24,12 +24,9 @@
 
 package github.BTEPlotSystem.core.system;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.utils.Utils;
-import github.BTEPlotSystem.utils.enums.Country_old;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
