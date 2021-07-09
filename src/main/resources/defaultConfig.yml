@@ -1,10 +1,10 @@
-# -------------------------------------------
-#         Plot System - by Alps BTE
-# -------------------------------------------
+# +----------------------------------------------------+
+#              Plot System - by Alps BTE
+# +----------------------------------------------------+
 # [Github Repo] https://github.com/AlpsBTE/PlotSystem
 # [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
-# -------------------------------------------
+# +----------------------------------------------------+
 
 # Your database credentials
 database:
