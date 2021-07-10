@@ -90,10 +90,10 @@ countries:
 # when pressing the navigator item in the companion.
 # Note: Remove the "/" from whatever command you want to use.
 navigator:
-  navigator-command: navigator
-  navigator-item: NETHER_STAR
-  navigator-title: Navigator
-  navigator-description: Open the navigator menu
+  command: navigator
+  item: NETHER_STAR
+  title: Navigator
+  description: Open the navigator menu
 
 # The prefix for the plugin message outputs.
 message-prefix: §7§l>>
