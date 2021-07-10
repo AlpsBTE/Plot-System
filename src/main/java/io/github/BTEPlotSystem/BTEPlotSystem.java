@@ -33,18 +33,14 @@ import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.core.config.ConfigManager;
+import github.BTEPlotSystem.core.config.ConfigNotImplementedException;
 import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -55,8 +51,7 @@ public class BTEPlotSystem extends JavaPlugin {
     private static MultiverseCore multiverseCore;
 
     // Config
-    private FileConfiguration config;
-    private File configFile;
+    private ConfigManager configManager;
 
     // Holograms
     private static final List<HolographicDisplay> holograms = Arrays.asList(
@@ -68,6 +63,12 @@ public class BTEPlotSystem extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
+
+        try {
+            configManager = new ConfigManager();
+        } catch (ConfigNotImplementedException ex) {
+            return;
+        }
 
         reloadConfig();
 
@@ -119,36 +120,18 @@ public class BTEPlotSystem extends JavaPlugin {
     }
 
     @Override
-    public void reloadConfig() {
-        Reader defConfigStream = new InputStreamReader(this.getResource("defaultConfig.yml"), StandardCharsets.UTF_8);
-        configFile = new File(getDataFolder(), "config.yml");
-
-        if (configFile.exists()) {
-            config = YamlConfiguration.loadConfiguration(configFile);
-        } else {
-            config = YamlConfiguration.loadConfiguration(defConfigStream);
-        }
-        config.options().copyDefaults(true);
-        config.setDefaults(YamlConfiguration.loadConfiguration(defConfigStream));
+    public FileConfiguration getConfig() {
+        return this.configManager.getConfig();
     }
 
     @Override
-    public FileConfiguration getConfig() {
-        if (config == null) {
-            reloadConfig();
-        }
-        return config;
+    public void reloadConfig() {
+        this.configManager.reloadConfig();
     }
 
     @Override
     public void saveConfig() {
-        if (config != null && configFile != null) {
-            try {
-                config.save(configFile);
-            } catch (IOException ex) {
-                getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
-            }
-        }
+        this.configManager.saveConfig();
     }
 
     public static void reloadHolograms() {
