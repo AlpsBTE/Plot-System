@@ -1,34 +1,32 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![License][license-shield]][license-url]
+[![Discord][discord-shield]][discord-url]
+[![Code Lines][code-lines-shield]][code-lines-url]
+[![Repo Size][repo-size-shield]][repo-size-url]
+[![Last Commit][last-commit-shield]][last-commit-url]
 
-
-<!-- PROJECT LOGO -->
-
+<!-- PROJECT DESCRIPTION -->
 <br />
 
-<p align="center">
+<p align="Center">
   <a href="https://github.com/AlpsBTE/PlotSystem">
     <img src="https://cdn.discordapp.com/attachments/492376978922537009/862047184689430568/Block_of_Emerald_JE4_BE3.png" alt="Logo" width="120" height="120">
   </a>
 </p>
 
-  <h3 align="center">Plot System</h3>
+<h3 align="Center">Plot System</h3>
 
-  <p align="center">
-    An easy to use building system for the BuildTheEarth project
-    <br />
-    <a href="https://github.com/AlpsBTE/PlotSystem/wiki"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="mc.alps-bte.com">Check Out Now</a>
-    ·
-    <a href="https://github.com/AlpsBTE/PlotSystem/wiki">Report Bug</a>
-    ·
-    <a href="https://github.com/AlpsBTE/PlotSystem/wiki">Request Feature</a>
-  </p>
+<p align="Center">
+An easy to use building system for the BuildTheEarth project
+<br />
+<a href="https://github.com/AlpsBTE/PlotSystem/wiki"><strong>Explore the docs »</strong></a>
+<br />
+<br />
+<a>Check Out Now</a>
+·
+<a href="https://github.com/AlpsBTE/Plot-System/issues">Report Bug</a>
+·
+<a href="https://github.com/AlpsBTE/Plot-System/issues">Request Feature</a>
+</p>
 
 
 
@@ -48,6 +46,19 @@ The plugin was programmed by the Alps BTE Team and is meant for everyone to use 
 
 All used Library and APIs are listed below.
 
+
+
+## Features
+
+- Detailed Review System
+- Feedback for Users
+- Difficulty Levels
+- Building Quality of Life tools
+- /tpll support
+- Leaderboards
+- Automatically abandon inactive plots
+- Automatically place finished plots on Terra Server using FTP/SFTP or direct path 
+- Support for Multiple Cities and Countries
 
 
 <!-- USAGE EXAMPLES -->
@@ -83,30 +94,29 @@ Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE
 
 
 
-<!-- Librarys & APIs -->
-## Librarys & APIs
-* [Spigot & Bukkit API](https://hub.spigotmc.org/nexus/content/repositories/snapshots/)
-* [WorldEdit & WorldGuard](http://maven.enginehub.org/repo/)
-* [Fast Async WorldEdit](http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/)
-* [Multiverse](http://repo.onarandombox.com/content/repositories/multiverse/)
-* [Holographic Displays](https://repo.codemc.io/repository/maven-public/)
-* [Skull Creator](https://dl.bintray.com/deanveloper/SkullCreator)
-* [ParticleLIB](https://github.com/ByteZ1337/ParticleLib)  
-* [HeadDB](https://github.com/Arcaniax-Development/HeadDatabase-API)
-* [Canvas - Inventory Menu Builder](https://github.com/IPVP-MC/canvas)
-* [MariaDB](https://mariadb.com/kb/en/about-mariadb-connector-j/)
+<!-- LIBRARIES & APIS -->
+## Libraries & APIs
+* [Spigot & Bukkit API](https://hub.spigotmc.org/stash/projects/SPIGOT)
+* [WorldEdit API](https://github.com/EngineHub/WorldEdit) 
+* [WorldGuard API](https://github.com/EngineHub/WorldGuard)
+* [Fast Async WorldEdit API](https://github.com/IntellectualSites/FastAsyncWorldEdit)
+* [Multiverse-Core API](https://github.com/Multiverse/Multiverse-Core)
+* [Holographic Displays API](https://github.com/filoghost/HolographicDisplays)
+* [Skull Creator API](https://github.com/deanveloper/SkullCreator)
+* [Head-DB API](https://github.com/Arcaniax-Development/HeadDatabase-API)
+* [Canvas Menu-Builder Library](https://github.com/IPVP-MC/canvas)
+* [Maria-DB Library](https://mariadb.com/kb/en/about-mariadb-connector-j/)
 
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/AlpsBTE/PlotSystem.svg?style=for-the-badge
-[contributors-url]: https://github.com/AlpsBTE/PlotSystem/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/AlpsBTE/PlotSystem.svg?style=for-the-badge
-[forks-url]: https://github.com/AlpsBTE/PlotSystem/network/members
-[stars-shield]: https://img.shields.io/github/stars/AlpsBTE/PlotSystem.svg?style=for-the-badge
-[stars-url]: https://github.com/AlpsBTE/PlotSystem/stargazers
-[issues-shield]: https://img.shields.io/github/issues/AlpsBTE/PlotSystem.svg?style=for-the-badge
-[issues-url]: https://github.com/AlpsBTE/PlotSystem/issues
-[license-shield]: https://img.shields.io/github/license/AlpsBTE/PlotSystem.svg?style=for-the-badge
-[license-url]: https://github.com/AlpsBTE/PlotSystem/blob/main/LICENSE.txt
+[license-shield]: https://img.shields.io/github/license/AlpsBTE/Plot-System
+[license-url]: https://github.com/AlpsBTE/Plot-System/blob/main/LICENSE.txt
+[discord-shield]: https://img.shields.io/discord/696795397376442440?label=discord
+[discord-url]: https://discord.com/invite/vgkspay
+[code-lines-shield]: https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System
+[code-lines-url]: https://github.com/AlpsBTE/Plot-System
+[repo-size-shield]: https://img.shields.io/github/repo-size/AlpsBTE/Plot-System
+[repo-size-url]: https://github.com/AlpsBTE/Plot-System
+[last-commit-shield]: https://img.shields.io/github/last-commit/AlpsBTE/Plot-System/V1.2_Dev
+[last-commit-url]: https://github.com/AlpsBTE/Plot-System
