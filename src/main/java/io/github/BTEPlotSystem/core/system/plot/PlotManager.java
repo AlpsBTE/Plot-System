@@ -75,13 +75,17 @@ public class PlotManager {
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
+            List<Plot> plots = listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
+            plots.addAll(listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE INSTR(uuidMembers, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)")));
+            return plots;
         }
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "' AND uuidplayer = '" + builder.getUUID(), statuses)));
+            //TODO: Query uuidMember as well
+            List<Plot> plots = listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "' AND uuidplayer = '" + builder.getUUID(), statuses)));
+            return plots;
         }
     }
 
