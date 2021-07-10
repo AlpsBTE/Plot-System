@@ -48,6 +48,19 @@ All used Library and APIs are listed below.
 
 
 
+## Features
+
+- Detailed Review System
+- Feedback for Users
+- Difficulty Levels
+- Building Quality of Life tools
+- /tpll support
+- Leaderboards
+- Automatically abandon inactive plots
+- Automatically place finished plots on Terra Server using FTP/SFTP or direct path 
+- Support for Multiple Cities and Countries
+
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 
