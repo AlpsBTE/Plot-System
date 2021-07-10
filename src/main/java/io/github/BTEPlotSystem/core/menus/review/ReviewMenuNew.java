@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.core.menus.wip;
+package github.BTEPlotSystem.core.menus.review;
 
 import github.BTEPlotSystem.core.menus.AbstractMenu;
 import github.BTEPlotSystem.core.menus.PlotActionsMenu;
@@ -109,47 +109,57 @@ public class ReviewMenuNew extends AbstractMenu {
         }
 
         // Add previous page button
-        getMenu().getSlot(42).setItem(MenuItems.previousPageItem());
+        getMenu().getSlot(46).setItem(MenuItems.previousPageItem());
 
         // Add close menu button
-        getMenu().getSlot(45).setItem(MenuItems.closeMenuItem());
+        getMenu().getSlot(49).setItem(MenuItems.closeMenuItem());
 
         // Add next page button
-        getMenu().getSlot(48).setItem(MenuItems.nextPageItem());
+        getMenu().getSlot(52).setItem(MenuItems.nextPageItem());
     }
 
     @Override
     protected void setItemClickEvents() {
         // Set click event for unreviewed & unfinished plots
         for(int i = 0; i < plotDisplayCount; i++) {
-            try {
-                Plot plot = plots.get(i);
-                if(plot.getStatus() == Status.unreviewed) {
-                    if (!plot.getBuilder().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
-                        PlotHandler.teleportPlayer(plot, getMenuPlayer());
+            int currentIteration = i;
+            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+                try {
+                    Plot plot = plots.get(currentIteration);
+                    if(plot.getStatus() == Status.unreviewed) {
+                        if (!plot.getBuilder().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
+                            PlotHandler.teleportPlayer(plot, getMenuPlayer());
+                        } else {
+                            getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+                        }
                     } else {
-                        getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+                        getMenuPlayer().closeInventory();
+                        new PlotActionsMenu(getMenuPlayer(), plot);
                     }
-                } else {
-                    getMenuPlayer().closeInventory();
-                    new PlotActionsMenu(getMenuPlayer(), plot);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+            });
         }
 
         // Set click event for previous page button
-        getMenu().getSlot(42).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
         });
 
         // Set click event for close menu button
-        getMenu().getSlot(45).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
+        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
         // Set click event for next page button
-        getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
         });
+    }
+
+    public static ItemStack getMenuItem(){
+        return new ItemBuilder(Material.BOOK, 1)
+                .setName("§b§lReview Plots §7(Right Click)")
+                .setEnchantment(true)
+                .build();
     }
 }
