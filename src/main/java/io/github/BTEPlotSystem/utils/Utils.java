@@ -140,7 +140,7 @@ public class Utils {
         if(serverShortName == null)
             throw new Exception("Server Not Found");
         else {
-            String configServer = "servers."+ serverShortName;
+            String configServer = "servers." + serverShortName;
             FTPConfiguration ftpConfiguration = null;
             if (config.getBoolean(configServer + ".ftp.enabled")) {
                 ftpConfiguration = new FTPConfiguration(

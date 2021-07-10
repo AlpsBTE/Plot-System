@@ -86,9 +86,9 @@ public class Plot extends PlotPermissions {
         return file;
     }
 
-    public File getFinishedSchematic() throws IOException {
-        File file = Paths.get(PlotManager.getFinishedSchematicPath(cityProject.getCountry()), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
-        if(!file.exists()) {
+    public File getFinishedSchematic(boolean createFile) throws IOException {
+        File file = Paths.get(cityProject.getCountry().getFinishedSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
+        if(createFile && !file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
