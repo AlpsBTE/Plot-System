@@ -85,7 +85,7 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void addMenuItems() {
-        // Set navigator item
+        // Set navigator itemS
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString("navigator.item")), 1)
                         .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString("navigator.name")).setLore(new LoreBuilder()
