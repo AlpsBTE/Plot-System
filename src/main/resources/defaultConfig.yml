@@ -1,10 +1,10 @@
-# +----------------------------------------------------+
-#              Plot System - by Alps BTE
-# +----------------------------------------------------+
+# -------------------------------------------
+#         Plot System - by Alps BTE
+# -------------------------------------------
 # [Github Repo] https://github.com/AlpsBTE/PlotSystem
 # [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
-# +----------------------------------------------------+
+# -------------------------------------------
 
 # Your database credentials
 database:
@@ -13,16 +13,18 @@ database:
   username: user
   password: paswd
 
-# The path on your server, where all outline plot schematics are saved.
+# The path where all outline plot schematics are saved
 outlines-schematic-path: path
 
-# Set to true if one or more of your servers requires you to transfer using FTP.
+# Set to true if one or more of your servers
+# requires to you transfer using FTP
 ftp-enabled: false
 
-# The lobby world name of the plot system.
+# The lobby world name of the plot system
 lobby-world: HUB
 
-# The spawn coordinates on the lobby world, where all users are teleported to, whenever they join or leave a plot
+# The spawn coordinates on the lobby world, where all users are
+# teleported to, whenever they join or leave a plot.
 spawn-point:
   x: 0
   y: 0
@@ -40,7 +42,7 @@ holograms:
     y: 0
     z: 0
   # Displays the top 10 players with the most completed buildings
-  completed-buildings-leaderboard:
+  completed-builds-leaderboard:
     enabled: false
     x: 0
     y: 0
@@ -48,25 +50,31 @@ holograms:
 
 servers:
   S1:
-    server-name: NAME-1
+    server-name: server-1
     finished-schematic-path: path
     ftp:
-      enabled: true
+      enabled: false
       secure-ftp: true
-      address: ipadress
-      port: 21
-      username: username
-      password: password
+      address: ip-adress
+      port: 22
+      username: user
+      password: paswd
 
 # The countries that will be assigned to your city projects
-#   - head-id: This is the Head Database ID of the head that you want to be displayed for this country/region
-#      use this website to find a Head Database head for your country.
-#      https://minecraft-heads.com/custom-heads
-#   - finished-schematic-path: The path on your server, where all finished plot schematics of that country are saved.
-#      (for when you have multiple servers for different regions)
-#   - ftp: The FTP credentials for uploading plots once complete and accepted.
+#  - head-id:
+#       This is the Head Database ID of the head that
+#       you want to be displayed for this country/region.
+#       Use this website to find a head for your country:
+#       [https://minecraft-heads.com/custom-heads]
+#   - finished-schematic-path:
+#       The path on your server, where all finished
+#       plot schematics of that country are saved.
+#      (For when you have multiple servers for different regions)
+#   - ftp:
+#       The FTP credentials for uploading plots
+#       once complete and accepted.
 #       Requires ftp-enabled (line 20) to be set to true.
-#       for more information, view the config documentation.
+#       For more information, view the config documentation.
 countries:
   AT:
     head-id: 4397
@@ -78,10 +86,16 @@ countries:
     head-id: 26174
     server: S1
 
-# The command that the player will automatically execute when pressing the navigator item in the companion.
-# Note: just remove the "/" from whatever command you want to use. "/navigator" for example would just be "navigator"
+# The command that the player will automatically execute
+# when pressing the navigator item in the companion.
+# Note: Remove the "/" from whatever command you want to use.
 navigator:
   navigator-command: navigator
   navigator-item: NETHER_STAR
   navigator-title: Navigator
   navigator-description: Open the navigator menu
+
+# The prefix for the plugin message outputs.
+message-prefix: §7§l>>
+info-prefix: §a
+error-prefix: §c
