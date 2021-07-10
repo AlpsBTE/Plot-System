@@ -116,7 +116,7 @@ public abstract class HolographicDisplay {
     protected abstract ItemStack getItem();
 
     public void updateHologram() {
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
             if(isPlaced()) {
                 hologram.clearLines();
                 insertLines();
