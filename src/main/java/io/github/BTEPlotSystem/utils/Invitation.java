@@ -68,20 +68,25 @@ public class Invitation {
     }
 
     public void AcceptInvite() throws SQLException {
-        List<Builder> builders = plot.getPlotMembers();
-        builders.add(new Builder(invitee.getUniqueId()));
-        plot.setPlotMembers(builders);
-        plot.addBuilderPerms(invitee.getUniqueId());
+        Builder builder = new Builder(invitee.getUniqueId());
+        if (builder.getFreeSlot() != null) {
+            List<Builder> builders = plot.getPlotMembers();
+            builders.add(new Builder(invitee.getUniqueId()));
+            plot.setPlotMembers(builders);
+            plot.addBuilderPerms(invitee.getUniqueId());
+            builder.setPlot(plot.getID(),builder.getFreeSlot());
 
-        // Messages Receiver
-        invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getBuilder().getName() + "'s invite!"));
-        invitee.sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
+            // Messages Receiver
+            invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getBuilder().getName() + "'s invite!"));
+            invitee.sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
 
-        // Messages Sender
-        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
-        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
-
-        scheduler.cancelTask(taskID);
+            // Messages Sender
+            plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
+            plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
+            scheduler.cancelTask(taskID);
+        } else {
+            invitee.sendMessage(Utils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
+        }
     }
 
     public void RejectInvite() throws SQLException {

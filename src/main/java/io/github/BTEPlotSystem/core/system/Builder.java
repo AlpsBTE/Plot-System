@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Builder {
 
@@ -121,6 +122,8 @@ public class Builder {
             while (rs.next()) {
                 if(!rs.wasNull()) {
                     slots.add(Slot.values()[counter]);
+                    Bukkit.getLogger().log(Level.INFO,Slot.values().length + "");
+                    Bukkit.getLogger().log(Level.INFO,Slot.values()[counter].toString());
                 }
                 counter++;
             }

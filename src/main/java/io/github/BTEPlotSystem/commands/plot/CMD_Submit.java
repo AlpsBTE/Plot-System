@@ -77,7 +77,21 @@ public class CMD_Submit implements CommandExecutor {
                         if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             PlotHandler.submitPlot(plot);
 
-                            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!"));
+                            if (plot.getPlotMembers().isEmpty()) {
+                                // Plot was made alone
+                                Bukkit.broadcastMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!");
+                            } else {
+                                // Plot was made in a group
+                                StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + ", ");
+
+                                for (int i = 0; i < plot.getPlotMembers().size(); i++) {
+                                    sb.append(i == plot.getPlotMembers().size() - 1 ?
+                                            plot.getPlotMembers().get(i).getName() + " §ahas been finished!" :
+                                            plot.getPlotMembers().get(i).getName() + ", ");
+                                }
+                                Bukkit.broadcastMessage(sb.toString());
+                            }
+
                             player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
                         } else {
                             player.sendMessage(Utils.getErrorMessageFormat("You are not allowed to submit this plot!"));
