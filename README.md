@@ -7,15 +7,15 @@
 <!-- PROJECT DESCRIPTION -->
 <br />
 
-<p style="text-align: center">
+<p align="Center">
   <a href="https://github.com/AlpsBTE/PlotSystem">
     <img src="https://cdn.discordapp.com/attachments/492376978922537009/862047184689430568/Block_of_Emerald_JE4_BE3.png" alt="Logo" width="120" height="120">
   </a>
 </p>
 
-<h3 style="text-align: center">Plot System</h3>
+<h3 align="Center">Plot System</h3>
 
-<p style="text-align: center">
+<p align="Center">
 An easy to use building system for the BuildTheEarth project
 <br />
 <a href="https://github.com/AlpsBTE/PlotSystem/wiki"><strong>Explore the docs »</strong></a>
@@ -97,13 +97,13 @@ Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[license-shield]: https://img.shields.io/github/license/AlpsBTE/Plot-System?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/AlpsBTE/Plot-System
 [license-url]: https://github.com/AlpsBTE/Plot-System/blob/main/LICENSE.txt
-[discord-shield]: https://img.shields.io/discord/696795397376442440?label=discord&style=for-the-badge
+[discord-shield]: https://img.shields.io/discord/696795397376442440?label=discord
 [discord-url]: https://discord.com/invite/vgkspay
-[code-lines-shield]: https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System?style=for-the-badge
+[code-lines-shield]: https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System
 [code-lines-url]: https://github.com/AlpsBTE/Plot-System
-[repo-size-shield]: https://img.shields.io/github/repo-size/AlpsBTE/Plot-System?style=for-the-badge
+[repo-size-shield]: https://img.shields.io/github/repo-size/AlpsBTE/Plot-System
 [repo-size-url]: https://github.com/AlpsBTE/Plot-System
-[last-commit-shield]: https://img.shields.io/github/last-commit/AlpsBTE/Plot-System/V1.2_Dev?style=for-the-badge
+[last-commit-shield]: https://img.shields.io/github/last-commit/AlpsBTE/Plot-System/V1.2_Dev
 [last-commit-url]: https://github.com/AlpsBTE/Plot-System
