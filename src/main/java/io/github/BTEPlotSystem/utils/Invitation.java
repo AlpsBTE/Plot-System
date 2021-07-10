@@ -71,8 +71,7 @@ public class Invitation {
         List<Builder> builders = plot.getPlotMembers();
         builders.add(new Builder(invitee.getUniqueId()));
         plot.setPlotMembers(builders);
-
-        //TODO: Set Permissions
+        plot.addBuilderPerms(invitee.getUniqueId());
 
         // Messages Receiver
         invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getBuilder().getName() + "'s invite!"));

@@ -291,6 +291,7 @@ public class Plot extends PlotPermissions {
         }
     }
 
+    // TODO: Maybe rework this method
     public void setPlotMembers(List<Builder> plotMembers) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
             // Convert plot member list to string
