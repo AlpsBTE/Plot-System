@@ -92,7 +92,7 @@ countries:
 navigator:
   command: navigator
   item: NETHER_STAR
-  title: Navigator
+  name: Navigator
   description: Open the navigator menu
 
 # The prefix for the plugin message outputs.
