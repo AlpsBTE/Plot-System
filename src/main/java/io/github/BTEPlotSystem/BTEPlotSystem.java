@@ -34,6 +34,7 @@ import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.config.ConfigManager;
+import github.BTEPlotSystem.core.config.ConfigNotImplementedException;
 import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -63,7 +64,12 @@ public class BTEPlotSystem extends JavaPlugin {
         plugin = this;
         multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
 
-        configManager = new ConfigManager();
+        try {
+            configManager = new ConfigManager();
+        } catch (ConfigNotImplementedException ex) {
+            return;
+        }
+
         reloadConfig();
 
         // Initialize database

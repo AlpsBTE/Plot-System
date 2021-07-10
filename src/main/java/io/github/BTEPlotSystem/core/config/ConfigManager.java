@@ -1,11 +1,36 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package github.BTEPlotSystem.core.config;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.multiverse.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,78 +40,107 @@ import java.util.logging.Level;
 
 public class ConfigManager {
 
-    private final File configFile = Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
+    private final File configFile;
     private FileConfiguration config;
 
-    public ConfigManager() {
+    public ConfigManager() throws ConfigNotImplementedException {
+        configFile = Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
+
         if(!configFile.exists()) {
-           if (this.createConfig(configFile)) {
-               throw new NotImplementedException("The Config must be configured!");
+           if (this.createConfig()) {
+               Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+               Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "The config file must be configured! (" + configFile.getAbsolutePath() + ")");
+               Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+
+               BTEPlotSystem.getPlugin().getServer().getPluginManager().disablePlugin(BTEPlotSystem.getPlugin());
+               throw new ConfigNotImplementedException("The config file must be configured!");
            }
         }
 
         reloadConfig();
     }
 
-    public void saveConfig() {
-        try {
-            // TODO: Try to save config custom without using config.saveToString
-            // TODO: Override default config width of ~60
-            Bukkit.getLogger().log(Level.INFO, this.prepareConfigString(config.saveToString()));
+    /**
+     * Saves intern config to config file.
+     *
+     * @return - true if config saved successfully.
+     */
+    public boolean saveConfig() {
+        try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(configFile))){
             String configuration = this.prepareConfigString(config.saveToString());
-            BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
-            writer.write(configuration);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            configWriter.write(configuration);
+            configWriter.flush();
+            return true;
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving config file!", ex);
         }
+        return false;
     }
 
-    public void reloadConfig() {
-        Reader configReader = getConfigContent();
-        if (configReader != null) {
+    /**
+     * Reloads intern config from config file.
+     *
+     * @return - true if config reloaded successfully.
+     */
+    public boolean reloadConfig() {
+        try (@NotNull Reader configReader = getConfigContent()){
             this.scanConfig();
-            this.config = YamlConfiguration.loadConfiguration(getConfigContent());
-        } else {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not reload config file!");
+            this.config = YamlConfiguration.loadConfiguration(configReader);
+            return true;
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading config file!", ex);
         }
+        return false;
     }
 
-    public void scanConfig() {
-        if (!configFile.exists()) return;
+    /**
+     * Scans given file for tabs, very useful when loading YAML configuration.
+     * Any configuration loaded using the API in this class is automatically scanned.
+     *
+     * @return - true if config scanned successfully.
+     */
+    public boolean scanConfig() {
+        if (!configFile.exists()) return false;
+
         int lineNumber = 0;
         String line;
         try (Scanner scanner = new Scanner(configFile)) {
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
                 lineNumber++;
+
                 if (line.contains("\t")) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + " ------------------------------------------------------ ");
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "------------------------------------------------------");
                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Tab found in file \"" + configFile.getAbsolutePath() + "\" on line #" + lineNumber + "!");
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + " ------------------------------------------------------ ");
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "------------------------------------------------------");
                     throw new IllegalArgumentException("Tab found in file \"" + configFile.getAbsolutePath() + "\" on line # " + line + "!");
                 }
             }
+            return true;
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while scanning config file!", ex);
         }
+        return false;
     }
 
-    public boolean createConfig(File configFile) {
+    /**
+     * Create a new config with default values
+     *
+     * @return - true if the config is created.
+     */
+    public boolean createConfig() {
         try {
-            boolean fileCreated = configFile.createNewFile();
-
-            if(fileCreated) {
-                InputStream defConfigStream = BTEPlotSystem.getPlugin().getResource("defaultConfig.yml");
-                OutputStream out = new FileOutputStream(configFile);
-                int lenght;
-                byte[] buf = new byte[1024];
-                while ((lenght = defConfigStream.read(buf)) > 0) {
-                    out.write(buf, 0, lenght);
+            if (configFile.createNewFile()) {
+                try (InputStream defConfigStream = BTEPlotSystem.getPlugin().getResource("defaultConfig.yml")) {
+                    try (OutputStream outputStream = new FileOutputStream(configFile)) {
+                        int length;
+                        byte[] buf = new byte[1024];
+                        while ((length = defConfigStream.read(buf)) > 0) {
+                            outputStream.write(buf, 0, length);
+                        }
+                    }
                 }
-                out.close();
-                defConfigStream.close();
                 return true;
             }
         } catch (IOException ex) {
@@ -103,78 +157,68 @@ public class ConfigManager {
      */
     private String prepareConfigString (String configString) {
         String[] lines = configString.split("\n");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "test2.yml").toFile()));
+        StringBuilder config = new StringBuilder();
 
-            StringBuilder config = new StringBuilder();
-            for (String line : lines) {
-                if (line.startsWith(this.getPluginName() + "_COMMENT")) {
-                    String comment = "#" + line.replace("/n", "").substring(line.indexOf(":") + 1);
-                    String normalComment = comment.replace("'", "");
-                    config.append(normalComment).append("\n");
-                    writer.write(normalComment + "\n");
-                } else if (line.startsWith(getPluginName() + "_EMPTY_SPACE")) {
-                    config.append("\n");
-                    writer.write("\n");
-                } else {
-                    config.append(line).append("\n");
-                    writer.write(line + "\n");
-                }
+        for (String line : lines) {
+            if (line.startsWith("COMMENT")) {
+                String comment = "#" + line.substring(line.indexOf(":") + 1).replace("'", "");
+                config.append(comment).append("\n");
+            } else if (line.startsWith("EMPTY_SPACE")) {
+                config.append("\n");
+            } else {
+                config.append(line).append("\n");
             }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return config.toString();
     }
 
-    // Read file and make comments SnakeYAML friendly
-    private InputStreamReader getConfigContent() {
-        if (!configFile.exists()) return null;
-        try {
+    /**
+     * Read file and make comments SnakeYAML friendly
+     *
+     * @return - file as InputStreamReader (Reader)
+     */
+    private Reader getConfigContent() {
+        if (!configFile.exists()) return new InputStreamReader(IOUtils.toInputStream(""));
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
             int commentNum = 0;
             int emptySpaceNum = 0;
-
             String addLine;
             String currentLine;
-            String pluginName = this.getPluginName();
 
             StringBuilder whole = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new FileReader(configFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "test.yml").toFile()));
 
+            // Convert config file
             while ((currentLine = reader.readLine()) != null) {
+                // Add comment
                 if (currentLine.startsWith("#")) {
-                    addLine = currentLine.replaceFirst("#", pluginName + "_COMMENT_" + commentNum + ":");
-                    addLine = addLine.replaceFirst(":", ": '") + "'";
-                    addLine = addLine.replaceFirst("' ", "'");
-                    writer.write(addLine + "\n");
+                    addLine = (currentLine.replaceFirst("#", "COMMENT_" + commentNum + ":")
+                                .replaceFirst(":", ": '") + "'")
+                                .replaceFirst("' ", "'");
                     whole.append(addLine).append("\n");
                     commentNum++;
 
+                // Add empty space
                 } else if (currentLine.equals("") || currentLine.equals(" ") || currentLine.isEmpty()) {
-                    addLine = pluginName + "_EMPTY_SPACE_" + emptySpaceNum + ": ' '";
-                    writer.write(addLine + "\n");
+                    addLine = "EMPTY_SPACE_" + emptySpaceNum + ": ''";
                     whole.append(addLine).append("\n");
                     emptySpaceNum++;
+
+                // Add config value
                 } else {
                     whole.append(currentLine).append("\n");
-                    writer.write(currentLine + "\n");
                 }
             }
             String config = whole.toString();
-            InputStreamReader configStream = new InputStreamReader(new ByteArrayInputStream(config.getBytes(StandardCharsets.UTF_8)));
             reader.close();
-            writer.close();
-            return configStream;
 
-        } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while parsing ");
-            return null;
+            return new InputStreamReader(new ByteArrayInputStream(config.getBytes()), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while parsing config file!", ex);
+            return new InputStreamReader(IOUtils.toInputStream(""));
         }
     }
 
     public FileConfiguration getConfig() { return config; }
-
-    private String getPluginName() { return "PlotSystem"; }
 }
