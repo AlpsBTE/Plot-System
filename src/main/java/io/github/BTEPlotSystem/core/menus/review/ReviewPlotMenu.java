@@ -27,6 +27,7 @@ package github.BTEPlotSystem.core.menus.review;
 import com.sk89q.worldedit.WorldEditException;
 import github.BTEPlotSystem.core.menus.AbstractMenu;
 import github.BTEPlotSystem.core.menus.PlotActionsMenu;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.Review;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
@@ -305,29 +306,72 @@ public class ReviewPlotMenu extends AbstractMenu {
                     new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
                 }
 
-
-
                 double totalRatingWithMultiplier = totalRating * PlotManager.getMultiplierByDifficulty(plot.getDifficulty());
                 totalRating = (int) Math.floor(totalRatingWithMultiplier);
                 plot.setScore(totalRating);
 
                 if (!isRejected){
-                    clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §amarked as reviewed!");
-
                     plot.getReview().setFeedbackSent(false);
                     plot.getReview().setFeedback("No Feedback");
                     plot.setStatus(Status.complete);
-                    plot.getBuilder().addScore(totalRating);
                     plot.getBuilder().addCompletedBuild(1);
+
                     try {
                         plot.getBuilder().removePlot(plot.getSlot());
                     } catch (Exception ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
                     }
 
+                    if (plot.getPlotMembers().size() != 0) {
+                        // Plot was made alone
+                        clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §amarked as reviewed!");
+
+                        // Builder gets 100% of score
+                        plot.getBuilder().addScore(totalRating);
+                    } else {
+                        // Plot was made in a group
+                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + ", ");
+
+                        for (int i = 0; i < plot.getPlotMembers().size(); i++) {
+                            sb.append(i == plot.getPlotMembers().size() - 1 ?
+                                    plot.getPlotMembers().get(i).getName() + " §amarked as reviewed!" :
+                                    plot.getPlotMembers().get(i).getName() + ", ");
+                        }
+
+                        // Score gets split between all participants
+                        plot.getBuilder().addScore((int) Math.floor((double) (totalRating/plot.getPlotMembers().size() + 1)));
+
+                        for (Builder builder : plot.getPlotMembers()) {
+                            // Score gets split between all participants
+                            builder.addScore((int) Math.floor((double) (totalRating/plot.getPlotMembers().size() + 1)));
+                            builder.addCompletedBuild(1);
+
+                            try {
+                                builder.removePlot(plot.getSlot());
+                            } catch (Exception ex) {
+                                Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
+                            }
+                        }
+
+                        clickPlayer.sendMessage(sb.toString());
+                    }
+
                     PlotManager.savePlotAsSchematic(plot);
                 } else {
-                    clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
+                    if (plot.getPlotMembers().size() != 0) {
+                        // Plot was made alone
+                        clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
+                    } else {
+                        // Plot was made in a group
+                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + ", ");
+
+                        for (int i = 0; i < plot.getPlotMembers().size(); i++) {
+                            sb.append(i == plot.getPlotMembers().size() - 1 ?
+                                    plot.getPlotMembers().get(i).getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!" :
+                                    plot.getPlotMembers().get(i).getName() + ", ");
+                        }
+                        clickPlayer.sendMessage(sb.toString());
+                    }
 
                     PlotHandler.undoSubmit(plot);
                 }
