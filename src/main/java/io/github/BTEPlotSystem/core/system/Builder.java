@@ -40,6 +40,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Builder {
@@ -106,6 +107,24 @@ public class Builder {
                 }
             }
             return null;
+        }
+    }
+
+    public List<Slot> getOccupiedSlots() throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = ?");
+            ps.setString(1, getUUID().toString());
+            ResultSet rs = ps.executeQuery();
+
+            List<Slot> slots = new ArrayList<>();
+            int counter = 0;
+            while (rs.next()) {
+                if(!rs.wasNull()) {
+                    slots.add(Slot.values()[counter]);
+                }
+                counter++;
+            }
+            return slots;
         }
     }
 
