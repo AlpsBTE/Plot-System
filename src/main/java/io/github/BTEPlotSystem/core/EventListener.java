@@ -25,7 +25,7 @@
 package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
-import github.BTEPlotSystem.core.menus.review.ReviewMenuNew;
+import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
@@ -68,8 +68,8 @@ public class EventListener extends SpecialBlocks implements Listener {
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
         }
         if (event.getPlayer().hasPermission("alpsbte.review")){
-            if (!event.getPlayer().getInventory().contains(ReviewMenuNew.getMenuItem())){
-                event.getPlayer().getInventory().setItem(7, ReviewMenuNew.getMenuItem());
+            if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
             }
         }
 
@@ -135,7 +135,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
             if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem())){
                 new CompanionMenu(event.getPlayer());
-            } else if (event.getItem() != null && event.getItem().equals(ReviewMenuNew.getMenuItem())){
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
             }
         }
@@ -170,7 +170,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem())){
             event.setCancelled(true);
         }
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenuNew.getMenuItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem())){
             event.setCancelled(true);
         }
     }
@@ -180,7 +180,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem())) {
             event.setCancelled(true);
         }
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenuNew.getMenuItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem())) {
             event.setCancelled(true);
         }
     }

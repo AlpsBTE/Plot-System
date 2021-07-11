@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.core.menus.review;
+package github.BTEPlotSystem.core.menus;
 
 import com.sk89q.worldedit.WorldEditException;
 import github.BTEPlotSystem.core.menus.AbstractMenu;

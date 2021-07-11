@@ -24,8 +24,8 @@
 
 package github.BTEPlotSystem.commands.review;
 
-import github.BTEPlotSystem.core.menus.review.ReviewMenuNew;
-import github.BTEPlotSystem.core.menus.review.ReviewPlotMenu;
+import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.menus.ReviewPlotMenu;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -48,7 +48,7 @@ public class CMD_Review implements CommandExecutor {
                     if(PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getPlotByWorld(player.getWorld()).getStatus() == Status.unreviewed) {
                         new ReviewPlotMenu(player,PlotManager.getPlotByWorld(player.getWorld()));
                     } else {
-                        new ReviewMenuNew(player);
+                        new ReviewMenu(player);
                     }
                 } catch (SQLException ex) {
                     sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));

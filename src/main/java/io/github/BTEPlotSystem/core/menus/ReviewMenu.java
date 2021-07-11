@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.core.menus.review;
+package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.menus.AbstractMenu;
 import github.BTEPlotSystem.core.menus.PlotActionsMenu;
@@ -45,13 +45,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
-public class ReviewMenuNew extends AbstractMenu {
+public class ReviewMenu extends AbstractMenu {
 
     private final List<Plot> plots = PlotManager.getPlots(Status.unreviewed, Status.unfinished);
 
     private int plotDisplayCount = 0;
 
-    public ReviewMenuNew(Player player) throws SQLException {
+    public ReviewMenu(Player player) throws SQLException {
         // Opens Review Menu, showing all plots in the given round.
         super(6, "Review & Manage Plots", player);
 
