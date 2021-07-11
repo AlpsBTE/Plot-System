@@ -15,6 +15,12 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
+        <!-- Fast Async World Edit -->
+        <repository>
+            <id>fawe-repo</id>
+            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+        </repository>
+
         <!-- World Edit -->
         <repository>
             <id>sk89q-repo</id>
@@ -25,12 +31,6 @@
         <repository>
             <id>nachwahl-repo</id>
             <url>https://maven.nachwahl.dev/</url>
-        </repository>
-
-        <!-- Fast Async World Edit -->
-        <repository>
-            <id>fawe-repo</id>
-            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
         </repository>
 
         <!-- Multiverse Core -->
@@ -73,6 +73,14 @@
             <version>1.12.2-R0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- Fast Async World Edit -->
+        <dependency>
+            <groupId>com.boydti</groupId>
+            <artifactId>fawe-api</artifactId>
+            <version>latest</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- World Edit -->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
@@ -86,14 +94,6 @@
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
             <version>6.2</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Fast Async World Edit -->
-        <dependency>
-            <groupId>com.boydti</groupId>
-            <artifactId>fawe-api</artifactId>
-            <version>latest</version>
             <scope>provided</scope>
         </dependency>
 
