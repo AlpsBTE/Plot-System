@@ -24,8 +24,8 @@
 
 package github.BTEPlotSystem.commands.review;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.menus.ReviewPlotMenu;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -41,14 +41,14 @@ import java.util.logging.Level;
 public class CMD_Review implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            if (sender.hasPermission("alpsbte.review")){
+        if (sender instanceof Player) {
+            if (sender.hasPermission("alpsbte.review")) {
                 try {
                     Player player = (Player) sender;
                     if(PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getPlotByWorld(player.getWorld()).getStatus() == Status.unreviewed) {
-                        Bukkit.getPluginManager().registerEvents(new ReviewMenu(player, PlotManager.getPlotByWorld(player.getWorld())), BTEPlotSystem.getPlugin());
+                        new ReviewPlotMenu(player,PlotManager.getPlotByWorld(player.getWorld()));
                     } else {
-                        Bukkit.getPluginManager().registerEvents(new ReviewMenu(player), BTEPlotSystem.getPlugin());
+                        new ReviewMenu(player);
                     }
                 } catch (SQLException ex) {
                     sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));

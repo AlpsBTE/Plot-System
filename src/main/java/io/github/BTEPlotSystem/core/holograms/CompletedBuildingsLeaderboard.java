@@ -25,54 +25,46 @@
 package github.BTEPlotSystem.core.holograms;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.system.Builder;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-public class EventHologram extends HolographicDisplay {
+public class CompletedBuildingsLeaderboard extends HolographicDisplay {
 
-    public EventHologram() {
-        super("EventHologram");
+    public CompletedBuildingsLeaderboard() {
+        super("completed-builds-leaderboard");
     }
 
     @Override
     protected String getTitle() {
-        return ("§6§lEVENT-SERVER");
-    }
-
-    @Override
-    protected void insertLines() {
-        getHologram().insertTextLine(0, getTitle());
-        getHologram().insertTextLine(1, "§r");
-
-        if(BTEPlotSystem.getPlugin().getNavigatorConfig().getBoolean("servers.event.visible")) {
-            List<String> data = getDataLines();
-            for(int i = 2; i < data.size() + 2; i++) {
-                getHologram().insertTextLine(i, data.get(i - 2));
-            }
-        } else {
-            getHologram().insertTextLine(2, "§2There is currently no event...");
-        }
-    }
-
-    @Override
-    public void updateLeaderboard() {
-        if(isPlaced() && getHologram() != null) {
-            getHologram().clearLines();
-            insertLines();
-        }
+        return "§b§lCOMPLETED PLOTS";
     }
 
     @Override
     protected List<String> getDataLines() {
-        return Arrays.asList(BTEPlotSystem.getPlugin().getNavigatorConfig().getString("servers.event.type.description").split("/"));
+        try {
+            return Builder.getBuildersByCompletedBuilds(10);
+        } catch (SQLException ex) {
+            BTEPlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
+        }
+        return new ArrayList<>();
     }
 
     @Override
     protected ItemStack getItem() {
-        return null;
+        return new ItemStack(Material.NETHER_STAR);
+    }
+
+    @Override
+    public void updateHologram() {
+        if(isPlaced()) {
+            getHologram().clearLines();
+            insertLines();
+        }
     }
 }

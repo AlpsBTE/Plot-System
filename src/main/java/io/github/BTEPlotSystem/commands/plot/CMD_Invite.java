@@ -19,42 +19,35 @@ public class CMD_Invite implements CommandExecutor {
             if(sender.hasPermission("alpsbte.plot")) {
                 Player player = (Player)sender;
                 Invitation invite = null;
-                Plot plot;
-                if (args.length == 2) {
-                    if (Utils.TryParseInt(args[1]) != null) {
-                        try {
-                            plot = new Plot(Integer.parseInt(args[1]));
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
-                    } else {
-                        //Wrong Input
-                        return true;
-                    }
-
+                if (args.length == 1) {
                     for (Invitation item : Invitation.invitationsList) {
                         if (item.invitee == player){
                             invite = item;
-                            switch (args[0]){
-                                case "accept":
-                                    item.AcceptInvite();
-                                    break;
-                                case "deny":
-                                    item.RejectInvite();
-                                    break;
-                                default:
-                                    //Wrong input
-                                    break;
+                            try {
+                                switch (args[0]){
+                                    case "accept":
+                                        item.AcceptInvite();
+                                        break;
+                                    case "deny":
+                                        item.RejectInvite();
+                                        break;
+                                    default:
+                                        player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <accept/deny>"));
+                                        invite = null;
+                                        break;
+                                }
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
                             }
                         }
                     }
                     if (invite != null) {
                         Invitation.invitationsList.remove(invite);
                     } else {
-                        //Wrong input
+                        player.sendMessage(Utils.getErrorMessageFormat("You have no unanswered invitations!"));
                     }
                 } else {
-                    //Wrong input!
+                    player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Usage: /invite <accept/deny>"));
                 }
             }
         }

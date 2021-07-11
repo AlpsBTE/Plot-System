@@ -29,6 +29,7 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -46,6 +47,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Plot extends PlotPermissions {
 
@@ -84,9 +86,9 @@ public class Plot extends PlotPermissions {
         return file;
     }
 
-    public File getFinishedSchematic() throws IOException {
-        File file = Paths.get(PlotManager.getFinishedSchematicPath(cityProject.getCountry()), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
-        if(!file.exists()) {
+    public File getFinishedSchematic(boolean createFile) throws IOException {
+        File file = Paths.get(cityProject.getCountry().getFinishedSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
+        if(createFile && !file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
@@ -289,6 +291,25 @@ public class Plot extends PlotPermissions {
         }
     }
 
+    // TODO: Maybe rework this method
+    public void setPlotMembers(List<Builder> plotMembers) throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            // Convert plot member list to string
+            String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
+
+            PreparedStatement ps;
+            if(!plotMembers.isEmpty()) {
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = ? WHERE idplot = ?");
+                ps.setString(1, plotMemberAsString);
+                ps.setInt(2, getID());
+            } else {
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = DEFAULT(uuidMembers) WHERE idplot = ?");
+                ps.setInt(1, getID());
+            }
+            ps.executeUpdate();
+        }
+    }
+
     public boolean isPasted() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
             ResultSet rs = con.createStatement().executeQuery("SELECT isPasted FROM plots WHERE idplot = '" + getID() + "'");
@@ -304,4 +325,5 @@ public class Plot extends PlotPermissions {
     public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != -1; // -1 == null
     }
+
 }

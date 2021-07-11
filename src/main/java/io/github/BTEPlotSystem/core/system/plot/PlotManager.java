@@ -24,8 +24,10 @@
 
 package github.BTEPlotSystem.core.system.plot;
 
-import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -38,7 +40,8 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.Country;
-import github.BTEPlotSystem.utils.enums.Country_old;
+import github.BTEPlotSystem.utils.FTPManager;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -51,7 +54,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 public class PlotManager {
@@ -70,13 +75,17 @@ public class PlotManager {
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
+            List<Plot> plots = listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
+            plots.addAll(listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE INSTR(uuidMembers, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)")));
+            return plots;
         }
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "' AND uuidplayer = '" + builder.getUUID(), statuses)));
+            //TODO: Query uuidMember as well
+            List<Plot> plots = listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "' AND uuidplayer = '" + builder.getUUID(), statuses)));
+            return plots;
         }
     }
 
@@ -199,10 +208,22 @@ public class PlotManager {
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
+        if(!BTEPlotSystem.getPlugin().getConfig().getBoolean("ftp-enabled")) { // Save Local
+            // Write finished plot clipboard to schematic file
+            try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
+                writer.write(cb, region.getWorld().getWorldData());
+            }
+        } else { // Save FTP/SFTP
+            Utils.Server server = plot.getCity().getServer();
 
-        // Write finished plot clipboard to schematic file
-        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(), false))) {
-            writer.write(cb, region.getWorld().getWorldData());
+            if(server.ftpConfiguration != null) {
+                // Send schematic to terra server
+                FTPManager.sendFileFTP(FTPManager.getFTPUrl(
+                        server, plot),
+                        plot.getFinishedSchematic(false));
+            } else {
+                Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
+            }
         }
     }
 
@@ -351,9 +372,5 @@ public class PlotManager {
 
     public static String getOutlinesSchematicPath() {
         return BTEPlotSystem.getPlugin().getConfig().getString("outlines-schematic-path");
-    }
-
-    public static String getFinishedSchematicPath(Country country) {
-        return BTEPlotSystem.getPlugin().getConfig().getString(country.getFinishedSchematicPath());
     }
 }

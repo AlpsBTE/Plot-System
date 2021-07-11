@@ -26,6 +26,9 @@ package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.holograms.CompletedBuildingsLeaderboard;
+import github.BTEPlotSystem.core.holograms.HolographicDisplay;
+import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
@@ -37,7 +40,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Builder {
 
@@ -106,6 +111,26 @@ public class Builder {
         }
     }
 
+    public List<Slot> getOccupiedSlots() throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = ?");
+            ps.setString(1, getUUID().toString());
+            ResultSet rs = ps.executeQuery();
+
+            List<Slot> slots = new ArrayList<>();
+            int counter = 0;
+            while (rs.next()) {
+                if(!rs.wasNull()) {
+                    slots.add(Slot.values()[counter]);
+                    Bukkit.getLogger().log(Level.INFO,Slot.values().length + "");
+                    Bukkit.getLogger().log(Level.INFO,Slot.values()[counter].toString());
+                }
+                counter++;
+            }
+            return slots;
+        }
+    }
+
     public Plot getPlot(Slot slot) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps = con.prepareStatement("SELECT " + slot.name() + " FROM players WHERE uuid = ?");
@@ -125,7 +150,7 @@ public class Builder {
             ps.setString(2, getUUID().toString());
             ps.executeUpdate();
         }
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("ScoreLeaderboard")).findFirst().get().updateLeaderboard();
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -135,7 +160,7 @@ public class Builder {
             ps.setString(2, getUUID().toString());
             ps.executeUpdate();
         }
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo.getHologramName().equals("BuildsLeaderboard")).findFirst().get().updateLeaderboard();
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof CompletedBuildingsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {

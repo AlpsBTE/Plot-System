@@ -5,53 +5,97 @@
 # [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # -------------------------------------------
+
+# Your database credentials
 database:
-  url: jdbc:mariadb://IP:PORT/
-  name: name
-  username: username
-  password: password
+  url: jdbc:mariadb://adress:port/
+  name: databasename
+  username: user
+  password: paswd
+
+# The path where all outline plot schematics are saved
 outlines-schematic-path: path
-lobby-world: world
+
+# Set to true if one or more of your servers
+# requires to you transfer using FTP
+ftp-enabled: false
+
+# The lobby world name of the plot system
+lobby-world: HUB
+
+# The spawn coordinates on the lobby world, where all users are
+# teleported to, whenever they join or leave a plot.
 spawn-point:
   x: 0
   y: 0
   z: 0
   yaw: 0
   pitch: 0
-message-prefix:
+
+# Holograms that are placed on your Lobby server [Optional]
+# IMPORTANT: Requires the HolographicDisplays plugin to work
 holograms:
-  ScoreLeaderboard:
-    enabled: true
-    x: 0
-    y: 0
-    z: 0
-  ParkourLeaderboard:
+  # Displays the top 10 builders with the highest score
+  score-leaderboard:
     enabled: false
     x: 0
     y: 0
     z: 0
-  EventHologram:
+  # Displays the top 10 players with the most completed buildings
+  completed-builds-leaderboard:
     enabled: false
     x: 0
     y: 0
     z: 0
-  BuildsLeaderboard:
-    enabled: true
-    x: 0
-    y: 0
-    z: 0
+
+servers:
+  S1:
+    server-name: server-1
+    finished-schematic-path: path
+    ftp:
+      enabled: false
+      secure-ftp: true
+      address: ip-adress
+      port: 22
+      username: user
+      password: paswd
+
+# The countries that will be assigned to your city projects
+#  - head-id:
+#       This is the Head Database ID of the head that
+#       you want to be displayed for this country/region.
+#       Use this website to find a head for your country:
+#       [https://minecraft-heads.com/custom-heads]
+#   - finished-schematic-path:
+#       The path on your server, where all finished
+#       plot schematics of that country are saved.
+#      (For when you have multiple servers for different regions)
+#   - ftp:
+#       The FTP credentials for uploading plots
+#       once complete and accepted.
+#       Requires ftp-enabled (line 20) to be set to true.
+#       For more information, view the config documentation.
 countries:
   AT:
     head-id: 4397
-    finished-schematic-path: path
+    server: S1
   CH:
     head-id: 32348
-    finished-schematic-path: path
+    server: S1
   LI:
     head-id: 26174
-    finished-schematic-path: path
+    server: S1
+
+# The command that the player will automatically execute
+# when pressing the navigator item in the companion.
+# Note: Remove the "/" from whatever command you want to use.
 navigator:
   command: navigator
-  item: COMPASS
+  item: NETHER_STAR
   name: Navigator
-  description: A neat description explaining what the navigator does
+  description: Open the navigator menu
+
+# The prefix for the plugin message outputs.
+message-prefix: §7§l>>
+info-prefix: §a
+error-prefix: §c

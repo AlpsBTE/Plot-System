@@ -24,8 +24,11 @@
 
 package github.BTEPlotSystem.utils;
 
+import org.jetbrains.annotations.Nullable;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.system.CityProject;
+import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
@@ -35,9 +38,18 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Utils {
+
+
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
@@ -73,24 +85,15 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix = BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
+    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + "§a" + info;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("info-prefix") + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + "§c" + error;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("error-prefix") + error;
     }
-
-    // Servers
-    public final static String PLOT_SERVER = "ALPS-1";
-
-    public final static String TERRA_SERVER = "ALPS-2";
-
-    public final static String EVENT_SERVER = "ALPS-3";
-
-    public final static String TEST_SERVER = "ALPS-4";
 
     // Integer Try Parser
     public static Integer TryParseInt(String someText) {
@@ -128,6 +131,63 @@ public class Utils {
                 return "§c§lHard";
             default:
                 return "";
+        }
+    }
+
+    public static Server parseServer(CityProject cityProject) throws Exception {
+        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
+        String serverShortName = config.getString("countries." + cityProject.getCountry().name + ".server");
+        if(serverShortName == null)
+            throw new Exception("Server Not Found");
+        else {
+            String configServer = "servers." + serverShortName;
+            FTPConfiguration ftpConfiguration = null;
+            if (config.getBoolean(configServer + ".ftp.enabled")) {
+                ftpConfiguration = new FTPConfiguration(
+                    config.getString(configServer + ".ftp.address"),
+                    config.getInt(configServer + ".ftp.port"),
+                    config.getString(configServer + ".ftp.username"),
+                    config.getString(configServer + ".ftp.password"),
+                    config.getBoolean(configServer + ".ftp.secure-ftp")
+                );
+            }
+            return new Server(serverShortName,
+                    config.getString(configServer + ".server-name"),
+                    config.getString(configServer + ".finished-schematic-path"),
+                    ftpConfiguration);
+        }
+    }
+
+
+    public static class Server {
+        public String shortName;
+        public String serverName;
+        public String finishedSchematicPath;
+
+        public FTPConfiguration ftpConfiguration;
+
+        public Server(String shortName, String serverName, String finishedSchematicPath,
+                      @Nullable FTPConfiguration ftpConfiguration) {
+            this.shortName = shortName;
+            this.serverName = serverName;
+            this.finishedSchematicPath = finishedSchematicPath;
+            this.ftpConfiguration = ftpConfiguration;
+        }
+    }
+
+    public static class FTPConfiguration {
+        public String address;
+        public int port;
+        public String username;
+        public String password;
+        public boolean secureFTP;
+
+        public FTPConfiguration(String address, int port, String username, String password, boolean secureFTP) {
+            this.address = address;
+            this.port = port;
+            this.username = username;
+            this.password = password;
+            this.secureFTP = secureFTP;
         }
     }
 }

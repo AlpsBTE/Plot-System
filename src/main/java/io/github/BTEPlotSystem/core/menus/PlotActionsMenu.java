@@ -35,7 +35,6 @@ import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
@@ -45,7 +44,6 @@ import java.util.logging.Level;
 public class PlotActionsMenu extends AbstractMenu {
 
     private final Plot plot;
-    private ItemStack plotMemberButton;
 
     private final boolean hasFeedback;
 
@@ -58,8 +56,6 @@ public class PlotActionsMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItems() {
-        plotMemberButton = Utils.getItemHead("9237");
-
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             // Add submit/undo submit plot button
             try {
@@ -111,14 +107,20 @@ public class PlotActionsMenu extends AbstractMenu {
             }
 
             // Add Plot Member Button
-            getMenu().getSlot(22)
-                    .setItem(new ItemBuilder(plotMemberButton)
-                            .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
-                                    .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
-                                            "",
-                                            "§c§lNote: §7Points will be split between all Members when reviewed!")
-                                    .build())
-                            .build());
+            try {
+                if (getMenuPlayer() == plot.getBuilder().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                    getMenu().getSlot(22)
+                            .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                                    .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
+                                            .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
+                                                    "",
+                                                    "§c§lNote: §7Points will be split between all Members when reviewed!")
+                                            .build())
+                                    .build());
+                }
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
         });
     }
 
@@ -160,8 +162,14 @@ public class PlotActionsMenu extends AbstractMenu {
 
         // Set click event for Plot Member button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            new PlotMemberMenu(plot,clickPlayer);
+            try {
+                if (clickPlayer == plot.getBuilder().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
+                    clickPlayer.closeInventory();
+                    new PlotMemberMenu(plot,clickPlayer);
+                }
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
         });
     }
 

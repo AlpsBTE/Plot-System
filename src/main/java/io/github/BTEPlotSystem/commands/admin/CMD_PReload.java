@@ -25,7 +25,6 @@
 package github.BTEPlotSystem.commands.admin;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -40,12 +39,11 @@ public class CMD_PReload implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission("alpsbte.admin")){
             try {
-                BTEPlotSystem.getPlugin().saveConfig();
                 BTEPlotSystem.getPlugin().reloadConfig();
+                BTEPlotSystem.getPlugin().saveConfig();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
-                BTEPlotSystem.getHolograms().forEach(HolographicDisplay::updateLeaderboard);
-
+                BTEPlotSystem.reloadHolograms();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
             } catch (Exception ex) {
                 sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while reloading!"));

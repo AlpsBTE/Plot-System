@@ -24,8 +24,6 @@
 
 package github.BTEPlotSystem;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.commands.admin.CMD_DeletePlot;
@@ -35,41 +33,42 @@ import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
+import github.BTEPlotSystem.core.config.ConfigManager;
+import github.BTEPlotSystem.core.config.ConfigNotImplementedException;
 import github.BTEPlotSystem.core.holograms.*;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
-import github.BTEPlotSystem.utils.PortalManager;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 public class BTEPlotSystem extends JavaPlugin {
+    // Plugins
     private static BTEPlotSystem plugin;
-
     private static MultiverseCore multiverseCore;
 
-    private FileConfiguration leaderboardConfig;
-    private FileConfiguration navigatorConfig;
-    private FileConfiguration config;
-    private File configFile;
+    // Config
+    private ConfigManager configManager;
 
-    private final static List<HolographicDisplay> holograms = new ArrayList<>();
+    // Holograms
+    private static final List<HolographicDisplay> holograms = Arrays.asList(
+      new ScoreLeaderboard(),
+      new CompletedBuildingsLeaderboard()
+    );
 
     @Override
     public void onEnable() {
         plugin = this;
         multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
+
+        try {
+            configManager = new ConfigManager();
+        } catch (ConfigNotImplementedException ex) {
+            return;
+        }
 
         reloadConfig();
 
@@ -113,98 +112,43 @@ public class BTEPlotSystem extends JavaPlugin {
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        // Set holograms
-        if(config.getBoolean("holograms.ScoreLeaderboard.enabled")) holograms.add(new ScoreLeaderboard());
-        if(config.getBoolean("holograms.ParkourLeaderboard.enabled")) holograms.add(new ParkourLeaderboard());
-        if(config.getBoolean("holograms.EventHologram.enabled")) holograms.add(new EventHologram());
-        if(config.getBoolean("holograms.BuildsLeaderboard.enabled")) holograms.add(new CompletedBuildsLeaderboard());
-        holograms.forEach(Thread::start);
-
-        new PortalManager().start();
+        reloadHolograms();
 
         PlotManager.checkPlotsForLastActivity();
 
         getLogger().log(Level.INFO, "Successfully enabled AlpsBTE-PlotSystem plugin.");
     }
 
-    public static BTEPlotSystem getPlugin() {
-        return plugin;
-    }
-    public static MultiverseCore getMultiverseCore() { return multiverseCore; }
-
-    public static List<HolographicDisplay> getHolograms() {
-        return holograms;
+    @Override
+    public FileConfiguration getConfig() {
+        return this.configManager.getConfig();
     }
 
     @Override
     public void reloadConfig() {
-        try{
-            leaderboardConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("LeakParkour").getDataFolder(), "history.yml"));
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        configFile = new File(getDataFolder(), "config.yml");
-        if (configFile.exists()) {
-            config = YamlConfiguration.loadConfiguration(configFile);
-        } else {
-            // Look for default configuration file
-            Reader defConfigStream = new InputStreamReader(this.getResource("defaultConfig.yml"), StandardCharsets.UTF_8);
-
-            config = YamlConfiguration.loadConfiguration(defConfigStream);
-        }
-        saveConfig();
-    }
-
-    @Override
-    public FileConfiguration getConfig() {
-        if (config == null) {
-            reloadConfig();
-        }
-        return config;
-    }
-
-    public FileConfiguration getLeaderboardConfig() {
-        try{
-            leaderboardConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("LeakParkour").getDataFolder(), "history.yml"));
-        } catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reading config file!", ex);
-        }
-        return leaderboardConfig;
-    }
-
-    public FileConfiguration getNavigatorConfig() {
-        try {
-            System.out.println(Bukkit.getPluginManager().getPlugin("AlpsBTE-Navigator").getDataFolder().getAbsolutePath());
-            navigatorConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("AlpsBTE-Navigator").getDataFolder(), "config.yml"));
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reading config file!", ex);
-        }
-        return navigatorConfig;
+        this.configManager.reloadConfig();
     }
 
     @Override
     public void saveConfig() {
-        if (config == null || configFile == null) {
-            return;
-        }
+        this.configManager.saveConfig();
+    }
 
-        try {
-            getConfig().save(configFile);
-        } catch (IOException ex) {
-            getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+    public static void reloadHolograms() {
+        for (HolographicDisplay hologram : holograms) {
+            if(getPlugin().getConfig().getBoolean(hologram.getDefaultPath() + "enabled")) {
+                hologram.show();
+            } else {
+                hologram.hide();
+            }
         }
     }
 
-    public void connectPlayer(Player player, String server) {
-        try{
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("ConnectOther");
-            out.writeUTF(player.getName());
-            out.writeUTF(server);
-            player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-        } catch (Exception ex){
-            getLogger().log(Level.WARNING, "Could not connect player [" + player + "] to " + server, ex);
-        }
+    public static BTEPlotSystem getPlugin() {
+        return plugin;
     }
+
+    public static MultiverseCore getMultiverseCore() { return multiverseCore; }
+
+    public static List<HolographicDisplay> getHolograms() { return holograms; }
 }
