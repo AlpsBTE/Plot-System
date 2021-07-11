@@ -4,64 +4,39 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>BTEPlotSystem</artifactId>
-    <version>1.1.2</version>
+    <groupId>io.github.BTEPlotSystem</groupId>
+    <artifactId>Plot-System</artifactId>
+    <version>1.2</version>
 
     <repositories>
-        <!-- Spigot & Bukkit API -->
+        <!-- Spigot & Bukkit -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <!-- World Edit & World Guard API -->
-        <repository>
-            <id>nachwahl-repo</id>
-            <url>https://maven.nachwahl.dev/</url>
-        </repository>
-
-        <!-- Holographic Displays -->
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
-
-        <!-- World Edit / World Guard API -->
-        <repository>
-            <id>enginehub-maven</id>
-            <url>http://maven.enginehub.org/repo/</url>
-        </repository>
-
-        <!-- Fast Async World Edit API -->
-        <repository>
-            <id>fawe-repo</id>
-            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
-        </repository>
-
-        <!-- World Edit / World Guard API -->
+        <!-- World Edit -->
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
 
-        <!-- Discord JDA API -->
+        <!-- World Guard -->
         <repository>
-            <id>jcenter</id>
-            <name>jcenter-bintray</name>
-            <url>https://jcenter.bintray.com</url>
+            <id>nachwahl-repo</id>
+            <url>https://maven.nachwahl.dev/</url>
         </repository>
 
-        <!-- Multiverse Core API -->
+        <!-- Fast Async World Edit -->
+        <repository>
+            <id>fawe-repo</id>
+            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+        </repository>
+
+        <!-- Multiverse Core -->
         <repository>
             <id>Multiverse-Core</id>
             <url>http://repo.onarandombox.com/content/repositories/multiverse/</url>
-        </repository>
-
-        <!-- Skull Creator Library -->
-        <repository>
-            <id>skullcreator-repo</id>
-            <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
         </repository>
 
         <!-- Anvil GUI -->
@@ -69,46 +44,36 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
+
+        <!-- Skull Creator -->
+        <repository>
+            <id>skullcreator-repo</id>
+            <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
+        </repository>
+
+        <!-- Holographic Displays -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
-        <!-- Spigot API [1.12.2-R0.1-SNAPSHOT] -->
+        <!-- Spigot -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>4.0.3</version>
-        </dependency>
-
-        <!-- Bukkit API [1.12.2-R0.1-SNAPSHOT] -->
+        <!-- Bukkit -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- Holographic Displays API [2.4.0] -->
-        <dependency>
-            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
-            <artifactId>holographicdisplays-api</artifactId>
-            <version>2.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Fast Async World Edit API [Latest]-->
-        <dependency>
-            <groupId>com.boydti</groupId>
-            <artifactId>fawe-api</artifactId>
-            <version>latest</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- World Edit API [6.1.9]-->
+        <!-- World Edit -->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
@@ -116,7 +81,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- World Guard API [V6.2]-->
+        <!-- World Guard -->
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
@@ -124,22 +89,15 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Inventory Menu Builder API [V1.6.0]-->
+        <!-- Fast Async World Edit -->
         <dependency>
-            <groupId>org.ipvp</groupId>
-            <artifactId>canvas</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>com.boydti</groupId>
+            <artifactId>fawe-api</artifactId>
+            <version>latest</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- ParticleLib [1.5.1] -->
-        <dependency>
-            <groupId>xyz.xenondevs</groupId>
-            <artifactId>particle</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-
-        <!-- Multiverse Core API [2.5.0] -->
+        <!-- Multiverse Core -->
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
@@ -152,27 +110,6 @@
             </exclusions>
         </dependency>
 
-         <!-- HeadDB API [1.0] -->
-        <dependency>
-            <groupId>com.github.shynixn.headdatabase</groupId>
-            <artifactId>hdb-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <!-- MariaDB Connector API [V2.7.1]-->
-         <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>2.7.1</version>
-        </dependency>
-
-        <!-- Skull Creator Library [3.0.0] -->
-        <dependency>
-            <groupId>dev.dbassett</groupId>
-            <artifactId>skullcreator</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-
         <!-- Anvil GUI -->
         <dependency>
             <groupId>net.wesjd</groupId>
@@ -180,6 +117,51 @@
             <version>1.5.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Inventory Menu Builder -->
+        <dependency>
+            <groupId>org.ipvp</groupId>
+            <artifactId>canvas</artifactId>
+            <version>1.6.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+         <!-- HeadDB -->
+        <dependency>
+            <groupId>com.github.shynixn.headdatabase</groupId>
+            <artifactId>hdb-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- Skull Creator -->
+        <dependency>
+            <groupId>dev.dbassett</groupId>
+            <artifactId>skullcreator</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- Holographic Displays -->
+        <dependency>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- MariaDB Connector -->
+         <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+
+        <!-- Hikari-CP (MariaDB) -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
+        <!-- Additional Annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
