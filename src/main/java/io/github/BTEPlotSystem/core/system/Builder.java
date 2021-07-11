@@ -118,14 +118,12 @@ public class Builder {
             ResultSet rs = ps.executeQuery();
 
             List<Slot> slots = new ArrayList<>();
-            int counter = 0;
-            while (rs.next()) {
-                if(!rs.wasNull()) {
+            if(rs.next()) {
+                int counter = 0;
+                do {
                     slots.add(Slot.values()[counter]);
-                    Bukkit.getLogger().log(Level.INFO,Slot.values().length + "");
-                    Bukkit.getLogger().log(Level.INFO,Slot.values()[counter].toString());
-                }
-                counter++;
+                    counter++;
+                } while (rs.next());
             }
             return slots;
         }
