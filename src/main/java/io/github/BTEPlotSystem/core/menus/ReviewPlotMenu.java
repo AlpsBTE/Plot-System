@@ -36,6 +36,7 @@ import github.BTEPlotSystem.utils.ItemBuilder;
 import github.BTEPlotSystem.utils.LoreBuilder;
 import github.BTEPlotSystem.utils.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -322,7 +323,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                         Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
                     }
 
-                    if (plot.getPlotMembers().size() != 0) {
+                    if (plot.getPlotMembers().isEmpty()) {
                         // Plot was made alone
                         clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §amarked as reviewed!");
 
@@ -347,7 +348,11 @@ public class ReviewPlotMenu extends AbstractMenu {
                             builder.addCompletedBuild(1);
 
                             try {
-                                builder.removePlot(plot.getSlot());
+                                for (Slot slot : builder.getOccupiedSlots()) {
+                                    if (builder.getPlot(slot).getID() == plot.getID()) {
+                                        builder.removePlot(slot);
+                                    }
+                                }
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
                             }

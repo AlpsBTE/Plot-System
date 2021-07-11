@@ -118,14 +118,20 @@ public class PlotActionsMenu extends AbstractMenu {
         }
 
         // Add Plot Member Button
-        getMenu().getSlot(22)
-                .setItem(new ItemBuilder(Utils.getItemHead("9237"))
-                        .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
-                                .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
-                                        "",
-                                        "§c§lNote: §7Points will be split between all Members when reviewed!")
-                                .build())
-                        .build());
+        try {
+            if (getMenuPlayer() == plot.getBuilder().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                getMenu().getSlot(22)
+                        .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                                .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
+                                        .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
+                                                "",
+                                                "§c§lNote: §7Points will be split between all Members when reviewed!")
+                                        .build())
+                                .build());
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 
     @Override
@@ -166,8 +172,14 @@ public class PlotActionsMenu extends AbstractMenu {
 
         // Set click event for Plot Member button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            new PlotMemberMenu(plot,clickPlayer);
+            try {
+                if (clickPlayer == plot.getBuilder().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
+                    clickPlayer.closeInventory();
+                    new PlotMemberMenu(plot,clickPlayer);
+                }
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
         });
     }
 
