@@ -317,6 +317,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     plot.setStatus(Status.complete);
                     plot.getBuilder().addCompletedBuild(1);
 
+                    // Remove Plot from Owner
                     try {
                         plot.getBuilder().removePlot(plot.getSlot());
                     } catch (Exception ex) {
@@ -347,12 +348,9 @@ public class ReviewPlotMenu extends AbstractMenu {
                             builder.addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
                             builder.addCompletedBuild(1);
 
+                            // Remove Slot from Member
                             try {
-                                for (Slot slot : builder.getOccupiedSlots()) {
-                                    if (builder.getPlot(slot).getID() == plot.getID()) {
-                                        builder.removePlot(slot);
-                                    }
-                                }
+                                builder.removePlot(builder.getSlot(plot));
                             } catch (Exception ex) {
                                 Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
                             }

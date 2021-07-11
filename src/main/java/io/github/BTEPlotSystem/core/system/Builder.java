@@ -222,4 +222,13 @@ public class Builder {
             return completedBuildsAsFormat;
         }
     }
+
+    public Slot getSlot (Plot plot) throws SQLException {
+        for (Slot slot : Slot.values()) {
+            if (getPlot(slot).getID() == plot.getID()) {
+                return slot;
+            }
+        }
+        return null;
+    }
 }
