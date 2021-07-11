@@ -54,7 +54,7 @@ public class PlotActionsMenu extends AbstractMenu {
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
-                .pattern("111101111")
+                .pattern("111111111")
                 .build();
         mask.apply(getMenu());
 

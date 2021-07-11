@@ -42,12 +42,13 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 public class ReviewMenu extends AbstractMenu {
 
-    private final List<Plot> plots = PlotManager.getPlots(Status.unreviewed, Status.unfinished);
+    private final List<Plot> plots = new ArrayList<>();
 
     private int plotDisplayCount = 0;
 
@@ -74,6 +75,13 @@ public class ReviewMenu extends AbstractMenu {
 
     @Override
     protected void addMenuItems() {
+        try {
+            plots.addAll(PlotManager.getPlots(Status.unreviewed));
+            plots.addAll(PlotManager.getPlots(Status.unfinished));
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
         // Add plot items
         plotDisplayCount = Math.min(plots.size(), 45);
         for(int i = 0; i < plotDisplayCount; i++) {
