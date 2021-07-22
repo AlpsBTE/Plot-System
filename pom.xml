@@ -48,7 +48,7 @@
         <!-- Skull Creator -->
         <repository>
             <id>skullcreator-repo</id>
-            <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
+            <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
         </repository>
 
         <!-- Holographic Displays -->
@@ -136,7 +136,7 @@
         <dependency>
             <groupId>dev.dbassett</groupId>
             <artifactId>skullcreator</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </dependency>
 
         <!-- Holographic Displays -->
