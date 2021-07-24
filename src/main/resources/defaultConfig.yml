@@ -13,9 +13,6 @@ database:
   username: user
   password: paswd
 
-# The path where all outline plot schematics are saved
-outlines-schematic-path: path
-
 # Set to true if one or more of your servers
 # requires to you transfer using FTP
 ftp-enabled: false

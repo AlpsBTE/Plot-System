@@ -39,7 +39,6 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.core.system.Country;
 import github.BTEPlotSystem.utils.FTPManager;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -47,9 +46,11 @@ import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -371,6 +372,6 @@ public class PlotManager {
     }
 
     public static String getOutlinesSchematicPath() {
-        return BTEPlotSystem.getPlugin().getConfig().getString("outlines-schematic-path");
+        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 }
