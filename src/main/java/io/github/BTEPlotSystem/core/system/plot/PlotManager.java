@@ -371,7 +371,15 @@ public class PlotManager {
         return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName;
     }
 
-    public static String getOutlinesSchematicPath() {
-        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
+    public static File getPlotOutlinesSchematic(Plot plot) {
+       return null;
+    }
+
+    public static File getFinishedPlotSchematic(Plot plot) {
+        return null;
+    }
+
+    public static String getPlotSchematicsPath() {
+        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "plots") + File.separator;
     }
 }

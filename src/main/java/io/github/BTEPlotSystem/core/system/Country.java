@@ -26,11 +26,11 @@ public class Country {
         return configFile.getInt("countries." + name + ".head-id");
     }
 
-    public String getServer() {
+    public String getServerName() {
         return configFile.getString("countries." + name + ".server");
     }
 
     public String getFinishedSchematicPath() {
-        return configFile.getString("servers." + getServer() + ".finished-schematic-path");
+        return configFile.getString("servers." + getServerName() + ".finished-schematic-path");
     }
 }
