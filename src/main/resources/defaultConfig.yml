@@ -10,6 +10,9 @@
 # [default] -> Uses the default multiverse spawn world
 spawn-world: default
 
+# Keep updated about newer versions
+check-for-updates: true
+
 # Your database credentials
 database:
   url: jdbc:mariadb://adress:port/
