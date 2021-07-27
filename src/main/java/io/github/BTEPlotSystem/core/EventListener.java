@@ -61,7 +61,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         // Remove Default Join Message
         event.setJoinMessage(null);
         // Teleport Player to the spawn
-        event.getPlayer().teleport(Utils.getSpawnPoint());
+        event.getPlayer().teleport(Utils.getSpawnLocation());
 
         // Add Items
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){

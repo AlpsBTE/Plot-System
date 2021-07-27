@@ -24,32 +24,21 @@
 
 package github.BTEPlotSystem.utils;
 
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.bukkit.*;
 import org.jetbrains.annotations.Nullable;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.CityProject;
-import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Utils {
-
-
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
@@ -72,16 +61,19 @@ public class Utils {
     public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
     // Spawn Location
-    public static Location getSpawnPoint() {
+    public static Location getSpawnLocation() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        return new Location(Bukkit.getWorld(config.getString("lobby-world")),
-                config.getDouble("spawn-point.x"),
-                config.getDouble("spawn-point.y"),
-                config.getDouble("spawn-point.z"),
-                (float) config.getDouble("spawn-point.yaw"),
-                (float) config.getDouble("spawn-point.pitch")
-        );
+        if (!config.getString("spawn-world").equalsIgnoreCase("default")) {
+            try {
+                MultiverseWorld spawnWorld = BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString("spawn-world"));
+                return spawnWorld.getSpawnLocation();
+            } catch (Exception ignore) {
+                Bukkit.getLogger().log(Level.WARNING, "Could not find spawn-world in multiverse config!");
+            }
+        }
+
+        return BTEPlotSystem.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
     }
 
     // Player Messages
