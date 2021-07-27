@@ -14,7 +14,7 @@ spawn-world: default
 check-for-updates: true
 
 # Enables special dev tools and features for development
-# NOTE: Do not change if you don't know what you are doing
+# NOTE: Do not change if you do not know what you are doing
 dev-mode: false
 
 
