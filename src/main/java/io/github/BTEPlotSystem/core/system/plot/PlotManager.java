@@ -209,23 +209,21 @@ public class PlotManager {
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
-        if(!BTEPlotSystem.getPlugin().getConfig().getBoolean("ftp-enabled")) { // Save Local
-            // Write finished plot clipboard to schematic file
-            try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
-                writer.write(cb, region.getWorld().getWorldData());
-            }
-        } else { // Save FTP/SFTP
-            Utils.Server server = plot.getCity().getServer();
-
-            if(server.ftpConfiguration != null) {
-                // Send schematic to terra server
-                FTPManager.sendFileFTP(FTPManager.getFTPUrl(
-                        server, plot),
-                        plot.getFinishedSchematic(false));
-            } else {
-                Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
-            }
+        // Write finished plot clipboard to schematic file
+        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
+            writer.write(cb, region.getWorld().getWorldData());
         }
+
+        /*Utils.Server server = plot.getCity().getServer();
+
+        if(server.ftpConfiguration != null) {
+            // Send schematic to terra server
+            FTPManager.sendFileFTP(FTPManager.getFTPUrl(
+                    server, plot),
+                    plot.getFinishedSchematic(false));
+        } else {
+            Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
+        }*/
     }
 
     public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {

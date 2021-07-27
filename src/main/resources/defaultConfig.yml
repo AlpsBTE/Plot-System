@@ -13,10 +13,6 @@ database:
   username: user
   password: paswd
 
-# Set to true if one or more of your servers
-# requires to you transfer using FTP
-ftp-enabled: false
-
 # The lobby world name of the plot system
 lobby-world: HUB
 
@@ -70,7 +66,6 @@ servers:
 #   - ftp:
 #       The FTP credentials for uploading plots
 #       once complete and accepted.
-#       Requires ftp-enabled (line 20) to be set to true.
 #       For more information, view the config documentation.
 countries:
   AT:
