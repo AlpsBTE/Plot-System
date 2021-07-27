@@ -42,6 +42,16 @@ holograms:
     y: 0
     z: 0
 
+# Switch hologram statistics between different time stamps
+# [interval] -> default: 5 seconds
+display-options:
+  interval: 5
+  show-daily: false
+  show-weekly: true
+  show-monthly: true
+  show-yearly: false
+
+
 servers:
   S1:
     server-name: server-1
