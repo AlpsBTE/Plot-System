@@ -110,3 +110,7 @@ navigator:
 message-prefix: §7§l>>
 info-prefix: §a
 error-prefix: §c
+
+
+# NOTE: Do not change
+config-version: 1.0

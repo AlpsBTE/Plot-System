@@ -41,7 +41,7 @@ import java.util.logging.Level;
 public class ConfigManager {
 
     private final File configFile;
-    private FileConfiguration config;
+    private final Config config = new Config();
 
     public ConfigManager() throws ConfigNotImplementedException {
         configFile = Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
@@ -86,9 +86,9 @@ public class ConfigManager {
     public boolean reloadConfig() {
         try (@NotNull Reader configReader = getConfigContent()){
             this.scanConfig();
-            this.config = YamlConfiguration.loadConfiguration(configReader);
+            this.config.load(configReader);
             return true;
-        } catch (IOException ex) {
+        } catch (IOException | InvalidConfigurationException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading config file!", ex);
         }
         return false;
