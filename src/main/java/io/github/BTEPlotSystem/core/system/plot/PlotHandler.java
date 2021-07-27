@@ -77,7 +77,7 @@ public class PlotHandler {
 
         if(plot.getPlotWorld() != null) {
             for(Player player : plot.getPlotWorld().getPlayers()) {
-                player.teleport(Utils.getSpawnPoint());
+                player.teleport(Utils.getSpawnLocation());
             }
         }
 
@@ -105,7 +105,7 @@ public class PlotHandler {
 
         loadPlot(plot); // Load Plot to be listed by Multiverse
         for(Player player : plot.getPlotWorld().getPlayers()) {
-            player.teleport(Utils.getSpawnPoint());
+            player.teleport(Utils.getSpawnLocation());
         }
 
         plot.getBuilder().removePlot(plot.getSlot());
