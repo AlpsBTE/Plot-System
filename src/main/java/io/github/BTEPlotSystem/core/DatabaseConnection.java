@@ -44,7 +44,7 @@ public class DatabaseConnection {
 
             FileConfiguration configFile = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
 
-            config.setJdbcUrl(configFile.getString("database.url") + configFile.getString("database.name"));
+            config.setJdbcUrl(configFile.getString("database.url") + configFile.getString("database.dbname"));
             config.setUsername(configFile.getString("database.username"));
             config.setPassword(configFile.getString("database.password"));
             config.addDataSourceProperty("cachePrepStmts", "true");

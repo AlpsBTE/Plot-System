@@ -23,7 +23,7 @@ dev-mode: false
 # -----------------------------------------------------
 database:
   url: jdbc:mariadb://adress:3306/
-  name: plotsystem
+  dbname: plotsystem
   username: plotsystem
   password: minecraft
 
