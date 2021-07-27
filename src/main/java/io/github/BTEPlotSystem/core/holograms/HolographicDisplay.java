@@ -27,6 +27,7 @@ package github.BTEPlotSystem.core.holograms;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,7 +62,7 @@ public abstract class HolographicDisplay {
         try {
             FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-            return new Location(Bukkit.getWorld(config.getString("lobby-world")),
+            return new Location(Utils.getSpawnLocation().getWorld(),
                     config.getDouble(getDefaultPath() + "x"),
                     config.getDouble(getDefaultPath() + "y"),
                     config.getDouble(getDefaultPath() + "z")
