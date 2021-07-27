@@ -13,6 +13,11 @@ spawn-world: default
 # Keep updated about newer versions
 check-for-updates: true
 
+# Enables special dev tools and features for development
+# NOTE: Do not change if you don't know what you are doing
+dev-mode: false
+
+
 # Your database credentials
 database:
   url: jdbc:mariadb://adress:port/
