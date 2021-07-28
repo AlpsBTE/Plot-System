@@ -120,7 +120,7 @@ public final class PlotGenerator {
         wc.generatorSettings("2;0;1;");
         wc.createWorld();
 
-        worldManager.addWorld(plot.getWorldName(), wc.environment(), null, wc.type(), false, "VoidGenerator");
+        worldManager.addWorld(plot.getWorldName(), wc.environment(), null, wc.type(), false, "VoidGen");
 
         plot.getPlotWorld().setGameRuleValue("randomTickSpeed", "0");
         plot.getPlotWorld().setGameRuleValue("doDaylightCycle", "false");
