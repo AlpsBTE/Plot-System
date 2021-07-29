@@ -22,8 +22,10 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.utils.items;
 
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

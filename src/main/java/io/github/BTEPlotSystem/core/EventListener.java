@@ -31,7 +31,7 @@ import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.SpecialBlocks;
+import github.BTEPlotSystem.utils.items.SpecialBlocks;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;

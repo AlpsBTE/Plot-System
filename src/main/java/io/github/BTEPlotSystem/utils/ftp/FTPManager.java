@@ -1,7 +1,8 @@
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.utils.ftp;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.Plot;
+import github.BTEPlotSystem.utils.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -39,8 +39,6 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.FTPManager;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
