@@ -37,7 +37,7 @@ database:
 servers:
   S1:
     server-name: server-1
-    finished-schematic-path: default
+    schematic-path: default
     ftp:
       enabled: false
       address: ip-adress
