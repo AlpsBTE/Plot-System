@@ -36,7 +36,6 @@ database:
 # -----------------------------------------------------
 servers:
   S1:
-    server-name: server-1
     schematic-path: default
     ftp:
       enabled: false
