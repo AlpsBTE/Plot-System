@@ -25,6 +25,7 @@
 package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.plot.Plot;
@@ -90,9 +91,9 @@ public class CompanionMenu extends AbstractMenu {
     protected void addMenuItems() {
         // Set navigator itemS
         getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString("navigator.item")), 1)
-                        .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString("navigator.name")).setLore(new LoreBuilder()
-                                .addLine(BTEPlotSystem.getPlugin().getConfig().getString("navigator.description")).build())
+                .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
+                        .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_NAME)).setLore(new LoreBuilder()
+                                .addLine(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_DESCRIPTION)).build())
                         .build());
 
         // Set switch plots difficulty item
@@ -153,7 +154,7 @@ public class CompanionMenu extends AbstractMenu {
         // Add click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand(BTEPlotSystem.getPlugin().getConfig().getString("navigator.command"));
+            clickPlayer.performCommand(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
         });
 
         // Add click event for switch plots difficulty item

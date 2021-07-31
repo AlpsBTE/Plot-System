@@ -27,6 +27,7 @@ package github.BTEPlotSystem.core.holograms;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -63,9 +64,9 @@ public abstract class HolographicDisplay {
             FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
             return new Location(Utils.getSpawnLocation().getWorld(),
-                    config.getDouble(getDefaultPath() + "x"),
-                    config.getDouble(getDefaultPath() + "y"),
-                    config.getDouble(getDefaultPath() + "z")
+                    config.getDouble(getDefaultPath() + ConfigPaths.HOLOGRAMS_X),
+                    config.getDouble(getDefaultPath() + ConfigPaths.HOLOGRAMS_Y),
+                    config.getDouble(getDefaultPath() + ConfigPaths.HOLOGRAMS_Z)
             );
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not read hologram location of " + getHologramName() + "!", ex);
@@ -76,10 +77,10 @@ public abstract class HolographicDisplay {
     public void setLocation(Location newLocation) {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        config.set(getDefaultPath() + "enabled", true);
-        config.set(getDefaultPath() + "x", newLocation.getX());
-        config.set(getDefaultPath() + "y", newLocation.getY() + 4);
-        config.set(getDefaultPath() + "z", newLocation.getZ());
+        config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED, true);
+        config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_X, newLocation.getX());
+        config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Y, newLocation.getY() + 4);
+        config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Z, newLocation.getZ());
 
         BTEPlotSystem.getPlugin().saveConfig();
 
@@ -136,6 +137,6 @@ public abstract class HolographicDisplay {
     public int getInterval() { return 20*60; }
 
     public String getDefaultPath() {
-        return "holograms." + getHologramName() + ".";
+        return ConfigPaths.HOLOGRAMS + getHologramName();
     }
 }

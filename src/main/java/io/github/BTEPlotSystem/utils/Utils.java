@@ -25,12 +25,11 @@
 package github.BTEPlotSystem.utils;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
-import org.jetbrains.annotations.Nullable;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -65,12 +64,12 @@ public class Utils {
     public static Location getSpawnLocation() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        if (!config.getString("spawn-world").equalsIgnoreCase("default")) {
+        if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
             try {
                 MultiverseWorld spawnWorld = BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString("spawn-world"));
                 return spawnWorld.getSpawnLocation();
             } catch (Exception ignore) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not find spawn-world in multiverse config!");
+                Bukkit.getLogger().log(Level.WARNING, String.format("Could not find %s in multiverse config!", ConfigPaths.SPAWN_WORLD));
             }
         }
 
