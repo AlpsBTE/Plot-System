@@ -77,14 +77,14 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
+    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("info-prefix") + info;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOR) + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("error-prefix") + error;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOR) + error;
     }
 
     // Integer Try Parser
