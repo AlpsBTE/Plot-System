@@ -39,8 +39,6 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.FTPManager;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -209,23 +207,21 @@ public class PlotManager {
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
-        if(!BTEPlotSystem.getPlugin().getConfig().getBoolean("ftp-enabled")) { // Save Local
-            // Write finished plot clipboard to schematic file
-            try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
-                writer.write(cb, region.getWorld().getWorldData());
-            }
-        } else { // Save FTP/SFTP
-            Utils.Server server = plot.getCity().getServer();
-
-            if(server.ftpConfiguration != null) {
-                // Send schematic to terra server
-                FTPManager.sendFileFTP(FTPManager.getFTPUrl(
-                        server, plot),
-                        plot.getFinishedSchematic(false));
-            } else {
-                Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
-            }
+        // Write finished plot clipboard to schematic file
+        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
+            writer.write(cb, region.getWorld().getWorldData());
         }
+
+        /*Utils.Server server = plot.getCity().getServer();
+
+        if(server.ftpConfiguration != null) {
+            // Send schematic to terra server
+            FTPManager.sendFileFTP(FTPManager.getFTPUrl(
+                    server, plot),
+                    plot.getFinishedSchematic(false));
+        } else {
+            Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
+        }*/
     }
 
     public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
@@ -371,15 +367,7 @@ public class PlotManager {
         return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName;
     }
 
-    public static File getPlotOutlinesSchematic(Plot plot) {
-       return null;
-    }
-
-    public static File getFinishedPlotSchematic(Plot plot) {
-        return null;
-    }
-
-    public static String getPlotSchematicsPath() {
-        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "plots") + File.separator;
+    public static String getDefaultSchematicPath() {
+        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 }

@@ -26,6 +26,7 @@ package github.BTEPlotSystem.core;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -44,9 +45,9 @@ public class DatabaseConnection {
 
             FileConfiguration configFile = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
 
-            config.setJdbcUrl(configFile.getString("database.url") + configFile.getString("database.name"));
-            config.setUsername(configFile.getString("database.username"));
-            config.setPassword(configFile.getString("database.password"));
+            config.setJdbcUrl(configFile.getString(ConfigPaths.DATABASE_URL) + configFile.getString(ConfigPaths.DATABASE_NAME));
+            config.setUsername(configFile.getString(ConfigPaths.DATABASE_USERNAME));
+            config.setPassword(configFile.getString(ConfigPaths.DATABASE_PASSWORD));
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

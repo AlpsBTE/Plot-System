@@ -124,7 +124,7 @@ public class PlotHandler {
     public static void deletePlot(Plot plot) throws Exception {
         abandonPlot(plot);
 
-        Files.deleteIfExists(Paths.get(PlotManager.getPlotSchematicsPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+        Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
         try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps = con.prepareStatement("DELETE FROM plots WHERE idplot = ?");

@@ -25,9 +25,9 @@
 package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.core.system.plot.PlotManager;
-import github.BTEPlotSystem.utils.ItemBuilder;
-import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.MenuItems;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
+import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

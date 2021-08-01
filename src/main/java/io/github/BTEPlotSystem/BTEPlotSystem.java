@@ -56,7 +56,7 @@ public class BTEPlotSystem extends JavaPlugin {
     // Holograms
     private static final List<HolographicDisplay> holograms = Arrays.asList(
       new ScoreLeaderboard(),
-      new CompletedBuildingsLeaderboard()
+      new PlotsLeaderboard()
     );
 
     @Override

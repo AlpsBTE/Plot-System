@@ -29,6 +29,7 @@ import github.BTEPlotSystem.core.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -77,7 +78,7 @@ public class Plot extends PlotPermissions {
     public PlotDifficulty getDifficulty() { return plotDifficulty; }
 
     public File getOutlinesSchematic() throws IOException {
-        File file = Paths.get(PlotManager.getPlotSchematicsPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
+        File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
         if(!file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();

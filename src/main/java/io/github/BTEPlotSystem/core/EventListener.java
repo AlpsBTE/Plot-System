@@ -31,7 +31,7 @@ import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.SpecialBlocks;
+import github.BTEPlotSystem.utils.items.SpecialBlocks;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
@@ -61,7 +61,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         // Remove Default Join Message
         event.setJoinMessage(null);
         // Teleport Player to the spawn
-        event.getPlayer().teleport(Utils.getSpawnPoint());
+        event.getPlayer().teleport(Utils.getSpawnLocation());
 
         // Add Items
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){

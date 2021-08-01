@@ -26,7 +26,7 @@ package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.core.holograms.CompletedBuildingsLeaderboard;
+import github.BTEPlotSystem.core.holograms.PlotsLeaderboard;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
 import github.BTEPlotSystem.core.system.plot.Plot;
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Builder {
 
@@ -158,7 +157,7 @@ public class Builder {
             ps.setString(2, getUUID().toString());
             ps.executeUpdate();
         }
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof CompletedBuildingsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {

@@ -25,28 +25,32 @@
 package github.BTEPlotSystem.core.config;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import org.apache.commons.multiverse.io.FileUtils;
 import org.apache.commons.multiverse.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 
 public class ConfigManager {
 
     private final File configFile;
-    private FileConfiguration config;
+    private final Config config = new Config();
 
     public ConfigManager() throws ConfigNotImplementedException {
-        configFile = Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
+        this.configFile = Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
 
-        if(!configFile.exists()) {
+        if (!configFile.exists()) {
            if (this.createConfig()) {
                Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
                Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "The config file must be configured! (" + configFile.getAbsolutePath() + ")");
@@ -56,8 +60,13 @@ public class ConfigManager {
                throw new ConfigNotImplementedException("The config file must be configured!");
            }
         }
-
         reloadConfig();
+
+        // Check for updates
+        if (config.getDouble(ConfigPaths.CONFIG_VERSION) != Config.VERSION) {
+            updateConfig();
+            reloadConfig();
+        }
     }
 
     /**
@@ -86,9 +95,9 @@ public class ConfigManager {
     public boolean reloadConfig() {
         try (@NotNull Reader configReader = getConfigContent()){
             this.scanConfig();
-            this.config = YamlConfiguration.loadConfiguration(configReader);
+            this.config.load(configReader);
             return true;
-        } catch (IOException ex) {
+        } catch (IOException | InvalidConfigurationException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading config file!", ex);
         }
         return false;
@@ -145,6 +154,43 @@ public class ConfigManager {
             }
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating config file!", ex);
+        }
+        return false;
+    }
+
+    /**
+     * Update config file from default config
+     *
+     * @return - true if config updated successfully.
+     */
+    private boolean updateConfig() {
+        // Create Backup of config file
+        try {
+            FileUtils.copyFile(configFile, Paths.get(configFile.getParentFile().getAbsolutePath(), "old_config.yml").toFile());
+        } catch (IOException ignored) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not create backup of current config file!");
+        }
+
+        // Update config
+        try {
+            List<String> currentFileLines = FileUtils.readLines(configFile);
+            List<String> defaultFileLines = config.readDefaultConfig();
+
+            currentFileLines.removeIf(s -> s.trim().isEmpty() || s.trim().startsWith("#") || s.split(":").length == 1);
+            currentFileLines.forEach(s -> {
+                String[] a = s.split(":");
+                String newS = String.join(":", Arrays.copyOfRange(a, 1, a.length));
+                int index = getIndex(a[0], defaultFileLines);
+                if (index > -1)
+                    defaultFileLines.set(index, defaultFileLines.get(index).split(":")[0] + ":" + newS);
+            });
+
+            defaultFileLines.set(getIndex("config-version", defaultFileLines), "config-version: " + Config.VERSION);
+            Files.write(configFile.toPath(), defaultFileLines);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Successfully updated Plot-System config to version " + Config.VERSION);
+            return true;
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while updating config file!", ex);
         }
         return false;
     }
@@ -220,5 +266,14 @@ public class ConfigManager {
         }
     }
 
-    public FileConfiguration getConfig() { return config; }
+    public int getIndex(String line, List<String> list) {
+        for (String s : list)
+            if (s.startsWith(line) || s.equalsIgnoreCase(line))
+                return list.indexOf(s);
+        return -1;
+    }
+
+    public FileConfiguration getConfig() {
+        return config;
+    }
 }

@@ -25,18 +25,15 @@
 package github.BTEPlotSystem.core.menus;
 
 import com.sk89q.worldedit.WorldEditException;
-import github.BTEPlotSystem.core.menus.AbstractMenu;
-import github.BTEPlotSystem.core.menus.PlotActionsMenu;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.Review;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
-import github.BTEPlotSystem.utils.ItemBuilder;
-import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.MenuItems;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
+import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
-import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -380,7 +377,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 }
 
                 for(Player player : clickPlayer.getWorld().getPlayers()) {
-                    player.teleport(Utils.getSpawnPoint());
+                    player.teleport(Utils.getSpawnLocation());
                 }
 
                 if(plot.getBuilder().isOnline()) {

@@ -34,10 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class CompletedBuildingsLeaderboard extends HolographicDisplay {
+public class PlotsLeaderboard extends HolographicDisplay {
 
-    public CompletedBuildingsLeaderboard() {
-        super("completed-builds-leaderboard");
+    public PlotsLeaderboard() {
+        super("plots-leaderboard");
     }
 
     @Override
