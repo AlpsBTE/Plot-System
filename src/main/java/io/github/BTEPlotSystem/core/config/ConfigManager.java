@@ -63,7 +63,7 @@ public class ConfigManager {
         reloadConfig();
 
         // Check for updates
-        if (config.getDouble("config-version") != Config.VERSION) {
+        if (config.getDouble(ConfigPaths.CONFIG_VERSION) != Config.VERSION) {
             updateConfig();
             reloadConfig();
         }

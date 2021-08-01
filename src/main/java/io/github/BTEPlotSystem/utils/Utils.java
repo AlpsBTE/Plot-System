@@ -25,12 +25,11 @@
 package github.BTEPlotSystem.utils;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
-import org.jetbrains.annotations.Nullable;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -65,12 +64,12 @@ public class Utils {
     public static Location getSpawnLocation() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        if (!config.getString("spawn-world").equalsIgnoreCase("default")) {
+        if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
             try {
-                MultiverseWorld spawnWorld = BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString("spawn-world"));
+                MultiverseWorld spawnWorld = BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
             } catch (Exception ignore) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not find spawn-world in multiverse config!");
+                Bukkit.getLogger().log(Level.WARNING, String.format("Could not find %s in multiverse config!", ConfigPaths.SPAWN_WORLD));
             }
         }
 
@@ -78,14 +77,14 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
+    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("info-prefix") + info;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOR) + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("error-prefix") + error;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOR) + error;
     }
 
     // Integer Try Parser

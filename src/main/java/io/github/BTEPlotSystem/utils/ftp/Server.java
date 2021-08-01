@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.utils.ftp;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,13 +39,13 @@ public class Server {
         return ftpConfiguration;
     }
 
-    public static void initializeServers() {
+    public static void init() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
-        Set<String> serverSection = config.getConfigurationSection("servers").getKeys(false);
+        Set<String> serverSection = config.getConfigurationSection(ConfigPaths.SERVERS).getKeys(false);
 
         servers.clear();
         for (String serverKey : serverSection) {
-            String configPath = "servers." + serverKey + "."; // Temporary till we add ConfigPath class
+            String configPath = ConfigPaths.SERVERS + serverKey;
             if(servers.stream().anyMatch(s -> s.name.equals(serverKey))) {
                 Bukkit.getLogger().log(Level.WARNING, "Server (" + serverKey + ") is already registered! Please check your config!");
                 continue;
@@ -52,13 +53,12 @@ public class Server {
 
             FTPConfiguration ftpConfiguration = null;
             try {
-                String ftpPath = configPath + "ftp."; // Temporary till we add ConfigPath class
-                if (config.getBoolean(ftpPath + "enabled")) {
+                if (config.getBoolean(configPath + ConfigPaths.SERVERS_FTP_ENABLED)) {
                     ftpConfiguration = new FTPConfiguration(
-                            config.getString(ftpPath + "address"),
-                            config.getInt(ftpPath + "port"),
-                            config.getString(ftpPath + "username"),
-                            config.getString(ftpPath + "password")
+                            config.getString(configPath + ConfigPaths.SERVERS_FTP_ADDRESS),
+                            config.getInt(configPath + ConfigPaths.SERVERS_FTP_PORT),
+                            config.getString(configPath + ConfigPaths.SERVERS_FTP_USERNAME),
+                            config.getString(configPath + ConfigPaths.SERVERS_FTP_PASSWORD)
                     );
                 }
             } catch (Exception ex) {
@@ -67,9 +67,8 @@ public class Server {
 
             String schematicPath;
             try {
-                String schemPath = configPath + "schematicPath"; // Temporary till we add ConfigPath class
-                if (!config.getString(schemPath).equalsIgnoreCase("default")) {
-                    schematicPath = config.getString(schemPath);
+                if (!config.getString(configPath + ConfigPaths.SERVERS_SCHEMATIC_PATH).equalsIgnoreCase("default")) {
+                    schematicPath = config.getString(configPath + ConfigPaths.SERVERS_SCHEMATIC_PATH);
                     schematicPath = !schematicPath.startsWith(File.separator) ? File.separator + schematicPath : schematicPath;
                     schematicPath = !schematicPath.endsWith(File.separator) ? schematicPath + File.separator : schematicPath;
                 } else {

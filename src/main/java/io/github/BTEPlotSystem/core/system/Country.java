@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
@@ -23,14 +24,14 @@ public class Country {
     public String name;
 
     public int getHeadID() {
-        return configFile.getInt("countries." + name + ".head-id");
+        return configFile.getInt(ConfigPaths.COUNTRIES + name + ConfigPaths.COUNTRIES_HEAD_ID);
     }
 
     public String getServer() {
-        return configFile.getString("countries." + name + ".server");
+        return configFile.getString(ConfigPaths.COUNTRIES + name + ConfigPaths.COUNTRIES_SERVER);
     }
 
     public String getFinishedSchematicPath() {
-        return configFile.getString("servers." + getServer() + ".finished-schematic-path");
+        return configFile.getString(ConfigPaths.SERVERS + getServer() + ConfigPaths.SERVERS_SCHEMATIC_PATH + "finished-plots/");
     }
 }

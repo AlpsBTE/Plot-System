@@ -36,7 +36,6 @@ database:
 # -----------------------------------------------------
 servers:
   S1:
-    server-name: server-1
     schematic-path: default
     ftp:
       enabled: false
@@ -76,8 +75,8 @@ holograms:
     x: 0
     y: 0
     z: 0
-  # Displays the top 10 players with the most completed buildings
-  completed-builds-leaderboard:
+  # Displays the top 10 players with the most completed plots
+  plots-leaderboard:
     enabled: false
     x: 0
     y: 0
@@ -108,8 +107,8 @@ navigator:
 # | Formatting: Info/Error message outputs
 # -----------------------------------------------------
 message-prefix: §7§l>>
-info-prefix: §a
-error-prefix: §c
+info-color: §a
+error-color: §c
 
 
 # NOTE: Do not change
