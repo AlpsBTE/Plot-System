@@ -107,8 +107,8 @@ navigator:
 # | Formatting: Info/Error message outputs
 # -----------------------------------------------------
 message-prefix: §7§l>>
-info-color: §a
-error-color: §c
+info-colour: §a
+error-colour: §c
 
 
 # NOTE: Do not change

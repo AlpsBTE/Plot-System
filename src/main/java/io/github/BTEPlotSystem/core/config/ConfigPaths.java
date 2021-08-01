@@ -82,8 +82,8 @@ public abstract class ConfigPaths {
 
     // FORMATTING
     public static final String MESSAGE_PREFIX = "message-prefix";
-    public static final String MESSAGE_INFO_COLOR = "info-color";
-    public static final String MESSAGE_ERROR_COLOR = "error-color";
+    public static final String MESSAGE_INFO_COLOUR = "info-colour";
+    public static final String MESSAGE_ERROR_COLOUR = "error-colour";
 
 
     // CONFIG VERSION

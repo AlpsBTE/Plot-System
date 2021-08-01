@@ -26,6 +26,7 @@ package github.BTEPlotSystem.utils;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import github.BTEPlotSystem.core.config.ConfigPaths;
+import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
 import dev.dbassett.skullcreator.SkullCreator;
@@ -34,6 +35,7 @@ import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.logging.Level;
@@ -80,11 +82,11 @@ public class Utils {
     private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOR) + info;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOUR) + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOR) + error;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOUR) + error;
     }
 
     // Integer Try Parser
