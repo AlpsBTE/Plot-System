@@ -88,7 +88,7 @@ public class Server {
         }
 
         if(servers.isEmpty()) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "No server could be registered. Please check your config!");
+            Bukkit.getLogger().log(Level.WARNING, "No server could be registered! Please check your config!");
         }
     }
 
