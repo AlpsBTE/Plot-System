@@ -25,13 +25,10 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.database.DatabaseConnection;
-import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.core.database.builder.StatementBuilder;
 import org.bukkit.Bukkit;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.List;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -40,29 +37,25 @@ import java.util.logging.Level;
 public class CityProject {
 
     private final int ID;
+    private int countryID;
+
     private String name;
-    private Country country;
     private String description;
-    private String tags;
     private boolean visible;
 
 
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            assert con != null;
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM cityProjects WHERE idcityProject = ?");
-            ps.setInt(1, ID);
-            ResultSet rs = ps.executeQuery();
+        String sql = "SELECT * FROM plotsystem_city_projects WHERE id = ?";
+        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
+                .setInt(this.ID).build());
 
-            if(rs.next()) {
-                this.name = rs.getString("name");
-                this.country = new Country(rs.getString("country"));
-                this.description = rs.getString("description");
-                this.tags = rs.getString("tags");
-                this.visible = rs.getInt("visible") == 1;
-            }
+        if (!rs.wasNull()) {
+            this.countryID = rs.getInt("country_id");
+            this.name = rs.getString("name");
+            this.description = rs.getString("description");
+            this.visible = rs.getInt("visible") == 1;
         }
     }
 
@@ -70,39 +63,27 @@ public class CityProject {
         return ID;
     }
 
+    public Country getCountry() throws SQLException {
+        return new Country(countryID);
+    }
+
     public String getName() {
         return name;
     }
 
-    public Country getCountry() {
-        return country;
+    public String getDescription() {
+        return description;
     }
 
-    public String getDescription() { return description; }
-
-    public String getTags() {
-        return tags;
+    public boolean isVisible() {
+        return visible;
     }
-
-    public boolean isVisible() { return visible; }
-
-    public Utils.Server getServer() {
-        Utils.Server server = null;
-        try {
-            server = Utils.parseServer(this);
-        } catch (Exception exception) {
-            Bukkit.getLogger().log(Level.SEVERE, "Unable to find server in config file," +
-                    " it might be that the country's server value is not the same as the server." +
-                    " (Capitalisation Matters)");
-        }
-        return server;
-    } // TODO: Prevent multiple servers of same name from being created.
 
 
     public static List<CityProject> getCityProjects() {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            assert con != null;
-            ResultSet rs = con.createStatement().executeQuery("SELECT idcityProject FROM cityProjects ORDER BY CAST(country AS CHAR)");
+        try {
+            String sql = "SELECT id FROM plotsystem_city_projects ORDER BY country_id";
+            ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql).build());
 
             List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {
