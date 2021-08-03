@@ -29,7 +29,6 @@ import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -87,12 +86,13 @@ public class Plot extends PlotPermissions {
     }
 
     public File getFinishedSchematic(boolean createFile) throws IOException {
-        File file = Paths.get(cityProject.getCountry().getFinishedSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
+        /*File file = Paths.get(cityProject.getCountry().getFinishedSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
         if(createFile && !file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-        return file;
+        return file;*/
+        return null; //TODO: Reimplement feature
     }
 
     public Builder getBuilder() throws SQLException {
