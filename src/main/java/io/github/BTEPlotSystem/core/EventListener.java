@@ -26,6 +26,7 @@ package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;

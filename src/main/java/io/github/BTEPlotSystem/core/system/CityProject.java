@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.system;
 
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 

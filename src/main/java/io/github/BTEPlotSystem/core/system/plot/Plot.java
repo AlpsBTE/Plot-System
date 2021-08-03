@@ -25,7 +25,7 @@
 package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldedit.Vector;;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
