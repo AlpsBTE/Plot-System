@@ -58,7 +58,7 @@ import java.util.logging.Level;
 public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event){
+    public void onPlayerJoinEvent(PlayerJoinEvent event) {
         // Remove Default Join Message
         event.setJoinMessage(null);
         // Teleport Player to the spawn
@@ -77,11 +77,11 @@ public class EventListener extends SpecialBlocks implements Listener {
         // User has joined for the first time
         // Adding user to the database
         if(!event.getPlayer().hasPlayedBefore()) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)");
-                ps.setString(1, event.getPlayer().getUniqueId().toString());
-                ps.setString(2, event.getPlayer().getName());
-                ps.execute();
+            try {
+                DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
+                        .setValue(event.getPlayer().getUniqueId().toString())
+                        .setValue(event.getPlayer().getName())
+                        .executeUpdate();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }

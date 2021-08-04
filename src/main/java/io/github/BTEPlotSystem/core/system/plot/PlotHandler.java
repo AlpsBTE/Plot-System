@@ -41,8 +41,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -92,15 +90,11 @@ public class PlotHandler {
 
     public static void abandonPlot(Plot plot) throws Exception {
         if(plot.isReviewed()) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
-                ps.setInt(1, plot.getReview().getReviewID());
-                ps.executeUpdate();
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                    .setValue(plot.getReview().getReviewID()).executeUpdate();
 
-                ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
-                ps.setInt(1, plot.getID());
-                ps.executeUpdate();
-            }
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                    .setValue(plot.getID()).executeUpdate();
         }
 
         loadPlot(plot); // Load Plot to be listed by Multiverse
@@ -126,11 +120,8 @@ public class PlotHandler {
 
         Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, plot.getID());
-            ps.execute();
-        }
+        DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
+                .setValue(plot.getID()).executeUpdate();
     }
 
     public static void loadPlot(Plot plot) {

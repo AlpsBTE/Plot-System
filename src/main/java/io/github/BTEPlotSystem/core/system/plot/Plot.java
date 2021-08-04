@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.system.plot;
 
-import com.sk89q.worldedit.Vector;;
+import com.sk89q.worldedit.Vector;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
@@ -38,12 +38,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -51,30 +49,31 @@ import java.util.stream.Collectors;
 public class Plot extends PlotPermissions {
 
     private final int ID;
-    private CityProject cityProject;
-    private PlotDifficulty plotDifficulty;
 
     public Plot(int ID) throws SQLException {
         super(ID);
         this.ID = ID;
-
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT city_project_id, difficulty_id FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, getID());
-
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                this.cityProject = new CityProject(rs.getInt(1));
-                this.plotDifficulty = PlotDifficulty.values()[rs.getInt(2) - 1];
-            }
-        }
     }
 
-    public int getID() { return ID; }
+    public int getID() {
+        return ID;
+    }
 
-    public CityProject getCity() { return cityProject; }
+    public CityProject getCity() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement("SELECT city_project_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
 
-    public PlotDifficulty getDifficulty() { return plotDifficulty; }
+        if (rs.next()) return new CityProject(rs.getInt(1));
+        return null;
+    }
+
+    public PlotDifficulty getDifficulty() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement("SELECT difficulty_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if (rs.next()) return PlotDifficulty.values()[rs.getInt(1) - 1];
+        return null;
+    }
 
     public File getOutlinesSchematic() {
         try {
@@ -111,35 +110,31 @@ public class Plot extends PlotPermissions {
         return null;
     }
 
-    public List<Builder> getPlotMembers(){
+    public List<Builder> getPlotMembers() throws SQLException {
         List<Builder> builders = new ArrayList<>();
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT member_uuids FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, getID());
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                String members = rs.getString(1);
-                if(!rs.wasNull()) {
-                    String[] uuidMembers = members.split(",");
 
-                    for (String uuid : uuidMembers) {
-                        builders.add(new Builder(UUID.fromString(uuid)));
-                    }
+        ResultSet rs = DatabaseConnection.createStatement("SELECT member_uuids FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if(rs.next()) {
+            String members = rs.getString(1);
+            if(!rs.wasNull()) {
+                String[] uuidMembers = members.split(",");
+
+                for (String uuid : uuidMembers) {
+                    builders.add(new Builder(UUID.fromString(uuid)));
                 }
             }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return builders;
     }
 
     public Review getReview() throws SQLException {
         if(getStatus() == Status.completed || isRejected()) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?");
-                ps.setInt(1, getID());
-                ResultSet rs = ps.executeQuery();
-                rs.next();
+            ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                    .setValue(this.ID).executeQuery();
+
+            if (rs.next()) {
                 return new Review(rs.getInt(1));
             }
         }
@@ -158,65 +153,77 @@ public class Plot extends PlotPermissions {
     }
 
     public Vector getMinecraftCoordinates() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, getID());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
 
-            // Player MC Coordinates
+        if (rs.next()) {
             String[] mcLocation = rs.getString(1).split(",");
-            return new Vector(Double.parseDouble(mcLocation[0]),Double.parseDouble(mcLocation[1]),Double.parseDouble(mcLocation[2]));
+            return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
         }
+        return null;
     }
 
     public int getScore() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT score FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, getID());
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
 
-            if(rs.next()) {
-                int score = rs.getInt(1);
-                if(!rs.wasNull()) {
-                    return score;
-                }
+        if(rs.next()) {
+            int score = rs.getInt(1);
+            if(!rs.wasNull()) {
+                return score;
             }
-            return -1;
         }
+        return -1;
     }
 
     public Status getStatus() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT status FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, getID());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT status FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if (rs.next()) {
             return Status.valueOf(rs.getString(1));
         }
+        return null;
     }
 
     public Date getLastActivity() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT last_activity FROM plotsystem_plots WHERE id = ?");
-            ps.setInt(1, getID());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT last_activity FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if (rs.next()) {
             return rs.getDate(1);
         }
+        return null;
+    }
+
+    public Date getCreateDate() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement("SELECT create_date FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if (rs.next()) {
+            return rs.getDate(1);
+        }
+        return null;
+    }
+
+    public Builder getPlotCreator() throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement("SELECT create_player FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if (rs.next()) {
+            return new Builder(UUID.fromString(rs.getString(1)));
+        }
+        return null;
     }
 
     public Slot getSlot() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?");
-            ps.setString(1, getBuilder().getUUID().toString());
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(this.getPlotOwner().getUUID().toString()).executeQuery();
 
-            if(rs.next()) {
-                for(int i = 1; i <= 3; i++) {
-                    if(rs.getInt(i) == getID()) {
-                        return Slot.values()[i - 1];
-                    }
+        if(rs.next()) {
+            for(int i = 1; i <= 3; i++) {
+                if(rs.getInt(i) == getID()) {
+                    return Slot.values()[i - 1];
                 }
             }
         }
@@ -252,67 +259,41 @@ public class Plot extends PlotPermissions {
     }
 
     public void setScore(int score) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps;
-            if(score == -1) {
-                ps = con.prepareStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?");
-                ps.setInt(1, getID());
-            } else {
-                ps = con.prepareStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?");
-                ps.setInt(1, score);
-                ps.setInt(2, getID());
-            }
-            ps.executeUpdate();
+        if (score == -1) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?")
+                    .setValue(this.ID).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?")
+                    .setValue(score).setValue(this.ID).executeUpdate();
         }
     }
 
     public void setStatus(Status status) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE plotsystem_plots SET status = ? WHERE id = '" + getID() + "'");
-            ps.setString(1, status.name());
-            ps.executeUpdate();
-        }
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET status = ? WHERE id = ?")
+                .setValue(status.name()).setValue(this.ID).executeUpdate();
     }
 
     public void setLastActivity(boolean setNull) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps;
-            if(setNull) {
-                ps = con.prepareStatement("UPDATE plotsystem_plots SET last_activity = DEFAULT(last_activity) WHERE id = ?");
-                ps.setInt(1, getID());
-            } else {
-                ps = con.prepareStatement("UPDATE plotsystem_plots SET last_activity = ? WHERE id = ?");
-                ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
-                ps.setInt(2, getID());
-            }
-            ps.executeUpdate();
+        if(setNull) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET last_activity = DEFAULT(last_activity) WHERE id = ?")
+                    .setValue(this.ID).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET last_activity = ? WHERE id = ?")
+                    .setValue(java.sql.Date.valueOf(LocalDate.now())).setValue(this.ID).executeUpdate();
         }
     }
 
     // TODO: Maybe rework this method
     public void setPlotMembers(List<Builder> plotMembers) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            // Convert plot member list to string
-            String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
+        // Convert plot member list to string
+        String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
 
-            PreparedStatement ps;
-            if(!plotMembers.isEmpty()) {
-                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plotsystem_plots SET member_uuids = ? WHERE id = ?");
-                ps.setString(1, plotMemberAsString);
-                ps.setInt(2, getID());
-            } else {
-                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plotsystem_plots SET member_uuids = DEFAULT(member_uuids) WHERE id = ?");
-                ps.setInt(1, getID());
-            }
-            ps.executeUpdate();
-        }
-    }
-
-    public boolean isPasted() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT pasted FROM plotsystem_plots WHERE id = '" + getID() + "'");
-            rs.next();
-            return rs.getBoolean(1);
+        if(!plotMembers.isEmpty()) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET member_uuids = ? WHERE id = ?")
+                    .setValue(plotMemberAsString).setValue(this.ID).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET member_uuids = DEFAULT(member_uuids) WHERE id = ?")
+                    .setValue(this.ID).executeUpdate();
         }
     }
 

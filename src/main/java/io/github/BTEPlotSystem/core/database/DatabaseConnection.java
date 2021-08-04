@@ -27,7 +27,6 @@ package github.BTEPlotSystem.core.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import github.BTEPlotSystem.core.config.ConfigPaths;
-import github.BTEPlotSystem.core.database.builder.TableBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -44,16 +43,27 @@ public class DatabaseConnection {
     private final static HikariConfig config = new HikariConfig();
     private static HikariDataSource dataSource;
 
+    private static String URL;
+    private static String name;
+    private static String username;
+    private static String password;
+
     public static void InitializeDatabase() {
         try {
             Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
             Bukkit.getLogger().log(Level.INFO, "Successfully registered MariaDB JDBC Driver!");
 
             FileConfiguration configFile = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
+            URL = configFile.getString(ConfigPaths.DATABASE_URL);
+            name = configFile.getString(ConfigPaths.DATABASE_NAME);
+            username = configFile.getString(ConfigPaths.DATABASE_USERNAME);
+            password = configFile.getString(ConfigPaths.DATABASE_PASSWORD);
 
-            config.setJdbcUrl(configFile.getString(ConfigPaths.DATABASE_URL) + configFile.getString(ConfigPaths.DATABASE_NAME));
-            config.setUsername(configFile.getString(ConfigPaths.DATABASE_USERNAME));
-            config.setPassword(configFile.getString(ConfigPaths.DATABASE_PASSWORD));
+            createDatabase();
+
+            config.setJdbcUrl(URL + name);
+            config.setUsername(username);
+            config.setPassword(password);
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -66,6 +76,7 @@ public class DatabaseConnection {
         }
     }
 
+    @Deprecated
     public static Connection getConnection() {
         int retries = 3;
         while (retries > 0) {
@@ -83,6 +94,34 @@ public class DatabaseConnection {
         return new StatementBuilder(sql);
     }
 
+    private static void createDatabase() throws SQLException {
+        try (Connection con = DriverManager.getConnection(URL, username, password)) {
+            Statement statement = con.createStatement();
+            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+        }
+    }
+
+    private static void createTables() {
+        for (String table : Tables.getTables()) {
+            try (Connection con = dataSource.getConnection()) {
+                    /*Objects.requireNonNull(con).prepareStatement(table.toString()).executeUpdate();
+
+                    if (table.getTableName().equals("plotsystem_difficulties")) {
+                        ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
+                        rs.next();
+                        if (rs.getInt(1) != 3) {
+                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
+                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
+                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+                        }
+                    }*/
+                Bukkit.getLogger().log(Level.INFO, table);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!");
+            }
+        }
+    }
+
     public static class StatementBuilder {
         private final String sql;
         private final List<Object> values = new ArrayList<>();
@@ -97,14 +136,14 @@ public class DatabaseConnection {
         }
 
         public ResultSet executeQuery() throws SQLException {
-            try (Connection con = DatabaseConnection.getConnection()) {
+            try (Connection con = dataSource.getConnection()) {
                 PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
                 return iterateValues(ps).executeQuery();
             }
         }
 
         public void executeUpdate() throws SQLException {
-            try (Connection con = DatabaseConnection.getConnection()) {
+            try (Connection con = dataSource.getConnection()) {
                 PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
                 iterateValues(ps).executeUpdate();
             }
@@ -139,81 +178,105 @@ public class DatabaseConnection {
                             ");",
 
                     // Servers
-                    new TableBuilder("plotsystem_servers")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("ftp_configuration_id", SQL.INT).Null()
-                            .column("name", SQL.varchar(45)).notNull()
-                            .column("schematic_path", SQL.varchar(255)).Null()
-                            .foreignKey("ftp_configuration_id", "plotsystem_ftp_configurations", "id")
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_servers`" +
+                            "(" +
+                            " `id`                   int NOT NULL AUTO_INCREMENT ," +
+                            " `ftp_configuration_id` int NULL ," +
+                            " `name`                 varchar(45) NOT NULL ," +
+                            " `schematic_path`       varchar(255) NULL ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `fkIdx_30` (`ftp_configuration_id`)," +
+                            "CONSTRAINT `FK_29` FOREIGN KEY `fkIdx_30` (`ftp_configuration_id`) REFERENCES `plotsystem_ftp_configurations` (`id`)" +
+                            ");",
 
                     // Countries
-                    new TableBuilder("plotsystem_countries")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("server_id", SQL.INT).notNull()
-                            .column("name", SQL.varchar(45)).notNull()
-                            .column("head_id", SQL.varchar(10)).Null()
-                            .foreignKey("server_id", "plotsystem_servers", "id")
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_countries`" +
+                            "(" +
+                            " `id`        int NOT NULL AUTO_INCREMENT ," +
+                            " `server_id` int NOT NULL ," +
+                            " `name`      varchar(45) NOT NULL ," +
+                            " `head_id`   varchar(10) NULL ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `fkIdx_38` (`server_id`)," +
+                            "CONSTRAINT `FK_37` FOREIGN KEY `fkIdx_38` (`server_id`) REFERENCES `plotsystem_servers` (`id`)" +
+                            ");",
 
                     // City Projects
-                    new TableBuilder("plotsystem_city_projects")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("country_id", SQL.INT).notNull()
-                            .column("name", SQL.varchar(45)).notNull()
-                            .column("description", SQL.varchar(255)).notNull()
-                            .column("visible", SQL.BOOL).defaultValue("0")
-                            .foreignKey("country_id", "plotsystem_countries", "id")
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_city_projects`" +
+                            "(" +
+                            " `id`          int NOT NULL AUTO_INCREMENT ," +
+                            " `country_id`  int NOT NULL ," +
+                            " `name`        varchar(45) NOT NULL ," +
+                            " `description` varchar(255) NOT NULL ," +
+                            " `visible`     tinyint DEFAULT 0 ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `fkIdx_44` (`country_id`)," +
+                            "CONSTRAINT `FK_43` FOREIGN KEY `fkIdx_44` (`country_id`) REFERENCES `plotsystem_countries` (`id`)" +
+                            ");",
 
                     // Builders
-                    new TableBuilder("plotsystem_builders")
-                            .column("uuid", SQL.varchar(36)).primaryKey(false)
-                            .column("name", SQL.varchar(16)).notNull()
-                            .column("score", SQL.INT).defaultValue("0")
-                            .column("completed_plots", SQL.INT).defaultValue("0")
-                            .column("first_slot", SQL.INT).Null()
-                            .column("second_slot", SQL.INT).Null()
-                            .column("third_slot", SQL.INT).Null()
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_builders`" +
+                            "(" +
+                            " `uuid`            varchar(36) NOT NULL ," +
+                            " `name`            varchar(16) NOT NULL ," +
+                            " `score`           int DEFAULt 0 ," +
+                            " `completed_plots` int DEFAULT 0 ," +
+                            " `first_slot`      int NULL ," +
+                            " `second_slot`     int NULL ," +
+                            " `third_slot`      int NULL ," +
+                            "PRIMARY KEY (`uuid`)" +
+                            ");",
 
                     // Reviews
-                    new TableBuilder("plotsystem_reviews")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("reviewer_uuid", SQL.varchar(36)).notNull()
-                            .column("rating", SQL.varchar(45)).notNull()
-                            .column("feedback", SQL.varchar(420)).notNull()
-                            .column("review_date", SQL.DATETIME).notNull()
-                            .column("sent", SQL.BOOL).defaultValue("0")
-                            .foreignKey("reviewer_uuid", "plotsystem_builders", "uuid")
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
+                            "(" +
+                            " `id`            int NOT NULL AUTO_INCREMENT ," +
+                            " `reviewer_uuid` varchar(36) NOT NULL ," +
+                            " `rating`        varchar(45) NOT NULL ," +
+                            " `feedback`      varchar(420) NOT NULL ," +
+                            " `review_date`   datetime NOT NULL ," +
+                            " `sent`          tinyint DEFAULT 0 ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `fkIdx_73` (`reviewer_uuid`)," +
+                            "CONSTRAINT `FK_72` FOREIGN KEY `fkIdx_73` (`reviewer_uuid`) REFERENCES `plotsystem_builders` (`uuid`)" +
+                            ");",
 
                     // Difficulties
-                    new TableBuilder("plotsystem_difficulties")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("name", SQL.varchar(45)).notNull()
-                            .column("multiplier", SQL.DOUBLE).defaultValue("1")
-                            .column("score_requirement", SQL.INT).defaultValue("0")
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_difficulties`" +
+                            "(" +
+                            " `id`               int NOT NULL AUTO_INCREMENT ," +
+                            " `name`             varchar(45) NOT NULL ," +
+                            " `multiplier`       double DEFAULT 1 ," +
+                            " `score_requirment` int DEFAULT 0 ," +
+                            "PRIMARY KEY (`id`)" +
+                            ");",
 
                     // Plots
-                    new TableBuilder("plotsystem_plots")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("city_project_id", SQL.INT).notNull()
-                            .column("difficulty_id", SQL.INT).notNull()
-                            .column("review_id", SQL.INT).Null()
-                            .column("player_uuid", SQL.varchar(36)).notNull()
-                            .column("member_uuids", SQL.varchar(110)).Null()
-                            .column("mc_coordinates", SQL.varchar(255)).notNull()
-                            .column("score", SQL.INT).Null()
-                            .column("last_activity", SQL.DATETIME).notNull()
-                            .column("create_date", SQL.DATETIME).notNull()
-                            .column("pasted", SQL.BOOL).defaultValue(false)
-                            .foreignKey("city_project_id", "plotsystem_city_projects", "id")
-                            .foreignKey("difficulty_id", "plotsystem_difficulties", "id")
-                            .foreignKey("review_id", "plotsystem_reviews", "id")
-                            .foreignKey("player_uuid", "plotsystem_builders", "uuid")
-                            .build()
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_plots`" +
+                            "(" +
+                            " `id`              int NOT NULL AUTO_INCREMENT ," +
+                            " `city_project_id` int NOT NULL ," +
+                            " `difficulty_id`   int NOT NULL ," +
+                            " `review_id`       int NULL ," +
+                            " `owner_uuid`     varchar(36) NULL ," +
+                            " `member_uuids`    varchar(110) NULL ," +
+                            " `status`          enum ('unclaimed', 'unfinished', 'unreviewed', 'completed') NOT NULL DEFAULT 'unclaimed' ," +
+                            " `mc_coordinates`  varchar(255) NOT NULL ," +
+                            " `score`           int NULL ," +
+                            " `last_activity`   datetime NULL ," +
+                            " `create_date`     datetime NOT NULL ," +
+                            " `create_player`   varchar(36) NOT NULL ," +
+                            " `pasted`          tinyint DEFAULT 0 ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `fkIdx_57` (`city_project_id`)," +
+                            "CONSTRAINT `FK_56` FOREIGN KEY `fkIdx_57` (`city_project_id`) REFERENCES `plotsystem_city_projects` (`id`)," +
+                            "KEY `fkIdx_60` (`owner_uuid`)," +
+                            "CONSTRAINT `FK_59` FOREIGN KEY `fkIdx_60` (`owner_uuid`) REFERENCES `plotsystem_builders` (`uuid`)," +
+                            "KEY `fkIdx_70` (`review_id`)," +
+                            "CONSTRAINT `FK_69` FOREIGN KEY `fkIdx_70` (`review_id`) REFERENCES `plotsystem_reviews` (`id`)," +
+                            "KEY `fkIdx_82` (`difficulty_id`)," +
+                            "CONSTRAINT `FK_81` FOREIGN KEY `fkIdx_82` (`difficulty_id`) REFERENCES `plotsystem_difficulties` (`id`)" +
+                            ");"
             );
         }
     }

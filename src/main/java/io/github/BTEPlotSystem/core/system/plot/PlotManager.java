@@ -41,6 +41,7 @@ import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
+import github.BTEPlotSystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -49,99 +50,84 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class PlotManager {
 
     public static List<Plot> getPlots() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.prepareStatement("SELECT id FROM plotsystem_plots").executeQuery());
-        }
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
     }
 
     public static List<Plot> getPlots(Status... statuses) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery(getStatusQuery("id", "", statuses)));
-        }
+       return listPlots(DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery());
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            List<Plot> plots = listPlots(con.createStatement().executeQuery("SELECT id FROM plotsystem_plots WHERE player_uuid = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
-            plots.addAll(listPlots(con.createStatement().executeQuery("SELECT id FROM plotsystem_plots WHERE INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)")));
-            return plots;
-        }
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE owner_uuid = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)").executeQuery());
+        plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
+        return plots;
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            //TODO: Query uuidMember as well
-            List<Plot> plots = listPlots(con.createStatement().executeQuery(getStatusQuery("id", "' AND player_uuid = '" + builder.getUUID(), statuses)));
-            return plots;
-        }
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
+        //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
+        // TODO: Add support for member plots
+        return plots;
     }
 
     public static List<Plot> getPlots(int cityID, Status... statuses) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery(getStatusQuery("id", "' AND city_project_id = '" + cityID, statuses)));
-        }
+        return listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND city_project_id = '" + cityID, statuses)).executeQuery());
     }
 
     public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT id FROM plotsystem_plots WHERE city_project_id = ? AND difficulty_id = ? AND status = ?");
-            ps.setInt(1, cityID);
-            ps.setInt(2, plotDifficulty.ordinal() + 1);
-            ps.setString(3, status.name());
-            return listPlots(ps.executeQuery());
-        }
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE city_project_id = ? AND difficulty_id = ? AND status = ?")
+                .setValue(cityID)
+                .setValue(plotDifficulty.ordinal() + 1)
+                .setValue(status.name())
+                .executeQuery());
     }
 
-    private static String getStatusQuery(String columns, String additionalQuery, Status... statuses) {
-        StringBuilder query = new StringBuilder("SELECT " + columns + " FROM plotsystem_plots WHERE status = ");
+    private static String getStatusQuery(String additionalQuery, Status... statuses) {
+        StringBuilder query = new StringBuilder("SELECT id FROM plotsystem_plots WHERE status = ");
 
         for(int i = 0; i < statuses.length; i++) {
             query.append("'").append(statuses[i].name()).append(additionalQuery).append("'");
-            query.append((i != statuses.length - 1) ? " OR status = " : ""); // TODO: Try to change OR to AND
+            query.append((i != statuses.length - 1) ? " AND status = " : "");
         }
         return query.toString();
     }
 
     public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT multiplier FROM plotsystem_difficulties WHERE id = ?");
-            ps.setInt(1, plotDifficulty.ordinal() + 1);
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT multiplier FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
 
-            if (rs.next()) {
-                return rs.getDouble(1);
-            }
-            return 1;
+        if (rs.next()) {
+            return rs.getDouble(1);
         }
+        return 1;
     }
 
     public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?");
-            ps.setInt(1, plotDifficulty.ordinal() + 1);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
+
+        if (rs.next()) {
             return rs.getInt(1);
         }
+        return 0;
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
         List<Plot> plots = new ArrayList<>();
 
         while (rs.next()) {
-           plots.add(new Plot(rs.getInt("id")));
+           plots.add(new Plot(rs.getInt(1)));
         }
 
         return plots;
