@@ -92,9 +92,11 @@ public class Builder {
         ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(getUUID().toString()).executeQuery();
 
-        for(int i = 1; i <= 3; i++) {
-            if(rs.getString(i) == null) {
-                return Slot.values()[i - 1];
+        if (rs.next()) {
+            for(int i = 1; i <= 3; i++) {
+                if(rs.getString(i) == null) {
+                    return Slot.values()[i - 1];
+                }
             }
         }
         return null;
@@ -132,9 +134,11 @@ public class Builder {
     }
 
     public void removePlot(Slot slot) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
-                .setValue(getUUID().toString())
-                .executeUpdate();
+        if (slot != null) { // If not null, plot is already removed from player slot
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
+                    .setValue(getUUID().toString())
+                    .executeUpdate();
+        }
     }
 
     public static Builder getBuilderByName(String name) throws SQLException {
