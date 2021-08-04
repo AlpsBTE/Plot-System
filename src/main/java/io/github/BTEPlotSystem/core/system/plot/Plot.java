@@ -76,23 +76,29 @@ public class Plot extends PlotPermissions {
 
     public PlotDifficulty getDifficulty() { return plotDifficulty; }
 
-    public File getOutlinesSchematic() throws IOException {
-        File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
-        if(!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+    public File getOutlinesSchematic() {
+        try {
+            File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+
+            if(!file.exists()) {
+                if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
+                    // TODO: Try to get file from the ftp server
+                }
+            }
+            return file;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return file;
+        return null;
     }
 
-    public File getFinishedSchematic(boolean createFile) throws IOException {
-        /*File file = Paths.get(cityProject.getCountry().getFinishedSchematicPath(), String.valueOf(cityProject.getID()), getID() + ".schematic").toFile();
-        if(createFile && !file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+    public File getFinishedSchematic() {
+        try {
+            return Paths.get(PlotManager.getDefaultSchematicPath(), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return file;*/
-        return null; //TODO: Reimplement feature
+        return null;
     }
 
     public Builder getPlotOwner() throws SQLException {

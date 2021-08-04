@@ -211,20 +211,24 @@ public class PlotManager {
         Operations.complete(forwardExtentCopy);
 
         // Write finished plot clipboard to schematic file
-        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
-            writer.write(cb, region.getWorld().getWorldData());
+        File finishedSchematicFile = plot.getFinishedSchematic();
+
+        boolean createdDirs = false; boolean createdFile = false;
+        if (!finishedSchematicFile.exists()) {
+            createdDirs = finishedSchematicFile.getParentFile().mkdirs();
+            createdFile = finishedSchematicFile.createNewFile();
         }
 
-        /*Utils.Server server = plot.getCity().getServer();
+        if (createdDirs && createdFile) {
+            try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+                writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+            }
 
-        if(server.ftpConfiguration != null) {
-            // Send schematic to terra server
-            FTPManager.sendFileFTP(FTPManager.getFTPUrl(
-                    server, plot),
-                    plot.getFinishedSchematic(false));
-        } else {
-            Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
-        }*/
+            // Upload to FTP server
+            if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
+                FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
+            }
+        }
     }
 
     public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
