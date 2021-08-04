@@ -311,7 +311,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 if (!isRejected){
                     plot.getReview().setFeedbackSent(false);
                     plot.getReview().setFeedback("No Feedback");
-                    plot.setStatus(Status.complete);
+                    plot.setStatus(Status.completed);
                     plot.getBuilder().addCompletedBuild(1);
 
                     // Remove Plot from Owner
