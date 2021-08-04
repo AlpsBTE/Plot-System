@@ -27,13 +27,13 @@ package github.BTEPlotSystem.core.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import github.BTEPlotSystem.core.config.ConfigPaths;
-import github.BTEPlotSystem.core.database.builder.PreparedStatementBuilder;
 import github.BTEPlotSystem.core.database.builder.TableBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -80,14 +80,43 @@ public class DatabaseConnection {
         return null;
     }
 
-    public static ResultSet query(PreparedStatementBuilder builder) throws SQLException {
-        ResultSet rs = builder.getPreparedStatement().executeQuery();
-        rs.next();
-        return rs;
+    public static StatementBuilder createStatement(String sql) {
+        return new StatementBuilder(sql);
     }
 
-    public static void update(PreparedStatementBuilder builder) throws SQLException {
-        builder.getPreparedStatement().executeUpdate();
+    public static class StatementBuilder {
+        private final String sql;
+        private final List<Object> values = new ArrayList<>();
+
+        public StatementBuilder(String sql) {
+            this.sql = sql;
+        }
+
+        public StatementBuilder setValue(Object value) {
+            values.add(value);
+            return this;
+        }
+
+        public ResultSet executeQuery() throws SQLException {
+            try (Connection con = DatabaseConnection.getConnection()) {
+                PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
+                return iterateValues(ps).executeQuery();
+            }
+        }
+
+        public void executeUpdate() throws SQLException {
+            try (Connection con = DatabaseConnection.getConnection()) {
+                PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
+                iterateValues(ps).executeUpdate();
+            }
+        }
+
+        private PreparedStatement iterateValues(PreparedStatement ps) throws SQLException {
+            for (int i = 0; i < values.size(); i++) {
+                ps.setObject(i + 1, values.get(i));
+            }
+            return ps;
+        }
     }
 
     public static class Tables {
@@ -97,7 +126,7 @@ public class DatabaseConnection {
         public static void createTables() {
             for (TableBuilder table : tables) {
                 try (Connection con = getConnection()) {
-                    Objects.requireNonNull(con).prepareStatement(table.toString()).executeUpdate();
+                    /*Objects.requireNonNull(con).prepareStatement(table.toString()).executeUpdate();
 
                     if (table.getTableName().equals("plotsystem_difficulties")) {
                         ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
@@ -107,7 +136,8 @@ public class DatabaseConnection {
                             con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
                             con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
                         }
-                    }
+                    }*/
+                    Bukkit.getLogger().log(Level.INFO, table.toString());
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!");
                 }

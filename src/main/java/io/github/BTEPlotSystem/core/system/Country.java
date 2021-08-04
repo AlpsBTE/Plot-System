@@ -1,7 +1,6 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.database.DatabaseConnection;
-import github.BTEPlotSystem.core.database.builder.StatementBuilder;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -23,14 +22,13 @@ public class Country {
     public Country(int ID) throws SQLException {
         this.ID = ID;
 
-        String sql = "SELECT * FROM plotsystem_countries WHERE id = ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setInt(this.ID).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id FROM plotsystem_countries WHERE id = ?")
+                .setValue(this.ID).executeQuery();
 
-        if (!rs.wasNull()) {
-            this.serverID = rs.getInt("server_id");
-            this.name = rs.getString("name");
-            this.headID = rs.getString("head_id");
+        if (rs.next()) {
+            this.serverID = rs.getInt(1);
+            this.name = rs.getString(2);
+            this.headID = rs.getString(3);
         }
     }
 
@@ -38,8 +36,8 @@ public class Country {
         return ID;
     }
 
-    public int getServer_id() {
-        return serverID;
+    public Server getServer() throws SQLException {
+        return new Server(serverID);
     }
 
     public String getName() {
@@ -52,8 +50,7 @@ public class Country {
 
     public static List<Country> getCountries() {
         try {
-            String sql = "SELECT id FROM plotsystem_countries ORDER BY server_id";
-            ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql).build());
+            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery();
 
             List<Country> countries = new ArrayList<>();
             while (rs.next()) {

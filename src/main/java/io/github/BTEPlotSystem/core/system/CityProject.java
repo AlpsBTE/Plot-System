@@ -25,7 +25,6 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.database.DatabaseConnection;
-import github.BTEPlotSystem.core.database.builder.StatementBuilder;
 import org.bukkit.Bukkit;
 
 import java.util.List;
@@ -47,15 +46,14 @@ public class CityProject {
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
-        String sql = "SELECT * FROM plotsystem_city_projects WHERE id = ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setInt(this.ID).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT country_id, name, description, visible FROM plotsystem_city_projects WHERE id = ?")
+                .setValue(this.ID).executeQuery();
 
-        if (!rs.wasNull()) {
-            this.countryID = rs.getInt("country_id");
-            this.name = rs.getString("name");
-            this.description = rs.getString("description");
-            this.visible = rs.getInt("visible") == 1;
+        if (rs.next()) {
+            this.countryID = rs.getInt(1);
+            this.name = rs.getString(2);
+            this.description = rs.getString(3);
+            this.visible = rs.getInt(4) == 1;
         }
     }
 
@@ -82,8 +80,7 @@ public class CityProject {
 
     public static List<CityProject> getCityProjects() {
         try {
-            String sql = "SELECT id FROM plotsystem_city_projects ORDER BY country_id";
-            ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql).build());
+            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery();
 
             List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {

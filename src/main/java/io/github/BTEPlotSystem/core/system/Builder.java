@@ -29,7 +29,6 @@ import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.holograms.PlotsLeaderboard;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
-import github.BTEPlotSystem.core.database.builder.StatementBuilder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
@@ -60,30 +59,38 @@ public class Builder {
     public boolean isOnline() { return Bukkit.getPlayer(UUID) != null; }
 
     public String getName() throws SQLException {
-        String sql = "SELECT name FROM plotsystem_builders WHERE uuid = ?";
-        return DatabaseConnection.query(new StatementBuilder(sql)
-                .setString(getUUID().toString())
-                .build()).getString(1);
+        ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
+
+        if (rs.next()) {
+            return rs.getString(1);
+        }
+        return getPlayer() != null ? getPlayer().getName() : "";
     }
 
     public int getScore() throws SQLException {
-        String sql = "SELECT score FROM plotsystem_builders WHERE uuid = ?";
-        return DatabaseConnection.query(new StatementBuilder(sql)
-                .setString(getUUID().toString())
-                .build()).getInt(1);
+        ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
     }
 
     public int getCompletedBuilds() throws SQLException {
-        String sql = "SELECT completed_plots FROM plotsystem_builders WHERE uuid = ?";
-        return DatabaseConnection.query(new StatementBuilder(sql)
-                .setString(getUUID().toString())
-                .build()).getInt(1);
+        ResultSet rs = DatabaseConnection.createStatement("SELECT completed_plots FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
     }
 
     public Slot getFreeSlot() throws SQLException {
-        String sql = "SELECT firsts_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setString(getUUID().toString()).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
 
         for(int i = 1; i <= 3; i++) {
             if(rs.getString(i) == null) {
@@ -94,77 +101,70 @@ public class Builder {
     }
 
     public Plot getPlot(Slot slot) throws SQLException {
-        String sql = "SELECT " + slot.name() + " FROM plotsystem_builders WHERE uuid = ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setString(getUUID().toString()).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT " + slot.name().toLowerCase() + " FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
 
-        int plotID = rs.getInt(1);
-        return rs.wasNull() ? null : new Plot(plotID);
+        int plotID = -1;
+        if (rs.next()) plotID = rs.getInt(1);
+        return plotID == -1 ? null : new Plot(plotID);
     }
 
     public void addScore(int score) throws SQLException {
-        String sql = "UPDATE plotsystem_builders SET score = ? WHERE uuid = ?";
-        DatabaseConnection.update(new StatementBuilder(sql)
-                .setInt(score).setString(UUID.toString()).build());
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
+                .setValue(score).setValue(getUUID().toString())
+                .executeUpdate();
 
         BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
-        String sql = "UPDATE plotsystem_builders SET completed_plots = ? WHERE uuid = ?";
-        DatabaseConnection.update(new StatementBuilder(sql)
-                .setInt(amount).setString(UUID.toString()).build());
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET completed_plots = ? WHERE uuid = ?")
+                .setValue(amount).setValue(getUUID().toString())
+                .executeUpdate();
 
         BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
-        String sql = "UPDATE plotsystem_builders SET " + slot.name() + " = ? WHERE uuid = ?";
-        DatabaseConnection.update(new StatementBuilder(sql)
-                .setInt(plotID).setString(UUID.toString()).build());
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = ? WHERE uuid = ?")
+                .setValue(plotID).setValue(getUUID().toString())
+                .executeUpdate();
     }
 
     public void removePlot(Slot slot) throws SQLException {
-        String sql = "UPDATE plotsystem_builders SET " + slot.name() + " = DEFAULT(first_slot) WHERE uuid = ?";
-        DatabaseConnection.update(new StatementBuilder(sql)
-                .setString(UUID.toString()).build());
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
+                .setValue(getUUID().toString())
+                .executeUpdate();
     }
 
     public static Builder getBuilderByName(String name) throws SQLException {
-        String sql = "SELECT uuid FROM plotsystem_builders WHERE name = ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setString(name).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT uuid FROM plotsystem_builders WHERE name = ?")
+                .setValue(name).executeQuery();
 
-        if (!rs.wasNull()) {
+        if (rs.next()) {
             return new Builder(java.util.UUID.fromString(rs.getString(1)));
         }
         return null;
     }
 
     public static List<String> getBuildersByScore(int limit) throws SQLException {
-        String sql = "SELECT name, score FROM plotsystem_builders ORDER BY score DESC LIMIT ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setInt(limit).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT name, score FROM plotsystem_builders ORDER BY score DESC LIMIT ?")
+                .setValue(limit).executeQuery();
 
         List<String> scoreAsFormat = new ArrayList<>();
-        if (!rs.wasNull()) {
             while (rs.next()) {
                 scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
             }
-        }
         return scoreAsFormat;
     }
 
     public static List<String> getBuildersByCompletedBuilds(int limit) throws SQLException {
-        String sql = "SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setInt(limit).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
+                .setValue(limit).executeQuery();
 
         List<String> scoreAsFormat = new ArrayList<>();
-        if (!rs.wasNull()) {
-            while (rs.next()) {
-                scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
-            }
+        while (rs.next()) {
+            scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
         }
         return scoreAsFormat;
     }

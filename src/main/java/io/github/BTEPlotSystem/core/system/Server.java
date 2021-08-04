@@ -1,7 +1,6 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.database.DatabaseConnection;
-import github.BTEPlotSystem.core.database.builder.StatementBuilder;
 import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
@@ -20,16 +19,15 @@ public class Server {
     public Server(int ID) throws SQLException {
         this.ID = ID;
 
-        String sql = "SELECT * FROM plotsystem_servers WHERE id = ?";
-        ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                .setInt(this.ID).build());
+        ResultSet rs = DatabaseConnection.createStatement("SELECT ftp_configuration_id, name, schematic_path FROM plotsystem_servers WHERE id = ?")
+                .setValue(this.ID).executeQuery();
 
-        if (!rs.wasNull()) {
-            this.ftpConfigurationID = rs.getInt("ftp_configuration_id");
+        if (rs.next()) {
+            this.ftpConfigurationID = rs.getInt(1);
             if (rs.wasNull()) this.ftpConfigurationID = -1;
 
-            this.name = rs.getString("name");
-            this.schematicPath = rs.getString("schematic_path");
+            this.name = rs.getString(2);
+            this.schematicPath = rs.getString(3);
         }
     }
 
@@ -50,9 +48,8 @@ public class Server {
     }
 
     public static List<Server> getServers() {
-        try {
-            String sql = "SELECT id FROM plotsystem_servers";
-            ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql).build());
+        try {;
+            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_servers").executeQuery();
 
             List<Server> servers = new ArrayList<>();
             while (rs.next()) {
@@ -76,15 +73,14 @@ public class Server {
         public FTPConfiguration(int ID) throws SQLException {
             this.ID = ID;
 
-            String sql = "SELECT * FROM plotsystem_ftp_configurations WHERE id = ?";
-            ResultSet rs = DatabaseConnection.query(new StatementBuilder(sql)
-                    .setInt(this.ID).build());
+            ResultSet rs = DatabaseConnection.createStatement("SELECT address, port, username, password FROM plotsystem_ftp_configurations WHERE id = ?")
+                    .setValue(this.ID).executeQuery();
 
-            if (!rs.wasNull()) {
-                this.address = rs.getString("address");
-                this.port = rs.getInt("port");
-                this.username = rs.getString("username");
-                this.password = rs.getString("password");
+            if (rs.next()) {
+                this.address = rs.getString(1);
+                this.port = rs.getInt(2);
+                this.username = rs.getString(3);
+                this.password = rs.getString(4);
             }
         }
 
