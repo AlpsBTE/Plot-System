@@ -74,15 +74,15 @@ public class CMD_Submit implements CommandExecutor {
 
                 try {
                     if(plot.getStatus() == Status.unfinished) {
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
+                        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             PlotHandler.submitPlot(plot);
 
                             if (plot.getPlotMembers().isEmpty()) {
                                 // Plot was made alone
-                                Bukkit.broadcastMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been finished!");
+                                Bukkit.broadcastMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been finished!");
                             } else {
                                 // Plot was made in a group
-                                StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + ", ");
+                                StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", ");
 
                                 for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                                     sb.append(i == plot.getPlotMembers().size() - 1 ?

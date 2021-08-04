@@ -67,7 +67,7 @@ public class PlotHandler {
 
         sendLinkMessages(plot, player);
 
-        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
             plot.setLastActivity(false);
         }
     }
@@ -81,13 +81,13 @@ public class PlotHandler {
             }
         }
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
+        plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.addBuilderPerms(plot.getBuilder().getUUID()).save();
+        plot.addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
@@ -108,8 +108,8 @@ public class PlotHandler {
             player.teleport(Utils.getSpawnLocation());
         }
 
-        plot.getBuilder().removePlot(plot.getSlot());
-        plot.setBuilder(null);
+        plot.getPlotOwner().removePlot(plot.getSlot());
+        plot.setPlotOwner(null);
         plot.setLastActivity(true);
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);

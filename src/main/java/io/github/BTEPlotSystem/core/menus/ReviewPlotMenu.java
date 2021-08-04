@@ -80,7 +80,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
         // Check if plot is from player
         try {
-            if (plot.getBuilder().getUUID().equals(player.getUniqueId())){
+            if (plot.getPlotOwner().getUUID().equals(player.getUniqueId())){
                 player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
                 return;
             }
@@ -106,7 +106,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                 .setLore(new LoreBuilder()
                                         .addLines("ID: §f" + plot.getID(),
                                                 "",
-                                                "§7Builder: §f" + plot.getBuilder().getName(),
+                                                "§7Builder: §f" + plot.getPlotOwner().getName(),
                                                 "§7City: §f" + plot.getCity().getName(),
                                                 "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                         .build())
@@ -312,24 +312,24 @@ public class ReviewPlotMenu extends AbstractMenu {
                     plot.getReview().setFeedbackSent(false);
                     plot.getReview().setFeedback("No Feedback");
                     plot.setStatus(Status.completed);
-                    plot.getBuilder().addCompletedBuild(1);
+                    plot.getPlotOwner().addCompletedBuild(1);
 
                     // Remove Plot from Owner
                     try {
-                        plot.getBuilder().removePlot(plot.getSlot());
+                        plot.getPlotOwner().removePlot(plot.getSlot());
                     } catch (Exception ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
                     }
 
                     if (plot.getPlotMembers().isEmpty()) {
                         // Plot was made alone
-                        clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §amarked as reviewed!");
+                        clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §amarked as reviewed!");
 
                         // Builder gets 100% of score
-                        plot.getBuilder().addScore(totalRating);
+                        plot.getPlotOwner().addScore(totalRating);
                     } else {
                         // Plot was made in a group
-                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + ", ");
+                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", ");
 
                         for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                             sb.append(i == plot.getPlotMembers().size() - 1 ?
@@ -338,7 +338,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                         }
 
                         // Score gets split between all participants
-                        plot.getBuilder().addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
+                        plot.getPlotOwner().addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
 
                         for (Builder builder : plot.getPlotMembers()) {
                             // Score gets split between all participants
@@ -360,10 +360,10 @@ public class ReviewPlotMenu extends AbstractMenu {
                 } else {
                     if (plot.getPlotMembers().size() != 0) {
                         // Plot was made alone
-                        clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
+                        clickPlayer.sendMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
                     } else {
                         // Plot was made in a group
-                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + ", ");
+                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", ");
 
                         for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                             sb.append(i == plot.getPlotMembers().size() - 1 ?
@@ -380,8 +380,8 @@ public class ReviewPlotMenu extends AbstractMenu {
                     player.teleport(Utils.getSpawnLocation());
                 }
 
-                if(plot.getBuilder().isOnline()) {
-                    PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), plot.getBuilder().getPlayer());
+                if(plot.getPlotOwner().isOnline()) {
+                    PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
                 }
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
             } catch (SQLException ex) {

@@ -95,15 +95,12 @@ public class Plot extends PlotPermissions {
         return null; //TODO: Reimplement feature
     }
 
-    public Builder getBuilder() throws SQLException {
+    public Builder getPlotOwner() throws SQLException {
         if(getStatus() != Status.unclaimed) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("SELECT player_uuid FROM plotsystem_plots WHERE id = ?");
-                ps.setInt(1, getID());
-                ResultSet rs = ps.executeQuery();
-                rs.next();
-                return new Builder(UUID.fromString(rs.getString(1)));
-            }
+            ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots WHERE id = ?")
+                    .setValue(this.ID).executeQuery();
+
+            if (rs.next()) return new Builder(UUID.fromString(rs.getString(1)));
         }
         return null;
     }
@@ -238,18 +235,13 @@ public class Plot extends PlotPermissions {
 
     public World getPlotWorld() { return Bukkit.getWorld(getWorldName()); }
 
-    public void setBuilder(String UUID) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps;
-            if(UUID == null) {
-                ps = con.prepareStatement("UPDATE plotsystem_plots SET player_uuid = DEFAULT(player_uuid) WHERE id = ?");
-                ps.setInt(1, getID());
-            } else {
-                ps = con.prepareStatement("UPDATE plotsystem_plots SET player_uuid = ? WHERE id = ?");
-                ps.setString(1, UUID);
-                ps.setInt(2, getID());
-            }
-            ps.executeUpdate();
+    public void setPlotOwner(String UUID) throws SQLException {
+        if (UUID == null) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET owner_uuid = DEFAULT(owner_uuid) WHERE id = ?")
+                    .setValue(this.ID).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET owner_uuid = ? WHERE id = ?")
+                    .setValue(UUID).setValue(this.ID).executeUpdate();
         }
     }
 

@@ -192,13 +192,13 @@ public class Review {
     public static void undoReview(Review review) throws SQLException {
         Plot plot = new Plot(review.getPlotID());
 
-        plot.getBuilder().addScore(-plot.getScore());
-        plot.getBuilder().addCompletedBuild(-1);
+        plot.getPlotOwner().addScore(-plot.getScore());
+        plot.getPlotOwner().addCompletedBuild(-1);
         plot.setScore(-1);
         plot.setStatus(Status.unreviewed);
 
-        if(plot.getBuilder().getFreeSlot() != null) {
-            plot.getBuilder().setPlot(plot.getID(), plot.getBuilder().getFreeSlot());
+        if(plot.getPlotOwner().getFreeSlot() != null) {
+            plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
         }
 
         try (Connection con = DatabaseConnection.getConnection()) {

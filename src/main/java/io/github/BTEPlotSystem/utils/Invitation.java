@@ -30,7 +30,7 @@ public class Invitation {
         // Check if player has already been invited
         for (Invitation item : invitationsList) {
             if (item.invitee == invitee) {
-                plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has already gotten an Invite from a plot!"));
+                plot.getPlotOwner().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has already gotten an Invite from a plot!"));
                 return;
             }
         }
@@ -42,11 +42,11 @@ public class Invitation {
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Accept Invite").create()));
 
         invitee.sendMessage("§7--------------------");
-        invitee.sendMessage(Utils.getInfoMessageFormat(plot.getBuilder().getName() + " has invited you to help building Plot #" + plot.getID()));
+        invitee.sendMessage(Utils.getInfoMessageFormat(plot.getPlotOwner().getName() + " has invited you to help building Plot #" + plot.getID()));
         invitee.spigot().sendMessage(tc);
         invitee.sendMessage("§7--------------------");
 
-        plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Sent an invitation to §6" + invitee.getName() + "§a, to join your plot!"));
+        plot.getPlotOwner().getPlayer().sendMessage(Utils.getInfoMessageFormat("Sent an invitation to §6" + invitee.getName() + "§a, to join your plot!"));
 
         // Add invitation to static list
         invitationsList.add(this);
@@ -58,8 +58,8 @@ public class Invitation {
             public void run() {
                 invitationsList.remove(invitation);
                 try {
-                    invitee.sendMessage(Utils.getErrorMessageFormat("Invitation from " + plot.getBuilder().getName() + " expired!"));
-                    plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat("The invitation you sent to " + invitee.getName() + " expired!"));
+                    invitee.sendMessage(Utils.getErrorMessageFormat("Invitation from " + plot.getPlotOwner().getName() + " expired!"));
+                    plot.getPlotOwner().getPlayer().sendMessage(Utils.getErrorMessageFormat("The invitation you sent to " + invitee.getName() + " expired!"));
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -77,12 +77,12 @@ public class Invitation {
             builder.setPlot(plot.getID(),builder.getFreeSlot());
 
             // Messages Receiver
-            invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getBuilder().getName() + "'s invite!"));
+            invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getPlotOwner().getName() + "'s invite!"));
             invitee.sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
 
             // Messages Sender
-            plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
-            plot.getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
+            plot.getPlotOwner().getPlayer().sendMessage(Utils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
+            plot.getPlotOwner().getPlayer().sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
             scheduler.cancelTask(taskID);
         } else {
             invitee.sendMessage(Utils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
@@ -90,7 +90,7 @@ public class Invitation {
     }
 
     public void RejectInvite() throws SQLException {
-        plot.getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has rejected your Invite!"));
+        plot.getPlotOwner().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has rejected your Invite!"));
         scheduler.cancelTask(taskID);
     }
 }

@@ -50,9 +50,9 @@ public class PlotMemberMenu extends AbstractMenu {
     protected void addMenuItems() throws SQLException {
         // Plot Owner Item
         getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getBuilder().getUUID()))
-                        .setName("§6§lOWNER - " + plot.getBuilder().getName()).setLore(new LoreBuilder()
-                                .addLine(plot.getBuilder().getName()).build())
+                .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                        .setName("§6§lOWNER - " + plot.getPlotOwner().getName()).setLore(new LoreBuilder()
+                                .addLine(plot.getPlotOwner().getName()).build())
                         .build());
 
         // Add Member Button
@@ -91,7 +91,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 Builder builder = Builder.getBuilderByName(text);
                                 if (builder.isOnline()){
                                     // Check if player is owner of plot
-                                    if (builder.getPlayer() == plot.getBuilder().getPlayer()){
+                                    if (builder.getPlayer() == plot.getPlotOwner().getPlayer()){
                                         player.sendMessage(Utils.getErrorMessageFormat("You cannot add the plot owner as a member!"));
                                         return AnvilGUI.Response.text("Player is already the owner!");
                                     }
