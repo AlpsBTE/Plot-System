@@ -60,8 +60,7 @@ public class DatabaseConnection {
 
             dataSource = new HikariDataSource(config);
 
-            // Create tables and default values if not exists
-            Tables.createTables();
+            createTables();
         } catch (Exception ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while initializing database!", ex);
         }
@@ -119,41 +118,25 @@ public class DatabaseConnection {
         }
     }
 
-    public static class Tables {
+    private static class Tables {
+        private final static List<String> tables;
 
-        private final static List<TableBuilder> tables;
-
-        public static void createTables() {
-            for (TableBuilder table : tables) {
-                try (Connection con = getConnection()) {
-                    /*Objects.requireNonNull(con).prepareStatement(table.toString()).executeUpdate();
-
-                    if (table.getTableName().equals("plotsystem_difficulties")) {
-                        ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
-                        rs.next();
-                        if (rs.getInt(1) != 3) {
-                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
-                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
-                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
-                        }
-                    }*/
-                    Bukkit.getLogger().log(Level.INFO, table.toString());
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!");
-                }
-            }
+        public static List<String> getTables() {
+            return tables;
         }
 
         static {
             tables = Arrays.asList(
                     // FTP Configurations
-                    new TableBuilder("plotsystem_ftp_configurations")
-                            .column("id", SQL.INT).primaryKey(true)
-                            .column("address", SQL.varchar(255)).notNull()
-                            .column("port", SQL.INT).notNull()
-                            .column("username", SQL.varchar(255)).notNull()
-                            .column("password", SQL.varchar(255)).notNull()
-                            .build(),
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_ftp_configurations`" +
+                            "(" +
+                            " `id`       int NOT NULL AUTO_INCREMENT ," +
+                            " `address`  varchar(255) NOT NULL ," +
+                            " `port`     int NOT NULL ," +
+                            " `username` varchar(255) NOT NULL ," +
+                            " `password` varchar(255) NOT NULL ," +
+                            "PRIMARY KEY (`id`)" +
+                            ");",
 
                     // Servers
                     new TableBuilder("plotsystem_servers")
