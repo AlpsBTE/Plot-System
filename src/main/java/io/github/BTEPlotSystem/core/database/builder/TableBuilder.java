@@ -49,7 +49,7 @@ public class TableBuilder {
     }
 
     public TableBuilder Null() {
-        columnBuilder.append(" NOT NULL");
+        columnBuilder.append(" NULL");
         return this;
     }
 
@@ -85,6 +85,20 @@ public class TableBuilder {
         }
         keyConstraints.append("PRIMARY KEY (").append(column).append(')');
         constraintCount++;
+    }
+
+    @Override
+    public String toString() {
+        finalizeColumn();
+
+        if (columnCount <= 0) {
+            throw new IllegalStateException("No columns specified for statement '" + columns.toString() + "..'");
+        }
+        if (constraintCount > 0) {
+            return columns.toString() + ',' + keyConstraints.toString() + ')';
+        } else {
+            return columns.toString() + ')';
+        }
     }
 
     public TableBuilder build() {
