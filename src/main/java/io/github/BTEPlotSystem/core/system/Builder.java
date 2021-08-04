@@ -113,7 +113,7 @@ public class Builder {
 
     public void addScore(int score) throws SQLException {
         DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
-                .setValue(score).setValue(getUUID().toString())
+                .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
         BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
@@ -121,7 +121,7 @@ public class Builder {
 
     public void addCompletedBuild(int amount) throws SQLException {
         DatabaseConnection.createStatement("UPDATE plotsystem_builders SET completed_plots = ? WHERE uuid = ?")
-                .setValue(amount).setValue(getUUID().toString())
+                .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
         BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
