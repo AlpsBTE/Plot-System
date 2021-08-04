@@ -59,7 +59,7 @@ public class Plot extends PlotPermissions {
         this.ID = ID;
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT idcity, iddifficulty FROM plots WHERE idplot = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT city_project_id, difficulty_id FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, getID());
 
             ResultSet rs = ps.executeQuery();
@@ -98,7 +98,7 @@ public class Plot extends PlotPermissions {
     public Builder getBuilder() throws SQLException {
         if(getStatus() != Status.unclaimed) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("SELECT uuidplayer FROM plots WHERE idplot = ?");
+                PreparedStatement ps = con.prepareStatement("SELECT player_uuid FROM plotsystem_plots WHERE id = ?");
                 ps.setInt(1, getID());
                 ResultSet rs = ps.executeQuery();
                 rs.next();
@@ -111,7 +111,7 @@ public class Plot extends PlotPermissions {
     public List<Builder> getPlotMembers(){
         List<Builder> builders = new ArrayList<>();
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT uuidMembers FROM plots WHERE idplot = ?");
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT member_uuids FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
@@ -131,9 +131,9 @@ public class Plot extends PlotPermissions {
     }
 
     public Review getReview() throws SQLException {
-        if(getStatus() == Status.complete || isRejected()) {
+        if(getStatus() == Status.completed || isRejected()) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("SELECT idreview FROM plots WHERE idplot = ?");
+                PreparedStatement ps = con.prepareStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?");
                 ps.setInt(1, getID());
                 ResultSet rs = ps.executeQuery();
                 rs.next();
@@ -156,7 +156,7 @@ public class Plot extends PlotPermissions {
 
     public Vector getMinecraftCoordinates() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT mcCoordinates FROM plots WHERE idplot = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
             rs.next();
@@ -169,7 +169,7 @@ public class Plot extends PlotPermissions {
 
     public int getScore() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT score FROM plots WHERE idplot = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT score FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
 
@@ -185,7 +185,7 @@ public class Plot extends PlotPermissions {
 
     public Status getStatus() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT status FROM plots WHERE idplot = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT status FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
             rs.next();
@@ -195,7 +195,7 @@ public class Plot extends PlotPermissions {
 
     public Date getLastActivity() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT lastActivity FROM plots WHERE idplot = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT last_activity FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, getID());
             ResultSet rs = ps.executeQuery();
             rs.next();
@@ -205,7 +205,7 @@ public class Plot extends PlotPermissions {
 
     public Slot getSlot() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?");
             ps.setString(1, getBuilder().getUUID().toString());
             ResultSet rs = ps.executeQuery();
 
@@ -242,10 +242,10 @@ public class Plot extends PlotPermissions {
         try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps;
             if(UUID == null) {
-                ps = con.prepareStatement("UPDATE plots SET uuidplayer = DEFAULT(uuidplayer) WHERE idplot = ?");
+                ps = con.prepareStatement("UPDATE plotsystem_plots SET player_uuid = DEFAULT(player_uuid) WHERE id = ?");
                 ps.setInt(1, getID());
             } else {
-                ps = con.prepareStatement("UPDATE plots SET uuidplayer = ? WHERE idplot = ?");
+                ps = con.prepareStatement("UPDATE plotsystem_plots SET player_uuid = ? WHERE id = ?");
                 ps.setString(1, UUID);
                 ps.setInt(2, getID());
             }
@@ -257,10 +257,10 @@ public class Plot extends PlotPermissions {
         try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps;
             if(score == -1) {
-                ps = con.prepareStatement("UPDATE plots SET score = DEFAULT(score) WHERE idplot = ?");
+                ps = con.prepareStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?");
                 ps.setInt(1, getID());
             } else {
-                ps = con.prepareStatement("UPDATE plots SET score = ? WHERE idplot = ?");
+                ps = con.prepareStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?");
                 ps.setInt(1, score);
                 ps.setInt(2, getID());
             }
@@ -270,7 +270,7 @@ public class Plot extends PlotPermissions {
 
     public void setStatus(Status status) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE plots SET status = ? WHERE idplot = '" + getID() + "'");
+            PreparedStatement ps = con.prepareStatement("UPDATE plotsystem_plots SET status = ? WHERE id = '" + getID() + "'");
             ps.setString(1, status.name());
             ps.executeUpdate();
         }
@@ -280,10 +280,10 @@ public class Plot extends PlotPermissions {
         try (Connection con = DatabaseConnection.getConnection()) {
             PreparedStatement ps;
             if(setNull) {
-                ps = con.prepareStatement("UPDATE plots SET lastActivity = DEFAULT(lastActivity) WHERE idplot = ?");
+                ps = con.prepareStatement("UPDATE plotsystem_plots SET last_activity = DEFAULT(last_activity) WHERE id = ?");
                 ps.setInt(1, getID());
             } else {
-                ps = con.prepareStatement("UPDATE plots SET lastActivity = ? WHERE idplot = ?");
+                ps = con.prepareStatement("UPDATE plotsystem_plots SET last_activity = ? WHERE id = ?");
                 ps.setDate(1, java.sql.Date.valueOf(java.time.LocalDate.now()));
                 ps.setInt(2, getID());
             }
@@ -299,11 +299,11 @@ public class Plot extends PlotPermissions {
 
             PreparedStatement ps;
             if(!plotMembers.isEmpty()) {
-                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = ? WHERE idplot = ?");
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plotsystem_plots SET member_uuids = ? WHERE id = ?");
                 ps.setString(1, plotMemberAsString);
                 ps.setInt(2, getID());
             } else {
-                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plots SET uuidMembers = DEFAULT(uuidMembers) WHERE idplot = ?");
+                ps = Objects.requireNonNull(con).prepareStatement("UPDATE plotsystem_plots SET member_uuids = DEFAULT(member_uuids) WHERE id = ?");
                 ps.setInt(1, getID());
             }
             ps.executeUpdate();
@@ -312,7 +312,7 @@ public class Plot extends PlotPermissions {
 
     public boolean isPasted() throws SQLException {
         try (Connection con = DatabaseConnection.getConnection()) {
-            ResultSet rs = con.createStatement().executeQuery("SELECT isPasted FROM plots WHERE idplot = '" + getID() + "'");
+            ResultSet rs = con.createStatement().executeQuery("SELECT pasted FROM plotsystem_plots WHERE id = '" + getID() + "'");
             rs.next();
             return rs.getBoolean(1);
         }

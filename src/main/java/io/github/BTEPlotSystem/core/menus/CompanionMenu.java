@@ -105,7 +105,11 @@ public class CompanionMenu extends AbstractMenu {
         }
 
         // Set city project items
-        setCityProjectItems();
+        try {
+            setCityProjectItems();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
 
         // Set player slots items
         for (int i = 0; i < 3; i++) {
@@ -260,11 +264,11 @@ public class CompanionMenu extends AbstractMenu {
    }
 
     // Set city project items
-    private void setCityProjectItems() {
+    private void setCityProjectItems() throws SQLException {
         for(int i = 0; i < cityProjects.size(); i++) {
             if(i <= 28) {
                 ItemStack cityProjectItem = MenuItems.errorItem();
-                cityProjectItem = Utils.getItemHead(Integer.toString(cityProjects.get(i).getCountry().getHeadID()));
+                cityProjectItem = cityProjects.get(i).getCountry().getHead();
                 try {
                     PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ?
                             selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityProjects.get(i).getID(), new Builder(getMenuPlayer().getUniqueId()));
@@ -278,7 +282,7 @@ public class CompanionMenu extends AbstractMenu {
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unclaimed).size() + " §7Plots Open",
                                                     "§f---------------------",
                                                     "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.complete).size() + " §7Plots Completed",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.completed).size() + " §7Plots Completed",
                                                     "",
                                                     PlotManager.getPlots(cityProjects.get(i).getID(), plotDifficultyForCity, Status.unclaimed).size() != 0 ?
                                                             Utils.getFormattedDifficulty(plotDifficultyForCity) : "§f§lNo Plots Available"

@@ -1,10 +1,12 @@
 package github.BTEPlotSystem.utils.ftp;
 
+import github.BTEPlotSystem.core.system.Server;
 import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class FTPManager {
@@ -24,7 +26,7 @@ public class FTPManager {
         }
     }
 
-    public static String getFTPUrl(Server server, int cityID) {
+    public static String getFTPUrl(Server server, int cityID) throws SQLException {
         return String.format("%sftp://%s:%s@%s:%d/%s%s/",
                 server.getFTPConfiguration().getPort() == 22 ? "s" : "",
                 server.getFTPConfiguration().getUsername(),

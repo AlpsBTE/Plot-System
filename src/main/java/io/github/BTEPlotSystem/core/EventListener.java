@@ -78,7 +78,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         // Adding user to the database
         if(!event.getPlayer().hasPlayedBefore()) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
+                PreparedStatement ps = con.prepareStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)");
                 ps.setString(1, event.getPlayer().getUniqueId().toString());
                 ps.setString(2, event.getPlayer().getName());
                 ps.execute();
@@ -89,7 +89,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         // Informing player about new feedback
         try {
-            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
             List<Plot> reviewedPlots = new ArrayList<>();
 
             for(Plot plot : plots) {

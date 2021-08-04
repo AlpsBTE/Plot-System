@@ -77,7 +77,7 @@ public class PlotHandler {
 
         if(plot.getPlotWorld() != null) {
             for(Player player : plot.getPlotWorld().getPlayers()) {
-                player.teleport(Utils.getSpawnPoint());
+                player.teleport(Utils.getSpawnLocation());
             }
         }
 
@@ -105,7 +105,7 @@ public class PlotHandler {
 
         loadPlot(plot); // Load Plot to be listed by Multiverse
         for(Player player : plot.getPlotWorld().getPlayers()) {
-            player.teleport(Utils.getSpawnPoint());
+            player.teleport(Utils.getSpawnLocation());
         }
 
         plot.getBuilder().removePlot(plot.getSlot());
@@ -127,7 +127,7 @@ public class PlotHandler {
         Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM plots WHERE idplot = ?");
+            PreparedStatement ps = con.prepareStatement("DELETE FROM plotsystem_plots WHERE id = ?");
             ps.setInt(1, plot.getID());
             ps.execute();
         }
