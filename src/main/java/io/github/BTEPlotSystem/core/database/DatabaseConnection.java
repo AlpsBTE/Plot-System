@@ -102,23 +102,21 @@ public class DatabaseConnection {
     }
 
     private static void createTables() {
-        for (String table : Tables.getTables()) {
-            try (Connection con = dataSource.getConnection()) {
-                    /*Objects.requireNonNull(con).prepareStatement(table.toString()).executeUpdate();
-
-                    if (table.getTableName().equals("plotsystem_difficulties")) {
-                        ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
-                        rs.next();
-                        if (rs.getInt(1) != 3) {
-                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
-                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
-                            con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
-                        }
-                    }*/
-                Bukkit.getLogger().log(Level.INFO, table);
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!");
+        try (Connection con = dataSource.getConnection()) {
+            for (String table : Tables.getTables()) {
+                Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
             }
+
+            ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
+            if (rs.next()) {
+                if (rs.getInt(1) == 0) {
+                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
+                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
+                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!");
         }
     }
 
