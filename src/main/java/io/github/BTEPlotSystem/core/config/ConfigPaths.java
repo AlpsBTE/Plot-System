@@ -39,24 +39,6 @@ public abstract class ConfigPaths {
     public static final String DATABASE_PASSWORD = DATABASE + "password";
 
 
-    // Servers
-    public static final String SERVERS = "servers.";
-    public static final String SERVERS_SCHEMATIC_PATH = ".schematic-path";
-
-    private static final String SERVERS_FTP = ".ftp.";
-    public static final String SERVERS_FTP_ENABLED = SERVERS_FTP + "enabled";
-    public static final String SERVERS_FTP_ADDRESS = SERVERS_FTP + "address";
-    public static final String SERVERS_FTP_PORT = SERVERS_FTP + "port";
-    public static final String SERVERS_FTP_USERNAME = SERVERS_FTP + "username";
-    public static final String SERVERS_FTP_PASSWORD = SERVERS_FTP + "password";
-
-
-    // Countries
-    public static final String COUNTRIES = "countries.";
-    public static final String COUNTRIES_HEAD_ID = ".head-id";
-    public static final String COUNTRIES_SERVER = ".server";
-
-
     // Holograms
     public static final String HOLOGRAMS = "holograms.";
     public static final String HOLOGRAMS_ENABLED = ".enabled";
