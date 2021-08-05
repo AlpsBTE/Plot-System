@@ -199,21 +199,22 @@ public class PlotManager {
         // Write finished plot clipboard to schematic file
         File finishedSchematicFile = plot.getFinishedSchematic();
 
-        boolean createdDirs = false; boolean createdFile = false;
         if (!finishedSchematicFile.exists()) {
-            createdDirs = finishedSchematicFile.getParentFile().mkdirs();
-            createdFile = finishedSchematicFile.createNewFile();
+            boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
+            boolean createdFile = finishedSchematicFile.createNewFile();
+            if (!createdDirs || !createdFile) {
+                Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
+                return;
+            }
         }
 
-        if (createdDirs && createdFile) {
-            try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
-                writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
-            }
+        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+            writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+        }
 
-            // Upload to FTP server
-            if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
-                FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
-            }
+        // Upload to FTP server
+        if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
+            FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
         }
     }
 
