@@ -61,6 +61,8 @@ public class BTEPlotSystem extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog"); // Disable Logging
+
         plugin = this;
         multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
 
