@@ -34,6 +34,7 @@ import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsExc
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
+import github.BTEPlotSystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -81,7 +82,7 @@ public class Plot extends PlotPermissions {
 
             if(!file.exists()) {
                 if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
-                    // TODO: Try to get file from the ftp server
+                    FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
                 }
             }
             return file;
