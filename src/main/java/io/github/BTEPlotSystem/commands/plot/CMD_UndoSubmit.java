@@ -73,7 +73,7 @@ public class CMD_UndoSubmit implements CommandExecutor {
 
                 try {
                     if(plot.getStatus() == Status.unreviewed) {
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
+                        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")) {
                             PlotHandler.undoSubmit(plot);
 
                             player.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));

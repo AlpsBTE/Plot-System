@@ -31,7 +31,7 @@ import github.BTEPlotSystem.commands.admin.CMD_PReload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologram;
 import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.config.ConfigManager;
 import github.BTEPlotSystem.core.config.ConfigNotImplementedException;

@@ -46,7 +46,7 @@ public class Utils {
     public static HeadDatabaseAPI headDatabaseAPI;
 
     public static ItemStack getItemHead(String headID) {
-        return headDatabaseAPI != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+        return headDatabaseAPI != null && headID != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
     }
 
     // Get player head by UUID
@@ -125,63 +125,6 @@ public class Utils {
                 return "§c§lHard";
             default:
                 return "";
-        }
-    }
-
-    public static Server parseServer(CityProject cityProject) throws Exception {
-        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
-        String serverShortName = config.getString("countries." + cityProject.getCountry().name + ".server");
-        if(serverShortName == null)
-            throw new Exception("Server Not Found");
-        else {
-            String configServer = "servers." + serverShortName;
-            FTPConfiguration ftpConfiguration = null;
-            if (config.getBoolean(configServer + ".ftp.enabled")) {
-                ftpConfiguration = new FTPConfiguration(
-                    config.getString(configServer + ".ftp.address"),
-                    config.getInt(configServer + ".ftp.port"),
-                    config.getString(configServer + ".ftp.username"),
-                    config.getString(configServer + ".ftp.password"),
-                    config.getBoolean(configServer + ".ftp.secure-ftp")
-                );
-            }
-            return new Server(serverShortName,
-                    config.getString(configServer + ".server-name"),
-                    config.getString(configServer + ".finished-schematic-path"),
-                    ftpConfiguration);
-        }
-    }
-
-
-    public static class Server {
-        public String shortName;
-        public String serverName;
-        public String finishedSchematicPath;
-
-        public FTPConfiguration ftpConfiguration;
-
-        public Server(String shortName, String serverName, String finishedSchematicPath,
-                      @Nullable FTPConfiguration ftpConfiguration) {
-            this.shortName = shortName;
-            this.serverName = serverName;
-            this.finishedSchematicPath = finishedSchematicPath;
-            this.ftpConfiguration = ftpConfiguration;
-        }
-    }
-
-    public static class FTPConfiguration {
-        public String address;
-        public int port;
-        public String username;
-        public String password;
-        public boolean secureFTP;
-
-        public FTPConfiguration(String address, int port, String username, String password, boolean secureFTP) {
-            this.address = address;
-            this.port = port;
-            this.username = username;
-            this.password = password;
-            this.secureFTP = secureFTP;
         }
     }
 }

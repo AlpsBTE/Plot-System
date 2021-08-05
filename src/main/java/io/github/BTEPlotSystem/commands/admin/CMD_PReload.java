@@ -25,6 +25,7 @@
 package github.BTEPlotSystem.commands.admin;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -45,6 +46,8 @@ public class CMD_PReload implements CommandExecutor {
 
                 BTEPlotSystem.reloadHolograms();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
+
+                DatabaseConnection.InitializeDatabase();
             } catch (Exception ex) {
                 sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while reloading!"));
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading!", ex);

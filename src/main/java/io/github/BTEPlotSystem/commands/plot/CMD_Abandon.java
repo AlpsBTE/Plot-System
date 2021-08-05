@@ -73,7 +73,7 @@ public class CMD_Abandon implements CommandExecutor {
 
                 try {
                     if(plot.getStatus() == Status.unfinished) {
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
+                        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             PlotHandler.abandonPlot(plot);
 
                             player.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
