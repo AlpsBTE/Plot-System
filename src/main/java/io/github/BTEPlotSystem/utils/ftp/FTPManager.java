@@ -2,6 +2,7 @@ package github.BTEPlotSystem.utils.ftp;
 
 import github.BTEPlotSystem.core.system.Server;
 import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.bukkit.Bukkit;
 
@@ -11,13 +12,12 @@ import java.util.logging.Level;
 
 public class FTPManager {
 
-    private static FileSystemManager fileManager;
     private static FileSystemOptions fileOptions;
+
+    private final static String DEFAULT_SCHEMATIC_PATH_LINUX = "/var/lib/Plot-System/schematics";
 
     static {
         try {
-            fileManager = VFS.getManager();
-
             fileOptions = new FileSystemOptions();
             SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(fileOptions, "no");
             SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fileOptions, false);
@@ -27,19 +27,24 @@ public class FTPManager {
     }
 
     public static String getFTPUrl(Server server, int cityID) throws SQLException {
-        return String.format("%sftp://%s:%s@%s:%d/%s%s/",
+        String schematicsPath = server.getFTPConfiguration().getSchematicPath();
+
+        return String.format("%sftp://%s:%s@%s:%d/%s/%s/%s/",
                 server.getFTPConfiguration().getPort() == 22 ? "s" : "",
                 server.getFTPConfiguration().getUsername(),
                 server.getFTPConfiguration().getPassword(),
                 server.getFTPConfiguration().getAddress(),
                 server.getFTPConfiguration().getPort(),
-                server.getSchematicPath(),
+                schematicsPath == null ? DEFAULT_SCHEMATIC_PATH_LINUX : schematicsPath,
+                "finishedSchematics",
                 cityID
         );
     }
 
     public static void uploadSchematic(String ftpURL, File schematic) {
-        try {
+        try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
+            fileManager.init();
+
             // Get local schematic
             FileObject localSchematic = fileManager.toFileObject(schematic);
 
@@ -61,12 +66,14 @@ public class FTPManager {
     }
 
     public static void downloadSchematic(String ftpURL, File schematic) {
-        try {
+        try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
+            fileManager.init();
+
             // Get local schematic
             FileObject localSchematic = fileManager.toFileObject(schematic);
 
             // Get remote path
-            FileObject remote = fileManager.resolveFile(ftpURL, fileOptions);
+            FileObject remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/",""), fileOptions);
 
             // Get remote schematic and write it to local file
             FileObject remoteSchematic = remote.resolveFile(schematic.getName());
