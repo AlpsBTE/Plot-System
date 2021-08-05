@@ -3,6 +3,7 @@ package github.BTEPlotSystem.core.system;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import org.bukkit.Bukkit;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,12 +15,11 @@ public class Server {
     private int ftpConfigurationID;
 
     private String name;
-    private String schematicPath;
 
     public Server(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT ftp_configuration_id, name, schematic_path FROM plotsystem_servers WHERE id = ?")
+        ResultSet rs = DatabaseConnection.createStatement("SELECT ftp_configuration_id, name FROM plotsystem_servers WHERE id = ?")
                 .setValue(this.ID).executeQuery();
 
         if (rs.next()) {
@@ -27,7 +27,6 @@ public class Server {
             if (rs.wasNull()) this.ftpConfigurationID = -1;
 
             this.name = rs.getString(2);
-            this.schematicPath = rs.getString(3);
         }
     }
 
@@ -37,10 +36,6 @@ public class Server {
 
     public String getName() {
         return name;
-    }
-
-    public String getSchematicPath() {
-        return schematicPath;
     }
 
     public FTPConfiguration getFTPConfiguration() throws SQLException {
@@ -65,6 +60,7 @@ public class Server {
     public static class FTPConfiguration {
         private final int ID;
 
+        private String schematicPath;
         private String address;
         private int port;
         private String username;
@@ -73,19 +69,28 @@ public class Server {
         public FTPConfiguration(int ID) throws SQLException {
             this.ID = ID;
 
-            ResultSet rs = DatabaseConnection.createStatement("SELECT address, port, username, password FROM plotsystem_ftp_configurations WHERE id = ?")
+            ResultSet rs = DatabaseConnection.createStatement("SELECT schematics_path, address, port, username, password FROM plotsystem_ftp_configurations WHERE id = ?")
                     .setValue(this.ID).executeQuery();
 
             if (rs.next()) {
-                this.address = rs.getString(1);
-                this.port = rs.getInt(2);
-                this.username = rs.getString(3);
-                this.password = rs.getString(4);
+                this.schematicPath = rs.getString(1);
+                this.address = rs.getString(2);
+                this.port = rs.getInt(3);
+                this.username = rs.getString(4);
+                this.password = rs.getString(5);
             }
         }
 
         public int getID() {
             return ID;
+        }
+
+        public String getSchematicPath() {
+            if (schematicPath != null) {
+                schematicPath = !schematicPath.startsWith("/") ? File.separator + schematicPath : schematicPath;
+                schematicPath = schematicPath.endsWith("/") ? schematicPath.substring(0, schematicPath.length() - 1) : schematicPath;
+            }
+            return schematicPath;
         }
 
         public String getAddress() {
