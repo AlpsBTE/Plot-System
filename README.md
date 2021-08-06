@@ -101,11 +101,13 @@ Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE
 * [WorldGuard API](https://github.com/EngineHub/WorldGuard)
 * [Fast Async WorldEdit API](https://github.com/IntellectualSites/FastAsyncWorldEdit)
 * [Multiverse-Core API](https://github.com/Multiverse/Multiverse-Core)
-* [Holographic Displays API](https://github.com/filoghost/HolographicDisplays)
-* [Skull Creator API](https://github.com/deanveloper/SkullCreator)
-* [Head-DB API](https://github.com/Arcaniax-Development/HeadDatabase-API)
+* [Anvil GUI](https://github.com/WesJD/AnvilGUI)
 * [Canvas Menu-Builder Library](https://github.com/IPVP-MC/canvas)
+* [Head-DB API](https://github.com/Arcaniax-Development/HeadDatabase-API)
+* [Skull Creator API](https://github.com/deanveloper/SkullCreator)
+* [Holographic Displays API](https://github.com/filoghost/HolographicDisplays)
 * [Maria-DB Library](https://mariadb.com/kb/en/about-mariadb-connector-j/)
+* [Hikari-CP](https://github.com/brettwooldridge/HikariCP)
 
 
 
