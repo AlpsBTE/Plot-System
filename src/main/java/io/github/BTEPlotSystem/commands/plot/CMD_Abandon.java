@@ -24,7 +24,6 @@
 
 package github.BTEPlotSystem.commands.plot;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
@@ -74,10 +73,8 @@ public class CMD_Abandon implements CommandExecutor {
 
                 try {
                     if(plot.getStatus() == Status.unfinished) {
-                        if(plot.getBuilder().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
-                            Plot finalPlot = plot;
-                            Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-                                PlotHandler.abandonPlot(finalPlot, false);
+                        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
+                            PlotHandler.abandonPlot(plot);
 
                                 player.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + finalPlot.getID()));
                                 player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);

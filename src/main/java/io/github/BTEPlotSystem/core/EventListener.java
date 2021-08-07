@@ -26,12 +26,13 @@ package github.BTEPlotSystem.core;
 
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotGenerator;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.utils.SpecialBlocks;
+import github.BTEPlotSystem.utils.items.SpecialBlocks;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
@@ -57,11 +58,11 @@ import java.util.logging.Level;
 public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event){
+    public void onPlayerJoinEvent(PlayerJoinEvent event) {
         // Remove Default Join Message
         event.setJoinMessage(null);
         // Teleport Player to the spawn
-        event.getPlayer().teleport(Utils.getSpawnPoint());
+        event.getPlayer().teleport(Utils.getSpawnLocation());
 
         // Add Items
         if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
@@ -76,11 +77,11 @@ public class EventListener extends SpecialBlocks implements Listener {
         // User has joined for the first time
         // Adding user to the database
         if(!event.getPlayer().hasPlayedBefore()) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO players (uuid, name) VALUES (?, ?)");
-                ps.setString(1, event.getPlayer().getUniqueId().toString());
-                ps.setString(2, event.getPlayer().getName());
-                ps.execute();
+            try {
+                DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
+                        .setValue(event.getPlayer().getUniqueId().toString())
+                        .setValue(event.getPlayer().getName())
+                        .executeUpdate();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -88,7 +89,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         // Informing player about new feedback
         try {
-            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.complete, Status.unfinished);
+            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
             List<Plot> reviewedPlots = new ArrayList<>();
 
             for(Plot plot : plots) {

@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.utils;
+package github.BTEPlotSystem.utils.items.builder;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

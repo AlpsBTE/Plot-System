@@ -61,9 +61,9 @@ public class CompanionMenu extends AbstractMenu {
     protected void setMenuItems() {
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString("navigator.item")), 1)
-                            .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString("navigator.name")).setLore(new LoreBuilder()
-                                    .addLine(BTEPlotSystem.getPlugin().getConfig().getString("navigator.description")).build())
+                    .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
+                            .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_NAME)).setLore(new LoreBuilder()
+                                    .addLine(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_DESCRIPTION)).build())
                             .build());
 
             try {
@@ -125,7 +125,7 @@ public class CompanionMenu extends AbstractMenu {
         // Add click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand(BTEPlotSystem.getPlugin().getConfig().getString("navigator-command"));
+            clickPlayer.performCommand(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
         });
 
         // Add click event for switch plots difficulty item
@@ -145,7 +145,11 @@ public class CompanionMenu extends AbstractMenu {
                     }
                 });
 
-                setCityProjectItems();
+                try {
+                    setCityProjectItems();
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
             });
         });
 
@@ -257,14 +261,11 @@ public class CompanionMenu extends AbstractMenu {
    }
 
     // Set city project items
-    private void setCityProjectItems() {
-        cityProjects = CityProject.getCityProjects();
-
+    private void setCityProjectItems() throws SQLException {
         for(int i = 0; i < cityProjects.size(); i++) {
             if(i <= 28) {
-                CityProject cp = cityProjects.get(i);
-                ItemStack cpItem = Utils.getItemHead(Integer.toString(cp.getCountry().getHeadID()));
-
+                ItemStack cityProjectItem = MenuItems.errorItem();
+                cityProjectItem = cityProjects.get(i).getCountry().getHead();
                 try {
                     PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
                             selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), new Builder(getMenuPlayer().getUniqueId()));
@@ -282,6 +283,8 @@ public class CompanionMenu extends AbstractMenu {
                                                     "",
                                                     "§6" + plotsOpen + " §7Plots Open",
                                                     "§f---------------------",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
+                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.completed).size() + " §7Plots Completed",
                                                     "§6" + plotsInProgress + " §7Plots In Progress",
                                                     "§6" + plotsCompleted + " §7Plots Completed",
                                                     "",

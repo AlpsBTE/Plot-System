@@ -24,14 +24,12 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.core.menus.AbstractMenu;
-import github.BTEPlotSystem.core.menus.PlotActionsMenu;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
-import github.BTEPlotSystem.utils.ItemBuilder;
-import github.BTEPlotSystem.utils.LoreBuilder;
-import github.BTEPlotSystem.utils.MenuItems;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
+import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -42,12 +40,13 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 public class ReviewMenu extends AbstractMenu {
 
-    private final List<Plot> plots = PlotManager.getPlots(Status.unreviewed, Status.unfinished);
+    private final List<Plot> plots = new ArrayList<>();
 
     private int plotDisplayCount = 0;
 
@@ -74,6 +73,13 @@ public class ReviewMenu extends AbstractMenu {
 
     @Override
     protected void addMenuItems() {
+        try {
+            plots.addAll(PlotManager.getPlots(Status.unreviewed));
+            plots.addAll(PlotManager.getPlots(Status.unfinished));
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
         // Add plot items
         plotDisplayCount = Math.min(plots.size(), 45);
         for(int i = 0; i < plotDisplayCount; i++) {
@@ -85,7 +91,7 @@ public class ReviewMenu extends AbstractMenu {
                             .setLore(new LoreBuilder()
                                     .addLines("ID: §f" + plot.getID(),
                                             "",
-                                            "§7Builder: §f" + plot.getBuilder().getName(),
+                                            "§7Builder: §f" + plot.getPlotOwner().getName(),
                                             "§7City: §f" + plot.getCity().getName(),
                                             "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                     .build())
@@ -96,7 +102,7 @@ public class ReviewMenu extends AbstractMenu {
                             .setLore(new LoreBuilder()
                                     .addLines("ID: §f" + plot.getID(),
                                               "",
-                                              "§7Builder: §f" + plot.getBuilder().getName(),
+                                              "§7Builder: §f" + plot.getPlotOwner().getName(),
                                               "§7City: §f" + plot.getCity().getName(),
                                               "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                     .build())
@@ -127,7 +133,7 @@ public class ReviewMenu extends AbstractMenu {
                 try {
                     Plot plot = plots.get(currentIteration);
                     if(plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getBuilder().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
+                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
                             PlotHandler.teleportPlayer(plot, getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));

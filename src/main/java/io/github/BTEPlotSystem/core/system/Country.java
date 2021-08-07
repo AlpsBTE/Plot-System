@@ -1,36 +1,65 @@
 package github.BTEPlotSystem.core.system;
 
-import github.BTEPlotSystem.BTEPlotSystem;
-import org.bukkit.configuration.file.FileConfiguration;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
+import github.BTEPlotSystem.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Set;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class Country {
-    public Country (int ID){
+
+    private final int ID;
+    private int serverID;
+
+    private String name;
+    private String headID;
+
+    public Country(int ID) throws SQLException {
         this.ID = ID;
-        this.name = (String)configFile.getKeys(false).toArray()[ID];
+
+        ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id FROM plotsystem_countries WHERE id = ?")
+                .setValue(this.ID).executeQuery();
+
+        if (rs.next()) {
+            this.serverID = rs.getInt(1);
+            this.name = rs.getString(2);
+            this.headID = rs.getString(3);
+        }
     }
 
-    public Country (String name) {
-        this.name = name;
-        Set<String> keys = configFile.getKeys(false);
-        this.ID = Arrays.binarySearch(keys.toArray(new String[0]), name);
+    public int getID() {
+        return ID;
     }
 
-    public FileConfiguration configFile =  BTEPlotSystem.getPlugin().getConfig();
-    public int ID;
-    public String name;
-
-    public int getHeadID() {
-        return configFile.getInt("countries." + name + ".head-id");
+    public Server getServer() throws SQLException {
+        return new Server(serverID);
     }
 
-    public String getServer() {
-        return configFile.getString("countries." + name + ".server");
+    public String getName() {
+        return name;
     }
 
-    public String getFinishedSchematicPath() {
-        return configFile.getString("servers." + getServer() + ".finished-schematic-path");
+    public ItemStack getHead() {
+        return Utils.getItemHead(headID);
+    }
+
+    public static List<Country> getCountries() {
+        try {
+            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery();
+
+            List<Country> countries = new ArrayList<>();
+            while (rs.next()) {
+                countries.add(new Country(rs.getInt(1)));
+            }
+            return countries;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+        return new ArrayList<>();
     }
 }

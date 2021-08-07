@@ -24,13 +24,12 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
-import github.BTEPlotSystem.utils.ItemBuilder;
-import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import github.BTEPlotSystem.core.system.Review;
-import github.BTEPlotSystem.utils.MenuItems;
+import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Category;
 import org.bukkit.Bukkit;
@@ -39,38 +38,29 @@ import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 
 public class FeedbackMenu extends AbstractMenu {
 
-    private final int plotID;
+    private Review review = null;
+    private final Plot plot;
 
     public FeedbackMenu(Player player, int plotID) throws SQLException {
         super(3, "Feedback | Review #" + plotID, player);
-        this.plotID = plotID;
+        this.plot = new Plot(plotID);
+
+        ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(plotID).executeQuery();
+
+        if (rs.next()) {
+            this.review = new Review(rs.getInt(1));
+        }
     }
 
     @Override
     protected void setMenuItems() {
-        Plot plot; Review review;
-
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT idreview FROM plots WHERE idplot = ?");
-            ps.setInt(1, plotID);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            review = new Review(rs.getInt(1));
-            plot = new Plot(plotID);
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return;
-        }
-
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             try {
                 getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)

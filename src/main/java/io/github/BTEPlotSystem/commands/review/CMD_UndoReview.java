@@ -49,7 +49,7 @@ public class CMD_UndoReview implements CommandExecutor {
                         if(plot.isReviewed() && !plot.isRejected()) {
                             if(plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId()) || sender.hasPermission("alpsbte.admin")) {
                                 Review.undoReview(plot.getReview());
-                                sender.sendMessage((Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getBuilder().getName() + " §ahas been unreviewed!")));
+                                sender.sendMessage((Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been unreviewed!")));
                             } else {
                                 sender.sendMessage(Utils.getErrorMessageFormat("You cannot undo a review that you haven't reviewed yourself!"));
                             }

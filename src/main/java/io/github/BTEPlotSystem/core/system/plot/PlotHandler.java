@@ -37,18 +37,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.multiverse.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotHandler {
@@ -71,7 +65,7 @@ public class PlotHandler {
 
         sendLinkMessages(plot, player);
 
-        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
             plot.setLastActivity(false);
         }
     }
@@ -81,74 +75,53 @@ public class PlotHandler {
 
         if(plot.getPlotWorld() != null) {
             for(Player player : plot.getPlotWorld().getPlayers()) {
-                player.teleport(Utils.getSpawnPoint());
+                player.teleport(Utils.getSpawnLocation());
             }
         }
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
+        plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.addBuilderPerms(plot.getBuilder().getUUID()).save();
+        plot.addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
-    public static void abandonPlot(Plot plot, boolean deletePlot) {
-        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
-            try {
-                if(plot.isReviewed()) {
-                    try (Connection con = DatabaseConnection.getConnection()) {
-                        PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("DELETE FROM reviews WHERE id_review = ?");
-                        ps.setInt(1, plot.getReview().getReviewID());
-                        ps.executeUpdate();
+    public static void abandonPlot(Plot plot) throws Exception {
+        if(plot.isReviewed()) {
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                    .setValue(plot.getReview().getReviewID()).executeUpdate();
 
-                        ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
-                        ps.setInt(1, plot.getID());
-                        ps.executeUpdate();
-                    }
-                }
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                    .setValue(plot.getID()).executeUpdate();
+        }
 
-                plot.getBuilder().removePlot(plot.getSlot());
-                plot.setBuilder(null);
-                plot.setLastActivity(true);
-                plot.setScore(-1);
-                plot.setStatus(Status.unclaimed);
+        loadPlot(plot); // Load Plot to be listed by Multiverse
+        for(Player player : plot.getPlotWorld().getPlayers()) {
+            player.teleport(Utils.getSpawnLocation());
+        }
 
-                if(deletePlot) {
-                    try (Connection con = DatabaseConnection.getConnection()) {
-                        PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("DELETE FROM plots WHERE idplot = ?");
-                        ps.setInt(1, plot.getID());
-                        ps.execute();
-                    }
-                }
+        plot.getPlotOwner().removePlot(plot.getSlot());
+        plot.setPlotOwner(null);
+        plot.setLastActivity(true);
+        plot.setScore(-1);
+        plot.setStatus(Status.unclaimed);
 
-                Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-                    loadPlot(plot);
-                    for(Player player : plot.getPlotWorld().getPlayers()) {
-                        player.teleport(Utils.getSpawnPoint());
-                    }
+        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
 
-                    try {
-                        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-                        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
-
-                        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
-                        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
-
-                        if(deletePlot) Files.deleteIfExists(Paths.get(PlotManager.getOutlinesSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                    } catch (IOException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while deleting config files!", ex);
-                    }
-                });
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        });
+        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
+        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
     }
 
-    public static void deletePlot(Plot plot) {
-        abandonPlot(plot, true);
+    public static void deletePlot(Plot plot) throws Exception {
+        abandonPlot(plot);
+
+        Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+
+        DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
+                .setValue(plot.getID()).executeUpdate();
     }
 
     public static void loadPlot(Plot plot) {

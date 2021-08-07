@@ -108,7 +108,7 @@ public class PlotActionsMenu extends AbstractMenu {
 
             // Add Plot Member Button
             try {
-                if (getMenuPlayer() == plot.getBuilder().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(Utils.getItemHead("9237"))
                                     .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
@@ -163,7 +163,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for Plot Member button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if (clickPlayer == plot.getBuilder().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
+                if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
                     clickPlayer.closeInventory();
                     new PlotMemberMenu(plot,clickPlayer);
                 }

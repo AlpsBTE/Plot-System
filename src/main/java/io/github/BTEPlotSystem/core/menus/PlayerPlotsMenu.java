@@ -108,7 +108,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                                                 .setLore(getDescription(plot))
                                                 .build());
                                 break;
-                            case complete:
+                            case completed:
                                 getMenu().getSlot(9 + slot)
                                         .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 13)
                                                 .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())

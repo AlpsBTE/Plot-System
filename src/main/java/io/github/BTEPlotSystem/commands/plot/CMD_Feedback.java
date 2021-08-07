@@ -49,7 +49,7 @@ public class CMD_Feedback implements CommandExecutor {
 
                             if(PlotManager.plotExists(plot.getID())) {
                                 if(plot.isReviewed() || plot.isRejected()) {
-                                    if(plot.getBuilder().getUUID().equals(((Player) sender).getUniqueId()) || sender.hasPermission("alpsbte.review")) {
+                                    if(plot.getPlotOwner().getUUID().equals(((Player) sender).getUniqueId()) || sender.hasPermission("alpsbte.review")) {
                                         new FeedbackMenu((Player) sender, plot.getID());
                                     } else {
                                         sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to see this feedback!"));

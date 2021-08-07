@@ -37,109 +37,97 @@ import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
-import github.BTEPlotSystem.core.system.Country;
-import github.BTEPlotSystem.utils.FTPManager;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
+import github.BTEPlotSystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class PlotManager {
 
     public static List<Plot> getPlots() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.prepareStatement("SELECT idplot FROM plots").executeQuery());
-        }
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
     }
 
     public static List<Plot> getPlots(Status... statuses) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "", statuses)));
-        }
+       return listPlots(DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery());
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            List<Plot> plots = listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE uuidplayer = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)"));
-            plots.addAll(listPlots(con.createStatement().executeQuery("SELECT idplot FROM plots WHERE INSTR(uuidMembers, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)")));
-            return plots;
-        }
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE owner_uuid = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)").executeQuery());
+        plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
+        return plots;
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            //TODO: Query uuidMember as well
-            List<Plot> plots = listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "' AND uuidplayer = '" + builder.getUUID(), statuses)));
-            return plots;
-        }
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
+        //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
+        // TODO: Add support for member plots
+        return plots;
     }
 
     public static List<Plot> getPlots(int cityID, Status... statuses) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            return listPlots(con.createStatement().executeQuery(getStatusQuery("idplot", "' AND idcity = '" + cityID, statuses)));
-        }
+        return listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND city_project_id = '" + cityID, statuses)).executeQuery());
     }
 
     public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT idplot FROM plots WHERE idcity = ? AND iddifficulty = ? AND status = ?");
-            ps.setInt(1, cityID);
-            ps.setInt(2, plotDifficulty.ordinal() + 1);
-            ps.setString(3, status.name());
-            return listPlots(ps.executeQuery());
-        }
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE city_project_id = ? AND difficulty_id = ? AND status = ?")
+                .setValue(cityID)
+                .setValue(plotDifficulty.ordinal() + 1)
+                .setValue(status.name())
+                .executeQuery());
     }
 
-    private static String getStatusQuery(String columns, String additionalQuery, Status... statuses) {
-        StringBuilder query = new StringBuilder("SELECT " + columns + " FROM plots WHERE status = ");
+    private static String getStatusQuery(String additionalQuery, Status... statuses) {
+        StringBuilder query = new StringBuilder("SELECT id FROM plotsystem_plots WHERE status = ");
 
         for(int i = 0; i < statuses.length; i++) {
             query.append("'").append(statuses[i].name()).append(additionalQuery).append("'");
-            query.append((i != statuses.length - 1) ? " OR status = " : ""); // TODO: Try to change OR to AND
+            query.append((i != statuses.length - 1) ? " AND status = " : "");
         }
         return query.toString();
     }
 
     public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT multiplier FROM difficulties WHERE iddifficulty = ?");
-            ps.setInt(1, plotDifficulty.ordinal() + 1);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT multiplier FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
+
+        if (rs.next()) {
             return rs.getDouble(1);
         }
+        return 1;
     }
 
     public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT scoreRequirement FROM difficulties WHERE iddifficulty = ?");
-            ps.setInt(1, plotDifficulty.ordinal() + 1);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
+
+        if (rs.next()) {
             return rs.getInt(1);
         }
+        return 0;
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
         List<Plot> plots = new ArrayList<>();
 
         while (rs.next()) {
-           plots.add(new Plot(rs.getInt("idplot")));
+           plots.add(new Plot(rs.getInt(1)));
         }
 
         return plots;
@@ -208,22 +196,25 @@ public class PlotManager {
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
-        if(!BTEPlotSystem.getPlugin().getConfig().getBoolean("ftp-enabled")) { // Save Local
-            // Write finished plot clipboard to schematic file
-            try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(plot.getFinishedSchematic(true), false))) {
-                writer.write(cb, region.getWorld().getWorldData());
-            }
-        } else { // Save FTP/SFTP
-            Utils.Server server = plot.getCity().getServer();
+        // Write finished plot clipboard to schematic file
+        File finishedSchematicFile = plot.getFinishedSchematic();
 
-            if(server.ftpConfiguration != null) {
-                // Send schematic to terra server
-                FTPManager.sendFileFTP(FTPManager.getFTPUrl(
-                        server, plot),
-                        plot.getFinishedSchematic(false));
-            } else {
-                Bukkit.getLogger().log(Level.SEVERE, "FTP configuration is null!");
+        if (!finishedSchematicFile.exists()) {
+            boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
+            boolean createdFile = finishedSchematicFile.createNewFile();
+            if (!createdDirs || !createdFile) {
+                Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
+                return;
             }
+        }
+
+        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+            writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+        }
+
+        // Upload to FTP server
+        if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
+            FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
         }
     }
 
@@ -370,7 +361,7 @@ public class PlotManager {
         return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName;
     }
 
-    public static String getOutlinesSchematicPath() {
-        return BTEPlotSystem.getPlugin().getConfig().getString("outlines-schematic-path");
+    public static String getDefaultSchematicPath() {
+        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 }

@@ -22,37 +22,44 @@
  *  SOFTWARE.
  */
 
-package github.BTEPlotSystem.commands.admin;
+package github.BTEPlotSystem.core.config;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.database.DatabaseConnection;
-import github.BTEPlotSystem.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.yaml.snakeyaml.DumperOptions;
 
-import java.util.logging.Level;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class CMD_PReload implements CommandExecutor {
+public class Config extends YamlConfiguration {
+
+    public static final double VERSION = 1.0;
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission("alpsbte.admin")){
-            try {
-                BTEPlotSystem.getPlugin().reloadConfig();
-                BTEPlotSystem.getPlugin().saveConfig();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
+    public String saveToString() {
+        try {
+            // Increase config width to avoid line breaks
+            Field op;
+            op = YamlConfiguration.class.getDeclaredField("yamlOptions");
+            op.setAccessible(true);
+            final DumperOptions options = (DumperOptions) op.get(this);
+            options.setWidth(250);
+        } catch (final Exception ignored) {}
 
-                BTEPlotSystem.reloadHolograms();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
+        return super.saveToString();
+    }
 
-                DatabaseConnection.InitializeDatabase();
-            } catch (Exception ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while reloading!"));
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading!", ex);
-            }
+    public List<String> readDefaultConfig() {
+        try (InputStream in = BTEPlotSystem.getPlugin().getResource("defaultConfig.yml")) {
+             BufferedReader input = new BufferedReader(new InputStreamReader(in));
+             return input.lines().collect(Collectors.toList());
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
-        return true;
     }
 }

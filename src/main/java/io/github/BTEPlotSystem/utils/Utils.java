@@ -24,38 +24,29 @@
 
 package github.BTEPlotSystem.utils;
 
-import org.jetbrains.annotations.Nullable;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import github.BTEPlotSystem.core.config.ConfigPaths;
+import github.BTEPlotSystem.core.system.CityProject;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import org.bukkit.*;
 import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.system.CityProject;
-import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Utils {
-
-
 
     // Head Database API
     public static HeadDatabaseAPI headDatabaseAPI;
 
     public static ItemStack getItemHead(String headID) {
-        return headDatabaseAPI != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+        return headDatabaseAPI != null && headID != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
     }
 
     // Get player head by UUID
@@ -72,27 +63,30 @@ public class Utils {
     public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
     // Spawn Location
-    public static Location getSpawnPoint() {
+    public static Location getSpawnLocation() {
         FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
 
-        return new Location(Bukkit.getWorld(config.getString("lobby-world")),
-                config.getDouble("spawn-point.x"),
-                config.getDouble("spawn-point.y"),
-                config.getDouble("spawn-point.z"),
-                (float) config.getDouble("spawn-point.yaw"),
-                (float) config.getDouble("spawn-point.pitch")
-        );
+        if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
+            try {
+                MultiverseWorld spawnWorld = BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
+                return spawnWorld.getSpawnLocation();
+            } catch (Exception ignore) {
+                Bukkit.getLogger().log(Level.WARNING, String.format("Could not find %s in multiverse config!", ConfigPaths.SPAWN_WORLD));
+            }
+        }
+
+        return BTEPlotSystem.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
     }
 
     // Player Messages
-    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString("message-prefix") + " ";
+    private static final String messagePrefix =  BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("info-prefix") + info;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOUR) + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString("error-prefix") + error;
+        return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOUR) + error;
     }
 
     // Integer Try Parser
@@ -131,63 +125,6 @@ public class Utils {
                 return "§c§lHard";
             default:
                 return "";
-        }
-    }
-
-    public static Server parseServer(CityProject cityProject) throws Exception {
-        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
-        String serverShortName = config.getString("countries." + cityProject.getCountry().name + ".server");
-        if(serverShortName == null)
-            throw new Exception("Server Not Found");
-        else {
-            String configServer = "servers." + serverShortName;
-            FTPConfiguration ftpConfiguration = null;
-            if (config.getBoolean(configServer + ".ftp.enabled")) {
-                ftpConfiguration = new FTPConfiguration(
-                    config.getString(configServer + ".ftp.address"),
-                    config.getInt(configServer + ".ftp.port"),
-                    config.getString(configServer + ".ftp.username"),
-                    config.getString(configServer + ".ftp.password"),
-                    config.getBoolean(configServer + ".ftp.secure-ftp")
-                );
-            }
-            return new Server(serverShortName,
-                    config.getString(configServer + ".server-name"),
-                    config.getString(configServer + ".finished-schematic-path"),
-                    ftpConfiguration);
-        }
-    }
-
-
-    public static class Server {
-        public String shortName;
-        public String serverName;
-        public String finishedSchematicPath;
-
-        public FTPConfiguration ftpConfiguration;
-
-        public Server(String shortName, String serverName, String finishedSchematicPath,
-                      @Nullable FTPConfiguration ftpConfiguration) {
-            this.shortName = shortName;
-            this.serverName = serverName;
-            this.finishedSchematicPath = finishedSchematicPath;
-            this.ftpConfiguration = ftpConfiguration;
-        }
-    }
-
-    public static class FTPConfiguration {
-        public String address;
-        public int port;
-        public String username;
-        public String password;
-        public boolean secureFTP;
-
-        public FTPConfiguration(String address, int port, String username, String password, boolean secureFTP) {
-            this.address = address;
-            this.port = port;
-            this.username = username;
-            this.password = password;
-            this.secureFTP = secureFTP;
         }
     }
 }

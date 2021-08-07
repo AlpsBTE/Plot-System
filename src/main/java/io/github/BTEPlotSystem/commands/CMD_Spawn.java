@@ -36,7 +36,7 @@ public class CMD_Spawn implements CommandExecutor {
         if (sender instanceof Player){
             Player player = (Player)sender;
 
-            player.teleport(Utils.getSpawnPoint());
+            player.teleport(Utils.getSpawnLocation());
             player.sendMessage(Utils.getInfoMessageFormat("Teleporting to spawn..."));
             player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
         }

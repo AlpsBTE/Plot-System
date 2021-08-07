@@ -25,8 +25,8 @@
 package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.DatabaseConnection;
-import github.BTEPlotSystem.core.holograms.CompletedBuildingsLeaderboard;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
+import github.BTEPlotSystem.core.holograms.PlotsLeaderboard;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.core.holograms.ScoreLeaderboard;
 import github.BTEPlotSystem.core.system.plot.Plot;
@@ -34,15 +34,11 @@ import github.BTEPlotSystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Builder {
 
@@ -63,163 +59,126 @@ public class Builder {
     public boolean isOnline() { return Bukkit.getPlayer(UUID) != null; }
 
     public String getName() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT name FROM players WHERE uuid = ?");
-            ps.setString(1, UUID.toString());
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
 
-            if(rs.next()) {
-                return rs.getString(1);
-            }
-            return null;
+        if (rs.next()) {
+            return rs.getString(1);
         }
+        return getPlayer() != null ? getPlayer().getName() : "";
     }
 
     public int getScore() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT score FROM players WHERE uuid = ?");
-            ps.setString(1, getUUID().toString());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
+
+        if (rs.next()) {
             return rs.getInt(1);
         }
+        return 0;
     }
 
     public int getCompletedBuilds() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT completedBuilds FROM players WHERE uuid = ?");
-            ps.setString(1, getUUID().toString());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT completed_plots FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
+
+        if (rs.next()) {
             return rs.getInt(1);
         }
+        return 0;
     }
 
     public Slot getFreeSlot() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = ?");
-            ps.setString(1, getUUID().toString());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
 
+        if (rs.next()) {
             for(int i = 1; i <= 3; i++) {
                 if(rs.getString(i) == null) {
                     return Slot.values()[i - 1];
                 }
             }
-            return null;
         }
-    }
-
-    public List<Slot> getOccupiedSlots() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement("SELECT firstSlot, secondSlot, thirdSlot FROM players WHERE uuid = ?");
-            ps.setString(1, getUUID().toString());
-            ResultSet rs = ps.executeQuery();
-
-            List<Slot> slots = new ArrayList<>();
-            int counter = 0;
-            while (rs.next()) {
-                if(!rs.wasNull()) {
-                    slots.add(Slot.values()[counter]);
-                    Bukkit.getLogger().log(Level.INFO,Slot.values().length + "");
-                    Bukkit.getLogger().log(Level.INFO,Slot.values()[counter].toString());
-                }
-                counter++;
-            }
-            return slots;
-        }
+        return null;
     }
 
     public Plot getPlot(Slot slot) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT " + slot.name() + " FROM players WHERE uuid = ?");
-            ps.setString(1, getUUID().toString());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT " + slot.name().toLowerCase() + " FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery();
 
-            int plotID = rs.getInt(1);
-            return rs.wasNull() ? null : new Plot(plotID);
-        }
+        int plotID = -1;
+        if (rs.next()) plotID = rs.getInt(1);
+        return plotID == -1 ? null : new Plot(plotID);
     }
 
     public void addScore(int score) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE players SET score = ? WHERE uuid = ?");
-            ps.setInt(1, getScore() + score);
-            ps.setString(2, getUUID().toString());
-            ps.executeUpdate();
-        }
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
+                .setValue(getScore() + score).setValue(getUUID().toString())
+                .executeUpdate();
+
         BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE players SET completedBuilds = ? WHERE uuid = ?");
-            ps.setInt(1, getCompletedBuilds() + amount);
-            ps.setString(2, getUUID().toString());
-            ps.executeUpdate();
-        }
-        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof CompletedBuildingsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET completed_plots = ? WHERE uuid = ?")
+                .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
+                .executeUpdate();
+
+        BTEPlotSystem.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram);
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE players SET " + slot.name() + " = ? WHERE uuid = ?");
-            ps.setInt(1, plotID);
-            ps.setString(2, getUUID().toString());
-            ps.executeUpdate();
-        }
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = ? WHERE uuid = ?")
+                .setValue(plotID).setValue(getUUID().toString())
+                .executeUpdate();
     }
 
     public void removePlot(Slot slot) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE players SET " + slot.name() + " = DEFAULT(firstSlot) WHERE uuid = ?");
-            ps.setString(1, getUUID().toString());
-            ps.executeUpdate();
+        if (slot != null) { // If not null, plot is already removed from player slot
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
+                    .setValue(getUUID().toString())
+                    .executeUpdate();
         }
     }
 
     public static Builder getBuilderByName(String name) throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT uuid FROM players WHERE name = ?");
-            ps.setString(1, name);
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT uuid FROM plotsystem_builders WHERE name = ?")
+                .setValue(name).executeQuery();
 
-            if(rs.next()) {
-                return new Builder(java.util.UUID.fromString(rs.getString(1)));
-            }
-            return null;
+        if (rs.next()) {
+            return new Builder(java.util.UUID.fromString(rs.getString(1)));
         }
+        return null;
     }
 
     public static List<String> getBuildersByScore(int limit) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement("SELECT name, score FROM plotsystem_builders ORDER BY score DESC LIMIT ?")
+                .setValue(limit).executeQuery();
+
         List<String> scoreAsFormat = new ArrayList<>();
-
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT name, score FROM players ORDER BY score DESC LIMIT ?");
-            ps.setInt(1, limit);
-            ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
             }
-            return scoreAsFormat;
-        }
+        return scoreAsFormat;
     }
 
     public static List<String> getBuildersByCompletedBuilds(int limit) throws SQLException {
-        List<String> completedBuildsAsFormat = new ArrayList<>();
+        ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
+                .setValue(limit).executeQuery();
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT name, completedBuilds FROM players ORDER BY completedBuilds DESC LIMIT ?");
-            ps.setInt(1, limit);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                completedBuildsAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
-            }
-            return completedBuildsAsFormat;
+        List<String> scoreAsFormat = new ArrayList<>();
+        while (rs.next()) {
+            scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
         }
+        return scoreAsFormat;
+    }
+
+    public Slot getSlot (Plot plot) throws SQLException {
+        for (Slot slot : Slot.values()) {
+            if (getPlot(slot).getID() == plot.getID()) {
+                return slot;
+            }
+        }
+        return null;
     }
 }
