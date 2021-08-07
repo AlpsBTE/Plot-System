@@ -29,42 +29,6 @@ database:
 
 
 # -----------------------------------------------------
-# | Terra-Servers: Register one or multiple terra servers
-# |
-# | Only use FTP/SFTP if the servers cannot communicate with each other using Symlinks
-# | For more information: https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# -----------------------------------------------------
-servers:
-  S1:
-    schematic-path: default
-    ftp:
-      enabled: false
-      address: ip-adress
-      port: 22
-      username: user
-      password: paswd
-
-
-# -----------------------------------------------------
-# | Countries: Register one or multiple countries and assign them to a server
-# |
-# | Head-ID -> Displays the head for the country/region. Use this website to get a head (https://minecraft-heads.com/custom-heads)
-# | Server -> Each country must be linked to a server registered above
-# | For more information: https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# -----------------------------------------------------
-countries:
-  AT:
-    head-id: 4397
-    server: S1
-  CH:
-    head-id: 32348
-    server: S1
-  LI:
-    head-id: 26174
-    server: S1
-
-
-# -----------------------------------------------------
 # | Holograms: Show plot statistics / Are placed in the spawn world
 # | NOTE: Requires the HolographicDisplays plugin to work
 # -----------------------------------------------------

@@ -91,7 +91,7 @@ public class ReviewMenu extends AbstractMenu {
                             .setLore(new LoreBuilder()
                                     .addLines("ID: §f" + plot.getID(),
                                             "",
-                                            "§7Builder: §f" + plot.getBuilder().getName(),
+                                            "§7Builder: §f" + plot.getPlotOwner().getName(),
                                             "§7City: §f" + plot.getCity().getName(),
                                             "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                     .build())
@@ -102,7 +102,7 @@ public class ReviewMenu extends AbstractMenu {
                             .setLore(new LoreBuilder()
                                     .addLines("ID: §f" + plot.getID(),
                                               "",
-                                              "§7Builder: §f" + plot.getBuilder().getName(),
+                                              "§7Builder: §f" + plot.getPlotOwner().getName(),
                                               "§7City: §f" + plot.getCity().getName(),
                                               "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                                     .build())
@@ -133,7 +133,7 @@ public class ReviewMenu extends AbstractMenu {
                 try {
                     Plot plot = plots.get(currentIteration);
                     if(plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getBuilder().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
+                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
                             PlotHandler.teleportPlayer(plot, getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));

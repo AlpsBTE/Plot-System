@@ -25,5 +25,5 @@
 package github.BTEPlotSystem.utils.enums;
 
 public enum Slot {
-    firstSlot, secondSlot, thirdSlot
+    first_slot, second_slot, third_slot
 }

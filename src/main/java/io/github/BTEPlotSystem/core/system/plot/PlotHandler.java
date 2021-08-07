@@ -25,7 +25,7 @@
 package github.BTEPlotSystem.core.system.plot;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.utils.Utils;
@@ -41,8 +41,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -67,7 +65,7 @@ public class PlotHandler {
 
         sendLinkMessages(plot, player);
 
-        if(plot.getBuilder().getUUID().equals(player.getUniqueId())) {
+        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
             plot.setLastActivity(false);
         }
     }
@@ -81,26 +79,22 @@ public class PlotHandler {
             }
         }
 
-        plot.removeBuilderPerms(plot.getBuilder().getUUID()).save();
+        plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.addBuilderPerms(plot.getBuilder().getUUID()).save();
+        plot.addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static void abandonPlot(Plot plot) throws Exception {
         if(plot.isReviewed()) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                PreparedStatement ps = con.prepareStatement("DELETE FROM reviews WHERE id_review = ?");
-                ps.setInt(1, plot.getReview().getReviewID());
-                ps.executeUpdate();
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                    .setValue(plot.getReview().getReviewID()).executeUpdate();
 
-                ps = con.prepareStatement("UPDATE plots SET idreview = DEFAULT(idreview) WHERE idplot = ?");
-                ps.setInt(1, plot.getID());
-                ps.executeUpdate();
-            }
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                    .setValue(plot.getID()).executeUpdate();
         }
 
         loadPlot(plot); // Load Plot to be listed by Multiverse
@@ -108,8 +102,8 @@ public class PlotHandler {
             player.teleport(Utils.getSpawnLocation());
         }
 
-        plot.getBuilder().removePlot(plot.getSlot());
-        plot.setBuilder(null);
+        plot.getPlotOwner().removePlot(plot.getSlot());
+        plot.setPlotOwner(null);
         plot.setLastActivity(true);
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);
@@ -126,11 +120,8 @@ public class PlotHandler {
 
         Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM plots WHERE idplot = ?");
-            ps.setInt(1, plot.getID());
-            ps.execute();
-        }
+        DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
+                .setValue(plot.getID()).executeUpdate();
     }
 
     public static void loadPlot(Plot plot) {

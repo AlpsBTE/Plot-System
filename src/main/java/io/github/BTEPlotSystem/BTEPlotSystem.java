@@ -31,7 +31,7 @@ import github.BTEPlotSystem.commands.admin.CMD_PReload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologram;
 import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.EventListener;
 import github.BTEPlotSystem.core.config.ConfigManager;
 import github.BTEPlotSystem.core.config.ConfigNotImplementedException;
@@ -61,6 +61,8 @@ public class BTEPlotSystem extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog"); // Disable Logging
+
         plugin = this;
         multiverseCore = (MultiverseCore) getServer().getPluginManager().getPlugin("Multiverse-Core");
 

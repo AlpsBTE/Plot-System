@@ -1,56 +1,90 @@
 package github.BTEPlotSystem.utils.ftp;
 
-import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.system.plot.Plot;
-import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.core.system.Server;
+import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.impl.StandardFileSystemManager;
+import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
+import org.bukkit.Bukkit;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class FTPManager {
 
-    public static String getFTPUrl(Utils.Server server, Plot plot) {
-        return String.format(
-                "%sftp://%s:%s@%s:%d/%s",
-                server.ftpConfiguration.secureFTP ? "s" : "",
-                server.ftpConfiguration.username,
-                server.ftpConfiguration.password,
-                server.ftpConfiguration.address,
-                server.ftpConfiguration.port,
-                server.finishedSchematicPath
-                        + plot.getCity().getID()
-                        + "/"
-                        + plot.getID() + ".schematic"
+    private static FileSystemOptions fileOptions;
+
+    private final static String DEFAULT_SCHEMATIC_PATH_LINUX = "/var/lib/Plot-System/schematics";
+
+    static {
+        try {
+            fileOptions = new FileSystemOptions();
+            SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(fileOptions, "no");
+            SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fileOptions, false);
+        } catch (FileSystemException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
+        }
+    }
+
+    public static String getFTPUrl(Server server, int cityID) throws SQLException {
+        String schematicsPath = server.getFTPConfiguration().getSchematicPath();
+
+        return String.format("%sftp://%s:%s@%s:%d/%s/%s/%s/",
+                server.getFTPConfiguration().getPort() == 22 ? "s" : "",
+                server.getFTPConfiguration().getUsername(),
+                server.getFTPConfiguration().getPassword(),
+                server.getFTPConfiguration().getAddress(),
+                server.getFTPConfiguration().getPort(),
+                schematicsPath == null ? DEFAULT_SCHEMATIC_PATH_LINUX : schematicsPath,
+                "finishedSchematics",
+                cityID
         );
     }
 
-    private static final int BUFFER_SIZE = 4096;
+    public static void uploadSchematic(String ftpURL, File schematic) {
+        try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
+            fileManager.init();
 
-    public static void sendFileFTP(String ftpURL, File schematic)
-    {
-        try {
-            URL url = new URL(ftpURL);
-            URLConnection conn = url.openConnection();
-            OutputStream outputStream = conn.getOutputStream();
-            FileInputStream inputStream = new FileInputStream(schematic);
+            // Get local schematic
+            FileObject localSchematic = fileManager.toFileObject(schematic);
 
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int bytesRead = -1;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
+            // Get remote path and create missing directories
+            FileObject remote = fileManager.resolveFile(ftpURL, fileOptions);
+            remote.createFolder();
 
-            inputStream.close();
-            outputStream.close();
+            // Create remote schematic and write to it
+            FileObject remoteSchematic = remote.resolveFile(schematic.getName());
+            remoteSchematic.copyFrom(localSchematic, Selectors.SELECT_SELF);
 
-            BTEPlotSystem.getPlugin().getLogger().log(Level.INFO, "File uploaded successfully!");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            localSchematic.close();
+            remoteSchematic.close();
+
+            Bukkit.getLogger().log(Level.INFO, "File " + schematic.getName() + " uploaded successfully!");
+        } catch (FileSystemException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
+        }
+    }
+
+    public static void downloadSchematic(String ftpURL, File schematic) {
+        try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
+            fileManager.init();
+
+            // Get local schematic
+            FileObject localSchematic = fileManager.toFileObject(schematic);
+
+            // Get remote path
+            FileObject remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/",""), fileOptions);
+
+            // Get remote schematic and write it to local file
+            FileObject remoteSchematic = remote.resolveFile(schematic.getName());
+            localSchematic.copyFrom(remoteSchematic, Selectors.SELECT_SELF);
+
+            localSchematic.close();
+            remoteSchematic.close();
+
+            Bukkit.getLogger().log(Level.INFO, "File " + schematic.getName() + " downloaded successfully!");
+        } catch (FileSystemException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
     }
 }

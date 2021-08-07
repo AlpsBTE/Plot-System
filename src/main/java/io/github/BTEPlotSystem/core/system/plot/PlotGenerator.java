@@ -94,13 +94,13 @@ public final class PlotGenerator {
 
                 builder.setPlot(plot.getID(), builder.getFreeSlot());
                 plot.setStatus(Status.unfinished);
-                plot.setBuilder(builder.getPlayer().getUniqueId().toString());
+                plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
                 plot.setLastActivity(false);
 
                 Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                     try {
                         PlotHandler.teleportPlayer(plot, builder.getPlayer());
-                        Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getBuilder().getName() + "§a!"));
+                        Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getPlotOwner().getName() + "§a!"));
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
