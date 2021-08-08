@@ -174,12 +174,14 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-vfs2</artifactId>
             <version>2.4</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>0.1.55</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Additional Annotations -->
