@@ -25,7 +25,7 @@
 package github.BTEPlotSystem.core.system.plot;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.core.DatabaseConnection;
+import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.utils.Utils;
@@ -104,6 +104,7 @@ public class PlotHandler {
 
         plot.getPlotOwner().removePlot(plot.getSlot());
         plot.setPlotOwner(null);
+        // TODO: Set plot members null and remove plot slot from members
         plot.setLastActivity(true);
         plot.setScore(-1);
         plot.setStatus(Status.unclaimed);

@@ -42,14 +42,14 @@ import java.util.logging.Level;
 public class CMD_Abandon implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender instanceof Player) {
-            if(sender.hasPermission("alpsbte.plot")) {
+        if (sender instanceof Player) {
+            if (sender.hasPermission("alpsbte.plot")) {
                 Player player = (Player) sender;
                 World playerWorld = player.getWorld();
 
                 Plot plot = null;
-                if(args.length == 0) {
-                    if(PlotManager.isPlotWorld(playerWorld)) {
+                if (args.length == 0) {
+                    if (PlotManager.isPlotWorld(playerWorld)) {
                         try {
                             plot = PlotManager.getPlotByWorld(playerWorld);
                         } catch (SQLException ex) {
@@ -59,7 +59,7 @@ public class CMD_Abandon implements CommandExecutor {
                     } else {
                         player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/abandon or /abandon <ID>"));
                     }
-                } else if(args.length == 1 && Utils.TryParseInt(args[0]) != null) {
+                } else if (args.length == 1 && Utils.TryParseInt(args[0]) != null) {
                     try {
                         plot = new Plot(Integer.parseInt(args[0]));
                     } catch (SQLException ex) {
@@ -72,13 +72,12 @@ public class CMD_Abandon implements CommandExecutor {
                 }
 
                 try {
-                    if(plot.getStatus() == Status.unfinished) {
-                        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
+                    if (plot.getStatus() == Status.unfinished) {
+                        if (plot.getPlotOwner().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.review")) {
                             PlotHandler.abandonPlot(plot);
 
-                                player.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + finalPlot.getID()));
-                                player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);
-                            });
+                            player.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
+                            player.playSound(player.getLocation(), Utils.AbandonPlotSound, 1, 1);
                         } else {
                             player.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
                         }

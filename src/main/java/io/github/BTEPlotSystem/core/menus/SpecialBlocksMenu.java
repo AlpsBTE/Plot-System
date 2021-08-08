@@ -25,10 +25,10 @@
 package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import github.BTEPlotSystem.utils.MenuItems;
-import github.BTEPlotSystem.utils.SpecialBlocks;
-import github.BTEPlotSystem.utils.ItemBuilder;
-import github.BTEPlotSystem.utils.LoreBuilder;
+import github.BTEPlotSystem.utils.items.MenuItems;
+import github.BTEPlotSystem.utils.items.SpecialBlocks;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;

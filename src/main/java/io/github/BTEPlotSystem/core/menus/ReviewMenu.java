@@ -53,26 +53,10 @@ public class ReviewMenu extends AbstractMenu {
     public ReviewMenu(Player player) throws SQLException {
         // Opens Review Menu, showing all plots in the given round.
         super(6, "Review & Manage Plots", player);
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("101101101")
-                .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
+    protected void setMenuItems() {
         try {
             plots.addAll(PlotManager.getPlots(Status.unreviewed));
             plots.addAll(PlotManager.getPlots(Status.unfinished));
@@ -160,6 +144,19 @@ public class ReviewMenu extends AbstractMenu {
         getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
         });
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("101101101")
+                .build();
     }
 
     public static ItemStack getMenuItem(){

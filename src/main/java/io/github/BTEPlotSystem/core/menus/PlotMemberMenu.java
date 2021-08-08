@@ -29,53 +29,42 @@ public class PlotMemberMenu extends AbstractMenu {
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
         super(3, "Manage Members | Plot #" + plot.getID(), menuPlayer);
         this.plot = plot;
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111111111")
-                .pattern("000000000")
-                .pattern("111111111")
-                .build();
-        mask.apply(getMenu());
-
-        try {
-            addMenuItems();
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "SQL Error, while trying to open PlotMemberMenu");
-        }
-        setItemClickEvents();
-        getMenu().open(menuPlayer.getPlayer());
     }
 
     @Override
-    protected void addMenuItems() throws SQLException {
+    protected void setMenuItems() {
         // Plot Owner Item
-        getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                        .setName("§6§lOWNER - " + plot.getPlotOwner().getName()).setLore(new LoreBuilder()
-                                .addLine(plot.getPlotOwner().getName()).build())
-                        .build());
+        try {
+            getMenu().getSlot(10)
+                    .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                            .setName("§6§lOWNER - " + plot.getPlotOwner().getName()).setLore(new LoreBuilder()
+                                    .addLine(plot.getPlotOwner().getName()).build())
+                            .build());
 
-        // Add Member Button
-        ItemStack whitePlus = Utils.getItemHead("9237");
-        getMenu().getSlot(16)
-                .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§lAdd Member to plot").setLore(new LoreBuilder()
-                                .addLine("Invite your friends to your plot, and start building together!").build())
-                        .build());
+            // Add Member Button
+            ItemStack whitePlus = Utils.getItemHead("9237");
+            getMenu().getSlot(16)
+                    .setItem(new ItemBuilder(whitePlus)
+                            .setName("§6§lAdd Member to plot").setLore(new LoreBuilder()
+                                    .addLine("Invite your friends to your plot, and start building together!").build())
+                            .build());
 
-        // Member List
-        builders = plot.getPlotMembers();
-        for (int i = 12; i < 15; i++) {
-            if (builders.size() >= (i-11)) {
-                Builder builder = builders.get(i-12);
-                getMenu().getSlot(i)
-                        .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                .setName("§b§l" + builder.getName() + " - Member")
-                                .setLore(new LoreBuilder().addLine("§cclick to remove...").build())
-                                .build());
-            } else {
-                getMenu().getSlot(i).setItem(emptyMemberSlotItem);
+            // Member List
+            builders = plot.getPlotMembers();
+            for (int i = 12; i < 15; i++) {
+                if (builders.size() >= (i-11)) {
+                    Builder builder = builders.get(i-12);
+                    getMenu().getSlot(i)
+                            .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
+                                    .setName("§b§l" + builder.getName() + " - Member")
+                                    .setLore(new LoreBuilder().addLine("§cclick to remove...").build())
+                                    .build());
+                } else {
+                    getMenu().getSlot(i).setItem(emptyMemberSlotItem);
+                }
             }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }
 
@@ -150,5 +139,15 @@ public class PlotMemberMenu extends AbstractMenu {
                 }
             });
         }
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("111111111")
+                .build();
     }
 }

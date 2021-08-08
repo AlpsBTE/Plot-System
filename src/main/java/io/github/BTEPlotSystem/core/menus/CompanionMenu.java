@@ -25,6 +25,7 @@
 package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.plot.Plot;
@@ -34,6 +35,9 @@ import github.BTEPlotSystem.utils.*;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Slot;
 import github.BTEPlotSystem.utils.enums.Status;
+import github.BTEPlotSystem.utils.items.MenuItems;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,6 +63,8 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItems() {
+        cityProjects = CityProject.getCityProjects();
+
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             getMenu().getSlot(4)
                     .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
@@ -117,7 +123,11 @@ public class CompanionMenu extends AbstractMenu {
         });
 
         // Set city project items
-        setCityProjectItems();
+        try {
+            setCityProjectItems();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
     }
 
     @Override
@@ -129,29 +139,28 @@ public class CompanionMenu extends AbstractMenu {
         });
 
         // Add click event for switch plots difficulty item
-        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) ->
             Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
-                selectedPlotDifficulty = (selectedPlotDifficulty == null ?
-                        PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
-                        PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
+            selectedPlotDifficulty = (selectedPlotDifficulty == null ?
+                    PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
+                    PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
 
-                Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-                    try {
-                        getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.Done, 1, 1);
-                    } catch (SQLException ex) {
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
-                });
-
+            Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                 try {
-                    setCityProjectItems();
+                    getMenu().getSlot(7).setItem(getSelectedDifficultyItem());
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.Done, 1, 1);
                 } catch (SQLException ex) {
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
             });
-        });
+
+            try {
+                setCityProjectItems();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }));
 
         // Add click event for city projects items
         for(int i = 0; i < cityProjects.size(); i++) {
@@ -264,15 +273,15 @@ public class CompanionMenu extends AbstractMenu {
     private void setCityProjectItems() throws SQLException {
         for(int i = 0; i < cityProjects.size(); i++) {
             if(i <= 28) {
-                ItemStack cityProjectItem = MenuItems.errorItem();
-                cityProjectItem = cityProjects.get(i).getCountry().getHead();
+                CityProject cp = cityProjects.get(i);
+                ItemStack cpItem = cp.getCountry().getHead();
                 try {
                     PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
                             selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), new Builder(getMenuPlayer().getUniqueId()));
 
                     int plotsOpen = PlotManager.getPlots(cp.getID(), Status.unclaimed).size();
                     int plotsInProgress = PlotManager.getPlots(cp.getID(), Status.unfinished, Status.unreviewed).size();
-                    int plotsCompleted = PlotManager.getPlots(cp.getID(), Status.complete).size();
+                    int plotsCompleted = PlotManager.getPlots(cp.getID(), Status.completed).size();
                     int plotsUnclaimed = PlotManager.getPlots(cp.getID(), cpPlotDifficulty, Status.unclaimed).size();
 
                     Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () ->
@@ -283,8 +292,6 @@ public class CompanionMenu extends AbstractMenu {
                                                     "",
                                                     "§6" + plotsOpen + " §7Plots Open",
                                                     "§f---------------------",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.unfinished, Status.unreviewed).size() + " §7Plots In Progress",
-                                                    "§6" + PlotManager.getPlots(cityProjects.get(i).getID(), Status.completed).size() + " §7Plots Completed",
                                                     "§6" + plotsInProgress + " §7Plots In Progress",
                                                     "§6" + plotsCompleted + " §7Plots Completed",
                                                     "",

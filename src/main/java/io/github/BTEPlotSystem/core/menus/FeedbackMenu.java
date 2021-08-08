@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;

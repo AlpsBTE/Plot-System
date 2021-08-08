@@ -64,38 +64,20 @@ public class ReviewPlotMenu extends AbstractMenu {
 
     public ReviewPlotMenu(Player player, Plot plot) {
         super(6, "Review Plot #" + plot.getID(), player);
-
         this.plot = plot;
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("111010111")
-                .build();
-        mask.apply(getMenu());
 
         // Check if plot is from player
         try {
             if (plot.getPlotOwner().getUUID().equals(player.getUniqueId())){
                 player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
-                return;
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
+    protected void setMenuItems() {
         for(int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
@@ -423,5 +405,18 @@ public class ReviewPlotMenu extends AbstractMenu {
                 });
             }
         }
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111101111")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("111010111")
+                .build();
     }
 }
