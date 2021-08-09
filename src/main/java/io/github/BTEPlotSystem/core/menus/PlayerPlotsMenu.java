@@ -82,7 +82,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                     .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
                             .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
                                     .addLines("Score: §f" + builder.getScore(),
-                                            "§7Completed Buildings: §f" + builder.getCompletedBuilds())
+                                            "§7Completed Plots: §f" + builder.getCompletedBuilds())
                                     .build())
                             .build());
         } catch (SQLException ex) {

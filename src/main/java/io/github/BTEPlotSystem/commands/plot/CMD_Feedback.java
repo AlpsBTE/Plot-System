@@ -25,6 +25,7 @@
 package github.BTEPlotSystem.commands.plot;
 
 import github.BTEPlotSystem.core.menus.FeedbackMenu;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.Utils;
@@ -49,7 +50,8 @@ public class CMD_Feedback implements CommandExecutor {
 
                             if(PlotManager.plotExists(plot.getID())) {
                                 if(plot.isReviewed() || plot.isRejected()) {
-                                    if(plot.getPlotOwner().getUUID().equals(((Player) sender).getUniqueId()) || sender.hasPermission("alpsbte.review")) {
+                                    Builder builder = new Builder(((Player) sender).getUniqueId());
+                                    if(plot.getPlotOwner().getUUID().equals(builder.getUUID()) || plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(builder.getUUID())) || sender.hasPermission("alpsbte.review")) {
                                         new FeedbackMenu((Player) sender, plot.getID());
                                     } else {
                                         sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to see this feedback!"));
