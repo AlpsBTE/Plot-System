@@ -252,7 +252,7 @@ public class PlotManager {
         };
 
         // Return coordinates if they are in the schematic plot region
-        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains((int)plotCoords[0], (int)plotCoords[1])) {
+        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int)plotCoords[0], 15, (int)plotCoords[1]))) {
             return plotCoords;
         }
 

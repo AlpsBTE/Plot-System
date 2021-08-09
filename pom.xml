@@ -17,14 +17,14 @@
 
         <!-- Fast Async World Edit -->
         <repository>
-            <id>fawe-repo</id>
-            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+            <id>IntellectualSites</id>
+            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
 
         <!-- World Edit -->
         <repository>
             <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
+            <url>https://maven.sk89q.com/repo/</url>
         </repository>
 
         <!-- World Guard -->
@@ -35,8 +35,8 @@
 
         <!-- Multiverse Core -->
         <repository>
-            <id>Multiverse-Core</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse/</url>
+            <id>OnARandomBox</id>
+            <url>https://repo.onarandombox.com/content/groups/public/</url>
         </repository>
 
         <!-- Anvil GUI -->
@@ -45,16 +45,16 @@
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
 
-        <!-- Skull Creator -->
-        <repository>
-            <id>skullcreator-repo</id>
-            <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
-        </repository>
-
         <!-- Holographic Displays -->
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+
+        <!-- Canvas Library -->
+        <repository>
+            <id>canvas-repo</id>
+            <url>file://${project.basedir}/canvas</url>
         </repository>
     </repositories>
 
@@ -75,14 +75,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Fast Async World Edit -->
-        <dependency>
-            <groupId>com.boydti</groupId>
-            <artifactId>fawe-api</artifactId>
-            <version>latest</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- World Edit -->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
@@ -99,17 +91,32 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Fast Async World Edit API -->
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FAWE-Core</artifactId>
+            <version>1.17-93</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FAWE-Bukkit</artifactId>
+            <version>1.17-93</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>FAWE-Core</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Multiverse Core -->
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
-            <version>2.5.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>craftbukkit</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -135,14 +142,6 @@
             <artifactId>hdb-api</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Skull Creator -->
-        <dependency>
-            <groupId>dev.dbassett</groupId>
-            <artifactId>skullcreator</artifactId>
-            <version>3.0.1</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Holographic Displays -->
@@ -175,12 +174,26 @@
             <artifactId>commons-vfs2</artifactId>
             <version>2.4</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>0.1.55</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- FileUtils -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
             <scope>compile</scope>
         </dependency>
 
@@ -207,7 +220,7 @@
         <!-- IMPORTANT: Plugin Building Path -->
         <sourceDirectory>src/main/java/io</sourceDirectory>
         <!-- IMPORTANT: Output File Name -->
-        <finalName>AlpsBTE-PlotSystem V${project.version}</finalName>
+        <finalName>Plot-System V${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -221,6 +234,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>module-info.class</exclude>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.MF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

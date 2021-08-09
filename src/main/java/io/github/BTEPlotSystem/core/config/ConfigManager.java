@@ -25,8 +25,8 @@
 package github.BTEPlotSystem.core.config;
 
 import github.BTEPlotSystem.BTEPlotSystem;
-import org.apache.commons.multiverse.io.FileUtils;
-import org.apache.commons.multiverse.io.IOUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -173,7 +173,7 @@ public class ConfigManager {
 
         // Update config
         try {
-            List<String> currentFileLines = FileUtils.readLines(configFile);
+            List<String> currentFileLines = FileUtils.readLines(configFile, StandardCharsets.UTF_8);
             List<String> defaultFileLines = config.readDefaultConfig();
 
             currentFileLines.removeIf(s -> s.trim().isEmpty() || s.trim().startsWith("#") || s.split(":").length == 1);
@@ -225,7 +225,7 @@ public class ConfigManager {
      * @return - file as InputStreamReader (Reader)
      */
     private Reader getConfigContent() {
-        if (!configFile.exists()) return new InputStreamReader(IOUtils.toInputStream(""));
+        if (!configFile.exists()) return new InputStreamReader(IOUtils.toInputStream("", StandardCharsets.UTF_8));
 
         try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
             int commentNum = 0;
@@ -246,7 +246,7 @@ public class ConfigManager {
                     commentNum++;
 
                 // Add empty space
-                } else if (currentLine.equals("") || currentLine.equals(" ") || currentLine.isEmpty()) {
+                } else if (currentLine.equals(" ") || currentLine.isEmpty()) {
                     addLine = "EMPTY_SPACE_" + emptySpaceNum + ": ''";
                     whole.append(addLine).append("\n");
                     emptySpaceNum++;
@@ -262,7 +262,7 @@ public class ConfigManager {
             return new InputStreamReader(new ByteArrayInputStream(config.getBytes()), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while parsing config file!", ex);
-            return new InputStreamReader(IOUtils.toInputStream(""));
+            return new InputStreamReader(IOUtils.toInputStream("", StandardCharsets.UTF_8));
         }
     }
 

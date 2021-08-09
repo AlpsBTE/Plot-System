@@ -26,16 +26,14 @@ package github.BTEPlotSystem.utils;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import github.BTEPlotSystem.core.config.ConfigPaths;
-import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
-import dev.dbassett.skullcreator.SkullCreator;
 import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
 import java.util.logging.Level;
@@ -51,7 +49,13 @@ public class Utils {
 
     // Get player head by UUID
     public static ItemStack getPlayerHead(UUID playerUUID) {
-        return SkullCreator.itemFromUuid(playerUUID) != null ? SkullCreator.itemFromUuid(playerUUID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUUID));
+        skull.setItemMeta(meta);
+
+        return skull;
     }
 
     // Sounds
