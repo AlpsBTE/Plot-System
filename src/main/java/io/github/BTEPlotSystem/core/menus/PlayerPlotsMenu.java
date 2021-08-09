@@ -81,7 +81,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             getMenu().getSlot(4)
                     .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
                             .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
-                                    .addLines("Points: §f" + builder.getScore(),
+                                    .addLines("Score: §f" + builder.getScore(),
                                             "§7Completed Buildings: §f" + builder.getCompletedBuilds())
                                     .build())
                             .build());
@@ -159,7 +159,20 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
     private List<String> getDescription(Plot plot) throws SQLException {
         List<String> lines = new ArrayList<>();
-        lines.add("§7Total Points: §f" + (plot.getScore() == -1 ? 0 : plot.getScore()));
+        if (plot.getPlotMembers().size() == 0) {
+            // Plot is single player plot
+            lines.add("§7Total Score: §6" + (plot.getScore() == -1 ? 0 : plot.getScore()));
+        } else {
+            // Plot is multiplayer plot
+            lines.add("§7Plot Owner: §a" + plot.getPlotOwner().getName());
+            lines.add("");
+
+            int score = (plot.getScore() == -1 ? 0 : plot.getScore());
+            int memberCount = plot.getPlotMembers().size();
+            lines.add("§7Total Points: §f" + score + " §8(shared by " + (memberCount + 1) + " members)");
+            lines.add("§7Effective Score: §6" + (int) Math.floor((double) (score / (memberCount + 1))));
+        }
+
         if (plot.isReviewed() || plot.isRejected()) {
             lines.add("");
             lines.add("§7Accuracy: " + Utils.getPointsByColor(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
