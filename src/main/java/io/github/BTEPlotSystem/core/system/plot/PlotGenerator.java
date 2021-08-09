@@ -26,11 +26,14 @@ package github.BTEPlotSystem.core.system.plot;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -50,6 +53,7 @@ import github.BTEPlotSystem.utils.enums.PlotDifficulty;
 import github.BTEPlotSystem.utils.enums.Status;
 import org.bukkit.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -154,13 +158,15 @@ public final class PlotGenerator {
         regionManager.saveChanges();
     }
 
-    private void generateBuildingOutlines() throws IOException {
+    private void generateBuildingOutlines() throws IOException, WorldEditException {
         Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot); // TODO: Set Plot to the bottom of the schematic
 
-        EditSession editSession = Objects.requireNonNull(
-                ClipboardFormat.findByFile(plot.getOutlinesSchematic()))
-                .load(plot.getOutlinesSchematic())
-                .paste(weWorld, buildingOutlinesCoordinates, false, false, null);
+        Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
+        ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
+        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(weWorld, -1);
+
+        Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
+        Operations.complete(operation);
         editSession.flushQueue();
     }
 

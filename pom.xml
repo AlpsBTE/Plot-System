@@ -17,8 +17,8 @@
 
         <!-- Fast Async World Edit -->
         <repository>
-            <id>fawe-repo</id>
-            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+            <id>IntellectualSites</id>
+            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
 
         <!-- World Edit -->
@@ -75,14 +75,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Fast Async World Edit -->
-        <dependency>
-            <groupId>com.boydti</groupId>
-            <artifactId>fawe-api</artifactId>
-            <version>latest</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- World Edit -->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
@@ -97,6 +89,28 @@
             <artifactId>worldguard-legacy</artifactId>
             <version>6.2</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Fast Async World Edit Core API -->
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FAWE-Core</artifactId>
+            <version>1.17-93</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Fast Async World Edit Bukkit API -->
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FAWE-Bukkit</artifactId>
+            <version>1.17-93</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>FAWE-Core</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Multiverse Core -->
