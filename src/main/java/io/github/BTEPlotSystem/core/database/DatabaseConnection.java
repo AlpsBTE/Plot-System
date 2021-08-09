@@ -26,6 +26,7 @@ package github.BTEPlotSystem.core.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.config.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,7 +54,7 @@ public class DatabaseConnection {
             Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
             Bukkit.getLogger().log(Level.INFO, "Successfully registered MariaDB JDBC Driver!");
 
-            FileConfiguration configFile = github.BTEPlotSystem.BTEPlotSystem.getPlugin().getConfig();
+            FileConfiguration configFile = BTEPlotSystem.getPlugin().getConfig();
             URL = configFile.getString(ConfigPaths.DATABASE_URL);
             name = configFile.getString(ConfigPaths.DATABASE_NAME);
             username = configFile.getString(ConfigPaths.DATABASE_USERNAME);
