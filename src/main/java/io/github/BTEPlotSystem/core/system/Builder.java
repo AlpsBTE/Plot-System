@@ -108,7 +108,7 @@ public class Builder {
 
         int plotID = -1;
         if (rs.next()) plotID = rs.getInt(1);
-        return plotID == -1 ? null : new Plot(plotID);
+        return rs.wasNull() ? null : new Plot(plotID);
     }
 
     public void addScore(int score) throws SQLException {
