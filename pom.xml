@@ -249,12 +249,6 @@
                                 <exclude>META-INF/**</exclude>
                             </excludes>
                         </filter>
-                        <filter>
-                            <artifact>dev.dbassett</artifact>
-                            <excludes>
-                                <exclude>plugin.yml</exclude>
-                            </excludes>
-                        </filter>
                     </filters>
                 </configuration>
                 <executions>
