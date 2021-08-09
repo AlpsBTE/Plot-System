@@ -9,12 +9,6 @@
     <version>1.2</version>
 
     <repositories>
-        <!-- Canvas Library -->
-        <repository>
-            <id>canvas-repo</id>
-            <url>file://${project.basedir}/canvas</url>
-        </repository>
-
         <!-- Spigot & Bukkit -->
         <repository>
             <id>spigot-repo</id>
@@ -51,16 +45,16 @@
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
 
-        <!-- Skull Creator -->
-        <repository>
-            <id>skullcreator-repo</id>
-            <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
-        </repository>
-
         <!-- Holographic Displays -->
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+
+        <!-- Canvas Library -->
+        <repository>
+            <id>canvas-repo</id>
+            <url>file://${project.basedir}/canvas</url>
         </repository>
     </repositories>
 
@@ -148,14 +142,6 @@
             <artifactId>hdb-api</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Skull Creator -->
-        <dependency>
-            <groupId>dev.dbassett</groupId>
-            <artifactId>skullcreator</artifactId>
-            <version>3.0.1</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Holographic Displays -->
