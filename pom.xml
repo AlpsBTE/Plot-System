@@ -189,6 +189,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- FileUtils -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Additional Annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
