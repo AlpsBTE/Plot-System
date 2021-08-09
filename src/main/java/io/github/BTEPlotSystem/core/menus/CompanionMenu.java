@@ -290,7 +290,7 @@ public class CompanionMenu extends AbstractMenu {
                                     .addLines(cp.getDescription(),
                                             "",
                                             "§6" + plotsOpen + " §7Plots Open",
-                                            "§7---------------------",
+                                            "§8---------------------",
                                             "§6" + plotsInProgress + " §7Plots In Progress",
                                             "§6" + plotsCompleted + " §7Plots Completed",
                                             "",
