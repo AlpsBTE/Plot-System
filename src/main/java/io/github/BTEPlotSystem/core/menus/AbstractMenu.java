@@ -42,7 +42,7 @@ public abstract class AbstractMenu {
         this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
 
         if(getMask() != null) getMask().apply(getMenu());
-        getMenu().open(getMenuPlayer());
+        getMenu().open(getMenuPlayer()); // TODO: Add option to override menu opening
         Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
             setMenuItems();
             setItemClickEvents();
