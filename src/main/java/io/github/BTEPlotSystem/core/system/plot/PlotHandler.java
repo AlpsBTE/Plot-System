@@ -28,6 +28,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -80,6 +81,11 @@ public class PlotHandler {
         }
 
         plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        if (plot.getPlotMembers().size() != 0) {
+            for (Builder builder : plot.getPlotMembers()) {
+                plot.removeBuilderPerms(builder.getUUID());
+            }
+        }
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {

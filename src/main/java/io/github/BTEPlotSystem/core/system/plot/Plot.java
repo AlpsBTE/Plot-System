@@ -26,9 +26,11 @@ package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldedit.Vector;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
+import github.BTEPlotSystem.core.menus.PlotMemberMenu;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
+import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -306,4 +308,23 @@ public class Plot extends PlotPermissions {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != -1; // -1 == null
     }
 
+    public void removeMember(Builder member) {
+        // Remove Slot from Member
+        try {
+            member.removePlot(member.getSlot(this));
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
+        }
+
+        try {
+            List<Builder> builders = getPlotMembers();
+            builders.remove(member);
+            setPlotMembers(builders);
+
+            // Remove building perms
+            removeBuilderPerms(member.getUUID());
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
+        }
+    }
 }

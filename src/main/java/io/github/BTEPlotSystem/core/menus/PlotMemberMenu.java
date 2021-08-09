@@ -133,20 +133,16 @@ public class PlotMemberMenu extends AbstractMenu {
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) {
                     Builder builder = builders.get(itemSlot-12);
-                    // Used Member Slot
-                    builders.remove(builder);
+                    plot.removeMember(builder);
+
                     try {
-                        plot.setPlotMembers(builders);
-
-                        //TODO: Remove Permissions
-
                         clickPlayer.sendMessage(Utils.getInfoMessageFormat(builder.getName() + " has been removed from plot #" + plot.getID()));
-
-                        // Reopen menu to refresh everything
-                        new PlotMemberMenu(plot,clickPlayer);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
+
+                    // Reopen menu to refresh everything
+                    new PlotMemberMenu(plot,clickPlayer);
                 }
             });
         }

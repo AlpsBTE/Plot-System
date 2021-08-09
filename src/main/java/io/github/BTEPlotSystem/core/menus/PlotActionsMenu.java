@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
@@ -128,6 +129,15 @@ public class PlotActionsMenu extends AbstractMenu {
                                                 "§c§lNote: §7Points will be split between all Members when reviewed!")
                                         .build())
                                 .build());
+            } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                getMenu().getSlot(22)
+                        .setItem(new ItemBuilder(Utils.getItemHead("9243"))
+                                .setName("§b§lLeave Plot").setLore(new LoreBuilder()
+                                        .addLines("Click to leave this plot...",
+                                                "",
+                                                "§c§lNote: §7You will no longer be able to continue build or get any score on it!")
+                                        .build())
+                                .build());
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -176,6 +186,12 @@ public class PlotActionsMenu extends AbstractMenu {
                 if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
                     clickPlayer.closeInventory();
                     new PlotMemberMenu(plot,clickPlayer);
+                } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                    // Leave Plot
+                    Builder builder = new Builder(clickPlayer.getUniqueId());
+                    plot.removeMember(builder);
+                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
+                    clickPlayer.closeInventory();
                 }
             } catch (SQLException exception) {
                 exception.printStackTrace();
