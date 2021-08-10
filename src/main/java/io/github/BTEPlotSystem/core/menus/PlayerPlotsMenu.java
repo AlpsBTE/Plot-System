@@ -161,16 +161,15 @@ public class PlayerPlotsMenu extends AbstractMenu {
         List<String> lines = new ArrayList<>();
         if (plot.getPlotMembers().size() == 0) {
             // Plot is single player plot
-            lines.add("§7Total Score: §6" + (plot.getScore() == -1 ? 0 : plot.getScore()));
+            lines.add("§7Total Score: §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
         } else {
             // Plot is multiplayer plot
             lines.add("§7Plot Owner: §a" + plot.getPlotOwner().getName());
             lines.add("");
 
-            int score = (plot.getScore() == -1 ? 0 : plot.getScore());
-            int memberCount = plot.getPlotMembers().size();
-            lines.add("§7Total Points: §f" + score + " §8(shared by " + (memberCount + 1) + " members)");
-            lines.add("§7Effective Score: §6" + (int) Math.floor((double) (score / (memberCount + 1))));
+            int score = (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore());
+            lines.add("§7Total Points: §f" + score + " §8(shared by " + (plot.getPlotMembers().size() + 1) + " members)");
+            lines.add("§7Effective Score: §6" + (plot.getSharedScore() == -1 ? 0 : plot.getSharedScore()));
         }
 
         if (plot.isReviewed() || plot.isRejected()) {

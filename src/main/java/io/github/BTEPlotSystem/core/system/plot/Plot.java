@@ -26,11 +26,9 @@ package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldedit.Vector;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
-import github.BTEPlotSystem.core.menus.PlotMemberMenu;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
 import github.BTEPlotSystem.core.system.Review;
-import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.conversion.CoordinateConversion;
 import github.BTEPlotSystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -177,6 +175,14 @@ public class Plot extends PlotPermissions {
             }
         }
         return -1;
+    }
+
+    public int getSharedScore() throws SQLException {
+        int score = getTotalScore();
+        if (score != -1 && !getPlotMembers().isEmpty()) {
+            return (int) Math.floor(score / (getPlotMembers().size() + 1d));
+        }
+        return score;
     }
 
     public Status getStatus() throws SQLException {

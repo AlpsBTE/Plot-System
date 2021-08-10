@@ -338,11 +338,11 @@ public class ReviewPlotMenu extends AbstractMenu {
                         }
 
                         // Score gets split between all participants
-                        plot.getPlotOwner().addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
+                        plot.getPlotOwner().addScore(plot.getSharedScore());
 
                         for (Builder builder : plot.getPlotMembers()) {
                             // Score gets split between all participants
-                            builder.addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
+                            builder.addScore(plot.getSharedScore());
                             builder.addCompletedBuild(1);
 
                             // Remove Slot from Member
