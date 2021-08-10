@@ -133,12 +133,12 @@ public class PlotMemberMenu extends AbstractMenu {
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) {
                     Builder builder = builders.get(itemSlot-12);
-                    plot.removeMember(builder);
 
                     try {
+                        plot.removePlotMember(builder);
                         clickPlayer.sendMessage(Utils.getInfoMessageFormat(builder.getName() + " has been removed from plot #" + plot.getID()));
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
 
                     // Reopen menu to refresh everything

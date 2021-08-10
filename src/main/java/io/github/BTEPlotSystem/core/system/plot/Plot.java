@@ -292,8 +292,7 @@ public class Plot extends PlotPermissions {
         }
     }
 
-    // TODO: Maybe rework this method
-    public void setPlotMembers(List<Builder> plotMembers) throws SQLException {
+    private void setPlotMembers(List<Builder> plotMembers) throws SQLException {
         // Convert plot member list to string
         String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
 
@@ -306,31 +305,39 @@ public class Plot extends PlotPermissions {
         }
     }
 
+    public void addPlotMember(Builder member) throws SQLException {
+        List<Builder> members = getPlotMembers();
+        if (members.size() < 3 && members.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
+            Slot slot = member.getFreeSlot();
+            if (slot != null) {
+                members.add(member);
+                setPlotMembers(members);
+
+                member.setPlot(this.ID, slot);
+            }
+        }
+    }
+
+    public void removePlotMember(Builder member) throws SQLException {
+        List<Builder> members = getPlotMembers();
+        if (!members.isEmpty() && members.stream().anyMatch(m -> m.getUUID().equals(member.getUUID()))) {
+            members.remove(members.stream().filter(m -> m.getUUID().equals(member.getUUID())).findFirst().orElse(null));
+            setPlotMembers(members);
+
+            Slot slot = member.getSlot(this);
+            if (slot != null) {
+                member.removePlot(slot);
+            }
+
+            removeBuilderPerms(member.getUUID());
+        }
+    }
+
     public boolean isReviewed() throws SQLException {
         return getReview() != null;
     }
 
     public boolean isRejected() throws SQLException {
-        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getScore() != -1; // -1 == null
-    }
-
-    public void removeMember(Builder member) {
-        // Remove Slot from Member
-        try {
-            member.removePlot(member.getSlot(this));
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
-        }
-
-        try {
-            List<Builder> builders = getPlotMembers();
-            builders.remove(builders.stream().filter(b -> b.getUUID().equals(member.getUUID())).findFirst().orElse(null));
-            setPlotMembers(builders);
-
-            // Remove building perms
-            removeBuilderPerms(member.getUUID());
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not remove Plot of builders slot!", ex);
-        }
+        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
     }
 }

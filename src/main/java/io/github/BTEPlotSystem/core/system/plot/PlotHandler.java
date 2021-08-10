@@ -109,8 +109,9 @@ public class PlotHandler {
         }
 
         for (Builder builder : plot.getPlotMembers()) {
-            plot.removeMember(builder);
+            plot.removePlotMember(builder);
         }
+
         plot.getPlotOwner().removePlot(plot.getSlot());
         plot.setPlotOwner(null);
         plot.setLastActivity(true);
