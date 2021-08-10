@@ -108,6 +108,9 @@ public class PlotHandler {
             player.teleport(Utils.getSpawnLocation());
         }
 
+        for (Builder builder : plot.getPlotMembers()) {
+            plot.removeMember(builder);
+        }
         plot.getPlotOwner().removePlot(plot.getSlot());
         plot.setPlotOwner(null);
         plot.setLastActivity(true);

@@ -318,7 +318,7 @@ public class Plot extends PlotPermissions {
 
         try {
             List<Builder> builders = getPlotMembers();
-            builders.remove(member);
+            builders.remove(builders.stream().filter(b -> b.getUUID().equals(member.getUUID())).findFirst().orElse(null));
             setPlotMembers(builders);
 
             // Remove building perms
