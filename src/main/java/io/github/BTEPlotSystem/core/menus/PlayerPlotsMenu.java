@@ -187,7 +187,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
             }
         }
         lines.add("");
-        lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
+        lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1) +
+                (plot.isRejected() ? "§8(§cRejected§8)" : ""));
         return lines;
     }
 }
