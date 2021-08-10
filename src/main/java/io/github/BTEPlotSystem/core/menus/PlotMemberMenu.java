@@ -23,7 +23,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
     private Plot plot;
 
-    private ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2Empty Member Slot").build();
+    private ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§lEmpty Member Slot").build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -51,7 +51,7 @@ public class PlotMemberMenu extends AbstractMenu {
         // Plot Owner Item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                        .setName("§6§lOWNER - " + plot.getPlotOwner().getName()).setLore(new LoreBuilder()
+                        .setName("§6§lOwner").setLore(new LoreBuilder()
                                 .addLine(plot.getPlotOwner().getName()).build())
                         .build());
 
@@ -70,8 +70,12 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(i-12);
                 getMenu().getSlot(i)
                         .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                .setName("§b§l" + builder.getName() + " - Member")
-                                .setLore(new LoreBuilder().addLine("§cclick to remove...").build())
+                                .setName("§b§lMember")
+                                .setLore(new LoreBuilder()
+                                        .addLines(builder.getName(),
+                                                "",
+                                                "§cClick to remove member from plot")
+                                        .build())
                                 .build());
             } else {
                 getMenu().getSlot(i).setItem(emptyMemberSlotItem);

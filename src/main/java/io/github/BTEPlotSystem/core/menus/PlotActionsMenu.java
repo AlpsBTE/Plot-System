@@ -83,7 +83,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                 .setName("§a§lSubmit").setLore(new LoreBuilder()
                                         .addLines("Click to complete the selected plot and submit it to be reviewed.",
                                                   "",
-                                                  "§c§lNote: §7You won't be able to continue building on your plot!")
+                                                  Utils.getNoteFormat("You won't be able to continue building on your plot!"))
                                         .build())
                                 .build());
             }
@@ -105,7 +105,7 @@ public class PlotActionsMenu extends AbstractMenu {
                         .setName("§c§lAbandon").setLore(new LoreBuilder()
                                 .addLines("Click to reset your plot and give it to someone else.",
                                           "",
-                                          "§c§lNote: §7You won't be able to continue building on your plot!")
+                                          Utils.getNoteFormat("You won't be able to continue building on your plot!"))
                                 .build())
                         .build());
 
@@ -127,7 +127,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
                                             .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
                                                     "",
-                                                    "§c§lNote: §7Points will be split between all Members when reviewed!")
+                                                    Utils.getNoteFormat("Points will be split between all Members when reviewed!"))
                                             .build())
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
@@ -136,7 +136,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .setName("§b§lLeave Plot").setLore(new LoreBuilder()
                                             .addLines("Click to leave this plot...",
                                                     "",
-                                                    "§c§lNote: §7You will no longer be able to continue build or get any score on it!")
+                                                    Utils.getNoteFormat("You will no longer be able to continue build or get any score on it!"))
                                             .build())
                                     .build());
                 }
