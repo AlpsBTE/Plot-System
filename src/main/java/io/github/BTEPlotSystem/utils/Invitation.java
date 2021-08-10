@@ -73,7 +73,7 @@ public class Invitation {
             plot.addPlotMember(new Builder(invitee.getUniqueId()));
 
             // Messages Receiver
-            invitee.sendMessage(Utils.getInfoMessageFormat("Accepted " + plot.getPlotOwner().getName() + "'s invite!"));
+            invitee.sendMessage(Utils.getInfoMessageFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been accepted!"));
             invitee.sendMessage(Utils.getInfoMessageFormat("Happy building! :)"));
 
             // Messages Sender
@@ -87,6 +87,7 @@ public class Invitation {
 
     public void RejectInvite() throws SQLException {
         plot.getPlotOwner().getPlayer().sendMessage(Utils.getErrorMessageFormat(invitee.getName() + " has rejected your Invite!"));
+        invitee.sendMessage(Utils.getInfoMessageFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been rejected!"));
         scheduler.cancelTask(taskID);
     }
 }
