@@ -380,9 +380,17 @@ public class ReviewPlotMenu extends AbstractMenu {
                     player.teleport(Utils.getSpawnLocation());
                 }
 
+                for (Builder member : plot.getPlotMembers()) {
+                    if (member.isOnline()) {
+                        PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
+                    }
+                }
+
                 if(plot.getPlotOwner().isOnline()) {
                     PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
+                    plot.getReview().setFeedbackSent(true);
                 }
+
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

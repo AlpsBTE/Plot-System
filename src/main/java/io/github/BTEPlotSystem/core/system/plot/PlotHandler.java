@@ -198,8 +198,6 @@ public class PlotHandler {
             if(plots.size() != plots.indexOf(plot) + 1) {
                 player.sendMessage("");
             }
-
-            plot.getReview().setFeedbackSent(true);
         }
         player.sendMessage("§7--------------------");
         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);

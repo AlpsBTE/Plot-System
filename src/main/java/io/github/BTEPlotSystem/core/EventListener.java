@@ -48,8 +48,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +91,9 @@ public class EventListener extends SpecialBlocks implements Listener {
             List<Plot> reviewedPlots = new ArrayList<>();
 
             for(Plot plot : plots) {
-                if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
+                if(plot.isReviewed() && !plot.getReview().isFeedbackSent() && plot.getPlotOwner().getPlayer().equals(event.getPlayer())) {
                     reviewedPlots.add(plot);
+                    plot.getReview().setFeedbackSent(true);
                 }
             }
 
