@@ -120,24 +120,26 @@ public class PlotActionsMenu extends AbstractMenu {
 
         // Add Plot Member Button
         try {
-            if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
-                getMenu().getSlot(22)
-                        .setItem(new ItemBuilder(Utils.getItemHead("9237"))
-                                .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
-                                        .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
-                                                "",
-                                                "§c§lNote: §7Points will be split between all Members when reviewed!")
-                                        .build())
-                                .build());
-            } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
-                getMenu().getSlot(22)
-                        .setItem(new ItemBuilder(Utils.getItemHead("9243"))
-                                .setName("§b§lLeave Plot").setLore(new LoreBuilder()
-                                        .addLines("Click to leave this plot...",
-                                                "",
-                                                "§c§lNote: §7You will no longer be able to continue build or get any score on it!")
-                                        .build())
-                                .build());
+            if (!plot.isReviewed()) {
+                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                    getMenu().getSlot(22)
+                            .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                                    .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
+                                            .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
+                                                    "",
+                                                    "§c§lNote: §7Points will be split between all Members when reviewed!")
+                                            .build())
+                                    .build());
+                } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                    getMenu().getSlot(22)
+                            .setItem(new ItemBuilder(Utils.getItemHead("9243"))
+                                    .setName("§b§lLeave Plot").setLore(new LoreBuilder()
+                                            .addLines("Click to leave this plot...",
+                                                    "",
+                                                    "§c§lNote: §7You will no longer be able to continue build or get any score on it!")
+                                            .build())
+                                    .build());
+                }
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -183,15 +185,16 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for Plot Member button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
-                    clickPlayer.closeInventory();
-                    new PlotMemberMenu(plot,clickPlayer);
-                } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
-                    // Leave Plot
-                    Builder builder = new Builder(clickPlayer.getUniqueId());
-                    plot.removeMember(builder);
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
-                    clickPlayer.closeInventory();
+                if (!plot.isReviewed()) {
+                     if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
+                         clickPlayer.closeInventory();
+                         new PlotMemberMenu(plot,clickPlayer);
+                     } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                         // Leave Plot
+                         plot.removePlotMember(new Builder(clickPlayer.getUniqueId()));
+                         clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
+                         clickPlayer.closeInventory();
+                     }
                 }
             } catch (SQLException exception) {
                 exception.printStackTrace();
