@@ -166,7 +166,7 @@ public class Plot extends PlotPermissions {
         return null;
     }
 
-    public int getScore() throws SQLException {
+    public int getTotalScore() throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery();
 
