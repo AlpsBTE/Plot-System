@@ -138,8 +138,6 @@ public class Builder {
             DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
                     .setValue(getUUID().toString())
                     .executeUpdate();
-        } else {
-            throw new NullPointerException();
         }
     }
 
