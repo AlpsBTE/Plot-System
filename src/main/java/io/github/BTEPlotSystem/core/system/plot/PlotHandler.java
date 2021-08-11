@@ -96,11 +96,11 @@ public class PlotHandler {
 
     public static void abandonPlot(Plot plot) throws Exception {
         if(plot.isReviewed()) {
-            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                    .setValue(plot.getReview().getReviewID()).executeUpdate();
-
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                     .setValue(plot.getID()).executeUpdate();
+
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                    .setValue(plot.getReview().getReviewID()).executeUpdate();
         }
 
         loadPlot(plot); // Load Plot to be listed by Multiverse
