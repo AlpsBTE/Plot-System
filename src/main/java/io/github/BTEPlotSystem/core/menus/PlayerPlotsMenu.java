@@ -27,6 +27,7 @@ package github.BTEPlotSystem.core.menus;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.utils.enums.Status;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import github.BTEPlotSystem.utils.items.MenuItems;
@@ -153,7 +154,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
         return new ItemBuilder(Utils.getItemHead("9282"))
                 .setName("§b§lShow Plots")
                 .setLore(new LoreBuilder()
-                        .addLine("Show all your plots").build())
+                        .addLine("Show all your plots.").build())
                 .build();
     }
 
@@ -168,7 +169,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             lines.add("");
 
             int score = (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore());
-            lines.add("§7Total Points: §f" + score + " §8(shared by " + (plot.getPlotMembers().size() + 1) + " members)");
+            lines.add("§7Total Score: §f" + score + " §8(shared by " + (plot.getPlotMembers().size() + 1) + " members)");
             lines.add("§7Effective Score: §6" + (plot.getSharedScore() == -1 ? 0 : plot.getSharedScore()));
         }
 
@@ -187,8 +188,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
             }
         }
         lines.add("");
-        lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1) +
-                (plot.isRejected() ? "§8(§cRejected§8)" : ""));
+        if (plot.isRejected()) lines.add("§c§lRejected");
+        lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
         return lines;
     }
 }

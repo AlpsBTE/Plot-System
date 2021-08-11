@@ -21,9 +21,9 @@ import java.util.logging.Level;
 
 public class PlotMemberMenu extends AbstractMenu {
 
-    private Plot plot;
+    private final Plot plot;
 
-    private ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§lEmpty Member Slot").build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§lEmpty Member Slot").build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -39,8 +39,8 @@ public class PlotMemberMenu extends AbstractMenu {
 
         try {
             addMenuItems();
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "SQL Error, while trying to open PlotMemberMenu");
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         setItemClickEvents();
         getMenu().open(menuPlayer.getPlayer());
@@ -59,8 +59,10 @@ public class PlotMemberMenu extends AbstractMenu {
         ItemStack whitePlus = Utils.getItemHead("9237");
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§lAdd Member to plot").setLore(new LoreBuilder()
-                                .addLine("Invite your friends to your plot, and start building together!").build())
+                        .setName("§6§lAdd Member to Plot").setLore(new LoreBuilder()
+                                .addLines("Invite your friends to your plot, and start building together!",
+                                        "",
+                                        Utils.getNoteFormat("The player has to be online!")).build())
                         .build());
 
         // Member List
@@ -74,7 +76,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 .setLore(new LoreBuilder()
                                         .addLines(builder.getName(),
                                                 "",
-                                                "§cClick to remove member from plot")
+                                                "§cClick to remove member from plot.")
                                         .build())
                                 .build());
             } else {
@@ -111,7 +113,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                     new Invitation(builder.getPlayer(),plot);
                                     return AnvilGUI.Response.close();
                                 } else {
-                                    // Builder isn't online, thus cant be asked if he/she wants to be added
+                                    // Builder isn't online, thus can't be asked if he/she wants to be added
                                     player.sendMessage(Utils.getErrorMessageFormat("That player isn't online!"));
                                     return AnvilGUI.Response.text("Player isn't online!");
                                 }

@@ -43,6 +43,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class ReviewMenu extends AbstractMenu {
 
@@ -52,7 +53,7 @@ public class ReviewMenu extends AbstractMenu {
 
     public ReviewMenu(Player player) throws SQLException {
         // Opens Review Menu, showing all plots in the given round.
-        super(6, "Review & Manage Plots", player);
+        super(6, "Manage & Review Plots", player);
 
         Mask mask = BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
@@ -85,29 +86,27 @@ public class ReviewMenu extends AbstractMenu {
         for(int i = 0; i < plotDisplayCount; i++) {
             try {
                 Plot plot = plots.get(i);
-                if(plot.getStatus() == Status.unreviewed) {
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.MAP, 1)
-                            .setName("§b§lReview Plot")
-                            .setLore(new LoreBuilder()
-                                    .addLines("ID: §f" + plot.getID(),
-                                            "",
-                                            "§7Builder: §f" + plot.getPlotOwner().getName(),
-                                            "§7City: §f" + plot.getCity().getName(),
-                                            "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
-                                    .build())
-                    .build());
-                } else {
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1)
-                            .setName("§b§lManage Plot")
-                            .setLore(new LoreBuilder()
-                                    .addLines("ID: §f" + plot.getID(),
-                                              "",
-                                              "§7Builder: §f" + plot.getPlotOwner().getName(),
-                                              "§7City: §f" + plot.getCity().getName(),
-                                              "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
-                                    .build())
-                    .build());
-                }
+
+                List<String> lines = new ArrayList<>();
+                lines.add("§7ID: §f" + plot.getID());
+                lines.add("");
+                lines.add("§7Plot Owner: §f" + plot.getPlotOwner().getName());
+                if (!plot.getPlotMembers().isEmpty()) lines.add("§7Members: §f" + plot.getPlotMembers().stream().map(m -> {
+                            try {
+                                return m.getName();
+                            } catch (SQLException ex) {
+                                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                            }
+                            return "";
+                        }).collect(Collectors.joining(", "))
+                );
+                lines.add("§7City: §f" + plot.getCity().getName());
+                lines.add("§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
+
+                getMenu().getSlot(i).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
+                        .setName(plot.getStatus() == Status.unfinished ? "§b§lManage Plot" : "§b§lReview Plot")
+                        .setLore(lines)
+                        .build());
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 getMenu().getSlot(i).setItem(MenuItems.errorItem());
