@@ -76,7 +76,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 .setLore(new LoreBuilder()
                                         .addLines(builder.getName(),
                                                 "",
-                                                "§cClick to remove member from plot.")
+                                                Utils.getActionFormat("Click to remove member from plot..."))
                                         .build())
                                 .build());
             } else {

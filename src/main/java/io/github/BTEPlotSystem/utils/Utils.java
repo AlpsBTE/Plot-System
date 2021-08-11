@@ -98,6 +98,8 @@ public class Utils {
         return "§c§lNote: §8" + note;
     }
 
+    public static String getActionFormat(String action) { return "§8§l> §c" + action; }
+
     // Integer Try Parser
     public static Integer TryParseInt(String someText) {
         try {
