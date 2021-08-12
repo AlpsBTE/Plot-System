@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.ipvp.canvas.mask.BinaryMask;
+import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -32,11 +34,15 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected void setMenuItems() {
         // Plot Owner Item
-        getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                        .setName("§6§lOwner").setLore(new LoreBuilder()
-                                .addLine(plot.getPlotOwner().getName()).build())
-                        .build());
+        try {
+            getMenu().getSlot(10)
+                    .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                            .setName("§6§lOwner").setLore(new LoreBuilder()
+                                    .addLine(plot.getPlotOwner().getName()).build())
+                            .build());
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
 
         // Add Member Button
         ItemStack whitePlus = Utils.getItemHead("9237");
@@ -49,22 +55,26 @@ public class PlotMemberMenu extends AbstractMenu {
                         .build());
 
         // Member List
-        builders = plot.getPlotMembers();
-        for (int i = 12; i < 15; i++) {
-            if (builders.size() >= (i - 11)) {
-                Builder builder = builders.get(i - 12);
-                getMenu().getSlot(i)
-                        .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                .setName("§b§lMember")
-                                .setLore(new LoreBuilder()
-                                        .addLines(builder.getName(),
-                                                "",
-                                                Utils.getActionFormat("Click to remove member from plot..."))
-                                        .build())
-                                .build());
-            } else {
-                getMenu().getSlot(i).setItem(emptyMemberSlotItem);
+        try {
+            builders = plot.getPlotMembers();
+            for (int i = 12; i < 15; i++) {
+                if (builders.size() >= (i - 11)) {
+                    Builder builder = builders.get(i - 12);
+                    getMenu().getSlot(i)
+                            .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
+                                    .setName("§b§lMember")
+                                    .setLore(new LoreBuilder()
+                                            .addLines(builder.getName(),
+                                                    "",
+                                                    Utils.getActionFormat("Click to remove member from plot..."))
+                                            .build())
+                                    .build());
+                } else {
+                    getMenu().getSlot(i).setItem(emptyMemberSlotItem);
+                }
             }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }
 

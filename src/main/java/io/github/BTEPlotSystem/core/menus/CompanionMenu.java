@@ -87,7 +87,7 @@ public class CompanionMenu extends AbstractMenu {
                     .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
                             .setName("§b§lSettings")
                             .setLore(new LoreBuilder()
-                                    .addLine("Modify your user settings").build())
+                                    .addLine("Modify your user settings.").build())
                             .build());
 
             // Set player slots items

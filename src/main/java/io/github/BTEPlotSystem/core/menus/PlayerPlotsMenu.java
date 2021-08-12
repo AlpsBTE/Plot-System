@@ -34,9 +34,6 @@ import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Category;
-import github.BTEPlotSystem.utils.items.MenuItems;
-import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
-import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,17 +60,15 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItems() {
-        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-            getMenu().getSlot(4).setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
-                    .setName("§6§lLoading...").build());
-
-            getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
-        });
+        getMenu().getSlot(4).setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+                .setName("§6§lLoading...").build());
 
         // Load player head
         ItemStack playerHead = Utils.getPlayerHead(builder.getUUID());
 
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+            getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
+
             try {
                 getMenu().getSlot(4)
                         .setItem(new ItemBuilder(playerHead)
@@ -87,6 +82,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                 getMenu().getSlot(4).setItem(MenuItems.errorItem());
             }
         });
+
         try {
             plots = PlotManager.getPlots(builder);
 
@@ -97,29 +93,14 @@ public class PlayerPlotsMenu extends AbstractMenu {
                 int slot = i;
                 Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
                     try {
-                        switch (plot.getStatus()) {
-                            case unfinished:
-                                getMenu().getSlot(9 + slot)
-                                        .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 1)
-                                                .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                                .setLore(getDescription(plot))
-                                                .build());
-                                break;
-                            case unreviewed:
-                                getMenu().getSlot(9 + slot)
-                                        .setItem(new ItemBuilder(Material.MAP, 1)
-                                                .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                                .setLore(getDescription(plot))
-                                                .build());
-                                break;
-                            case completed:
-                                getMenu().getSlot(9 + slot)
-                                        .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 13)
-                                                .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                                .setLore(getDescription(plot))
-                                                .build());
-                                break;
-                        }
+                        ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.WOOL, 1, (byte) 1) :
+                                plot.getStatus() == Status.unreviewed ? new ItemStack(Material.MAP) : new ItemStack(Material.WOOL, 1, (byte) 13);
+
+                        getMenu().getSlot(9 + slot)
+                                .setItem(new ItemBuilder(item)
+                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
+                                        .setLore(getDescription(plot))
+                                        .build());
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                         getMenu().getSlot(9 + slot).setItem(MenuItems.errorItem());
