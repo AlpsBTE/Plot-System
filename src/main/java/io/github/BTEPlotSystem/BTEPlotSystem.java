@@ -29,6 +29,7 @@ import github.BTEPlotSystem.commands.*;
 import github.BTEPlotSystem.commands.admin.CMD_DeletePlot;
 import github.BTEPlotSystem.commands.admin.CMD_PReload;
 import github.BTEPlotSystem.commands.admin.CMD_SetHologram;
+import github.BTEPlotSystem.commands.admin.setup.*;
 import github.BTEPlotSystem.commands.plot.*;
 import github.BTEPlotSystem.commands.review.*;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
@@ -110,6 +111,14 @@ public class BTEPlotSystem extends JavaPlugin {
         this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
         this.getCommand("sethologram").setExecutor(new CMD_SetHologram());
         this.getCommand("preload").setExecutor(new CMD_PReload());
+
+        // Setup Commands
+        CMD_Setup setupCommand = new CMD_Setup();
+        setupCommand.registerCommand("server", new CMD_Setup_Server());
+        setupCommand.registerCommand("ftp", new CMD_Setup_FTP());
+        setupCommand.registerCommand("country", new CMD_Setup_Country());
+        setupCommand.registerCommand("city", new CMD_Setup_City());
+        this.getCommand("pss").setExecutor(setupCommand);
 
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
