@@ -28,6 +28,10 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.core.system.Builder;
+import github.BTEPlotSystem.utils.enums.Status;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
+import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Category;
 import github.BTEPlotSystem.utils.items.MenuItems;
@@ -163,7 +167,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
         return new ItemBuilder(Utils.getItemHead("9282"))
                 .setName("§b§lShow Plots")
                 .setLore(new LoreBuilder()
-                        .addLine("Show all your plots").build())
+                        .addLine("Show all your plots.").build())
                 .build();
     }
 
@@ -171,16 +175,15 @@ public class PlayerPlotsMenu extends AbstractMenu {
         List<String> lines = new ArrayList<>();
         if (plot.getPlotMembers().size() == 0) {
             // Plot is single player plot
-            lines.add("§7Total Score: §6" + (plot.getScore() == -1 ? 0 : plot.getScore()));
+            lines.add("§7Total Score: §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
         } else {
             // Plot is multiplayer plot
             lines.add("§7Plot Owner: §a" + plot.getPlotOwner().getName());
             lines.add("");
 
-            int score = (plot.getScore() == -1 ? 0 : plot.getScore());
-            int memberCount = plot.getPlotMembers().size();
-            lines.add("§7Total Points: §f" + score + " §8(shared by " + (memberCount + 1) + " members)");
-            lines.add("§7Effective Score: §6" + (int) Math.floor((double) (score / (memberCount + 1))));
+            int score = (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore());
+            lines.add("§7Total Score: §f" + score + " §8(shared by " + (plot.getPlotMembers().size() + 1) + " members)");
+            lines.add("§7Effective Score: §6" + (plot.getSharedScore() == -1 ? 0 : plot.getSharedScore()));
         }
 
         if (plot.isReviewed() || plot.isRejected()) {
@@ -198,6 +201,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             }
         }
         lines.add("");
+        if (plot.isRejected()) lines.add("§c§lRejected");
         lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
         return lines;
     }

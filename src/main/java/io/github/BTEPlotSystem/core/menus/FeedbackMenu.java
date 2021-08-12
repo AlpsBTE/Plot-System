@@ -67,7 +67,7 @@ public class FeedbackMenu extends AbstractMenu {
                 getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
                         .setName("§b§lScore")
                         .setLore(new LoreBuilder()
-                                .addLines("Total Points: §f" + plot.getScore(),
+                                .addLines("Total Points: §f" + plot.getTotalScore(),
                                         "",
                                         "§7Accuracy: " + Utils.getPointsByColor(review.getRating(Category.ACCURACY)) + "§8/§a5",
                                         "§7Block Palette: " + Utils.getPointsByColor(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",

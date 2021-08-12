@@ -36,7 +36,7 @@ public class MenuItems {
         return new ItemBuilder(Material.BARRIER)
                 .setName("§c§lClose")
                 .setLore(new LoreBuilder()
-                    .addLine("Close the menu").build())
+                    .addLine("Close the menu.").build())
                 .build();
     }
 
@@ -44,7 +44,7 @@ public class MenuItems {
         return new ItemBuilder(Utils.getItemHead("9226"))
                 .setName("§6§lBack")
                 .setLore(new LoreBuilder()
-                    .addLine("Go back to the last menu").build())
+                    .addLine("Go back to the last menu.").build())
                 .build();
     }
 
@@ -52,7 +52,7 @@ public class MenuItems {
         return new ItemBuilder(Utils.getItemHead("9223"))
                 .setName("§6§lNext Page")
                 .setLore(new LoreBuilder()
-                    .addLine("Show the next page").build())
+                    .addLine("Show the next page.").build())
                 .build();
     }
 
@@ -60,7 +60,7 @@ public class MenuItems {
         return new ItemBuilder(Utils.getItemHead("9226"))
                 .setName("§6§lPrevious Page")
                 .setLore(new LoreBuilder()
-                        .addLine("Show the previous page").build())
+                        .addLine("Show the previous page.").build())
                 .build();
     }
 

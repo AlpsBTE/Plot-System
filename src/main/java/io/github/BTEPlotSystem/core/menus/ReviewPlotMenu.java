@@ -320,11 +320,11 @@ public class ReviewPlotMenu extends AbstractMenu {
                         }
 
                         // Score gets split between all participants
-                        plot.getPlotOwner().addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
+                        plot.getPlotOwner().addScore(plot.getSharedScore());
 
                         for (Builder builder : plot.getPlotMembers()) {
                             // Score gets split between all participants
-                            builder.addScore((int) Math.floor((double) (totalRating/(plot.getPlotMembers().size() + 1))));
+                            builder.addScore(plot.getSharedScore());
                             builder.addCompletedBuild(1);
 
                             // Remove Slot from Member
@@ -362,9 +362,17 @@ public class ReviewPlotMenu extends AbstractMenu {
                     player.teleport(Utils.getSpawnLocation());
                 }
 
+                for (Builder member : plot.getPlotMembers()) {
+                    if (member.isOnline()) {
+                        PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
+                    }
+                }
+
                 if(plot.getPlotOwner().isOnline()) {
                     PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
+                    plot.getReview().setFeedbackSent(true);
                 }
+
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1, 1);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

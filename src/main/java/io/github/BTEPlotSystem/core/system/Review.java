@@ -187,7 +187,16 @@ public class Review {
     public static void undoReview(Review review) throws SQLException {
         Plot plot = new Plot(review.getPlotID());
 
-        plot.getPlotOwner().addScore(-plot.getScore());
+        for (Builder member : plot.getPlotMembers()) {
+            member.addScore(-plot.getSharedScore());
+            member.addCompletedBuild(-1);
+
+            if (member.getFreeSlot() != null) {
+                member.setPlot(plot.getID(), member.getFreeSlot());
+            }
+        }
+
+        plot.getPlotOwner().addScore(-plot.getSharedScore());
         plot.getPlotOwner().addCompletedBuild(-1);
         plot.setScore(-1);
         plot.setStatus(Status.unreviewed);

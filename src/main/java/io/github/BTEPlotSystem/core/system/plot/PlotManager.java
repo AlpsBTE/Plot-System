@@ -202,7 +202,7 @@ public class PlotManager {
         if (!finishedSchematicFile.exists()) {
             boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
             boolean createdFile = finishedSchematicFile.createNewFile();
-            if (!createdDirs || !createdFile) {
+            if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
                 Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
                 return;
             }

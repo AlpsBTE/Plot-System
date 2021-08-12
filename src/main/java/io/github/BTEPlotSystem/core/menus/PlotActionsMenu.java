@@ -25,6 +25,7 @@
 package github.BTEPlotSystem.core.menus;
 
 import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.utils.Utils;
@@ -63,15 +64,15 @@ public class PlotActionsMenu extends AbstractMenu {
                     getMenu().getSlot(10)
                             .setItem(new ItemBuilder(Material.FIREBALL, 1)
                                     .setName("§c§lUndo Submit").setLore(new LoreBuilder()
-                                            .addLine("Click to undo your submission").build())
+                                            .addLine("Click to undo your submission.").build())
                                     .build());
                 } else {
                     getMenu().getSlot(10)
                             .setItem(new ItemBuilder(Material.NAME_TAG, 1)
                                     .setName("§a§lSubmit").setLore(new LoreBuilder()
-                                            .addLines("Click to complete the selected plot and submit it to be reviewed.",
+                                            .addLines("Click to complete this plot and submit it to be reviewed.",
                                                     "",
-                                                    "§c§lNote: §7You won't be able to continue building on your plot!")
+                                                    Utils.getNoteFormat("You won't be able to continue building on this plot!"))
                                             .build())
                                     .build());
                 }
@@ -84,16 +85,16 @@ public class PlotActionsMenu extends AbstractMenu {
             getMenu().getSlot(hasFeedback ? 12 : 13)
                     .setItem(new ItemBuilder(Material.COMPASS, 1)
                             .setName("§6§lTeleport").setLore(new LoreBuilder()
-                                    .addLine("Click to teleport to the plot").build())
+                                    .addLine("Click to teleport to the plot.").build())
                             .build());
 
             // Add abandon plot button
             getMenu().getSlot(hasFeedback ? 14 : 16)
                     .setItem(new ItemBuilder(Material.BARRIER, 1)
                             .setName("§c§lAbandon").setLore(new LoreBuilder()
-                                    .addLines("Click to reset your plot and give it to someone else.",
+                                    .addLines("Click to reset your plot and to give it to someone else.",
                                             "",
-                                            "§c§lNote: §7You won't be able to continue building on your plot!")
+                                            Utils.getNoteFormat("You won't be able to continue building on your plot!"))
                                     .build())
                             .build());
 
@@ -102,24 +103,36 @@ public class PlotActionsMenu extends AbstractMenu {
                 getMenu().getSlot(16)
                         .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
                                 .setName("§b§lFeedback").setLore(new LoreBuilder()
-                                        .addLine("Click to view your plot review feedback").build())
+                                        .addLine("Click to view your plot review feedback.").build())
                                 .build());
             }
 
             // Add Plot Member Button
             try {
-                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
-                    getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead("9237"))
-                                    .setName("§b§lAdd Member to Plot").setLore(new LoreBuilder()
-                                            .addLines("Click to open your Plot Member menu, where you can add and remove other players on your plot.",
-                                                    "",
-                                                    "§c§lNote: §7Points will be split between all Members when reviewed!")
-                                            .build())
-                                    .build());
+                if (!plot.isReviewed()) {
+                    if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                        getMenu().getSlot(22)
+                                .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                                        .setName("§b§lManage Members").setLore(new LoreBuilder()
+                                                .addLines("Click to open your Plot Member menu, where you can add",
+                                                        "and remove other players on your plot.",
+                                                        "",
+                                                        Utils.getNoteFormat("Score will be split between all members when reviewed!"))
+                                                .build())
+                                        .build());
+                    } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                        getMenu().getSlot(22)
+                                .setItem(new ItemBuilder(Utils.getItemHead("9243"))
+                                        .setName("§b§lLeave Plot").setLore(new LoreBuilder()
+                                                .addLines("Click to leave this plot.",
+                                                        "",
+                                                        Utils.getNoteFormat("You will no longer be able to continue build or get any score on it!"))
+                                                .build())
+                                        .build());
+                    }
                 }
-            } catch (SQLException exception) {
-                exception.printStackTrace();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
     }
@@ -163,9 +176,16 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for Plot Member button
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
-                    clickPlayer.closeInventory();
-                    new PlotMemberMenu(plot,clickPlayer);
+                if (!plot.isReviewed()) {
+                     if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
+                         clickPlayer.closeInventory();
+                         new PlotMemberMenu(plot,clickPlayer);
+                     } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                         // Leave Plot
+                         plot.removePlotMember(new Builder(clickPlayer.getUniqueId()));
+                         clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
+                         clickPlayer.closeInventory();
+                     }
                 }
             } catch (SQLException exception) {
                 exception.printStackTrace();

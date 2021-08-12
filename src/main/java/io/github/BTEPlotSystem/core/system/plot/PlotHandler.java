@@ -28,6 +28,7 @@ import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
+import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -80,6 +81,11 @@ public class PlotHandler {
         }
 
         plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        if (plot.getPlotMembers().size() != 0) {
+            for (Builder builder : plot.getPlotMembers()) {
+                plot.removeBuilderPerms(builder.getUUID());
+            }
+        }
     }
 
     public static void undoSubmit(Plot plot) throws SQLException {
@@ -90,16 +96,20 @@ public class PlotHandler {
 
     public static void abandonPlot(Plot plot) throws Exception {
         if(plot.isReviewed()) {
-            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                    .setValue(plot.getReview().getReviewID()).executeUpdate();
-
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                     .setValue(plot.getID()).executeUpdate();
+
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                    .setValue(plot.getReview().getReviewID()).executeUpdate();
         }
 
         loadPlot(plot); // Load Plot to be listed by Multiverse
         for(Player player : plot.getPlotWorld().getPlayers()) {
             player.teleport(Utils.getSpawnLocation());
+        }
+
+        for (Builder builder : plot.getPlotMembers()) {
+            plot.removePlotMember(builder);
         }
 
         plot.getPlotOwner().removePlot(plot.getSlot());
@@ -189,8 +199,6 @@ public class PlotHandler {
             if(plots.size() != plots.indexOf(plot) + 1) {
                 player.sendMessage("");
             }
-
-            plot.getReview().setFeedbackSent(true);
         }
         player.sendMessage("§7--------------------");
         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);

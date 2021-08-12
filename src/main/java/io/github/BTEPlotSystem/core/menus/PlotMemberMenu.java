@@ -12,8 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.ipvp.canvas.mask.BinaryMask;
-import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,9 +19,9 @@ import java.util.logging.Level;
 
 public class PlotMemberMenu extends AbstractMenu {
 
-    private Plot plot;
+    private final Plot plot;
 
-    private ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2Empty Member Slot").build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§lEmpty Member Slot").build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -34,37 +32,39 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected void setMenuItems() {
         // Plot Owner Item
-        try {
-            getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName("§6§lOWNER - " + plot.getPlotOwner().getName()).setLore(new LoreBuilder()
-                                    .addLine(plot.getPlotOwner().getName()).build())
-                            .build());
+        getMenu().getSlot(10)
+                .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                        .setName("§6§lOwner").setLore(new LoreBuilder()
+                                .addLine(plot.getPlotOwner().getName()).build())
+                        .build());
 
-            // Add Member Button
-            ItemStack whitePlus = Utils.getItemHead("9237");
-            getMenu().getSlot(16)
-                    .setItem(new ItemBuilder(whitePlus)
-                            .setName("§6§lAdd Member to plot").setLore(new LoreBuilder()
-                                    .addLine("Invite your friends to your plot, and start building together!").build())
-                            .build());
+        // Add Member Button
+        ItemStack whitePlus = Utils.getItemHead("9237");
+        getMenu().getSlot(16)
+                .setItem(new ItemBuilder(whitePlus)
+                        .setName("§6§lAdd Member to Plot").setLore(new LoreBuilder()
+                                .addLines("Invite your friends to your plot, and start building together!",
+                                        "",
+                                        Utils.getNoteFormat("The player has to be online!")).build())
+                        .build());
 
-            // Member List
-            builders = plot.getPlotMembers();
-            for (int i = 12; i < 15; i++) {
-                if (builders.size() >= (i-11)) {
-                    Builder builder = builders.get(i-12);
-                    getMenu().getSlot(i)
-                            .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                    .setName("§b§l" + builder.getName() + " - Member")
-                                    .setLore(new LoreBuilder().addLine("§cclick to remove...").build())
-                                    .build());
-                } else {
-                    getMenu().getSlot(i).setItem(emptyMemberSlotItem);
-                }
+        // Member List
+        builders = plot.getPlotMembers();
+        for (int i = 12; i < 15; i++) {
+            if (builders.size() >= (i - 11)) {
+                Builder builder = builders.get(i - 12);
+                getMenu().getSlot(i)
+                        .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
+                                .setName("§b§lMember")
+                                .setLore(new LoreBuilder()
+                                        .addLines(builder.getName(),
+                                                "",
+                                                Utils.getActionFormat("Click to remove member from plot..."))
+                                        .build())
+                                .build());
+            } else {
+                getMenu().getSlot(i).setItem(emptyMemberSlotItem);
             }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }
 
@@ -96,7 +96,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                     new Invitation(builder.getPlayer(),plot);
                                     return AnvilGUI.Response.close();
                                 } else {
-                                    // Builder isn't online, thus cant be asked if he/she wants to be added
+                                    // Builder isn't online, thus can't be asked if he/she wants to be added
                                     player.sendMessage(Utils.getErrorMessageFormat("That player isn't online!"));
                                     return AnvilGUI.Response.text("Player isn't online!");
                                 }
@@ -122,20 +122,16 @@ public class PlotMemberMenu extends AbstractMenu {
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) {
                     Builder builder = builders.get(itemSlot-12);
-                    // Used Member Slot
-                    builders.remove(builder);
+
                     try {
-                        plot.setPlotMembers(builders);
-
-                        //TODO: Remove Permissions
-
+                        plot.removePlotMember(builder);
                         clickPlayer.sendMessage(Utils.getInfoMessageFormat(builder.getName() + " has been removed from plot #" + plot.getID()));
-
-                        // Reopen menu to refresh everything
-                        new PlotMemberMenu(plot,clickPlayer);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
+
+                    // Reopen menu to refresh everything
+                    new PlotMemberMenu(plot,clickPlayer);
                 }
             });
         }

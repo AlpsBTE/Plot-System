@@ -110,7 +110,7 @@ public class CompanionMenu extends AbstractMenu {
                             getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
                                     .setName("§b§lSLOT " + (i + 1))
                                     .setLore(new LoreBuilder()
-                                            .addLines("§7Click on a city project to create a new plot",
+                                            .addLines("§7Click on a city project to create a new plot.",
                                                       "",
                                                       "§6§lStatus: §7§lUnassigned")
                                             .build())
@@ -204,7 +204,7 @@ public class CompanionMenu extends AbstractMenu {
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } catch (SQLException ex) {
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a staff member."));
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a developer."));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
@@ -224,9 +224,9 @@ public class CompanionMenu extends AbstractMenu {
                         try {
                             new PlotActionsMenu(clickPlayer, slots[itemSlot]);
                         } catch (SQLException ex) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("Something went wrong... please message a Manager or Developer."));
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a developer."));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu.", ex);
+                            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
                         }
                     });
                 }
@@ -329,7 +329,7 @@ public class CompanionMenu extends AbstractMenu {
                                 selectedPlotDifficulty != null ? Utils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§lAutomatic",
                                 selectedPlotDifficulty != null ? "§7Score Multiplier: §fx" + PlotManager.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
                                 "",
-                                "§7Click To Switch...")
+                                "§7Click to Switch...")
                         .build())
                 .build();
     }

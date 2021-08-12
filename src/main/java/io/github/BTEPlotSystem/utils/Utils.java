@@ -93,6 +93,13 @@ public class Utils {
         return messagePrefix + BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOUR) + error;
     }
 
+    // Item Formatting
+    public static String getNoteFormat(String note) {
+        return "§c§lNote: §8" + note;
+    }
+
+    public static String getActionFormat(String action) { return "§8§l> §c" + action; }
+
     // Integer Try Parser
     public static Integer TryParseInt(String someText) {
         try {
