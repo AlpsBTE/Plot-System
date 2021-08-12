@@ -175,7 +175,8 @@ public class Builder {
 
     public Slot getSlot (Plot plot) throws SQLException {
         for (Slot slot : Slot.values()) {
-            if (getPlot(slot).getID() == plot.getID()) {
+            Plot slotPlot = getPlot(slot);
+            if (slotPlot != null && slotPlot.getID() == plot.getID()) {
                 return slot;
             }
         }
