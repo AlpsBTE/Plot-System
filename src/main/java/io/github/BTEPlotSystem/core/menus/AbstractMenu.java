@@ -41,19 +41,57 @@ public abstract class AbstractMenu {
         this.menuPlayer = menuPlayer;
         this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
 
+        reloadMenuAsync();
+    }
+
+    /**
+     * Places items asynchronously in the menu after it is opened
+     */
+    protected abstract void setMenuItemsAsync();
+
+    /**
+     * Sets click events for the items placed in the menu after it is opened
+     */
+    protected abstract void setItemClickEventsAsync();
+
+    /**
+     * Places pre-defined items in the menu before it is opened
+     * @return Pre-defined mask
+     * @see <a href=https://github.com/IPVP-MC/canvas#masks</a>
+     */
+    protected abstract Mask getMask();
+
+    /**
+     * Places items synchronously in the menu and opens it afterwards
+     */
+    protected void setPreviewItems() {
         if(getMask() != null) getMask().apply(getMenu());
-        getMenu().open(getMenuPlayer()); // TODO: Add option to override menu opening
+        getMenu().open(getMenuPlayer());
+    }
+
+    /**
+     * Reloads all menu items and click events in the menu asynchronously
+     * {@link #setPreviewItems()}.{@link #setMenuItemsAsync()}.{@link #setItemClickEventsAsync()}
+     */
+    protected void reloadMenuAsync() {
+        setPreviewItems();
         Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
-            setMenuItems();
-            setItemClickEvents();
+            setMenuItemsAsync();
+            setItemClickEventsAsync();
         });
     }
 
-    protected abstract void setMenuItems();
-    protected abstract void setItemClickEvents();
-    protected abstract Mask getMask();
+    /**
+     * @return Inventory
+     */
+    protected Menu getMenu() {
+        return menu;
+    }
 
-    protected Menu getMenu() { return menu; }
-
-    protected Player getMenuPlayer() { return menuPlayer; }
+    /**
+     * @return Inventory player
+     */
+    protected Player getMenuPlayer() {
+        return menuPlayer;
+    }
 }

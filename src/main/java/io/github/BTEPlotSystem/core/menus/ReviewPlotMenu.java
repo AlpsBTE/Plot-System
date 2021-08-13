@@ -51,7 +51,7 @@ import java.util.logging.Level;
 
 public class ReviewPlotMenu extends AbstractMenu {
 
-    private Plot plot;
+    private final Plot plot;
 
     boolean sentWarning = false;
 
@@ -77,12 +77,11 @@ public class ReviewPlotMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setMenuItems() {
+    protected void setPreviewItems() {
         for(int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
                     try {
-                        // Map Item
                         getMenu().getSlot(i).setItem(new ItemBuilder(Material.MAP, 1)
                                 .setName("§b§lReview Plot")
                                 .setLore(new LoreBuilder()
@@ -146,7 +145,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 48:
-                    // Submit Item
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 13)
                             .setName("§a§lSUBMIT")
                             .setLore(new LoreBuilder()
@@ -154,7 +152,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 50:
-                    // Cancel Item
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
                             .setName("§c§lCANCEL")
                             .setLore(new LoreBuilder()
@@ -218,26 +215,29 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
             }
         }
+
+        super.setPreviewItems();
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Cancel Item
-        getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-        });
+    protected void setMenuItemsAsync() {}
 
-        // Map Item
+    @Override
+    protected void setItemClickEventsAsync() {
+        // Set click event for close item
+        getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
+
+        // Set click event for plot info item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
                 new PlotActionsMenu(clickPlayer,plot);
             } catch (SQLException ex) {
-                ex.printStackTrace();
+               Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
 
-        // Submit Item
+        // Set click event for submit item
         getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
             StringBuilder score = new StringBuilder();
 
@@ -382,7 +382,7 @@ public class ReviewPlotMenu extends AbstractMenu {
             }
         });
 
-        // Point Selection
+        // Set click event for point selection items
         for (int i = 0; i < 54; i++) {
             int slot = i;
 

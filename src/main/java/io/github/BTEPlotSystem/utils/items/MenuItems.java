@@ -71,4 +71,16 @@ public class MenuItems {
                     .addLine("An internal error occurred! Please contact a staff member!").build())
                 .build();
     }
+
+    public static ItemStack loadingItem(Material material) {
+        return new ItemBuilder(material)
+                .setName("§6§lLoading...")
+                .build();
+    }
+
+    public static ItemStack loadingItem(Material material, byte subId) {
+        return new ItemBuilder(material, 1, subId)
+                .setName("§6§lLoading...")
+                .build();
+    }
 }

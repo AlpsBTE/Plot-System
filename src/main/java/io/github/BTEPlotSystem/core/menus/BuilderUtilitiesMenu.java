@@ -24,13 +24,11 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -49,40 +47,47 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setMenuItems() {
-        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-            getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
-                            .setName("§b§lCUSTOM HEADS")
-                            .setLore(new LoreBuilder()
-                                    .addLine("Open the head menu to get a variety of custom heads.").build())
-                            .build());
+    protected void setPreviewItems() {
+        // Set back item
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
 
-            getMenu().getSlot(13)
-                    .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
-                            .setName("§b§lBANNER MAKER")
-                            .setLore(new LoreBuilder()
-                                    .addLine("Open the banner maker menu to create your own custom banners.").build())
-                            .build());
-
-            getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
-
-            getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
-        });
+        super.setPreviewItems();
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Set click event for custom heads
+    protected void setMenuItemsAsync() {
+        // Set custom-heads menu item
+        getMenu().getSlot(10)
+                .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+                        .setName("§b§lCUSTOM HEADS")
+                        .setLore(new LoreBuilder()
+                                .addLine("Open the head menu to get a variety of custom heads.").build())
+                        .build());
+
+        // Set banner-maker menu item
+        getMenu().getSlot(13)
+                .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
+                        .setName("§b§lBANNER MAKER")
+                        .setLore(new LoreBuilder()
+                                .addLine("Open the banner maker menu to create your own custom banners.").build())
+                        .build());
+
+        // Set special-blocks menu item
+        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
+    }
+
+    @Override
+    protected void setItemClickEventsAsync() {
+        // Set click event for custom-heads menu item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("hdb"));
 
-        // Set click event for banner maker
+        // Set click event for banner-maker menu item
         getMenu().getSlot(13).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("bm"));
 
-        // Set click event for special blocks
+        // Set click event for special-blocks menu item
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> new SpecialBlocksMenu(clickPlayer));
 
-        // Set click event for back button
+        // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
     }
 
@@ -96,6 +101,9 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                 .build();
     }
 
+    /**
+     * @return Menu item
+     */
     public static ItemStack getMenuItem() {
         return new ItemBuilder(Material.GOLD_AXE)
                 .setName("§b§lBuilder Utilities")

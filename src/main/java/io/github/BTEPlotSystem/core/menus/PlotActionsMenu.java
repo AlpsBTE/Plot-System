@@ -24,7 +24,6 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
@@ -45,7 +44,6 @@ import java.util.logging.Level;
 public class PlotActionsMenu extends AbstractMenu {
 
     private final Plot plot;
-
     private final boolean hasFeedback;
 
     public PlotActionsMenu(Player menuPlayer, Plot plot) throws SQLException {
@@ -56,90 +54,88 @@ public class PlotActionsMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setMenuItems() {
-        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-            // Add submit/undo submit plot button
-            try {
-                if (plot.getStatus().equals(Status.unreviewed)) {
-                    getMenu().getSlot(10)
-                            .setItem(new ItemBuilder(Material.FIREBALL, 1)
-                                    .setName("§c§lUndo Submit").setLore(new LoreBuilder()
-                                            .addLine("Click to undo your submission.").build())
-                                    .build());
-                } else {
-                    getMenu().getSlot(10)
-                            .setItem(new ItemBuilder(Material.NAME_TAG, 1)
-                                    .setName("§a§lSubmit").setLore(new LoreBuilder()
-                                            .addLines("Click to complete this plot and submit it to be reviewed.",
+    protected void setMenuItemsAsync() {
+        // Set plot submit or undo submit item
+        try {
+            if (plot.getStatus().equals(Status.unreviewed)) {
+                getMenu().getSlot(10)
+                        .setItem(new ItemBuilder(Material.FIREBALL, 1)
+                                .setName("§c§lUndo Submit").setLore(new LoreBuilder()
+                                        .addLine("Click to undo your submission.").build())
+                                .build());
+            } else {
+                getMenu().getSlot(10)
+                        .setItem(new ItemBuilder(Material.NAME_TAG, 1)
+                                .setName("§a§lSubmit").setLore(new LoreBuilder()
+                                        .addLines("Click to complete this plot and submit it to be reviewed.",
+                                                "",
+                                                Utils.getNoteFormat("You won't be able to continue building on this plot!"))
+                                        .build())
+                                .build());
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            getMenu().getSlot(10).setItem(MenuItems.errorItem());
+        }
+
+        // Set teleport to plot item
+        getMenu().getSlot(hasFeedback ? 12 : 13)
+                .setItem(new ItemBuilder(Material.COMPASS, 1)
+                        .setName("§6§lTeleport").setLore(new LoreBuilder()
+                                .addLine("Click to teleport to the plot.").build())
+                        .build());
+
+        // Set plot abandon item
+        getMenu().getSlot(hasFeedback ? 14 : 16)
+                .setItem(new ItemBuilder(Material.BARRIER, 1)
+                        .setName("§c§lAbandon").setLore(new LoreBuilder()
+                                .addLines("Click to reset your plot and to give it to someone else.",
+                                        "",
+                                        Utils.getNoteFormat("You won't be able to continue building on your plot!"))
+                                .build())
+                        .build());
+
+        // Set plot feedback item
+        if (hasFeedback) {
+            getMenu().getSlot(16)
+                    .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+                            .setName("§b§lFeedback").setLore(new LoreBuilder()
+                                    .addLine("Click to view your plot review feedback.").build())
+                            .build());
+        }
+
+        // Set plot members item
+        try {
+            if (!plot.isReviewed()) {
+                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                    getMenu().getSlot(22)
+                            .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                                    .setName("§b§lManage Members").setLore(new LoreBuilder()
+                                            .addLines("Click to open your Plot Member menu, where you can add",
+                                                    "and remove other players on your plot.",
                                                     "",
-                                                    Utils.getNoteFormat("You won't be able to continue building on this plot!"))
+                                                    Utils.getNoteFormat("Score will be split between all members when reviewed!"))
+                                            .build())
+                                    .build());
+                } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                    getMenu().getSlot(22)
+                            .setItem(new ItemBuilder(Utils.getItemHead("9243"))
+                                    .setName("§b§lLeave Plot").setLore(new LoreBuilder()
+                                            .addLines("Click to leave this plot.",
+                                                    "",
+                                                    Utils.getNoteFormat("You will no longer be able to continue build or get any score on it!"))
                                             .build())
                                     .build());
                 }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                getMenu().getSlot(10).setItem(MenuItems.errorItem());
             }
-
-            // Add teleport to plot button
-            getMenu().getSlot(hasFeedback ? 12 : 13)
-                    .setItem(new ItemBuilder(Material.COMPASS, 1)
-                            .setName("§6§lTeleport").setLore(new LoreBuilder()
-                                    .addLine("Click to teleport to the plot.").build())
-                            .build());
-
-            // Add abandon plot button
-            getMenu().getSlot(hasFeedback ? 14 : 16)
-                    .setItem(new ItemBuilder(Material.BARRIER, 1)
-                            .setName("§c§lAbandon").setLore(new LoreBuilder()
-                                    .addLines("Click to reset your plot and to give it to someone else.",
-                                            "",
-                                            Utils.getNoteFormat("You won't be able to continue building on your plot!"))
-                                    .build())
-                            .build());
-
-            // Add feedback menu button
-            if (hasFeedback) {
-                getMenu().getSlot(16)
-                        .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
-                                .setName("§b§lFeedback").setLore(new LoreBuilder()
-                                        .addLine("Click to view your plot review feedback.").build())
-                                .build());
-            }
-
-            // Add Plot Member Button
-            try {
-                if (!plot.isReviewed()) {
-                    if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
-                        getMenu().getSlot(22)
-                                .setItem(new ItemBuilder(Utils.getItemHead("9237"))
-                                        .setName("§b§lManage Members").setLore(new LoreBuilder()
-                                                .addLines("Click to open your Plot Member menu, where you can add",
-                                                        "and remove other players on your plot.",
-                                                        "",
-                                                        Utils.getNoteFormat("Score will be split between all members when reviewed!"))
-                                                .build())
-                                        .build());
-                    } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
-                        getMenu().getSlot(22)
-                                .setItem(new ItemBuilder(Utils.getItemHead("9243"))
-                                        .setName("§b§lLeave Plot").setLore(new LoreBuilder()
-                                                .addLines("Click to leave this plot.",
-                                                        "",
-                                                        Utils.getNoteFormat("You will no longer be able to continue build or get any score on it!"))
-                                                .build())
-                                        .build());
-                    }
-                }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        });
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Set click event for submit/undo submit button
+    protected void setItemClickEventsAsync() {
+        // Set click event for submit or undo submit plot item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
@@ -149,7 +145,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         });
 
-        // Set click event for teleport to plot button
+        // Set click event for teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
@@ -159,7 +155,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         });
 
-        // Set click event for abandon plot button
+        // Set click event for abandon plot item
         getMenu().getSlot(hasFeedback ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("abandon " + plot.getID());
@@ -173,7 +169,7 @@ public class PlotActionsMenu extends AbstractMenu {
             });
         }
 
-        // Set click event for Plot Member button
+        // Set click event for plot members item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 if (!plot.isReviewed()) {
@@ -187,8 +183,8 @@ public class PlotActionsMenu extends AbstractMenu {
                          clickPlayer.closeInventory();
                      }
                 }
-            } catch (SQLException exception) {
-                exception.printStackTrace();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
     }
