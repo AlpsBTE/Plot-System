@@ -40,10 +40,12 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotHandler {
@@ -94,36 +96,50 @@ public class PlotHandler {
         plot.addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
-    public static void abandonPlot(Plot plot) throws Exception {
-        if(plot.isReviewed()) {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
-                    .setValue(plot.getID()).executeUpdate();
+    public static void abandonPlot(Plot plot) {
+        try {
+            loadPlot(plot); // Load Plot to be listed by Multiverse
+            for (Player player : plot.getPlotWorld().getPlayers()) {
+                player.teleport(Utils.getSpawnLocation());
+            }
 
-            DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                    .setValue(plot.getReview().getReviewID()).executeUpdate();
+            for (Builder builder : plot.getPlotMembers()) {
+                plot.removePlotMember(builder);
+            }
+
+            BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+            BTEPlotSystem.getMultiverseCore().saveWorldConfig();
+
+            CompletableFuture.runAsync(() -> {
+                try {
+                    if(plot.isReviewed()) {
+                        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                                .setValue(plot.getID()).executeUpdate();
+
+                        DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                                .setValue(plot.getReview().getReviewID()).executeUpdate();
+                    }
+
+                    plot.getPlotOwner().removePlot(plot.getSlot());
+                    plot.setPlotOwner(null);
+                    plot.setLastActivity(true);
+                    plot.setScore(-1);
+                    plot.setStatus(Status.unclaimed);
+
+                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
+                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                } catch (IOException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A error occurred while deleting plot world and configs!", ex);
+                }
+            }).exceptionally(ex -> {
+                Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot!", ex);
+                return null;
+            });
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        loadPlot(plot); // Load Plot to be listed by Multiverse
-        for(Player player : plot.getPlotWorld().getPlayers()) {
-            player.teleport(Utils.getSpawnLocation());
-        }
-
-        for (Builder builder : plot.getPlotMembers()) {
-            plot.removePlotMember(builder);
-        }
-
-        plot.getPlotOwner().removePlot(plot.getSlot());
-        plot.setPlotOwner(null);
-        // TODO: Set plot members null and remove plot slot from members
-        plot.setLastActivity(true);
-        plot.setScore(-1);
-        plot.setStatus(Status.unclaimed);
-
-        BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-        BTEPlotSystem.getMultiverseCore().saveWorldConfig();
-
-        FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
-        FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
     }
 
     public static void deletePlot(Plot plot) throws Exception {
