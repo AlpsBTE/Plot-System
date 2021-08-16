@@ -24,12 +24,12 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
+
+import java.util.concurrent.CompletableFuture;
 
 
 public abstract class AbstractMenu {
@@ -63,6 +63,7 @@ public abstract class AbstractMenu {
 
     /**
      * Places items synchronously in the menu and opens it afterwards
+     * NOTE: This method gets called before class is loaded!
      */
     protected void setPreviewItems() {
         if(getMask() != null) getMask().apply(getMenu());
@@ -75,7 +76,7 @@ public abstract class AbstractMenu {
      */
     protected void reloadMenuAsync() {
         setPreviewItems();
-        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+        CompletableFuture.runAsync(() -> {
             setMenuItemsAsync();
             setItemClickEventsAsync();
         });
