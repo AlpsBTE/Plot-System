@@ -109,7 +109,7 @@ public class PlotActionsMenu extends AbstractMenu {
             if (!plot.isReviewed()) {
                 if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                            .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.ADD_BUTTON))
                                     .setName("§b§lManage Members").setLore(new LoreBuilder()
                                             .addLines("Click to open your Plot Member menu, where you can add",
                                                     "and remove other players on your plot.",
@@ -119,7 +119,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead("9243"))
+                            .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.REMOVE_BUTTON))
                                     .setName("§b§lLeave Plot").setLore(new LoreBuilder()
                                             .addLines("Click to leave this plot.",
                                                     "",

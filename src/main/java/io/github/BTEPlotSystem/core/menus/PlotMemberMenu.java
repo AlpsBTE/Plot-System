@@ -84,8 +84,6 @@ public class PlotMemberMenu extends AbstractMenu {
                                                     Utils.getActionFormat("Click to remove member from plot..."))
                                             .build())
                                     .build());
-                } else {
-                    getMenu().getSlot(i).setItem(emptyMemberSlotItem);
                 }
             }
         } catch (SQLException ex) {
@@ -93,7 +91,7 @@ public class PlotMemberMenu extends AbstractMenu {
         }
 
         // Set add plot member item
-        ItemStack whitePlus = Utils.getItemHead("9237");
+        ItemStack whitePlus = Utils.getItemHead(Utils.CustomHead.ADD_BUTTON);
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
                         .setName("§6§lAdd Member to Plot").setLore(new LoreBuilder()

@@ -2,7 +2,9 @@ package github.BTEPlotSystem.core.system;
 
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.utils.Utils;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
@@ -45,7 +47,7 @@ public class Country {
     }
 
     public ItemStack getHead() {
-        return Utils.getItemHead(headID);
+        return Utils.TryParseInt(headID) != null ? Utils.getItemHead(new Utils.CustomHead(Integer.parseInt(headID))) : null;
     }
 
     public static List<Country> getCountries() {

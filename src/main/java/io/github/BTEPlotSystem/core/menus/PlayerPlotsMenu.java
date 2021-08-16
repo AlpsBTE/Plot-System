@@ -192,7 +192,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem() {
-        return new ItemBuilder(Utils.getItemHead("9282"))
+        return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.WHITE_P))
                 .setName("§b§lShow Plots")
                 .setLore(new LoreBuilder()
                         .addLine("Show all your plots.").build())

@@ -310,15 +310,15 @@ public class CompanionMenu extends AbstractMenu {
      * @return plots difficulty head as ItemStack
      */
     private ItemStack getSelectedDifficultyItem() {
-        ItemStack item = Utils.getItemHead("8614");
+        ItemStack item = Utils.getItemHead(Utils.CustomHead.WHITE_CONCRETE);
 
         if (selectedPlotDifficulty != null) {
             if (selectedPlotDifficulty == PlotDifficulty.EASY) {
-                item = Utils.getItemHead("8621");
+                item = Utils.getItemHead(Utils.CustomHead.GREEN_CONCRETE);
             } else if (selectedPlotDifficulty == PlotDifficulty.MEDIUM) {
-                item = Utils.getItemHead("8613");
+                item = Utils.getItemHead(Utils.CustomHead.YELLOW_CONCRETE);
             } else if (selectedPlotDifficulty == PlotDifficulty.HARD) {
-                item = Utils.getItemHead("8616");
+                item = Utils.getItemHead(Utils.CustomHead.RED_CONCRETE);
             }
         }
 

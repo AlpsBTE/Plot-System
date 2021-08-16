@@ -216,6 +216,6 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent event) {
-       Utils.headDatabaseAPI = new HeadDatabaseAPI();
+        Utils.CustomHead.loadHeadsAsync(new HeadDatabaseAPI());
     }
 }
