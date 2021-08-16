@@ -40,8 +40,13 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
             try {
-                for (int i = 0; i < plot.getPlotMembers().size(); i++) {
-                    getMenu().getSlot(12 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+                List<Builder> plotMembers = plot.getPlotMembers();
+                for (int i = 1; i <= 3; i++) {
+                    if (plotMembers.size() >= i) {
+                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+                    } else {
+                        getMenu().getSlot(11 + i).setItem(emptyMemberSlotItem);
+                    }
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
