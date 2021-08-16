@@ -227,7 +227,7 @@ public class PlotManager {
         return CompletableFuture.completedFuture(null);
     }
 
-    public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
+    public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
 
         // Load plot outlines schematic as clipboard
         Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
@@ -262,7 +262,7 @@ public class PlotManager {
 
         // Return coordinates if they are in the schematic plot region
         if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int)plotCoords[0], 15, (int)plotCoords[1]))) {
-            return plotCoords;
+            return CompletableFuture.completedFuture(plotCoords);
         }
 
        return null;
