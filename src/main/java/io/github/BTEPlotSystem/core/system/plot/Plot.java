@@ -82,7 +82,14 @@ public class Plot extends PlotPermissions {
 
             if(!file.exists()) {
                 if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
-                    FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
+                    CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+                        return null;
+                    });
                 }
             }
             return file;

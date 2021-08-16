@@ -214,8 +214,17 @@ public class PlotManager {
 
         // Upload to FTP server
         if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
-            FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
+            CompletableFuture.supplyAsync(() -> {
+                try {
+                    return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+                return null;
+            });
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 
     public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {

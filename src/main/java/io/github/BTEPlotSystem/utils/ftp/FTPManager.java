@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class FTPManager {
@@ -41,7 +42,7 @@ public class FTPManager {
         );
     }
 
-    public static void uploadSchematic(String ftpURL, File schematic) {
+    public static CompletableFuture<Void> uploadSchematic(String ftpURL, File schematic) {
         try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
             fileManager.init();
 
@@ -63,9 +64,10 @@ public class FTPManager {
         } catch (FileSystemException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
+        return CompletableFuture.completedFuture(null);
     }
 
-    public static void downloadSchematic(String ftpURL, File schematic) {
+    public static CompletableFuture<Void> downloadSchematic(String ftpURL, File schematic) {
         try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
             fileManager.init();
 
@@ -86,5 +88,6 @@ public class FTPManager {
         } catch (FileSystemException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
+        return CompletableFuture.completedFuture(null);
     }
 }
