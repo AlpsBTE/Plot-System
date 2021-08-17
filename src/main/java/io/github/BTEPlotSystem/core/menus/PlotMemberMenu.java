@@ -99,6 +99,9 @@ public class PlotMemberMenu extends AbstractMenu {
                                         "",
                                         Utils.getNoteFormat("The player has to be online!")).build())
                         .build());
+
+        // Set back item
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
     }
 
     @Override
@@ -166,6 +169,15 @@ public class PlotMemberMenu extends AbstractMenu {
                     .title("Enter player name.")
                     .plugin(BTEPlotSystem.getPlugin())
                     .open(clickPlayer);
+        });
+
+        // Set click event for back item
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
+            try {
+                new PlotActionsMenu(clickPlayer, plot);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         });
     }
 
