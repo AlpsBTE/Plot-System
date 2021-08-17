@@ -120,7 +120,6 @@ public class BTEPlotSystem extends JavaPlugin {
         setupCommand.registerCommand("city", new CMD_Setup_City());
         this.getCommand("pss").setExecutor(setupCommand);
 
-
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         reloadHolograms();

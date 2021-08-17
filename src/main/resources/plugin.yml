@@ -85,6 +85,10 @@ commands:
   invite:
     description: accept or deny an incoming invite
     usage: /invite accept/deny <PlotID>
+  pss:
+    description: Command for setting up the database
+    permission: alpsbte.admin
+    usage: /pss
 permissions:
   alpsbte.admin:
     description: Manager permissions

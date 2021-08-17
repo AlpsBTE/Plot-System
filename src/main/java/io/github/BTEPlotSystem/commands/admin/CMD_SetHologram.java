@@ -58,11 +58,11 @@ public class CMD_SetHologram implements CommandExecutor {
                     }
                 } else {
                     player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sethologram <name>"));
-                    player.sendMessage("§7------- §6§lHolograms §7-------");
+                    player.sendMessage("§8------- §6§lHolograms §8-------");
                     for(HolographicDisplay holo : BTEPlotSystem.getHolograms()) {
                         player.sendMessage(" §6> §f" + holo.getHologramName());
                     }
-                    player.sendMessage("§7--------------------------");
+                    player.sendMessage("§8--------------------------");
                 }
 
             }

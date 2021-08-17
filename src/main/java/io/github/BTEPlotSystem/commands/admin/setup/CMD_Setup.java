@@ -1,6 +1,7 @@
 package github.BTEPlotSystem.commands.admin.setup;
 
 import github.BTEPlotSystem.commands.BaseCommand;
+import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,9 +13,16 @@ public class CMD_Setup extends BaseCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (args.length > 0) {
-                onCommand((Player) sender, args);
+                onCommand(player, args);
             } else {
-                // show commands
+                // Show commands!
+                player.sendMessage(Utils.getErrorMessageFormat("Use one of the following commands:"));
+                player.sendMessage("§8--------------------------");
+                player.sendMessage(" §6> §f/pss server");
+                player.sendMessage(" §6> §f/pss ftp");
+                player.sendMessage(" §6> §f/pss country");
+                player.sendMessage(" §6> §f/pss city");
+                player.sendMessage("§8--------------------------");
             }
         }
         return true;
