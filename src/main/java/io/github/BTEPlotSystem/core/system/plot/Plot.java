@@ -315,6 +315,7 @@ public class Plot extends PlotPermissions {
                 setPlotMembers(members);
 
                 member.setPlot(this.ID, slot);
+                addBuilderPerms(member.getUUID());
             }
         }
     }
