@@ -40,27 +40,23 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     public BuilderUtilitiesMenu(Player player) {
         super(3, "Builder Utilities", player);
 
-        if(PlotManager.isPlotWorld(player.getWorld())) {
-            Mask mask = BinaryMask.builder(getMenu())
-                    .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                    .pattern("111111111")
-                    .pattern("000000000")
-                    .pattern("111111111")
-                    .build();
-            mask.apply(getMenu());
-
-            addMenuItems();
-            setItemClickEvents();
-
-            getMenu().open(getMenuPlayer());
-        } else {
+        if(!PlotManager.isPlotWorld(player.getWorld())) {
             player.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this!"));
+            player.closeInventory();
         }
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add custom heads item
+    protected void setPreviewItems() {
+        // Set back item
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+
+        super.setPreviewItems();
+    }
+
+    @Override
+    protected void setMenuItemsAsync() {
+        // Set custom-heads menu item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
                         .setName("§b§lCUSTOM HEADS")
@@ -68,7 +64,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                                 .addLine("Open the head menu to get a variety of custom heads.").build())
                         .build());
 
-        // Add banner maker item
+        // Set banner-maker menu item
         getMenu().getSlot(13)
                 .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
                         .setName("§b§lBANNER MAKER")
@@ -76,28 +72,38 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                                 .addLine("Open the banner maker menu to create your own custom banners.").build())
                         .build());
 
-        // Add special blocks menu item
+        // Set special-blocks menu item
         getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
-
-        // Add back button item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Set click event for custom heads
+    protected void setItemClickEventsAsync() {
+        // Set click event for custom-heads menu item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("hdb"));
 
-        // Set click event for banner maker
+        // Set click event for banner-maker menu item
         getMenu().getSlot(13).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("bm"));
 
-        // Set click event for special blocks
+        // Set click event for special-blocks menu item
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> new SpecialBlocksMenu(clickPlayer));
 
-        // Set click event for back button
+        // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
     }
 
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("111111111")
+                .build();
+    }
+
+    /**
+     * @return Menu item
+     */
     public static ItemStack getMenuItem() {
         return new ItemBuilder(Material.GOLD_AXE)
                 .setName("§b§lBuilder Utilities")

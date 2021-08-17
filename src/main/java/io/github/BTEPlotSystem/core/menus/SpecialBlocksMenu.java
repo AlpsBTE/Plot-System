@@ -38,35 +38,22 @@ import org.ipvp.canvas.mask.Mask;
 public class SpecialBlocksMenu extends AbstractMenu {
     public SpecialBlocksMenu(Player player) {
         super(3, "Special Blocks", player);
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("111101111")
-                .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add Special Blocks
+    protected void setMenuItemsAsync() {
+        // Set special block items
         for(int i = 0; i < 13; i++) {
             getMenu().getSlot(i).setItem(getSpecialBlock(i));
         }
 
-        // Add Back Button Item
+        // Set back item
         getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Add Click Event For Special Blocks
+    protected void setItemClickEventsAsync() {
+        // Set click event for special block items
         for(int i = 0; i < 13; i++) {
             int specialBlockID = i;
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
@@ -77,18 +64,24 @@ public class SpecialBlocksMenu extends AbstractMenu {
             });
         }
 
-        // Add Click Event For Back Button
+        // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer));
     }
 
-    public static ItemStack getMenuItem() {
-        return new ItemBuilder(Material.GOLD_BLOCK ,1)
-                .setName("§b§lSPECIAL BLOCKS")
-                .setLore(new LoreBuilder()
-                        .addLine("Open the special blocks menu to get a variety of inaccessible blocks.").build())
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("111101111")
                 .build();
     }
 
+    /**
+     * @param ID menu slot
+     * @return Special block as ItemStack
+     */
     private ItemStack getSpecialBlock(int ID) {
         switch (ID) {
             // First Row
@@ -136,5 +129,16 @@ public class SpecialBlocksMenu extends AbstractMenu {
             default:
                 return MenuItems.errorItem();
         }
+    }
+
+    /**
+     * @return Menu item
+     */
+    public static ItemStack getMenuItem() {
+        return new ItemBuilder(Material.GOLD_BLOCK ,1)
+                .setName("§b§lSPECIAL BLOCKS")
+                .setLore(new LoreBuilder()
+                        .addLine("Open the special blocks menu to get a variety of inaccessible blocks.").build())
+                .build();
     }
 }

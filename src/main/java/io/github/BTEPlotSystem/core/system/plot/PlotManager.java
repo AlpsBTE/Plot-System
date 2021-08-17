@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotManager {
@@ -133,7 +134,7 @@ public class PlotManager {
         return plots;
     }
 
-    public static void savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
+    public static CompletableFuture<Void> savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
         // TODO: MOVE CONVERSION TO SEPERATE METHODS
 
         Vector terraOrigin, schematicOrigin, plotOrigin;
@@ -203,8 +204,7 @@ public class PlotManager {
             boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
             boolean createdFile = finishedSchematicFile.createNewFile();
             if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
-                return;
+                return CompletableFuture.completedFuture(null);
             }
         }
 
@@ -214,11 +214,20 @@ public class PlotManager {
 
         // Upload to FTP server
         if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
-            FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
+            CompletableFuture.supplyAsync(() -> {
+                try {
+                    return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+                return null;
+            });
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 
-    public static double[] convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
+    public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
 
         // Load plot outlines schematic as clipboard
         Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
@@ -253,7 +262,7 @@ public class PlotManager {
 
         // Return coordinates if they are in the schematic plot region
         if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int)plotCoords[0], 15, (int)plotCoords[1]))) {
-            return plotCoords;
+            return CompletableFuture.completedFuture(plotCoords);
         }
 
        return null;

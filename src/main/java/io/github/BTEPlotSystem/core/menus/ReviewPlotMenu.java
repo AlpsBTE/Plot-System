@@ -47,74 +47,42 @@ import org.ipvp.canvas.mask.Mask;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class ReviewPlotMenu extends AbstractMenu {
 
-    private Plot plot;
+    private final Plot plot;
 
     boolean sentWarning = false;
 
-    private final ItemStack[] itemPointZero = new ItemStack[4];
-    private final ItemStack[] itemPointOne = new ItemStack[4];
-    private final ItemStack[] itemPointTwo = new ItemStack[4];
-    private final ItemStack[] itemPointThree = new ItemStack[4];
-    private final ItemStack[] itemPointFour = new ItemStack[4];
-    private final ItemStack[] itemPointFive = new ItemStack[4];
-
     public ReviewPlotMenu(Player player, Plot plot) {
         super(6, "Review Plot #" + plot.getID(), player);
-
         this.plot = plot;
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("111010111")
-                .build();
-        mask.apply(getMenu());
 
         // Check if plot is from player
         try {
             if (plot.getPlotOwner().getUUID().equals(player.getUniqueId())){
                 player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
-                return;
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
+    protected void setPreviewItems() {
+        final ItemStack[] itemPointZero = new ItemStack[4];
+        final ItemStack[] itemPointOne = new ItemStack[4];
+        final ItemStack[] itemPointTwo = new ItemStack[4];
+        final ItemStack[] itemPointThree = new ItemStack[4];
+        final ItemStack[] itemPointFour = new ItemStack[4];
+        final ItemStack[] itemPointFive = new ItemStack[4];
+
         for(int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
-                    try {
-                        // Map Item
-                        getMenu().getSlot(i).setItem(new ItemBuilder(Material.MAP, 1)
-                                .setName("§b§lReview Plot")
-                                .setLore(new LoreBuilder()
-                                        .addLines("ID: §f" + plot.getID(),
-                                                "",
-                                                "§7Builder: §f" + plot.getPlotOwner().getName(),
-                                                "§7City: §f" + plot.getCity().getName(),
-                                                "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
-                                        .build())
-                                .build());
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        getMenu().getSlot(i).setItem(MenuItems.errorItem());
-                    }
+                    getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP));
                     break;
                 case 10:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.ARROW, 1)
@@ -164,7 +132,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 48:
-                    // Submit Item
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 13)
                             .setName("§a§lSUBMIT")
                             .setLore(new LoreBuilder()
@@ -172,7 +139,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 50:
-                    // Cancel Item
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
                             .setName("§c§lCANCEL")
                             .setLore(new LoreBuilder()
@@ -182,21 +148,22 @@ public class ReviewPlotMenu extends AbstractMenu {
                 default:
                     int column = (i % 9) + 1;
                     int row = (i - (i % 9)) / 9 + 1;
+                    int position = ((i + 1) - (i + 1) % 9) / 54;
                     if (column > 2 && column < 9 && row > 1 && row < 6) {
                         if ((i + 1) % 9 == 3) {
-                            itemPointZero[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 1, (byte) 8)
+                            itemPointZero[position] = new ItemBuilder(Material.WOOL, 1, (byte) 8)
                                     .setName("§l§70 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
 
                             //Add Enchantment
-                            ItemMeta itemMeta = itemPointZero[((i + 1) - (i + 1) % 9) / 54].getItemMeta();
+                            ItemMeta itemMeta = itemPointZero[position].getItemMeta();
                             itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-                            itemPointZero[((i + 1) - (i + 1) % 9) / 54].setItemMeta(itemMeta);
+                            itemPointZero[position].setItemMeta(itemMeta);
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
-                            itemPointOne[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 1, (byte) 14)
+                            itemPointOne[position] = new ItemBuilder(Material.WOOL, 1, (byte) 14)
                                     .setName("§l§c1 Point")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
@@ -204,28 +171,28 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                             getMenu().getSlot(i).setItem(itemPointOne[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 5) {
-                            itemPointTwo[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 2, (byte) 1)
+                            itemPointTwo[position] = new ItemBuilder(Material.WOOL, 2, (byte) 1)
                                     .setName("§l§62 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointTwo[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 6) {
-                            itemPointThree[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 3, (byte) 4)
+                            itemPointThree[position] = new ItemBuilder(Material.WOOL, 3, (byte) 4)
                                     .setName("§l§e3 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointThree[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 7) {
-                            itemPointFour[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 4, (byte) 13)
+                            itemPointFour[position] = new ItemBuilder(Material.WOOL, 4, (byte) 13)
                                     .setName("§l§24 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFour[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 8) {
-                            itemPointFive[((i + 1) - (i + 1) % 9) / 54] = new ItemBuilder(Material.WOOL, 5, (byte) 5)
+                            itemPointFive[position] = new ItemBuilder(Material.WOOL, 5, (byte) 5)
                                     .setName("§l§a5 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
@@ -236,26 +203,45 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
             }
         }
+
+        super.setPreviewItems();
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Cancel Item
-        getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-        });
+    protected void setMenuItemsAsync() {
+        try {
+            getMenu().getSlot(4).setItem(new ItemBuilder(Material.MAP, 1)
+                    .setName("§b§lReview Plot")
+                    .setLore(new LoreBuilder()
+                            .addLines("ID: §f" + plot.getID(),
+                                    "",
+                                    "§7Builder: §f" + plot.getPlotOwner().getName(),
+                                    "§7City: §f" + plot.getCity().getName(),
+                                    "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
+                            .build())
+                    .build());
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            getMenu().getSlot(4).setItem(MenuItems.errorItem());
+        }
+    }
 
-        // Map Item
+    @Override
+    protected void setItemClickEventsAsync() {
+        // Set click event for close item
+        getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
+
+        // Set click event for plot info item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
                 new PlotActionsMenu(clickPlayer,plot);
             } catch (SQLException ex) {
-                ex.printStackTrace();
+               Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
 
-        // Submit Item
+        // Set click event for submit item
         getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
             StringBuilder score = new StringBuilder();
 
@@ -356,7 +342,15 @@ public class ReviewPlotMenu extends AbstractMenu {
                         clickPlayer.sendMessage(sb.toString());
                     }
 
-                    PlotManager.savePlotAsSchematic(plot);
+                    clickPlayer.closeInventory();
+                    CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return PlotManager.savePlotAsSchematic(plot);
+                        } catch (IOException | SQLException | WorldEditException ex) {
+                            Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
+                        }
+                        return null;
+                    });
                 } else {
                     if (plot.getPlotMembers().size() != 0) {
                         // Plot was made alone
@@ -395,12 +389,10 @@ public class ReviewPlotMenu extends AbstractMenu {
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 ex.printStackTrace();
-            } catch (WorldEditException | IOException e) {
-                e.printStackTrace();
             }
         });
 
-        // Point Selection
+        // Set click event for point selection items
         for (int i = 0; i < 54; i++) {
             int slot = i;
 
@@ -431,5 +423,18 @@ public class ReviewPlotMenu extends AbstractMenu {
                 });
             }
         }
+    }
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111101111")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("100000001")
+                .pattern("111010111")
+                .build();
     }
 }

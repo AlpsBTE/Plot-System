@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 import static github.BTEPlotSystem.core.system.plot.PlotManager.getPlots;
@@ -86,38 +87,35 @@ public final class PlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
-            try {
-                playerPlotGenerationHistory.put(builder.getUUID(), LocalDateTime.now());
-
-                generateWorld();
-
-                generateBuildingOutlines();
-
-                createPlotProtection();
-
-                builder.setPlot(plot.getID(), builder.getFreeSlot());
-                plot.setStatus(Status.unfinished);
-                plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
-                plot.setLastActivity(false);
-
-                Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
-                    try {
-                        PlotHandler.teleportPlayer(plot, builder.getPlayer());
-                        Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getPlotOwner().getName() + "§a!"));
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
-                });
-            } catch (Exception ex) {
-                builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating a new plot!"));
-                builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while a generating plot!", ex);
-            }
-        });
+        try {
+            CompletableFuture.allOf(generateWorld(), generateOutlines(), createPlotProtection())
+                    .thenRun(() -> {
+                        try {
+                            builder.setPlot(plot.getID(), builder.getFreeSlot());
+                            plot.setStatus(Status.unfinished);
+                            plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
+                            plot.setLastActivity(false);
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+                    }).whenComplete((result, failed) -> {
+                        try {
+                            if (failed == null) {
+                                PlotHandler.teleportPlayer(plot, builder.getPlayer());
+                                Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot §afor §6" + plot.getPlotOwner().getName() + "§a!"));
+                            }
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+                    });
+        } catch (StorageException | IOException | WorldEditException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot world!", ex);
+            builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating a new plot!"));
+            builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
+        }
     }
 
-    private void generateWorld() throws StorageException {
+    private CompletableFuture<Void> generateWorld() throws StorageException {
         WorldCreator wc = new WorldCreator(plot.getWorldName());
         wc.environment(org.bukkit.World.Environment.NORMAL);
         wc.type(WorldType.FLAT);
@@ -156,9 +154,10 @@ public final class PlotGenerator {
 
         regionManager.addRegion(globalRegion);
         regionManager.saveChanges();
+        return CompletableFuture.completedFuture(null);
     }
 
-    private void generateBuildingOutlines() throws IOException, WorldEditException {
+    private CompletableFuture<Void> generateOutlines() throws IOException, WorldEditException {
         Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot); // TODO: Set Plot to the bottom of the schematic
 
         Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
@@ -168,9 +167,10 @@ public final class PlotGenerator {
         Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
         Operations.complete(operation);
         editSession.flushQueue();
+        return CompletableFuture.completedFuture(null);
     }
 
-    private void createPlotProtection() throws StorageException {
+    private CompletableFuture<Void> createPlotProtection() throws StorageException {
         BlockVector min = BlockVector.toBlockPoint(
                 0,
                 1,
@@ -208,5 +208,6 @@ public final class PlotGenerator {
 
         regionManager.addRegion(protectedPlotRegion);
         regionManager.saveChanges();
+        return CompletableFuture.completedFuture(null);
     }
 }

@@ -36,15 +36,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Utils {
 
-    // Head Database API
-    public static HeadDatabaseAPI headDatabaseAPI;
-
-    public static ItemStack getItemHead(String headID) {
-        return headDatabaseAPI != null && headID != null ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+    public static ItemStack getItemHead(CustomHead head) {
+        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
     }
 
     // Get player head by UUID
@@ -136,6 +134,56 @@ public class Utils {
                 return "§c§lHard";
             default:
                 return "";
+        }
+    }
+
+    public static class CustomHead {
+
+        private final int headID;
+        private final ItemStack headItem;
+
+        public CustomHead(int headID) {
+            this.headItem = (headDatabaseAPI != null) ? headDatabaseAPI.getItemHead(String.valueOf(headID)) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+            this.headID = headID;
+        }
+
+        public int getHeadID() {
+            return headID;
+        }
+
+        public ItemStack getAsItemStack() {
+            return headItem;
+        }
+
+        private static HeadDatabaseAPI headDatabaseAPI;
+
+        public static CustomHead WHITE_CONCRETE;
+        public static CustomHead GREEN_CONCRETE;
+        public static CustomHead YELLOW_CONCRETE;
+        public static CustomHead RED_CONCRETE;
+        public static CustomHead WHITE_P;
+
+        public static CustomHead ADD_BUTTON;
+        public static CustomHead REMOVE_BUTTON;
+        public static CustomHead BACK_BUTTON;
+        public static CustomHead NEXT_BUTTON;
+        public static CustomHead PREVIOUS_BUTTON;
+
+        public static void loadHeadsAsync(HeadDatabaseAPI api) {
+            headDatabaseAPI = api;
+            CompletableFuture.runAsync(() -> {
+                WHITE_CONCRETE = new CustomHead(8614);
+                GREEN_CONCRETE = new CustomHead(8621);
+                YELLOW_CONCRETE = new CustomHead(8613);
+                RED_CONCRETE = new CustomHead(8616);
+                WHITE_P = new CustomHead(9282);
+
+                ADD_BUTTON = new CustomHead(9237);
+                REMOVE_BUTTON = new CustomHead(9243);
+                BACK_BUTTON = new CustomHead(9226);
+                NEXT_BUTTON = new CustomHead(9223);
+                PREVIOUS_BUTTON = new CustomHead(9226);
+            });
         }
     }
 }

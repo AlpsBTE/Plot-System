@@ -48,39 +48,35 @@ import java.util.logging.Level;
 public class PlayerPlotsMenu extends AbstractMenu {
 
     private final Builder builder;
-    private final List<Plot> plots;
+    private List<Plot> plots;
 
     private int plotDisplayCount = 0;
 
-    public PlayerPlotsMenu(Player menuPlayer, Builder showPlotsBuilder) throws SQLException {
-        super(6, showPlotsBuilder.getName() + "'s Plots", menuPlayer);
-        this.builder = showPlotsBuilder;
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("111101111")
-                .build();
-        mask.apply(getMenu());
-
-        plots = PlotManager.getPlots(builder);
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
+    public PlayerPlotsMenu(Player menuPlayer, Builder builder) throws SQLException {
+        super(6, builder.getName() + "'s Plots", menuPlayer);
+        this.builder = builder;
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add player stats item
+    protected void setPreviewItems() {
+        // Set loading item for player head item
+        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+
+        // Set back item
+        getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
+
+        super.setPreviewItems();
+    }
+
+    @Override
+    protected void setMenuItemsAsync() {
+        // Load player head
+        ItemStack playerHead = Utils.getPlayerHead(builder.getUUID());
+
+        // Set player stats item
         try {
             getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
+                    .setItem(new ItemBuilder(playerHead)
                             .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
                                     .addLines("Score: §f" + builder.getScore(),
                                             "§7Completed Plots: §f" + builder.getCompletedBuilds())
@@ -91,47 +87,35 @@ public class PlayerPlotsMenu extends AbstractMenu {
             getMenu().getSlot(4).setItem(MenuItems.errorItem());
         }
 
-        // Add player plots items
-        plotDisplayCount = Math.min(plots.size(), 36);
-        for (int i = 0; i < plotDisplayCount; i++) {
-            try {
-                Plot plot = plots.get(i);
-                switch (plot.getStatus()) {
-                    case unfinished:
-                        getMenu().getSlot(9 + i)
-                                .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 1)
-                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                        .setLore(getDescription(plot))
-                                        .build());
-                        break;
-                    case unreviewed:
-                        getMenu().getSlot(9 + i)
-                                .setItem(new ItemBuilder(Material.MAP, 1)
-                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                        .setLore(getDescription(plot))
-                                        .build());
-                        break;
-                    case completed:
-                        getMenu().getSlot(9 + i)
-                                .setItem(new ItemBuilder(Material.WOOL, 1, (byte) 13)
-                                        .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                        .setLore(getDescription(plot))
-                                        .build());
-                        break;
-                }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
-            }
-        }
+        // Set player plot items
+        try {
+            plots = PlotManager.getPlots(builder);
 
-        // Add Back Button Item
-        getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
+            plotDisplayCount = Math.min(plots.size(), 36);
+            for (int i = 0; i < plotDisplayCount; i++) {
+                Plot plot = plots.get(i);
+                try {
+                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.WOOL, 1, (byte) 1) :
+                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.MAP) : new ItemStack(Material.WOOL, 1, (byte) 13);
+
+                    getMenu().getSlot(9 + i)
+                            .setItem(new ItemBuilder(item)
+                                    .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
+                                    .setLore(getDescription(plot))
+                                    .build());
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
+                }
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Set click event for plots
+    protected void setItemClickEventsAsync() {
+        // Add click event for player plot items
         for(int i = 0; i < plotDisplayCount; i++) {
             int itemSlot = i;
             getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
@@ -143,21 +127,32 @@ public class PlayerPlotsMenu extends AbstractMenu {
             });
         }
 
-        // Set click event for back button
+        // Set click event for back item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("companion");
         });
     }
 
-    public static ItemStack getMenuItem() {
-        return new ItemBuilder(Utils.getItemHead("9282"))
-                .setName("§b§lShow Plots")
-                .setLore(new LoreBuilder()
-                        .addLine("Show all your plots.").build())
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111101111")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("111101111")
                 .build();
     }
 
+    /**
+     * Returns description for plot item
+     * @param plot Plot class
+     * @return Description lore for plot item
+     * @throws SQLException When querying database
+     */
     private List<String> getDescription(Plot plot) throws SQLException {
         List<String> lines = new ArrayList<>();
         if (plot.getPlotMembers().size() == 0) {
@@ -191,5 +186,16 @@ public class PlayerPlotsMenu extends AbstractMenu {
         if (plot.isRejected()) lines.add("§c§lRejected");
         lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
         return lines;
+    }
+
+    /**
+     * @return Menu item
+     */
+    public static ItemStack getMenuItem() {
+        return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.WHITE_P))
+                .setName("§b§lShow Plots")
+                .setLore(new LoreBuilder()
+                        .addLine("Show all your plots.").build())
+                .build();
     }
 }

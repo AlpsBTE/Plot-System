@@ -27,11 +27,11 @@ package github.BTEPlotSystem.core.menus;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
-import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
-import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
-import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
+import github.BTEPlotSystem.utils.items.MenuItems;
+import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
+import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,32 +44,18 @@ import java.util.logging.Level;
 public class PlotActionsMenu extends AbstractMenu {
 
     private final Plot plot;
-
     private final boolean hasFeedback;
 
     public PlotActionsMenu(Player menuPlayer, Plot plot) throws SQLException {
         super(3, "Plot #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
+
         this.plot = plot;
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111111111")
-                .pattern("000000000")
-                .pattern("111111111")
-                .build();
-        mask.apply(getMenu());
-
         hasFeedback = plot.isReviewed() || plot.isRejected();
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add submit/undo submit plot button
+    protected void setMenuItemsAsync() {
+        // Set plot submit or undo submit item
         try {
             if (plot.getStatus().equals(Status.unreviewed)) {
                 getMenu().getSlot(10)
@@ -82,8 +68,8 @@ public class PlotActionsMenu extends AbstractMenu {
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
                                 .setName("§a§lSubmit").setLore(new LoreBuilder()
                                         .addLines("Click to complete this plot and submit it to be reviewed.",
-                                                  "",
-                                                  Utils.getNoteFormat("You won't be able to continue building on this plot!"))
+                                                "",
+                                                Utils.getNoteFormat("You won't be able to continue building on this plot!"))
                                         .build())
                                 .build());
             }
@@ -92,24 +78,24 @@ public class PlotActionsMenu extends AbstractMenu {
             getMenu().getSlot(10).setItem(MenuItems.errorItem());
         }
 
-        // Add teleport to plot button
+        // Set teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13)
                 .setItem(new ItemBuilder(Material.COMPASS, 1)
                         .setName("§6§lTeleport").setLore(new LoreBuilder()
                                 .addLine("Click to teleport to the plot.").build())
                         .build());
 
-        // Add abandon plot button
+        // Set plot abandon item
         getMenu().getSlot(hasFeedback ? 14 : 16)
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
                         .setName("§c§lAbandon").setLore(new LoreBuilder()
                                 .addLines("Click to reset your plot and to give it to someone else.",
-                                          "",
-                                          Utils.getNoteFormat("You won't be able to continue building on your plot!"))
+                                        "",
+                                        Utils.getNoteFormat("You won't be able to continue building on your plot!"))
                                 .build())
                         .build());
 
-        // Add feedback menu button
+        // Set plot feedback item
         if (hasFeedback) {
             getMenu().getSlot(16)
                     .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
@@ -118,12 +104,12 @@ public class PlotActionsMenu extends AbstractMenu {
                             .build());
         }
 
-        // Add Plot Member Button
+        // Set plot members item
         try {
             if (!plot.isReviewed()) {
                 if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead("9237"))
+                            .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.ADD_BUTTON))
                                     .setName("§b§lManage Members").setLore(new LoreBuilder()
                                             .addLines("Click to open your Plot Member menu, where you can add",
                                                     "and remove other players on your plot.",
@@ -133,7 +119,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead("9243"))
+                            .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.REMOVE_BUTTON))
                                     .setName("§b§lLeave Plot").setLore(new LoreBuilder()
                                             .addLines("Click to leave this plot.",
                                                     "",
@@ -148,8 +134,8 @@ public class PlotActionsMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Set click event for submit/undo submit button
+    protected void setItemClickEventsAsync() {
+        // Set click event for submit or undo submit plot item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
@@ -159,7 +145,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         });
 
-        // Set click event for teleport to plot button
+        // Set click event for teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
@@ -169,7 +155,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         });
 
-        // Set click event for abandon plot button
+        // Set click event for abandon plot item
         getMenu().getSlot(hasFeedback ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("abandon " + plot.getID());
@@ -183,7 +169,7 @@ public class PlotActionsMenu extends AbstractMenu {
             });
         }
 
-        // Set click event for Plot Member button
+        // Set click event for plot members item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 if (!plot.isReviewed()) {
@@ -197,10 +183,19 @@ public class PlotActionsMenu extends AbstractMenu {
                          clickPlayer.closeInventory();
                      }
                 }
-            } catch (SQLException exception) {
-                exception.printStackTrace();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
     }
 
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("111111111")
+                .build();
+    }
 }

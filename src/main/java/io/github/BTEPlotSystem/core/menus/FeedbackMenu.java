@@ -50,30 +50,30 @@ public class FeedbackMenu extends AbstractMenu {
     public FeedbackMenu(Player player, int plotID) throws SQLException {
         super(3, "Feedback | Review #" + plotID, player);
         this.plot = new Plot(plotID);
-
-        ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(plotID).executeQuery();
-
-        if (rs.next()) {
-            this.review = new Review(rs.getInt(1));
-        } else return;
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111111111")
-                .pattern("000000000")
-                .pattern("111111111")
-                .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
-        // Add Points Item
+    protected void setPreviewItems() {
+        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+
+        super.setPreviewItems();
+    }
+
+    @Override
+    protected void setMenuItemsAsync() {
+        // Get review id from plot
+        try {
+            ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                    .setValue(plot.getID()).executeQuery();
+
+            if (rs.next()) {
+                this.review = new Review(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+
+        // Set score item
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
                     .setName("§b§lScore")
@@ -93,7 +93,7 @@ public class FeedbackMenu extends AbstractMenu {
             getMenu().getSlot(10).setItem(MenuItems.errorItem());
         }
 
-        // Add Feedback Item
+        // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
                     .setName("§b§lFeedback")
@@ -105,7 +105,7 @@ public class FeedbackMenu extends AbstractMenu {
             getMenu().getSlot(13).setItem(MenuItems.errorItem());
         }
 
-        // Add Reviewer Item
+        // Set reviewer item
         try {
             getMenu().getSlot(16).setItem(new ItemBuilder(Utils.getPlayerHead(review.getReviewer().getUUID()))
                     .setName("§b§lReviewer")
@@ -119,5 +119,15 @@ public class FeedbackMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {}
+    protected void setItemClickEventsAsync() {}
+
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("111111111")
+                .build();
+    }
 }

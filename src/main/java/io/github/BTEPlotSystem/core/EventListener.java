@@ -24,6 +24,7 @@
 
 package github.BTEPlotSystem.core;
 
+import github.BTEPlotSystem.BTEPlotSystem;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
@@ -51,83 +52,95 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        // Remove Default Join Message
-        event.setJoinMessage(null);
         // Teleport Player to the spawn
         event.getPlayer().teleport(Utils.getSpawnLocation());
 
-        // Add Items
-        if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
-            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
-        }
-        if (event.getPlayer().hasPermission("alpsbte.review")){
-            if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
-                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
-            }
-        }
-
         // User has joined for the first time
         // Adding user to the database
-        if(!event.getPlayer().hasPlayedBefore()) {
+        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+            // Add Items
+            if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
+                event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
+            }
+            if (event.getPlayer().hasPermission("alpsbte.review")){
+                if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
+                    event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
+                }
+            }
+
+            if(!event.getPlayer().hasPlayedBefore()) {
+                try {
+                    DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
+                            .setValue(event.getPlayer().getUniqueId().toString())
+                            .setValue(event.getPlayer().getName())
+                            .executeUpdate();
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            }
+
+            // Check if player has changed his name
             try {
-                DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
-                        .setValue(event.getPlayer().getUniqueId().toString())
-                        .setValue(event.getPlayer().getName())
-                        .executeUpdate();
+                Builder builder = new Builder(event.getPlayer().getUniqueId());
+                if (!builder.getName().equals(event.getPlayer().getName())) {
+                    DatabaseConnection.createStatement("UPDATE plotsystem_builders SET name = ? WHERE uuid = ?")
+                            .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId()).executeUpdate();
+                }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-        }
 
-        // Informing player about new feedback
-        try {
-            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
-            List<Plot> reviewedPlots = new ArrayList<>();
-
-            for(Plot plot : plots) {
-                if(plot.isReviewed() && !plot.getReview().isFeedbackSent() && plot.getPlotOwner().getPlayer().equals(event.getPlayer())) {
-                    reviewedPlots.add(plot);
-                    plot.getReview().setFeedbackSent(true);
-                }
-            }
-
-            if(reviewedPlots.size() >= 1) {
-                PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
-                event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
-            }
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
-        }
-
-        // Informing player about unfinished plots
-        try {
-            List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
-            if(plots.size() >= 1) {
-                PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
-                event.getPlayer().sendMessage("");
-            }
-        } catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about his unfinished plots!", ex);
-        }
-
-        // Informing reviewer about new reviews
-        if(event.getPlayer().hasPermission("alpsbte.review")) {
+            // Informing player about new feedback
             try {
-                List<Plot> unreviewedPlots = PlotManager.getPlots(Status.unreviewed);
+                List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
+                List<Plot> reviewedPlots = new ArrayList<>();
 
-                if(unreviewedPlots.size() != 0) {
-                    PlotHandler.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
+                for(Plot plot : plots) {
+                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent() && plot.getPlotOwner().getPlayer().equals(event.getPlayer())) {
+                        reviewedPlots.add(plot);
+                        plot.getReview().setFeedbackSent(true);
+                    }
+                }
+
+                if(reviewedPlots.size() >= 1) {
+                    PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
+                    event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
                 }
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
             }
-        }
+
+            // Informing player about unfinished plots
+            try {
+                List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
+                if(plots.size() >= 1) {
+                    PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+                    event.getPlayer().sendMessage("");
+                }
+            } catch (Exception ex){
+                Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about his unfinished plots!", ex);
+            }
+
+            // Informing reviewer about new reviews
+            if(event.getPlayer().hasPermission("alpsbte.review")) {
+                try {
+                    List<Plot> unreviewedPlots = PlotManager.getPlots(Status.unreviewed);
+
+                    if(unreviewedPlots.size() != 0) {
+                        PlotHandler.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
+                    }
+                } catch (Exception ex) {
+                    Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
+                }
+            }
+        });
     }
 
     @EventHandler
@@ -216,6 +229,6 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent event) {
-       Utils.headDatabaseAPI = new HeadDatabaseAPI();
+        Utils.CustomHead.loadHeadsAsync(new HeadDatabaseAPI());
     }
 }

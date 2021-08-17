@@ -41,7 +41,7 @@ public class MenuItems {
     }
 
     public static ItemStack backMenuItem() {
-        return new ItemBuilder(Utils.getItemHead("9226"))
+        return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.BACK_BUTTON))
                 .setName("§6§lBack")
                 .setLore(new LoreBuilder()
                     .addLine("Go back to the last menu.").build())
@@ -49,7 +49,7 @@ public class MenuItems {
     }
 
     public static ItemStack nextPageItem() {
-        return new ItemBuilder(Utils.getItemHead("9223"))
+        return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.NEXT_BUTTON))
                 .setName("§6§lNext Page")
                 .setLore(new LoreBuilder()
                     .addLine("Show the next page.").build())
@@ -57,7 +57,7 @@ public class MenuItems {
     }
 
     public static ItemStack previousPageItem() {
-        return new ItemBuilder(Utils.getItemHead("9226"))
+        return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.PREVIOUS_BUTTON))
                 .setName("§6§lPrevious Page")
                 .setLore(new LoreBuilder()
                         .addLine("Show the previous page.").build())
@@ -69,6 +69,18 @@ public class MenuItems {
                 .setName("§c§lError")
                 .setLore(new LoreBuilder()
                     .addLine("An internal error occurred! Please contact a staff member!").build())
+                .build();
+    }
+
+    public static ItemStack loadingItem(Material material) {
+        return new ItemBuilder(material)
+                .setName("§6§lLoading...")
+                .build();
+    }
+
+    public static ItemStack loadingItem(Material material, byte subId) {
+        return new ItemBuilder(material, 1, subId)
+                .setName("§6§lLoading...")
                 .build();
     }
 }

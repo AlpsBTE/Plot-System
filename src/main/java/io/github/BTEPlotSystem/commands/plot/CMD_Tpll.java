@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class CMD_Tpll implements CommandExecutor {
@@ -64,7 +65,7 @@ public class CMD_Tpll implements CommandExecutor {
                             Plot plot = PlotManager.getPlotByWorld(playerWorld);
 
                             // Convert terra coordinates to plot relative coordinates
-                            double[] plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);
+                            CompletableFuture<double[]> plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);
 
                             if(plotCoords == null) {
                                 player.sendMessage(Utils.getErrorMessageFormat("You can only teleport to your plot!"));
@@ -74,7 +75,7 @@ public class CMD_Tpll implements CommandExecutor {
                             // TODO: Support to insert own height as parameter
                             // Get Highest Y
                             int highestY = 0;
-                            Location block = new Location(playerWorld, plotCoords[0], 0, plotCoords[1]);
+                            Location block = new Location(playerWorld, plotCoords.get()[0], 0, plotCoords.get()[1]);
                             for (int i = 1; i < 256; i++) {
                                 block.add(0, 1, 0);
                                 if (!block.getBlock().isEmpty()) {
@@ -85,7 +86,7 @@ public class CMD_Tpll implements CommandExecutor {
                                 highestY = 10;
                             }
 
-                            player.teleport(new Location(playerWorld, plotCoords[0], highestY + 1, plotCoords[1]));
+                            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1]));
 
                             DecimalFormat df = new DecimalFormat("##.#####");
                             df.setRoundingMode(RoundingMode.FLOOR);

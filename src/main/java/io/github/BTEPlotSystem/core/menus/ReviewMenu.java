@@ -28,7 +28,6 @@ import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.core.system.plot.PlotHandler;
 import github.BTEPlotSystem.core.system.plot.PlotManager;
 import github.BTEPlotSystem.utils.items.builder.ItemBuilder;
-import github.BTEPlotSystem.utils.items.builder.LoreBuilder;
 import github.BTEPlotSystem.utils.items.MenuItems;
 import github.BTEPlotSystem.utils.Utils;
 import github.BTEPlotSystem.utils.enums.Status;
@@ -48,40 +47,37 @@ import java.util.stream.Collectors;
 public class ReviewMenu extends AbstractMenu {
 
     private final List<Plot> plots = new ArrayList<>();
-
     private int plotDisplayCount = 0;
 
     public ReviewMenu(Player player) throws SQLException {
-        // Opens Review Menu, showing all plots in the given round.
         super(6, "Manage & Review Plots", player);
-
-        Mask mask = BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("101101101")
-                .build();
-        mask.apply(getMenu());
-
-        addMenuItems();
-        setItemClickEvents();
-
-        getMenu().open(getMenuPlayer());
     }
 
     @Override
-    protected void addMenuItems() {
+    protected void setPreviewItems() {
+        // Set previous page item
+        getMenu().getSlot(46).setItem(MenuItems.previousPageItem());
+
+        // Set close item
+        getMenu().getSlot(49).setItem(MenuItems.closeMenuItem());
+
+        // Set next page item
+        getMenu().getSlot(52).setItem(MenuItems.nextPageItem());
+
+        super.setPreviewItems();
+    }
+
+    @Override
+    protected void setMenuItemsAsync() {
+        // Get all unreviewed and unfinished plots
         try {
             plots.addAll(PlotManager.getPlots(Status.unreviewed));
             plots.addAll(PlotManager.getPlots(Status.unfinished));
-        } catch (SQLException exception) {
-            exception.printStackTrace();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
 
-        // Add plot items
+        // Set unreviewed and unfinished plot items
         plotDisplayCount = Math.min(plots.size(), 45);
         for(int i = 0; i < plotDisplayCount; i++) {
             try {
@@ -112,20 +108,11 @@ public class ReviewMenu extends AbstractMenu {
                 getMenu().getSlot(i).setItem(MenuItems.errorItem());
             }
         }
-
-        // Add previous page button
-        getMenu().getSlot(46).setItem(MenuItems.previousPageItem());
-
-        // Add close menu button
-        getMenu().getSlot(49).setItem(MenuItems.closeMenuItem());
-
-        // Add next page button
-        getMenu().getSlot(52).setItem(MenuItems.nextPageItem());
     }
 
     @Override
-    protected void setItemClickEvents() {
-        // Set click event for unreviewed & unfinished plots
+    protected void setItemClickEventsAsync() {
+        // Set click event for unreviewed and unfinished plot items
         for(int i = 0; i < plotDisplayCount; i++) {
             int currentIteration = i;
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
@@ -147,20 +134,36 @@ public class ReviewMenu extends AbstractMenu {
             });
         }
 
-        // Set click event for previous page button
-        getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
+        // Set click event for previous page item
+        //getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
-        });
+        //});
 
-        // Set click event for close menu button
+        // Set click event for close item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
-        // Set click event for next page button
-        getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
+        // Set click event for next page item
+        //getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
             // Not implemented yet
-        });
+        //});
     }
 
+    @Override
+    protected Mask getMask() {
+        return BinaryMask.builder(getMenu())
+                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("101101101")
+                .build();
+    }
+
+    /**
+     * @return Menu item
+     */
     public static ItemStack getMenuItem(){
         return new ItemBuilder(Material.BOOK, 1)
                 .setName("§b§lReview Plots §7(Right Click)")
