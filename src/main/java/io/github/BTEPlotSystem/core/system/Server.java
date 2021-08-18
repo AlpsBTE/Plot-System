@@ -56,4 +56,28 @@ public class Server {
         }
         return new ArrayList<>();
     }
+
+    public static void addServer(String name) {
+        try {
+            DatabaseConnection.createStatement("INSERT INTO plotsystem_servers (name) VALUES (?)").setValue(name).executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void removeServer(String name) {
+        try {
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_servers WHERE name = ?").setValue(name).executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void setFTP(String name, int ftpConfigID) {
+        try {
+            DatabaseConnection.createStatement("UPDATE plotsystem_servers SET ftp_configuration_id = ? WHERE name = ?").setValue(ftpConfigID).setValue(name).executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 }

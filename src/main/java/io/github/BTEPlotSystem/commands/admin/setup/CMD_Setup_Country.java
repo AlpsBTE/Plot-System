@@ -30,7 +30,7 @@ public class CMD_Setup_Country extends SubCommand {
                     case "add":
                         if (args.length == 3) {
                             if (args[2].length() <= 45) {
-                                //TODO: Add Country
+                                Country.addCountry(args[2]);
                                 player.sendMessage(Utils.getInfoMessageFormat("Successfully added country with name " + args[2] + "!"));
                             } else {
                                 player.sendMessage(Utils.getErrorMessageFormat("Country name cannot be longer than 45 characters!"));
@@ -43,7 +43,7 @@ public class CMD_Setup_Country extends SubCommand {
                         if (args.length == 3) {
                             // Check if country exists
                             if (Country.getCountries().stream().anyMatch(c -> c.getName().equals(args[2]))) {
-                                //TODO: Remove Country
+                                Country.removeCountry(args[2]);
                                 player.sendMessage(Utils.getInfoMessageFormat("Successfully removed country with name " + args[2] + "!"));
                             } else {
                                 player.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[2] + "!"));
@@ -58,7 +58,7 @@ public class CMD_Setup_Country extends SubCommand {
                             if (args[2].equalsIgnoreCase("head")) {
                                 // Check if country exists
                                 if (Country.getCountries().stream().anyMatch(c -> c.getName().equals(args[3]))) {
-                                    //TODO: Set Head
+                                    Country.setHeadID(args[3], Integer.parseInt(args[4]));
                                     player.sendMessage(Utils.getInfoMessageFormat("Successfully set HeadID of country " + args[3] + " to " + args[4] + "!"));
                                 } else {
                                     player.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[3] + "!"));

@@ -31,7 +31,7 @@ public class CMD_Setup_Server extends SubCommand {
                     case "add":
                         if (args.length == 3) {
                             if (args[2].length() <= 45) {
-                                //TODO: Add Server
+                                Server.addServer(args[2]);
                                 player.sendMessage(Utils.getInfoMessageFormat("Successfully added server with name " + args[2] + "!"));
                             } else {
                                 player.sendMessage(Utils.getErrorMessageFormat("Server name cannot be longer than 45 characters!"));
@@ -44,7 +44,7 @@ public class CMD_Setup_Server extends SubCommand {
                         if (args.length == 3) {
                             // Check if server exists
                             if (Server.getServers().stream().anyMatch(s -> s.getName().equals(args[2]))) {
-                                //TODO: Remove Server
+                                Server.removeServer(args[2]);
                                 player.sendMessage(Utils.getInfoMessageFormat("Successfully removed server with name " + args[2] + "!"));
                             } else {
                                 player.sendMessage(Utils.getErrorMessageFormat("Could not find any server with name " + args[2] + "!"));
@@ -60,7 +60,7 @@ public class CMD_Setup_Server extends SubCommand {
                                 // Check if server exists
                                 if (Server.getServers().stream().anyMatch(s -> s.getName().equals(args[3]))) {
                                     if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[4]))) {
-                                        //TODO: Set FTP
+                                        Server.setFTP(args[3],Integer.parseInt(args[4]));
                                         player.sendMessage(Utils.getInfoMessageFormat("Successfully set FTP Configuration of server " + args[3] + " to " + args[4] + "!"));
                                     } else {
                                         player.sendMessage(Utils.getErrorMessageFormat("Could not find any ftp configurations with name " + args[4] + "!"));

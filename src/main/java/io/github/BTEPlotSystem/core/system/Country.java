@@ -62,4 +62,28 @@ public class Country {
         }
         return new ArrayList<>();
     }
+
+    public static void addCountry(String name) {
+        try {
+            DatabaseConnection.createStatement("INSERT INTO plotsystem_countries (name) VALUES (?)").setValue(name).executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void removeCountry(String name) {
+        try {
+            DatabaseConnection.createStatement("DELETE FROM plotsystem_countries WHERE name = ?").setValue(name).executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void setHeadID(String name, int id) {
+        try {
+            DatabaseConnection.createStatement("UPDATE plotsystem_countries SET head_id = ? WHERE name = ?").setValue(id).setValue(name).executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 }
