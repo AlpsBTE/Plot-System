@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -45,11 +45,11 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.*;
 
 import java.io.FileInputStream;
@@ -60,7 +60,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
-import static alpsbte.plotsystem.core.system.plot.PlotManager.getPlots;
+import static com.alpsbte.plotsystem.core.system.plot.PlotManager.getPlots;
 
 public final class PlotGenerator {
 

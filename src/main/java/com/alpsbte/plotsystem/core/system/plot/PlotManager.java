@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -35,12 +35,12 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import alpsbte.plotsystem.utils.enums.Status;
-import alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 

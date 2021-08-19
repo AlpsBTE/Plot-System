@@ -1,4 +1,4 @@
-package alpsbte.plotsystem.utils.conversion.projection;
+package com.alpsbte.plotsystem.utils.conversion.projection;
 
 import com.google.common.base.Preconditions;
 

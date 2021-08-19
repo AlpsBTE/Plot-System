@@ -22,13 +22,13 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands.plot;
 
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.core.system.plot.PlotManager;
-import alpsbte.plotsystem.core.system.plot.PlotHandler;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;

@@ -22,13 +22,13 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus;
 
-import alpsbte.plotsystem.core.system.plot.PlotManager;
-import alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import alpsbte.plotsystem.utils.items.MenuItems;
-import alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

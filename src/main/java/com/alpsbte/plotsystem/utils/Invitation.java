@@ -1,8 +1,8 @@
-package alpsbte.plotsystem.utils;
+package com.alpsbte.plotsystem.utils;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;

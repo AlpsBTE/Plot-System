@@ -1,4 +1,4 @@
-package alpsbte.plotsystem.utils.conversion.projection;
+package com.alpsbte.plotsystem.utils.conversion.projection;
 
 public abstract class ProjectionTransform extends GeographicProjection {
     protected final GeographicProjection input;

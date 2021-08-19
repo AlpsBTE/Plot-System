@@ -1,13 +1,13 @@
-package alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.utils.Invitation;
-import alpsbte.plotsystem.utils.items.MenuItems;
-import alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.Invitation;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
+import com.alpsbte.plotsystem.utils.Utils;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

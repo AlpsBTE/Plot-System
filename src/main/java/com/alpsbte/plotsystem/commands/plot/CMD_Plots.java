@@ -22,11 +22,11 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands.plot;
 
-import alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

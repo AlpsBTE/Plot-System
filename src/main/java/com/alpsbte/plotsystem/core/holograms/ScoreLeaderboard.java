@@ -22,10 +22,10 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.holograms;
+package com.alpsbte.plotsystem.core.holograms;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

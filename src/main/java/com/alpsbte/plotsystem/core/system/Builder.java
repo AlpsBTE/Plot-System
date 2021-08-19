@@ -22,15 +22,15 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system;
+package com.alpsbte.plotsystem.core.system;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.holograms.HolographicDisplay;
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
-import alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
-import alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
+import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

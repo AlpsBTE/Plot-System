@@ -22,15 +22,15 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.menus.ReviewMenu;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.core.menus.CompanionMenu;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;

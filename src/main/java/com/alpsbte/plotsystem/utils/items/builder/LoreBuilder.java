@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.utils.items.builder;
+package com.alpsbte.plotsystem.utils.items.builder;
 
 import org.bukkit.ChatColor;
 

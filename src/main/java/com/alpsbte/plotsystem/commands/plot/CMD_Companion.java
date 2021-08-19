@@ -22,9 +22,9 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands.plot;
 
-import alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

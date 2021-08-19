@@ -22,12 +22,12 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.utils.conversion;
+package com.alpsbte.plotsystem.utils.conversion;
 
-import alpsbte.plotsystem.utils.conversion.projection.GeographicProjection;
-import alpsbte.plotsystem.utils.conversion.projection.ScaleProjectionTransform;
-import alpsbte.plotsystem.utils.conversion.projection.OffsetProjectionTransform;
-import alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.utils.conversion.projection.GeographicProjection;
+import com.alpsbte.plotsystem.utils.conversion.projection.ScaleProjectionTransform;
+import com.alpsbte.plotsystem.utils.conversion.projection.OffsetProjectionTransform;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

@@ -22,12 +22,12 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system;
+package com.alpsbte.plotsystem.core.system;
 
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.utils.enums.Category;
-import alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.utils.enums.Status;
 
 import java.sql.*;
 import java.time.LocalDate;

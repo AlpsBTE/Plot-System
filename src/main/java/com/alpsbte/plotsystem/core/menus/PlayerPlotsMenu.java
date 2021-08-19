@@ -22,17 +22,17 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus;
 
-import alpsbte.plotsystem.core.system.plot.PlotManager;
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.utils.enums.Status;
-import alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import alpsbte.plotsystem.utils.items.MenuItems;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Category;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

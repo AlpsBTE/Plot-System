@@ -1,10 +1,10 @@
-package alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands.plot;
 
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.core.system.plot.PlotManager;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

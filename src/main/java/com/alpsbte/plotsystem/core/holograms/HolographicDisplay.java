@@ -22,13 +22,13 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.holograms;
+package com.alpsbte.plotsystem.core.holograms;
 
-import alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import alpsbte.plotsystem.core.config.ConfigPaths;
-import alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;

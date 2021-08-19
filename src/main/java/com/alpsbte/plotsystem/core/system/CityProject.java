@@ -22,9 +22,9 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system;
+package com.alpsbte.plotsystem.core.system;
 
-import alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import org.bukkit.Bukkit;
 
 import java.util.List;

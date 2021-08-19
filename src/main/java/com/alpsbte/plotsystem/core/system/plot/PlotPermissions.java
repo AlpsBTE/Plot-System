@@ -22,12 +22,12 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot;
 
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.PlotSystem;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;

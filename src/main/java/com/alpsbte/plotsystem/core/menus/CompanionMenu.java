@@ -22,22 +22,22 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.core.system.CityProject;
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.core.system.plot.PlotGenerator;
-import alpsbte.plotsystem.core.system.plot.PlotManager;
-import alpsbte.plotsystem.core.config.ConfigPaths;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import alpsbte.plotsystem.utils.enums.Slot;
-import alpsbte.plotsystem.utils.enums.Status;
-import alpsbte.plotsystem.utils.items.MenuItems;
-import alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import alpsbte.plotsystem.utils.items.builder.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -22,11 +22,11 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.commands.admin;
+package com.alpsbte.plotsystem.commands.admin;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

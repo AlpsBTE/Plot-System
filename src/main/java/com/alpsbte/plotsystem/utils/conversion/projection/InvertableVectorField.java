@@ -1,6 +1,6 @@
-package alpsbte.plotsystem.utils.conversion.projection;
+package com.alpsbte.plotsystem.utils.conversion.projection;
 
-import alpsbte.plotsystem.utils.conversion.MathUtils;
+import com.alpsbte.plotsystem.utils.conversion.MathUtils;
 
 public class InvertableVectorField {
 

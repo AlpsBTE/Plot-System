@@ -22,20 +22,20 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core;
+package com.alpsbte.plotsystem.core;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.system.plot.PlotGenerator;
-import alpsbte.plotsystem.core.system.plot.PlotManager;
-import alpsbte.plotsystem.core.menus.CompanionMenu;
-import alpsbte.plotsystem.core.menus.ReviewMenu;
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.core.system.plot.Plot;
-import alpsbte.plotsystem.core.system.plot.PlotHandler;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.utils.items.SpecialBlocks;
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;

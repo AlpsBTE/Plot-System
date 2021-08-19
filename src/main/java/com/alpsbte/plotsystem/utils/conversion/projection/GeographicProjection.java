@@ -1,8 +1,8 @@
-package alpsbte.plotsystem.utils.conversion.projection;
+package com.alpsbte.plotsystem.utils.conversion.projection;
 
-import alpsbte.plotsystem.utils.conversion.projection.airocean.Airocean;
-import alpsbte.plotsystem.utils.conversion.projection.airocean.ConformalEstimate;
-import alpsbte.plotsystem.utils.conversion.projection.airocean.ModifiedAirocean;
+import com.alpsbte.plotsystem.utils.conversion.projection.airocean.Airocean;
+import com.alpsbte.plotsystem.utils.conversion.projection.airocean.ConformalEstimate;
+import com.alpsbte.plotsystem.utils.conversion.projection.airocean.ModifiedAirocean;
 
 import java.util.HashMap;
 import java.util.Map;

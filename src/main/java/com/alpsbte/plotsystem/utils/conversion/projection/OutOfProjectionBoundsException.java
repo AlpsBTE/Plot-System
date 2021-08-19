@@ -1,4 +1,4 @@
-package alpsbte.plotsystem.utils.conversion.projection;
+package com.alpsbte.plotsystem.utils.conversion.projection;
 
 public final class OutOfProjectionBoundsException extends Exception {
     private static final OutOfProjectionBoundsException INSTANCE = new OutOfProjectionBoundsException(false);

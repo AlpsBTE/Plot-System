@@ -22,10 +22,10 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.database;
+package com.alpsbte.plotsystem.core.database;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;

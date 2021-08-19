@@ -22,11 +22,11 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.commands.admin;
+package com.alpsbte.plotsystem.commands.admin;
 
-import alpsbte.plotsystem.PlotSystem;
-import alpsbte.plotsystem.core.holograms.HolographicDisplay;
-import alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

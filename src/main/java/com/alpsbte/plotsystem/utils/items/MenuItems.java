@@ -22,11 +22,11 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.utils.items;
+package com.alpsbte.plotsystem.utils.items;
 
-import alpsbte.plotsystem.utils.Utils;
-import alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import alpsbte.plotsystem.utils.items.builder.LoreBuilder;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

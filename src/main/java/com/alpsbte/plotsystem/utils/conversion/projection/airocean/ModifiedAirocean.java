@@ -1,7 +1,7 @@
-package alpsbte.plotsystem.utils.conversion.projection.airocean;
+package com.alpsbte.plotsystem.utils.conversion.projection.airocean;
 
-import alpsbte.plotsystem.utils.conversion.MathUtils;
-import alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.utils.conversion.MathUtils;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 
 /**
  * Implementation of the BTE modified Dynmaxion projection.

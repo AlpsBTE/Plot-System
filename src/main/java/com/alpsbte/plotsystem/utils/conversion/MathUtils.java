@@ -1,4 +1,4 @@
-package alpsbte.plotsystem.utils.conversion;
+package com.alpsbte.plotsystem.utils.conversion;
 
 public class MathUtils {
     /**

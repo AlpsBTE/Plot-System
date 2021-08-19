@@ -22,9 +22,9 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.config;
+package com.alpsbte.plotsystem.core.config;
 
-import alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.PlotSystem;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.DumperOptions;
 

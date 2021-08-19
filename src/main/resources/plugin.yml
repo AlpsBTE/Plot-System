@@ -1,7 +1,7 @@
-main: alpsbte.plotsystem.PlotSystem
+main: com.alpsbte.plotsystem.PlotSystem
 version: 1.2
 api-version: 1.12.2
-name: AlpsBTE-PlotSystem
+name: Plot-System
 author: R3tuxn & Cinnazeyy
 softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase]
 

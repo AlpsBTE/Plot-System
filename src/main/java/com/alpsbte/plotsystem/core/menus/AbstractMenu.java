@@ -22,9 +22,9 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus;
 
-import alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.PlotSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.Menu;

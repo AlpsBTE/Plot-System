@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.config;
+package com.alpsbte.plotsystem.core.config;
 
 public class ConfigNotImplementedException extends Exception {
 

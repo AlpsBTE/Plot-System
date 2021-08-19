@@ -22,14 +22,14 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.utils;
+package com.alpsbte.plotsystem.utils;
 
-import alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import alpsbte.plotsystem.core.config.ConfigPaths;
-import alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
-import alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;

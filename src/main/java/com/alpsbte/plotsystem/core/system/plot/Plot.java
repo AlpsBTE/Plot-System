@@ -22,19 +22,19 @@
  *  SOFTWARE.
  */
 
-package alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot;
 
-import alpsbte.plotsystem.core.system.CityProject;
-import alpsbte.plotsystem.core.system.Review;
-import alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.sk89q.worldedit.Vector;
-import alpsbte.plotsystem.core.database.DatabaseConnection;
-import alpsbte.plotsystem.core.system.Builder;
-import alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
-import alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import alpsbte.plotsystem.utils.enums.Slot;
-import alpsbte.plotsystem.utils.enums.Status;
-import alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
