@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.holograms;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +50,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
         try {
             return Builder.getBuildersByScore(10);
         } catch (SQLException ex) {
-            BTEPlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
+            PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
         return new ArrayList<>();
     }

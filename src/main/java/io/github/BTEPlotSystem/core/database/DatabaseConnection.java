@@ -26,7 +26,7 @@ package github.BTEPlotSystem.core.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.config.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,7 +52,7 @@ public class DatabaseConnection {
     public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
 
-        FileConfiguration configFile = BTEPlotSystem.getPlugin().getConfig();
+        FileConfiguration configFile = PlotSystem.getPlugin().getConfig();
         URL = configFile.getString(ConfigPaths.DATABASE_URL);
         name = configFile.getString(ConfigPaths.DATABASE_NAME);
         username = configFile.getString(ConfigPaths.DATABASE_USERNAME);

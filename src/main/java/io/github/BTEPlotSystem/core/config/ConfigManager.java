@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.config;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
@@ -48,7 +48,7 @@ public class ConfigManager {
     private final Config config = new Config();
 
     public ConfigManager() throws ConfigNotImplementedException {
-        this.configFile = Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
+        this.configFile = Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
 
         if (!configFile.exists()) {
            if (this.createConfig()) {
@@ -134,7 +134,7 @@ public class ConfigManager {
     public boolean createConfig() {
         try {
             if (configFile.createNewFile()) {
-                try (InputStream defConfigStream = BTEPlotSystem.getPlugin().getResource("defaultConfig.yml")) {
+                try (InputStream defConfigStream = PlotSystem.getPlugin().getResource("defaultConfig.yml")) {
                     try (OutputStream outputStream = new FileOutputStream(configFile)) {
                         int length;
                         byte[] buf = new byte[1024];

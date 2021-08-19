@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.Menu;
@@ -76,7 +76,7 @@ public abstract class AbstractMenu {
      */
     protected void reloadMenuAsync() {
         setPreviewItems();
-        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             setMenuItemsAsync();
             setItemClickEventsAsync();
         });

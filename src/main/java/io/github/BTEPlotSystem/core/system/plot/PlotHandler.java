@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.system.plot;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
@@ -107,8 +107,8 @@ public class PlotHandler {
                 plot.removePlotMember(builder);
             }
 
-            BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-            BTEPlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
+            PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+            PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
 
             CompletableFuture.runAsync(() -> {
                 try {
@@ -153,14 +153,14 @@ public class PlotHandler {
 
     public static void loadPlot(Plot plot) {
         if(plot.getPlotWorld() == null) {
-            BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
+            PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
         }
     }
 
     public static void unloadPlot(Plot plot) {
         if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), () ->
-                    BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () ->
+                    PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
         }
     }
 

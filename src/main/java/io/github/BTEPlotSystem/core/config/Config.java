@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.config;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.DumperOptions;
 
@@ -55,7 +55,7 @@ public class Config extends YamlConfiguration {
     }
 
     public List<String> readDefaultConfig() {
-        try (InputStream in = BTEPlotSystem.getPlugin().getResource("defaultConfig.yml")) {
+        try (InputStream in = PlotSystem.getPlugin().getResource("defaultConfig.yml")) {
              BufferedReader input = new BufferedReader(new InputStreamReader(in));
              return input.lines().collect(Collectors.toList());
         } catch (Exception e) {

@@ -25,10 +25,9 @@
 package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
@@ -82,7 +81,7 @@ public class PlotPermissions {
     }
 
     public ProtectedRegion getPlotRegion() {
-        RegionContainer container = BTEPlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
 
         String worldName = "P-" + plotID;
         try {

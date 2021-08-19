@@ -51,9 +51,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BTEPlotSystem extends JavaPlugin {
+public class PlotSystem extends JavaPlugin {
 
-    private static BTEPlotSystem plugin;
+    private static PlotSystem plugin;
     private ConfigManager configManager;
 
     private static final List<HolographicDisplay> holograms = Arrays.asList(
@@ -213,7 +213,7 @@ public class BTEPlotSystem extends JavaPlugin {
         }
     }
 
-    public static BTEPlotSystem getPlugin() {
+    public static PlotSystem getPlugin() {
         return plugin;
     }
 

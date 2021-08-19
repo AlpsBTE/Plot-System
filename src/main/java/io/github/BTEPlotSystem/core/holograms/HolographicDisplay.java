@@ -26,7 +26,7 @@ package github.BTEPlotSystem.core.holograms;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
@@ -61,7 +61,7 @@ public abstract class HolographicDisplay {
 
     public Location getLocation() {
         try {
-            FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
+            FileConfiguration config = PlotSystem.getPlugin().getConfig();
 
             return new Location(Utils.getSpawnLocation().getWorld(),
                     config.getDouble(getDefaultPath() + ConfigPaths.HOLOGRAMS_X),
@@ -75,14 +75,14 @@ public abstract class HolographicDisplay {
     }
 
     public void setLocation(Location newLocation) {
-        FileConfiguration config = BTEPlotSystem.getPlugin().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
 
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED, true);
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_X, newLocation.getX());
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Y, newLocation.getY() + 4);
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Z, newLocation.getZ());
 
-        BTEPlotSystem.getPlugin().saveConfig();
+        PlotSystem.getPlugin().saveConfig();
 
         if(isPlaced) {
             hologram.delete();
@@ -94,7 +94,7 @@ public abstract class HolographicDisplay {
 
     public void placeHologram() {
         if(!isPlaced() && getLocation() != null) {
-            hologram = HologramsAPI.createHologram(BTEPlotSystem.getPlugin(), getLocation());
+            hologram = HologramsAPI.createHologram(PlotSystem.getPlugin(), getLocation());
             isPlaced = true;
         }
     }
@@ -118,7 +118,7 @@ public abstract class HolographicDisplay {
     protected abstract ItemStack getItem();
 
     public void updateHologram() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(PlotSystem.getPlugin(), () -> {
             if(isPlaced()) {
                 hologram.clearLines();
                 insertLines();

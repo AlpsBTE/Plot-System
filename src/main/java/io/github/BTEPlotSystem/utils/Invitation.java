@@ -1,6 +1,6 @@
 package github.BTEPlotSystem.utils;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -20,7 +20,7 @@ public class Invitation {
     public Player invitee;
     public Plot plot;
 
-    private BukkitScheduler scheduler = BTEPlotSystem.getPlugin().getServer().getScheduler();
+    private BukkitScheduler scheduler = PlotSystem.getPlugin().getServer().getScheduler();
     private int taskID;
 
     public Invitation(Player invitee, Plot plot) throws SQLException {
@@ -53,7 +53,7 @@ public class Invitation {
 
         // Schedule expiry in 30 seconds
         Invitation invitation = this;
-        taskID = scheduler.scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), new Runnable() {
+        taskID = scheduler.scheduleSyncDelayedTask(PlotSystem.getPlugin(), new Runnable() {
             @Override
             public void run() {
                 invitationsList.remove(invitation);

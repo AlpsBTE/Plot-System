@@ -1,6 +1,6 @@
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.plot.Plot;
 import github.BTEPlotSystem.utils.Invitation;
@@ -38,7 +38,7 @@ public class PlotMemberMenu extends AbstractMenu {
         getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
 
         // Set loading item for plot member items
-        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
                 List<Builder> plotMembers = plot.getPlotMembers();
                 for (int i = 1; i <= 3; i++) {
@@ -167,7 +167,7 @@ public class PlotMemberMenu extends AbstractMenu {
                     .itemLeft(new ItemStack(Material.NAME_TAG))
                     .itemRight(new ItemStack(Material.SKULL))
                     .title("Enter player name.")
-                    .plugin(BTEPlotSystem.getPlugin())
+                    .plugin(PlotSystem.getPlugin())
                     .open(clickPlayer);
         });
 

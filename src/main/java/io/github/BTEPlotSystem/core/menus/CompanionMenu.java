@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core.menus;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.config.ConfigPaths;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.core.system.CityProject;
@@ -65,9 +65,9 @@ public class CompanionMenu extends AbstractMenu {
     protected void setPreviewItems() {
         // Set navigator item
         getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.valueOf(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
-                        .setName("§6§l"+ BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_NAME)).setLore(new LoreBuilder()
-                                .addLine(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_DESCRIPTION)).build())
+                .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
+                        .setName("§6§l"+ PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_NAME)).setLore(new LoreBuilder()
+                                .addLine(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_DESCRIPTION)).build())
                         .build());
 
         // Set loading item for plots difficulty item
@@ -142,7 +142,7 @@ public class CompanionMenu extends AbstractMenu {
         // Set click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand(BTEPlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
+            clickPlayer.performCommand(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
         });
 
         // Set click event for plots difficulty item
@@ -187,7 +187,7 @@ public class CompanionMenu extends AbstractMenu {
                                 clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
 
-                                Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                                     try {
                                         new PlotGenerator(cityID, plotDifficultyForCity, builder);
                                     } catch (SQLException ex) {
@@ -216,7 +216,7 @@ public class CompanionMenu extends AbstractMenu {
         }
 
         // Set click event for player slot items
-        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             for(int i = 0; i < 3; i++) {
                 if (slots[i] != null) {
                     int itemSlot = i;
@@ -297,7 +297,7 @@ public class CompanionMenu extends AbstractMenu {
 
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () ->
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
                             getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(MenuItems.errorItem())
                     );
                 }

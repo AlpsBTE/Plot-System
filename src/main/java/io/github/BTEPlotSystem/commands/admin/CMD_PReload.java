@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.commands.admin;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.Bukkit;
@@ -40,11 +40,11 @@ public class CMD_PReload implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission("alpsbte.admin")){
             try {
-                BTEPlotSystem.getPlugin().reloadConfig();
-                BTEPlotSystem.getPlugin().saveConfig();
+                PlotSystem.getPlugin().reloadConfig();
+                PlotSystem.getPlugin().saveConfig();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
-                BTEPlotSystem.reloadHolograms();
+                PlotSystem.reloadHolograms();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
 
                 DatabaseConnection.InitializeDatabase();

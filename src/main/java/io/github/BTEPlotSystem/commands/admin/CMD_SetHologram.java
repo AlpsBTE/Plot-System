@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.commands.admin;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.holograms.HolographicDisplay;
 import github.BTEPlotSystem.utils.Utils;
 import org.bukkit.command.Command;
@@ -41,7 +41,7 @@ public class CMD_SetHologram implements CommandExecutor {
             if (sender.hasPermission("alpsbte.admin")){
                 if (args.length == 1) {
                     // Find hologram by name
-                    HolographicDisplay hologram = BTEPlotSystem.getHolograms().stream()
+                    HolographicDisplay hologram = PlotSystem.getHolograms().stream()
                             .filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))
                             .findFirst()
                             .orElse(null);
@@ -52,14 +52,14 @@ public class CMD_SetHologram implements CommandExecutor {
                         player.sendMessage(Utils.getInfoMessageFormat("Successfully updated hologram location!"));
                         player.playSound(player.getLocation(), Utils.Done,1,1);
 
-                        BTEPlotSystem.reloadHolograms();
+                        PlotSystem.reloadHolograms();
                     } else {
                         player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
                     }
                 } else {
                     player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sethologram <name>"));
                     player.sendMessage("§7------- §6§lHolograms §7-------");
-                    for(HolographicDisplay holo : BTEPlotSystem.getHolograms()) {
+                    for(HolographicDisplay holo : PlotSystem.getHolograms()) {
                         player.sendMessage(" §6> §f" + holo.getHologramName());
                     }
                     player.sendMessage("§7--------------------------");

@@ -26,7 +26,6 @@ package github.BTEPlotSystem.core.system.plot;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
@@ -36,7 +35,7 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
 import github.BTEPlotSystem.core.system.Builder;
 import github.BTEPlotSystem.utils.enums.PlotDifficulty;
@@ -193,7 +192,7 @@ public class PlotManager {
         // Copy finished plot region to clipboard
         Clipboard cb = new BlockArrayClipboard(region);
         cb.setOrigin(plotOrigin);
-        EditSession editSession = BTEPlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(region.getWorld(), -1);
+        EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(region.getWorld(), -1);
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
@@ -269,14 +268,14 @@ public class PlotManager {
     }
 
     public static void checkPlotsForLastActivity() {
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(PlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
                 long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
 
                 for(Plot plot : plots) {
                     if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
-                        Bukkit.getScheduler().runTask(BTEPlotSystem.getPlugin(), () -> {
+                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                             try {
                                 PlotHandler.abandonPlot(plot);
                                 Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
@@ -298,7 +297,7 @@ public class PlotManager {
 
     public static boolean plotExists(int ID) {
         String worldName = "P-" + ID;
-        return (BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
+        return (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
     // TODO: Make this function more efficient :eyes:
@@ -339,7 +338,7 @@ public class PlotManager {
     }
 
     public static boolean isPlotWorld(World world) {
-        return BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
+        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
     }
 
     public static int getPlotSize(Plot plot) {
@@ -371,6 +370,6 @@ public class PlotManager {
     }
 
     public static String getDefaultSchematicPath() {
-        return Paths.get(BTEPlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
+        return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 }

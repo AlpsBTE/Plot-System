@@ -24,7 +24,7 @@
 
 package github.BTEPlotSystem.core;
 
-import github.BTEPlotSystem.BTEPlotSystem;
+import github.BTEPlotSystem.PlotSystem;
 import github.BTEPlotSystem.core.menus.CompanionMenu;
 import github.BTEPlotSystem.core.menus.ReviewMenu;
 import github.BTEPlotSystem.core.database.DatabaseConnection;
@@ -62,7 +62,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         // User has joined for the first time
         // Adding user to the database
-        Bukkit.getScheduler().runTaskAsynchronously(BTEPlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             // Add Items
             if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
                 event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
