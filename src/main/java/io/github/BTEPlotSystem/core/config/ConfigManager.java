@@ -52,11 +52,6 @@ public class ConfigManager {
 
         if (!configFile.exists()) {
            if (this.createConfig()) {
-               Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
-               Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "The config file must be configured! (" + configFile.getAbsolutePath() + ")");
-               Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
-
-               BTEPlotSystem.getPlugin().getServer().getPluginManager().disablePlugin(BTEPlotSystem.getPlugin());
                throw new ConfigNotImplementedException("The config file must be configured!");
            }
         }
@@ -120,9 +115,7 @@ public class ConfigManager {
                 lineNumber++;
 
                 if (line.contains("\t")) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "------------------------------------------------------");
                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Tab found in file \"" + configFile.getAbsolutePath() + "\" on line #" + lineNumber + "!");
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "------------------------------------------------------");
                     throw new IllegalArgumentException("Tab found in file \"" + configFile.getAbsolutePath() + "\" on line # " + line + "!");
                 }
             }
@@ -187,7 +180,7 @@ public class ConfigManager {
 
             defaultFileLines.set(getIndex("config-version", defaultFileLines), "config-version: " + Config.VERSION);
             Files.write(configFile.toPath(), defaultFileLines);
-            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Successfully updated Plot-System config to version " + Config.VERSION);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Updated configuration file to version " + Config.VERSION + ".");
             return true;
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while updating config file!", ex);

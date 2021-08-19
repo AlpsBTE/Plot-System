@@ -193,7 +193,7 @@ public class PlotManager {
         // Copy finished plot region to clipboard
         Clipboard cb = new BlockArrayClipboard(region);
         cb.setOrigin(plotOrigin);
-        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(region.getWorld(), -1);
+        EditSession editSession = BTEPlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(region.getWorld(), -1);
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
@@ -298,7 +298,7 @@ public class PlotManager {
 
     public static boolean plotExists(int ID) {
         String worldName = "P-" + ID;
-        return (BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
+        return (BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
     // TODO: Make this function more efficient :eyes:
@@ -339,7 +339,7 @@ public class PlotManager {
     }
 
     public static boolean isPlotWorld(World world) {
-        return BTEPlotSystem.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
+        return BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
     }
 
     public static int getPlotSize(Plot plot) {

@@ -72,7 +72,7 @@ public final class PlotGenerator {
     private World weWorld;
     private RegionManager regionManager;
 
-    private static final MVWorldManager worldManager = BTEPlotSystem.getMultiverseCore().getMVWorldManager();
+    private static final MVWorldManager worldManager = BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
 
     public static Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
     public static Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/submit", "/abandon", "//undo", "//redo", "/plot", "/navigator", "/plots", "/review", "/tpp", "/tp", "/hdb", "/bannermaker", "/repl", "/we", "//sel", "/;", "/br", "/brush", "/gamemode spectator", "//br", "//brush", "/gamemode creative", "//repl", "//we", "//rotate", "/up", "//up", "/editplot", "/link", "/feedback", "/sendfeedback", "//wand", "/undosubmit", "/tpll", "/cleanplot", "/hub", "/companion", "/undoreview", "/generateplot", "/deleteplot"));
@@ -143,7 +143,7 @@ public final class PlotGenerator {
         mvWorld.setAutoLoad(false);
         mvWorld.setKeepSpawnInMemory(false);
 
-        RegionContainer container = WorldGuardPlugin.inst().getRegionContainer();
+        RegionContainer container = BTEPlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         this.regionManager = container.get(plot.getPlotWorld());
         this.weWorld = new BukkitWorld(plot.getPlotWorld());
 
@@ -162,7 +162,7 @@ public final class PlotGenerator {
 
         Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
         ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
-        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(weWorld, -1);
+        EditSession editSession = BTEPlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
 
         Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
         Operations.complete(operation);

@@ -71,14 +71,14 @@ public class Utils {
 
         if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
             try {
-                MultiverseWorld spawnWorld = BTEPlotSystem.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
+                MultiverseWorld spawnWorld = BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
             } catch (Exception ignore) {
                 Bukkit.getLogger().log(Level.WARNING, String.format("Could not find %s in multiverse config!", ConfigPaths.SPAWN_WORLD));
             }
         }
 
-        return BTEPlotSystem.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
+        return BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
     }
 
     // Player Messages

@@ -107,8 +107,8 @@ public class PlotHandler {
                 plot.removePlotMember(builder);
             }
 
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-            BTEPlotSystem.getMultiverseCore().saveWorldConfig();
+            BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+            BTEPlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
 
             CompletableFuture.runAsync(() -> {
                 try {
@@ -153,14 +153,14 @@ public class PlotHandler {
 
     public static void loadPlot(Plot plot) {
         if(plot.getPlotWorld() == null) {
-            BTEPlotSystem.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
+            BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
         }
     }
 
     public static void unloadPlot(Plot plot) {
         if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(BTEPlotSystem.getPlugin(), () ->
-                    BTEPlotSystem.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
+                    BTEPlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
         }
     }
 

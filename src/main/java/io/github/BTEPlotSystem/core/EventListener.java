@@ -41,7 +41,6 @@ import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -52,7 +51,6 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
@@ -161,17 +159,15 @@ public class EventListener extends SpecialBlocks implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
-        event.setQuitMessage(null);
-        
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
         }
         PlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
