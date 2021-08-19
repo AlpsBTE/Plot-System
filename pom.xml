@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>BTEPlotSystem</artifactId>
+    <groupId>com.alpsbte</groupId>
+    <artifactId>PlotSystem</artifactId>
     <version>1.2</version>
 
     <repositories>
@@ -212,9 +212,9 @@
             </resource>
         </resources>
         <!-- IMPORTANT: Plugin Building Path -->
-        <sourceDirectory>src/main/java/io</sourceDirectory>
+        <sourceDirectory>src/main/java/com</sourceDirectory>
         <!-- IMPORTANT: Output File Name -->
-        <finalName>Plot-System V${project.version}</finalName>
+        <finalName>${project.artifactId} V${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
