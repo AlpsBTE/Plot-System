@@ -49,33 +49,28 @@ public class DatabaseConnection {
     private static String username;
     private static String password;
 
-    public static void InitializeDatabase() {
-        try {
-            Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
-            Bukkit.getLogger().log(Level.INFO, "Successfully registered MariaDB JDBC Driver!");
+    public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
+        Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
 
-            FileConfiguration configFile = BTEPlotSystem.getPlugin().getConfig();
-            URL = configFile.getString(ConfigPaths.DATABASE_URL);
-            name = configFile.getString(ConfigPaths.DATABASE_NAME);
-            username = configFile.getString(ConfigPaths.DATABASE_USERNAME);
-            password = configFile.getString(ConfigPaths.DATABASE_PASSWORD);
+        FileConfiguration configFile = BTEPlotSystem.getPlugin().getConfig();
+        URL = configFile.getString(ConfigPaths.DATABASE_URL);
+        name = configFile.getString(ConfigPaths.DATABASE_NAME);
+        username = configFile.getString(ConfigPaths.DATABASE_USERNAME);
+        password = configFile.getString(ConfigPaths.DATABASE_PASSWORD);
 
-            createDatabase();
+        createDatabase();
 
-            config.setJdbcUrl(URL + name);
-            config.setUsername(username);
-            config.setPassword(password);
-            config.addDataSourceProperty("cachePrepStmts", "true");
-            config.addDataSourceProperty("prepStmtCacheSize", "250");
-            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.setJdbcUrl(URL + name);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
-            dataSource = new HikariDataSource(config);
+        dataSource = new HikariDataSource(config);
 
-            createTables();
-        } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while initializing database!", ex);
-        }
-    }
+        createTables();
+}
 
     @Deprecated
     public static Connection getConnection() {
