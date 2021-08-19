@@ -205,7 +205,7 @@ public class BTEPlotSystem extends JavaPlugin {
 
     public static void reloadHolograms() {
         for (HolographicDisplay hologram : holograms) {
-            if(getPlugin().getConfig().getBoolean(hologram.getDefaultPath() + "enabled")) {
+            if(plugin.getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
                 hologram.show();
             } else {
                 hologram.hide();
