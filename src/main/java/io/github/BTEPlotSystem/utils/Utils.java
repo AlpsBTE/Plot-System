@@ -41,6 +41,7 @@ import java.util.logging.Level;
 
 public class Utils {
 
+    // Get custom head
     public static ItemStack getItemHead(CustomHead head) {
         return head != null ? head.getAsItemStack() : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
     }
