@@ -169,7 +169,7 @@ public class PlotSystem extends JavaPlugin {
 
         if (DependencyManager.isHolographicDisplaysEnabled()) {
             reloadHolograms();
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- Holograms (Leaderboard)");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
         }
