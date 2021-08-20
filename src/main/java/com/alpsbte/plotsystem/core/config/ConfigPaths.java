@@ -67,6 +67,11 @@ public abstract class ConfigPaths {
     public static final String MESSAGE_INFO_COLOUR = "info-colour";
     public static final String MESSAGE_ERROR_COLOUR = "error-colour";
 
+    // COMMANDS
+    public static final String EDITPLOT_ENABLED = "editplot-enabled";
+    public static final String BLOCKED_COMMANDS_BUILDERS = "blocked-commands-builders";
+    public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
+
 
     // CONFIG VERSION
     public static final String CONFIG_VERSION = "config-version";
