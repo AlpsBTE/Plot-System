@@ -51,10 +51,10 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
 
-        <!-- Canvas Library -->
+        <!-- JitPack -->
         <repository>
-            <id>canvas-repo</id>
-            <url>file://${project.basedir}/canvas</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -128,11 +128,11 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Inventory Menu Builder -->
+        <!-- Canvas Menu Builder -->
         <dependency>
-            <groupId>org.ipvp</groupId>
+            <groupId>com.github.IPVP-MC</groupId>
             <artifactId>canvas</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
+            <version>master-2047a9372b-1</version>
             <scope>compile</scope>
         </dependency>
 
