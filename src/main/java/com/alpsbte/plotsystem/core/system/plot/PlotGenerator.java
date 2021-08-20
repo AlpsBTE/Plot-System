@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.*;
@@ -51,6 +52,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -72,9 +74,6 @@ public final class PlotGenerator {
     private RegionManager regionManager;
 
     private static final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
-
-    public static Set<String> blockedCommandsNonBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//rep", "//r", "//re", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "//undo", "//redo"));
-    public static Set<String> allowedCommandsBuilder = new HashSet<>(Arrays.asList("//pos1", "//pos2", "//contract", "//copy", "//curve", "//cut", "//cyl", "//drain", "//expand", "//fill", "//hcyl", "//hpos1", "//hpos2", "//hpyramid", "//hsphere", "//line", "//move", "//paste", "//overlay", "//pyramid", "//replace", "//replacenear", "//stack", "//sphere", "//stack", "//set", "//setbiome", "//shift", "/spawn", "/submit", "/abandon", "//undo", "//redo", "/plot", "/navigator", "/plots", "/review", "/tpp", "/tp", "/hdb", "/bannermaker", "/repl", "/we", "//sel", "/;", "/br", "/brush", "/gamemode spectator", "//br", "//brush", "/gamemode creative", "//repl", "//we", "//rotate", "/up", "//up", "/editplot", "/link", "/feedback", "/sendfeedback", "//wand", "/undosubmit", "/tpll", "/cleanplot", "/hub", "/companion", "/undoreview", "/generateplot", "/deleteplot"));
 
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
@@ -199,11 +198,26 @@ public final class PlotGenerator {
         protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
         protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, blockedCommandsNonBuilder);
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+        // Permissions
+        List<String> blockedCommandsBuilders = new ArrayList<>(), allowedCommandsNonBuilder = new ArrayList<>();
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
 
-        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, allowedCommandsBuilder);
-        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+        try {
+            allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
+            allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
+            //allowedCommandsNonBuilder = ... TODO: Add all Plot-System commands
+
+            blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
+            blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.WARNING, "Could not set allowed and blocked commands for plot #" + plot.getID() + "!");
+        }
+
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+
+        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
+        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
 
         regionManager.addRegion(protectedPlotRegion);
         regionManager.saveChanges();
