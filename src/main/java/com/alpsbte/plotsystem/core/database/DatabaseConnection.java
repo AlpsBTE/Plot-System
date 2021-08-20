@@ -52,7 +52,7 @@ public class DatabaseConnection {
     public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
 
-        FileConfiguration configFile = PlotSystem.getPlugin().getConfig();
+        FileConfiguration configFile = PlotSystem.getPlugin().getConfigManager().getConfig();
         URL = configFile.getString(ConfigPaths.DATABASE_URL);
         name = configFile.getString(ConfigPaths.DATABASE_NAME);
         username = configFile.getString(ConfigPaths.DATABASE_USERNAME);

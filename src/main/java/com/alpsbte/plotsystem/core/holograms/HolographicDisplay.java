@@ -61,7 +61,7 @@ public abstract class HolographicDisplay {
 
     public Location getLocation() {
         try {
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
+            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
 
             return new Location(Utils.getSpawnLocation().getWorld(),
                     config.getDouble(getDefaultPath() + ConfigPaths.HOLOGRAMS_X),
@@ -75,14 +75,14 @@ public abstract class HolographicDisplay {
     }
 
     public void setLocation(Location newLocation) {
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
 
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED, true);
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_X, newLocation.getX());
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Y, newLocation.getY() + 4);
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Z, newLocation.getZ());
 
-        PlotSystem.getPlugin().saveConfig();
+        PlotSystem.getPlugin().getConfigManager().saveConfigs();
 
         if(isPlaced) {
             hologram.delete();

@@ -40,8 +40,8 @@ public class CMD_PReload implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission("alpsbte.admin")){
             try {
-                PlotSystem.getPlugin().reloadConfig();
-                PlotSystem.getPlugin().saveConfig();
+                PlotSystem.getPlugin().getConfigManager().reloadConfigs();
+                PlotSystem.getPlugin().getConfigManager().saveConfigs();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
                 PlotSystem.reloadHolograms();

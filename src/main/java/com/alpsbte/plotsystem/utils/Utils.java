@@ -67,7 +67,7 @@ public class Utils {
 
     // Spawn Location
     public static Location getSpawnLocation() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
 
         if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
             try {
@@ -82,14 +82,14 @@ public class Utils {
     }
 
     // Player Messages
-    private static final String messagePrefix =  PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
+    private static final String messagePrefix =  PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
     public static String getInfoMessageFormat(String info) {
-        return messagePrefix + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOUR) + info;
+        return messagePrefix + PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOUR) + info;
     }
 
     public static String getErrorMessageFormat(String error) {
-        return messagePrefix + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOUR) + error;
+        return messagePrefix + PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOUR) + error;
     }
 
     // Item Formatting

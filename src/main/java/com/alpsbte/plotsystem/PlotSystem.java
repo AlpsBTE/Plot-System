@@ -102,7 +102,7 @@ public class PlotSystem extends JavaPlugin {
             return;
         }
 
-        reloadConfig();
+        this.configManager.reloadConfigs();
 
         // Initialize database connection
         try {
@@ -194,24 +194,28 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
     }
 
-    @Override
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    @Override @Deprecated
     public FileConfiguration getConfig() {
         return this.configManager.getConfig();
     }
 
-    @Override
+    @Override @Deprecated
     public void reloadConfig() {
-        this.configManager.reloadConfig();
+        this.configManager.reloadConfigs();
     }
 
-    @Override
+    @Override @Deprecated
     public void saveConfig() {
-        this.configManager.saveConfig();
+        this.configManager.saveConfigs();
     }
 
     public static void reloadHolograms() {
         for (HolographicDisplay hologram : holograms) {
-            if(plugin.getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
+            if(plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
                 hologram.show();
             } else {
                 hologram.hide();

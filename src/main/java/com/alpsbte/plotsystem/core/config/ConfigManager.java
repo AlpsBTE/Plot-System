@@ -24,13 +24,11 @@
 
 package com.alpsbte.plotsystem.core.config;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -44,79 +42,90 @@ import java.util.logging.Level;
 
 public class ConfigManager {
 
-    private final File configFile;
-    private final Config config = new Config();
+   // Register configuration files
+   private final List<Config> configs = Arrays.asList(
+           new Config("config.yml"),
+           new Config("commands.yml")
+   );
 
     public ConfigManager() throws ConfigNotImplementedException {
-        this.configFile = Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "config.yml").toFile();
-
-        if (!configFile.exists()) {
-           if (this.createConfig()) {
+        if (!getConfig().getFile().exists()) {
+           if (this.createConfig(getConfig())) {
                throw new ConfigNotImplementedException("The config file must be configured!");
            }
         }
-        reloadConfig();
+
+        if (!getCommandsConfig().getFile().exists()) {
+            this.createConfig(getCommandsConfig());
+        }
+
+        reloadConfigs();
 
         // Check for updates
-        if (config.getDouble(ConfigPaths.CONFIG_VERSION) != Config.VERSION) {
-            updateConfig();
-            reloadConfig();
-        }
+        configs.forEach(config -> {
+            if (config.getDouble(ConfigPaths.CONFIG_VERSION) != Config.VERSION) {
+                updateConfig(config);
+                reloadConfigs();
+            }
+        });
     }
 
     /**
-     * Saves intern config to config file.
+     * Saves configuration files
      *
-     * @return - true if config saved successfully.
+     * @return True if config saved successfully
      */
-    public boolean saveConfig() {
-        try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(configFile))){
-            String configuration = this.prepareConfigString(config.saveToString());
+    public boolean saveConfigs() {
+        configs.forEach(config -> {
+            try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(config.getFile()))){
+                String configuration = this.prepareConfigString(config.saveToString());
 
-            configWriter.write(configuration);
-            configWriter.flush();
-            return true;
-        } catch (IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving config file!", ex);
-        }
-        return false;
+                configWriter.write(configuration);
+                configWriter.flush();
+            } catch (IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving config file!", ex);
+            }
+        });
+        return true;
     }
 
     /**
-     * Reloads intern config from config file.
+     * Reloads configuration files
      *
-     * @return - true if config reloaded successfully.
+     * @return True if configs reloaded successfully
      */
-    public boolean reloadConfig() {
-        try (@NotNull Reader configReader = getConfigContent()){
-            this.scanConfig();
-            this.config.load(configReader);
-            return true;
-        } catch (IOException | InvalidConfigurationException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading config file!", ex);
-        }
-        return false;
+    public boolean reloadConfigs() {
+        configs.forEach(config -> {
+            try (@NotNull Reader configReader = getConfigContent(config)){
+                this.scanConfig(config);
+                config.load(configReader);
+            } catch (IOException | InvalidConfigurationException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading config file!", ex);
+            }
+        });
+        return true;
     }
 
     /**
-     * Scans given file for tabs, very useful when loading YAML configuration.
-     * Any configuration loaded using the API in this class is automatically scanned.
+     * Scans given file for tabs, very useful when loading YAML configuration
+     * Any configuration loaded using the API in this class is automatically scanned
      *
-     * @return - true if config scanned successfully.
+     * @param config File
+     * @return True if config scanned successfully
      */
-    public boolean scanConfig() {
-        if (!configFile.exists()) return false;
+    public boolean scanConfig(Config config) {
+        if (!config.getFile().exists()) return false;
 
         int lineNumber = 0;
         String line;
-        try (Scanner scanner = new Scanner(configFile)) {
+        try (Scanner scanner = new Scanner(config.getFile())) {
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
                 lineNumber++;
 
                 if (line.contains("\t")) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Tab found in file \"" + configFile.getAbsolutePath() + "\" on line #" + lineNumber + "!");
-                    throw new IllegalArgumentException("Tab found in file \"" + configFile.getAbsolutePath() + "\" on line # " + line + "!");
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Tab found in file \"" + config.getFile().getAbsolutePath() + "\" on line #" + lineNumber + "!");
+                    throw new IllegalArgumentException("Tab found in file \"" + config.getFile().getAbsolutePath() + "\" on line # " + line + "!");
                 }
             }
             return true;
@@ -129,13 +138,14 @@ public class ConfigManager {
     /**
      * Create a new config with default values
      *
-     * @return - true if the config is created.
+     * @param config File
+     * @return True if the config is created
      */
-    public boolean createConfig() {
+    public boolean createConfig(Config config) {
         try {
-            if (configFile.createNewFile()) {
-                try (InputStream defConfigStream = PlotSystem.getPlugin().getResource("defaultConfig.yml")) {
-                    try (OutputStream outputStream = new FileOutputStream(configFile)) {
+            if (config.getFile().createNewFile()) {
+                try (InputStream defConfigStream = config.getDefaultFileStream()) {
+                    try (OutputStream outputStream = new FileOutputStream(config.getFile())) {
                         int length;
                         byte[] buf = new byte[1024];
                         while ((length = defConfigStream.read(buf)) > 0) {
@@ -154,19 +164,20 @@ public class ConfigManager {
     /**
      * Update config file from default config
      *
-     * @return - true if config updated successfully.
+     * @param config File
+     * @return True if config updated successfully
      */
-    private boolean updateConfig() {
+    private boolean updateConfig(Config config) {
         // Create Backup of config file
         try {
-            FileUtils.copyFile(configFile, Paths.get(configFile.getParentFile().getAbsolutePath(), "old_config.yml").toFile());
+            FileUtils.copyFile(config.getFile(), Paths.get(config.getFile().getParentFile().getAbsolutePath(), "old_" + config.getFileName()).toFile());
         } catch (IOException ignored) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not create backup of current config file!");
         }
 
         // Update config
         try {
-            List<String> currentFileLines = FileUtils.readLines(configFile, StandardCharsets.UTF_8);
+            List<String> currentFileLines = FileUtils.readLines(config.getFile(), StandardCharsets.UTF_8);
             List<String> defaultFileLines = config.readDefaultConfig();
 
             currentFileLines.removeIf(s -> s.trim().isEmpty() || s.trim().startsWith("#") || s.split(":").length == 1);
@@ -179,8 +190,8 @@ public class ConfigManager {
             });
 
             defaultFileLines.set(getIndex("config-version", defaultFileLines), "config-version: " + Config.VERSION);
-            Files.write(configFile.toPath(), defaultFileLines);
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Updated configuration file to version " + Config.VERSION + ".");
+            Files.write(config.getFile().toPath(), defaultFileLines);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Updated " + config.getFileName() + " to version " + Config.VERSION + ".");
             return true;
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while updating config file!", ex);
@@ -189,10 +200,10 @@ public class ConfigManager {
     }
 
     /**
-     * Prepares the config file for parsing with SnakeYAML.
+     * Prepares the config file for parsing with SnakeYAML
      *
-     * @param configString - The configuration as string.
-     * @return - ready-to-parse config.
+     * @param configString The configuration file as string
+     * @return Ready-to-parse config
      */
     private String prepareConfigString (String configString) {
         String[] lines = configString.split("\n");
@@ -215,12 +226,13 @@ public class ConfigManager {
     /**
      * Read file and make comments SnakeYAML friendly
      *
-     * @return - file as InputStreamReader (Reader)
+     * @param config File
+     * @return File as InputStreamReader (Reader)
      */
-    private Reader getConfigContent() {
-        if (!configFile.exists()) return new InputStreamReader(IOUtils.toInputStream("", StandardCharsets.UTF_8));
+    private Reader getConfigContent(Config config) {
+        if (!config.getFile().exists()) return new InputStreamReader(IOUtils.toInputStream("", StandardCharsets.UTF_8));
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(config.getFile()))) {
             int commentNum = 0;
             int emptySpaceNum = 0;
             String addLine;
@@ -249,16 +261,19 @@ public class ConfigManager {
                     whole.append(currentLine).append("\n");
                 }
             }
-            String config = whole.toString();
+            String configContent = whole.toString();
             reader.close();
 
-            return new InputStreamReader(new ByteArrayInputStream(config.getBytes()), StandardCharsets.UTF_8);
+            return new InputStreamReader(new ByteArrayInputStream(configContent.getBytes()), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while parsing config file!", ex);
             return new InputStreamReader(IOUtils.toInputStream("", StandardCharsets.UTF_8));
         }
     }
 
+    /**
+     * @return Line index in list
+     */
     public int getIndex(String line, List<String> list) {
         for (String s : list)
             if (s.startsWith(line) || s.equalsIgnoreCase(line))
@@ -266,7 +281,17 @@ public class ConfigManager {
         return -1;
     }
 
-    public FileConfiguration getConfig() {
-        return config;
+    /**
+     * @return Config
+     */
+    public Config getConfig() {
+        return configs.get(0);
+    }
+
+    /**
+     * @return Commands Config
+     */
+    public Config getCommandsConfig() {
+        return configs.get(1);
     }
 }
