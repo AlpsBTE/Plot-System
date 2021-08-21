@@ -94,4 +94,13 @@ public class FTPConfiguration {
         }
         return false;
     }
+
+    public static boolean setSchematicPath(int ID, String path) throws SQLException {
+        if (getFTPConfigurations().stream().anyMatch(ftp -> ftp.getID() == ID)) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_ftp_configurations SET schematic_path = ? WHERE id = ?")
+                    .setValue(path).setValue(ID).executeUpdate();
+            return true;
+        }
+        return false;
+    }
 }

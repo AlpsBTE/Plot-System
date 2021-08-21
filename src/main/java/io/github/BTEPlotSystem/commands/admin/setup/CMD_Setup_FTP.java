@@ -28,8 +28,12 @@ public class CMD_Setup_FTP extends SubCommand {
                         break;
                     case "add":
                         if (args.length == 6) {
-                            //TODO: Add FTP Config
-                            player.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP Configuration!"));
+                            if (FTPConfiguration.add(args[2],Integer.parseInt(args[3]),args[4],args[5])) {
+                                player.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP Configuration!"));
+                            } else {
+                                player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
+                                ErrorMessage(player);
+                            }
                         } else {
                             ErrorMessage(player);
                         }
@@ -38,8 +42,12 @@ public class CMD_Setup_FTP extends SubCommand {
                         if (args.length == 3) {
                             // Check if ftp config exists
                             if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[2]))) {
-                                //TODO: Remove Server
-                                player.sendMessage(Utils.getInfoMessageFormat("Successfully removed FTP Configuration with ID " + args[2] + "!"));
+                                if (FTPConfiguration.remove(Integer.parseInt(args[2]))) {
+                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully removed FTP Configuration with ID " + args[2] + "!"));
+                                } else {
+                                    player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
+                                    ErrorMessage(player);
+                                }
                             } else {
                                 player.sendMessage(Utils.getErrorMessageFormat("Could not find any FTP Configurations with ID " + args[2] + "!"));
                                 player.sendMessage(Utils.getErrorMessageFormat("Type </pss ftp list> to see all Configurations!"));
@@ -53,8 +61,12 @@ public class CMD_Setup_FTP extends SubCommand {
                             if (args[2].equalsIgnoreCase("schematicPath")) {
                                 // Check if ftp config exists
                                 if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[3]))) {
-                                    //TODO: Set FTP
-                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully set Schematic Path of FTP Configuration " + args[3] + " to " + args[4] + "!"));
+                                    if (FTPConfiguration.setSchematicPath(Integer.parseInt(args[3]), args[4])) {
+                                        player.sendMessage(Utils.getInfoMessageFormat("Successfully set Schematic Path of FTP Configuration " + args[3] + " to " + args[4] + "!"));
+                                    } else {
+                                        player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
+                                        ErrorMessage(player);
+                                    }
                                 } else {
                                     player.sendMessage(Utils.getErrorMessageFormat("Could not find any FTP Configurations with ID " + args[3] + "!"));
                                     player.sendMessage(Utils.getErrorMessageFormat("Type </pss ftp list> to see all Configurations!"));
