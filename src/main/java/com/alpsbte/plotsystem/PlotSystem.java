@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.CMD_Spawn;
 import com.alpsbte.plotsystem.commands.CMD_Tpp;
+import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
 import com.alpsbte.plotsystem.commands.plot.*;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
 import com.alpsbte.plotsystem.commands.review.CMD_Review;
@@ -156,6 +157,7 @@ public class PlotSystem extends JavaPlugin {
             this.getCommand("editplot").setExecutor(new CMD_EditPlot());
 
             // Add admin commands [alpsbte.admin Permission]
+            this.getCommand("cleanplot").setExecutor(new CMD_CleanPlot());
             this.getCommand("deleteplot").setExecutor(new CMD_DeletePlot());
             this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
             this.getCommand("sethologram").setExecutor(new CMD_SetHologram());

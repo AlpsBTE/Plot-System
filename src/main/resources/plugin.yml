@@ -63,6 +63,10 @@ commands:
     description: Enable/disble build permissions for reviewers on a plot
     permission: alpsbte.review
     usage: /editplot
+  cleanplot:
+    description: Cleans and refreshes plots due to bugs or permission changes
+    permission: alpsbte.admin
+    usage: /cleanplot <ID> or /cleanplot all
   deleteplot:
     description: Delete a plot
     permission: alpsbte.admin
