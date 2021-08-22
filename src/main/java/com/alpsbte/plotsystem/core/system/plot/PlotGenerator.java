@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -205,7 +206,9 @@ public final class PlotGenerator {
         try {
             allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
             allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
-            //allowedCommandsNonBuilder = ... TODO: Add all Plot-System commands
+            for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
+                allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
+            }
 
             blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
             blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
