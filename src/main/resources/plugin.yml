@@ -22,6 +22,10 @@ commands:
     description: Teleport to a position in the plot, using irl coordinates
     permission: plotsystem.tpll
     usage: /tpll <lon> <lat>
+  p:
+    description: List all plot commands.
+    permission: plotsystem.plot
+    usage: /p help
   plot:
     description: List all plot commands.
     permission: plotsystem.plot

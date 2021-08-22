@@ -43,7 +43,6 @@ public class CommandManager {
     public List<BaseCommand> baseCommands = Arrays.asList(
             new CMD_Companion(),
             new CMD_Spawn(),
-            new CMD_Tpp(),
             new CMD_Plot(),
             new CMD_Tpll(),
             new CMD_Plots(),

@@ -107,7 +107,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set plot members item
         try {
             if (!plot.isReviewed()) {
-                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("alpsbte.admin")) {
+                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.ADD_BUTTON))
                                     .setName("§b§lManage Members").setLore(new LoreBuilder()
@@ -139,7 +139,7 @@ public class PlotActionsMenu extends AbstractMenu {
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             try {
-                clickPlayer.performCommand((plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getID());
+                clickPlayer.performCommand("plot " + (plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getID());
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -158,14 +158,14 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for abandon plot item
         getMenu().getSlot(hasFeedback ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand("abandon " + plot.getID());
+            clickPlayer.performCommand("plot abandon " + plot.getID());
         });
 
         // Set click event for feedback menu button
         if(hasFeedback) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
-                clickPlayer.performCommand("feedback " + plot.getID());
+                clickPlayer.performCommand("plot feedback " + plot.getID());
             });
         }
 
@@ -173,7 +173,7 @@ public class PlotActionsMenu extends AbstractMenu {
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 if (!plot.isReviewed()) {
-                     if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("alpsbte.admin")) {
+                     if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("plotsystem.admin")) {
                          clickPlayer.closeInventory();
                          new PlotMemberMenu(plot,clickPlayer);
                      } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {

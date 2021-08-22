@@ -62,7 +62,7 @@ public class CMD_Plot_Submit extends SubCommand {
                 return;
             }
 
-            if (sender.hasPermission("alpsbte.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
+            if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
                 if (plot.getStatus() == Status.unfinished) {
                     PlotHandler.submitPlot(plot);
 

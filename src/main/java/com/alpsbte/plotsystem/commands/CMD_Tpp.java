@@ -33,6 +33,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@Deprecated
 public class CMD_Tpp extends BaseCommand {
 
     @Override
@@ -46,7 +47,7 @@ public class CMD_Tpp extends BaseCommand {
                     player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
 
                     player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-                    if (player.hasPermission("alpsbte.review")) {
+                    if (player.hasPermission("plotsystem.review")) {
                         player.getInventory().setItem(7, ReviewMenu.getMenuItem());
                     }
                 } catch (Exception ignore) {
