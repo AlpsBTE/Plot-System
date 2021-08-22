@@ -7,92 +7,65 @@ softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, Holographi
 
 commands:
   spawn:
-    description: Teleport to the spawn
+    description: Teleport to the spawn point.
+    permission: plotsystem.spawn
     usage: /spawn
-  hub:
-    description: Alternative to the spawn command
-    usage: /hub
-  tpp:
-    description: Teleport to a player
-    usage: /tpp <Player>
   companion:
-    description: Open the Companion menu
-    permission: alpsbte.plot
+    description: Opens the Companion menu.
+    permission: plotsystem.companion
     usage: /companion
-  link:
-    description: Sends you the links of the plot you are currently on
-    permission: alpsbte.plot
-    usage: /link
-  submit:
-    description: Submit a unfinished plot
-    permission: alpsbte.plot
-    usage: /submit, /submit <ID>
-  abandon:
-    description: Abandon a unfinished plot
-    permission: alpsbte.plot
-    usage: /abandon, /abandon <ID>
-  undosubmit:
-    description: Undo a submission of a unreviewed plot
-    permission: alpsbte.plot
-    usage: /undosubmit, /undosubmit <ID>
-  feedback:
-    description: Shows all feedback information of a plot
-    permission: alpsbte.plot
-    usage: /feedback <ID>
   plots:
-    description: Shows all plots of the given player
-    permission: alpsbte.plot
+    description: Shows all plots of the given player.
+    permission: plotsystem.plots
     usage: /plots, /plots <Player>
+  tpll:
+    description: Teleport to a position in the plot, using irl coordinates
+    permission: plotsystem.tpll
+    usage: /tpll <lon> <lat>
   plot:
-    description: Teleport to a plot
-    permission: alpsbte.review
-    usage: /plot <ID>
+    description: List all plot commands.
+    permission: plotsystem.plot
+    usage: /plot help
   review:
-    description: Open the review or review plot menu
-    permission: alpsbte.review
+    description: Opens the review or review plot menu.
+    permission: plotsystem.review
     usage: /review
   undoreview:
-    description: Undo a review of a plot
-    permission: alpsbte.review
+    description: Undo a review of a plot.
+    permission: plotsystem.review.undoreview
     usage: /undoreview <ID>
   sendfeedback:
-    description: Sets the feedback of a plot
-    permission: alpsbte.review
+    description: Updates the feedback of a plot.
+    permission: plotsystem.review.sendfeedback
     usage: /sendfeedback <ID> <Text>
   editplot:
-    description: Enable/disble build permissions for reviewers on a plot
-    permission: alpsbte.review
+    description: Enable/disable build permissions for reviewers on a plot.
+    permission: plotsystem.review.editplot
     usage: /editplot
   cleanplot:
-    description: Cleans and refreshes plots due to bugs or permission changes
-    permission: alpsbte.admin
-    usage: /cleanplot <ID> or /cleanplot all
+    description: Cleans and refreshes plots due to bugs or permission changes.
+    permission: plotsystem.admin
+    usage: /cleanplot <All/ID>
   deleteplot:
-    description: Delete a plot
-    permission: alpsbte.admin
+    description: Delete a plot from the system.
+    permission: plotsystem.admin.deleteplot
     usage: /deleteplot <ID>
-  generateplot:
-    description: Generate a new plot
-    permission: alpsbte.admin
-    usage: /generateplot <ID>
   sethologram:
     description: Sets the position of a hologram
-    permission: alpsbte.admin
+    permission: plotsystem.admin.sethologram
     usage: /sethologram <name>
   preload:
     description: Reload config and holograms
-    permission: alpsbte.admin
+    permission: plotsystem.admin.preload
     usage: /preload
-  tpll:
-    description: teleport to a position in the plot, using irl coordinates
-    usage: /tpll <long> <lat>
-  invite:
-    description: accept or deny an incoming invite
-    usage: /invite accept/deny <PlotID>
   pss:
-    description: Command for setting up the database
-    permission: alpsbte.admin
-    usage: /pss
+    description: Command for setting up the database.
+    permission: plotsystem.admin.pss
+    usage: /pss help
 permissions:
-  alpsbte.admin:
-    description: Manager permissions
+  plotsystem.plot:
+    description: Builder permissions
+  plotsystem.review:
+    description: Reviewer permissions
+  plotsystem.admin:
+    description: Administrator permissions
