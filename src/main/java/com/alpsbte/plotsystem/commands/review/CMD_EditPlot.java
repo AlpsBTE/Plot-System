@@ -24,7 +24,9 @@
 
 package com.alpsbte.plotsystem.commands.review;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -39,37 +41,41 @@ public class CMD_EditPlot extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender.hasPermission(getPermission())) {
-            try {
-                Plot plot;
-                if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
-                    int plotID = Integer.parseInt(args[0]);
-                    if (PlotManager.plotExists(plotID)) {
-                        plot = new Plot(plotID);
+        if (PlotSystem.getPlugin().getConfigManager().getCommandsConfig().getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
+            if(sender.hasPermission(getPermission())) {
+                try {
+                    Plot plot;
+                    if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+                        int plotID = Integer.parseInt(args[0]);
+                        if (PlotManager.plotExists(plotID)) {
+                            plot = new Plot(plotID);
+                        } else {
+                            sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                            return true;
+                        }
+                    } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
+                        plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                        sendInfo(sender);
                         return true;
                     }
-                } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
-                } else {
-                    sendInfo(sender);
-                    return true;
-                }
 
-                if(plot.hasReviewerPerms()) {
-                    plot.removeReviewerPerms().save();
-                    sender.sendMessage(Utils.getInfoMessageFormat("§6Disabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
-                } else {
-                    plot.addReviewerPerms().save();
-                    sender.sendMessage(Utils.getInfoMessageFormat("§6Enabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
+                    if(plot.hasReviewerPerms()) {
+                        plot.removeReviewerPerms().save();
+                        sender.sendMessage(Utils.getInfoMessageFormat("§6Disabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
+                    } else {
+                        plot.addReviewerPerms().save();
+                        sender.sendMessage(Utils.getInfoMessageFormat("§6Enabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
+                    }
+                } catch (SQLException ex) {
+                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            } else {
+                sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat("This command is disabled!"));
         }
         return true;
     }
