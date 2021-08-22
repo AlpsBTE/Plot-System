@@ -58,7 +58,7 @@ public class CMD_Spawn extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "Teleport to the spawn.";
+        return "Teleport to the spawn point.";
     }
 
     @Override
