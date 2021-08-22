@@ -1,41 +1,48 @@
-package github.BTEPlotSystem.commands.admin.setup;
+package com.alpsbte.plotsystem.commands.admin.setup;
 
-import github.BTEPlotSystem.commands.SubCommand;
-import github.BTEPlotSystem.core.system.FTPConfiguration;
-import github.BTEPlotSystem.utils.Utils;
+import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.FTPConfiguration;
+import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class CMD_Setup_FTP extends SubCommand {
+
+    public CMD_Setup_FTP(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
     @Override
-    public void onCommand(Player player, String[] args) {
+    public void onCommand(CommandSender sender, String[] args) {
         try {
             if(!(args.length < 2)) {
                 switch (args[1].toLowerCase()) {
                     case "list":
                         List<FTPConfiguration> ftpConfigs = FTPConfiguration.getFTPConfigurations();
                         if (ftpConfigs.size() != 0) {
-                            player.sendMessage(Utils.getInfoMessageFormat("There are currently " + ftpConfigs.size() + " FTP Configurations registered in the database:"));
-                            player.sendMessage("§8--------------------------");
+                            sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + ftpConfigs.size() + " FTP Configurations registered in the database:"));
+                            sender.sendMessage("§8--------------------------");
                             for (FTPConfiguration ftp : ftpConfigs) {
-                                player.sendMessage(" §6> §f" + ftp.getID() + " - Adress: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - Username: " + ftp.getUsername() + " - Password: " + ftp.getPassword() + " - Path: " + ftp.getSchematicPath());
+                                sender.sendMessage(" §6> §f" + ftp.getID() + " - Adress: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - Username: " + ftp.getUsername() + " - Password: " + ftp.getPassword() + " - Path: " + ftp.getSchematicPath());
                             }
-                            player.sendMessage("§8--------------------------");
+                            sender.sendMessage("§8--------------------------");
                         } else {
-                            player.sendMessage(Utils.getInfoMessageFormat("There are currently no FTP Configurations registered in the database!"));
+                            sender.sendMessage(Utils.getInfoMessageFormat("There are currently no FTP Configurations registered in the database!"));
                         }
                         break;
                     case "add":
                         if (args.length == 6) {
                             if (FTPConfiguration.add(args[2],Integer.parseInt(args[3]),args[4],args[5])) {
-                                player.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP Configuration!"));
+                                sender.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP Configuration!"));
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
-                                ErrorMessage(player);
+                                sender.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
+                                ErrorMessage(sender);
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     case "remove":
@@ -43,17 +50,17 @@ public class CMD_Setup_FTP extends SubCommand {
                             // Check if ftp config exists
                             if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[2]))) {
                                 if (FTPConfiguration.remove(Integer.parseInt(args[2]))) {
-                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully removed FTP Configuration with ID " + args[2] + "!"));
+                                    sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed FTP Configuration with ID " + args[2] + "!"));
                                 } else {
-                                    player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
-                                    ErrorMessage(player);
+                                    sender.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
+                                    ErrorMessage(sender);
                                 }
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Could not find any FTP Configurations with ID " + args[2] + "!"));
-                                player.sendMessage(Utils.getErrorMessageFormat("Type </pss ftp list> to see all Configurations!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Could not find any FTP Configurations with ID " + args[2] + "!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Type </pss ftp list> to see all Configurations!"));
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     case "set":
@@ -62,34 +69,54 @@ public class CMD_Setup_FTP extends SubCommand {
                                 // Check if ftp config exists
                                 if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[3]))) {
                                     if (FTPConfiguration.setSchematicPath(Integer.parseInt(args[3]), args[4])) {
-                                        player.sendMessage(Utils.getInfoMessageFormat("Successfully set Schematic Path of FTP Configuration " + args[3] + " to " + args[4] + "!"));
+                                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully set Schematic Path of FTP Configuration " + args[3] + " to " + args[4] + "!"));
                                     } else {
-                                        player.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
-                                        ErrorMessage(player);
+                                        sender.sendMessage(Utils.getErrorMessageFormat("Something went wrong! Please try again."));
+                                        ErrorMessage(sender);
                                     }
                                 } else {
-                                    player.sendMessage(Utils.getErrorMessageFormat("Could not find any FTP Configurations with ID " + args[3] + "!"));
-                                    player.sendMessage(Utils.getErrorMessageFormat("Type </pss ftp list> to see all Configurations!"));
+                                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find any FTP Configurations with ID " + args[3] + "!"));
+                                    sender.sendMessage(Utils.getErrorMessageFormat("Type </pss ftp list> to see all Configurations!"));
                                 }
                             } else {
-                                ErrorMessage(player);
+                                ErrorMessage(sender);
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     default:
-                        ErrorMessage(player);
+                        ErrorMessage(sender);
                 }
             } else {
-                ErrorMessage(player);
+                ErrorMessage(sender);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void ErrorMessage(Player player) {
+    @Override
+    public String[] getNames() {
+        return new String[0];
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return null;
+    }
+
+    private void ErrorMessage(CommandSender player) {
         player.sendMessage(Utils.getErrorMessageFormat("Try one of the following commands:"));
         player.sendMessage("§8--------------------------");
         player.sendMessage(" §6> §f/pss ftp list");

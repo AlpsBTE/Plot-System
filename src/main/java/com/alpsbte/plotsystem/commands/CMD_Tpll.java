@@ -1,4 +1,28 @@
-package com.alpsbte.plotsystem.commands.plot;
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
+package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -6,10 +30,10 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,11 +44,11 @@ import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
-public class CMD_Tpll implements CommandExecutor {
+public class CMD_Tpll extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender instanceof Player) {
-            if (sender.hasPermission("alpsbte.plot")) {
+        if(sender.hasPermission(getPermission())) {
+            if (getPlayer(sender) != null) {
                 Player player = (Player) sender;
                 World playerWorld = player.getWorld();
 
@@ -100,13 +124,37 @@ public class CMD_Tpll implements CommandExecutor {
                             player.sendMessage(Utils.getErrorMessageFormat("A unknown error occurred! Please try again!"));
                         }
                     } catch (Exception ignore) {
-                        player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpll <lat> <lon>"));
+                        sendInfo(sender);
                     }
                 } else {
                     player.sendMessage(Utils.getErrorMessageFormat("You can only use /tpll on a plot!"));
                 }
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "tpll" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Teleport to a specific RL coordinate.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "Lat", "Lon" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "alpsbte.tpll";
     }
 }

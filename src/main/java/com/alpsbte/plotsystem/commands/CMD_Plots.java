@@ -22,25 +22,25 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_Plots implements CommandExecutor {
+public class CMD_Plots extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            if(sender.hasPermission("alpsbte.plot")) {
+        if (sender.hasPermission(getPermission())) {
+            if(getPlayer(sender) != null) {
                 Player player = (Player)sender;
                 try {
                     if(args.length >= 1) {
@@ -54,11 +54,35 @@ public class CMD_Plots implements CommandExecutor {
                         new PlayerPlotsMenu(player, new Builder(player.getUniqueId()));
                     }
                 } catch (SQLException ex) {
-                    player.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "plots" } ;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Shows all plots of the given player.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "Player" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "alpsbte.plots";
     }
 }

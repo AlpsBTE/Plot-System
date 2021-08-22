@@ -22,22 +22,39 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-public class CMD_Companion implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            if(sender.hasPermission("alpsbte.plot")) {
-                new CompanionMenu((Player) sender);
-            }
-        }
-        return true;
-    }
+public interface ICommand {
+
+    /**
+     *
+     * @return
+     */
+    String[] getNames();
+
+    /**
+     *
+     * @return
+     */
+    String getDescription();
+
+    /**
+     *
+     * @return
+     */
+    String[] getParameter();
+
+    /**
+     *
+     * @return
+     */
+    String getPermission();
+
+    /**
+     *
+     * @param sender
+     */
+    void sendInfo(CommandSender sender);
 }

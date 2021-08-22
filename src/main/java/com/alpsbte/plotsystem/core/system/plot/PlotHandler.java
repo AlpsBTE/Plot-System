@@ -73,7 +73,7 @@ public class PlotHandler {
         }
     }
 
-    public static void submitPlot(Plot plot) throws Exception {
+    public static void submitPlot(Plot plot) throws SQLException {
         plot.setStatus(Status.unreviewed);
 
         if(plot.getPlotWorld() != null) {

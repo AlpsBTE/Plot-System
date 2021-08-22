@@ -1,31 +1,38 @@
-package github.BTEPlotSystem.commands.admin.setup;
+package com.alpsbte.plotsystem.commands.admin.setup;
 
-import github.BTEPlotSystem.commands.SubCommand;
-import github.BTEPlotSystem.core.system.CityProject;
-import github.BTEPlotSystem.core.system.Country;
-import github.BTEPlotSystem.utils.Utils;
+import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class CMD_Setup_City extends SubCommand {
+
+    public CMD_Setup_City(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
     @Override
-    public void onCommand(Player player, String[] args) {
+    public void onCommand(CommandSender sender, String[] args) {
         try {
             if (!(args.length < 2)) {
                 switch (args[1].toLowerCase()) {
                     case "list":
                         List<CityProject> cities = CityProject.getCityProjects();
                         if (cities.size() != 0) {
-                            player.sendMessage(Utils.getInfoMessageFormat("There are currently " + cities.size() + " City Projects registered in the database:"));
-                            player.sendMessage("§8--------------------------");
+                            sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + cities.size() + " City Projects registered in the database:"));
+                            sender.sendMessage("§8--------------------------");
                             for (CityProject c : cities) {
-                                player.sendMessage(" §6> §f" + c.getID() + " - " + c.getName() + " - Description: " + c.getDescription() + " - Country " + c.getCountry().getName() + " - Visible: " + c.isVisible());
+                                sender.sendMessage(" §6> §f" + c.getID() + " - " + c.getName() + " - Description: " + c.getDescription() + " - Country " + c.getCountry().getName() + " - Visible: " + c.isVisible());
                             }
-                            player.sendMessage("§8--------------------------");
+                            sender.sendMessage("§8--------------------------");
                         } else {
-                            player.sendMessage(Utils.getInfoMessageFormat("There are currently no City Projects registered in the database!"));
+                            sender.sendMessage(Utils.getInfoMessageFormat("There are currently no City Projects registered in the database!"));
                         }
                         break;
                     case "add":
@@ -35,16 +42,16 @@ public class CMD_Setup_City extends SubCommand {
                                 String name = appendArgs(args,3);
                                 if (name.length() <= 45) {
                                     CityProject.addCityProject(country, name);
-                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully added City Project with name '" + name + "' in country " + args[2] + "!"));
+                                    sender.sendMessage(Utils.getInfoMessageFormat("Successfully added City Project with name '" + name + "' in country " + args[2] + "!"));
                                 } else {
-                                    player.sendMessage(Utils.getErrorMessageFormat("City Project name cannot be longer than 45 characters!"));
+                                    sender.sendMessage(Utils.getErrorMessageFormat("City Project name cannot be longer than 45 characters!"));
                                 }
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[2] + "!"));
-                                player.sendMessage(Utils.getErrorMessageFormat("Type </pss country list> to see all countries!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[2] + "!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Type </pss country list> to see all countries!"));
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     case "remove":
@@ -52,13 +59,13 @@ public class CMD_Setup_City extends SubCommand {
                             // Check if City Project exists
                             if (CityProject.getCityProjects().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
                                 CityProject.removeCityProject(Integer.parseInt(args[2]));
-                                player.sendMessage(Utils.getInfoMessageFormat("Successfully removed City Project with ID " + args[2] + "!"));
+                                sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed City Project with ID " + args[2] + "!"));
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Could not find any City Project with ID " + args[2] + "!"));
-                                player.sendMessage(Utils.getErrorMessageFormat("Type </pss city list> to see all City Projects!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Could not find any City Project with ID " + args[2] + "!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Type </pss city list> to see all City Projects!"));
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     case "set":
@@ -70,53 +77,73 @@ public class CMD_Setup_City extends SubCommand {
                                         String name = appendArgs(args,4);
                                         if (name.length() <= 45) {
                                             CityProject.setCityProjectName(Integer.parseInt(args[3]), name);
-                                            player.sendMessage(Utils.getInfoMessageFormat("Successfully changed name of City Project with ID " + args[3] + " to '" + name + "'!"));
+                                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully changed name of City Project with ID " + args[3] + " to '" + name + "'!"));
                                         } else {
-                                            player.sendMessage(Utils.getErrorMessageFormat("City Project name cannot be longer than 45 characters!"));
+                                            sender.sendMessage(Utils.getErrorMessageFormat("City Project name cannot be longer than 45 characters!"));
                                         }
                                         break;
                                     case "description":
                                         String description = appendArgs(args,4);
                                         if (description.length() <= 255) {
                                             CityProject.setCityProjectDescription(Integer.parseInt(args[3]), description);
-                                            player.sendMessage(Utils.getInfoMessageFormat("Successfully set description of City Project with ID " + args[3] + " to '" + description + "'!"));
+                                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully set description of City Project with ID " + args[3] + " to '" + description + "'!"));
                                         } else {
-                                            player.sendMessage(Utils.getErrorMessageFormat("City Project description cant be longer than 255 characters!"));
+                                            sender.sendMessage(Utils.getErrorMessageFormat("City Project description cant be longer than 255 characters!"));
                                         }
                                         break;
                                     case "visible":
                                         if (args[4].equalsIgnoreCase("true") || args[4].equalsIgnoreCase("false")) {
                                             CityProject.setCityProjectVisibility(Integer.parseInt(args[3]), args[4].equalsIgnoreCase("true"));
-                                            player.sendMessage(Utils.getInfoMessageFormat("Successfully set visibility of City Project with ID " + args[3] + " to " + args[4].toUpperCase() + "!"));
+                                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully set visibility of City Project with ID " + args[3] + " to " + args[4].toUpperCase() + "!"));
                                         } else {
-                                            ErrorMessage(player);
+                                            ErrorMessage(sender);
                                         }
                                         break;
                                     default:
-                                        ErrorMessage(player);
+                                        ErrorMessage(sender);
                                         break;
                                 }
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Could not find any City Project with ID " + args[3] + "!"));
-                                player.sendMessage(Utils.getErrorMessageFormat("Type </pss city list> to see all City Projects!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Could not find any City Project with ID " + args[3] + "!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Type </pss city list> to see all City Projects!"));
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     default:
-                        ErrorMessage(player);
+                        ErrorMessage(sender);
                         break;
                 }
             } else {
-                ErrorMessage(player);
+                ErrorMessage(sender);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    private void ErrorMessage(Player player) {
+    @Override
+    public String[] getNames() {
+        return new String[0];
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return null;
+    }
+
+    private void ErrorMessage(CommandSender player) {
         player.sendMessage(Utils.getErrorMessageFormat("Try one of the following commands:"));
         player.sendMessage("§8--------------------------");
         player.sendMessage(" §6> §f/pss city list");

@@ -22,35 +22,45 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
+import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-
-public class CMD_GeneratePlot implements CommandExecutor {
+public class CMD_Companion extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender instanceof Player) {
-            if(sender.hasPermission("alpsbte.admin")) {
-                if(Utils.TryParseInt(args[0]) != null) {
-                    try {
-                        new PlotGenerator(new Plot(Integer.parseInt(args[0])), new Builder(((Player) sender).getUniqueId()));
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
-                }
+        if (sender.hasPermission(getPermission())) {
+            if (getPlayer(sender) != null) {
+                new CompanionMenu((Player) sender);
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
+
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "companion" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Open the Companion menu (Display all city projects and manage your ongoing projects).";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return "alpsbte.companion";
     }
 }

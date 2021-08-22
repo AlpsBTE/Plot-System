@@ -1,6 +1,6 @@
-package github.BTEPlotSystem.core.system;
+package com.alpsbte.plotsystem.core.system;
 
-import github.BTEPlotSystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import org.bukkit.Bukkit;
 
 import java.io.File;

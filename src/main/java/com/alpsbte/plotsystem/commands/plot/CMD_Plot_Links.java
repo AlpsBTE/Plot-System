@@ -22,63 +22,68 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands;
+package com.alpsbte.plotsystem.commands.plot;
 
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-public class CMD_Tpp extends BaseCommand {
+import java.sql.SQLException;
+import java.util.logging.Level;
+
+public class CMD_Plot_Links extends SubCommand {
+
+    public CMD_Plot_Links(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            if(getPlayer(sender) != null) {
-                Player player = (Player) sender;
-                try {
-                    Player targetPlayer = player.getServer().getPlayer(args[0]);
-                    player.teleport(targetPlayer);
-                    player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
-
-                    player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-                    if (player.hasPermission("alpsbte.review")) {
-                        player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+    public void onCommand(CommandSender sender, String[] args) {
+        try {
+            if (getPlayer(sender) != null) {
+                if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+                    int plotID = Integer.parseInt(args[0]);
+                    if (PlotManager.plotExists(plotID)) {
+                        PlotHandler.sendLinkMessages(new Plot(plotID), getPlayer(sender));
+                    } else {
+                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
-                } catch (Exception ignore) {
+                } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
+                    PlotHandler.sendLinkMessages(PlotManager.getPlotByWorld(getPlayer(sender).getWorld()), getPlayer(sender));
+                } else {
                     sendInfo(sender);
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
-        } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "tpp" };
+        return new String[] { "links", "link" };
     }
 
     @Override
     public String getDescription() {
-        return "Teleport to a specific player.";
+        return "Sends you the links of the plot you are currently on.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Player" };
+        return new String[] { "ID" };
     }
 
     @Override
     public String getPermission() {
-        return "alpsbte.tpp";
+        return "alpsbte.plot.links";
     }
 }

@@ -1,42 +1,49 @@
-package github.BTEPlotSystem.commands.admin.setup;
+package com.alpsbte.plotsystem.commands.admin.setup;
 
-import github.BTEPlotSystem.commands.SubCommand;
-import github.BTEPlotSystem.core.system.Country;
-import github.BTEPlotSystem.utils.Utils;
+import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class CMD_Setup_Country extends SubCommand {
+
+    public CMD_Setup_Country(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
     @Override
-    public void onCommand(Player player, String[] args) {
+    public void onCommand(CommandSender sender, String[] args) {
         try {
             if (!(args.length < 2)) {
                 switch (args[1].toLowerCase()) {
                     case "list":
                         List<Country> countries = Country.getCountries();
                         if (countries.size() != 0) {
-                            player.sendMessage(Utils.getInfoMessageFormat("There are currently " + countries.size() + " countries registered in the database:"));
-                            player.sendMessage("§8--------------------------");
+                            sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + countries.size() + " countries registered in the database:"));
+                            sender.sendMessage("§8--------------------------");
                             for (Country c : countries) {
-                                player.sendMessage(" §6> §f" + c.getName() + " - Server: " + c.getServer().getName());
+                                sender.sendMessage(" §6> §f" + c.getName() + " - Server: " + c.getServer().getName());
                             }
-                            player.sendMessage("§8--------------------------");
+                            sender.sendMessage("§8--------------------------");
                         } else {
-                            player.sendMessage(Utils.getInfoMessageFormat("There are currently no countries registered in the database!"));
+                            sender.sendMessage(Utils.getInfoMessageFormat("There are currently no countries registered in the database!"));
                         }
                         break;
                     case "add":
                         if (args.length == 3) {
                             if (args[2].length() <= 45) {
                                 Country.addCountry(args[2]);
-                                player.sendMessage(Utils.getInfoMessageFormat("Successfully added country with name " + args[2] + "!"));
+                                sender.sendMessage(Utils.getInfoMessageFormat("Successfully added country with name " + args[2] + "!"));
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Country name cannot be longer than 45 characters!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Country name cannot be longer than 45 characters!"));
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     case "remove":
@@ -44,13 +51,13 @@ public class CMD_Setup_Country extends SubCommand {
                             // Check if country exists
                             if (Country.getCountries().stream().anyMatch(c -> c.getName().equals(args[2]))) {
                                 Country.removeCountry(args[2]);
-                                player.sendMessage(Utils.getInfoMessageFormat("Successfully removed country with name " + args[2] + "!"));
+                                sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed country with name " + args[2] + "!"));
                             } else {
-                                player.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[2] + "!"));
-                                player.sendMessage(Utils.getErrorMessageFormat("Type </pss country list> to see all servers!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[2] + "!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("Type </pss country list> to see all servers!"));
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     case "set":
@@ -59,31 +66,51 @@ public class CMD_Setup_Country extends SubCommand {
                                 // Check if country exists
                                 if (Country.getCountries().stream().anyMatch(c -> c.getName().equals(args[3]))) {
                                     Country.setHeadID(args[3], Integer.parseInt(args[4]));
-                                    player.sendMessage(Utils.getInfoMessageFormat("Successfully set HeadID of country " + args[3] + " to " + args[4] + "!"));
+                                    sender.sendMessage(Utils.getInfoMessageFormat("Successfully set HeadID of country " + args[3] + " to " + args[4] + "!"));
                                 } else {
-                                    player.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[3] + "!"));
-                                    player.sendMessage(Utils.getErrorMessageFormat("Type </pss country list> to see all servers!"));
+                                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find any country with name " + args[3] + "!"));
+                                    sender.sendMessage(Utils.getErrorMessageFormat("Type </pss country list> to see all servers!"));
                                 }
                             } else {
-                                ErrorMessage(player);
+                                ErrorMessage(sender);
                             }
                         } else {
-                            ErrorMessage(player);
+                            ErrorMessage(sender);
                         }
                         break;
                     default:
-                        ErrorMessage(player);
+                        ErrorMessage(sender);
                         break;
                 }
             } else {
-                ErrorMessage(player);
+                ErrorMessage(sender);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    private void ErrorMessage(Player player) {
+    @Override
+    public String[] getNames() {
+        return new String[0];
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return null;
+    }
+
+    private void ErrorMessage(CommandSender player) {
         player.sendMessage(Utils.getErrorMessageFormat("Try one of the following commands:"));
         player.sendMessage("§8--------------------------");
         player.sendMessage(" §6> §f/pss country list");

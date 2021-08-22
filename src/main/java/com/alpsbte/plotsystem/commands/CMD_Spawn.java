@@ -25,21 +25,49 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMD_Spawn implements CommandExecutor {
+public class CMD_Spawn extends BaseCommand {
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            Player player = (Player)sender;
+        if (sender.hasPermission(getPermission())) {
+            if (getPlayer(sender) != null) {
+                Player player = (Player) sender;
 
-            player.teleport(Utils.getSpawnLocation());
-            player.sendMessage(Utils.getInfoMessageFormat("Teleporting to spawn..."));
-            player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
+                player.teleport(Utils.getSpawnLocation());
+                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to spawn..."));
+                player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "spawn" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Teleport to the spawn.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return "alpsbte.spawn";
     }
 }

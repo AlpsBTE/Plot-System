@@ -24,44 +24,50 @@
 
 package com.alpsbte.plotsystem.commands.plot;
 
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.logging.Level;
+public class CMD_Plot extends BaseCommand {
 
-public class CMD_Plot implements CommandExecutor {
+    // Register Sub-Commands
+    public CMD_Plot() {
+        registerSubCommand(new CMD_Plot_Teleport(this));
+        registerSubCommand(new CMD_Plot_Links(this));
+        registerSubCommand(new CMD_Plot_Submit(this));
+        registerSubCommand(new CMD_Plot_Abandon(this));
+        registerSubCommand(new CMD_Plot_Invite(this));
+        registerSubCommand(new CMD_Plot_Feedback(this));
+        registerSubCommand(new CMD_Plot_UndoSubmit(this));
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender instanceof Player) {
-            if(sender.hasPermission("alpsbte.review")) {
-                if(args.length == 1 || args.length == 2) {
-                    if(Utils.TryParseInt(args[0]) != null) {
-                        int ID = Integer.parseInt(args[0]);
-                        if(PlotManager.plotExists(ID)) {
-                            try {
-                                PlotHandler.teleportPlayer(new Plot(ID), (Player) sender);
-                            } catch (Exception ex) {
-                                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
-                                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                            }
-                        } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + ID + "!"));
-                        }
-                    } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("Please enter a valid ID!"));
-                    }
-                } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/plot <ID>"));
-                }
-            }
+        if (args.length == 0) {
+            sendInfo(sender);
+            return true;
         }
-        return true;
+
+        return super.onCommand(sender, cmd, s, args);
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "plot" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return "alpsbte.plot";
     }
 }
