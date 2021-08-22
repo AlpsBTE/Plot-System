@@ -111,6 +111,6 @@ public class CMD_Plot_Submit extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.submit";
+        return "plotsystem.plot.submit";
     }
 }

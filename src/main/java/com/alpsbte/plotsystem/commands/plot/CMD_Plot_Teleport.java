@@ -88,6 +88,6 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.teleport";
+        return "plotsystem.plot.teleport";
     }
 }

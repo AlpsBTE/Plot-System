@@ -25,20 +25,20 @@
 package com.alpsbte.plotsystem.commands.admin;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.logging.Level;
 
-public class CMD_PReload implements CommandExecutor {
+public class CMD_PReload extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission("alpsbte.admin")){
+        if (sender.hasPermission(getPermission())){
             try {
                 PlotSystem.getPlugin().getConfigManager().reloadConfigs();
                 PlotSystem.getPlugin().getConfigManager().saveConfigs();
@@ -49,10 +49,32 @@ public class CMD_PReload implements CommandExecutor {
 
                 DatabaseConnection.InitializeDatabase();
             } catch (Exception ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while reloading!"));
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading!", ex);
+                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "preload" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Reloads configuration files and holograms.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.admin.preload";
     }
 }

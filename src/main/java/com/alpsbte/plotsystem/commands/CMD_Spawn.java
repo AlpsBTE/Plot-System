@@ -68,6 +68,6 @@ public class CMD_Spawn extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.spawn";
+        return "plotsystem.spawn";
     }
 }

@@ -97,6 +97,6 @@ public class CMD_Plot_Abandon extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.abandon";
+        return "plotsystem.plot.abandon";
     }
 }

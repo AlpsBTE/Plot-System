@@ -84,7 +84,7 @@ public class CMD_SendFeedback extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Updates feedback of a plot.";
     }
 
     @Override
@@ -94,6 +94,6 @@ public class CMD_SendFeedback extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.review";
+        return "plotsystem.review.sendfeedback";
     }
 }

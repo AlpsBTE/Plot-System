@@ -83,6 +83,6 @@ public class CMD_Plots extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plots";
+        return "plotsystem.plots";
     }
 }

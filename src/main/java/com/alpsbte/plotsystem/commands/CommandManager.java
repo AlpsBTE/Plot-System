@@ -25,16 +25,18 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
+import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
+import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
+import com.alpsbte.plotsystem.commands.admin.CMD_SetHologram;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
 import com.alpsbte.plotsystem.commands.review.CMD_Review;
 import com.alpsbte.plotsystem.commands.review.CMD_SendFeedback;
 import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
-import org.bukkit.Bukkit;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 public class CommandManager {
 
@@ -48,15 +50,22 @@ public class CommandManager {
             new CMD_EditPlot(),
             new CMD_Review(),
             new CMD_SendFeedback(),
-            new CMD_UndoReview()
+            new CMD_UndoReview(),
+            new CMD_CleanPlot(),
+            new CMD_DeletePlot(),
+            new CMD_PReload(),
+            new CMD_SetHologram()
     );
 
     public void init() {
         for (BaseCommand baseCmd : baseCommands) {
             for (String baseName : baseCmd.getNames()) {
-                Bukkit.getLogger().log(Level.INFO, baseName);
                 PlotSystem.getPlugin().getCommand(baseName).setExecutor(baseCmd);
             }
         }
+    }
+
+    public List<BaseCommand> getBaseCommands() {
+        return baseCommands;
     }
 }

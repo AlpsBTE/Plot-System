@@ -74,10 +74,10 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
     public void sendInfo(CommandSender sender) {
         List<String> lines = new ArrayList<>();
         if (!subCommands.isEmpty()) {
-            lines.add(Utils.getInfoMessageFormat(getNames()[0] + " Commands:"));
+            lines.add(Utils.getInfoMessageFormat(getNames()[0].substring(0, 1).toUpperCase() + getNames()[0].substring(1) + " Commands:"));
             lines.add("§8--------------------------");
             getSubCommands().forEach(sub -> {
-                StringBuilder subCommand = new StringBuilder("§b/" + getNames()[0] + " §6" + sub.getNames()[0] + "§7");
+                StringBuilder subCommand = new StringBuilder("§7§l> §b/" + getNames()[0] + " §6" + sub.getNames()[0] + "§7");
                 for (String parameter : sub.getParameter()) {
                     subCommand.append(" <").append(parameter).append(">");
                 }
@@ -86,7 +86,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
             });
             lines.add("§8--------------------------");
         } else {
-            StringBuilder baseCommand = new StringBuilder("§b/" + getNames()[0] + "§7");
+            StringBuilder baseCommand = new StringBuilder("§7§l> §b/" + getNames()[0] + "§7");
             for (String parameter : getParameter()) {
                 baseCommand.append(" <").append(parameter).append(">");
             }

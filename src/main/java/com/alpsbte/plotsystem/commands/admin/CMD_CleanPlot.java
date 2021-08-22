@@ -24,13 +24,13 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,19 +39,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class CMD_CleanPlot implements CommandExecutor {
+public class CMD_CleanPlot extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         List<Plot> plots = new ArrayList<>();
-        if (sender instanceof Player) {
-            if (!sender.hasPermission("alpsbte.admin")) {
-                return true;
-            }
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            return true;
         }
 
         // Get plot(s)
         try {
-            if (args.length == 1) {
+            if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("all")) {
                     plots.addAll(PlotManager.getPlots(Status.unclaimed, Status.unfinished, Status.unreviewed));
                 } else if (Utils.TryParseInt(args[0]) != null) {
@@ -63,14 +62,15 @@ public class CMD_CleanPlot implements CommandExecutor {
                         return true;
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/cleanplot <ID> or /cleanplot all"));
+                    sendInfo(sender);
                     return true;
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/cleanplot <ID> or /cleanplot all"));
+                sendInfo(sender);
                 return true;
             }
         } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return true;
         }
@@ -94,5 +94,25 @@ public class CMD_CleanPlot implements CommandExecutor {
     private void cleanPlot(Plot plot) {
         // TODO: Implement clean plot code
         // Waiting for commands rework to prevent copy paste code.
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "cleanplot" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Clean up / Refresh a plot due to bugs or updates.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "All/ID" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.admin.cleanplot";
     }
 }

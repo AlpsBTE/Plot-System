@@ -84,6 +84,6 @@ public class CMD_Plot_Links extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.links";
+        return "plotsystem.plot.links";
     }
 }

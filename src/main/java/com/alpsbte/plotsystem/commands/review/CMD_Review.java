@@ -71,7 +71,7 @@ public class CMD_Review extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Opens the review menu or review plot menu.";
     }
 
     @Override
@@ -81,6 +81,6 @@ public class CMD_Review extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.review";
+        return "plotsystem.review";
     }
 }

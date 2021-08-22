@@ -94,6 +94,6 @@ public class CMD_Plot_Invite extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.invite";
+        return "plotsystem.plot.invite";
     }
 }

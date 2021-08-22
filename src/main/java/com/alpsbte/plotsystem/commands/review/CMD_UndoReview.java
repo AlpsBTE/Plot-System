@@ -78,7 +78,7 @@ public class CMD_UndoReview extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Undo a review of a plot.";
     }
 
     @Override
@@ -88,6 +88,6 @@ public class CMD_UndoReview extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.review";
+        return "plotsystem.review.undoreview";
     }
 }

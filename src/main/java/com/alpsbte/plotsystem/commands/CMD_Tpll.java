@@ -155,6 +155,6 @@ public class CMD_Tpll extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.tpll";
+        return "plotsystem.tpll";
     }
 }

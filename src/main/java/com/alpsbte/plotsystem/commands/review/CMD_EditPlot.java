@@ -81,7 +81,7 @@ public class CMD_EditPlot extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Enables/disables build permissions for reviewers on a plot.";
     }
 
     @Override
@@ -91,6 +91,6 @@ public class CMD_EditPlot extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.editplot";
+        return "plotsystem.review.editplot";
     }
 }

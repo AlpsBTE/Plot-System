@@ -93,6 +93,6 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.undoSubmit";
+        return "plotsystem.plot.undosubmit";
     }
 }

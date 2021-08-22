@@ -51,7 +51,7 @@ public class CMD_Companion extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "Open the Companion menu (Display all city projects and manage your ongoing projects).";
+        return "Open the Companion menu (Displays all city projects and your ongoing projects).";
     }
 
     @Override
@@ -61,6 +61,6 @@ public class CMD_Companion extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.companion";
+        return "plotsystem.companion";
     }
 }

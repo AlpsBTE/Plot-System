@@ -98,6 +98,6 @@ public class CMD_Plot_Feedback extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.plot.feedback";
+        return "plotsystem.plot.feedback";
     }
 }

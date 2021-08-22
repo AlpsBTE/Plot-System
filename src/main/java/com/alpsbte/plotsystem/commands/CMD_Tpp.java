@@ -79,6 +79,6 @@ public class CMD_Tpp extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "alpsbte.tpp";
+        return "plotsystem.tpp";
     }
 }
