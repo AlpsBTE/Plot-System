@@ -147,16 +147,16 @@ public class PlotSystem extends JavaPlugin {
             //this.getCommand("abandon").setExecutor(new CMD_Plot_Abandon());
             //this.getCommand("undosubmit").setExecutor(new CMD_Plot_UndoSubmit());
             //this.getCommand("feedback").setExecutor(new CMD_Plot_Feedback());
-            this.getCommand("plots").setExecutor(new CMD_Plots());
+            //this.getCommand("plots").setExecutor(new CMD_Plots());
             //this.getCommand("tpll").setExecutor(new CMD_Tpll());
            //this.getCommand("invite").setExecutor(new CMD_Invite());
 
             // Add reviewer commands [alpsbte.review Permission]
             //this.getCommand("plot").setExecutor(new CMD_Plot());
-            this.getCommand("review").setExecutor(new CMD_Review());
-            this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
-            this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
-            this.getCommand("editplot").setExecutor(new CMD_EditPlot());
+            //this.getCommand("review").setExecutor(new CMD_Review());
+            //this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
+            //this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
+            //this.getCommand("editplot").setExecutor(new CMD_EditPlot());
 
             // Add admin commands [alpsbte.admin Permission]
             this.getCommand("cleanplot").setExecutor(new CMD_CleanPlot());

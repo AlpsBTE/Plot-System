@@ -26,6 +26,10 @@ package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
+import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
+import com.alpsbte.plotsystem.commands.review.CMD_Review;
+import com.alpsbte.plotsystem.commands.review.CMD_SendFeedback;
+import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
 import org.bukkit.Bukkit;
 
 import java.util.Arrays;
@@ -40,7 +44,11 @@ public class CommandManager {
             new CMD_Tpp(),
             new CMD_Plot(),
             new CMD_Tpll(),
-            new CMD_Plots()
+            new CMD_Plots(),
+            new CMD_EditPlot(),
+            new CMD_Review(),
+            new CMD_SendFeedback(),
+            new CMD_UndoReview()
     );
 
     public void init() {
