@@ -39,6 +39,8 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,7 +48,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.TrapDoor;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -148,6 +152,27 @@ public class EventListener extends SpecialBlocks implements Listener {
                 new CompanionMenu(event.getPlayer());
             } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
+            }
+        }
+
+        // Open/Close iron trap door when right-clicking
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            if (event.getHand() != EquipmentSlot.OFF_HAND) {
+                if (!event.getPlayer().isSneaking()){
+                    if (event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
+                        BlockState state = event.getClickedBlock().getState();
+                        TrapDoor tp = (TrapDoor) state.getData();
+
+                        if (!tp.isOpen()) {
+                            tp.setOpen(true);
+                            event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.open", 1f, 1f);
+                        } else {
+                            tp.setOpen(false);
+                            event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.close", 1f, 1f);
+                        }
+                        state.update();
+                    }
+                }
             }
         }
     }
