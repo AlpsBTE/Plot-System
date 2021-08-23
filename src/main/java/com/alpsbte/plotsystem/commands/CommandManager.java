@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
 import com.alpsbte.plotsystem.commands.admin.CMD_SetHologram;
+import com.alpsbte.plotsystem.commands.admin.setup.CMD_Setup;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
 import com.alpsbte.plotsystem.commands.review.CMD_Review;
@@ -53,7 +54,8 @@ public class CommandManager {
             new CMD_CleanPlot(),
             new CMD_DeletePlot(),
             new CMD_PReload(),
-            new CMD_SetHologram()
+            new CMD_SetHologram(),
+            new CMD_Setup()
     );
 
     public void init() {
