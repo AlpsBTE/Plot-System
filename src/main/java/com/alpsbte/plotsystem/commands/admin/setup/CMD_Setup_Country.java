@@ -61,7 +61,7 @@ public class CMD_Setup_Country extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Configure countries";
     }
 
     @Override

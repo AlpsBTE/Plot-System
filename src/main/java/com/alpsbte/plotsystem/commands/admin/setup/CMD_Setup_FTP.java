@@ -61,7 +61,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Configure SFTP/FTP configurations";
     }
 
     @Override

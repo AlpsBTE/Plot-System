@@ -62,7 +62,7 @@ public class CMD_Setup_Server extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Configure servers";
     }
 
     @Override

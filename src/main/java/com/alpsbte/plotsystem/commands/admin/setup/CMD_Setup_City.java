@@ -64,7 +64,7 @@ public class CMD_Setup_City extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Configure city projects";
     }
 
     @Override
