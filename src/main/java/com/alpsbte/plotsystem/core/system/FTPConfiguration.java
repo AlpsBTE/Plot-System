@@ -77,30 +77,25 @@ public class FTPConfiguration {
         return new ArrayList<>();
     }
 
-    public static boolean add(String address, int port, String username, String password) throws SQLException {
+    public static void addFTPConfiguration(String address, int port, String username, String password) throws SQLException {
         if (getFTPConfigurations().stream().noneMatch(ftp -> ftp.getAddress().equals(address))) {
-            DatabaseConnection.createStatement("INSERT INTO plotsystem_ftp_configurations (address, port, username, password) VALUES (?, ?, ?, ?)")
+            DatabaseConnection.createStatement("INSERT INTO plotsystem_ftp_configurations (id, address, port, username, password) VALUES (?, ?, ?, ?, ?)")
+                    .setValue(DatabaseConnection.getTableID("plotsystem_ftp_configurations"))
                     .setValue(address).setValue(port).setValue(username).setValue(password).executeUpdate();
-            return true;
         }
-        return false;
     }
 
-    public static boolean remove(int ID) throws SQLException {
+    public static void removeFTPConfiguration(int ID) throws SQLException {
         if (getFTPConfigurations().stream().anyMatch(ftp -> ftp.getID() == ID)) {
             DatabaseConnection.createStatement("DELETE FROM plotsystem_ftp_configurations WHERE id = ?")
                     .setValue(ID).executeUpdate();
-            return true;
         }
-        return false;
     }
 
-    public static boolean setSchematicPath(int ID, String path) throws SQLException {
+    public static void setSchematicPath(int ID, String path) throws SQLException {
         if (getFTPConfigurations().stream().anyMatch(ftp -> ftp.getID() == ID)) {
-            DatabaseConnection.createStatement("UPDATE plotsystem_ftp_configurations SET schematic_path = ? WHERE id = ?")
+            DatabaseConnection.createStatement("UPDATE plotsystem_ftp_configurations SET schematics_path = ? WHERE id = ?")
                     .setValue(path).setValue(ID).executeUpdate();
-            return true;
         }
-        return false;
     }
 }
