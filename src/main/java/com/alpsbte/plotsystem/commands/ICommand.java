@@ -27,34 +27,29 @@ package com.alpsbte.plotsystem.commands;
 import org.bukkit.command.CommandSender;
 
 public interface ICommand {
-
     /**
-     *
-     * @return
+     * @return Command Name(s)
      */
     String[] getNames();
 
     /**
-     *
-     * @return
+     * @return Command Description
      */
     String getDescription();
 
     /**
-     *
-     * @return
+     * @return Command Parameter(s)
      */
     String[] getParameter();
 
     /**
-     *
-     * @return
+     * @return Command Permission
      */
     String getPermission();
 
     /**
-     *
-     * @param sender
+     * Lists all relevant commands to the player
+     * @param sender player or console
      */
     void sendInfo(CommandSender sender);
 }

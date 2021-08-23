@@ -37,6 +37,11 @@ import java.util.List;
 public abstract class BaseCommand implements CommandExecutor, ICommand {
     private final List<SubCommand> subCommands = new ArrayList<>();
 
+    /**
+     * Executes base command and checks for sub commands
+     * @param sender player or console
+     * @param args parameter
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (args.length > 0) {
@@ -76,14 +81,26 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
         return true;
     }
 
+    /**
+     * @return All sub commands
+     */
     public List<SubCommand> getSubCommands() {
         return subCommands;
     }
 
+    /**
+     * Gets the player
+     * @param sender player
+     * @return null if sender is not a player
+     */
     protected Player getPlayer(CommandSender sender) {
         return sender instanceof Player ? (Player) sender : null;
     }
 
+    /**
+     * Registers sub command
+     * @param subCommand base sub command
+     */
     protected void registerSubCommand(SubCommand subCommand) {
         subCommands.add(subCommand);
     }

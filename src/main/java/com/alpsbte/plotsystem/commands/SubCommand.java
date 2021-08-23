@@ -47,24 +47,47 @@ public abstract class SubCommand implements ICommand {
         this.subCommand = subCommand;
     }
 
+    /**
+     * Executes sub command
+     * @param sender player or console
+     * @param args parameter
+     */
     public abstract void onCommand(CommandSender sender, String[] args);
 
+    /**
+     * Gets the player
+     * @param sender player
+     * @return null if sender is not a player
+     */
     protected Player getPlayer(CommandSender sender) {
         return sender instanceof Player ? (Player) sender : null;
     }
 
+    /**
+     * Registers sub command
+     * @param subCommand this
+     */
     public void registerSubCommand(SubCommand subCommand) {
         subCommands.add(subCommand);
     }
 
+    /**
+     * @return Base Command
+     */
     public BaseCommand getBaseCommand() {
         return baseCommand;
     }
 
+    /**
+     * @return Sub Command (if it exists)
+     */
     public SubCommand getSubCommand() {
         return subCommand;
     }
 
+    /**
+     * @return All sub commands
+     */
     public List<SubCommand> getSubCommands() {
         return subCommands;
     }
