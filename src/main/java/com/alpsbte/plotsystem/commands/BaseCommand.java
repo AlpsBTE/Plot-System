@@ -64,7 +64,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
             }
 
             if (subCommand == null) {
-                sender.sendMessage("This sub command does not exist!");
+                sendInfo(sender);
             } else {
                 if (!sender.hasPermission(subCommand.getPermission())) {
                     sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to execute this command!"));
@@ -99,7 +99,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
                 for (String parameter : sub.getParameter()) {
                     subCommand.append(" <").append(parameter).append(">");
                 }
-                subCommand.append(" §f- ").append(sub.getDescription());
+                if (sub.getDescription() != null) subCommand.append(" §f- ").append(sub.getDescription());
                 lines.add(subCommand.toString());
             });
             lines.add("§8--------------------------");
@@ -108,7 +108,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
             for (String parameter : getParameter()) {
                 baseCommand.append(" <").append(parameter).append(">");
             }
-            baseCommand.append(" §f- ").append(getDescription());
+            if (getDescription() != null) baseCommand.append(" §f- ").append(getDescription());
             lines.add(baseCommand.toString());
         }
         lines.forEach(sender::sendMessage);

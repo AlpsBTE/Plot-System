@@ -80,7 +80,7 @@ public abstract class SubCommand implements ICommand {
                 for (String parameter : sub.getParameter()) {
                     subCommand.append(" <").append(parameter).append(">");
                 }
-                subCommand.append(" §f- ").append(sub.getDescription());
+                if (sub.getDescription() != null) subCommand.append(" §f- ").append(sub.getDescription());
                 lines.add(subCommand.toString());
             });
             lines.add("§8--------------------------");
@@ -89,7 +89,7 @@ public abstract class SubCommand implements ICommand {
             for (String parameter : getParameter()) {
                 baseCommand.append(" <").append(parameter).append(">");
             }
-            baseCommand.append(" §f- ").append(getDescription());
+            if (getDescription() != null) baseCommand.append(" §f- ").append(getDescription());
             lines.add(baseCommand.toString());
         }
         lines.forEach(sender::sendMessage);
