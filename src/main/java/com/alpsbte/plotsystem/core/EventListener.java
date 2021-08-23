@@ -175,6 +175,17 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
+    public void onPlayerWorldChangeEvent(PlayerChangedWorldEvent event) {
+        if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
+
+            if (event.getPlayer().hasPermission("plotsystem.review")) {
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
+            }
+        }
+    }
+
+    @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event){
         if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem())){
             event.setCancelled(true);
