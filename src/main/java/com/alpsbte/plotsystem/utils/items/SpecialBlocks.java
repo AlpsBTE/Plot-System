@@ -55,7 +55,9 @@ public class SpecialBlocks {
     public static ItemStack RedMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
             .setName("§6§lRed Mushroom").setLore(new LoreBuilder()
                 .emptyLine()
-                .addLine("Use this tool to place a §fRed Mushroom§7 block.")
+                .addLines("Use this tool to place a §fRed Mushroom§7 block.",
+                        "",
+                        "§7ID: §b100")
                 .emptyLine()
             .build())
             .setEnchantment(true)
@@ -64,7 +66,9 @@ public class SpecialBlocks {
     public static ItemStack BrownMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_1, 1)
             .setName("§6§lBrown Mushroom Block").setLore(new LoreBuilder()
                 .emptyLine()
-                .addLine("Use this tool to place a §fBrown Mushroom§7 block.")
+                .addLines("Use this tool to place a §fBrown Mushroom§7 block.",
+                        "",
+                        "§7ID: §b99")
                 .emptyLine()
             .build())
             .setEnchantment(true)
@@ -95,7 +99,9 @@ public class SpecialBlocks {
     public static ItemStack Barrier = new ItemBuilder(Material.BARRIER, 1)
             .setName("§6§lBarrier").setLore(new LoreBuilder()
                 .emptyLine()
-                .addLine("Use this tool to place an §fInvisible§7 block.")
+                .addLines("Use this tool to place an §fInvisible§7 block.",
+                        "",
+                        "§7ID: §b166")
                 .emptyLine()
             .build())
             .setEnchantment(true)
