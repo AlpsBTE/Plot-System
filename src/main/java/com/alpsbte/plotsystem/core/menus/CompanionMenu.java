@@ -130,7 +130,7 @@ public class CompanionMenu extends AbstractMenu {
 
         // Set city project items
         try {
-            cityProjects = CityProject.getCityProjects();
+            cityProjects = CityProject.getCityProjects(true);
             setCityProjectItems();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

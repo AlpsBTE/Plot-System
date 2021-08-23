@@ -76,14 +76,14 @@ public class CityProject {
         return visible;
     }
 
-    public static List<CityProject> getCityProjects() {
+    public static List<CityProject> getCityProjects(boolean onlyVisible) {
         try {
             ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery();
 
             List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {
                 CityProject city = new CityProject(rs.getInt(1));
-                if(city.isVisible()) {
+                if(city.isVisible() || !onlyVisible) {
                     cityProjects.add(city);
                 }
             }
