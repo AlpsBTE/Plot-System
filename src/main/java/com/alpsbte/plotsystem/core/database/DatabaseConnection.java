@@ -116,6 +116,26 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Returns a missing auto increment id
+     * @param table in the database
+     * @return smallest missing auto increment id in the table
+     */
+    public static int getTableID(String table) {
+        try {
+            String query ="SELECT id + 1 available_id FROM $table t WHERE NOT EXISTS (SELECT * FROM $table WHERE $table.id = t.id + 1) ORDER BY id LIMIT 1"
+                    .replace("$table", table);
+            ResultSet rs = DatabaseConnection.createStatement(query).executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 1;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return 1;
+        }
+    }
+
     public static class StatementBuilder {
         private final String sql;
         private final List<Object> values = new ArrayList<>();
