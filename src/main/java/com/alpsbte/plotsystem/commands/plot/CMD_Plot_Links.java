@@ -22,52 +22,68 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands;
+package com.alpsbte.plotsystem.commands.plot;
 
+import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-public class CMD_Spawn extends BaseCommand {
+import java.sql.SQLException;
+import java.util.logging.Level;
+
+public class CMD_Plot_Links extends SubCommand {
+
+    public CMD_Plot_Links(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
+    public void onCommand(CommandSender sender, String[] args) {
+        try {
             if (getPlayer(sender) != null) {
-                Player player = (Player) sender;
-
-                player.teleport(Utils.getSpawnLocation());
-                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to spawn..."));
-                player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
+                if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+                    int plotID = Integer.parseInt(args[0]);
+                    if (PlotManager.plotExists(plotID)) {
+                        PlotHandler.sendLinkMessages(new Plot(plotID), getPlayer(sender));
+                    } else {
+                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                    }
+                } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
+                    PlotHandler.sendLinkMessages(PlotManager.getPlotByWorld(getPlayer(sender).getWorld()), getPlayer(sender));
+                } else {
+                    sendInfo(sender);
+                }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
-        } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "spawn" };
+        return new String[] { "links", "link" };
     }
 
     @Override
     public String getDescription() {
-        return "Teleport to the spawn point.";
+        return "Sends you the links of the plot you are currently on.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[0];
+        return new String[] { "ID" };
     }
 
     @Override
     public String getPermission() {
-        return "plotsystem.spawn";
+        return "plotsystem.plot.links";
     }
 }

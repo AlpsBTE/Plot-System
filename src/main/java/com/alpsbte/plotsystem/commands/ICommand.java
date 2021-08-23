@@ -22,35 +22,34 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
-import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
+public interface ICommand {
+    /**
+     * @return Command Name(s)
+     */
+    String[] getNames();
 
-public class CMD_GeneratePlot implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender instanceof Player) {
-            if(sender.hasPermission("alpsbte.admin")) {
-                if(Utils.TryParseInt(args[0]) != null) {
-                    try {
-                        new PlotGenerator(new Plot(Integer.parseInt(args[0])), new Builder(((Player) sender).getUniqueId()));
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
-                }
-            }
-        }
-        return true;
-    }
+    /**
+     * @return Command Description
+     */
+    String getDescription();
+
+    /**
+     * @return Command Parameter(s)
+     */
+    String[] getParameter();
+
+    /**
+     * @return Command Permission
+     */
+    String getPermission();
+
+    /**
+     * Lists all relevant commands to the player
+     * @param sender player or console
+     */
+    void sendInfo(CommandSender sender);
 }

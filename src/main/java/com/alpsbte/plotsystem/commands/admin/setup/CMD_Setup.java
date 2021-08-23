@@ -22,50 +22,38 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.admin;
+package com.alpsbte.plotsystem.commands.admin.setup;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.logging.Level;
+public class CMD_Setup extends BaseCommand {
 
-public class CMD_PReload extends BaseCommand {
+    public CMD_Setup() {
+        registerSubCommand(new CMD_Setup_FTP(this));
+        registerSubCommand(new CMD_Setup_Server(this));
+        registerSubCommand(new CMD_Setup_Country(this));
+        registerSubCommand(new CMD_Setup_City(this));
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())){
-            try {
-                PlotSystem.getPlugin().getConfigManager().reloadConfigs();
-                PlotSystem.getPlugin().getConfigManager().saveConfigs();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
-
-                PlotSystem.reloadHolograms();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
-
-                DatabaseConnection.InitializeDatabase();
-            } catch (Exception ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+        if (args.length == 0) {
+            sendInfo(sender);
         }
-        return true;
+
+        return super.onCommand(sender, cmd, s, args);
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "preload" };
+        return new String[] { "pss" };
     }
 
     @Override
     public String getDescription() {
-        return "Reloads configuration files and holograms.";
+        return "";
     }
 
     @Override
@@ -75,6 +63,6 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.preload";
+        return "plotsystem.admin.pss";
     }
 }

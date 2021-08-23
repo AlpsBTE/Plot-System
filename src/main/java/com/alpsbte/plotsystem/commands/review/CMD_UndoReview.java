@@ -24,30 +24,29 @@
 
 package com.alpsbte.plotsystem.commands.review;
 
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_UndoReview implements CommandExecutor {
+public class CMD_UndoReview extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender.hasPermission("alpsbte.review")) {
-            if(args.length == 1 && Utils.TryParseInt(args[0]) != null) {
-                try {
+        if(sender.hasPermission(getPermission())) {
+            try {
+                if(args.length > 0 && Utils.TryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     if(PlotManager.plotExists(plotID)) {
                         Plot plot = new Plot(plotID);
-                        if(plot.isReviewed() && !plot.isRejected()) {
-                            if(plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId()) || sender.hasPermission("alpsbte.admin")) {
+                        if(plot.isReviewed()) {
+                            if(getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(getPlayer(sender).getUniqueId())) {
                                 Review.undoReview(plot.getReview());
                                 sender.sendMessage((Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been unreviewed!")));
                             } else {
@@ -59,14 +58,36 @@ public class CMD_UndoReview implements CommandExecutor {
                     } else {
                         sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    sender.sendMessage(Utils.getErrorMessageFormat(""));
+                } else {
+                    sendInfo(sender);
                 }
-            } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/undoReview <ID>"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "undoReview" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Undo a review of a plot.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "ID" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.review.undoreview";
     }
 }

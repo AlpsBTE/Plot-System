@@ -42,7 +42,6 @@ public class CityProject {
     private String description;
     private boolean visible;
 
-
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
@@ -77,15 +76,14 @@ public class CityProject {
         return visible;
     }
 
-
-    public static List<CityProject> getCityProjects() {
+    public static List<CityProject> getCityProjects(boolean onlyVisible) {
         try {
             ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery();
 
             List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {
                 CityProject city = new CityProject(rs.getInt(1));
-                if(city.isVisible()) {
+                if(city.isVisible() || !onlyVisible) {
                     cityProjects.add(city);
                 }
             }
@@ -94,5 +92,36 @@ public class CityProject {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return new ArrayList<>();
+    }
+
+    public static void addCityProject(Country country, String name) throws SQLException {
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description) VALUES (?, ?, ?, ?)")
+                .setValue(DatabaseConnection.getTableID("plotsystem_city_projects"))
+                .setValue(name)
+                .setValue(country.getID())
+                .setValue("").executeUpdate();
+    }
+
+    public static void removeCityProject(int id) throws SQLException {
+        DatabaseConnection.createStatement("DELETE FROM plotsystem_city_projects WHERE id = ?")
+                .setValue(id).executeUpdate();
+    }
+
+    public static void setCityProjectName(int id, String newName) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET name = ? WHERE id = ?")
+                .setValue(newName)
+                .setValue(id).executeUpdate();
+    }
+
+    public static void setCityProjectDescription(int id, String description) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET description = ? WHERE id = ?")
+                .setValue(description)
+                .setValue(id).executeUpdate();
+    }
+
+    public static void setCityProjectVisibility(int id, boolean isEnabled) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET visible = ? WHERE id = ?")
+                .setValue(isEnabled ? 1 : 0)
+                .setValue(id).executeUpdate();
     }
 }

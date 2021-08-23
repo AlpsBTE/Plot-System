@@ -27,30 +27,59 @@ package com.alpsbte.plotsystem.commands;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMD_Tpp implements CommandExecutor {
+@Deprecated
+public class CMD_Tpp extends BaseCommand {
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender instanceof Player) {
-            Player player = (Player) sender;
-            try {
-                Player targetPlayer = player.getServer().getPlayer(args[0]);
-                player.teleport(targetPlayer);
-                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
+        if (sender.hasPermission(getPermission())) {
+            if(getPlayer(sender) != null) {
+                Player player = (Player) sender;
+                try {
+                    Player targetPlayer = player.getServer().getPlayer(args[0]);
+                    player.teleport(targetPlayer);
+                    player.sendMessage(Utils.getInfoMessageFormat("Teleporting to player..."));
 
-                player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-
-                if (player.hasPermission("alpsbte.review")) {
-                    player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+                    player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+                    if (player.hasPermission("plotsystem.review")) {
+                        player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+                    }
+                } catch (Exception ignore) {
+                    sendInfo(sender);
                 }
-            } catch (Exception ignore) {
-                sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpp <Player>"));
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
+
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "tpp" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Teleport to a specific player.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "Player" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.tpp";
     }
 }

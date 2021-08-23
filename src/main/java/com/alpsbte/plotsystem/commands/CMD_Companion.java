@@ -22,22 +22,45 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.plot;
+package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMD_Companion implements CommandExecutor {
+public class CMD_Companion extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            if(sender.hasPermission("alpsbte.plot")) {
+        if (sender.hasPermission(getPermission())) {
+            if (getPlayer(sender) != null) {
                 new CompanionMenu((Player) sender);
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
+
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "companion" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Open the Companion menu (Displays all city projects and your ongoing projects).";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[0];
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.companion";
     }
 }

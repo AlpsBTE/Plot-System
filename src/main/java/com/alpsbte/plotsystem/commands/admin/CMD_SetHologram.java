@@ -25,20 +25,22 @@
 package com.alpsbte.plotsystem.commands.admin;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMD_SetHologram implements CommandExecutor {
+public class CMD_SetHologram extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            Player player = (Player)sender;
-            if (sender.hasPermission("alpsbte.admin")){
+        if (sender.hasPermission(getPermission())){
+            if (getPlayer(sender) != null){
+                Player player = (Player)sender;
                 if (args.length == 1) {
                     // Find hologram by name
                     HolographicDisplay hologram = PlotSystem.getHolograms().stream()
@@ -57,16 +59,40 @@ public class CMD_SetHologram implements CommandExecutor {
                         player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sethologram <name>"));
-                    player.sendMessage("§7------- §6§lHolograms §7-------");
+                    sendInfo(sender);
+                    player.sendMessage("§8------- §6§lHolograms §8-------");
                     for(HolographicDisplay holo : PlotSystem.getHolograms()) {
                         player.sendMessage(" §6> §f" + holo.getHologramName());
                     }
-                    player.sendMessage("§7--------------------------");
+                    player.sendMessage("§8--------------------------");
                 }
 
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "sethologram" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Sets the position of a hologram.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "Name" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.admin.sethologram";
     }
 }

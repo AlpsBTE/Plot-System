@@ -24,14 +24,8 @@
 
 package com.alpsbte.plotsystem;
 
-import com.alpsbte.plotsystem.commands.CMD_Spawn;
-import com.alpsbte.plotsystem.commands.CMD_Tpp;
+import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
-import com.alpsbte.plotsystem.commands.plot.*;
-import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
-import com.alpsbte.plotsystem.commands.review.CMD_Review;
-import com.alpsbte.plotsystem.commands.review.CMD_SendFeedback;
-import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
 import com.alpsbte.plotsystem.core.config.ConfigManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
@@ -57,11 +51,13 @@ import org.ipvp.canvas.MenuFunctionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
 
     private static PlotSystem plugin;
     private ConfigManager configManager;
+    private CommandManager commandManager;
 
     private static final List<HolographicDisplay> holograms = Arrays.asList(
       new ScoreLeaderboard(),
@@ -132,40 +128,13 @@ public class PlotSystem extends JavaPlugin {
 
         // Register commands
         try {
-            // Add default commands [No Permissions]
-            this.getCommand("spawn").setExecutor(new CMD_Spawn());
-            this.getCommand("hub").setExecutor(new CMD_Spawn());
-            this.getCommand("tpp").setExecutor(new CMD_Tpp());
-            this.getCommand("tpll").setExecutor(new CMD_Tpll());
-
-            // Add plot commands [alpsbte.plot Permission]
-            this.getCommand("companion").setExecutor(new CMD_Companion());
-            this.getCommand("link").setExecutor(new CMD_Links());
-            this.getCommand("submit").setExecutor(new CMD_Submit());
-            this.getCommand("abandon").setExecutor(new CMD_Abandon());
-            this.getCommand("undosubmit").setExecutor(new CMD_UndoSubmit());
-            this.getCommand("feedback").setExecutor(new CMD_Feedback());
-            this.getCommand("plots").setExecutor(new CMD_Plots());
-            this.getCommand("tpll").setExecutor(new CMD_Tpll());
-            this.getCommand("invite").setExecutor(new CMD_Invite());
-
-            // Add reviewer commands [alpsbte.review Permission]
-            this.getCommand("plot").setExecutor(new CMD_Plot());
-            this.getCommand("review").setExecutor(new CMD_Review());
-            this.getCommand("undoreview").setExecutor(new CMD_UndoReview());
-            this.getCommand("sendfeedback").setExecutor(new CMD_SendFeedback());
-            this.getCommand("editplot").setExecutor(new CMD_EditPlot());
-
-            // Add admin commands [alpsbte.admin Permission]
-            this.getCommand("cleanplot").setExecutor(new CMD_CleanPlot());
-            this.getCommand("deleteplot").setExecutor(new CMD_DeletePlot());
-            this.getCommand("generateplot").setExecutor(new CMD_GeneratePlot());
-            this.getCommand("sethologram").setExecutor(new CMD_SetHologram());
-            this.getCommand("preload").setExecutor(new CMD_PReload());
+            commandManager = new CommandManager();
+            commandManager.init();
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered commands.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register commands.");
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, "", ex);
 
             plugin.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -227,6 +196,10 @@ public class PlotSystem extends JavaPlugin {
 
     public static PlotSystem getPlugin() {
         return plugin;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public static List<HolographicDisplay> getHolograms() { return holograms; }

@@ -43,7 +43,7 @@ public class Server {
     }
 
     public static List<Server> getServers() {
-        try {;
+        try {
             ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_servers").executeQuery();
 
             List<Server> servers = new ArrayList<>();
@@ -57,56 +57,25 @@ public class Server {
         return new ArrayList<>();
     }
 
-    public static class FTPConfiguration {
-        private final int ID;
+    public static void addServer(String name) throws SQLException {
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_servers (id, name) VALUES (?, ?)")
+                .setValue(DatabaseConnection.getTableID("plotsystem_servers"))
+                .setValue(name).executeUpdate();
+    }
 
-        private String schematicPath;
-        private String address;
-        private int port;
-        private String username;
-        private String password;
+    public static void removeServer(int serverID) throws SQLException {
+        DatabaseConnection.createStatement("DELETE FROM plotsystem_servers WHERE id = ?")
+                .setValue(serverID).executeUpdate();
+    }
 
-        public FTPConfiguration(int ID) throws SQLException {
-            this.ID = ID;
-
-            ResultSet rs = DatabaseConnection.createStatement("SELECT schematics_path, address, port, username, password FROM plotsystem_ftp_configurations WHERE id = ?")
-                    .setValue(this.ID).executeQuery();
-
-            if (rs.next()) {
-                this.schematicPath = rs.getString(1);
-                this.address = rs.getString(2);
-                this.port = rs.getInt(3);
-                this.username = rs.getString(4);
-                this.password = rs.getString(5);
-            }
-        }
-
-        public int getID() {
-            return ID;
-        }
-
-        public String getSchematicPath() {
-            if (schematicPath != null) {
-                schematicPath = !schematicPath.startsWith("/") ? File.separator + schematicPath : schematicPath;
-                schematicPath = schematicPath.endsWith("/") ? schematicPath.substring(0, schematicPath.length() - 1) : schematicPath;
-            }
-            return schematicPath;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
+    public static void setFTP(int serverID, int ftpID) throws SQLException {
+        if (ftpID != -1) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_servers SET ftp_configuration_id = ? WHERE id = ?")
+                    .setValue(ftpID)
+                    .setValue(serverID).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_servers SET ftp_configuration_id = DEFAULT WHERE id = ?")
+                    .setValue(serverID).executeUpdate();
         }
     }
 }

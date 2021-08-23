@@ -24,61 +24,76 @@
 
 package com.alpsbte.plotsystem.commands.review;
 
+import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_SendFeedback implements CommandExecutor {
+public class CMD_SendFeedback extends BaseCommand {
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender instanceof Player){
-            Player player = (Player)sender;
-            if (player.hasPermission("alpsbte.review")){
-                if (args.length >= 2){
-                    if (Utils.TryParseInt(args[0]) != null){
-                        try {
-                            if(PlotManager.plotExists(Integer.parseInt(args[0]))) {
-                                Plot plot = new Plot(Integer.parseInt(args[0]));
-                                if (plot.isReviewed() || plot.isRejected()) {
-                                    if (plot.getReview().getReviewer().getUUID().equals(player.getUniqueId()) || player.hasPermission("alpsbte.admin")){
-
-                                        StringBuilder feedback = new StringBuilder();
-
-                                        for(int i = 2; i <= args.length; i++) {
-                                            feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
-                                        }
-
-                                        plot.getReview().setFeedback(feedback.toString());
-
-                                        player.sendMessage(Utils.getInfoMessageFormat("The feedback for the plot §6#" + plot.getID() + " §ahas been updated!"));
-
-
-                                    } else {
-                                        sender.sendMessage(Utils.getErrorMessageFormat("You cannot send feedback to a plot that you haven't reviewed yourself!"));
-                                    }
-                                } else {
-                                    sender.sendMessage(Utils.getErrorMessageFormat("Plot is either unclaimed or hasn't been reviewed yet!"));
+        if (sender.hasPermission(getPermission())) {
+            try {
+                if (args.length > 1 && Utils.TryParseInt(args[0]) != null){
+                    int plotID = Integer.parseInt(args[0]);
+                    if(PlotManager.plotExists(plotID)) {
+                        Plot plot = new Plot(Integer.parseInt(args[0]));
+                        if (plot.isReviewed() || plot.isRejected()) {
+                            if (getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
+                                StringBuilder feedback = new StringBuilder();
+                                for(int i = 2; i <= args.length; i++) {
+                                    feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
                                 }
+                                plot.getReview().setFeedback(feedback.toString());
+
+                                sender.sendMessage(Utils.getInfoMessageFormat("The feedback for the plot §6#" + plot.getID() + " §ahas been updated!"));
                             } else {
-                                sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                                sender.sendMessage(Utils.getErrorMessageFormat("You cannot send feedback to a plot that you haven't reviewed yourself!"));
                             }
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        } else {
+                            sender.sendMessage(Utils.getErrorMessageFormat("Plot is either unclaimed or hasn't been reviewed yet!"));
                         }
+                    } else {
+                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/sendfeedback <ID> <Text>"));
+                    sendInfo(sender);
                 }
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
+        } else {
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[] { "sendFeedback" };
+    }
+
+    @Override
+    public String getDescription() {
+        return "Updates feedback of a plot.";
+    }
+
+    @Override
+    public String[] getParameter() {
+        return new String[] { "ID", "Name" };
+    }
+
+    @Override
+    public String getPermission() {
+        return "plotsystem.review.sendfeedback";
     }
 }

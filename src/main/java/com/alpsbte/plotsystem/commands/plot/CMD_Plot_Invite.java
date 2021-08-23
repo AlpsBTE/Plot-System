@@ -22,65 +22,78 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.review;
+package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.utils.Invitation;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_Review extends BaseCommand {
+public class CMD_Plot_Invite extends SubCommand {
+
+    public CMD_Plot_Invite(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
+    public void onCommand(CommandSender sender, String[] args) {
+        if (args.length > 0) {
             if (getPlayer(sender) != null) {
-                try {
-                    Player player = (Player) sender;
-                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getPlotByWorld(player.getWorld()).getStatus() == Status.unreviewed) {
-                        new ReviewPlotMenu(player, PlotManager.getPlotByWorld(player.getWorld()));
-                    } else {
-                        new ReviewMenu(player);
+                Invitation invite = null;
+                for (Invitation item : Invitation.invitationsList) {
+                    if (item.invitee == getPlayer(sender)){
+                        invite = item;
+                        try {
+                            switch (args[0]){
+                                case "accept":
+                                    item.AcceptInvite();
+                                    break;
+                                case "deny":
+                                    item.RejectInvite();
+                                    break;
+                                default:
+                                    sendInfo(sender);
+                                    break;
+                            }
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
                     }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+
+                if (invite != null) {
+                    Invitation.invitationsList.remove(invite);
+                } else {
+                    sender.sendMessage(Utils.getErrorMessageFormat("You have no invitations!"));
+                }
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+           sendInfo(sender);
         }
-        return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "review" };
+        return new String[] { "invite" };
     }
 
     @Override
     public String getDescription() {
-        return "Opens the review menu or review plot menu.";
+        return "Accept or deny incoming invitations.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[0];
+        return new String[] { "Accept/Deny" };
     }
 
     @Override
     public String getPermission() {
-        return "plotsystem.review";
+        return "plotsystem.plot.invite";
     }
 }

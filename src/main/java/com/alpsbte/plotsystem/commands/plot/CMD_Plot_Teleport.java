@@ -22,65 +22,72 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.review;
+package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
+import com.alpsbte.plotsystem.commands.ICommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_Review extends BaseCommand {
+public class CMD_Plot_Teleport extends SubCommand implements ICommand {
+
+    public CMD_Plot_Teleport(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
+    public void onCommand(CommandSender sender, String[] args) {
+        try {
             if (getPlayer(sender) != null) {
-                try {
-                    Player player = (Player) sender;
-                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getPlotByWorld(player.getWorld()).getStatus() == Status.unreviewed) {
-                        new ReviewPlotMenu(player, PlotManager.getPlotByWorld(player.getWorld()));
+                if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+                    int plotID = Integer.parseInt(args[0]);
+                    if (PlotManager.plotExists(plotID)) {
+                        PlotHandler.teleportPlayer(new Plot(plotID), getPlayer(sender));
+                    } else if (sender.hasPermission("alpsbte.plot.teleport.admin")) {
+                        // new PlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
+                        // TODO: Unfinished feature / Waiting for PlotGenerator rework
+                        // Currently there are no queries, which can lead to errors.
                     } else {
-                        new ReviewMenu(player);
+                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                } else {
+                    sendInfo(sender);
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
-        } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "review" };
+        return new String[] { "tp", "teleport" };
     }
 
     @Override
     public String getDescription() {
-        return "Opens the review menu or review plot menu.";
+        return "Teleport to a plot.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[0];
+        return new String[] { "ID" };
     }
 
     @Override
     public String getPermission() {
-        return "plotsystem.review";
+        return "plotsystem.plot.teleport";
     }
 }

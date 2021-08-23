@@ -22,97 +22,82 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.admin;
+package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.menus.FeedbackMenu;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
-public class CMD_CleanPlot extends BaseCommand {
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        List<Plot> plots = new ArrayList<>();
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
-            return true;
-        }
+public class CMD_Plot_Feedback extends SubCommand {
 
-        // Get plot(s)
+    public CMD_Plot_Feedback(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
+    @Override
+    public void onCommand(CommandSender sender, String[] args) {
         try {
-            if (args.length > 0) {
-                if (args[0].equalsIgnoreCase("all")) {
-                    plots.addAll(PlotManager.getPlots(Status.unclaimed, Status.unfinished, Status.unreviewed));
-                } else if (Utils.TryParseInt(args[0]) != null) {
+            if (getPlayer(sender) != null) {
+                Plot plot;
+                if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotManager.plotExists(plotID)) {
-                        plots.add(new Plot(plotID));
+                        plot = new Plot(plotID);
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
-                        return true;
+                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                        return;
                     }
+                } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
+                    plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
                 } else {
                     sendInfo(sender);
-                    return true;
+                    return;
+                }
+
+                if(plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getPlayer(sender).getUniqueId())) || getPlayer(sender).hasPermission("alpsbte.plot.review")) {
+                    if (plot.isReviewed()) {
+                        new FeedbackMenu(getPlayer(sender), plot.getID());
+                    } else {
+                        sender.sendMessage(Utils.getErrorMessageFormat("This plot has not yet been reviewed!"));
+                    }
+                } else {
+                    sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to see this plot feedback!"));
                 }
             } else {
-                sendInfo(sender);
-                return true;
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
             sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return true;
         }
-
-        // Clean plot(s)
-        int failed = 0;
-        for (Plot plot : plots) {
-            try {
-                cleanPlot(plot);
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while cleaning plot #" + plot.getID() + "!", ex);
-                failed++;
-            }
-        }
-
-        sender.sendMessage(Utils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §aplot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §afailed!"));
-        if (sender instanceof Player) ((Player) sender).playSound(((Player) sender).getLocation(), Utils.Done, 1, 1);
-        return true;
-    }
-
-    private void cleanPlot(Plot plot) {
-        // TODO: Implement clean plot code
-        // Waiting for commands rework to prevent copy paste code.
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "cleanplot" };
+        return new String[] { "feedback" };
     }
 
     @Override
     public String getDescription() {
-        return "Clean up / Refresh a plot due to bugs or updates.";
+        return "Shows all feedback information of a plot (Points, Feedback and Reviewer).";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[] { "All/ID" };
+        return new String[] { "ID" };
     }
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.cleanplot";
+        return "plotsystem.plot.feedback";
     }
 }

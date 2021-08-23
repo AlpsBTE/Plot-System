@@ -67,7 +67,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
                 event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
             }
-            if (event.getPlayer().hasPermission("alpsbte.review")){
+            if (event.getPlayer().hasPermission("plotsystem.review")){
                 if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
                     event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
                 }
@@ -127,7 +127,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
 
             // Informing reviewer about new reviews
-            if(event.getPlayer().hasPermission("alpsbte.review")) {
+            if(event.getPlayer().hasPermission("plotsystem.review")) {
                 try {
                     List<Plot> unreviewedPlots = PlotManager.getPlots(Status.unreviewed);
 

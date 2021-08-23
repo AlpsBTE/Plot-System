@@ -22,53 +22,68 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.commands.admin;
+package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_DeletePlot extends BaseCommand {
+public class CMD_Plot_UndoSubmit extends SubCommand {
+
+    public CMD_Plot_UndoSubmit(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender.hasPermission(getPermission())) {
-            if(args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+    public void onCommand(CommandSender sender, String[] args) {
+        try {
+            Plot plot;
+            if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
-                if(PlotManager.plotExists(plotID)) {
-                    try {
-                        PlotHandler.deletePlot(new Plot(plotID));
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
-                    } catch (Exception ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
+                if (PlotManager.plotExists(plotID)) {
+                    plot = new Plot(plotID);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                    return;
                 }
+            } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
+                plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
             } else {
-               sendInfo(sender);
+                sendInfo(sender);
+                return;
             }
-        } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+
+            if(plot.getStatus() == Status.unreviewed) {
+                PlotHandler.undoSubmit(plot);
+
+                sender.sendMessage(Utils.getInfoMessageFormat("Undid submission of plot with the ID §6#" + plot.getID()));
+                if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.FinishPlotSound, 1, 1);
+            } else {
+                sender.sendMessage(Utils.getErrorMessageFormat("You can only undo submissions of unreviewed plots!"));
+            }
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-        return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "deleteplot" };
+        return new String[] { "undoSubmit" };
     }
 
     @Override
     public String getDescription() {
-        return "Delete a plot from the system.";
+        return "Undo a submission of a unreviewed plot.";
     }
 
     @Override
@@ -78,6 +93,6 @@ public class CMD_DeletePlot extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.deleteplot";
+        return "plotsystem.plot.undosubmit";
     }
 }
