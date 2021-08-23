@@ -175,7 +175,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
-    public void onPlayerWorldChangeEvent(PlayerChangedWorldEvent event) {
+    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
 
