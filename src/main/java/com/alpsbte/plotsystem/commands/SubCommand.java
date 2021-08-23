@@ -34,11 +34,17 @@ import java.util.List;
 public abstract class SubCommand implements ICommand {
 
     private final BaseCommand baseCommand;
-
+    private final SubCommand subCommand;
     private final List<SubCommand> subCommands = new ArrayList<>();
 
     public SubCommand(BaseCommand baseCommand) {
         this.baseCommand = baseCommand;
+        this.subCommand = null;
+    }
+
+    public SubCommand(BaseCommand baseCommand, SubCommand subCommand) {
+        this.baseCommand = baseCommand;
+        this.subCommand = subCommand;
     }
 
     public abstract void onCommand(CommandSender sender, String[] args);
@@ -53,6 +59,10 @@ public abstract class SubCommand implements ICommand {
 
     public BaseCommand getBaseCommand() {
         return baseCommand;
+    }
+
+    public SubCommand getSubCommand() {
+        return subCommand;
     }
 
     public List<SubCommand> getSubCommands() {
@@ -75,7 +85,7 @@ public abstract class SubCommand implements ICommand {
             });
             lines.add("§8--------------------------");
         } else {
-            StringBuilder baseCommand = new StringBuilder("§7§l> §b/" + getBaseCommand().getNames()[0] + " §6" + getNames()[0] + "§7");
+            StringBuilder baseCommand = new StringBuilder("§7§l> §b/" + getBaseCommand().getNames()[0] + " §6" + getSubCommand().getNames()[0] + " " + getNames()[0] + "§7");
             for (String parameter : getParameter()) {
                 baseCommand.append(" <").append(parameter).append(">");
             }

@@ -45,6 +45,24 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
                     .findFirst()
                     .orElse(null);
 
+            // Check if sub commands have sub commands
+            if (subCommand != null && args.length > 1) {
+                SubCommand iterateSubCommand;
+                for (int i = 1; i <= args.length; i++) {
+                    final int index = i;
+                    iterateSubCommand = subCommand.getSubCommands().stream()
+                            .filter(subCmd -> Arrays.stream(subCmd.getNames()).anyMatch(sub -> sub.equalsIgnoreCase(args[index])))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (iterateSubCommand == null) {
+                        break;
+                    } else {
+                        subCommand = iterateSubCommand;
+                    }
+                }
+            }
+
             if (subCommand == null) {
                 sender.sendMessage("This sub command does not exist!");
             } else {
