@@ -43,8 +43,10 @@ public class SpecialBlocksMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set special block items
-        for(int i = 0; i < 13; i++) {
-            getMenu().getSlot(i).setItem(getSpecialBlock(i));
+        for(int i = 0; i <= 14; i++) {
+            if (getSpecialBlock(i) != null) {
+                getMenu().getSlot(i).setItem(getSpecialBlock(i));
+            }
         }
 
         // Set back item
@@ -54,14 +56,16 @@ public class SpecialBlocksMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for special block items
-        for(int i = 0; i < 13; i++) {
+        for(int i = 0; i <= 14; i++) {
             int specialBlockID = i;
-            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
-                if(!clickPlayer.getInventory().contains(getSpecialBlock(specialBlockID))) {
-                    clickPlayer.getInventory().addItem(getSpecialBlock(specialBlockID));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
-                }
-            });
+            if (getSpecialBlock(i) != null) {
+                getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+                    if(!clickPlayer.getInventory().contains(getSpecialBlock(specialBlockID))) {
+                        clickPlayer.getInventory().addItem(getSpecialBlock(specialBlockID));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
+                    }
+                });
+            }
         }
 
         // Set click event for back item
@@ -127,7 +131,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
             case 14:
                 return SpecialBlocks.BarkDarkOakLog;
             default:
-                return MenuItems.errorItem();
+                return null;
         }
     }
 
