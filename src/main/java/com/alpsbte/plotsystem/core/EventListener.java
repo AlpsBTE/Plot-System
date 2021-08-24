@@ -159,7 +159,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             if (event.getHand() != EquipmentSlot.OFF_HAND) {
                 if (!event.getPlayer().isSneaking()){
-                    if (event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
+                    if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
                         BlockState state = event.getClickedBlock().getState();
                         TrapDoor tp = (TrapDoor) state.getData();
 
