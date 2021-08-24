@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
 import com.alpsbte.plotsystem.core.config.ConfigManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
@@ -34,9 +33,6 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
-import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
-import com.alpsbte.plotsystem.commands.admin.CMD_SetHologram;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
@@ -58,6 +54,8 @@ public class PlotSystem extends JavaPlugin {
     private static PlotSystem plugin;
     private ConfigManager configManager;
     private CommandManager commandManager;
+
+    private boolean pluginEnabled = false;
 
     private static final List<HolographicDisplay> holograms = Arrays.asList(
       new ScoreLeaderboard(),
@@ -82,7 +80,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Missing Dependencies:");
             DependencyManager.missingDependencies.forEach(dependency -> Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + " - " + dependency));
 
-            plugin.getServer().getPluginManager().disablePlugin(this);
+            this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
         Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded required dependencies.");
@@ -95,7 +93,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load configuration file.");
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "The config file must be configured!");
 
-            plugin.getServer().getPluginManager().disablePlugin(this);
+            this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -109,20 +107,20 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not initialize database connection.");
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
 
-            plugin.getServer().getPluginManager().disablePlugin(this);
+            this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         // Register event listeners
         try {
-            this.getServer().getPluginManager().registerEvents(new EventListener(), plugin);
-            this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), plugin);
+            this.getServer().getPluginManager().registerEvents(new EventListener(), this);
+            this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
 
-            plugin.getServer().getPluginManager().disablePlugin(this);
+            this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -136,7 +134,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
             Bukkit.getLogger().log(Level.SEVERE, "", ex);
 
-            plugin.getServer().getPluginManager().disablePlugin(this);
+            this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -153,6 +151,7 @@ public class PlotSystem extends JavaPlugin {
 
         PlotManager.checkPlotsForLastActivity();
 
+        pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Enabled Plot-System plugin.");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
@@ -160,9 +159,11 @@ public class PlotSystem extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Disabling plugin...");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+        if (!pluginEnabled) {
+            Bukkit.getConsoleSender().sendMessage("");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Disabling plugin...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+        }
     }
 
     public ConfigManager getConfigManager() {
