@@ -300,6 +300,19 @@ public class PlotManager {
         return (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
+    public static boolean plotExists(int ID, boolean system) {
+        if (system) {
+            try {
+                ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
+                        .setValue(ID).executeQuery();
+                if (rs.next()) return true;
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        } else return plotExists(ID);
+        return false;
+    }
+
     // TODO: Make this function more efficient :eyes:
     public static PlotDifficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
         int playerScore = builder.getScore();

@@ -143,7 +143,7 @@ public class PlotHandler {
     }
 
     public static void deletePlot(Plot plot) throws Exception {
-        abandonPlot(plot);
+        if (PlotManager.plotExists(plot.getID())) abandonPlot(plot);
 
         Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 

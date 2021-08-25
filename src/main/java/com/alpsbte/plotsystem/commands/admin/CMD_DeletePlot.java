@@ -41,7 +41,7 @@ public class CMD_DeletePlot extends BaseCommand {
         if(sender.hasPermission(getPermission())) {
             if(args.length > 0 && Utils.TryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
-                if(PlotManager.plotExists(plotID)) {
+                if(PlotManager.plotExists(plotID, true)) {
                     try {
                         PlotHandler.deletePlot(new Plot(plotID));
                         sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
