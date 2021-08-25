@@ -52,7 +52,7 @@ public class CMD_CleanPlot extends BaseCommand {
         try {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("all")) {
-                    plots.addAll(PlotManager.getPlots(Status.unclaimed, Status.unfinished, Status.unreviewed));
+                    plots.addAll(PlotManager.getPlots(Status.unfinished, Status.unreviewed));
                 } else if (Utils.TryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotManager.plotExists(plotID)) {
