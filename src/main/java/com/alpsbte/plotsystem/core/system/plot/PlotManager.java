@@ -305,7 +305,7 @@ public class PlotManager {
             try {
                 ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                         .setValue(ID).executeQuery();
-                if (rs.next()) return true;
+                if (rs.next() && rs.getInt(1) > 0) return true;
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
