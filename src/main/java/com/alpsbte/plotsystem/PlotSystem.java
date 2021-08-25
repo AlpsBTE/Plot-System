@@ -105,7 +105,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully initialized database connection.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not initialize database connection.");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -118,7 +118,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -131,8 +131,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered commands.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register commands.");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + ex.getMessage());
-            Bukkit.getLogger().log(Level.SEVERE, "", ex);
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
