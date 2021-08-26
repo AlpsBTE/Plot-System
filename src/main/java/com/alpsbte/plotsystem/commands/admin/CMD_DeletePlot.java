@@ -33,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class CMD_DeletePlot extends BaseCommand {
@@ -43,9 +44,11 @@ public class CMD_DeletePlot extends BaseCommand {
                 int plotID = Integer.parseInt(args[0]);
                 if(PlotManager.plotExists(plotID, true)) {
                     try {
+                        sender.sendMessage(Utils.getInfoMessageFormat("Deleting plot..."));
                         PlotHandler.deletePlot(new Plot(plotID));
                         sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
-                    } catch (Exception ex) {
+                        if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.Done, 1f, 1f);
+                    } catch (SQLException ex) {
                         sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }

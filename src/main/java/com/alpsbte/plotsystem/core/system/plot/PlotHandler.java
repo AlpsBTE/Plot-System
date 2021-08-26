@@ -29,8 +29,10 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -142,13 +144,30 @@ public class PlotHandler {
         }
     }
 
-    public static void deletePlot(Plot plot) throws Exception {
+    public static void deletePlot(Plot plot) throws SQLException {
         if (PlotManager.plotExists(plot.getID())) abandonPlot(plot);
 
-        Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+        if (CompletableFuture.supplyAsync(() -> {
+            try {
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),"finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
-                .setValue(plot.getID()).executeUpdate();
+                Server plotServer = plot.getCity().getCountry().getServer();
+                if (plotServer.getFTPConfiguration() != null) {
+                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
+                }
+            } catch (IOException | SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+            return null;
+        }).whenComplete((result, failed) -> {
+            try {
+                DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
+                        .setValue(plot.getID()).executeUpdate();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }).join() == null) throw new SQLException();
     }
 
     public static void loadPlot(Plot plot) {
