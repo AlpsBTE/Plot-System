@@ -52,7 +52,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotManager.plotExists(plotID)) {
                         PlotHandler.teleportPlayer(new Plot(plotID), getPlayer(sender));
-                    } else if (sender.hasPermission("alpsbte.plot.teleport.admin")) {
+                    } else if (sender.hasPermission("plotsystem.admin")) {
                         // new PlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
                         // TODO: Unfinished feature / Waiting for PlotGenerator rework
                         // Currently there are no queries, which can lead to errors.
