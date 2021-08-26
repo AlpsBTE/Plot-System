@@ -108,7 +108,7 @@ public abstract class SubCommand implements ICommand {
             });
             lines.add("§8--------------------------");
         } else {
-            StringBuilder baseCommand = new StringBuilder("§7§l> §b/" + getBaseCommand().getNames()[0] + " §6" + getSubCommand().getNames()[0] + " " + getNames()[0] + "§7");
+            StringBuilder baseCommand = new StringBuilder("§7§l> §b/" + getBaseCommand().getNames()[0] + " §6" + (getSubCommand() != null ? getSubCommand().getNames()[0] + " " : "") + getNames()[0] + "§7");
             for (String parameter : getParameter()) {
                 baseCommand.append(" <").append(parameter).append(">");
             }
