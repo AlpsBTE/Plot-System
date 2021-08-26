@@ -185,11 +185,13 @@ public class PlotSystem extends JavaPlugin {
     }
 
     public static void reloadHolograms() {
-        for (HolographicDisplay hologram : holograms) {
-            if(plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
-                hologram.show();
-            } else {
-                hologram.hide();
+        if (DependencyManager.isHolographicDisplaysEnabled()) {
+            for (HolographicDisplay hologram : holograms) {
+                if(plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
+                    hologram.show();
+                } else {
+                    hologram.hide();
+                }
             }
         }
     }
