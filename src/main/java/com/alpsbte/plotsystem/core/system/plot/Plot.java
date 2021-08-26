@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -79,25 +80,24 @@ public class Plot extends PlotPermissions {
 
     public File getOutlinesSchematic() {
         try {
-            File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
 
-            if(!file.exists()) {
-                if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
-                    CompletableFuture.supplyAsync(() -> {
-                        try {
-                            return FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    if(!file.exists()) {
+                        if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
+                            FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
                         }
-                        return null;
-                    });
+                    }
+                    return file;
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
-            }
-            return file;
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                return null;
+            }).get();
+        } catch (InterruptedException | ExecutionException ex) {
+            return null;
         }
-        return null;
     }
 
     public File getFinishedSchematic() {
@@ -239,7 +239,8 @@ public class Plot extends PlotPermissions {
 
         if(rs.next()) {
             for(int i = 1; i <= 3; i++) {
-                if(rs.getInt(i) == getID()) {
+                int slot = rs.getInt(i);
+                if(!rs.wasNull() && slot == getID()) {
                     return Slot.values()[i - 1];
                 }
             }
