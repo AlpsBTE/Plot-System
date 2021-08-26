@@ -59,8 +59,6 @@ public class FTPManager {
 
             localSchematic.close();
             remoteSchematic.close();
-
-            Bukkit.getLogger().log(Level.INFO, "File " + schematic.getName() + " uploaded successfully!");
         } catch (FileSystemException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
@@ -83,8 +81,6 @@ public class FTPManager {
 
             localSchematic.close();
             remoteSchematic.close();
-
-            Bukkit.getLogger().log(Level.INFO, "File " + schematic.getName() + " downloaded successfully!");
         } catch (FileSystemException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
