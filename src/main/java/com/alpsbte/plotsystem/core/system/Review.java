@@ -220,16 +220,20 @@ public class Review {
                 if (plotServer.getFTPConfiguration() != null) {
                     return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
                 }
-
+            } catch (SQLException | IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
+            }
+            return null;
+        }).whenComplete((result, failed) -> {
+            try {
                 DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                         .setValue(review.getPlotID()).executeUpdate();
 
                 DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
                         .setValue(review.reviewID).executeUpdate();
-            } catch (SQLException | IOException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-            return null;
         }).join() == null) throw new SQLException();
     }
 }

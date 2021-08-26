@@ -120,6 +120,7 @@ public class ReviewMenu extends AbstractMenu {
                     Plot plot = plots.get(currentIteration);
                     if(plot.getStatus() == Status.unreviewed) {
                         if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
+                            getMenuPlayer().closeInventory();
                             PlotHandler.teleportPlayer(plot, getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
