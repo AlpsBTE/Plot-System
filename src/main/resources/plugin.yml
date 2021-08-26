@@ -8,63 +8,48 @@ softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, Holographi
 commands:
   spawn:
     description: Teleport to the spawn point.
-    permission: plotsystem.spawn
     usage: /spawn
   companion:
     description: Opens the Companion menu.
-    permission: plotsystem.companion
     usage: /companion
   plots:
     description: Shows all plots of the given player.
-    permission: plotsystem.plots
     usage: /plots, /plots <Player>
   tpll:
     description: Teleport to a position in the plot, using irl coordinates
-    permission: plotsystem.tpll
     usage: /tpll <lon> <lat>
   p:
     description: List all plot commands.
-    permission: plotsystem.plot
     usage: /p help
   plot:
     description: List all plot commands.
-    permission: plotsystem.plot
     usage: /plot help
   review:
     description: Opens the review or review plot menu.
-    permission: plotsystem.review
     usage: /review
   undoreview:
     description: Undo a review of a plot.
-    permission: plotsystem.review.undoreview
     usage: /undoreview <ID>
   sendfeedback:
     description: Updates the feedback of a plot.
-    permission: plotsystem.review.sendfeedback
     usage: /sendfeedback <ID> <Text>
   editplot:
     description: Enable/disable build permissions for reviewers on a plot.
-    permission: plotsystem.review.editplot
     usage: /editplot
   cleanplot:
     description: Cleans and refreshes plots due to bugs or permission changes.
-    permission: plotsystem.admin
     usage: /cleanplot <All/ID>
   deleteplot:
     description: Delete a plot from the system.
-    permission: plotsystem.admin.deleteplot
     usage: /deleteplot <ID>
   sethologram:
     description: Sets the position of a hologram
-    permission: plotsystem.admin.sethologram
     usage: /sethologram <name>
   preload:
     description: Reload config and holograms
-    permission: plotsystem.admin.preload
     usage: /preload
   pss:
     description: Command for setting up the database.
-    permission: plotsystem.admin.pss
     usage: /pss help
 permissions:
   plotsystem.plot:
