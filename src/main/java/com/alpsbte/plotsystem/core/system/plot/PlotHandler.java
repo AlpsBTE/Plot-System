@@ -198,9 +198,9 @@ public class PlotHandler {
         tc[1] = new TextComponent();
         tc[2] = new TextComponent();
 
-        tc[0].setText("§7>> Click me to open the §aGoogle Maps §7link....");
-        tc[1].setText("§7>> Click me to open the §aGoogle Earth Web §7link....");
-        tc[2].setText("§7>> Click me to open the §aOpen Street Map §7link....");
+        tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link....");
+        tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link....");
+        tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link....");
 
         try {
             tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
@@ -214,45 +214,45 @@ public class PlotHandler {
         tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Earth Web").create()));
         tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Open Street Map").create()));
 
-        player.sendMessage("§7--------------------");
+        player.sendMessage("§8--------------------------");
         player.spigot().sendMessage(tc[0]);
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
-        player.sendMessage("§7--------------------");
+        player.sendMessage("§8--------------------------");
     }
 
     public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
-        player.sendMessage("§7--------------------");
+        player.sendMessage("§8--------------------------");
         for(Plot plot : plots) {
-            player.sendMessage("§aYour plot with the ID §6#" + plot.getID() + " §ahas been reviewed!");
+            player.sendMessage("§7§l> §aYour plot with the ID §6#" + plot.getID() + " §ahas been reviewed!");
             TextComponent tc = new TextComponent();
             tc.setText("§6Click Here §ato check your feedback.");
-            tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feedback " + plot.getID()));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Feedback").create()));
+            tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Plot Feedback").create()));
             player.spigot().sendMessage(tc);
 
             if(plots.size() != plots.indexOf(plot) + 1) {
                 player.sendMessage("");
             }
         }
-        player.sendMessage("§7--------------------");
+        player.sendMessage("§8--------------------------");
         player.playSound(player.getLocation(), Utils.FinishPlotSound, 1, 1);
     }
 
     public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-        player.sendMessage("§aYou still have §6" + plots.size() + " §aunfinished plot" + (plots.size() <= 1 ? "!" : "s!"));
+        player.sendMessage("§7§l> §aYou have §6" + plots.size() + " §aunfinished plot" + (plots.size() <= 1 ? "!" : "s!"));
         TextComponent tc = new TextComponent();
         tc.setText("§6Click Here §ato open your plots menu.");
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show my plots").create()));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show Plots").create()));
         player.spigot().sendMessage(tc);
     }
 
     public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
         if(plots.size() <= 1) {
-            player.sendMessage("§aThere is §6" + plots.size() + " §aunreviewed plot!");
+            player.sendMessage("§7§l> §aThere is §6" + plots.size() + " §aunreviewed plot!");
         } else {
-            player.sendMessage("§aThere are §6" + plots.size() + " §aunreviewed plots!");
+            player.sendMessage("§7§l> §aThere are §6" + plots.size() + " §aunreviewed plots!");
         }
 
         TextComponent tc = new TextComponent();

@@ -149,7 +149,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
             if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem())){
-                new CompanionMenu(event.getPlayer());
+                event.getPlayer().performCommand("companion");
             } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
             }

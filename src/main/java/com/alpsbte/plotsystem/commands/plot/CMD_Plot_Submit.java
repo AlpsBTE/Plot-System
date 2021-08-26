@@ -68,10 +68,10 @@ public class CMD_Plot_Submit extends SubCommand {
 
                     if (plot.getPlotMembers().isEmpty()) {
                         // Plot was made alone
-                        Bukkit.broadcastMessage("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been finished!");
+                        Bukkit.broadcastMessage("§7§l> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been finished!");
                     } else {
                         // Plot was made in a group
-                        StringBuilder sb = new StringBuilder("§7>> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", ");
+                        StringBuilder sb = new StringBuilder("§7§l> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", ");
 
                         for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                             sb.append(i == plot.getPlotMembers().size() - 1 ?
