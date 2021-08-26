@@ -72,7 +72,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                     sender.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("Only plot owners are allowed to abandon plots!"));
+                sender.sendMessage(Utils.getErrorMessageFormat("You can only abandon unfinished plots!"));
             }
         } catch (SQLException ex) {
             sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
