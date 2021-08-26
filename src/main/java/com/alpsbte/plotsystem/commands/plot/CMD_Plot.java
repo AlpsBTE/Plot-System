@@ -68,6 +68,6 @@ public class CMD_Plot extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.plot";
+        return null;
     }
 }

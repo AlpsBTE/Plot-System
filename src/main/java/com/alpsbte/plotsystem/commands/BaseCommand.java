@@ -71,7 +71,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
             if (subCommand == null) {
                 sendInfo(sender);
             } else {
-                if (!sender.hasPermission(subCommand.getPermission())) {
+                if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
                     sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to execute this command!"));
                     return true;
                 }

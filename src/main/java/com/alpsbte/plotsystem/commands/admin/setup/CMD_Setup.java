@@ -63,6 +63,6 @@ public class CMD_Setup extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.pss";
+        return null;
     }
 }
