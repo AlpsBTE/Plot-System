@@ -26,12 +26,20 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import org.bukkit.Bukkit;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class Review {
 
@@ -185,30 +193,43 @@ public class Review {
     }
 
     public static void undoReview(Review review) throws SQLException {
-        Plot plot = new Plot(review.getPlotID());
+        if (CompletableFuture.supplyAsync(() -> {
+            try {
+                Plot plot = new Plot(review.getPlotID());
 
-        for (Builder member : plot.getPlotMembers()) {
-            member.addScore(-plot.getSharedScore());
-            member.addCompletedBuild(-1);
+                for (Builder member : plot.getPlotMembers()) {
+                    member.addScore(-plot.getSharedScore());
+                    member.addCompletedBuild(-1);
 
-            if (member.getFreeSlot() != null) {
-                member.setPlot(plot.getID(), member.getFreeSlot());
+                    if (member.getFreeSlot() != null) {
+                        member.setPlot(plot.getID(), member.getFreeSlot());
+                    }
+                }
+
+                plot.getPlotOwner().addScore(-plot.getSharedScore());
+                plot.getPlotOwner().addCompletedBuild(-1);
+                plot.setScore(-1);
+                plot.setStatus(Status.unreviewed);
+
+                if(plot.getPlotOwner().getFreeSlot() != null) {
+                    plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
+                }
+
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),"finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Server plotServer = plot.getCity().getCountry().getServer();
+                if (plotServer.getFTPConfiguration() != null) {
+                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
+                }
+
+                DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                        .setValue(review.getPlotID()).executeUpdate();
+
+                DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                        .setValue(review.reviewID).executeUpdate();
+            } catch (SQLException | IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
-        }
-
-        plot.getPlotOwner().addScore(-plot.getSharedScore());
-        plot.getPlotOwner().addCompletedBuild(-1);
-        plot.setScore(-1);
-        plot.setStatus(Status.unreviewed);
-
-        if(plot.getPlotOwner().getFreeSlot() != null) {
-            plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
-        }
-
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
-                .setValue(review.getPlotID()).executeUpdate();
-
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                .setValue(review.reviewID).executeUpdate();
+            return null;
+        }).join() == null) throw new SQLException();
     }
 }

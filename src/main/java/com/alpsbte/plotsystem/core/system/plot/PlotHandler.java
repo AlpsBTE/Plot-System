@@ -154,7 +154,7 @@ public class PlotHandler {
 
                 Server plotServer = plot.getCity().getCountry().getServer();
                 if (plotServer.getFTPConfiguration() != null) {
-                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
+                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", false);
                 }
             } catch (IOException | SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

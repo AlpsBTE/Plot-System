@@ -47,6 +47,7 @@ public class CMD_UndoReview extends BaseCommand {
                         Plot plot = new Plot(plotID);
                         if(plot.isReviewed()) {
                             if(getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(getPlayer(sender).getUniqueId())) {
+                                sender.sendMessage(Utils.getInfoMessageFormat("Undoing review..."));
                                 Review.undoReview(plot.getReview());
                                 sender.sendMessage((Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been unreviewed!")));
                             } else {
