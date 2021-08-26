@@ -36,27 +36,36 @@ import com.alpsbte.plotsystem.commands.review.CMD_Review;
 import com.alpsbte.plotsystem.commands.review.CMD_SendFeedback;
 import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommandManager {
 
-    public List<BaseCommand> baseCommands = Arrays.asList(
-            new CMD_Companion(),
-            new CMD_Spawn(),
-            new CMD_Plot(),
-            new CMD_Tpll(),
-            new CMD_Plots(),
-            new CMD_EditPlot(),
-            new CMD_Review(),
-            new CMD_SendFeedback(),
-            new CMD_UndoReview(),
-            new CMD_CleanPlot(),
-            new CMD_DeletePlot(),
-            new CMD_PReload(),
-            new CMD_SetHologram(),
-            new CMD_Setup()
-    );
+    public List<BaseCommand> baseCommands = new ArrayList<BaseCommand>() {{
+        // Default Commands
+        add(new CMD_Spawn());
+        add(new CMD_Companion());
+        add(new CMD_Plots());
+        add(new CMD_Tpll());
+
+        // Plot Commands
+        add(new CMD_Plot());
+
+        // Review Commands
+        add(new CMD_Review());
+        add(new CMD_UndoReview());
+        add(new CMD_SendFeedback());
+        add(new CMD_EditPlot());
+
+        // Admin Commands
+        add(new CMD_DeletePlot());
+        add(new CMD_CleanPlot());
+        add(new CMD_SetHologram());
+        add(new CMD_PReload());
+
+        // Admin Setup Commands
+        add(new CMD_Setup());
+    }};
 
     public void init() {
         for (BaseCommand baseCmd : baseCommands) {
