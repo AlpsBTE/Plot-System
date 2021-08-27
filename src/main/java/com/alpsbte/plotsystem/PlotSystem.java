@@ -163,6 +163,7 @@ public class PlotSystem extends JavaPlugin {
             if (version.equalsIgnoreCase(VERSION)) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
             } else {
+                UpdateChecker.isUpdateAvailable = true;
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You are using a outdated version!");
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Latest version: " + ChatColor.GREEN + version + ChatColor.GRAY + " | Your version: " + ChatColor.RED + VERSION);
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Update here: " + ChatColor.AQUA + "https://github.com/AlpsBTE/Plot-System/releases");
@@ -296,9 +297,14 @@ public class PlotSystem extends JavaPlugin {
         }
     }
 
-    private static class UpdateChecker {
+    public static class UpdateChecker {
         private final static int RESOURCE_ID = 95757;
+        private static boolean isUpdateAvailable = false;
 
+        /**
+         * Get latest plugin version from SpigotMC
+         * @param version Returns latest stable version
+         */
         public static void getVersion(final Consumer<String> version) {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
@@ -307,6 +313,13 @@ public class PlotSystem extends JavaPlugin {
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
             }
+        }
+
+        /**
+         * @return True if an update is available
+         */
+        public static boolean updateAvailable() {
+            return isUpdateAvailable;
         }
     }
 }

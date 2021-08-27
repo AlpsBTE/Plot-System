@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
@@ -46,6 +47,7 @@ import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -91,6 +93,12 @@ public class EventListener extends SpecialBlocks implements Listener {
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
+            }
+
+            // Inform player about update
+            if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
+                event.getPlayer().sendMessage(Utils.getInfoMessageFormat("There is a new update for the Plot-System available. Check your console for more information!"));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.CreatePlotSound, 1f, 1f);
             }
 
             // Check if player has changed his name
