@@ -44,12 +44,19 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
+
+    private static final String VERSION = "1.2";
 
     private static PlotSystem plugin;
     private ConfigManager configManager;
@@ -147,6 +154,20 @@ public class PlotSystem extends JavaPlugin {
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
         }
+
+        // Check for updates
+        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
+
+        UpdateChecker.getVersion(version -> {
+            if (version.equalsIgnoreCase(VERSION)) {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You are using a outdated version!");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Latest version: " + ChatColor.GREEN + version + ChatColor.GRAY + " | Your version: " + ChatColor.RED + VERSION);
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Update here: " + ChatColor.AQUA + "https://github.com/AlpsBTE/Plot-System/releases");
+            }
+        });
 
         PlotManager.checkPlotsForLastActivity();
 
@@ -272,6 +293,20 @@ public class PlotSystem extends JavaPlugin {
          */
         public static WorldGuardPlugin getWorldGuard() {
             return WorldGuardPlugin.inst();
+        }
+    }
+
+    private static class UpdateChecker {
+        private final static int RESOURCE_ID = 95757;
+
+        public static void getVersion(final Consumer<String> version) {
+            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
+                if (scanner.hasNext()) {
+                    version.accept(scanner.next());
+                }
+            } catch (IOException ex) {
+                Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
+            }
         }
     }
 }
