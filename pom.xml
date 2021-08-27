@@ -214,7 +214,7 @@
         <!-- IMPORTANT: Plugin Building Path -->
         <sourceDirectory>src/main/java/</sourceDirectory>
         <!-- IMPORTANT: Output File Name -->
-        <finalName>${project.artifactId}-${project.version}</finalName>
+        <finalName>${project.artifactId}-${project.version}-${build.number}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -260,5 +260,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <build.number>SNAPSHOT</build.number>
     </properties>
 </project>
