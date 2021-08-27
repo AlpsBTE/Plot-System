@@ -36,6 +36,11 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
@@ -160,17 +165,22 @@ public class EventListener extends SpecialBlocks implements Listener {
             if (event.getHand() != EquipmentSlot.OFF_HAND) {
                 if (!event.getPlayer().isSneaking()){
                     if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
-                        BlockState state = event.getClickedBlock().getState();
-                        TrapDoor tp = (TrapDoor) state.getData();
+                        RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+                        RegionQuery query = regionContainer.createQuery();
 
-                        if (!tp.isOpen()) {
-                            tp.setOpen(true);
-                            event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.open", 1f, 1f);
-                        } else {
-                            tp.setOpen(false);
-                            event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.close", 1f, 1f);
+                        if (query.testBuild(event.getPlayer().getLocation(), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), DefaultFlag.INTERACT)) {
+                            BlockState state = event.getClickedBlock().getState();
+                            TrapDoor tp = (TrapDoor) state.getData();
+
+                            if (!tp.isOpen()) {
+                                tp.setOpen(true);
+                                event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.open", 1f, 1f);
+                            } else {
+                                tp.setOpen(false);
+                                event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.close", 1f, 1f);
+                            }
+                            state.update();
                         }
-                        state.update();
                     }
                 }
             }
