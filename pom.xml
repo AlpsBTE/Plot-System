@@ -230,6 +230,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
                 <configuration>
+                    <outputDirectory>${project.build.directory}/shaded/</outputDirectory>
                     <createDependencyReducedPom>true</createDependencyReducedPom>
                     <filters>
                         <filter>
