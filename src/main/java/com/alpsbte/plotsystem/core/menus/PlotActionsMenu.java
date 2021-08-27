@@ -173,15 +173,20 @@ public class PlotActionsMenu extends AbstractMenu {
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 if (!plot.isReviewed()) {
-                     if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("plotsystem.admin")) {
-                         clickPlayer.closeInventory();
-                         new PlotMemberMenu(plot,clickPlayer);
-                     } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
-                         // Leave Plot
-                         plot.removePlotMember(new Builder(clickPlayer.getUniqueId()));
-                         clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
-                         clickPlayer.closeInventory();
-                     }
+                    if (plot.getStatus() == Status.unfinished) {
+                        if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("plotsystem.admin")) {
+                            clickPlayer.closeInventory();
+                            new PlotMemberMenu(plot,clickPlayer);
+                        } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                            // Leave Plot
+                            plot.removePlotMember(new Builder(clickPlayer.getUniqueId()));
+                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
+                            clickPlayer.closeInventory();
+                        }
+                    } else {
+                        clickPlayer.closeInventory();
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("You can only manage plot members if plot is unfinished!"));
+                    }
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
