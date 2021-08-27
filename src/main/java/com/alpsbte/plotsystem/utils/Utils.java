@@ -108,6 +108,15 @@ public class Utils {
         }
     }
 
+    // Double Try Parser
+    public static Double tryParseDouble(String value) {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
     public static String getPointsByColor(int points) {
         switch (points) {
             case 0:
