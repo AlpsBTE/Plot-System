@@ -13,6 +13,10 @@ spawn-world: default
 # Keep updated about newer versions
 check-for-updates: true
 
+# Enable score requirement to restrict players to certain plot difficulties
+# Prevents beginners from generating difficult plots
+enable-score-requirement: true
+
 # Enables special dev tools and features for development
 # NOTE: Do not change if you do not know what you are doing
 dev-mode: false
