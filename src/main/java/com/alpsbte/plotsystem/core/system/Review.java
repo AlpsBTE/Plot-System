@@ -210,6 +210,7 @@ public class Review {
                 plot.getPlotOwner().addCompletedBuild(-1);
                 plot.setScore(-1);
                 plot.setStatus(Status.unreviewed);
+                plot.setPasted(false);
 
                 if(plot.getPlotOwner().getFreeSlot() != null) {
                     plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());

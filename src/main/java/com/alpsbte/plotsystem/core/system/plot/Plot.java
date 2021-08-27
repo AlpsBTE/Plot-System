@@ -301,6 +301,11 @@ public class Plot extends PlotPermissions {
         }
     }
 
+    public void setPasted(boolean pasted) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET pasted = ? WHERE id = ?")
+                .setValue(pasted).setValue(this.ID).executeUpdate();
+    }
+
     private void setPlotMembers(List<Builder> plotMembers) throws SQLException {
         // Convert plot member list to string
         String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
