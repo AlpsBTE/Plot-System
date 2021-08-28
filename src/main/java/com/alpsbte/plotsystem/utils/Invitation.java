@@ -7,12 +7,14 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Invitation {
     public static List<Invitation> invitationsList = new ArrayList<>();
@@ -20,7 +22,7 @@ public class Invitation {
     public Player invitee;
     public Plot plot;
 
-    private BukkitScheduler scheduler = PlotSystem.getPlugin().getServer().getScheduler();
+    private final BukkitScheduler scheduler = PlotSystem.getPlugin().getServer().getScheduler();
     private int taskID;
 
     public Invitation(Player invitee, Plot plot) throws SQLException {
@@ -38,7 +40,7 @@ public class Invitation {
         // Construct and send messages
         TextComponent tc = new TextComponent();
         tc.setText(Utils.getInfoMessageFormat("[CLICK TO ACCEPT]"));
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/invite accept"));
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot invite accept"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Accept Invite").create()));
 
         invitee.sendMessage("§7--------------------");
@@ -53,16 +55,13 @@ public class Invitation {
 
         // Schedule expiry in 30 seconds
         Invitation invitation = this;
-        taskID = scheduler.scheduleSyncDelayedTask(PlotSystem.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                invitationsList.remove(invitation);
-                try {
-                    invitee.sendMessage(Utils.getErrorMessageFormat("Invitation from " + plot.getPlotOwner().getName() + " expired!"));
-                    plot.getPlotOwner().getPlayer().sendMessage(Utils.getErrorMessageFormat("The invitation you sent to " + invitee.getName() + " expired!"));
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+        taskID = scheduler.scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
+            invitationsList.remove(invitation);
+            try {
+                invitee.sendMessage(Utils.getErrorMessageFormat("Invitation from " + plot.getPlotOwner().getName() + " expired!"));
+                plot.getPlotOwner().getPlayer().sendMessage(Utils.getErrorMessageFormat("The invitation you sent to " + invitee.getName() + " expired!"));
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }, 20 * 30);
     }
