@@ -1,41 +1,33 @@
-[![License][license-shield]][license-url]
-[![Discord][discord-shield]][discord-url]
-[![Code Lines][code-lines-shield]][code-lines-url]
-[![Repo Size][repo-size-shield]][repo-size-url]
-[![Last Commit][last-commit-shield]][last-commit-url]
-
 <!-- PROJECT DESCRIPTION -->
 <br />
 
 <p align="Center">
   <a href="https://github.com/AlpsBTE/PlotSystem">
-    <img src="https://cdn.discordapp.com/attachments/492376978922537009/862047184689430568/Block_of_Emerald_JE4_BE3.png" alt="Logo" width="120" height="120">
+    <img src="https://cdn.discordapp.com/attachments/406907194228080652/881142301831888936/PlotSystemLogo.gif" alt="Logo" width="250" height="250">
   </a>
 </p>
 
-<h3 align="Center">Plot System</h3>
+<h1 align="Center">Plot System</h1>
 
-<p align="Center">
-An easy to use building system for the BuildTheEarth project
-<br />
-<a href="https://github.com/AlpsBTE/PlotSystem/wiki"><strong>Explore the docs »</strong></a>
-<br />
-<br />
-<a>Check Out Now</a>
-·
-<a href="https://github.com/AlpsBTE/Plot-System/issues">Report Bug</a>
-·
-<a href="https://github.com/AlpsBTE/Plot-System/issues">Request Feature</a>
+<p align="center">
+  <b>An easy to use building system for the BuildTheEarth project.</b>
+  <br/>
+  <a href="https://github.com/AlpsBTE/Plot-System/wiki"><strong>Explore the docs »</strong></a>
+  <br/><br/>
 </p>
 
-
+<p align="center">
+    <a href="https://jenkins.alps-bte.com/job/PlotSystem/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.alps-bte.com%2Fjob%2FPlotSystem%2F"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System/releases"><img src="https://img.shields.io/github/v/release/AlpsBTE/Plot-System"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/github/repo-size/AlpsBTE/Plot-System"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/github/last-commit/AlpsBTE/Plot-System"></a>
+    <a href="https://discord.com/invite/vgkspay"><img src="https://img.shields.io/discord/696795397376442440?label=discord"></a>
+</p>
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-![PlotSystemTrailer](https://user-images.githubusercontent.com/64250550/113524662-7c78b400-95b0-11eb-98dd-753600fb6f17.gif)
-
 The Plot System is an essential part of any BuildTheEarth server system, meant to run alongside the classic Terra servers to make participating a lot easier and appeal to both the casual and power users. The plot system gives every player the opportunity to participate in the project with ease using Minecraft versions 1.12-1.17 (Vanilla). 
 
 After clicking on the Companion item in the hotbar, a selection window appears where you can choose a city from the list. If you now click on one of these cities, you will get to a random plot of this city and you can immediately start building. Links to Google Maps, Google Earth Web & OpenStreetMap appear when you enter the plot and allow you to quickly find your way around. 
@@ -44,37 +36,46 @@ The system is designed to make it easier for unexperienced people, casual player
 
 The plugin was programmed by the Alps BTE Team and is meant for everyone to use and help contribute. For any questions regarding setup or contribution feel free to contact us. 
 
-All used Library and APIs are listed below.
+All used Libraries and APIs are listed below.
 
+<img src="https://user-images.githubusercontent.com/64250550/113524662-7c78b400-95b0-11eb-98dd-753600fb6f17.gif" width=100%/>
 
 
 ## Features
-
-- Detailed Review System
-- Feedback for Users
-- Difficulty Levels
-- Building Quality of Life tools
-- /tpll support
-- Leaderboards
-- Automatically abandon inactive plots
-- Automatically place finished plots on Terra Server using FTP/SFTP or direct path 
-- Support for Multiple Cities and Countries
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Check out the [Documentation](https://github.com/AlpsBTE/PlotSystem/wiki) for detailed examples and tutorials.
+✔️ Support for **multiple cities** and **countries/states**<br/>
+✔️ **User-friendly menus** and **commands**<br/>
+✔️ Plot **Group System** (Build together with up to 5 people on one plot)<br/>
+✔️ Detailed **review system** with feedback<br/>
+✔️ Three plot **difficulty levels**<br/>
+✔️ Building **Quality of Life tools**<br/>
+✔️ **/tpll support** on plots<br/>
+✔️ **Leaderboards** when using the Holograms extension<br/>
+✔️ Automatic **abandoning of inactive plots**<br/>
+✔️ Automatic **placement of completed plots** on the terra server<br/>
+✔️ **Easy configuration** and **setup**<br/>
 
 
+<!-- INSTALLATION -->
+## Installation
+WIP
 
 
 <!-- ROADMAP -->
 ## Roadmap
+📋 Discord Integration<br/>
+📋 Plot Tutorial<br/>
+📋 In-Game Guidebook<br/>
+📋 More and Improved Leaderboards<br/>
+📋 Statistics<br/>
 
-See the [open issues](https://github.com/AlpsBTE/PlotSystem/issues) for a list of proposed features (and known issues).
+<!-- CONTRIBUTING -->
+## Contributing
+🔨 Any contributions you make are greatly appreciated.
 
-
+* Reporting a bug
+* Discussing the current state of the code
+* Submitting a fix
+* Proposing new features
 
 
 <!-- LICENSE -->
@@ -83,15 +84,14 @@ See the [open issues](https://github.com/AlpsBTE/PlotSystem/issues) for a list o
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
-
 <!-- CONTACTS -->
 ## Contacts
 
 - R3tuxn - [R3tuxn#7169](https://discord.com/invite/vgkspay)
 - Cinnazeyy - [Cinnazeyy#2440](https://discord.com/invite/vgkspay)
+- Coppertine - [Coppertine#1718](https://discord.com/invite/vgkspay)
 
 Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE/PlotSystem)
-
 
 
 <!-- LIBRARIES & APIS -->
@@ -104,21 +104,7 @@ Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE
 * [Anvil GUI](https://github.com/WesJD/AnvilGUI)
 * [Canvas Menu-Builder Library](https://github.com/IPVP-MC/canvas)
 * [Head-DB API](https://github.com/Arcaniax-Development/HeadDatabase-API)
-* [Skull Creator API](https://github.com/deanveloper/SkullCreator)
 * [Holographic Displays API](https://github.com/filoghost/HolographicDisplays)
 * [Maria-DB Library](https://mariadb.com/kb/en/about-mariadb-connector-j/)
 * [Hikari-CP](https://github.com/brettwooldridge/HikariCP)
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[license-shield]: https://img.shields.io/github/license/AlpsBTE/Plot-System
-[license-url]: https://github.com/AlpsBTE/Plot-System/blob/main/LICENSE.txt
-[discord-shield]: https://img.shields.io/discord/696795397376442440?label=discord
-[discord-url]: https://discord.com/invite/vgkspay
-[code-lines-shield]: https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System
-[code-lines-url]: https://github.com/AlpsBTE/Plot-System
-[repo-size-shield]: https://img.shields.io/github/repo-size/AlpsBTE/Plot-System
-[repo-size-url]: https://github.com/AlpsBTE/Plot-System
-[last-commit-shield]: https://img.shields.io/github/last-commit/AlpsBTE/Plot-System/V1.2_Dev
-[last-commit-url]: https://github.com/AlpsBTE/Plot-System
+* [Apache Common VFS API](https://commons.apache.org/proper/commons-vfs/commons-vfs2/apidocs/index.html)
