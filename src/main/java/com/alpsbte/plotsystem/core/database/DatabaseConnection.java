@@ -188,6 +188,7 @@ public class DatabaseConnection {
                             " `port`     int NOT NULL ," +
                             " `username` varchar(255) NOT NULL ," +
                             " `password` varchar(255) NOT NULL ," +
+                            " `schematics_path` varchar(255) NULL ," +
                             "PRIMARY KEY (`id`)" +
                             ");",
 
