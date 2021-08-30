@@ -143,6 +143,10 @@ public class ConfigManager {
      */
     public boolean createConfig(Config config) {
         try {
+            if (!config.getFile().getParentFile().exists()) {
+                config.getFile().getParentFile().mkdirs();
+            }
+
             if (config.getFile().createNewFile()) {
                 try (InputStream defConfigStream = config.getDefaultFileStream()) {
                     try (OutputStream outputStream = new FileOutputStream(config.getFile())) {
