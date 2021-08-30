@@ -45,7 +45,7 @@ public class Country {
     }
 
     public ItemStack getHead() {
-        return Utils.TryParseInt(headID) != null ? Utils.getItemHead(new Utils.CustomHead(Integer.parseInt(headID))) : null;
+        return Utils.TryParseInt(headID) != null ? Utils.getItemHead(new Utils.CustomHead(Integer.parseInt(headID))) :  Utils.getItemHead(new Utils.CustomHead(0));
     }
 
     public static List<Country> getCountries() {
