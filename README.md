@@ -45,6 +45,7 @@ All used Libraries and APIs are listed below.
 ✔️ Support for **multiple cities** and **countries/states**<br/>
 ✔️ **User-friendly menus** and **commands**<br/>
 ✔️ Plot **Group System** (Build together with up to 5 people on one plot)<br/>
+✔️ **SFTP/FTP** Support<br/>
 ✔️ Detailed **review system** with feedback<br/>
 ✔️ Three plot **difficulty levels**<br/>
 ✔️ Building **Quality of Life tools**<br/>
