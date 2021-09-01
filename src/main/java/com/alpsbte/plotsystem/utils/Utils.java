@@ -36,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Utils {
@@ -181,18 +180,18 @@ public class Utils {
 
         public static void loadHeadsAsync(HeadDatabaseAPI api) {
             headDatabaseAPI = api;
-            CompletableFuture.runAsync(() -> {
-                WHITE_CONCRETE = new CustomHead(8614);
-                GREEN_CONCRETE = new CustomHead(8621);
-                YELLOW_CONCRETE = new CustomHead(8613);
-                RED_CONCRETE = new CustomHead(8616);
-                WHITE_P = new CustomHead(9282);
+            Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+                WHITE_CONCRETE = new CustomHead("8614");
+                GREEN_CONCRETE = new CustomHead("8621");
+                YELLOW_CONCRETE = new CustomHead("8613");
+                RED_CONCRETE = new CustomHead("8616");
+                WHITE_P = new CustomHead("9282");
 
-                ADD_BUTTON = new CustomHead(9237);
-                REMOVE_BUTTON = new CustomHead(9243);
-                BACK_BUTTON = new CustomHead(9226);
-                NEXT_BUTTON = new CustomHead(9223);
-                PREVIOUS_BUTTON = new CustomHead(9226);
+                ADD_BUTTON = new CustomHead("9237");
+                REMOVE_BUTTON = new CustomHead("9243");
+                BACK_BUTTON = new CustomHead("9226");
+                NEXT_BUTTON = new CustomHead("9223");
+                PREVIOUS_BUTTON = new CustomHead("9226");
             });
         }
     }
