@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -313,41 +314,37 @@ public class PlotManager {
         return false;
     }
 
-    // TODO: Make this function more efficient :eyes:
-    public static PlotDifficulty getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
-        int playerScore = builder.getScore();
-        int easyScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.EASY), mediumScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.MEDIUM), hardScore = PlotManager.getScoreRequirementByDifficulty(PlotDifficulty.HARD);
+    // TODO: Move this function to Builder.java or rework in V3.0
+    public static boolean hasPlotDifficultyScoreRequirement(Builder builder, PlotDifficulty plotDifficulty) throws SQLException {
+        int playerScore = builder.getScore(), scoreRequirement = getScoreRequirementByDifficulty(plotDifficulty);
+        return playerScore >= scoreRequirement;
+    }
+
+    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+        // Check if plot difficulties are available
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
+        if(PlotManager.getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) easyHasPlots = true;
+        if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
+        if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
 
-        if(PlotManager.getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) {
-            easyHasPlots = true;
+        if(hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return easy
+            return CompletableFuture.completedFuture(PlotDifficulty.HARD);
+        } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
+            return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return hard
+            return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+        } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
+            return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
+            return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+        } else if (!PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) { // If score requirement is disabled get plot from any available difficulty
+            if (easyHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+            } else if (mediumHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+            }
         }
-
-        if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) {
-            mediumHasPlots = true;
-        }
-
-        if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) {
-            hardHasPlots = true;
-        }
-
-        if(playerScore >= easyScore && playerScore < mediumScore && easyHasPlots) {
-            return PlotDifficulty.EASY;
-        } else if(playerScore >= mediumScore && playerScore < hardScore && mediumHasPlots) {
-            return PlotDifficulty.MEDIUM;
-        } else if(playerScore >= hardScore && hardHasPlots) {
-            return PlotDifficulty.HARD;
-        } else if(easyHasPlots && playerScore >= mediumScore && playerScore < hardScore ) {
-            return PlotDifficulty.EASY;
-        } else if(mediumHasPlots && playerScore >= easyScore && playerScore < mediumScore) {
-            return PlotDifficulty.MEDIUM;
-        } else if(hardHasPlots) {
-            return PlotDifficulty.HARD;
-        } else if(mediumHasPlots) {
-            return PlotDifficulty.MEDIUM;
-        } else {
-            return PlotDifficulty.EASY;
-        }
+        return CompletableFuture.completedFuture(PlotDifficulty.HARD); // If nothing is available return hard (plot availability will be checked later additionally)
     }
 
     public static boolean isPlotWorld(World world) {

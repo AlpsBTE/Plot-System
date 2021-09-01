@@ -48,6 +48,7 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class CompanionMenu extends AbstractMenu {
@@ -172,8 +173,14 @@ public class CompanionMenu extends AbstractMenu {
                         int cityID = cityProjects.get(itemSlot).getID();
 
                         if (builder.getFreeSlot() != null) {
-                            PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder);
+                            PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
                             if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
+                                if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
+                                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need a higher score to build in this difficulty level."));
+                                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                                    return;
+                                }
+
                                 if (PlotGenerator.playerPlotGenerationHistory.containsKey(builder.getUUID())) {
                                     if (PlotGenerator.playerPlotGenerationHistory.get(builder.getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
                                         PlotGenerator.playerPlotGenerationHistory.remove(builder.getUUID());
@@ -204,10 +211,10 @@ public class CompanionMenu extends AbstractMenu {
                             clickPlayer.sendMessage(Utils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
-                    } catch (SQLException ex) {
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a developer."));
+                    } catch (SQLException | ExecutionException | InterruptedException ex) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again!"));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        Bukkit.getLogger().log(Level.SEVERE, "An internal error occurred!", ex);
                     }
                 } else {
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
@@ -274,7 +281,7 @@ public class CompanionMenu extends AbstractMenu {
                 ItemStack cpItem = cp.getCountry().getHead();
                 try {
                     PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
-                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), new Builder(getMenuPlayer().getUniqueId()));
+                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), new Builder(getMenuPlayer().getUniqueId())).get();
 
                     int plotsOpen = PlotManager.getPlots(cp.getID(), Status.unclaimed).size();
                     int plotsInProgress = PlotManager.getPlots(cp.getID(), Status.unfinished, Status.unreviewed).size();
@@ -295,11 +302,9 @@ public class CompanionMenu extends AbstractMenu {
                                     ).build())
                             .build());
 
-                } catch (SQLException ex) {
+                } catch (SQLException | ExecutionException | InterruptedException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
-                            getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(MenuItems.errorItem())
-                    );
+                    getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(MenuItems.errorItem());
                 }
             }
         }

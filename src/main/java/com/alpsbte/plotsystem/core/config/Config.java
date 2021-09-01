@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 public class Config extends YamlConfiguration {
 
-    public static final double VERSION = 1.0;
+    public static final double VERSION = 1.1;
 
     private final File file;
     private final String fileName;
