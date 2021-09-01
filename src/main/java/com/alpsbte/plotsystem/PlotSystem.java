@@ -56,7 +56,7 @@ import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
 
-    private static final String VERSION = "1.2";
+    private static final String VERSION = "2.0";
 
     private static PlotSystem plugin;
     private ConfigManager configManager;
@@ -77,7 +77,7 @@ public class PlotSystem extends JavaPlugin {
         String successPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "✔" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
         String errorPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.RED + "X" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------ Plot-System V1.2 ------------------");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------ Plot-System V" + VERSION + " ------------------");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Starting plugin...");
         Bukkit.getConsoleSender().sendMessage("");
 
