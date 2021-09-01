@@ -147,17 +147,11 @@ public class Utils {
     }
 
     public static class CustomHead {
-
-        private final int headID;
         private final ItemStack headItem;
 
-        public CustomHead(int headID) {
-            this.headItem = (headDatabaseAPI != null) ? headDatabaseAPI.getItemHead(String.valueOf(headID)) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
-            this.headID = headID;
-        }
-
-        public int getHeadID() {
-            return headID;
+        public CustomHead(String headID) {
+            this.headItem = headDatabaseAPI != null && headID != null && Utils.TryParseInt(headID) != null
+                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
         }
 
         public ItemStack getAsItemStack() {
