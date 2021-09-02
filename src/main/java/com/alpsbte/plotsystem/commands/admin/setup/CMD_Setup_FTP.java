@@ -88,7 +88,7 @@ public class CMD_Setup_FTP extends SubCommand {
                 sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + ftpConfigs.size() + " FTP-Configurations registered in the database:"));
                 sender.sendMessage("§8--------------------------");
                 for (FTPConfiguration ftp : ftpConfigs) {
-                    sender.sendMessage(" §6> §b" + ftp.getID() + " §f- Address: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - Username: " + ftp.getUsername() + " - Password: " + ftp.getPassword() + " - Path: " + ftp.getSchematicPath());
+                    sender.sendMessage(" §6> §b" + ftp.getID() + " §f- Address: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - Username: " + getCensorString(ftp.getUsername().length()) + " - Password: " + getCensorString(ftp.getPassword().length()) + " - Path: " + ftp.getSchematicPath());
                 }
                 sender.sendMessage("§8--------------------------");
             } else {
@@ -114,6 +114,14 @@ public class CMD_Setup_FTP extends SubCommand {
         @Override
         public String getPermission() {
             return "plotsystem.admin.pss.ftp.list";
+        }
+
+        public String getCensorString(int length) {
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                output.append("*");
+            }
+            return output.toString();
         }
     }
 
