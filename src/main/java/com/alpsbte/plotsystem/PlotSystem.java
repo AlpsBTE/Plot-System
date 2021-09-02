@@ -176,6 +176,9 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Enabled Plot-System plugin.");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
     }
 
     @Override
@@ -183,6 +186,9 @@ public class PlotSystem extends JavaPlugin {
         if (!pluginEnabled) {
             Bukkit.getConsoleSender().sendMessage("");
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Disabling plugin...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
         }
     }
