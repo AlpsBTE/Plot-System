@@ -58,7 +58,10 @@ All used Libraries and APIs are listed below.
 
 <!-- INSTALLATION -->
 ## Installation
-WIP
+💻 To use this system, you currently need at least two servers.</br>
+One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/AlpsBTE/Plot-System-Terra)** and the other one is a Spigot Vanilla server for the Plot-System itself.</br>
+
+**For more information check out the [Wiki](https://github.com/AlpsBTE/Plot-System/wiki/Installation)**!
 
 
 <!-- ROADMAP -->
@@ -92,7 +95,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - Cinnazeyy - [Cinnazeyy#2440](https://discord.com/invite/vgkspay)
 - Coppertine - [Coppertine#1718](https://discord.com/invite/vgkspay)
 
-Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE/PlotSystem)
+Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE/Plot-System)
 
 
 <!-- LIBRARIES & APIS -->
