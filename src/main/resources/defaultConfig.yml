@@ -1,15 +1,83 @@
-#BTE-PlotSystem Configuration File
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# -----------------------------------------------------
+
+# The lobby world, where all players are teleported to, whenever they join or leave a plot
+# [default] -> Uses the default multiverse spawn world
+spawn-world: default
+
+# Keep updated about newer versions
+check-for-updates: true
+
+# Enable score requirement to restrict players to certain plot difficulties
+# Prevents beginners from generating difficult plots
+enable-score-requirement: true
+
+# Enables special dev tools and features for development
+# NOTE: Do not change if you do not know what you are doing
+dev-mode: false
+
+
+# -----------------------------------------------------
+# | Supported database: MariaDB
+# -----------------------------------------------------
 database:
-  url: jdbc:mariadb://IP:PORT/
-  name: name
-  username: username
-  password: password
-outlines-schematic-path: null
-finished-schematic-path: null
-spawn-point:
-  x: 0
-  y: 0
-  z: 0
-  yaw: 0
-  pitch: 0
+  url: jdbc:mariadb://adress:3306/
+  dbname: plotsystem
+  username: plotsystem
+  password: minecraft
+
+
+# -----------------------------------------------------
+# | Holograms: Show plot statistics / Are placed in the spawn world
+# | NOTE: Requires the HolographicDisplays plugin to work
+# -----------------------------------------------------
 holograms:
+  # Displays the top 10 builders with the highest score
+  score-leaderboard:
+    enabled: false
+    x: 0
+    y: 0
+    z: 0
+  # Displays the top 10 players with the most completed plots
+  plots-leaderboard:
+    enabled: false
+    x: 0
+    y: 0
+    z: 0
+
+# Switch hologram statistics between different time stamps
+# [interval] -> default: 5 seconds
+display-options:
+  interval: 5
+  show-daily: false
+  show-weekly: true
+  show-monthly: true
+  show-yearly: false
+
+
+# -----------------------------------------------------
+# | Navigation: The command that the player will automatically execute when pressing the navigator item in the companion
+# | NOTE: Remove the "/" from whatever command you want to use
+# -----------------------------------------------------
+navigator:
+  item: NETHER_STAR
+  name: Navigator
+  description: Open the navigator menu
+  command: navigator
+
+
+# -----------------------------------------------------
+# | Formatting: Info/Error message outputs
+# -----------------------------------------------------
+message-prefix: §7§l>>
+info-colour: §a
+error-colour: §c
+
+
+# NOTE: Do not change
+config-version: 1.1

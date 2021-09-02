@@ -1,87 +1,60 @@
-main: github.BTEPlotSystem.BTEPlotSystem
-version: 1.1.2
+main: com.alpsbte.plotsystem.PlotSystem
+version: 2.0
 api-version: 1.12.2
-name: AlpsBTE-PlotSystem
+name: Plot-System
 author: R3tuxn & Cinnazeyy
-depend: [HeadDatabase, HolographicDisplays]
+softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase]
 
 commands:
   spawn:
-    description: Teleport to the spawn
+    description: Teleport to the spawn point.
     usage: /spawn
-  hub:
-    description: Alternative to the spawn command
-    usage: /hub
-  tpp:
-    description: Teleport to a player
-    usage: /tpp <Player>
   companion:
-    description: Open the Companion menu
-    permission: alpsbte.plot
+    description: Opens the Companion menu.
     usage: /companion
-  link:
-    description: Sends you the links of the plot you are currently on
-    permission: alpsbte.plot
-    usage: /link
-  submit:
-    description: Submit a unfinished plot
-    permission: alpsbte.plot
-    usage: /submit, /submit <ID>
-  abandon:
-    description: Abandon a unfinished plot
-    permission: alpsbte.plot
-    usage: /abandon, /abandon <ID>
-  undosubmit:
-    description: Undo a submission of a unreviewed plot
-    permission: alpsbte.plot
-    usage: /undosubmit, /undosubmit <ID>
-  feedback:
-    description: Shows all feedback information of a plot
-    permission: alpsbte.plot
-    usage: /feedback <ID>
   plots:
-    description: Shows all plots of the given player
-    permission: alpsbte.plot
+    description: Shows all plots of the given player.
     usage: /plots, /plots <Player>
+  tpll:
+    description: Teleport to a position in the plot, using irl coordinates
+    usage: /tpll <lon> <lat>
+  p:
+    description: List all plot commands.
+    usage: /p help
   plot:
-    description: Teleport to a plot
-    permission: alpsbte.review
-    usage: /plot <ID>
+    description: List all plot commands.
+    usage: /plot help
   review:
-    description: Open the review or review plot menu
-    permission: alpsbte.review
+    description: Opens the review or review plot menu.
     usage: /review
   undoreview:
-    description: Undo a review of a plot
-    permission: alpsbte.review
+    description: Undo a review of a plot.
     usage: /undoreview <ID>
   sendfeedback:
-    description: Sets the feedback of a plot
-    permission: alpsbte.review
+    description: Updates the feedback of a plot.
     usage: /sendfeedback <ID> <Text>
   editplot:
-    description: Enable/disble build permissions for reviewers on a plot
-    permission: alpsbte.review
+    description: Enable/disable build permissions for reviewers on a plot.
     usage: /editplot
+  cleanplot:
+    description: Cleans and refreshes plots due to bugs or permission changes.
+    usage: /cleanplot <All/ID>
   deleteplot:
-    description: Delete a plot
-    permission: alpsbte.admin
+    description: Delete a plot from the system.
     usage: /deleteplot <ID>
-  generateplot:
-    description: Generate a new plot
-    permission: alpsbte.admin
-    usage: /generateplot <ID>
   sethologram:
     description: Sets the position of a hologram
-    permission: alpsbte.admin
     usage: /sethologram <name>
   preload:
     description: Reload config and holograms
-    permission: alpsbte.admin
     usage: /preload
-  tpll:
-    description: teleport to a position in the plot, using irl coordinates
-    usage: /tpll <long> <lat>
+  pss:
+    description: Command for setting up the database.
+    usage: /pss help
 permissions:
-  alpsbte.admin:
-    description: Manager permissions
+  plotsystem.plot:
+    description: Builder permissions
+  plotsystem.review:
+    description: Reviewer permissions
+  plotsystem.admin:
+    description: Administrator permissions
