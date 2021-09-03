@@ -78,7 +78,7 @@ public class FTPConfiguration {
     }
 
     public static void addFTPConfiguration(String address, int port, String username, String password) throws SQLException {
-        if (getFTPConfigurations().stream().noneMatch(ftp -> ftp.getAddress().equals(address))) {
+        if (getFTPConfigurations().stream().noneMatch(ftp -> ftp.getAddress().equals(address) && ftp.getPort() == port)) {
             DatabaseConnection.createStatement("INSERT INTO plotsystem_ftp_configurations (id, address, port, username, password) VALUES (?, ?, ?, ?, ?)")
                     .setValue(DatabaseConnection.getTableID("plotsystem_ftp_configurations"))
                     .setValue(address).setValue(port).setValue(username).setValue(password).executeUpdate();
