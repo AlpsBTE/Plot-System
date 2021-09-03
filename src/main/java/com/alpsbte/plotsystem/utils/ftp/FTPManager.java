@@ -3,6 +3,7 @@ package com.alpsbte.plotsystem.utils.ftp;
 import com.alpsbte.plotsystem.core.system.Server;
 import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
+import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.bukkit.Bukkit;
 
@@ -22,6 +23,9 @@ public class FTPManager {
             fileOptions = new FileSystemOptions();
             SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(fileOptions, "no");
             SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fileOptions, false);
+
+            FtpFileSystemConfigBuilder.getInstance().setPassiveMode(fileOptions, true);
+            FtpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fileOptions, false);
         } catch (FileSystemException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
