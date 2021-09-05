@@ -45,9 +45,9 @@ commands:
   sethologram:
     description: Sets the position of a hologram
     usage: /sethologram <name>
-  preload:
+  plotreload:
     description: Reload config and holograms
-    usage: /preload
+    usage: /plotreload
   pss:
     description: Command for setting up the database.
     usage: /pss help
