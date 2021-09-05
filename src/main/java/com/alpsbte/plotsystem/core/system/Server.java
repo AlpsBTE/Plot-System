@@ -1,9 +1,12 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -57,10 +60,12 @@ public class Server {
         return new ArrayList<>();
     }
 
-    public static void addServer(String name) throws SQLException {
+    public static Server addServer(String name) throws SQLException {
+        int id = DatabaseConnection.getTableID("plotsystem_servers");
         DatabaseConnection.createStatement("INSERT INTO plotsystem_servers (id, name) VALUES (?, ?)")
-                .setValue(DatabaseConnection.getTableID("plotsystem_servers"))
+                .setValue(id)
                 .setValue(name).executeUpdate();
+        return new Server(id);
     }
 
     public static void removeServer(int serverID) throws SQLException {

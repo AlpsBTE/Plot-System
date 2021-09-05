@@ -28,10 +28,18 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
 import com.alpsbte.plotsystem.core.system.Server;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -133,9 +141,12 @@ public class CMD_Setup_Server extends SubCommand {
             if (args.length > 1) {
                 if (args[1].length() <= 45) {
                     try {
-                        Server.addServer(args[1]);
+                        Server server = Server.addServer(args[1]);
+                        Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(server.getID()));
+                        if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
+                        if (!serverPath.toFile().mkdirs()) throw new IOException();
                         sender.sendMessage(Utils.getInfoMessageFormat("Successfully added server!"));
-                    } catch (SQLException ex) {
+                    } catch (SQLException | IOException ex) {
                         sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
@@ -180,12 +191,14 @@ public class CMD_Setup_Server extends SubCommand {
                 try {
                     if (Server.getServers().stream().anyMatch(s -> s.getID() == Integer.parseInt(args[1]))) {
                         Server.removeServer(Integer.parseInt(args[1]));
+                        Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), args[1]);
+                        if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
                         sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed server with ID " + args[1] + "!"));
                     } else {
                         sender.sendMessage(Utils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
                         sendInfo(sender);
                     }
-                } catch (SQLException ex) {
+                } catch (SQLException | IOException ex) {
                     sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }

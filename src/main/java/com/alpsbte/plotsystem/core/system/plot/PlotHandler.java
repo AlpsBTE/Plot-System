@@ -149,8 +149,8 @@ public class PlotHandler {
 
         if (CompletableFuture.supplyAsync(() -> {
             try {
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),"finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
                 Server plotServer = plot.getCity().getCountry().getServer();
                 if (plotServer.getFTPConfiguration() != null) {

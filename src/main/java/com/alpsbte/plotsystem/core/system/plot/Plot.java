@@ -82,7 +82,7 @@ public class Plot extends PlotPermissions {
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
 
                     if(!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
@@ -102,7 +102,7 @@ public class Plot extends PlotPermissions {
 
     public File getFinishedSchematic() {
         try {
-            return Paths.get(PlotManager.getDefaultSchematicPath(), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+            return Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
