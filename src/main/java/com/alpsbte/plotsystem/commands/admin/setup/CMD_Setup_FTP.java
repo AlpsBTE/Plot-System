@@ -88,7 +88,7 @@ public class CMD_Setup_FTP extends SubCommand {
                 sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + ftpConfigs.size() + " FTP-Configurations registered in the database:"));
                 sender.sendMessage("§8--------------------------");
                 for (FTPConfiguration ftp : ftpConfigs) {
-                    sender.sendMessage(" §6> §b" + ftp.getID() + " §f- Address: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - Username: " + getCensorString(ftp.getUsername().length()) + " - Password: " + getCensorString(ftp.getPassword().length()) + " - Path: " + ftp.getSchematicPath());
+                    sender.sendMessage(" §6> §b" + ftp.getID() + " §f- Address: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - SFTP: " + (ftp.isSFTP() ? "True" : "False") + " - Username: " + getCensorString(ftp.getUsername().length()) + " - Password: " + getCensorString(ftp.getPassword().length()) + " - Path: " + ftp.getSchematicPath());
                 }
                 sender.sendMessage("§8--------------------------");
             } else {
@@ -132,13 +132,15 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 4 && Utils.TryParseInt(args[2]) != null) {
-                try {
-                    FTPConfiguration.addFTPConfiguration(args[1], Integer.parseInt(args[2]), args[3], args[4]);
-                    sender.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP-Configuration!"));
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            if (args.length > 5 && Utils.TryParseInt(args[2]) != null) {
+                if (args[3].equalsIgnoreCase("true") || args[3].equalsIgnoreCase("false")) {
+                    try {
+                        FTPConfiguration.addFTPConfiguration(args[1], Integer.parseInt(args[2]), args[3].equalsIgnoreCase("true"), args[4], args[5]);
+                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP-Configuration!"));
+                    } catch (SQLException ex) {
+                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    }
                 }
                 return;
             }
@@ -157,7 +159,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Address", "Port", "Username", "Password" };
+            return new String[] { "Address", "Port", "isSFTP (True/False)", "Username", "Password" };
         }
 
         @Override

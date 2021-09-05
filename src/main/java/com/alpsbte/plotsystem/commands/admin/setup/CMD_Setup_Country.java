@@ -89,7 +89,7 @@ public class CMD_Setup_Country extends SubCommand {
                 sender.sendMessage("§8--------------------------");
                 for (Country c : countries) {
                     try {
-                        sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Server: " + c.getID() + " (" + c.getServer().getName() + ")");
+                        sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Server: " + c.getServer().getID() + " (" + c.getServer().getName() + ")");
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }

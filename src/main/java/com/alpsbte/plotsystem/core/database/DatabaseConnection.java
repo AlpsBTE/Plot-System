@@ -183,11 +183,12 @@ public class DatabaseConnection {
                     // FTP Configurations
                     "CREATE TABLE IF NOT EXISTS `plotsystem_ftp_configurations`" +
                             "(" +
-                            " `id`       int NOT NULL AUTO_INCREMENT ," +
-                            " `address`  varchar(255) NOT NULL ," +
-                            " `port`     int NOT NULL ," +
-                            " `username` varchar(255) NOT NULL ," +
-                            " `password` varchar(255) NOT NULL ," +
+                            " `id`              int NOT NULL AUTO_INCREMENT ," +
+                            " `address`         varchar(255) NOT NULL ," +
+                            " `port`            int NOT NULL ," +
+                            " `isSFTP`          tinyint NOT NULL DEFAULT 1 ," +
+                            " `username`        varchar(255) NOT NULL ," +
+                            " `password`        varchar(255) NOT NULL ," +
                             " `schematics_path` varchar(255) NULL ," +
                             "PRIMARY KEY (`id`)" +
                             ");",

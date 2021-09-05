@@ -16,21 +16,23 @@ public class FTPConfiguration {
     private String schematicPath;
     private String address;
     private int port;
+    private boolean isSFTP;
     private String username;
     private String password;
 
     public FTPConfiguration(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT schematics_path, address, port, username, password FROM plotsystem_ftp_configurations WHERE id = ?")
+        ResultSet rs = DatabaseConnection.createStatement("SELECT schematics_path, address, port, isSFTP, username, password FROM plotsystem_ftp_configurations WHERE id = ?")
                 .setValue(this.ID).executeQuery();
 
         if (rs.next()) {
             this.schematicPath = rs.getString(1);
             this.address = rs.getString(2);
             this.port = rs.getInt(3);
-            this.username = rs.getString(4);
-            this.password = rs.getString(5);
+            this.isSFTP = rs.getBoolean(4);
+            this.username = rs.getString(5);
+            this.password = rs.getString(6);
         }
     }
 
@@ -52,6 +54,10 @@ public class FTPConfiguration {
 
     public int getPort() {
         return port;
+    }
+
+    public boolean isSFTP() {
+        return isSFTP;
     }
 
     public String getUsername() {
@@ -77,12 +83,10 @@ public class FTPConfiguration {
         return new ArrayList<>();
     }
 
-    public static void addFTPConfiguration(String address, int port, String username, String password) throws SQLException {
-        if (getFTPConfigurations().stream().noneMatch(ftp -> ftp.getAddress().equals(address) && ftp.getPort() == port)) {
-            DatabaseConnection.createStatement("INSERT INTO plotsystem_ftp_configurations (id, address, port, username, password) VALUES (?, ?, ?, ?, ?)")
-                    .setValue(DatabaseConnection.getTableID("plotsystem_ftp_configurations"))
-                    .setValue(address).setValue(port).setValue(username).setValue(password).executeUpdate();
-        }
+    public static void addFTPConfiguration(String address, int port, boolean isSFTP, String username, String password) throws SQLException {
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_ftp_configurations (id, address, port, isSFTP, username, password) VALUES (?, ?, ?, ?, ?, ?)")
+                .setValue(DatabaseConnection.getTableID("plotsystem_ftp_configurations"))
+                .setValue(address).setValue(port).setValue(isSFTP ? 1 : 0).setValue(username).setValue(password).executeUpdate();
     }
 
     public static void removeFTPConfiguration(int ID) throws SQLException {

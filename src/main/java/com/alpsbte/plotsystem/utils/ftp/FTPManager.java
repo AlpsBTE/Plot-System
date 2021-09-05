@@ -35,7 +35,7 @@ public class FTPManager {
         String schematicsPath = server.getFTPConfiguration().getSchematicPath();
 
         return String.format("%sftp://%s:%s@%s:%d/%s/%s/%s/",
-                server.getFTPConfiguration().getPort() == 22 ? "s" : "",
+                server.getFTPConfiguration().isSFTP() ? "s" : "",
                 server.getFTPConfiguration().getUsername(),
                 server.getFTPConfiguration().getPassword(),
                 server.getFTPConfiguration().getAddress(),
