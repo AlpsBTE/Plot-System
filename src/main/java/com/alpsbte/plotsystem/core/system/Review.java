@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -221,7 +222,7 @@ public class Review {
                 if (plotServer.getFTPConfiguration() != null) {
                     return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
                 }
-            } catch (SQLException | IOException ex) {
+            } catch (SQLException | IOException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
             return null;

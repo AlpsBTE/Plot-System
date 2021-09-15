@@ -39,6 +39,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -90,7 +91,7 @@ public class Plot extends PlotPermissions {
                         }
                     }
                     return file;
-                } catch (SQLException ex) {
+                } catch (SQLException | URISyntaxException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
                 return null;

@@ -8,6 +8,8 @@ import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -31,19 +33,15 @@ public class FTPManager {
         }
     }
 
-    public static String getFTPUrl(Server server, int cityID) throws SQLException {
+    public static String getFTPUrl(Server server, int cityID) throws SQLException, URISyntaxException {
         String schematicsPath = server.getFTPConfiguration().getSchematicPath();
-
-        return String.format("%sftp://%s:%s@%s:%d/%s/%s/%s/",
-                server.getFTPConfiguration().isSFTP() ? "s" : "",
-                server.getFTPConfiguration().getUsername(),
-                server.getFTPConfiguration().getPassword(),
+        return new URI(server.getFTPConfiguration().isSFTP() ? "sftp" : "ftp",
+                server.getFTPConfiguration().getUsername() + ":" + server.getFTPConfiguration().getPassword(),
                 server.getFTPConfiguration().getAddress(),
                 server.getFTPConfiguration().getPort(),
-                schematicsPath == null ? DEFAULT_SCHEMATIC_PATH_LINUX : schematicsPath,
-                "finishedSchematics",
-                cityID
-        );
+                String.format("/%s/%s/%s/", schematicsPath == null ? DEFAULT_SCHEMATIC_PATH_LINUX : schematicsPath, "finishedSchematics", cityID),
+                null,
+                null).toString();
     }
 
     public static CompletableFuture<Void> uploadSchematic(String ftpURL, File schematic) {
