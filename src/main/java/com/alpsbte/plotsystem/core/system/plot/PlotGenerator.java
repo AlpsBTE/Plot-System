@@ -157,10 +157,11 @@ public final class PlotGenerator {
     }
 
     private CompletableFuture<Void> generateOutlines() throws IOException, WorldEditException {
-        Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot); // TODO: Set Plot to the bottom of the schematic
+        Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot);
 
         Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
         clipboard.setOrigin(clipboard.getOrigin().setY(clipboard.getMinimumPoint().getY())); // Set origin point to the center bottom of the schematic
+
         ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
         EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
 
