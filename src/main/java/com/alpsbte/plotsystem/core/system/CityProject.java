@@ -95,11 +95,12 @@ public class CityProject {
     }
 
     public static void addCityProject(Country country, String name) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description) VALUES (?, ?, ?, ?)")
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description, visible) VALUES (?, ?, ?, ?, ?)")
                 .setValue(DatabaseConnection.getTableID("plotsystem_city_projects"))
                 .setValue(name)
                 .setValue(country.getID())
-                .setValue("").executeUpdate();
+                .setValue("")
+                .setValue(true).executeUpdate();
     }
 
     public static void removeCityProject(int id) throws SQLException {
