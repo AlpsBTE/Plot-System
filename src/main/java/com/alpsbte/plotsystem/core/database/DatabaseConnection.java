@@ -92,8 +92,9 @@ public class DatabaseConnection {
 
     private static void createDatabase() throws SQLException {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
-            Statement statement = con.createStatement();
-            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+            try (Statement statement = con.createStatement()) {
+                statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+            }
         }
     }
 
@@ -103,12 +104,13 @@ public class DatabaseConnection {
                 Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
             }
 
-            ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
-            if (rs.next()) {
-                if (rs.getInt(1) == 0) {
-                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
-                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
-                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+            try (ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery()) {
+                if (rs.next()) {
+                    if (rs.getInt(1) == 0) {
+                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
+                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
+                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -125,11 +127,12 @@ public class DatabaseConnection {
         try {
             String query ="SELECT id + 1 available_id FROM $table t WHERE NOT EXISTS (SELECT * FROM $table WHERE $table.id = t.id + 1) ORDER BY id LIMIT 1"
                     .replace("$table", table);
-            ResultSet rs = DatabaseConnection.createStatement(query).executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+            try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 1;
             }
-            return 1;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return 1;
@@ -151,15 +154,17 @@ public class DatabaseConnection {
 
         public ResultSet executeQuery() throws SQLException {
             try (Connection con = dataSource.getConnection()) {
-                PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
-                return iterateValues(ps).executeQuery();
+                try (PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql)) {
+                    return iterateValues(ps).executeQuery();
+                }
             }
         }
 
         public void executeUpdate() throws SQLException {
             try (Connection con = dataSource.getConnection()) {
-                PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
-                iterateValues(ps).executeUpdate();
+                try (PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql)) {
+                    iterateValues(ps).executeUpdate();
+                }
             }
         }
 

@@ -59,6 +59,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.TrapDoor;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,15 +86,14 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
 
             // Check if player even exists in database.
-            try {
-                if(!DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
-                        .setValue(event.getPlayer().getUniqueId()).executeQuery().first()) {
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
+                    .setValue(event.getPlayer().getUniqueId()).executeQuery()) {
 
+                if(!rs.first()) {
                         DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
                                 .setValue(event.getPlayer().getUniqueId().toString())
                                 .setValue(event.getPlayer().getName())
                                 .executeUpdate();
-
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
