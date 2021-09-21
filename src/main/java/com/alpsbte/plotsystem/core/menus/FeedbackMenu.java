@@ -62,9 +62,8 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Get review id from plot
-        try {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                    .setValue(plot.getID()).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(plot.getID()).executeQuery()) {
 
             if (rs.next()) {
                 this.review = new Review(rs.getInt(1));

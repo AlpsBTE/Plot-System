@@ -119,13 +119,14 @@ public class PlotManager {
     }
 
     public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
-                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getInt(1);
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
         }
-        return 0;
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
@@ -135,6 +136,7 @@ public class PlotManager {
            plots.add(new Plot(rs.getInt(1)));
         }
 
+        rs.close();
         return plots;
     }
 
@@ -327,9 +329,8 @@ public class PlotManager {
 
     public static boolean plotExists(int ID, boolean system) {
         if (system) {
-            try {
-                ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
-                        .setValue(ID).executeQuery();
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
+                    .setValue(ID).executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) return true;
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -351,11 +352,11 @@ public class PlotManager {
         if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
         if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
 
-        if(hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return easy
+        if(hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);
         } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
-        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return hard
+        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return easy
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
         } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);

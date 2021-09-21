@@ -29,7 +29,7 @@ sync-ftp-files:
 
 
 # -----------------------------------------------------
-# | Supported database: MariaDB
+# | Supported databases: MariaDB and MySQL
 # -----------------------------------------------------
 database:
   url: jdbc:mariadb://adress:3306/

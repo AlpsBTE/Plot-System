@@ -22,14 +22,15 @@ public class Server {
     public Server(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT ftp_configuration_id, name FROM plotsystem_servers WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT ftp_configuration_id, name FROM plotsystem_servers WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            this.ftpConfigurationID = rs.getInt(1);
-            if (rs.wasNull()) this.ftpConfigurationID = -1;
+            if (rs.next()) {
+                this.ftpConfigurationID = rs.getInt(1);
+                if (rs.wasNull()) this.ftpConfigurationID = -1;
 
-            this.name = rs.getString(2);
+                this.name = rs.getString(2);
+            }
         }
     }
 
@@ -46,9 +47,7 @@ public class Server {
     }
 
     public static List<Server> getServers() {
-        try {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_servers").executeQuery();
-
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_servers").executeQuery()) {
             List<Server> servers = new ArrayList<>();
             while (rs.next()) {
                 servers.add(new Server(rs.getInt(1)));
