@@ -204,7 +204,6 @@ public class DatabaseConnection {
                             " `id`                   int NOT NULL AUTO_INCREMENT ," +
                             " `ftp_configuration_id` int NULL ," +
                             " `name`                 varchar(45) NOT NULL ," +
-                            " `schematic_path`       varchar(255) NULL ," +
                             "PRIMARY KEY (`id`)," +
                             "KEY `fkIdx_30` (`ftp_configuration_id`)," +
                             "CONSTRAINT `FK_29` FOREIGN KEY `fkIdx_30` (`ftp_configuration_id`) REFERENCES `plotsystem_ftp_configurations` (`id`)" +
