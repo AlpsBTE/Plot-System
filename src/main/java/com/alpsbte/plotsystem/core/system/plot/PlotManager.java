@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.Country;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -44,6 +46,7 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -270,7 +273,7 @@ public class PlotManager {
     }
 
     public static void checkPlotsForLastActivity() {
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(PlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
                 long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
@@ -291,6 +294,26 @@ public class PlotManager {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }, 0L, 20 * 60 * 60); // Check every hour
+    }
+
+    public static void syncPlotSchematicFiles() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLED)) {
+            long interval = config.getLong(ConfigPaths.SYNC_FTP_FILES_INTERVAL);
+
+            Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+                CityProject.getCityProjects(false).forEach(c -> {
+                    try {
+                        if (c.getCountry().getServer().getFTPConfiguration() != null) {
+                            List<Plot> plots = PlotManager.getPlots(c.getID(), Status.unclaimed);
+                            plots.forEach(Plot::getOutlinesSchematic);
+                        }
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
+                    }
+                });
+            }, 0L, 20 * interval);
+        }
     }
 
     public static Plot getPlotByWorld(World plotWorld) throws SQLException {
