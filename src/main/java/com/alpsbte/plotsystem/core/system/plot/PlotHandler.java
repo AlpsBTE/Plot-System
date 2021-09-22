@@ -185,12 +185,15 @@ public class PlotHandler {
     }
 
     public static Location getPlotSpawnPoint(Plot plot) {
-        return new Location(plot.getPlotWorld(),
+        Location spawnLocation = new Location(plot.getPlotWorld(),
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
-                30, // TODO: Fit Y value to schematic height to prevent collision
+                30,
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
                 -90,
                 90);
+        // Set spawn point 3 blocks above the highest center point
+        spawnLocation.setY(plot.getPlotWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()));
+        return spawnLocation;
     }
 
     public static void sendLinkMessages(Plot plot, Player player){

@@ -368,7 +368,7 @@ public class PlotManager {
     public static Vector getPlotCenter(Plot plot) {
         return Vector.toBlockPoint(
                 getPlotSize(plot) / 2d + 0.5,
-                15, // TODO: Change Y value to the bottom of the schematic
+                5,
                 getPlotSize(plot) / 2d + 0.5
         );
     }
