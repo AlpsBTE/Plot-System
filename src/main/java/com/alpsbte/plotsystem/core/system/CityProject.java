@@ -45,14 +45,15 @@ public class CityProject {
     public CityProject(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT country_id, name, description, visible FROM plotsystem_city_projects WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT country_id, name, description, visible FROM plotsystem_city_projects WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            this.countryID = rs.getInt(1);
-            this.name = rs.getString(2);
-            this.description = rs.getString(3);
-            this.visible = rs.getInt(4) == 1;
+            if (rs.next()) {
+                this.countryID = rs.getInt(1);
+                this.name = rs.getString(2);
+                this.description = rs.getString(3);
+                this.visible = rs.getInt(4) == 1;
+            }
         }
     }
 
@@ -77,9 +78,7 @@ public class CityProject {
     }
 
     public static List<CityProject> getCityProjects(boolean onlyVisible) {
-        try {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery();
-
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery()) {
             List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {
                 CityProject city = new CityProject(rs.getInt(1));
@@ -95,11 +94,12 @@ public class CityProject {
     }
 
     public static void addCityProject(Country country, String name) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description) VALUES (?, ?, ?, ?)")
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description, visible) VALUES (?, ?, ?, ?, ?)")
                 .setValue(DatabaseConnection.getTableID("plotsystem_city_projects"))
                 .setValue(name)
                 .setValue(country.getID())
-                .setValue("").executeUpdate();
+                .setValue("")
+                .setValue(true).executeUpdate();
     }
 
     public static void removeCityProject(int id) throws SQLException {

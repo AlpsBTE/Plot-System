@@ -22,13 +22,14 @@ public class Country {
     public Country(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id FROM plotsystem_countries WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id FROM plotsystem_countries WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            this.serverID = rs.getInt(1);
-            this.name = rs.getString(2);
-            this.headID = rs.getString(3);
+            if (rs.next()) {
+                this.serverID = rs.getInt(1);
+                this.name = rs.getString(2);
+                this.headID = rs.getString(3);
+            }
         }
     }
 
@@ -49,9 +50,7 @@ public class Country {
     }
 
     public static List<Country> getCountries() {
-        try {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery();
-
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery()) {
             List<Country> countries = new ArrayList<>();
             while (rs.next()) {
                 countries.add(new Country(rs.getInt(1)));

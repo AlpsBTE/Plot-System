@@ -134,12 +134,16 @@ public class CMD_Setup_FTP extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length > 5 && Utils.TryParseInt(args[2]) != null) {
                 if (args[3].equalsIgnoreCase("true") || args[3].equalsIgnoreCase("false")) {
-                    try {
-                        FTPConfiguration.addFTPConfiguration(args[1], Integer.parseInt(args[2]), args[3].equalsIgnoreCase("true"), args[4], args[5]);
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP-Configuration!"));
-                    } catch (SQLException ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    if (!args[1].toLowerCase().startsWith("sftp:") && !args[1].toLowerCase().startsWith("ftp:")) {
+                        try {
+                            FTPConfiguration.addFTPConfiguration(args[1], Integer.parseInt(args[2]), args[3].equalsIgnoreCase("true"), args[4], args[5]);
+                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully added FTP-Configuration!"));
+                        } catch (SQLException ex) {
+                            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+                    } else {
+                        sender.sendMessage(Utils.getErrorMessageFormat("Please remove the protocol URL from the host address!"));
                     }
                 }
                 return;

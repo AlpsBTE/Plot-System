@@ -51,14 +51,7 @@ public class Review {
     }
 
     public Review(int plotID, UUID reviewer, String rating) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT id + 1 available_id FROM plotsystem_reviews t WHERE NOT EXISTS (SELECT * FROM plotsystem_reviews " +
-                "WHERE plotsystem_reviews.id = t.id + 1) ORDER BY id LIMIT 1").executeQuery();
-
-        if(rs.next()) {
-            this.reviewID = rs.getInt(1);
-        } else {
-            this.reviewID = 1;
-        }
+        this.reviewID = DatabaseConnection.getTableID("plotsystem_reviews");
 
         DatabaseConnection.createStatement("INSERT INTO plotsystem_reviews (id, reviewer_uuid, rating, review_date, feedback) VALUES (?, ?, ?, ?, ?)")
                 .setValue(this.reviewID)
@@ -79,67 +72,72 @@ public class Review {
     }
 
     public int getPlotID() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE review_id = ?")
-                .setValue(this.reviewID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE review_id = ?")
+                .setValue(this.reviewID).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getInt(1);
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
         }
-        return 0;
     }
 
     public Builder getReviewer() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT reviewer_uuid FROM plotsystem_reviews WHERE id = ?")
-                .setValue(this.reviewID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT reviewer_uuid FROM plotsystem_reviews WHERE id = ?")
+                .setValue(this.reviewID).executeQuery()) {
 
-        if (rs.next()) {
-            return new Builder(UUID.fromString(rs.getString(1)));
+            if (rs.next()) {
+                return new Builder(UUID.fromString(rs.getString(1)));
+            }
+            return null;
         }
-        return null;
     }
 
     public int getRating(Category category) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT rating FROM plotsystem_reviews WHERE id = ?")
-                .setValue(this.reviewID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT rating FROM plotsystem_reviews WHERE id = ?")
+                .setValue(this.reviewID).executeQuery()) {
 
-        if (rs.next()) {
-            String[] scoreAsString = rs.getString("rating").split(",");
-            switch (category) {
-                case ACCURACY:
-                    return Integer.parseInt(scoreAsString[0]);
-                case BLOCKPALETTE:
-                    return Integer.parseInt(scoreAsString[1]);
-                case DETAILING:
-                    return Integer.parseInt(scoreAsString[2]);
-                case TECHNIQUE:
-                    return Integer.parseInt(scoreAsString[3]);
-                case ALL:
-                    return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
-                default:
-                    return 0;
+            if (rs.next()) {
+                String[] scoreAsString = rs.getString("rating").split(",");
+                switch (category) {
+                    case ACCURACY:
+                        return Integer.parseInt(scoreAsString[0]);
+                    case BLOCKPALETTE:
+                        return Integer.parseInt(scoreAsString[1]);
+                    case DETAILING:
+                        return Integer.parseInt(scoreAsString[2]);
+                    case TECHNIQUE:
+                        return Integer.parseInt(scoreAsString[3]);
+                    case ALL:
+                        return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
+                    default:
+                        return 0;
+                }
             }
+            return 0;
         }
-        return 0;
     }
 
     public String getFeedback() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT feedback FROM plotsystem_reviews WHERE id = ?")
-                .setValue(this.reviewID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT feedback FROM plotsystem_reviews WHERE id = ?")
+                .setValue(this.reviewID).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getString(1);
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+            return null;
         }
-        return null;
     }
 
     public Date getReviewDate() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT review_date FROM plotsystem_reviews WHERE id = ?")
-                .setValue(this.reviewID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_date FROM plotsystem_reviews WHERE id = ?")
+                .setValue(this.reviewID).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getDate(1);
+            if (rs.next()) {
+                return rs.getDate(1);
+            }
+            return null;
         }
-        return null;
     }
 
     public void setReviewer(UUID reviewer) throws SQLException {
@@ -184,13 +182,14 @@ public class Review {
     }
 
     public boolean isFeedbackSent() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT sent FROM plotsystem_reviews WHERE id = ?")
-                .setValue(this.reviewID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT sent FROM plotsystem_reviews WHERE id = ?")
+                .setValue(this.reviewID).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getInt(1) != 0;
+            if (rs.next()) {
+                return rs.getInt(1) != 0;
+            }
+            return false;
         }
-        return false;
     }
 
     public static void undoReview(Review review) throws SQLException {
