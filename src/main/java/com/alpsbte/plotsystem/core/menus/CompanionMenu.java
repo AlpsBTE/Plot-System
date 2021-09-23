@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -196,7 +197,8 @@ public class CompanionMenu extends AbstractMenu {
 
                                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                                     try {
-                                        new PlotGenerator(cityID, plotDifficultyForCity, builder);
+                                        //new PlotGenerator(cityID, plotDifficultyForCity, builder);
+                                        new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
                                     } catch (SQLException ex) {
                                         clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a staff member."));
                                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
