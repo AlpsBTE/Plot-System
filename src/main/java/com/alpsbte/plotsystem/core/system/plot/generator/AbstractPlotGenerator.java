@@ -76,7 +76,10 @@ public abstract class AbstractPlotGenerator {
             } catch (InterruptedException | ExecutionException ex) { plotGen.completeExceptionally(ex); }
         })).whenComplete((t, exception) -> {
             try {
-                if (exception != null) onException(exception);
+                if (exception != null) {
+                    onException(exception);
+                    if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
+                }
                 this.onComplete(exception != null);
             } catch (SQLException ex) { PlotHandler.abandonPlot(plot); onException(ex); }
         });
@@ -103,9 +106,8 @@ public abstract class AbstractPlotGenerator {
     protected CompletableFuture<Boolean> generateWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            if (!worldManager.isMVWorld(plot.getPlotWorld())) {
-                worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false, "VoidGen");
-            }
+            if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
+            worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false, "VoidGen");
         } else {
             Bukkit.getLogger().log(Level.SEVERE, "World Creator is not configured!");
             return CompletableFuture.completedFuture(false);
