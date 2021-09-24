@@ -43,7 +43,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
@@ -66,21 +66,21 @@ public abstract class AbstractPlotGenerator {
         CompletableFuture<Boolean> a = configureWorldGeneration(), b = generateWorld(), c = generateOutlines(plot.getOutlinesSchematic()),
                 d = configureWorld(worldManager.getMVWorld(plot.getPlotWorld())), e = createProtection();
 
-        // TODO: Improve exceptions
         CompletableFuture<Void> plotGen = CompletableFuture.allOf(a, b, c, d, e);
-        plotGen.thenRun(() -> Stream.of(a, b, c, d, e).forEach(f -> {
-            try {
-                if (!f.isCompletedExceptionally()) {
-                    if (!f.get()) plotGen.completeExceptionally(null);
-                } else plotGen.completeExceptionally(null);
-            } catch (InterruptedException | ExecutionException ex) { plotGen.completeExceptionally(ex); }
-        })).whenComplete((t, exception) -> {
-            try {
-                if (exception != null) {
-                    onException(exception);
+        plotGen.thenRun(() -> {
+            AtomicBoolean completedExceptionally = new AtomicBoolean(false);
+            Stream.of(a, b, c, d, e).forEach(f -> f.handle((value, ex) -> {
+                if (!value || ex != null) {
+                    completedExceptionally.set(true);
+                    onException(ex != null ? ex : new RuntimeException("Generator completed exceptionally"));
                     if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
+                    plotGen.completeExceptionally(ex);
                 }
-                this.onComplete(exception != null);
+                return value;
+            }));
+
+            try {
+                this.onComplete(completedExceptionally.get());
             } catch (SQLException ex) { PlotHandler.abandonPlot(plot); onException(ex); }
         });
     }
