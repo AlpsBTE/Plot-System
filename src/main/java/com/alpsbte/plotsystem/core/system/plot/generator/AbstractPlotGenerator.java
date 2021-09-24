@@ -63,8 +63,8 @@ public abstract class AbstractPlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        CompletableFuture<Boolean> a = configureWorldGeneration(), b = generateWorld(), c = configureWorld(worldManager.getMVWorld(plot.getPlotWorld())),
-                d = generateOutlines(plot.getOutlinesSchematic()), e = createProtection();
+        CompletableFuture<Boolean> a = configureWorldGeneration(), b = generateWorld(), c = generateOutlines(plot.getOutlinesSchematic()),
+                d = configureWorld(worldManager.getMVWorld(plot.getPlotWorld())), e = createProtection();
 
         // TODO: Improve exceptions
         CompletableFuture<Void> plotGen = CompletableFuture.allOf(a, b, c, d, e);
@@ -117,36 +117,6 @@ public abstract class AbstractPlotGenerator {
     }
 
     /**
-     * Configures plot world
-     * @param mvWorld - plot world
-     * @return - true if configuration was successful
-     */
-    protected CompletableFuture<Boolean> configureWorld(@NotNull MultiverseWorld mvWorld) {
-        // Set Bukkit world game rules
-        plot.getPlotWorld().setGameRuleValue("randomTickSpeed", "0");
-        plot.getPlotWorld().setGameRuleValue("doDaylightCycle", "false");
-        plot.getPlotWorld().setGameRuleValue("doFireTick", "false");
-        plot.getPlotWorld().setGameRuleValue("doWeatherCycle", "false");
-        plot.getPlotWorld().setGameRuleValue("keepInventory", "true");
-        plot.getPlotWorld().setGameRuleValue("announceAdvancements", "false");
-
-        // Set world time to midday
-        plot.getPlotWorld().setTime(6000);
-
-        // Configure multiverse world
-        mvWorld.setAllowFlight(true);
-        mvWorld.setGameMode(GameMode.CREATIVE);
-        mvWorld.setEnableWeather(false);
-        mvWorld.setDifficulty(Difficulty.PEACEFUL);
-        mvWorld.setAllowAnimalSpawn(false);
-        mvWorld.setAllowMonsterSpawn(false);
-        mvWorld.setAutoLoad(false);
-        mvWorld.setKeepSpawnInMemory(false);
-
-        return CompletableFuture.completedFuture(true);
-    }
-
-    /**
      * Generates plot schematic and outlines
      * @param plotSchematic - schematic file
      * @return - true if generation was successful
@@ -173,6 +143,37 @@ public abstract class AbstractPlotGenerator {
             return CompletableFuture.completedFuture(false);
         }
         return CompletableFuture.completedFuture(false);
+    }
+
+    /**
+     * Configures plot world
+     * @param mvWorld - plot world
+     * @return - true if configuration was successful
+     */
+    protected CompletableFuture<Boolean> configureWorld(@NotNull MultiverseWorld mvWorld) {
+        // Set Bukkit world game rules
+        plot.getPlotWorld().setGameRuleValue("randomTickSpeed", "0");
+        plot.getPlotWorld().setGameRuleValue("doDaylightCycle", "false");
+        plot.getPlotWorld().setGameRuleValue("doFireTick", "false");
+        plot.getPlotWorld().setGameRuleValue("doWeatherCycle", "false");
+        plot.getPlotWorld().setGameRuleValue("keepInventory", "true");
+        plot.getPlotWorld().setGameRuleValue("announceAdvancements", "false");
+
+        // Set world time to midday
+        plot.getPlotWorld().setTime(6000);
+
+        // Configure multiverse world
+        mvWorld.setAllowFlight(true);
+        mvWorld.setGameMode(GameMode.CREATIVE);
+        mvWorld.setEnableWeather(false);
+        mvWorld.setDifficulty(Difficulty.PEACEFUL);
+        mvWorld.setAllowAnimalSpawn(false);
+        mvWorld.setAllowMonsterSpawn(false);
+        mvWorld.setAutoLoad(false);
+        mvWorld.setKeepSpawnInMemory(false);
+        mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(getPlot()));
+
+        return CompletableFuture.completedFuture(true);
     }
 
     /**

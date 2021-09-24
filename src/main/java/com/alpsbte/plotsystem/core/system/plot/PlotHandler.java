@@ -191,8 +191,8 @@ public class PlotHandler {
                 (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
                 -90,
                 90);
-        // Set spawn point 3 blocks above the highest center point
-        spawnLocation.setY(plot.getPlotWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()));
+        // Set spawn point 1 block above the highest center point
+        spawnLocation.setY(plot.getPlotWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
         return spawnLocation;
     }
 
