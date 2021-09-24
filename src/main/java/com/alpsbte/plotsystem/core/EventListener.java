@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
-import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
@@ -34,20 +33,18 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -211,7 +208,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
         }
-        PlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+        DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

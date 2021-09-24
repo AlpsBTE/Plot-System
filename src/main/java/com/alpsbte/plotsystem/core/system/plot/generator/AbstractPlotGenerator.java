@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Stream;
@@ -63,27 +64,37 @@ public abstract class AbstractPlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        CompletableFuture<Boolean> a = configureWorldGeneration(), b = generateWorld(), c = generateOutlines(plot.getOutlinesSchematic()),
-                d = configureWorld(worldManager.getMVWorld(plot.getPlotWorld())), e = createProtection();
+        try {
+            if (init().get()) {
+                 CompletableFuture<Boolean> a = configureWorldGeneration(), b = generateWorld(), c = generateOutlines(plot.getOutlinesSchematic()),
+                         d = configureWorld(worldManager.getMVWorld(plot.getPlotWorld())), e = createProtection();
 
-        CompletableFuture<Void> plotGen = CompletableFuture.allOf(a, b, c, d, e);
-        plotGen.thenRun(() -> {
-            AtomicBoolean completedExceptionally = new AtomicBoolean(false);
-            Stream.of(a, b, c, d, e).forEach(f -> f.handle((value, ex) -> {
-                if (!value || ex != null) {
-                    completedExceptionally.set(true);
-                    onException(ex != null ? ex : new RuntimeException("Generator completed exceptionally"));
-                    if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
-                    plotGen.completeExceptionally(ex);
-                }
-                return value;
-            }));
+                CompletableFuture<Void> plotGen = CompletableFuture.allOf(a, b, c, d, e);
+                plotGen.thenRun(() -> {
+                    AtomicBoolean completedExceptionally = new AtomicBoolean(false);
+                    Stream.of(a, b, c, d, e).forEach(f -> f.handle((value, ex) -> {
+                        if (!value || ex != null) {
+                            completedExceptionally.set(true);
+                            onException(ex != null ? ex : new RuntimeException("Generator completed exceptionally"));
+                            if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
+                            plotGen.completeExceptionally(ex);
+                        }
+                        return value;
+                    }));
 
-            try {
-                this.onComplete(completedExceptionally.get());
-            } catch (SQLException ex) { PlotHandler.abandonPlot(plot); onException(ex); }
-        });
+                    try {
+                        this.onComplete(completedExceptionally.get());
+                    } catch (SQLException ex) { PlotHandler.abandonPlot(plot); onException(ex); }
+                });
+            }
+        } catch (InterruptedException | ExecutionException ex) { onException(ex); }
     }
+
+    /**
+     * Executed before plot generation
+     * @return - true if plot should be generated
+     */
+    protected abstract CompletableFuture<Boolean> init();
 
     /**
      * Configures plot world generation

@@ -21,6 +21,11 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
+    protected CompletableFuture<Boolean> init() {
+        return CompletableFuture.completedFuture(true);
+    }
+
+    @Override
     protected CompletableFuture<Boolean> generateWorld() {
         return CompletableFuture.completedFuture(true);
     }
