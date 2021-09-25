@@ -171,6 +171,7 @@ public class PlotSystem extends JavaPlugin {
         });
 
         PlotManager.checkPlotsForLastActivity();
+        PlotManager.syncPlotSchematicFiles();
 
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");
