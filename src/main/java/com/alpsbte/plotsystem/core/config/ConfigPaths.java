@@ -31,6 +31,10 @@ public abstract class ConfigPaths {
     public static final String ENABLE_SCORE_REQUIREMENT = "enable-score-requirement";
     public static final String DEV_MODE = "dev-mode";
 
+    private static final String SYNC_FTP_FILES = "sync-ftp-files.";
+    public static final String SYNC_FTP_FILES_ENABLED = SYNC_FTP_FILES + "enabled";
+    public static final String SYNC_FTP_FILES_INTERVAL = SYNC_FTP_FILES + "sync-interval";
+
 
     // Database
     private static final String DATABASE = "database.";

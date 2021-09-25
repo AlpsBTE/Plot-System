@@ -36,17 +36,16 @@ import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Config extends YamlConfiguration {
 
-    public static final double VERSION = 1.1;
-
+    private final double version;
     private final File file;
     private final String fileName;
 
-    protected Config(String fileName) {
+    protected Config(String fileName, double version) {
+        this.version = version;
         this.fileName = fileName;
         this.file = Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), fileName).toFile();
     }
@@ -76,6 +75,10 @@ public class Config extends YamlConfiguration {
 
     public InputStream getDefaultFileStream() {
         return PlotSystem.getPlugin().getResource("default" + fileName.substring(0, 1).toUpperCase() + fileName.substring(1));
+    }
+
+    public double getVersion() {
+        return version;
     }
 
     public String getFileName() {
