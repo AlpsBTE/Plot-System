@@ -209,7 +209,9 @@ public final class PlotGenerator {
             allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
             allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
             for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
-                allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
+                for (String command : baseCommand.getNames()) {
+                    allowedCommandsNonBuilder.add("/" + command);
+                }
             }
 
             blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
