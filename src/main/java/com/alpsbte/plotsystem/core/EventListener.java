@@ -87,7 +87,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Check if player even exists in database.
             try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
-                    .setValue(event.getPlayer().getUniqueId()).executeQuery()) {
+                    .setValue(event.getPlayer().getUniqueId().toString()).executeQuery()) {
 
                 if(!rs.first()) {
                         DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
