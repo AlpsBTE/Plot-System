@@ -266,6 +266,9 @@ public abstract class AbstractPlotGenerator {
         allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
         for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
             allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
+            for (String command : baseCommand.getNames()) {
+                allowedCommandsNonBuilder.add("/" + command);
+            }
         }
 
         List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
