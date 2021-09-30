@@ -278,10 +278,11 @@ public class PlotManager {
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
-                long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
+                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                long millisInDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL) * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last x days
 
                 for(Plot plot : plots) {
-                    if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
+                    if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                             try {
                                 PlotHandler.abandonPlot(plot);

@@ -24,6 +24,8 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -34,6 +36,7 @@ import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -107,7 +110,8 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set plot members item
         try {
             if (!plot.isReviewed()) {
-                if (getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) {
+                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.ADD_BUTTON))
                                     .setName("§b§lManage Members").setLore(new LoreBuilder()
@@ -174,7 +178,8 @@ public class PlotActionsMenu extends AbstractMenu {
             try {
                 if (!plot.isReviewed()) {
                     if (plot.getStatus() == Status.unfinished) {
-                        if (clickPlayer == plot.getPlotOwner().getPlayer() || clickPlayer.hasPermission("plotsystem.admin")) {
+                        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                        if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                             clickPlayer.closeInventory();
                             new PlotMemberMenu(plot,clickPlayer);
                         } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {

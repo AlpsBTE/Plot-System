@@ -24,12 +24,15 @@
 
 package com.alpsbte.plotsystem.commands.plot;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Invitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -43,7 +46,8 @@ public class CMD_Plot_Invite extends SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            if (getPlayer(sender) != null) {
+            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+            if (getPlayer(sender) != null && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 Invitation invite = null;
                 for (Invitation item : Invitation.invitationsList) {
                     if (item.invitee == getPlayer(sender)){
