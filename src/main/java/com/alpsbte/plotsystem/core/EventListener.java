@@ -39,15 +39,12 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -87,7 +84,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Check if player even exists in database.
             try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
-                    .setValue(event.getPlayer().getUniqueId()).executeQuery()) {
+                    .setValue(event.getPlayer().getUniqueId().toString()).executeQuery()) {
 
                 if(!rs.first()) {
                         DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
@@ -110,7 +107,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Builder builder = new Builder(event.getPlayer().getUniqueId());
                 if (!builder.getName().equals(event.getPlayer().getName())) {
                     DatabaseConnection.createStatement("UPDATE plotsystem_builders SET name = ? WHERE uuid = ?")
-                            .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId()).executeUpdate();
+                            .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId().toString()).executeUpdate();
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
