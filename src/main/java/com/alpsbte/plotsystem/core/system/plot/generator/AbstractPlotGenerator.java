@@ -135,7 +135,8 @@ public abstract class AbstractPlotGenerator {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
             if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
-            worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false, "VoidGen");
+            worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false,
+                    "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
             throw new RuntimeException("World Creator is not configured");
         }
