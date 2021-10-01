@@ -66,11 +66,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 
 public abstract class AbstractPlotGenerator {
 
@@ -88,75 +84,68 @@ public abstract class AbstractPlotGenerator {
         this.plot = plot;
         this.builder = builder;
 
-        try {
-            if (init().get()) {
-                 CompletableFuture<Boolean> a = configureWorldGeneration(), b = generateWorld(), c = generateOutlines(plot.getOutlinesSchematic()),
-                         d = configureWorld(worldManager.getMVWorld(plot.getPlotWorld())), e = createProtection();
+        if (init()) {
+            Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+                Exception exception = null;
+                try {
+                    generateWorld();
+                    generateOutlines(plot.getOutlinesSchematic());
+                    createMultiverseWorld();
+                    configureWorld(worldManager.getMVWorld(plot.getPlotWorld()));
+                    createProtection();
+                } catch (Exception ex) {
+                    exception = ex;
+                }
 
-                CompletableFuture<Void> plotGen = CompletableFuture.allOf(a, b, c, d, e);
-                plotGen.thenRun(() -> {
-                    AtomicBoolean completedExceptionally = new AtomicBoolean(false);
-                    Stream.of(a, b, c, d, e).forEach(f -> f.handle((value, ex) -> {
-                        if (!value || ex != null) {
-                            completedExceptionally.set(true);
-                            onException(ex != null ? ex : new RuntimeException("Generator completed exceptionally"));
-                            if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
-                            plotGen.completeExceptionally(ex);
-                        }
-                        return value;
-                    }));
+                try {
+                    this.onComplete(exception != null);
+                } catch (SQLException ex) {
+                    exception = ex;
+                }
 
-                    try {
-                        this.onComplete(completedExceptionally.get());
-                    } catch (SQLException ex) { PlotHandler.abandonPlot(plot); onException(ex); }
-                });
-            }
-        } catch (InterruptedException | ExecutionException ex) { onException(ex); }
+                if (exception != null) {
+                    if (worldManager.isMVWorld(plot.getWorldName())) PlotHandler.abandonPlot(plot);
+                    onException(exception);
+                }
+            });
+        }
     }
 
     /**
      * Executed before plot generation
-     * @return - true if plot should be generated
+     * @return true if initialization was successful
      */
-    protected abstract CompletableFuture<Boolean> init();
+    protected abstract boolean init();
 
     /**
-     * Configures plot world generation
-     * @return - true if configuration was successful
+     * Generates plot world
      */
-    protected CompletableFuture<Boolean> configureWorldGeneration() {
+    protected void generateWorld() {
         worldCreator = new WorldCreator(plot.getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
         worldCreator.generatorSettings("2;0;1;");
         worldCreator.createWorld();
-
-        return CompletableFuture.completedFuture(true);
     }
 
     /**
-     * Generates plot world
-     * @return - true if generation was successful
+     * Creates Multiverse world
      */
-    protected CompletableFuture<Boolean> generateWorld() {
+    protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
             if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
             worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false, "VoidGen");
         } else {
-            Bukkit.getLogger().log(Level.SEVERE, "World Creator is not configured!");
-            return CompletableFuture.completedFuture(false);
+            throw new RuntimeException("World Creator is not configured");
         }
-
-        return CompletableFuture.completedFuture(true);
     }
 
     /**
      * Generates plot schematic and outlines
      * @param plotSchematic - schematic file
-     * @return - true if generation was successful
      */
-    protected CompletableFuture<Boolean> generateOutlines(File plotSchematic) {
+    protected void generateOutlines(File plotSchematic) {
         try {
             if (plotSchematic != null) {
                 Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot);
@@ -172,20 +161,19 @@ public abstract class AbstractPlotGenerator {
                 Operations.complete(operation);
                 editSession.flushQueue();
 
-                return CompletableFuture.completedFuture(true);
+                plot.getPlotWorld().setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
             }
         } catch (IOException | WorldEditException ex) {
-            return CompletableFuture.completedFuture(false);
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
+            throw new RuntimeException("Plot outlines generation completed exceptionally");
         }
-        return CompletableFuture.completedFuture(false);
     }
 
     /**
      * Configures plot world
      * @param mvWorld - plot world
-     * @return - true if configuration was successful
      */
-    protected CompletableFuture<Boolean> configureWorld(@NotNull MultiverseWorld mvWorld) {
+    protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
         // Set Bukkit world game rules
         plot.getPlotWorld().setGameRuleValue("randomTickSpeed", "0");
         plot.getPlotWorld().setGameRuleValue("doDaylightCycle", "false");
@@ -198,8 +186,6 @@ public abstract class AbstractPlotGenerator {
         plot.getPlotWorld().setTime(6000);
 
         // Configure multiverse world
-        mvWorld.setSpawnLocation(PlotHandler.getPlotSpawnPoint(getPlot()));
-        mvWorld.setAdjustSpawn(false);
         mvWorld.setAllowFlight(true);
         mvWorld.setGameMode(GameMode.CREATIVE);
         mvWorld.setEnableWeather(false);
@@ -208,15 +194,13 @@ public abstract class AbstractPlotGenerator {
         mvWorld.setAllowMonsterSpawn(false);
         mvWorld.setAutoLoad(false);
         mvWorld.setKeepSpawnInMemory(false);
-
-        return CompletableFuture.completedFuture(true);
+        worldManager.saveWorldsConfig();
     }
 
     /**
      * Creates plot protection
-     * @return - true if protection was created successful
      */
-    protected CompletableFuture<Boolean> createProtection() {
+    protected void createProtection() {
         BlockVector min = BlockVector.toBlockPoint(0, 1, 0);
         BlockVector max = BlockVector.toBlockPoint(PlotManager.getPlotSize(plot), 256, PlotManager.getPlotSize(plot));
 
@@ -239,11 +223,11 @@ public abstract class AbstractPlotGenerator {
                 regionManager.addRegion(protectedPlotRegion);
                 regionManager.saveChanges();
             } else {
-                Bukkit.getLogger().log(Level.SEVERE, "Region Manager is null!");
-                return CompletableFuture.completedFuture(false);
+                throw new RuntimeException("Region Manager is null");
             }
         } catch (StorageException ex) {
-            return CompletableFuture.completedFuture(false);
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection!", ex);
+            throw new RuntimeException("Plot protection creation completed exceptionally");
         }
 
 
@@ -279,8 +263,6 @@ public abstract class AbstractPlotGenerator {
 
         protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
         protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
-
-        return CompletableFuture.completedFuture(true);
     }
 
     /**

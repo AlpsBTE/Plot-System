@@ -35,7 +35,6 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class RawPlotGenerator extends AbstractPlotGenerator {
@@ -45,27 +44,21 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected CompletableFuture<Boolean> init() {
-        return CompletableFuture.completedFuture(true);
+    protected boolean init() {
+        return true;
     }
 
     @Override
-    protected CompletableFuture<Boolean> generateWorld() {
-        return CompletableFuture.completedFuture(true);
-    }
+    protected void generateWorld() {}
 
     @Override
-    protected CompletableFuture<Boolean> configureWorld(@NotNull MultiverseWorld mvWorld) {
-        return CompletableFuture.completedFuture(true);
-    }
+    protected void configureWorld(@NotNull MultiverseWorld mvWorld) {}
 
     @Override
-    protected CompletableFuture<Boolean> generateOutlines(@NotNull File plotSchematic) {
-        return CompletableFuture.completedFuture(true);
-    }
+    protected void generateOutlines(@NotNull File plotSchematic) {}
 
     @Override
-    protected CompletableFuture<Boolean> createProtection() {
+    protected void createProtection() {
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         RegionManager regionManager = container.get(getPlot().getPlotWorld());
 
@@ -74,11 +67,10 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
                 regionManager.removeRegion(regionID);
             }
         } else {
-            Bukkit.getLogger().log(Level.SEVERE, "Region Manager is null!");
-            return CompletableFuture.completedFuture(false);
+            throw new RuntimeException("Region Manager is null");
         }
 
-        return super.createProtection();
+        super.createProtection();
     }
 
     @Override

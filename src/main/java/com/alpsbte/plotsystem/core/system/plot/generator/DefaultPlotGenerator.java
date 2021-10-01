@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -39,7 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
@@ -55,7 +55,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected CompletableFuture<Boolean> init() {
+    protected boolean init() {
         try {
             if (getBuilder().getFreeSlot() != null) {
                 if (DefaultPlotGenerator.playerPlotGenerationHistory.containsKey(getBuilder().getUUID())) {
@@ -64,13 +64,13 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                     } else {
                         getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat("Please wait few seconds before creating a new plot!"));
                         getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.ErrorSound, 1, 1);
-                        return CompletableFuture.completedFuture(false);
+                        return true;
                     }
                 }
 
                 getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Creating new plot..."));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.CreatePlotSound, 1, 1);
-                return CompletableFuture.completedFuture(true);
+                return true;
             } else {
                 getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.ErrorSound, 1, 1);
@@ -78,7 +78,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
         }
-        return CompletableFuture.completedFuture(false);
+        return false;
     }
 
     @Override
@@ -86,8 +86,14 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed);
 
         if (!failed) {
-            PlotHandler.teleportPlayer(getPlot(), getBuilder().getPlayer());
-            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                try {
+                    PlotHandler.teleportPlayer(getPlot(), getBuilder().getPlayer());
+                    Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            });
         }
     }
 }
