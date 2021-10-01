@@ -179,8 +179,8 @@ public class PlotHandler {
 
     public static void unloadPlot(Plot plot) {
         if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () ->
-                    PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
+                    Bukkit.unloadWorld(plot.getWorldName(), true)), 60L);
         }
     }
 
