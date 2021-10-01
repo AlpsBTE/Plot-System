@@ -27,6 +27,13 @@ sync-ftp-files:
   enabled: false
   sync-interval: 3600
 
+# How many days of inactivity it will take before a claimed plot is automatically abandoned
+inactivity-interval: 16
+
+# Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
+# allowing them to build together.
+# NOTE: Score will be split by all participating members
+enable-group-support: true
 
 # -----------------------------------------------------
 # | Supported databases: MariaDB and MySQL
@@ -86,4 +93,4 @@ error-colour: §c
 
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3
