@@ -28,7 +28,7 @@ sync-ftp-files:
   sync-interval: 3600
 
 # How many days of inactivity it will take before a claimed plot is automatically abandoned
-inactivity-interval: 16
+inactivity-interval: 14
 
 # Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
 # allowing them to build together.
