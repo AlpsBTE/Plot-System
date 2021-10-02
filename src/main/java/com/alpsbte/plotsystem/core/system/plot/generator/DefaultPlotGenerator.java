@@ -64,10 +64,11 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                     } else {
                         getBuilder().getPlayer().sendMessage(Utils.getErrorMessageFormat("Please wait few seconds before creating a new plot!"));
                         getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.ErrorSound, 1, 1);
-                        return true;
+                        return false;
                     }
                 }
 
+                DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
                 getBuilder().getPlayer().sendMessage(Utils.getInfoMessageFormat("Creating new plot..."));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.CreatePlotSound, 1, 1);
                 return true;
