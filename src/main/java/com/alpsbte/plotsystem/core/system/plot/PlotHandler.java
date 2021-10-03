@@ -101,17 +101,20 @@ public class PlotHandler {
 
     public static void abandonPlot(Plot plot) {
         try {
-            loadPlot(plot); // Load Plot to be listed by Multiverse
-            for (Player player : plot.getPlotWorld().getPlayers()) {
-                player.teleport(Utils.getSpawnLocation());
+            if (PlotManager.plotExists(plot.getID())) {
+                loadPlot(plot); // Load Plot to be listed by Multiverse
+
+                for (Player player : plot.getPlotWorld().getPlayers()) {
+                    player.teleport(Utils.getSpawnLocation());
+                }
+
+                PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+                PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
             }
 
             for (Builder builder : plot.getPlotMembers()) {
                 plot.removePlotMember(builder);
             }
-
-            PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-            PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
 
             CompletableFuture.runAsync(() -> {
                 try {
