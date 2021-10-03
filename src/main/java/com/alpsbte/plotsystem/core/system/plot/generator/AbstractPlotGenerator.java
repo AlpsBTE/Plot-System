@@ -121,6 +121,8 @@ public abstract class AbstractPlotGenerator {
      * Generates plot world
      */
     protected void generateWorld() {
+        if (PlotManager.plotExists(plot.getID())) PlotHandler.abandonPlot(plot);
+
         worldCreator = new WorldCreator(plot.getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
@@ -134,7 +136,6 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            if (worldManager.isMVWorld(plot.getPlotWorld())) worldManager.deleteWorld(plot.getWorldName(), true, true);
             worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false,
                     "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
