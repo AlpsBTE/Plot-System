@@ -150,7 +150,7 @@ public abstract class AbstractPlotGenerator {
     protected void generateOutlines(File plotSchematic) {
         try {
             if (plotSchematic != null) {
-                Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter(plot);
+                Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter();
 
                 com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getPlotWorld());
                 Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
@@ -204,7 +204,7 @@ public abstract class AbstractPlotGenerator {
      */
     protected void createProtection() {
         BlockVector min = BlockVector.toBlockPoint(0, 1, 0);
-        BlockVector max = BlockVector.toBlockPoint(PlotManager.getPlotSize(plot), 256, PlotManager.getPlotSize(plot));
+        BlockVector max = BlockVector.toBlockPoint(PlotManager.PLOT_SIZE, 256, PlotManager.PLOT_SIZE);
 
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         RegionManager regionManager = container.get(plot.getPlotWorld());

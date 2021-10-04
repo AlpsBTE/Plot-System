@@ -65,6 +65,8 @@ import java.util.logging.Level;
 
 public class PlotManager {
 
+    public final static int PLOT_SIZE = 150;
+
     public static List<Plot> getPlots() throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
     }
@@ -155,7 +157,7 @@ public class PlotManager {
 
 
         // Get plot center
-        plotCenter = PlotManager.getPlotCenter(plot);
+        plotCenter = PlotManager.getPlotCenter();
 
 
         // Calculate min and max points of schematic
@@ -243,15 +245,15 @@ public class PlotManager {
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
         Vector schematicMinPoint = Vector.toBlockPoint(
-                PlotManager.getPlotCenter(plot).getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
+                PlotManager.getPlotCenter().getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
                 0,
-                PlotManager.getPlotCenter(plot).getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+                PlotManager.getPlotCenter().getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
         );
 
         Vector schematicMaxPoint = Vector.toBlockPoint(
-                PlotManager.getPlotCenter(plot).getX() + outlinesClipboardCenterX,
+                PlotManager.getPlotCenter().getX() + outlinesClipboardCenterX,
                 256,
-                PlotManager.getPlotCenter(plot).getZ() + outlinesClipboardCenterZ
+                PlotManager.getPlotCenter().getZ() + outlinesClipboardCenterZ
         );
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
@@ -377,23 +379,11 @@ public class PlotManager {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
     }
 
-    public static int getPlotSize(Plot plot) {
-       if(plot.getPlotRegion() != null) {
-           if(plot.getPlotRegion().contains(150, 15, 150)) {
-               return 150;
-           } else {
-               return 100;
-           }
-       } else {
-        return 150;
-       }
-    }
-
-    public static Vector getPlotCenter(Plot plot) {
+    public static Vector getPlotCenter() {
         return Vector.toBlockPoint(
-                getPlotSize(plot) / 2d + 0.5,
+                PLOT_SIZE / 2d + 0.5,
                 5,
-                getPlotSize(plot) / 2d + 0.5
+                PLOT_SIZE  / 2d + 0.5
         );
     }
 
