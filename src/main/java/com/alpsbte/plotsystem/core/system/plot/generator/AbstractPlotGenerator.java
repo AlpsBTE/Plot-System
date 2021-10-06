@@ -154,7 +154,10 @@ public abstract class AbstractPlotGenerator {
 
                 com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getPlotWorld());
                 Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
-                clipboard.setOrigin(clipboard.getOrigin().setY(clipboard.getMinimumPoint().getY())); // Set origin point to the center bottom of the schematic
+
+                // Place the bottom part of the schematic 5 blocks above 0
+                double heightDif = clipboard.getOrigin().getY() - clipboard.getMinimumPoint().getY();
+                buildingOutlinesCoordinates = buildingOutlinesCoordinates.add(0, heightDif, 0);
 
                 ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
                 EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
