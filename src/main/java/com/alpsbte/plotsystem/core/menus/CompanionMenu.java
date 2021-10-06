@@ -115,8 +115,9 @@ public class CompanionMenu extends AbstractMenu {
                                     .build())
                             .build());
                 }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            } catch (NullPointerException | SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing player slot items!", ex);
+                getMenu().getSlot(46 + i).setItem(MenuItems.errorItem());
             }
         }
 
