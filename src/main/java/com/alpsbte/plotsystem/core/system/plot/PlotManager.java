@@ -165,9 +165,9 @@ public class PlotManager {
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
         schematicMinPoint = Vector.toBlockPoint(
-                plotCenter.getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
-                0,
-                plotCenter.getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+                plotCenter.getX() - outlinesClipboardCenterX,
+                PlotManager.getPlotCenter().getY(),
+                plotCenter.getZ() - outlinesClipboardCenterZ
         );
 
         schematicMaxPoint = Vector.toBlockPoint(
@@ -188,14 +188,14 @@ public class PlotManager {
         // Add additional plot sizes to relative plot schematic coordinates
         plotOrigin = Vector.toBlockPoint(
                 schematicOrigin.getX() + schematicMinPoint.getX(),
-                schematicOrigin.getY() + 15 - Math.floor(outlinesClipboard.getRegion().getHeight() / 2f) + (outlinesClipboard.getRegion().getHeight() % 2 == 0 ? 1 : 0),
+                schematicOrigin.getY() + schematicMinPoint.getY(),
                 schematicOrigin.getZ() + schematicMinPoint.getZ()
         );
 
 
         // Load finished plot region as cuboid region
         PlotHandler.loadPlot(plot);
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(Bukkit.getWorld("P-" + plot.getID())), schematicMinPoint, schematicMaxPoint);
+        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getPlotWorld()), schematicMinPoint, schematicMaxPoint);
 
 
         // Copy finished plot region to clipboard
