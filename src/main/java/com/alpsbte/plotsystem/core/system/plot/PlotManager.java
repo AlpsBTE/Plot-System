@@ -381,9 +381,9 @@ public class PlotManager {
 
     public static Vector getPlotCenter() {
         return Vector.toBlockPoint(
-                PLOT_SIZE / 2d + 0.5,
+                PLOT_SIZE / 2d,
                 5,
-                PLOT_SIZE  / 2d + 0.5
+                PLOT_SIZE  / 2d
         );
     }
 

@@ -189,9 +189,9 @@ public class PlotHandler {
 
     public static Location getPlotSpawnPoint(Plot plot) {
         Location spawnLocation = new Location(plot.getPlotWorld(),
-                (double) (PlotManager.PLOT_SIZE / 2) + 0.5,
+                PlotManager.getPlotCenter().getX() + 0.5,
                 30,
-                (double) (PlotManager.PLOT_SIZE / 2) + 0.5,
+                PlotManager.getPlotCenter().getZ() + 0.5,
                 -90,
                 90);
         // Set spawn point 1 block above the highest center point
