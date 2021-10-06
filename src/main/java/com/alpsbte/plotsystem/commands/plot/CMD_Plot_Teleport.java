@@ -54,9 +54,10 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotManager.plotExists(plotID)) {
                         PlotHandler.teleportPlayer(new Plot(plotID), getPlayer(sender));
-                    } else if (sender.hasPermission("plotsystem.admin")) {
-                        new DefaultPlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
                     } else {
+                        if (sender.hasPermission("plotsystem.admin") && PlotManager.plotExists(plotID, true)) {
+                            new DefaultPlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
+                        } else
                         sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
                 } else {
