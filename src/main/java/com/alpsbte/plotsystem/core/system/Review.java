@@ -193,7 +193,7 @@ public class Review {
     }
 
     public static void undoReview(Review review) throws SQLException {
-        if (CompletableFuture.supplyAsync(() -> {
+        CompletableFuture.runAsync(() -> {
             try {
                 Plot plot = new Plot(review.getPlotID());
 
@@ -212,29 +212,24 @@ public class Review {
                 plot.setStatus(Status.unreviewed);
                 plot.setPasted(false);
 
-                if(plot.getPlotOwner().getFreeSlot() != null) {
+                if (plot.getPlotOwner().getFreeSlot() != null) {
                     plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
                 }
 
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()) ,"finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
                 Server plotServer = plot.getCity().getCountry().getServer();
                 if (plotServer.getFTPConfiguration() != null) {
-                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
+                    FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
                 }
-            } catch (SQLException | IOException | URISyntaxException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
-            }
-            return null;
-        }).whenComplete((result, failed) -> {
-            try {
+
                 DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                         .setValue(review.getPlotID()).executeUpdate();
 
                 DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
                         .setValue(review.reviewID).executeUpdate();
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            } catch (SQLException | IOException | URISyntaxException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
-        }).join() == null) throw new SQLException();
+        });
     }
 }
