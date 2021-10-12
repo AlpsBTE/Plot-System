@@ -207,6 +207,13 @@
             <version>13.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Book API -->
+        <dependency>
+            <groupId>com.github.upperlevel</groupId>
+            <artifactId>book-api</artifactId>
+            <version>v1.4.2</version>
+        </dependency>
     </dependencies>
 
     <!-- Plugin Build Settings -->
