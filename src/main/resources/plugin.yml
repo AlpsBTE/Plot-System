@@ -51,6 +51,9 @@ commands:
   pss:
     description: Command for setting up the database.
     usage: /pss help
+  guide:
+    description: Opens the guidebook.
+    usage: /guide
 permissions:
   plotsystem.plot:
     description: Builder permissions

@@ -47,6 +47,7 @@ public class CommandManager {
         add(new CMD_Companion());
         add(new CMD_Plots());
         add(new CMD_Tpll());
+        add(new CMD_Guide());
 
         // Plot Commands
         add(new CMD_Plot());
