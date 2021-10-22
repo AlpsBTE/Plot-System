@@ -148,7 +148,7 @@ public class DatabaseConnection {
         }
 
         public StatementBuilder setValue(Object value) {
-            values.add(value);
+            values.add(value instanceof Boolean ? ((boolean) value ? 1 : 0) : value);
             return this;
         }
 
