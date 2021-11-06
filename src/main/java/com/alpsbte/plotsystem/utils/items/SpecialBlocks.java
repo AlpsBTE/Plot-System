@@ -41,6 +41,17 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
+    public static ItemStack SeamlessRedSandstone = new ItemBuilder(Material.RED_SANDSTONE, 1, (byte) 2)
+            .setName("§6§lSeamless Red Sandstone").setLore(new LoreBuilder()
+                    .emptyLine()
+                    .addLines("Use this tool to place a §fSeamless Red Sandstone§7 block.",
+                            "",
+                            "§7ID: §b181:12")
+                    .emptyLine()
+                    .build())
+            .setEnchantment(true)
+            .build();
+
     public static ItemStack SeamlessStone = new ItemBuilder(Material.STONE, 1)
             .setName("§6§lSeamless Stone").setLore(new LoreBuilder()
                 .emptyLine()
