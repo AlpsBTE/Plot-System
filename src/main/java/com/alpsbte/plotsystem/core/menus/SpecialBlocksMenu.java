@@ -101,9 +101,9 @@ public class SpecialBlocksMenu extends AbstractMenu {
             // Red Mushroom
             case 3:
                 return SpecialBlocks.RedMushroom;
-            // Mushroom Stem
+            // Seamless Mushroom Stem
             case 4:
-                return SpecialBlocks.MushroomStem;
+                return SpecialBlocks.SeamlessMushroomStem;
             // Brown Mushroom
             case 5:
                 return SpecialBlocks.BrownMushroom;
