@@ -1,0 +1,118 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# |
+# | English translation by R3tuxn#7169 and Cinnazeyy#2440
+# -----------------------------------------------------
+
+plot:
+  id: 'ID'
+  owner: 'Plot Owner'
+  members: 'Plot Members'
+  city: 'City'
+  difficulty: 'Difficulty'
+  status: 'Status'
+  score: 'Score'
+  total-score: 'Total Score'
+  effective-score: 'Effective Score'
+
+  group-system:
+    empty-member-slot: 'Empty Member Slot'
+    # <number> will be replaced by the amount of members
+    shared-by-members: '(shared by <number> members)'
+
+  difficulties:
+    easy: 'Easy'
+    medium: 'Medium'
+    hard: 'Hard'
+
+  statuses:
+    unclaimed: 'Unclaimed'
+    unfinished: 'Unfinished'
+    unreviewed: 'Unreviewed'
+    completed: 'Completed'
+
+
+city-projects:
+  open: 'Plots Open'
+  in-progress: 'Plots In Progress'
+  completed: 'Plot Completed'
+
+  # City projects are automatically added and removed when there is a change in the database.
+  cities:
+
+
+menu-buttons:
+  close: 'Close'
+  close-desc: 'Close the menu'
+  back: 'Back'
+  back-desc: 'Go back to the last menu'
+  next-page: 'Next Page'
+  next-page-desc: 'Show the next page'
+  previous-page: 'Previous Page'
+  previous-page-desc: 'Show the previous page'
+  error: 'Error'
+  error-desc: 'An error occurred... please contact a staff member!'
+  loading: 'Loading...'
+
+
+menu-actions:
+  navigator: 'Navigator'
+  navigator-desc: 'Open the navigator menu'
+  plot-difficulty: 'Plot Difficulty'
+  plot-difficulty-desc: 'Click to Switch...'
+  slot: 'Slot'
+  slot-desc: 'Click on a city project to create a new plot'
+  builder-utilities: 'Builder Utilities'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  show-plots: 'Show Plots'
+  show-plots-desc: 'Show all your plots'
+  settings: 'Settings'
+  settings-desc: 'Modify your user settings'
+
+  submit: 'Submit'
+  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
+  teleport: 'Teleport'
+  teleport-desc: 'Click to teleport to the plot'
+  abandon: 'Abandon'
+  abandon-desc: 'Click to reset your plot and give it to someone else'
+  manage-members: 'Manage Members'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
+  feedback: 'Feedback'
+  feedback-desc: 'Click to view your plot review feedback'
+
+  custom-heads: 'Custom Heads'
+  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
+  banner-maker: 'Banner Maker'
+  banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
+  special-blocks: 'Special Blocks'
+  special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
+
+  point: 'Point'
+  points: 'Points'
+  points-desc: 'Click to select'
+  cancel: 'Cancel'
+  submit-review-desc: 'Submit selected points and mark plot as reviewed'
+
+  add-member-to-plot: 'Add Member to Plot'
+  add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
+
+
+review:
+  review-plot: 'Review Plot'
+  manage-plot: 'Manage Plot'
+
+  criteria:
+    accuracy: 'Accuracy'
+    accuracy-desc: 'How accurate is the building?\n\n- Looks like in RL\n- Correct outlines\n- Correct height\n- Is completed'
+    block-palette: 'Block Palette'
+    block-palette-desc: 'How many different blocks are used and how creative are they?\n\n- Choice of blocks colours/textures\n- Random blocks'
+    detailing: 'Detailing'
+    detailing-desc: 'How much detail does the building have?\n\n- Roof details\n- Details on the facades\n- Heads and Banners'
+    technique: 'Technique'
+    technique-desc: 'What building techniques have been used and how creative are they?\n\n- World-Edit\n- Special Blocks'
+
+
