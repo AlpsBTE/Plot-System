@@ -21,7 +21,6 @@ plot:
 
   group-system:
     empty-member-slot: 'Empty Member Slot'
-    # <number> will be replaced by the amount of members
     shared-by-members: '(shared by <number> members)'
 
   difficulties:
@@ -116,3 +115,45 @@ review:
     technique-desc: 'What building techniques have been used and how creative are they?\n\n- World-Edit\n- Special Blocks'
 
 
+notes:
+  wont-be-able-continue-building: 'You wont be able to continue building on this plot!'
+  score-will-be-split: 'Score will be split between all members when reviewed!'
+  player-has-to-be-online: 'The player has to be online!'
+
+
+# Words that are wrapped in the <> tag are replaced afterwards. Do NOT change them!
+messages:
+  info:
+    teleporting-plot: 'Teleporting to plot <id>...'
+    teleporting-spawn: 'Teleporting to spawn...'
+    teleporting-tpll: 'Teleporting to <lat>, <lon>...'
+    undoing-review: 'Undoing review...'
+    abandoned-plot: 'Abandoned plot with the ID <id>!'
+    finished-plot: 'Plot <id> by <player> has been finished!'
+    undid-submission: 'Undid submission of plot with the ID <id>!'
+    undid-review: 'Undid review of plot with the ID <id>!'
+    click-me-to-open: 'Click me to open the <link> link...'
+    reviewed-plots: 'Your plot with the ID <id> has been reviewed!'
+    unreviewed-plot: 'There is <size> unreviewed plot!'
+    unreviwed-plots: 'There are <size> unreviewed plots!'
+    unfinished-plot: 'You have <size> unfinished plot!'
+    unfinished-plots: 'You have <size> unfinished plots!'
+    enabled-build-permissions: 'Enabled build permissions for reviewers on plot <id>!'
+    disabled-build-permissions: 'Disabled build permissions for reviewers on plot <id>!'
+    updated-plot-feedback: 'The feedback for the plot <id> has been updated!'
+    click-to-open-feedback: 'Click Here to check your feedback.'
+    click-to-open-review: 'Click Here to open the review menu.'
+
+  errors:
+    could-not-find-player: 'Could not find that player!'
+    plot-does-not-exist: 'This plot does not exist!'
+    no-permissions: 'You do not have permission to do this!'
+    only-abandon-unfinished-plots: 'You can only abandon unfinished plots!'
+    only-submit-unfinished-plots: 'You can only submit unfinished plots!'
+    only-undo-submissions-unreviewed-plots: 'You can only undo submissions of unreviewed plots!'
+    only-teleport-plot: 'You can only teleport to your plot!'
+    plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
+    cannot-undo-review: 'You cannot undo a review that you have not reviewed yourself!'
+    command-execution: 'An error occurred while executing this command!'
+    not-yet-reviewed: 'This plot has not yet been reviewed!'
+    no-invitations: 'You have no invitations!'
