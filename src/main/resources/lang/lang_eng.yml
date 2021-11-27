@@ -60,44 +60,43 @@ menu-buttons:
 
 menu-actions:
   navigator: 'Navigator'
-  navigator-desc: 'Open the navigator menu'
   plot-difficulty: 'Plot Difficulty'
-  plot-difficulty-desc: 'Click to Switch...'
   slot: 'Slot'
-  slot-desc: 'Click on a city project to create a new plot'
   builder-utilities: 'Builder Utilities'
-  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
   show-plots: 'Show Plots'
-  show-plots-desc: 'Show all your plots'
   settings: 'Settings'
   settings-desc: 'Modify your user settings'
-
   submit: 'Submit'
-  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
   teleport: 'Teleport'
-  teleport-desc: 'Click to teleport to the plot'
   abandon: 'Abandon'
-  abandon-desc: 'Click to reset your plot and give it to someone else'
   manage-members: 'Manage Members'
-  manage-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
   feedback: 'Feedback'
   feedback-desc: 'Click to view your plot review feedback'
-
   custom-heads: 'Custom Heads'
-  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
   banner-maker: 'Banner Maker'
-  banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
   special-blocks: 'Special Blocks'
-  special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
-
-  point: 'Point'
-  points: 'Points'
-  points-desc: 'Click to select'
-  cancel: 'Cancel'
-  submit-review-desc: 'Submit selected points and mark plot as reviewed'
-
+  review-point: 'Point'
+  review-points: 'Points'
+  cancel-plot: 'Cancel'
   add-member-to-plot: 'Add Member to Plot'
+
+
+menu-action-descriptions:
+  navigator-desc: 'Open the navigator menu'
+  plot-difficulty-desc: 'Click to Switch...'
+  slot-desc: 'Click on a city project to create a new plot'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  show-plots-desc: 'Show all your plots'
+  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
+  teleport-plot-desc: 'Click to teleport to the plot'
+  abandon-plot-desc: 'Click to reset your plot and give it to someone else'
+  manage-plot-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
+  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
+  banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
+  special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
   add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
+  review-points-desc: 'Click to select'
+  submit-plot-review-desc: 'Submit selected points and mark plot as reviewed'
 
 
 review:
