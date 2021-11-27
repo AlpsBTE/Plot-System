@@ -23,42 +23,21 @@ plot:
     empty-member-slot: 'Empty Member Slot'
     shared-by-members: '(shared by <number> members)'
 
-  difficulties:
-    easy: 'Easy'
-    medium: 'Medium'
-    hard: 'Hard'
-
-  statuses:
-    unclaimed: 'Unclaimed'
-    unfinished: 'Unfinished'
-    unreviewed: 'Unreviewed'
-    completed: 'Completed'
-
 
 city-projects:
   open: 'Plots Open'
   in-progress: 'Plots In Progress'
   completed: 'Plot Completed'
 
-  # City projects are automatically added and removed when there is a change in the database.
-  cities:
 
-
-menu-buttons:
+menu-titles:
   close: 'Close'
-  close-desc: 'Close the menu'
   back: 'Back'
-  back-desc: 'Go back to the last menu'
   next-page: 'Next Page'
-  next-page-desc: 'Show the next page'
   previous-page: 'Previous Page'
-  previous-page-desc: 'Show the previous page'
   error: 'Error'
-  error-desc: 'An error occurred... please contact a staff member!'
   loading: 'Loading...'
 
-
-menu-actions:
   navigator: 'Navigator'
   plot-difficulty: 'Plot Difficulty'
   slot: 'Slot'
@@ -71,7 +50,6 @@ menu-actions:
   abandon: 'Abandon'
   manage-members: 'Manage Members'
   feedback: 'Feedback'
-  feedback-desc: 'Click to view your plot review feedback'
   custom-heads: 'Custom Heads'
   banner-maker: 'Banner Maker'
   special-blocks: 'Special Blocks'
@@ -81,22 +59,29 @@ menu-actions:
   add-member-to-plot: 'Add Member to Plot'
 
 
-menu-action-descriptions:
+menu-descriptions:
+  close-desc: 'Close the menu'
+  back-desc: 'Go back to the last menu'
+  next-page-desc: 'Show the next page'
+  previous-page-desc: 'Show the previous page'
+  error-desc: 'An error occurred... please contact a staff member!'
+
   navigator-desc: 'Open the navigator menu'
   plot-difficulty-desc: 'Click to Switch...'
   slot-desc: 'Click on a city project to create a new plot'
   builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
   show-plots-desc: 'Show all your plots'
   submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
-  teleport-plot-desc: 'Click to teleport to the plot'
-  abandon-plot-desc: 'Click to reset your plot and give it to someone else'
-  manage-plot-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
+  teleport-desc: 'Click to teleport to the plot'
+  abandon-desc: 'Click to reset your plot and give it to someone else'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
+  feedback-desc: 'Click to view your plot review feedback'
   custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
   banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
   special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
   add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
   review-points-desc: 'Click to select'
-  submit-plot-review-desc: 'Submit selected points and mark plot as reviewed'
+  submit-review-desc: 'Submit selected points and mark plot as reviewed'
 
 
 review:
@@ -119,29 +104,33 @@ notes:
   score-will-be-split: 'Score will be split between all members when reviewed!'
   player-has-to-be-online: 'The player has to be online!'
 
+  actions:
+    click-to-remove-plot-member: 'Click to remove member from plot...'
+
 
 # Words that are wrapped in the <> tag are replaced afterwards. Do NOT change them!
 messages:
   info:
-    teleporting-plot: 'Teleporting to plot <id>...'
+    teleporting-plot: 'Teleporting to plot #<id>...'
     teleporting-spawn: 'Teleporting to spawn...'
     teleporting-tpll: 'Teleporting to <lat>, <lon>...'
-    undoing-review: 'Undoing review...'
-    abandoned-plot: 'Abandoned plot with the ID <id>!'
-    finished-plot: 'Plot <id> by <player> has been finished!'
-    undid-submission: 'Undid submission of plot with the ID <id>!'
-    undid-review: 'Undid review of plot with the ID <id>!'
-    click-me-to-open: 'Click me to open the <link> link...'
-    reviewed-plots: 'Your plot with the ID <id> has been reviewed!'
+    abandoned-plot: 'Abandoned plot #<id>!'
+    finished-plot: 'Plot #<id> by <player> has been finished!'
+    undid-submission: 'Undid submission of plot #<id>!'
+    undid-review: 'Undid review of plot #<id>!'
+    click-me-to-open: 'Click Here to open the <link> link...'
+    reviewed-plots: 'Your plot #<id> has been reviewed!'
     unreviewed-plot: 'There is <size> unreviewed plot!'
     unreviwed-plots: 'There are <size> unreviewed plots!'
     unfinished-plot: 'You have <size> unfinished plot!'
     unfinished-plots: 'You have <size> unfinished plots!'
-    enabled-build-permissions: 'Enabled build permissions for reviewers on plot <id>!'
-    disabled-build-permissions: 'Disabled build permissions for reviewers on plot <id>!'
-    updated-plot-feedback: 'The feedback for the plot <id> has been updated!'
-    click-to-open-feedback: 'Click Here to check your feedback.'
+    enabled-build-permissions: 'Enabled build permissions for reviewers on plot #<id>!'
+    disabled-build-permissions: 'Disabled build permissions for reviewers on plot #<id>!'
+    updated-plot-feedback: 'Feedback for plot #<id> has been updated!'
+    click-to-open-feedback: 'Click Here to check your plot feedback.'
     click-to-open-review: 'Click Here to open the review menu.'
+    removed-plot-member: 'Removed <player> from plot #<id>!'
+
 
   errors:
     could-not-find-player: 'Could not find that player!'
@@ -156,3 +145,7 @@ messages:
     command-execution: 'An error occurred while executing this command!'
     not-yet-reviewed: 'This plot has not yet been reviewed!'
     no-invitations: 'You have no invitations!'
+    player-is-plot-owner: 'This player is already the plot owner!'
+    player-is-plot-member: 'This player is already a member of this plot!'
+    player-is-not-online: 'This player is not online!'
+    invalid-input: 'Invalid Input!'
