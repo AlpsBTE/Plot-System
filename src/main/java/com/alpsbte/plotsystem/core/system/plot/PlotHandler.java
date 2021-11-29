@@ -43,6 +43,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -100,17 +101,20 @@ public class PlotHandler {
 
     public static void abandonPlot(Plot plot) {
         try {
-            loadPlot(plot); // Load Plot to be listed by Multiverse
-            for (Player player : plot.getPlotWorld().getPlayers()) {
-                player.teleport(Utils.getSpawnLocation());
+            if (PlotManager.plotExists(plot.getID())) {
+                loadPlot(plot); // Load Plot to be listed by Multiverse
+
+                for (Player player : plot.getPlotWorld().getPlayers()) {
+                    player.teleport(Utils.getSpawnLocation());
+                }
+
+                PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+                PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
             }
 
             for (Builder builder : plot.getPlotMembers()) {
                 plot.removePlotMember(builder);
             }
-
-            PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-            PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
 
             CompletableFuture.runAsync(() -> {
                 try {
@@ -149,14 +153,14 @@ public class PlotHandler {
 
         if (CompletableFuture.supplyAsync(() -> {
             try {
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),"finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(),String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
 
                 Server plotServer = plot.getCity().getCountry().getServer();
                 if (plotServer.getFTPConfiguration() != null) {
                     return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", false);
                 }
-            } catch (IOException | SQLException ex) {
+            } catch (IOException | SQLException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
             return null;
@@ -178,18 +182,21 @@ public class PlotHandler {
 
     public static void unloadPlot(Plot plot) {
         if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () ->
-                    PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().unloadWorld(plot.getWorldName(), true), 20*3);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
+                    Bukkit.unloadWorld(plot.getWorldName(), true)), 60L);
         }
     }
 
     public static Location getPlotSpawnPoint(Plot plot) {
-        return new Location(plot.getPlotWorld(),
-                (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
-                30, // TODO: Fit Y value to schematic height to prevent collision
-                (double) (PlotManager.getPlotSize(plot) / 2) + 0.5,
+        Location spawnLocation = new Location(plot.getPlotWorld(),
+                PlotManager.getPlotCenter().getX() + 0.5,
+                30,
+                PlotManager.getPlotCenter().getZ() + 0.5,
                 -90,
                 90);
+        // Set spawn point 1 block above the highest center point
+        spawnLocation.setY(plot.getPlotWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+        return spawnLocation;
     }
 
     public static void sendLinkMessages(Plot plot, Player player){

@@ -44,8 +44,8 @@ public class ConfigManager {
 
    // Register configuration files
    private final List<Config> configs = Arrays.asList(
-           new Config("config.yml"),
-           new Config("commands.yml")
+           new Config("config.yml", 1.3),
+           new Config("commands.yml", 1.0)
    );
 
     public ConfigManager() throws ConfigNotImplementedException {
@@ -63,7 +63,7 @@ public class ConfigManager {
 
         // Check for updates
         configs.forEach(config -> {
-            if (config.getDouble(ConfigPaths.CONFIG_VERSION) != Config.VERSION) {
+            if (config.getDouble(ConfigPaths.CONFIG_VERSION) != config.getVersion()) {
                 updateConfig(config);
                 reloadConfigs();
             }
@@ -193,9 +193,9 @@ public class ConfigManager {
                     defaultFileLines.set(index, defaultFileLines.get(index).split(":")[0] + ":" + newS);
             });
 
-            defaultFileLines.set(getIndex("config-version", defaultFileLines), "config-version: " + Config.VERSION);
+            defaultFileLines.set(getIndex("config-version", defaultFileLines), "config-version: " + config.getVersion());
             Files.write(config.getFile().toPath(), defaultFileLines);
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Updated " + config.getFileName() + " to version " + Config.VERSION + ".");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Updated " + config.getFileName() + " to version " + config.getVersion() + ".");
             return true;
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while updating config file!", ex);

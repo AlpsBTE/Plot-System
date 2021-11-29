@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.Country;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -44,11 +46,13 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,6 +64,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotManager {
+
+    public final static int PLOT_SIZE = 150;
 
     public static List<Plot> getPlots() throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
@@ -115,13 +121,14 @@ public class PlotManager {
     }
 
     public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
-                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getInt(1);
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
         }
-        return 0;
     }
 
     private static List<Plot> listPlots(ResultSet rs) throws SQLException {
@@ -131,6 +138,7 @@ public class PlotManager {
            plots.add(new Plot(rs.getInt(1)));
         }
 
+        rs.close();
         return plots;
     }
 
@@ -149,7 +157,7 @@ public class PlotManager {
 
 
         // Get plot center
-        plotCenter = PlotManager.getPlotCenter(plot);
+        plotCenter = PlotManager.getPlotCenter();
 
 
         // Calculate min and max points of schematic
@@ -157,9 +165,9 @@ public class PlotManager {
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
         schematicMinPoint = Vector.toBlockPoint(
-                plotCenter.getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
-                0,
-                plotCenter.getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+                plotCenter.getX() - outlinesClipboardCenterX,
+                PlotManager.getPlotCenter().getY(),
+                plotCenter.getZ() - outlinesClipboardCenterZ
         );
 
         schematicMaxPoint = Vector.toBlockPoint(
@@ -180,14 +188,14 @@ public class PlotManager {
         // Add additional plot sizes to relative plot schematic coordinates
         plotOrigin = Vector.toBlockPoint(
                 schematicOrigin.getX() + schematicMinPoint.getX(),
-                schematicOrigin.getY() + 15 - Math.floor(outlinesClipboard.getRegion().getHeight() / 2f) + (outlinesClipboard.getRegion().getHeight() % 2 == 0 ? 1 : 0),
+                schematicOrigin.getY() + schematicMinPoint.getY(),
                 schematicOrigin.getZ() + schematicMinPoint.getZ()
         );
 
 
         // Load finished plot region as cuboid region
         PlotHandler.loadPlot(plot);
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(Bukkit.getWorld("P-" + plot.getID())), schematicMinPoint, schematicMaxPoint);
+        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getPlotWorld()), schematicMinPoint, schematicMaxPoint);
 
 
         // Copy finished plot region to clipboard
@@ -217,7 +225,7 @@ public class PlotManager {
             CompletableFuture.supplyAsync(() -> {
                 try {
                     return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
-                } catch (SQLException ex) {
+                } catch (SQLException | URISyntaxException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
                 return null;
@@ -237,15 +245,15 @@ public class PlotManager {
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
         Vector schematicMinPoint = Vector.toBlockPoint(
-                PlotManager.getPlotCenter(plot).getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
+                PlotManager.getPlotCenter().getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
                 0,
-                PlotManager.getPlotCenter(plot).getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+                PlotManager.getPlotCenter().getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
         );
 
         Vector schematicMaxPoint = Vector.toBlockPoint(
-                PlotManager.getPlotCenter(plot).getX() + outlinesClipboardCenterX,
+                PlotManager.getPlotCenter().getX() + outlinesClipboardCenterX,
                 256,
-                PlotManager.getPlotCenter(plot).getZ() + outlinesClipboardCenterZ
+                PlotManager.getPlotCenter().getZ() + outlinesClipboardCenterZ
         );
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
@@ -269,13 +277,14 @@ public class PlotManager {
     }
 
     public static void checkPlotsForLastActivity() {
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(PlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
-                long millisIn14Days = 14L * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last 14 days
+                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                long millisInDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL) * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last x days
 
                 for(Plot plot : plots) {
-                    if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisIn14Days)) {
+                    if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                             try {
                                 PlotHandler.abandonPlot(plot);
@@ -292,6 +301,26 @@ public class PlotManager {
         }, 0L, 20 * 60 * 60); // Check every hour
     }
 
+    public static void syncPlotSchematicFiles() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLED)) {
+            long interval = config.getLong(ConfigPaths.SYNC_FTP_FILES_INTERVAL);
+
+            Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+                CityProject.getCityProjects(false).forEach(c -> {
+                    try {
+                        if (c.getCountry().getServer().getFTPConfiguration() != null) {
+                            List<Plot> plots = PlotManager.getPlots(c.getID(), Status.unclaimed);
+                            plots.forEach(Plot::getOutlinesSchematic);
+                        }
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
+                    }
+                });
+            }, 0L, 20 * interval);
+        }
+    }
+
     public static Plot getPlotByWorld(World plotWorld) throws SQLException {
         return new Plot(Integer.parseInt(plotWorld.getName().substring(2)));
     }
@@ -303,9 +332,8 @@ public class PlotManager {
 
     public static boolean plotExists(int ID, boolean system) {
         if (system) {
-            try {
-                ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
-                        .setValue(ID).executeQuery();
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
+                    .setValue(ID).executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) return true;
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -327,11 +355,11 @@ public class PlotManager {
         if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
         if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
 
-        if(hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return easy
+        if(hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);
         } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
-        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return hard
+        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return easy
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
         } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
@@ -351,23 +379,11 @@ public class PlotManager {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
     }
 
-    public static int getPlotSize(Plot plot) {
-       if(plot.getPlotRegion() != null) {
-           if(plot.getPlotRegion().contains(150, 15, 150)) {
-               return 150;
-           } else {
-               return 100;
-           }
-       } else {
-        return 150;
-       }
-    }
-
-    public static Vector getPlotCenter(Plot plot) {
+    public static Vector getPlotCenter() {
         return Vector.toBlockPoint(
-                getPlotSize(plot) / 2d + 0.5,
-                15, // TODO: Change Y value to the bottom of the schematic
-                getPlotSize(plot) / 2d + 0.5
+                PLOT_SIZE / 2d,
+                5,
+                PLOT_SIZE  / 2d
         );
     }
 

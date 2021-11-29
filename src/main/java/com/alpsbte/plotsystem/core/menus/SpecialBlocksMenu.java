@@ -92,23 +92,26 @@ public class SpecialBlocksMenu extends AbstractMenu {
             // Seamless Sandstone
             case 0:
                 return SpecialBlocks.SeamlessSandstone;
-            // Seamless Stone
+            // Seamless Red Sandstone
             case 1:
+                return SpecialBlocks.SeamlessRedSandstone;
+            // Seamless Stone
+            case 2:
                 return SpecialBlocks.SeamlessStone;
             // Red Mushroom
-            case 2:
-                return SpecialBlocks.RedMushroom;
-            // Mushroom Stem
             case 3:
-                return SpecialBlocks.MushroomStem;
-            // Brown Mushroom
+                return SpecialBlocks.RedMushroom;
+            // Seamless Mushroom Stem
             case 4:
+                return SpecialBlocks.SeamlessMushroomStem;
+            // Brown Mushroom
+            case 5:
                 return SpecialBlocks.BrownMushroom;
             // Light Brown Mushroom
-            case 5:
+            case 6:
                 return SpecialBlocks.LightBrownMushroom;
             // Barrier
-            case 6:
+            case 7:
                 return SpecialBlocks.Barrier;
 
             // Second Row

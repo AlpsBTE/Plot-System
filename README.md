@@ -66,11 +66,13 @@ One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/
 
 <!-- ROADMAP -->
 ## Roadmap
-📋 Discord Integration<br/>
+📋 Multi-Language Support<br/>
 📋 Plot Tutorial<br/>
 📋 In-Game Guidebook<br/>
+📋 Discord Integration<br/>
 📋 More and Improved Leaderboards<br/>
 📋 Statistics<br/>
+
 
 <!-- CONTRIBUTING -->
 ## Contributing

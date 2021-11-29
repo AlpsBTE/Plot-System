@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.ICommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,11 +54,10 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotManager.plotExists(plotID)) {
                         PlotHandler.teleportPlayer(new Plot(plotID), getPlayer(sender));
-                    } else if (sender.hasPermission("plotsystem.admin")) {
-                        // new PlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
-                        // TODO: Unfinished feature / Waiting for PlotGenerator rework
-                        // Currently there are no queries, which can lead to errors.
                     } else {
+                        if (sender.hasPermission("plotsystem.admin") && PlotManager.plotExists(plotID, true)) {
+                            new DefaultPlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
+                        } else
                         sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
                 } else {

@@ -39,6 +39,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,26 +64,28 @@ public class Plot extends PlotPermissions {
     }
 
     public CityProject getCity() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT city_project_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT city_project_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) return new CityProject(rs.getInt(1));
-        return null;
+            if (rs.next()) return new CityProject(rs.getInt(1));
+            return null;
+        }
     }
 
     public PlotDifficulty getDifficulty() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT difficulty_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT difficulty_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) return PlotDifficulty.values()[rs.getInt(1) - 1];
-        return null;
+            if (rs.next()) return PlotDifficulty.values()[rs.getInt(1) - 1];
+            return null;
+        }
     }
 
     public File getOutlinesSchematic() {
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
 
                     if(!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
@@ -90,7 +93,7 @@ public class Plot extends PlotPermissions {
                         }
                     }
                     return file;
-                } catch (SQLException ex) {
+                } catch (SQLException | URISyntaxException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
                 return null;
@@ -102,7 +105,7 @@ public class Plot extends PlotPermissions {
 
     public File getFinishedSchematic() {
         try {
-            return Paths.get(PlotManager.getDefaultSchematicPath(), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+            return Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
@@ -111,10 +114,11 @@ public class Plot extends PlotPermissions {
 
     public Builder getPlotOwner() throws SQLException {
         if(getStatus() != Status.unclaimed) {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots WHERE id = ?")
-                    .setValue(this.ID).executeQuery();
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots WHERE id = ?")
+                    .setValue(this.ID).executeQuery()) {
 
-            if (rs.next()) return new Builder(UUID.fromString(rs.getString(1)));
+                if (rs.next()) return new Builder(UUID.fromString(rs.getString(1)));
+            }
         }
         return null;
     }
@@ -122,16 +126,17 @@ public class Plot extends PlotPermissions {
     public List<Builder> getPlotMembers() throws SQLException {
         List<Builder> builders = new ArrayList<>();
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT member_uuids FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT member_uuids FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if(rs.next()) {
-            String members = rs.getString(1);
-            if(!rs.wasNull()) {
-                String[] uuidMembers = members.split(",");
+            if(rs.next()) {
+                String members = rs.getString(1);
+                if(!rs.wasNull()) {
+                    String[] uuidMembers = members.split(",");
 
-                for (String uuid : uuidMembers) {
-                    builders.add(new Builder(UUID.fromString(uuid)));
+                    for (String uuid : uuidMembers) {
+                        builders.add(new Builder(UUID.fromString(uuid)));
+                    }
                 }
             }
         }
@@ -140,11 +145,12 @@ public class Plot extends PlotPermissions {
 
     public Review getReview() throws SQLException {
         if(getStatus() == Status.completed || isRejected()) {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                    .setValue(this.ID).executeQuery();
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                    .setValue(this.ID).executeQuery()) {
 
-            if (rs.next()) {
-                return new Review(rs.getInt(1));
+                if (rs.next()) {
+                    return new Review(rs.getInt(1));
+                }
             }
         }
         return null;
@@ -162,27 +168,29 @@ public class Plot extends PlotPermissions {
     }
 
     public Vector getMinecraftCoordinates() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            String[] mcLocation = rs.getString(1).split(",");
-            return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+            if (rs.next()) {
+                String[] mcLocation = rs.getString(1).split(",");
+                return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+            }
+            return null;
         }
-        return null;
     }
 
     public int getTotalScore() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if(rs.next()) {
-            int score = rs.getInt(1);
-            if(!rs.wasNull()) {
-                return score;
+            if(rs.next()) {
+                int score = rs.getInt(1);
+                if(!rs.wasNull()) {
+                    return score;
+                }
             }
+            return -1;
         }
-        return -1;
     }
 
     public int getSharedScore() throws SQLException {
@@ -194,58 +202,63 @@ public class Plot extends PlotPermissions {
     }
 
     public Status getStatus() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT status FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT status FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            return Status.valueOf(rs.getString(1));
+            if (rs.next()) {
+                return Status.valueOf(rs.getString(1));
+            }
+            return null;
         }
-        return null;
     }
 
     public Date getLastActivity() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT last_activity FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT last_activity FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getDate(1);
+            if (rs.next()) {
+                return rs.getDate(1);
+            }
+            return null;
         }
-        return null;
     }
 
     public Date getCreateDate() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT create_date FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT create_date FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            return rs.getDate(1);
+            if (rs.next()) {
+                return rs.getDate(1);
+            }
+            return null;
         }
-        return null;
     }
 
     public Builder getPlotCreator() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT create_player FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT create_player FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            return new Builder(UUID.fromString(rs.getString(1)));
+            if (rs.next()) {
+                return new Builder(UUID.fromString(rs.getString(1)));
+            }
+            return null;
         }
-        return null;
     }
 
     public Slot getSlot() throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(this.getPlotOwner().getUUID().toString()).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(this.getPlotOwner().getUUID().toString()).executeQuery()) {
 
-        if(rs.next()) {
-            for(int i = 1; i <= 3; i++) {
-                int slot = rs.getInt(i);
-                if(!rs.wasNull() && slot == getID()) {
-                    return Slot.values()[i - 1];
+            if(rs.next()) {
+                for(int i = 1; i <= 3; i++) {
+                    int slot = rs.getInt(i);
+                    if(!rs.wasNull() && slot == getID()) {
+                        return Slot.values()[i - 1];
+                    }
                 }
             }
+            return null;
         }
-        return null;
     }
 
     public String getOSMMapsLink() throws SQLException {

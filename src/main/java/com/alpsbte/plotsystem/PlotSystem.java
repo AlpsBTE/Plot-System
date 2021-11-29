@@ -56,7 +56,7 @@ import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
 
-    private static final String VERSION = "2.0";
+    private static final String VERSION = "2.2";
 
     private static PlotSystem plugin;
     private ConfigManager configManager;
@@ -171,6 +171,7 @@ public class PlotSystem extends JavaPlugin {
         });
 
         PlotManager.checkPlotsForLastActivity();
+        PlotManager.syncPlotSchematicFiles();
 
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");
