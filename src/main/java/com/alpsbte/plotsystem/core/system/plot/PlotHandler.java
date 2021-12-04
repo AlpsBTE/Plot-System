@@ -33,10 +33,7 @@ import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -70,6 +67,7 @@ public class PlotHandler {
         }
 
         sendLinkMessages(plot, player);
+        sendGroupTipMessage(plot, player);
 
         if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
             plot.setLastActivity(false);
@@ -226,6 +224,22 @@ public class PlotHandler {
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§8--------------------------");
+    }
+
+    public static void sendGroupTipMessage(Plot plot, Player player) {
+        try {
+            if (plot.getPlotMembers().size() == 0) {
+                TextComponent tc = new TextComponent();
+                tc.setText("§7§l> §7Want to play with your friends? Click §aHere....");
+                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
+                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Manage Plot Members...").create()));
+
+                player.spigot().sendMessage(tc);
+                player.sendMessage("§8--------------------------");
+            }
+        } catch (SQLException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", e);
+        }
     }
 
     public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
