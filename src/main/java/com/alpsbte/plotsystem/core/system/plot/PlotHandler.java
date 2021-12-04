@@ -230,9 +230,11 @@ public class PlotHandler {
         try {
             if (plot.getPlotMembers().size() == 0) {
                 TextComponent tc = new TextComponent();
-                tc.setText("§7§l> §7Want to play with your friends? Click §ahere....");
+                tc.setText("§7§l> §7Want to play with your friends? Click §aHere....");
                 tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
                 tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Manage Plot Members...").create()));
+
+                player.spigot().sendMessage(tc);
                 player.sendMessage("§8--------------------------");
             }
         } catch (SQLException e) {
