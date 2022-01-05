@@ -58,7 +58,6 @@ public class Config extends YamlConfiguration {
         this.fileName = fileName;
         this.filePath = filePath;
         this.file = Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), filePath, fileName).toFile();
-        Bukkit.getLogger().log(Level.INFO,file.getAbsolutePath());
     }
 
     @Override
@@ -85,7 +84,6 @@ public class Config extends YamlConfiguration {
     }
 
     public InputStream getDefaultFileStream() {
-        Bukkit.getLogger().log(Level.INFO, (filePath != null) ? filePath + "/" + fileName : fileName);
         return PlotSystem.getPlugin().getResource((filePath != null) ? filePath + "/" + fileName : fileName);
     }
 
