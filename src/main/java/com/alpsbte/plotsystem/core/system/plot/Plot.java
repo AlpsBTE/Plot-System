@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.sk89q.worldedit.Vector;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -53,10 +54,12 @@ import java.util.stream.Collectors;
 public class Plot extends PlotPermissions {
 
     private final int ID;
+    private final PlotWorld plotWorld;
 
     public Plot(int ID) throws SQLException {
         super(ID);
         this.ID = ID;
+        this.plotWorld = new PlotWorld(this);
     }
 
     public int getID() {
@@ -273,11 +276,10 @@ public class Plot extends PlotPermissions {
         return "https://earth.google.com/web/@" + getGeoCoordinatesNumeric() + ",0a,1000d,20y,-0h,0t,0r";
     }
 
-    public String getWorldName() {
-        return "P-" + getID();
-    }
 
-    public World getPlotWorld() { return Bukkit.getWorld(getWorldName()); }
+    public PlotWorld getPlotWorld() {
+        return plotWorld;
+    }
 
     public void setPlotOwner(String UUID) throws SQLException {
         if (UUID == null) {

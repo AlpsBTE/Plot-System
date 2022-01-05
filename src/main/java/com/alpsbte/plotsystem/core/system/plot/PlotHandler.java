@@ -30,6 +30,8 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.Server;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
@@ -55,7 +57,7 @@ public class PlotHandler {
 
         loadPlot(plot);
         player.teleport(getPlotSpawnPoint(plot));
-
+        new PlotWorld(plot).generate(plot.getPlotOwner(), DefaultPlotGenerator.class);
         player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
         player.setAllowFlight(true);
         player.setFlying(true);
