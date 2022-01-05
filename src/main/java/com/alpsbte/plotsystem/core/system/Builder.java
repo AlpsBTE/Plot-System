@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.language.Language;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
@@ -39,12 +40,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Builder {
 
     private final UUID UUID;
 
-    public Builder(UUID UUID) throws SQLException {
+    public Builder(UUID UUID) {
         this.UUID = UUID;
     }
 
@@ -187,6 +189,19 @@ public class Builder {
             if (slotPlot != null && slotPlot.getID() == plot.getID()) {
                 return slot;
             }
+        }
+        return null;
+    }
+
+    public Language getLanguage() {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT lang FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
+            if (rs.next()) {
+                String tag = rs.getString(1);
+                return Language.languageList.stream().filter(l -> l.getTag().equals(tag)).findFirst().orElse(null);
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database",ex);
         }
         return null;
     }

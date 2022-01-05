@@ -39,6 +39,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ConfigManager {
 
@@ -48,7 +50,13 @@ public class ConfigManager {
            new Config("commands.yml", 1.0)
    );
 
+   private final List<Config> languageConfigs = Arrays.asList(
+           new Config("lang", "en_GB.yml", 1.0)
+   );
+
     public ConfigManager() throws ConfigNotImplementedException {
+
+
         if (!getConfig().getFile().exists()) {
            if (this.createConfig(getConfig())) {
                throw new ConfigNotImplementedException("The config file must be configured!");
@@ -59,10 +67,16 @@ public class ConfigManager {
             this.createConfig(getCommandsConfig());
         }
 
+        languageConfigs.forEach(l -> {
+            if (!l.getFile().exists()) {
+                this.createConfig(l);
+            }
+        });
+
         reloadConfigs();
 
         // Check for updates
-        configs.forEach(config -> {
+        Stream.concat(configs.stream(), languageConfigs.stream()).collect(Collectors.toList()).forEach(config -> {
             if (config.getDouble(ConfigPaths.CONFIG_VERSION) != config.getVersion()) {
                 updateConfig(config);
                 reloadConfigs();
@@ -76,7 +90,7 @@ public class ConfigManager {
      * @return True if config saved successfully
      */
     public boolean saveConfigs() {
-        configs.forEach(config -> {
+        Stream.concat(configs.stream(), languageConfigs.stream()).collect(Collectors.toList()).forEach(config -> {
             try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(config.getFile()))){
                 String configuration = this.prepareConfigString(config.saveToString());
 
@@ -95,7 +109,7 @@ public class ConfigManager {
      * @return True if configs reloaded successfully
      */
     public boolean reloadConfigs() {
-        configs.forEach(config -> {
+        Stream.concat(configs.stream(), languageConfigs.stream()).collect(Collectors.toList()).forEach(config -> {
             try (@NotNull Reader configReader = getConfigContent(config)){
                 this.scanConfig(config);
                 config.load(configReader);
@@ -297,5 +311,9 @@ public class ConfigManager {
      */
     public Config getCommandsConfig() {
         return configs.get(1);
+    }
+
+    public Config getLanguageConfigByTag(String tag){
+        return languageConfigs.stream().filter(c -> c.getFileName().equals(tag + ".yml")).findFirst().orElse(null);
     }
 }

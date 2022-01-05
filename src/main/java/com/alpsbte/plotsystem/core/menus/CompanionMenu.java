@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.language.Language;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -54,6 +55,7 @@ public class CompanionMenu extends AbstractMenu {
 
     private Plot[] slots;
     private List<CityProject> cityProjects;
+    private Language language;
 
     private PlotDifficulty selectedPlotDifficulty = null;
 
@@ -63,6 +65,8 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
+        language = new Builder(getMenuPlayer().getUniqueId()).getLanguage();
+
         // Set navigator item
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
@@ -82,9 +86,9 @@ public class CompanionMenu extends AbstractMenu {
         // Set player settings menu item
         getMenu().getSlot(52)
                 .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
-                        .setName("§b§lSettings")
+                        .setName("§b§l" + language.get("menu-titles.settings"))
                         .setLore(new LoreBuilder()
-                                .addLine("Modify your user settings.").build())
+                                .addLine(language.get("menu-titles.settings-desc")).build())
                         .build());
 
         // Set players slot items

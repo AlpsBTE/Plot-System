@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.config;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.DumperOptions;
 
@@ -36,6 +37,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Config extends YamlConfiguration {
@@ -43,11 +45,20 @@ public class Config extends YamlConfiguration {
     private final double version;
     private final File file;
     private final String fileName;
+    private String filePath;
 
     protected Config(String fileName, double version) {
         this.version = version;
         this.fileName = fileName;
         this.file = Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), fileName).toFile();
+    }
+
+    protected Config(String filePath, String fileName, double version) {
+        this.version = version;
+        this.fileName = fileName;
+        this.filePath = filePath;
+        this.file = Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), filePath, fileName).toFile();
+        Bukkit.getLogger().log(Level.INFO,file.getAbsolutePath());
     }
 
     @Override
@@ -74,7 +85,8 @@ public class Config extends YamlConfiguration {
     }
 
     public InputStream getDefaultFileStream() {
-        return PlotSystem.getPlugin().getResource("default" + fileName.substring(0, 1).toUpperCase() + fileName.substring(1));
+        Bukkit.getLogger().log(Level.INFO, (filePath != null) ? filePath + "/" + fileName : fileName);
+        return PlotSystem.getPlugin().getResource((filePath != null) ? filePath + "/" + fileName : fileName);
     }
 
     public double getVersion() {
