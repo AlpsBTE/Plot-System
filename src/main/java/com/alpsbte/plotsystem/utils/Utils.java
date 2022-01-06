@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;

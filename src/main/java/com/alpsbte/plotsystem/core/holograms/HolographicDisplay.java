@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -82,7 +82,7 @@ public abstract class HolographicDisplay {
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Y, newLocation.getY() + 4);
         config.set(getDefaultPath() + ConfigPaths.HOLOGRAMS_Z, newLocation.getZ());
 
-        PlotSystem.getPlugin().getConfigManager().saveConfigs();
+        PlotSystem.getPlugin().getConfigManager().saveFiles();
 
         if(isPlaced) {
             hologram.delete();

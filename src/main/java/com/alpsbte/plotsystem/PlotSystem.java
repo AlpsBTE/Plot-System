@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.core.config.ConfigManager;
+import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
@@ -33,10 +33,10 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
-import com.alpsbte.plotsystem.core.config.ConfigNotImplementedException;
+import com.alpsbte.plotsystem.utils.io.config.ConfigNotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -94,8 +94,8 @@ public class PlotSystem extends JavaPlugin {
 
         // Load config, if it throws an exception disable plugin
         try {
-            configManager = new ConfigManager();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded configuration file.");
+            configManager = new ConfigUtil();
+            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded configuration files.");
         } catch (ConfigNotImplementedException ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load configuration file.");
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "The config file must be configured!");
@@ -103,6 +103,7 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        this.configManager.reloadFiles();
 
         this.configManager.reloadConfigs();
 

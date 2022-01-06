@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;

@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;

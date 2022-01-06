@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Invitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
