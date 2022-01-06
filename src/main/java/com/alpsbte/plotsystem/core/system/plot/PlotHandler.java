@@ -30,8 +30,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.Server;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
@@ -55,9 +53,8 @@ public class PlotHandler {
     public static void teleportPlayer(Plot plot, Player player) throws SQLException {
         player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-        loadPlot(plot);
+        plot.getWorld().load();
         player.teleport(getPlotSpawnPoint(plot));
-        new PlotWorld(plot).generate(plot.getPlotOwner(), DefaultPlotGenerator.class);
         player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
         player.setAllowFlight(true);
         player.setFlying(true);
@@ -79,8 +76,8 @@ public class PlotHandler {
     public static void submitPlot(Plot plot) throws SQLException {
         plot.setStatus(Status.unreviewed);
 
-        if(plot.getPlotWorld() != null) {
-            for(Player player : plot.getPlotWorld().getPlayers()) {
+        if(plot.getWorld() != null) {
+            for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnLocation());
             }
         }
@@ -102,13 +99,13 @@ public class PlotHandler {
     public static void abandonPlot(Plot plot) {
         try {
             if (PlotManager.plotExists(plot.getID())) {
-                loadPlot(plot); // Load Plot to be listed by Multiverse
+                plot.getWorld().load(); // Load Plot to be listed by Multiverse
 
-                for (Player player : plot.getPlotWorld().getPlayers()) {
+                for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                     player.teleport(Utils.getSpawnLocation());
                 }
 
-                PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
+                PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorld().getName(), true, true);
                 PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
             }
 
@@ -132,8 +129,8 @@ public class PlotHandler {
                     plot.setTotalScore(-1);
                     plot.setStatus(Status.unclaimed);
 
-                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
-                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
+                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getName())));
+                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getName())));
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 } catch (IOException ex) {
@@ -174,28 +171,15 @@ public class PlotHandler {
         }).join() == null) throw new SQLException();
     }
 
-    public static void loadPlot(Plot plot) {
-        if(plot.getPlotWorld() == null) {
-            PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
-        }
-    }
-
-    public static void unloadPlot(Plot plot) {
-        if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
-                    Bukkit.unloadWorld(plot.getWorldName(), true)), 60L);
-        }
-    }
-
     public static Location getPlotSpawnPoint(Plot plot) {
-        Location spawnLocation = new Location(plot.getPlotWorld(),
+        Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
                 PlotManager.getPlotCenter().getX() + 0.5,
                 30,
                 PlotManager.getPlotCenter().getZ() + 0.5,
                 -90,
                 90);
         // Set spawn point 1 block above the highest center point
-        spawnLocation.setY(plot.getPlotWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+        spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
         return spawnLocation;
     }
 

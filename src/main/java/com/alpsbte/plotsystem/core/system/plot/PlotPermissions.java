@@ -66,24 +66,6 @@ public class PlotPermissions {
     }
 
     public void save() {
-        try {
-            PlotHandler.unloadPlot(new Plot(plotID));
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
-    }
-
-    public ProtectedRegion getPlotRegion() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-
-        String worldName = "P-" + plotID;
-        try {
-            PlotHandler.loadPlot(new Plot(plotID));
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
-
-        RegionManager regionManager = container.get(Bukkit.getWorld(worldName));
-        return regionManager.getRegion("p-" + plotID);
+        plotWorld.unload(true);
     }
 }

@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -194,8 +193,8 @@ public class PlotManager {
 
 
         // Load finished plot region as cuboid region
-        PlotHandler.loadPlot(plot);
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getPlotWorld()), schematicMinPoint, schematicMaxPoint);
+        plot.getWorld().load();
+        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getWorld().getBukkitWorld()), schematicMinPoint, schematicMaxPoint);
 
 
         // Copy finished plot region to clipboard
@@ -325,6 +324,7 @@ public class PlotManager {
         return new Plot(Integer.parseInt(plotWorld.getName().substring(2)));
     }
 
+    @Deprecated
     public static boolean plotExists(int ID) {
         String worldName = "P-" + ID;
         return (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);

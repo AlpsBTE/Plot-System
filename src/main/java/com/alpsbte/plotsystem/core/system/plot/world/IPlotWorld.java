@@ -2,16 +2,18 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 public interface IPlotWorld {
     /**
      * Generates a new plot world with the required settings and plot schematic
      * @param plotOwner - plow owner of the plot
+     * @param generator - generator type as class
      * @return - true if world was generated successfully
      */
-    <T extends AbstractPlotGenerator> boolean generate(Builder plotOwner, Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean generate(@NotNull Builder plotOwner, @NotNull Class<T> generator);
 
     /**
      * Deletes the world file and entry in the config file
@@ -35,7 +37,7 @@ public interface IPlotWorld {
     /**
      * @return - Bukkit plot world
      */
-    World getBukkit();
+    World getBukkitWorld();
 
     /**
      * Returns plot world name in the format (for example: P-23)
@@ -47,7 +49,7 @@ public interface IPlotWorld {
      * Loads the protected plot world region from WorldGuard config
      * @return - protected WorldGuard region
      */
-    RegionContainer getProtectedRegion();
+    ProtectedRegion getProtectedRegion();
 
     /**
      * Checks if the plot world is loaded to memory. If the plot world has not yet been generated, it will return false.

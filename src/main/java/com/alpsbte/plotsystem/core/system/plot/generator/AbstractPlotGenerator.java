@@ -91,7 +91,7 @@ public abstract class AbstractPlotGenerator {
                     generateWorld();
                     generateOutlines(plot.getOutlinesSchematic());
                     createMultiverseWorld();
-                    configureWorld(worldManager.getMVWorld(plot.getPlotWorld().getBukkit()));
+                    configureWorld(worldManager.getMVWorld(plot.getWorld().getBukkitWorld()));
                     createProtection();
                 } catch (Exception ex) {
                     exception = ex;
@@ -104,7 +104,7 @@ public abstract class AbstractPlotGenerator {
                 }
 
                 if (exception != null) {
-                    if (worldManager.isMVWorld(plot.getPlotWorld().getName())) PlotHandler.abandonPlot(plot);
+                    if (worldManager.isMVWorld(plot.getWorld().getName())) PlotHandler.abandonPlot(plot);
                     onException(exception);
                 }
             });
@@ -123,7 +123,7 @@ public abstract class AbstractPlotGenerator {
     protected void generateWorld() {
         if (PlotManager.plotExists(plot.getID())) PlotHandler.abandonPlot(plot);
 
-        worldCreator = new WorldCreator(plot.getPlotWorld().getName());
+        worldCreator = new WorldCreator(plot.getWorld().getName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
         worldCreator.generatorSettings("2;0;1;");
@@ -136,7 +136,7 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(plot.getPlotWorld().getName(), worldCreator.environment(), null, worldCreator.type(), false,
+            worldManager.addWorld(plot.getWorld().getName(), worldCreator.environment(), null, worldCreator.type(), false,
                     "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
             throw new RuntimeException("World Creator is not configured");
@@ -152,7 +152,7 @@ public abstract class AbstractPlotGenerator {
             if (plotSchematic != null) {
                 Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter();
 
-                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getPlotWorld().getBukkit());
+                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getWorld().getBukkitWorld());
                 Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
 
                 // Place the bottom part of the schematic 5 blocks above 0
@@ -166,7 +166,7 @@ public abstract class AbstractPlotGenerator {
                 Operations.complete(operation);
                 editSession.flushQueue();
 
-                plot.getPlotWorld().getBukkit().setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
+                plot.getWorld().getBukkitWorld().setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
             }
         } catch (IOException | WorldEditException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
@@ -180,15 +180,15 @@ public abstract class AbstractPlotGenerator {
      */
     protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
         // Set Bukkit world game rules
-        plot.getPlotWorld().getBukkit().setGameRuleValue("randomTickSpeed", "0");
-        plot.getPlotWorld().getBukkit().setGameRuleValue("doDaylightCycle", "false");
-        plot.getPlotWorld().getBukkit().setGameRuleValue("doFireTick", "false");
-        plot.getPlotWorld().getBukkit().setGameRuleValue("doWeatherCycle", "false");
-        plot.getPlotWorld().getBukkit().setGameRuleValue("keepInventory", "true");
-        plot.getPlotWorld().getBukkit().setGameRuleValue("announceAdvancements", "false");
+        plot.getWorld().getBukkitWorld().setGameRuleValue("randomTickSpeed", "0");
+        plot.getWorld().getBukkitWorld().setGameRuleValue("doDaylightCycle", "false");
+        plot.getWorld().getBukkitWorld().setGameRuleValue("doFireTick", "false");
+        plot.getWorld().getBukkitWorld().setGameRuleValue("doWeatherCycle", "false");
+        plot.getWorld().getBukkitWorld().setGameRuleValue("keepInventory", "true");
+        plot.getWorld().getBukkitWorld().setGameRuleValue("announceAdvancements", "false");
 
         // Set world time to midday
-        plot.getPlotWorld().getBukkit().setTime(6000);
+        plot.getWorld().getBukkitWorld().setTime(6000);
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);
@@ -210,7 +210,7 @@ public abstract class AbstractPlotGenerator {
         BlockVector max = BlockVector.toBlockPoint(PlotManager.PLOT_SIZE, 256, PlotManager.PLOT_SIZE);
 
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = container.get(plot.getPlotWorld().getBukkit());
+        RegionManager regionManager = container.get(plot.getWorld().getBukkitWorld());
 
         // Create protected region for world
         GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
@@ -218,7 +218,7 @@ public abstract class AbstractPlotGenerator {
         globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
         // Create protected region for plot
-        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getPlotWorld().getName(), min, max);
+        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorld().getName(), min, max);
         protectedPlotRegion.setPriority(100);
 
         // Add and save regions

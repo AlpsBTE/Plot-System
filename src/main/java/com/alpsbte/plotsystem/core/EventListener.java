@@ -206,7 +206,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
+            PlotManager.getPlotByWorld(event.getPlayer().getWorld()).getWorld().unload(false);
         }
         DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
     }
@@ -214,14 +214,14 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getFrom().getWorld()));
+            PlotManager.getPlotByWorld(event.getFrom().getWorld()).getWorld().unload(false);
         }
     }
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
         if (PlotManager.isPlotWorld(event.getFrom())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getFrom()));
+            PlotManager.getPlotByWorld(event.getFrom()).getWorld().unload(false);
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
