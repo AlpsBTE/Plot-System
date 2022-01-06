@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -59,7 +60,8 @@ public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "2.2";
 
     private static PlotSystem plugin;
-    private ConfigManager configManager;
+    private ConfigUtil configManager;
+    private LangUtil langUtil;
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
@@ -105,7 +107,17 @@ public class PlotSystem extends JavaPlugin {
         }
         this.configManager.reloadFiles();
 
-        this.configManager.reloadConfigs();
+        // Load language files
+        try {
+            langUtil = new LangUtil();
+            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded language files.");
+        } catch (Exception ex) {
+            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load language file.");
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         // Initialize database connection
         try {
@@ -195,8 +207,12 @@ public class PlotSystem extends JavaPlugin {
         }
     }
 
-    public ConfigManager getConfigManager() {
+    public ConfigUtil getConfigManager() {
         return configManager;
+    }
+
+    public LangUtil getLangUtil() {
+        return langUtil;
     }
 
     @Override @Deprecated
@@ -206,12 +222,12 @@ public class PlotSystem extends JavaPlugin {
 
     @Override @Deprecated
     public void reloadConfig() {
-        this.configManager.reloadConfigs();
+        this.configManager.saveFiles();
     }
 
     @Override @Deprecated
     public void saveConfig() {
-        this.configManager.saveConfigs();
+        this.configManager.saveFiles();
     }
 
     public static void reloadHolograms() {

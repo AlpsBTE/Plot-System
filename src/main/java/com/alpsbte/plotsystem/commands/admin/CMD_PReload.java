@@ -40,8 +40,8 @@ public class CMD_PReload extends BaseCommand {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission(getPermission())){
             try {
-                PlotSystem.getPlugin().getConfigManager().reloadConfigs();
-                PlotSystem.getPlugin().getConfigManager().saveConfigs();
+                PlotSystem.getPlugin().getConfigManager().reloadFiles();
+                PlotSystem.getPlugin().getConfigManager().saveFiles();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
                 PlotSystem.reloadHolograms();

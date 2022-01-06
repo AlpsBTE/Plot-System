@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.database;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;

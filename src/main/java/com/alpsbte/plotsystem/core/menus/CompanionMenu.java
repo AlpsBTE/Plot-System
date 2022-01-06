@@ -25,17 +25,17 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.language.Language;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
@@ -55,7 +55,6 @@ public class CompanionMenu extends AbstractMenu {
 
     private Plot[] slots;
     private List<CityProject> cityProjects;
-    private Language language;
 
     private PlotDifficulty selectedPlotDifficulty = null;
 
@@ -65,8 +64,6 @@ public class CompanionMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        language = new Builder(getMenuPlayer().getUniqueId()).getLanguage();
-
         // Set navigator item
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
@@ -86,9 +83,9 @@ public class CompanionMenu extends AbstractMenu {
         // Set player settings menu item
         getMenu().getSlot(52)
                 .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
-                        .setName("§b§l" + language.get("menu-titles.settings"))
+                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), "menu-titles.settings", "Test 1234"))
                         .setLore(new LoreBuilder()
-                                .addLine(language.get("menu-titles.settings-desc")).build())
+                                .addLine(LangUtil.get(getMenuPlayer(), "menu-titles.settings-desc")).build())
                         .build());
 
         // Set players slot items
