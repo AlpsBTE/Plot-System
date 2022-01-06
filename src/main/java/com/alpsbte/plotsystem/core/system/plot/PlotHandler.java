@@ -85,10 +85,10 @@ public class PlotHandler {
             }
         }
 
-        plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
         if (plot.getPlotMembers().size() != 0) {
             for (Builder builder : plot.getPlotMembers()) {
-                plot.removeBuilderPerms(builder.getUUID());
+                plot.getPermissions().removeBuilderPerms(builder.getUUID());
             }
         }
     }
@@ -96,7 +96,7 @@ public class PlotHandler {
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.addBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static void abandonPlot(Plot plot) {
@@ -129,7 +129,7 @@ public class PlotHandler {
                     plot.getPlotOwner().removePlot(plot.getSlot());
                     plot.setPlotOwner(null);
                     plot.setLastActivity(true);
-                    plot.setScore(-1);
+                    plot.setTotalScore(-1);
                     plot.setStatus(Status.unclaimed);
 
                     FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));

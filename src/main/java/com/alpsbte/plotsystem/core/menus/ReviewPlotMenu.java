@@ -292,7 +292,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                     double totalRatingWithMultiplier = totalRating * PlotManager.getMultiplierByDifficulty(plot.getDifficulty());
                     totalRating = (int) Math.floor(totalRatingWithMultiplier);
-                    plot.setScore(totalRating);
+                    plot.setTotalScore(totalRating);
 
                     String reviewerConfirmationMessage;
                     clickPlayer.closeInventory();

@@ -208,7 +208,7 @@ public class Review {
 
                 plot.getPlotOwner().addScore(-plot.getSharedScore());
                 plot.getPlotOwner().addCompletedBuild(-1);
-                plot.setScore(-1);
+                plot.setTotalScore(-1);
                 plot.setStatus(Status.unreviewed);
                 plot.setPasted(false);
 

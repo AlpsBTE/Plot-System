@@ -24,53 +24,46 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.alpsbte.plotsystem.PlotSystem;
-import org.bukkit.Bukkit;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 
-import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class PlotPermissions {
 
-    private final int plotID;
+    private final PlotWorld plotWorld;
 
-    public PlotPermissions(int plotID) {
-        this.plotID = plotID;
+    public PlotPermissions(PlotWorld plotWorld) {
+        this.plotWorld = plotWorld;
     }
 
     public PlotPermissions addBuilderPerms(UUID builder) {
-        getPlotRegion().getOwners().addPlayer(builder);
+        plotWorld.getProtectedRegion().getOwners().addPlayer(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
-        getPlotRegion().getOwners().removePlayer(builder);
+        plotWorld.getProtectedRegion().getOwners().removePlayer(builder);
         return this;
     }
 
     public PlotPermissions addReviewerPerms() {
-        getPlotRegion().getOwners().addGroup("staff");
+        plotWorld.getProtectedRegion().getOwners().addGroup("staff");
         return this;
     }
 
     public PlotPermissions removeReviewerPerms() {
-        getPlotRegion().getOwners().removeGroup("staff");
+        plotWorld.getProtectedRegion().getOwners().removeGroup("staff");
         return this;
     }
 
     public PlotPermissions clearAllPerms() {
-        getPlotRegion().getOwners().removeAll();
+        plotWorld.getProtectedRegion().getOwners().removeAll();
         return this;
     }
 
     public boolean hasReviewerPerms() {
-        return getPlotRegion().getOwners().getGroups().contains("staff");
+        return plotWorld.getProtectedRegion().getOwners().getGroups().contains("staff");
     }
-
 
     public void save() {
         try {
