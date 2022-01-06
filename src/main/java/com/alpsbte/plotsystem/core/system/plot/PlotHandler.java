@@ -48,7 +48,7 @@ public class PlotHandler {
     public static void submitPlot(Plot plot) throws SQLException {
         plot.setStatus(Status.unreviewed);
 
-        if(plot.getWorld() != null) {
+        if(plot.getWorld().isLoaded()) {
             for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnLocation());
             }
