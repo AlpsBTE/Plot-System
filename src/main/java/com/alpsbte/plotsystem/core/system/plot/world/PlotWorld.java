@@ -3,7 +3,6 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
@@ -16,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -36,6 +36,19 @@ public class PlotWorld implements IPlotWorld {
                 new RawPlotGenerator(plot, plotOwner);
             } else return false;
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public <T extends AbstractPlotGenerator> boolean regenerate(@NotNull Class<T> generator) {
+        if (isGenerated() && unload(true)) {
+            try {
+                if (delete() && generate(plot.getPlotOwner(), generator))
+                    return true;
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
         return false;
     }
