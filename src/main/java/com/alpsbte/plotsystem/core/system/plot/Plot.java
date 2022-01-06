@@ -147,13 +147,12 @@ public class Plot implements IPlot {
 
     @Override
     public Review getReview() throws SQLException {
-        if(getStatus() == Status.completed || isRejected()) {
-            try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                    .setValue(this.ID).executeQuery()) {
+        if (getStatus() == Status.completed)
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-                if (rs.next()) {
-                    return new Review(rs.getInt(1));
-                }
+            if (rs.next()) {
+                return new Review(rs.getInt(1));
             }
         }
         return null;
@@ -392,11 +391,11 @@ public class Plot implements IPlot {
         }
     }
 
+    @Override
     public boolean isReviewed() throws SQLException {
         return getReview() != null;
     }
 
-    // TODO: Move to Review class
     public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
     }

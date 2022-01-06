@@ -183,7 +183,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             }
         }
         lines.add("");
-        if (plot.isRejected()) lines.add("§c§lRejected");
+        if (plot.isReviewed() && plot.isRejected()) lines.add("§c§lRejected");
         lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
         return lines;
     }

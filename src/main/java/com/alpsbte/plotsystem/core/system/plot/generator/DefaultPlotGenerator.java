@@ -89,7 +89,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         if (!failed) {
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 try {
-                    PlotHandler.teleportPlayer(getPlot(), getBuilder().getPlayer());
+                    getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
                     Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
                 } catch (SQLException ex) {
                     ex.printStackTrace();

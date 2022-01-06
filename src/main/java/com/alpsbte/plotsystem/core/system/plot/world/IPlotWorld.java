@@ -3,7 +3,9 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface IPlotWorld {
@@ -40,6 +42,19 @@ public interface IPlotWorld {
      * @return true if world was loaded successfully
      */
     boolean unload(boolean movePlayers);
+
+    /**
+     * Teleports a player to the spawn point of the plot
+     * @param player bukkit player
+     * @return true if player was teleported successfully
+     */
+    boolean teleportPlayer(Player player);
+
+    /**
+     * Returns the spawn point of the plot
+     * @return center coordinates of the plot
+     */
+    Location getSpawnPoint();
 
     /**
      * @return Bukkit plot world

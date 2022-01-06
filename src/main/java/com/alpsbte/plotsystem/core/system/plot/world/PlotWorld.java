@@ -1,8 +1,12 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
@@ -10,11 +14,15 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -56,8 +64,17 @@ public class PlotWorld implements IPlotWorld {
     @Override
     public boolean delete() {
         if (isGenerated() && unload(true))
-            return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(getName(), true, true) &&
-                    PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
+            if (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(getName(), true, true) &&
+                    PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig()) {
+                try {
+                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getName())));
+                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getName())));
+                } catch (IOException ex) {
+                    Bukkit.getLogger().log(Level.WARNING, "An error occurred while deleting world configs of plot #" + plot.getID());
+                    return false;
+                }
+                return true;
+            }
         return false;
     }
 
@@ -82,6 +99,49 @@ public class PlotWorld implements IPlotWorld {
             return !isLoaded();
         }
         return false;
+    }
+
+    @Override
+    public boolean teleportPlayer(Player player) {
+        if (load()) {
+            try {
+                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
+
+                player.teleport(getSpawnPoint());
+                player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
+                player.setAllowFlight(true);
+                player.setFlying(true);
+
+                player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+                if(player.hasPermission("plotsystem.review")) {
+                    player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+                }
+
+                PlotHandler.sendLinkMessages(plot, player);
+                PlotHandler.sendGroupTipMessage(plot, player);
+
+                if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                    plot.setLastActivity(false);
+                }
+                return true;
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Location getSpawnPoint() {
+        Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
+                PlotManager.getPlotCenter().getX() + 0.5,
+                30,
+                PlotManager.getPlotCenter().getZ() + 0.5,
+                -90,
+                90);
+        // Set spawn point 1 block above the highest center point
+        spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+        return spawnLocation;
     }
 
     @Override
