@@ -95,7 +95,7 @@ public class PlotWorld implements IPlotWorld {
                 for (Player player : getBukkitWorld().getPlayers()) {
                     player.teleport(Utils.getSpawnLocation());
                 }
-            } else return false;
+            }
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
                     Bukkit.unloadWorld(getBukkitWorld(), true)), 60L);
