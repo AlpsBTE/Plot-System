@@ -11,6 +11,7 @@ import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -30,9 +31,11 @@ import java.util.logging.Level;
 public class PlotWorld implements IPlotWorld {
 
     private final Plot plot;
+    private final MultiverseCore mvCore;
 
     public PlotWorld(Plot plot) {
         this.plot = plot;
+        this.mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     }
 
     @Override
@@ -64,8 +67,7 @@ public class PlotWorld implements IPlotWorld {
     @Override
     public boolean delete() {
         if (isGenerated() && unload(true))
-            if (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(getName(), true, true) &&
-                    PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig()) {
+            if (mvCore.getMVWorldManager().deleteWorld(getName(), true, true) && mvCore.saveWorldConfig()) {
                 try {
                     FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getName())));
                     FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getName())));
@@ -74,14 +76,14 @@ public class PlotWorld implements IPlotWorld {
                     return false;
                 }
                 return true;
-            }
+            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID());
         return false;
     }
 
     @Override
     public boolean load() {
         if (isGenerated())
-            return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().loadWorld(getName()) || isLoaded();
+            return mvCore.getMVWorldManager().loadWorld(getName()) || isLoaded();
         return false;
     }
 
@@ -173,6 +175,6 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean isGenerated() {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(getName()) != null || PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(getName());
+        return mvCore.getMVWorldManager().getMVWorld(getName()) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(getName());
     }
 }
