@@ -159,7 +159,10 @@ public class LangPaths {
             public static final String PLAYER_IS_PLOT_OWNER = ERROR + "player-is-plot-owner";
             public static final String PLAYER_IS_NOT_MEMBER = ERROR + "player-is-plot-member";
             public static final String PLAYER_IS_NOT_ONLINE = ERROR + "player-is-not-online";
+            public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
             public static final String INVALID_INPUT = ERROR + "invalid-input";
+            public static final String COMMAND_DISABLED = ERROR + "command-disabled";
+            public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
         }
     }
 
