@@ -30,6 +30,8 @@ import com.alpsbte.plotsystem.core.menus.FeedbackMenu;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -53,7 +55,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                     if (PlotManager.plotExists(plotID)) {
                         plot = new Plot(plotID);
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                         return;
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -67,16 +69,16 @@ public class CMD_Plot_Feedback extends SubCommand {
                     if (plot.isReviewed()) {
                         new FeedbackMenu(getPlayer(sender), plot.getID());
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("This plot has not yet been reviewed!"));
+                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NOT_YET_REVIEWED)));
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to see this plot feedback!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_PERMISSIONS)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.COMMAND_EXECUTION)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

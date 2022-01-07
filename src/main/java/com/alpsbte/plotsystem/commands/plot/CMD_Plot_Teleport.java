@@ -33,6 +33,8 @@ import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -57,8 +59,9 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                     } else {
                         if (sender.hasPermission("plotsystem.admin") && PlotManager.plotExists(plotID, true)) {
                             new DefaultPlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
-                        } else
-                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                        } else {
+                            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                        }
                     }
                 } else {
                     sendInfo(sender);
@@ -67,7 +70,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.COMMAND_EXECUTION)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

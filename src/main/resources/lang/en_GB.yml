@@ -133,7 +133,7 @@ message:
     teleporting-spawn: 'Teleporting to spawn...'
     teleporting-tpll: 'Teleporting to {lat}, {lon}...'
     abandoned-plot: 'Abandoned plot with ID §6#{id}!'
-    finished-plot: 'Plot #{id} by {players} has been finished!'
+    finished-plot: 'Plot §6#{id}§a by §6{players}§a has been finished!'
     undid-submission: 'Undid submission of plot #{id}!'
     undid-review: 'Undid review of plot #{id}!'
     click-me-to-open: 'Click Here to open the {link} link...'

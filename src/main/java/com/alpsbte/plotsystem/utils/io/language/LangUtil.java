@@ -5,6 +5,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.YamlFile;
 import com.alpsbte.plotsystem.utils.io.YamlFileFactory;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -47,6 +48,18 @@ public class LangUtil extends YamlFileFactory {
                 .filter(lang -> lang.tag.equals(locale))
                 .findFirst()
                 .orElse(languages[0]); // TODO: Set default language from config;
+    }
+
+    public static void broadcast(String key) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(Utils.getInfoMessageFormat(get(player,key)));
+        }
+    }
+
+    public static void broadcast(String key, String... strings) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(Utils.getInfoMessageFormat(get(player,key,strings)));
+        }
     }
 
     private static class LanguageFile extends YamlFile {
