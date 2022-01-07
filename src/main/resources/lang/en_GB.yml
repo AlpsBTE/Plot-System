@@ -32,7 +32,7 @@ plot:
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
-city-projects:
+city-project:
   open: 'Plots Open'
   in-progress: 'Plots In Progress'
   completed: 'Plot Completed'
@@ -40,7 +40,7 @@ city-projects:
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
-menu-titles:
+menu-title:
   close: 'Close'
   back: 'Back'
   next-page: 'Next Page'
@@ -52,8 +52,7 @@ menu-titles:
   slot: 'Slot'
   builder-utilities: 'Builder Utilities'
   show-plots: 'Show Plots'
-  settings: 'Settings TEST'
-  settings-desc: 'Modify your user settings TEST'
+  settings: 'Settings'
   submit: 'Submit'
   teleport: 'Teleport'
   abandon: 'Abandon'
@@ -71,7 +70,7 @@ menu-titles:
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
-menu-descriptions:
+menu-description:
   close-desc: 'Close the menu'
   back-desc: 'Go back to the last menu'
   next-page-desc: 'Show the next page'
@@ -82,6 +81,7 @@ menu-descriptions:
   slot-desc: 'Click on a city project to create a new plot'
   builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
   show-plots-desc: 'Show all your plots'
+  settings-desc: 'Modify your user settings'
   submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
   teleport-desc: 'Click to teleport to the plot'
   abandon-desc: 'Click to reset your plot and give it to someone else'
@@ -115,11 +115,11 @@ review:
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
-notes:
+note:
   wont-be-able-continue-building: 'You wont be able to continue building on this plot!'
   score-will-be-split: 'Score will be split between all members when reviewed!'
   player-has-to-be-online: 'The player has to be online!'
-  actions:
+  action:
     click-to-remove-plot-member: 'Click to remove member from plot...'
 
 
@@ -127,7 +127,7 @@ notes:
 # | Messages
 # -----------------------------------------------------
 # Words that are wrapped in the {} tag are replaced afterwards. Do NOT change them!
-messages:
+message:
   info:
     teleporting-plot: 'Teleporting to plot #{id}...'
     teleporting-spawn: 'Teleporting to spawn...'
