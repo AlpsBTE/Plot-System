@@ -53,20 +53,18 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
-        if (isWorldGenerated() && unloadWorld(true)) {
-            try {
-                if (deleteWorld() && generateWorld(plot.getPlotOwner(), generator))
-                    return true;
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+        try {
+            if (deleteWorld() && generateWorld(plot.getPlotOwner(), generator))
+                return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return false;
     }
 
     @Override
     public boolean deleteWorld() {
-        if (isWorldGenerated() && unloadWorld(true)) {
+        if (isWorldGenerated() && loadWorld()) {
             if (mvCore.getMVWorldManager().deleteWorld(getWorldName(), true, true) && mvCore.saveWorldConfig()) {
                 try {
                     FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName())));
