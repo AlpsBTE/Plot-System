@@ -80,7 +80,7 @@ public class LangPaths {
         public static final String CUSTOM_HEADS = MENU_DESCRIPTIONS + "custom-heads-desc";
         public static final String BANNER_MAKER = MENU_DESCRIPTIONS + "banner-maker-desc";
         public static final String SPECIAL_BLOCKS = MENU_DESCRIPTIONS + "special-blocks-desc";
-        public static final String ADD_MEMBER_TO_PLOT = MENU_DESCRIPTIONS + "add-member-to-plot";
+        public static final String ADD_MEMBER_TO_PLOT = MENU_DESCRIPTIONS + "add-member-to-plot-desc";
         public static final String REVIEW_POINTS = MENU_DESCRIPTIONS + "review-points-desc";
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";
     }
