@@ -193,7 +193,7 @@ public class PlotManager {
 
 
         // Load finished plot region as cuboid region
-        plot.getWorld().load();
+        plot.getWorld().loadWorld();
         CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getWorld().getBukkitWorld()), schematicMinPoint, schematicMaxPoint);
 
 

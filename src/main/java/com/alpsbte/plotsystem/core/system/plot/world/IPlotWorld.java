@@ -15,33 +15,33 @@ public interface IPlotWorld {
      * @param generator generator type as class
      * @return true if world was generated successfully
      */
-    <T extends AbstractPlotGenerator> boolean generate(@NotNull Builder plotOwner, @NotNull Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator);
 
     /**
      * Regenerates the current plot with an optional new generator type
      * @param generator generator type as class
      * @return true if world was regenerated successfully
      */
-    <T extends AbstractPlotGenerator> boolean regenerate(@NotNull Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator);
 
     /**
      * Deletes the world file and entry in the config file
      * @return true if world was deleted successfully
      */
-    boolean delete();
+    boolean deleteWorld();
 
     /**
      * Loads the plot world to memory to be used. Plot has to be generated.
      * @return true if world was loaded successfully
      */
-    boolean load();
+    boolean loadWorld();
 
     /**
      * Unloads the plot world from memory. Plot cannot be used anymore. Plot has to be generated.
      * @param movePlayers - if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.
      * @return true if world was loaded successfully
      */
-    boolean unload(boolean movePlayers);
+    boolean unloadWorld(boolean movePlayers);
 
     /**
      * Teleports a player to the spawn point of the plot
@@ -65,7 +65,7 @@ public interface IPlotWorld {
      * Returns plot world name in the format (for example: P-23)
      * @return world name of the plot
      */
-    String getName();
+    String getWorldName();
 
     /**
      * Loads the protected plot world region from WorldGuard config
@@ -77,11 +77,11 @@ public interface IPlotWorld {
      * Checks if the plot world is loaded to memory. If the plot world has not yet been generated, it will return false.
      * @return true if world is loaded
      */
-    boolean isLoaded();
+    boolean isWorldLoaded();
 
     /**
      * Checks if the plot world is generated.
      * @return true if world is generated
      */
-    boolean isGenerated();
+    boolean isWorldGenerated();
 }

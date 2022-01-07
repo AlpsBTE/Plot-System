@@ -39,8 +39,8 @@ public class PlotWorld implements IPlotWorld {
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generate(@NotNull Builder plotOwner, @NotNull Class<T> generator) {
-        if (!isGenerated()) {
+    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator) {
+        if (!isWorldGenerated()) {
             if (generator.isInstance(DefaultPlotGenerator.class)) {
                 new DefaultPlotGenerator(plot, plotOwner);
             } else if (generator.isInstance(RawPlotGenerator.class)) {
@@ -52,10 +52,10 @@ public class PlotWorld implements IPlotWorld {
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean regenerate(@NotNull Class<T> generator) {
-        if (isGenerated() && unload(true)) {
+    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
+        if (isWorldGenerated() && unloadWorld(true)) {
             try {
-                if (delete() && generate(plot.getPlotOwner(), generator))
+                if (deleteWorld() && generateWorld(plot.getPlotOwner(), generator))
                     return true;
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -65,47 +65,48 @@ public class PlotWorld implements IPlotWorld {
     }
 
     @Override
-    public boolean delete() {
-        if (isGenerated() && unload(true))
-            if (mvCore.getMVWorldManager().deleteWorld(getName(), true, true) && mvCore.saveWorldConfig()) {
+    public boolean deleteWorld() {
+        if (isWorldGenerated() && unloadWorld(true)) {
+            if (mvCore.getMVWorldManager().deleteWorld(getWorldName(), true, true) && mvCore.saveWorldConfig()) {
                 try {
-                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getName())));
-                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getName())));
+                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName())));
+                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName())));
                 } catch (IOException ex) {
                     Bukkit.getLogger().log(Level.WARNING, "An error occurred while deleting world configs of plot #" + plot.getID());
                     return false;
                 }
                 return true;
             } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID());
+        } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID() + ", because it is not generated or unloaded!");
         return false;
     }
 
     @Override
-    public boolean load() {
-        if (isGenerated())
-            return mvCore.getMVWorldManager().loadWorld(getName()) || isLoaded();
+    public boolean loadWorld() {
+        if (isWorldGenerated())
+            return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
         return false;
     }
 
     @Override
-    public boolean unload(boolean movePlayers) {
-        if(isLoaded()) {
+    public boolean unloadWorld(boolean movePlayers) {
+        if(isWorldLoaded()) {
             if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
                 for (Player player : getBukkitWorld().getPlayers()) {
                     player.teleport(Utils.getSpawnLocation());
                 }
-            } else if (!movePlayers && !getBukkitWorld().getPlayers().isEmpty()) return false;
+            } else return false;
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
                     Bukkit.unloadWorld(getBukkitWorld(), true)), 60L);
-            return !isLoaded();
+            return !isWorldLoaded();
         }
-        return false;
+        return true;
     }
 
     @Override
     public boolean teleportPlayer(Player player) {
-        if (load()) {
+        if (loadWorld()) {
             try {
                 player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
@@ -148,33 +149,33 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public World getBukkitWorld() {
-        return Bukkit.getWorld(getName());
+        return Bukkit.getWorld(getWorldName());
     }
 
     @Override
-    public String getName() {
+    public String getWorldName() {
         return "P-" + plot.getID();
     }
 
     @Override
     public ProtectedRegion getProtectedRegion() {
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        if (load()) {
+        if (loadWorld()) {
             RegionManager regionManager = container.get(getBukkitWorld());
             if (regionManager != null) {
-                return regionManager.getRegion(getName().toLowerCase(Locale.ROOT));
+                return regionManager.getRegion(getWorldName().toLowerCase(Locale.ROOT));
             } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
         }
         return null;
     }
 
     @Override
-    public boolean isLoaded() {
+    public boolean isWorldLoaded() {
         return getBukkitWorld() != null;
     }
 
     @Override
-    public boolean isGenerated() {
-        return mvCore.getMVWorldManager().getMVWorld(getName()) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(getName());
+    public boolean isWorldGenerated() {
+        return mvCore.getMVWorldManager().getMVWorld(getWorldName()) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(getWorldName());
     }
 }

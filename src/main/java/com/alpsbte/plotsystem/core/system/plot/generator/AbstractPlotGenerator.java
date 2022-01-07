@@ -104,7 +104,7 @@ public abstract class AbstractPlotGenerator {
                 }
 
                 if (exception != null) {
-                    if (worldManager.isMVWorld(plot.getWorld().getName())) PlotHandler.abandonPlot(plot);
+                    if (worldManager.isMVWorld(plot.getWorld().getWorldName())) PlotHandler.abandonPlot(plot);
                     onException(exception);
                 }
             });
@@ -121,9 +121,9 @@ public abstract class AbstractPlotGenerator {
      * Generates plot world
      */
     protected void generateWorld() {
-        if (PlotManager.plotExists(plot.getID())) PlotHandler.abandonPlot(plot);
+        if (getPlot().getWorld().isWorldGenerated()) plot.getWorld().deleteWorld();
 
-        worldCreator = new WorldCreator(plot.getWorld().getName());
+        worldCreator = new WorldCreator(plot.getWorld().getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
         worldCreator.generatorSettings("2;0;1;");
@@ -136,7 +136,7 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(plot.getWorld().getName(), worldCreator.environment(), null, worldCreator.type(), false,
+            worldManager.addWorld(plot.getWorld().getWorldName(), worldCreator.environment(), null, worldCreator.type(), false,
                     "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
             throw new RuntimeException("World Creator is not configured");
@@ -218,7 +218,7 @@ public abstract class AbstractPlotGenerator {
         globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
         // Create protected region for plot
-        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorld().getName(), min, max);
+        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorld().getWorldName(), min, max);
         protectedPlotRegion.setPriority(100);
 
         // Add and save regions

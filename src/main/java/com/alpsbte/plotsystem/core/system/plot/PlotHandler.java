@@ -48,7 +48,7 @@ public class PlotHandler {
     public static void submitPlot(Plot plot) throws SQLException {
         plot.setStatus(Status.unreviewed);
 
-        if(plot.getWorld().isLoaded()) {
+        if(plot.getWorld().isWorldLoaded()) {
             for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnLocation());
             }
@@ -70,14 +70,14 @@ public class PlotHandler {
 
     public static void abandonPlot(Plot plot) {
         try {
-            if (plot.getWorld().isGenerated()) {
-                plot.getWorld().load(); // Load Plot to be listed by Multiverse
+            if (plot.getWorld().isWorldGenerated()) {
+                plot.getWorld().loadWorld(); // Load Plot to be listed by Multiverse
 
                 for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                     player.teleport(Utils.getSpawnLocation());
                 }
 
-                plot.getWorld().delete();
+                plot.getWorld().deleteWorld();
             }
 
             for (Builder builder : plot.getPlotMembers()) {
@@ -112,7 +112,7 @@ public class PlotHandler {
     }
 
     public static void deletePlot(Plot plot) throws SQLException {
-        if (plot.getWorld().isGenerated()) abandonPlot(plot);
+        if (plot.getWorld().isWorldGenerated()) abandonPlot(plot);
 
         if (CompletableFuture.supplyAsync(() -> {
             try {
