@@ -141,7 +141,7 @@ public class PlotManager {
         return plots;
     }
 
-    public static CompletableFuture<Void> savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
+    public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
         // TODO: MOVE CONVERSION TO SEPERATE METHODS
 
         Vector terraOrigin, schematicOrigin, plotOrigin;
@@ -211,7 +211,7 @@ public class PlotManager {
             boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
             boolean createdFile = finishedSchematicFile.createNewFile();
             if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
-                return CompletableFuture.completedFuture(null);
+                return false;
             }
         }
 
@@ -231,7 +231,7 @@ public class PlotManager {
             });
         }
 
-        return CompletableFuture.completedFuture(null);
+        return true;
     }
 
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
