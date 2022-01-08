@@ -147,12 +147,13 @@ public class Plot implements IPlot {
 
     @Override
     public Review getReview() throws SQLException {
-        if (getStatus() == Status.completed)
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
+        if(getStatus() == Status.completed || isRejected()) {
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                    .setValue(this.ID).executeQuery()) {
 
-            if (rs.next()) {
-                return new Review(rs.getInt(1));
+                if (rs.next()) {
+                    return new Review(rs.getInt(1));
+                }
             }
         }
         return null;
