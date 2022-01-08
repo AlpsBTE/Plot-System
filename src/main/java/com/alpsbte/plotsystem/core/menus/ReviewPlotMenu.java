@@ -368,6 +368,9 @@ public class ReviewPlotMenu extends AbstractMenu {
                             player.teleport(Utils.getSpawnLocation());
                         }
 
+                        // Delete plot world after reviewing
+                        plot.getWorld().deleteWorld();
+
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);
                     });

@@ -41,9 +41,11 @@ public class PlotWorld implements IPlotWorld {
     @Override
     public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator) {
         if (!isWorldGenerated()) {
-            if (generator.isInstance(DefaultPlotGenerator.class)) {
-                new DefaultPlotGenerator(plot, plotOwner);
-            } else if (generator.isInstance(RawPlotGenerator.class)) {
+            if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
+               new DefaultPlotGenerator(plot, plotOwner);
+            } else if (generator.isAssignableFrom(DefaultPlotGenerator.RawDefaultPlotGenerator.RawDefaultPlotGenerator.class)) {
+                new DefaultPlotGenerator.RawDefaultPlotGenerator(plot, plotOwner);
+            } else if (generator.isAssignableFrom(RawPlotGenerator.class)) {
                 new RawPlotGenerator(plot, plotOwner);
             } else return false;
             return true;
@@ -70,19 +72,29 @@ public class PlotWorld implements IPlotWorld {
                     FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName())));
                     FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName())));
                 } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "An error occurred while deleting world configs of plot #" + plot.getID());
+                    Bukkit.getLogger().log(Level.WARNING, "An error occurred while deleting world configs of plot #" + plot.getID() + "!");
                     return false;
                 }
                 return true;
-            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID());
-        } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID() + ", because it is not generated or unloaded!");
+            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID() + "!");
+        }
         return false;
     }
 
     @Override
     public boolean loadWorld() {
-        if (isWorldGenerated())
-            return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
+        try {
+            // Generate plot if it doesn't exist
+            if (!isWorldGenerated() && !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class)) {
+                Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
+                return false;
+            }
+
+            if (isWorldGenerated())
+                return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
         return false;
     }
 
@@ -128,7 +140,7 @@ public class PlotWorld implements IPlotWorld {
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-        }
+        } else player.sendMessage(Utils.getErrorMessageFormat("Could not load plot world. Please try again!"));
         return false;
     }
 
