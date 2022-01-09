@@ -324,21 +324,13 @@ public class PlotManager {
         return new Plot(Integer.parseInt(plotWorld.getName().substring(2)));
     }
 
-    @Deprecated
     public static boolean plotExists(int ID) {
-        String worldName = "P-" + ID;
-        return (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
-    }
-
-    public static boolean plotExists(int ID, boolean system) {
-        if (system) {
-            try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
-                    .setValue(ID).executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) return true;
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else return plotExists(ID);
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
+                .setValue(ID).executeQuery()) {
+            if (rs.next() && rs.getInt(1) > 0) return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
         return false;
     }
 
