@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -44,6 +45,7 @@ import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -52,6 +54,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.TrapDoor;
@@ -204,11 +207,18 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
-            PlotManager.getPlotByWorld(event.getPlayer().getWorld()).getWorld().unloadWorld(false);
-        }
-        DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        final World w = event.getPlayer().getWorld();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
+            if(PlotManager.isPlotWorld(w)) {
+                try {
+                    PlotManager.getPlotByWorld(w).getWorld().unloadWorld(false);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                }
+                DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+            }
+        }, 60L);
     }
 
     @EventHandler
