@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IPlotWorld {
     /**
-     * Generates a new plot world with the required settings and plot schematic
+     * Generates the plot world with the required configurations and schematic
      * @param plotOwner plow owner of the plot
      * @param generator generator type as class
      * @return true if world was generated successfully
@@ -86,7 +86,6 @@ public interface IPlotWorld {
     World getBukkitWorld();
 
     /**
-     * Returns plot world name in the format (for example: P-23)
      * @return world name of the plot
      */
     String getWorldName();
@@ -98,13 +97,13 @@ public interface IPlotWorld {
     ProtectedRegion getProtectedRegion();
 
     /**
-     * Checks if the plot world is loaded to memory. If the plot world has not yet been generated, it will return false.
+     * Checks if the plot world is loaded to memory
      * @return true if world is loaded
      */
     boolean isWorldLoaded();
 
     /**
-     * Checks if the plot world is generated.
+     * Checks if the plot world is generated
      * @return true if world is generated
      */
     boolean isWorldGenerated();

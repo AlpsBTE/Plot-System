@@ -85,7 +85,7 @@ public class PlotWorld implements IPlotWorld {
             if (deleteWorld() && generateWorld(plot.getPlotOwner(), generator))
                 return true;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
         return false;
     }
@@ -98,7 +98,7 @@ public class PlotWorld implements IPlotWorld {
                     FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName())));
                     FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName())));
                 } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "An error occurred while deleting world configs of plot #" + plot.getID() + "!");
+                    Bukkit.getLogger().log(Level.WARNING, "Could not delete world configs of plot #" + plot.getID() + "!");
                     return false;
                 }
                 return true;
@@ -118,7 +118,7 @@ public class PlotWorld implements IPlotWorld {
                 return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
             return true;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
         return false;
     }
@@ -138,7 +138,7 @@ public class PlotWorld implements IPlotWorld {
                     return true;
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
@@ -178,7 +178,7 @@ public class PlotWorld implements IPlotWorld {
                                 plot.setLastActivity(false);
                             }
                         } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                         }
                     }
                 }
