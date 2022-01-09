@@ -11,6 +11,7 @@ import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -105,6 +106,15 @@ public class PlotWorld implements IPlotWorld {
                 for (Player player : getBukkitWorld().getPlayers()) {
                     player.teleport(Utils.getSpawnLocation());
                 }
+            }
+
+            try {
+                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty()) {
+                    deleteWorld();
+                    return true;
+                }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
