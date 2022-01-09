@@ -29,10 +29,10 @@ import com.alpsbte.plotsystem.commands.ICommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -52,10 +52,11 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
             if (getPlayer(sender) != null) {
                 if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
-                    if (PlotManager.plotExists(plotID)) {
-                        PlotHandler.teleportPlayer(new Plot(plotID), getPlayer(sender));
+                    Plot plot;
+                    if (PlotManager.plotExists(plotID) && (plot = new Plot(plotID)).getStatus() != Status.unclaimed) {
+                        plot.getWorld().teleportPlayer(getPlayer(sender));
                     } else {
-                        if (sender.hasPermission("plotsystem.admin") && PlotManager.plotExists(plotID, true)) {
+                        if (sender.hasPermission("plotsystem.admin") && PlotManager.plotExists(plotID)) {
                             new DefaultPlotGenerator(new Plot(plotID), new Builder(getPlayer(sender).getUniqueId()));
                         } else
                         sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));

@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -142,7 +141,7 @@ public class PlotManager {
         return plots;
     }
 
-    public static CompletableFuture<Void> savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
+    public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
         // TODO: MOVE CONVERSION TO SEPERATE METHODS
 
         Vector terraOrigin, schematicOrigin, plotOrigin;
@@ -194,8 +193,8 @@ public class PlotManager {
 
 
         // Load finished plot region as cuboid region
-        PlotHandler.loadPlot(plot);
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getPlotWorld()), schematicMinPoint, schematicMaxPoint);
+        plot.getWorld().loadWorld();
+        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getWorld().getBukkitWorld()), schematicMinPoint, schematicMaxPoint);
 
 
         // Copy finished plot region to clipboard
@@ -212,7 +211,7 @@ public class PlotManager {
             boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
             boolean createdFile = finishedSchematicFile.createNewFile();
             if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
-                return CompletableFuture.completedFuture(null);
+                return false;
             }
         }
 
@@ -232,7 +231,7 @@ public class PlotManager {
             });
         }
 
-        return CompletableFuture.completedFuture(null);
+        return true;
     }
 
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
@@ -326,19 +325,12 @@ public class PlotManager {
     }
 
     public static boolean plotExists(int ID) {
-        String worldName = "P-" + ID;
-        return (PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(worldName) != null) || PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getUnloadedWorlds().contains(worldName);
-    }
-
-    public static boolean plotExists(int ID, boolean system) {
-        if (system) {
-            try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
-                    .setValue(ID).executeQuery()) {
-                if (rs.next() && rs.getInt(1) > 0) return true;
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else return plotExists(ID);
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
+                .setValue(ID).executeQuery()) {
+            if (rs.next() && rs.getInt(1) > 0) return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
         return false;
     }
 

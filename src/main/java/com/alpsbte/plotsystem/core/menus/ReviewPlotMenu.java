@@ -292,25 +292,25 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                     double totalRatingWithMultiplier = totalRating * PlotManager.getMultiplierByDifficulty(plot.getDifficulty());
                     totalRating = (int) Math.floor(totalRatingWithMultiplier);
-                    plot.setScore(totalRating);
+                    plot.setTotalScore(totalRating);
 
                     String reviewerConfirmationMessage;
                     clickPlayer.closeInventory();
                     if (!isRejected) {
                         clickPlayer.sendMessage(Utils.getInfoMessageFormat("Saving plot..."));
-                        if (CompletableFuture.supplyAsync(() -> {
-                            try {
-                                return PlotManager.savePlotAsSchematic(plot);
-                            } catch (IOException | SQLException | WorldEditException ex) {
+                        try {
+                            if (!PlotManager.savePlotAsSchematic(plot)) {
+                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("Could not save plot. Please try again!"));
                                 Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
-                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("An error occurred while saving plot schematic!"));
+                                return;
                             }
-                            return null;
-                        }).join() == null) return;
+                        } catch (IOException | SQLException | WorldEditException ex) {
+                            Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!", ex);
+                        }
 
+                        plot.setStatus(Status.completed);
                         plot.getReview().setFeedbackSent(false);
                         plot.getReview().setFeedback("No Feedback");
-                        plot.setStatus(Status.completed);
                         plot.getPlotOwner().addCompletedBuild(1);
 
                         // Remove Plot from Owner
@@ -364,9 +364,12 @@ public class ReviewPlotMenu extends AbstractMenu {
                     }
 
                     Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                        for(Player player : clickPlayer.getWorld().getPlayers()) {
+                        for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                             player.teleport(Utils.getSpawnLocation());
                         }
+
+                        // Delete plot world after reviewing
+                        plot.getWorld().deleteWorld();
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);

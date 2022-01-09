@@ -60,7 +60,7 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
     @Override
     protected void createProtection() {
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = container.get(getPlot().getPlotWorld());
+        RegionManager regionManager = container.get(getPlot().getWorld().getBukkitWorld());
 
         if (regionManager != null) {
             for (String regionID : regionManager.getRegions().keySet()) {

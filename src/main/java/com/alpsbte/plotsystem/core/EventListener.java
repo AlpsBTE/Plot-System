@@ -44,6 +44,7 @@ import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -204,24 +205,31 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
-        }
-        DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        final World w = event.getPlayer().getWorld();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
+            if(PlotManager.isPlotWorld(w)) {
+                try {
+                    PlotManager.getPlotByWorld(w).getWorld().unloadWorld(false);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                }
+                DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+            }
+        }, 60L);
     }
 
     @EventHandler
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getFrom().getWorld()));
+            PlotManager.getPlotByWorld(event.getFrom().getWorld()).getWorld().unloadWorld(false);
         }
     }
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
         if (PlotManager.isPlotWorld(event.getFrom())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getFrom()));
+            PlotManager.getPlotByWorld(event.getFrom()).getWorld().unloadWorld(false);
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
