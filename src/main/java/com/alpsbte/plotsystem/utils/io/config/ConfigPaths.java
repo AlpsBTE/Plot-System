@@ -65,8 +65,6 @@ public abstract class ConfigPaths {
     // Navigator
     private static final String NAVIGATOR = "navigator.";
     public static final String NAVIGATOR_ITEM = NAVIGATOR + "item";
-    public static final String NAVIGATOR_NAME = NAVIGATOR + "name";
-    public static final String NAVIGATOR_DESCRIPTION = NAVIGATOR + "description";
     public static final String NAVIGATOR_COMMAND = NAVIGATOR + "command";
 
 

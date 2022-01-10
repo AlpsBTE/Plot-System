@@ -46,6 +46,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -73,8 +74,8 @@ public class EventListener extends SpecialBlocks implements Listener {
         // Adding user to the database
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             // Add Items
-            if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem())){
-                event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
+            if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem(event.getPlayer()))){
+                event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
             }
             if (event.getPlayer().hasPermission("plotsystem.review")){
                 if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
@@ -162,7 +163,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem())){
+            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))){
                 event.getPlayer().performCommand("companion");
             } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
                 event.getPlayer().performCommand("review");
@@ -225,7 +226,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
-            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
+            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
 
             if (event.getPlayer().hasPermission("plotsystem.review")) {
                 event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
@@ -235,7 +236,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event){
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked()))){
             event.setCancelled(true);
         }
         if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem())){
@@ -245,7 +246,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
         }
         if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem())) {
