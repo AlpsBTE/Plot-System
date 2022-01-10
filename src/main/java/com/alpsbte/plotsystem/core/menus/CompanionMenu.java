@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
@@ -59,7 +60,7 @@ public class CompanionMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     public CompanionMenu(Player player) {
-        super(6, "Companion", player);
+        super(6, LangUtil.get(player, LangPaths.MenuTitle.COMPANION), player);
     }
 
     @Override
@@ -67,15 +68,15 @@ public class CompanionMenu extends AbstractMenu {
         // Set navigator item
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
-                        .setName("§6§l"+ PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_NAME)).setLore(new LoreBuilder()
-                                .addLine(PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_DESCRIPTION)).build())
+                        .setName("§6§l"+ LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.NAVIGATOR)).setLore(new LoreBuilder()
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
                         .build());
 
         // Set loading item for plots difficulty item
         getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
 
         // Set builder utilities menu item
-        getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem());
+        getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem(getMenuPlayer()));
 
         // Set player plots menu item
         getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem());
@@ -83,9 +84,9 @@ public class CompanionMenu extends AbstractMenu {
         // Set player settings menu item
         getMenu().getSlot(52)
                 .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
-                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), "menu-titles.settings", "Test 1234"))
+                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SETTINGS))
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.get(getMenuPlayer(), "menu-titles.settings-desc")).build())
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SETTINGS)).build())
                         .build());
 
         // Set players slot items
@@ -97,22 +98,22 @@ public class CompanionMenu extends AbstractMenu {
 
                 if (slots[i] != null) {
                     getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.MAP, 1 + i)
-                            .setName("§b§lSLOT " + (i + 1))
+                            .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
                             .setLore(new LoreBuilder()
-                                    .addLines("§7ID: §f" + slots[i].getID(),
-                                            "§7City: §f" + slots[i].getCity().getName(),
-                                            "§7Difficulty: §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
+                                    .addLines("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + slots[i].getID(),
+                                            "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + slots[i].getCity().getName(),
+                                            "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
                                             "",
-                                            "§6§lStatus: §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
+                                            "§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.STATUS) + ": §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
                                     ).build())
                             .build());
                 } else {
                     getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
-                            .setName("§b§lSLOT " + (i + 1))
+                            .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
                             .setLore(new LoreBuilder()
-                                    .addLines("§7Click on a city project to create a new plot.",
+                                    .addLines("§7" + LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SLOT),
                                             "",
-                                            "§6§lStatus: §7§lUnassigned")
+                                            "§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
                                     .build())
                             .build());
                 }
@@ -176,19 +177,19 @@ public class CompanionMenu extends AbstractMenu {
                         PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
                         if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
                             if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
-                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need a higher score to build in this difficulty level."));
+                                clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.NEED_HIGHER_SCORE)));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                                 return;
                             }
 
                             new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
                         } else {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } catch (SQLException | ExecutionException | InterruptedException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                     }
                 } else {
@@ -207,7 +208,7 @@ public class CompanionMenu extends AbstractMenu {
                         try {
                             new PlotActionsMenu(clickPlayer, slots[itemSlot]);
                         } catch (SQLException ex) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a developer!"));
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
                         }
@@ -268,12 +269,12 @@ public class CompanionMenu extends AbstractMenu {
                             .setLore(new LoreBuilder()
                                     .addLines(cp.getDescription(),
                                             "",
-                                            "§6" + plotsOpen + " §7Plots Open",
+                                            "§6" + plotsOpen + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_OPEN),
                                             "§8---------------------",
-                                            "§6" + plotsInProgress + " §7Plots In Progress",
-                                            "§6" + plotsCompleted + " §7Plots Completed",
+                                            "§6" + plotsInProgress + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS),
+                                            "§6" + plotsCompleted + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED),
                                             "",
-                                            plotsUnclaimed != 0 ? Utils.getFormattedDifficulty(cpPlotDifficulty) : "§f§lNo Plots Available"
+                                            plotsUnclaimed != 0 ? Utils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS)
                                     ).build())
                             .build());
 
@@ -304,13 +305,13 @@ public class CompanionMenu extends AbstractMenu {
 
         try {
             return new ItemBuilder(item)
-                    .setName("§b§lPLOT DIFFICULTY")
+                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.PLOT_DIFFICULTY).toUpperCase())
                     .setLore(new LoreBuilder()
                             .addLines("",
-                                    selectedPlotDifficulty != null ? Utils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§lAutomatic",
-                                    selectedPlotDifficulty != null ? "§7Score Multiplier: §fx" + PlotManager.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
+                                    selectedPlotDifficulty != null ? Utils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.get(getMenuPlayer(), LangPaths.Difficulty.AUTOMATIC),
+                                    selectedPlotDifficulty != null ? "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Difficulty.SCORE_MULTIPLIER) + ": §fx" + PlotManager.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
                                     "",
-                                    "§7Click to Switch...")
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.PLOT_DIFFICULTY))
                             .build())
                     .build();
         } catch (SQLException ex) {
@@ -322,9 +323,9 @@ public class CompanionMenu extends AbstractMenu {
     /**
      * @return Menu item
      */
-    public static ItemStack getMenuItem() {
+    public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.NETHER_STAR, 1)
-                .setName("§b§lCompanion §7(Right Click)")
+                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.COMPANION) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
                 .setEnchantment(true)
                 .build();
     }

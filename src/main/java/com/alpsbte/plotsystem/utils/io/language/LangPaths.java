@@ -29,6 +29,13 @@ public class LangPaths {
         public static final String PROJECT_OPEN = CITY_PROJECT + "open";
         public static final String PROJECT_IN_PROGRESS = CITY_PROJECT + "in-progress";
         public static final String PROJECT_COMPLETED = CITY_PROJECT + "completed";
+        public static final String PROJECT_NO_PLOTS = CITY_PROJECT + "no-plots-available";
+    }
+
+    public static final class Difficulty {
+        private static final String DIFFICULTY = "difficulty.";
+        public static final String AUTOMATIC = DIFFICULTY + "automatic";
+        public static final String SCORE_MULTIPLIER = DIFFICULTY + "score-multiplier";
     }
 
     public static final class MenuTitle {
@@ -57,6 +64,7 @@ public class LangPaths {
         public static final String REVIEW_POINTS = MENU_TITLES + "review-points";
         public static final String CANCEL_PLOT = MENU_TITLES + "cancel-plot";
         public static final String ADD_MEMBER_TO_PLOT = MENU_TITLES + "add-member-to-plot";
+        public static final String COMPANION = MENU_TITLES + "companion";
     }
 
     public static final class MenuDescription {
@@ -111,6 +119,7 @@ public class LangPaths {
 
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
+            public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
         }
     }
@@ -153,7 +162,7 @@ public class LangPaths {
             public static final String ONLY_TELEPORT_PLOT = ERROR + "only-teleport-plot";
             public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR + "plot-either-unclaimed-or-unreviewed";
             public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
-            public static final String COMMAND_EXECUTION = ERROR + "command-execution";
+            public static final String ERROR_OCCURRED = ERROR + "error-occurred";
             public static final String NOT_YET_REVIEWED = ERROR + "not-yet-reviewed";
             public static final String NO_INVITATIONS = ERROR + "no-invitations";
             public static final String PLAYER_IS_PLOT_OWNER = ERROR + "player-is-plot-owner";
@@ -163,6 +172,9 @@ public class LangPaths {
             public static final String INVALID_INPUT = ERROR + "invalid-input";
             public static final String COMMAND_DISABLED = ERROR + "command-disabled";
             public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
+            public static final String NEED_TO_BE_ON_PLOT = ERROR + "need-to-be-on-plot";
+            public static final String NEED_HIGHER_SCORE = ERROR + "need-higher-score";
+            public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
         }
     }
 

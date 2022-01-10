@@ -36,6 +36,14 @@ city-project:
   open: 'Plots Open'
   in-progress: 'Plots In Progress'
   completed: 'Plot Completed'
+  no-plots-available: 'No Plots Available'
+
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
+difficulty:
+  automatic: 'Automatic'
+  score-multiplier: 'Score Multiplier'
 
 # -----------------------------------------------------
 # | Menu Titles
@@ -65,6 +73,7 @@ menu-title:
   review-points: 'Points'
   cancel-plot: 'Cancel'
   add-member-to-plot: 'Add Member to Plot'
+  companion: 'Companion'
 
 
 # -----------------------------------------------------
@@ -79,7 +88,7 @@ menu-description:
   navigator-desc: 'Open the navigator menu'
   plot-difficulty-desc: 'Click to Switch...'
   slot-desc: 'Click on a city project to create a new plot'
-  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks.'
   show-plots-desc: 'Show all your plots'
   settings-desc: 'Modify your user settings'
   submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
@@ -120,6 +129,7 @@ note:
   score-will-be-split: 'Score will be split between all members when reviewed!'
   player-has-to-be-online: 'The player has to be online!'
   action:
+    right-click: 'Right Click'
     click-to-remove-plot-member: 'Click to remove member from plot...'
 
 
@@ -159,7 +169,7 @@ message:
     only-teleport-plot: 'You can only use /tpll on a plot!'
     plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
     cannot-undo-review: 'You cannot undo a review that you have not reviewed yourself!'
-    command-execution: 'An error occurred while executing this command!'
+    error-occurred: 'An error occurred! Please try again!'
     not-yet-reviewed: 'This plot has not yet been reviewed!'
     no-invitations: 'You have no invitations!'
     player-is-plot-owner: 'This player is already the plot owner!'
@@ -169,6 +179,9 @@ message:
     invalid-input: 'Invalid Input!'
     command-disabled: 'This command is disabled!'
     cannot-send-feedback: 'You cannot send feedback to a plot that you haven't reviewed yourself!'
+    need-to-be-on-plot: 'You need to be on a plot in order to use this!'
+    need-higher-score: 'You need a higher score to build in this difficulty level.'
+    no-plots-left: 'This city project does not have any more plots left. Please select another project.'
 
 # NOTE: Do not change
 config-version: '1.0'

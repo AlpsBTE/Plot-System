@@ -120,10 +120,10 @@ public class CMD_Tpll extends BaseCommand {
 
                         } catch (SQLException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.COMMAND_EXECUTION)));
+                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         } catch (IOException | OutOfProjectionBoundsException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.COMMAND_EXECUTION)));
+                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         }
                     } catch (Exception ignore) {
                         sendInfo(sender);

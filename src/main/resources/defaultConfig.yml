@@ -79,8 +79,6 @@ display-options:
 # -----------------------------------------------------
 navigator:
   item: NETHER_STAR
-  name: Navigator
-  description: Open the navigator menu
   command: navigator
 
 
