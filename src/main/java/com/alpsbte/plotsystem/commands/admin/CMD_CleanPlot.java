@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -33,6 +34,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -76,18 +78,27 @@ public class CMD_CleanPlot extends BaseCommand {
         }
 
         // Clean plot(s)
-        int failed = 0;
-        for (Plot plot : plots) {
-            try {
-                cleanPlot(plot);
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while cleaning plot #" + plot.getID() + "!", ex);
-                failed++;
-            }
-        }
+        new BukkitRunnable() {
+            int index = 0;
+            int failed = 0;
+            @Override
+            public void run() {
+                try {
+                   cleanPlot(plots.get(index));
+                } catch (Exception ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while cleaning plot #" + plots.get(index).getID() + "!", ex);
+                    failed++;
+                }
 
-        sender.sendMessage(Utils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §aplot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §afailed!"));
-        if (sender instanceof Player) ((Player) sender).playSound(((Player) sender).getLocation(), Utils.Done, 1, 1);
+                if (index == plots.size() - 1) {
+                    sender.sendMessage(Utils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §aplot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §afailed!"));
+                    if (sender instanceof Player) ((Player) sender).playSound(((Player) sender).getLocation(), Utils.Done, 1, 1);
+                    cancel();
+                } else {
+                    index++;
+                }
+            }
+        }.runTaskTimer(PlotSystem.getPlugin(), 0L, 40L);
         return true;
     }
 

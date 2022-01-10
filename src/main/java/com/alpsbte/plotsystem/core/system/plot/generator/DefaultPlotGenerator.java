@@ -27,13 +27,14 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         this(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
-    public DefaultPlotGenerator(Plot plot, Builder builder) {
+    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
         super(plot, builder);
     }
 
@@ -89,12 +90,34 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         if (!failed) {
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 try {
-                    PlotHandler.teleportPlayer(getPlot(), getBuilder().getPlayer());
+                    getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
                     Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             });
+        }
+    }
+
+    public static final class RawDefaultPlotGenerator extends DefaultPlotGenerator {
+
+        public RawDefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
+            super(plot, builder);
+        }
+
+        @Override
+        protected void generateOutlines(File plotSchematic) {
+            super.generateOutlines(getPlot().getFinishedSchematic());
+        }
+
+        @Override
+        protected boolean init() {
+            return true;
+        }
+
+        @Override
+        protected void onComplete(boolean failed) throws SQLException {
+            super.onComplete(true); // This code sucks, you know it, and I know it.
         }
     }
 }

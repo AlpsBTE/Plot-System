@@ -65,7 +65,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                     return;
                 }
 
-                if(plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getPlayer(sender).getUniqueId())) || getPlayer(sender).hasPermission("alpsbte.plot.review")) {
+                if(plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getPlayer(sender).getUniqueId())) || getPlayer(sender).hasPermission("plotsystem.plot.review")) {
                     if (plot.isReviewed()) {
                         new FeedbackMenu(getPlayer(sender), plot.getID());
                     } else {

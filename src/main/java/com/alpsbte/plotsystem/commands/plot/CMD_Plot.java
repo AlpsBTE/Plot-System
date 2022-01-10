@@ -39,6 +39,7 @@ public class CMD_Plot extends BaseCommand {
         registerSubCommand(new CMD_Plot_Invite(this));
         registerSubCommand(new CMD_Plot_Feedback(this));
         registerSubCommand(new CMD_Plot_UndoSubmit(this));
+        registerSubCommand(new CMD_Plot_Members(this));
     }
 
     @Override

@@ -66,10 +66,10 @@ public class CMD_Plot_Abandon extends SubCommand {
 
             if (plot.getStatus() == Status.unfinished) {
                 if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
-                    PlotHandler.abandonPlot(plot);
-
-                    sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));
-                    if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.AbandonPlotSound, 1, 1);
+                    if (PlotHandler.abandonPlot(plot)) {
+                        sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));
+                        if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.AbandonPlotSound, 1, 1);
+                    }
                 } else {
                     sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender,LangPaths.Message.Error.NOT_ALLOWED)));
                 }
