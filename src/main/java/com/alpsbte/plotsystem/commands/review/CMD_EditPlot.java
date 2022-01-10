@@ -62,11 +62,11 @@ public class CMD_EditPlot extends BaseCommand {
                         return true;
                     }
 
-                    if(plot.hasReviewerPerms()) {
-                        plot.removeReviewerPerms().save();
+                    if(plot.getPermissions().hasReviewerPerms()) {
+                        plot.getPermissions().removeReviewerPerms().save();
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS,plot.getID() + "")));
                     } else {
-                        plot.addReviewerPerms().save();
+                        plot.getPermissions().addReviewerPerms().save();
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                     }
                 } catch (SQLException ex) {

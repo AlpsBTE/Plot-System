@@ -166,7 +166,7 @@ public class PlotWorld implements IPlotWorld {
                             player.setAllowFlight(true);
                             player.setFlying(true);
 
-                            player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+                            player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
                             if(player.hasPermission("plotsystem.review")) {
                                 player.getInventory().setItem(7, ReviewMenu.getMenuItem());
                             }
