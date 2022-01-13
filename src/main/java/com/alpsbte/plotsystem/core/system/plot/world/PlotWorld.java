@@ -111,7 +111,7 @@ public class PlotWorld implements IPlotWorld {
     public boolean loadWorld() {
         try {
             // Generate plot if it doesn't exist
-            if (!isWorldGenerated() && !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class)) {
+            if (!isWorldGenerated() && (!plot.getFinishedSchematic().exists() || !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class))) {
                 Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
                 return false;
             } else if (isWorldGenerated())
