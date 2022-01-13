@@ -35,10 +35,12 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -167,7 +169,21 @@ public class PlotHandler {
         tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Earth Web").create()));
         tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Open Street Map").create()));
 
+        // Temporary fix for bedrock players
+        String coords = null;
+        try {
+            String[] coordsSplit = plot.getGeoCoordinates().split(",");
+            double lat = Double.parseDouble(coordsSplit[0]);
+            double lon = Double.parseDouble(coordsSplit[1]);
+            DecimalFormat df = new DecimalFormat("##.#####");
+            df.setRoundingMode(RoundingMode.FLOOR);
+            coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+        }
+
         player.sendMessage("§8--------------------------");
+        if (coords != null) player.sendMessage("§7Coords: " + coords);
         player.spigot().sendMessage(tc[0]);
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
