@@ -95,8 +95,10 @@ public class PlotWorld implements IPlotWorld {
         if (isWorldGenerated() && loadWorld()) {
             if (mvCore.getMVWorldManager().deleteWorld(getWorldName(), true, true) && mvCore.saveWorldConfig()) {
                 try {
-                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName())));
-                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName())));
+                    File multiverseInventoriesConfig = new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName()));
+                    File worldGuardConfig = new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName()));
+                    if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
+                    if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
                 } catch (IOException ex) {
                     Bukkit.getLogger().log(Level.WARNING, "Could not delete world configs of plot #" + plot.getID() + "!");
                     return false;

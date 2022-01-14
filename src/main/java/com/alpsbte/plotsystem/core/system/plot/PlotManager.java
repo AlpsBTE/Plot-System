@@ -384,7 +384,7 @@ public class PlotManager {
     }
 
     public static String getMultiverseInventoriesConfigPath(String worldName) {
-        return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName;
+        return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
     }
 
     public static String getDefaultSchematicPath() {
