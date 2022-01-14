@@ -26,6 +26,8 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.Review;
@@ -48,7 +50,7 @@ public class FeedbackMenu extends AbstractMenu {
     private final Plot plot;
 
     public FeedbackMenu(Player player, int plotID) throws SQLException {
-        super(3, "Feedback | Review #" + plotID, player);
+        super(3, LangUtil.get(player, LangPaths.MenuTitle.FEEDBACK, plotID + ""), player);
         this.plot = new Plot(plotID);
     }
 
@@ -75,16 +77,16 @@ public class FeedbackMenu extends AbstractMenu {
         // Set score item
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
-                    .setName("§b§lScore")
+                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.SCORE))
                     .setLore(new LoreBuilder()
-                            .addLines("Total Points: §f" + plot.getTotalScore(),
+                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
                                     "",
-                                    "§7Accuracy: " + Utils.getPointsByColor(review.getRating(Category.ACCURACY)) + "§8/§a5",
-                                    "§7Block Palette: " + Utils.getPointsByColor(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
-                                    "§7Detailing: " + Utils.getPointsByColor(review.getRating(Category.DETAILING)) + "§8/§a5",
-                                    "§7Technique: " + Utils.getPointsByColor(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.getPointsByColor(review.getRating(Category.ACCURACY)) + "§8/§a5",
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.getPointsByColor(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.getPointsByColor(review.getRating(Category.DETAILING)) + "§8/§a5",
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.getPointsByColor(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
                                     "",
-                                    plot.isRejected() ? "§c§lRejected" : "§a§lAccepted")
+                                    plot.isRejected() ? "§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REJECTED) : "§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -95,7 +97,7 @@ public class FeedbackMenu extends AbstractMenu {
         // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
-                    .setName("§b§lFeedback")
+                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
                     .setLore(new LoreBuilder()
                             .addLine(plot.getReview().getFeedback()).build())
                     .build());
@@ -107,7 +109,7 @@ public class FeedbackMenu extends AbstractMenu {
         // Set reviewer item
         try {
             getMenu().getSlot(16).setItem(new ItemBuilder(Utils.getPlayerHead(review.getReviewer().getUUID()))
-                    .setName("§b§lReviewer")
+                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REVIEWER))
                     .setLore(new LoreBuilder()
                             .addLine(review.getReviewer().getName()).build())
                     .build());

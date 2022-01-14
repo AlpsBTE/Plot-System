@@ -97,6 +97,10 @@ public class LangPaths {
         private static final String REVIEW = "review.";
         public static final String REVIEW_PLOT = REVIEW + "review-plot";
         public static final String MANAGE_PLOT = REVIEW + "manage-plot";
+        public static final String ACCEPTED = REVIEW + "accepted";
+        public static final String REJECTED = REVIEW + "rejected";
+        public static final String FEEDBACK = REVIEW + "feedback";
+        public static final String REVIEWER = REVIEW + "reviewer";
 
         public static final class Criteria {
             private static final String CRITERIA = REVIEW + "criteria.";
