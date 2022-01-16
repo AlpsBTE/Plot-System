@@ -364,13 +364,14 @@ public class ReviewPlotMenu extends AbstractMenu {
                         PlotHandler.undoSubmit(plot);
                     }
 
+                    boolean finalIsRejected = isRejected;
                     Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                         for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                             player.teleport(Utils.getSpawnLocation());
                         }
 
                         // Delete plot world after reviewing
-                        plot.getWorld().deleteWorld();
+                        if (!finalIsRejected) plot.getWorld().deleteWorld();
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);
