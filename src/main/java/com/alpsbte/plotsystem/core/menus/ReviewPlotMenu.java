@@ -279,7 +279,8 @@ public class ReviewPlotMenu extends AbstractMenu {
                         sentWarning = true;
                         return;
                     } else if (totalRating == 0) {
-                        PlotHandler.abandonPlot(plot);
+                        plot.setStatus(Status.unfinished);
+                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> clickPlayer.performCommand("plot abandon " + plot.getID()));
                         return;
                     }
 
