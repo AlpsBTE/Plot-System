@@ -209,36 +209,40 @@ public class Review {
             try {
                 Plot plot = new Plot(review.getPlotID());
 
-                for (Builder member : plot.getPlotMembers()) {
-                    member.addScore(-plot.getSharedScore());
-                    member.addCompletedBuild(-1);
+                if (plot.getWorld().loadWorld()) {
+                    for (Builder member : plot.getPlotMembers()) {
+                        member.addScore(-plot.getSharedScore());
+                        member.addCompletedBuild(-1);
 
-                    if (member.getFreeSlot() != null) {
-                        member.setPlot(plot.getID(), member.getFreeSlot());
+                        if (member.getFreeSlot() != null) {
+                            member.setPlot(plot.getID(), member.getFreeSlot());
+                        }
                     }
+
+                    plot.getPlotOwner().addScore(-plot.getSharedScore());
+                    plot.getPlotOwner().addCompletedBuild(-1);
+                    plot.setTotalScore(-1);
+                    plot.setStatus(Status.unreviewed);
+                    plot.setPasted(false);
+
+                    if (plot.getPlotOwner().getFreeSlot() != null) {
+                        plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
+                    }
+
+                    Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                    Server plotServer = plot.getCity().getCountry().getServer();
+                    if (plotServer.getFTPConfiguration() != null) {
+                        FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
+                    }
+
+                    DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                            .setValue(review.getPlotID()).executeUpdate();
+
+                    DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                            .setValue(review.reviewID).executeUpdate();
+
+                    plot.getWorld().unloadWorld(false);
                 }
-
-                plot.getPlotOwner().addScore(-plot.getSharedScore());
-                plot.getPlotOwner().addCompletedBuild(-1);
-                plot.setTotalScore(-1);
-                plot.setStatus(Status.unreviewed);
-                plot.setPasted(false);
-
-                if (plot.getPlotOwner().getFreeSlot() != null) {
-                    plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
-                }
-
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                Server plotServer = plot.getCity().getCountry().getServer();
-                if (plotServer.getFTPConfiguration() != null) {
-                    FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
-                }
-
-                DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
-                        .setValue(review.getPlotID()).executeUpdate();
-
-                DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                        .setValue(review.reviewID).executeUpdate();
             } catch (SQLException | IOException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }

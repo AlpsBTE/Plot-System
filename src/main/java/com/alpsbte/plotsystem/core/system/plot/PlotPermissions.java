@@ -66,6 +66,6 @@ public class PlotPermissions {
     }
 
     public void save() {
-        plotWorld.unloadWorld(true);
+        plotWorld.unloadWorld(false);
     }
 }
