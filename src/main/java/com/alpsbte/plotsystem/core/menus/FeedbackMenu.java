@@ -68,6 +68,8 @@ public class FeedbackMenu extends AbstractMenu {
             if (rs.next()) {
                 this.review = new Review(rs.getInt(1));
             }
+
+            DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }

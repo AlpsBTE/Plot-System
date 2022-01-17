@@ -78,6 +78,8 @@ public class Review {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -89,6 +91,8 @@ public class Review {
             if (rs.next()) {
                 return new Builder(UUID.fromString(rs.getString(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -114,6 +118,8 @@ public class Review {
                         return 0;
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -125,6 +131,8 @@ public class Review {
             if (rs.next()) {
                 return rs.getString(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -136,6 +144,8 @@ public class Review {
             if (rs.next()) {
                 return rs.getDate(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -188,6 +198,8 @@ public class Review {
             if (rs.next()) {
                 return rs.getInt(1) != 0;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return false;
         }
     }

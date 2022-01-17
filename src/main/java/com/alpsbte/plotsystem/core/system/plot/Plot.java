@@ -72,6 +72,8 @@ public class Plot implements IPlot {
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()) return new CityProject(rs.getInt(1));
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -82,6 +84,8 @@ public class Plot implements IPlot {
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()) return PlotDifficulty.values()[rs.getInt(1) - 1];
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -93,6 +97,8 @@ public class Plot implements IPlot {
                     .setValue(this.ID).executeQuery()) {
 
                 if (rs.next()) return new Builder(UUID.fromString(rs.getString(1)));
+
+                DatabaseConnection.closeResultSet(rs);
             }
         }
         return null;
@@ -126,6 +132,8 @@ public class Plot implements IPlot {
                     }
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
         }
         return builders;
     }
@@ -154,6 +162,8 @@ public class Plot implements IPlot {
                 if (rs.next()) {
                     return new Review(rs.getInt(1));
                 }
+
+                DatabaseConnection.closeResultSet(rs);
             }
         }
         return null;
@@ -182,6 +192,9 @@ public class Plot implements IPlot {
                     return score;
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return -1;
         }
     }
@@ -214,6 +227,8 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 return Status.valueOf(rs.getString(1));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -232,6 +247,9 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 return rs.getDate(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return null;
         }
     }
@@ -255,6 +273,8 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 return rs.getDate(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -267,6 +287,9 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 return new Builder(UUID.fromString(rs.getString(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return null;
         }
     }
@@ -284,6 +307,9 @@ public class Plot implements IPlot {
                     }
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return null;
         }
     }
@@ -342,6 +368,9 @@ public class Plot implements IPlot {
                 String[] mcLocation = rs.getString(1).split(",");
                 return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return null;
         }
     }

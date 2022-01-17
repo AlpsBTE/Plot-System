@@ -71,7 +71,8 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Status... statuses) throws SQLException {
-       return listPlots(DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery());
+        ResultSet rs = DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery();
+        return listPlots(rs);
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
@@ -116,6 +117,8 @@ public class PlotManager {
         if (rs.next()) {
             return rs.getDouble(1);
         }
+
+        DatabaseConnection.closeResultSet(rs);
         return 1;
     }
 
@@ -126,6 +129,8 @@ public class PlotManager {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -137,7 +142,7 @@ public class PlotManager {
            plots.add(new Plot(rs.getInt(1)));
         }
 
-        rs.close();
+        DatabaseConnection.closeResultSet(rs);
         return plots;
     }
 
@@ -328,6 +333,8 @@ public class PlotManager {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
             if (rs.next() && rs.getInt(1) > 0) return true;
+
+            DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }

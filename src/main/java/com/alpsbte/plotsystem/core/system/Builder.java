@@ -65,6 +65,9 @@ public class Builder {
             if (rs.next()) {
                 return rs.getString(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return getPlayer() != null ? getPlayer().getName() : "";
         }
     }
@@ -76,6 +79,8 @@ public class Builder {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -87,6 +92,8 @@ public class Builder {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -102,6 +109,8 @@ public class Builder {
                     }
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -112,7 +121,11 @@ public class Builder {
 
             int plotID = -1;
             if (rs.next()) plotID = rs.getInt(1);
-            return rs.wasNull() ? null : new Plot(plotID);
+
+            boolean boo = rs.wasNull();
+            DatabaseConnection.closeResultSet(rs);
+
+            return boo ? null : new Plot(plotID);
         }
     }
 
@@ -153,6 +166,8 @@ public class Builder {
             if (rs.next()) {
                 return new Builder(java.util.UUID.fromString(rs.getString(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -165,6 +180,8 @@ public class Builder {
             while (rs.next()) {
                 scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return scoreAsFormat;
         }
     }
@@ -177,6 +194,8 @@ public class Builder {
             while (rs.next()) {
                 scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return scoreAsFormat;
         }
     }

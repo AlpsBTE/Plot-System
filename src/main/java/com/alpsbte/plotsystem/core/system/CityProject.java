@@ -54,6 +54,8 @@ public class CityProject {
                 this.description = rs.getString(3);
                 this.visible = rs.getInt(4) == 1;
             }
+
+            DatabaseConnection.closeResultSet(rs);
         }
     }
 
@@ -86,6 +88,8 @@ public class CityProject {
                     cityProjects.add(city);
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return cityProjects;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

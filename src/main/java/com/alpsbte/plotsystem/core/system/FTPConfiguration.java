@@ -34,6 +34,8 @@ public class FTPConfiguration {
                 this.username = rs.getString(5);
                 this.password = rs.getString(6);
             }
+
+            DatabaseConnection.closeResultSet(rs);
         }
     }
 
@@ -75,6 +77,9 @@ public class FTPConfiguration {
             while (rs.next()) {
                 ftpConfigurations.add(new FTPConfiguration(rs.getInt(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return ftpConfigurations;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
