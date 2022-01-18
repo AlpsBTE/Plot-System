@@ -49,6 +49,8 @@ public class DatabaseConnection {
     private static String username;
     private static String password;
 
+    private static int connectionClosed, connectionOpened;
+
     public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver");
 
@@ -91,9 +93,19 @@ public class DatabaseConnection {
     }
 
     public static void closeResultSet(ResultSet resultSet) throws SQLException {
+        if(resultSet.isClosed()
+        && resultSet.getStatement().isClosed()
+        && resultSet.getStatement().getConnection().isClosed())
+            return;
+
         resultSet.close();
         resultSet.getStatement().close();
         resultSet.getStatement().getConnection().close();
+
+        connectionClosed++;
+
+        if(connectionOpened > connectionClosed)
+            Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
     }
 
     private static void createDatabase() throws SQLException {
@@ -166,6 +178,8 @@ public class DatabaseConnection {
             Connection con = dataSource.getConnection();
             PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
             ResultSet rs = iterateValues(ps).executeQuery();
+
+            connectionOpened++;
 
             return rs;
         }
