@@ -115,7 +115,9 @@ public class PlotManager {
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery();
 
         if (rs.next()) {
-            return rs.getDouble(1);
+            double d = rs.getDouble(1);
+            DatabaseConnection.closeResultSet(rs);
+            return d;
         }
 
         DatabaseConnection.closeResultSet(rs);
@@ -127,7 +129,9 @@ public class PlotManager {
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -332,7 +336,11 @@ public class PlotManager {
     public static boolean plotExists(int ID) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
-            if (rs.next() && rs.getInt(1) > 0) return true;
+
+            if (rs.next() && rs.getInt(1) > 0){
+                DatabaseConnection.closeResultSet(rs);
+                return true;
+            }
 
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {

@@ -63,7 +63,9 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getString(1);
+                String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return s;
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -77,7 +79,9 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -90,7 +94,9 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -105,6 +111,7 @@ public class Builder {
             if (rs.next()) {
                 for(int i = 1; i <= 3; i++) {
                     if(rs.getString(i) == null) {
+                        DatabaseConnection.closeResultSet(rs);
                         return Slot.values()[i - 1];
                     }
                 }
@@ -164,7 +171,9 @@ public class Builder {
                 .setValue(name).executeQuery()) {
 
             if (rs.next()) {
-                return new Builder(java.util.UUID.fromString(rs.getString(1)));
+                String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return new Builder(java.util.UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);

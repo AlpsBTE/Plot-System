@@ -135,7 +135,9 @@ public class DatabaseConnection {
                     .replace("$table", table);
             try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1);
+                    int i = rs.getInt(1);
+                    DatabaseConnection.closeResultSet(rs);
+                    return i;
                 }
 
                 DatabaseConnection.closeResultSet(rs);
