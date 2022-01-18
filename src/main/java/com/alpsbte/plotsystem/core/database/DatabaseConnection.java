@@ -104,7 +104,7 @@ public class DatabaseConnection {
 
         connectionClosed++;
 
-        if(connectionOpened > connectionClosed)
+        if(connectionOpened > connectionClosed + 5)
             Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
     }
 
