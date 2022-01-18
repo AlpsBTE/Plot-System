@@ -28,6 +28,8 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -53,7 +55,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     private int plotDisplayCount = 0;
 
     public PlayerPlotsMenu(Player menuPlayer, Builder builder) throws SQLException {
-        super(6, builder.getName() + "'s Plots", menuPlayer);
+        super(6, LangUtil.get(menuPlayer, LangPaths.MenuTitle.PLAYER_PLOTS), menuPlayer);
         this.builder = builder;
     }
 
@@ -78,8 +80,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
             getMenu().getSlot(4)
                     .setItem(new ItemBuilder(playerHead)
                             .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
-                                    .addLines("Score: §f" + builder.getScore(),
-                                            "§7Completed Plots: §f" + builder.getCompletedBuilds())
+                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": §f" + builder.getScore(),
+                                            "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": §f" + builder.getCompletedBuilds())
                                     .build())
                             .build());
         } catch (SQLException ex) {
@@ -100,8 +102,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(item)
-                                    .setName("§b§l" + plot.getCity().getName() + " | Plot #" + plot.getID())
-                                    .setLore(getDescription(plot))
+                                    .setName("§b§l" + plot.getCity().getName() + " | " + LangUtil.get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getID())
+                                    .setLore(getDescription(plot, getMenuPlayer()))
                                     .build());
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -150,32 +152,33 @@ public class PlayerPlotsMenu extends AbstractMenu {
     /**
      * Returns description for plot item
      * @param plot Plot class
+     * @param p player instance for language system
      * @return Description lore for plot item
      * @throws SQLException When querying database
      */
-    private List<String> getDescription(Plot plot) throws SQLException {
+    private List<String> getDescription(Plot plot, Player p) throws SQLException {
         List<String> lines = new ArrayList<>();
         if (plot.getPlotMembers().size() == 0) {
             // Plot is single player plot
-            lines.add("§7Total Score: §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
+            lines.add("§7" + LangUtil.get(p, LangPaths.Plot.TOTAL_SCORE) + ": §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
         } else {
             // Plot is multiplayer plot
-            lines.add("§7Plot Owner: §a" + plot.getPlotOwner().getName());
+            lines.add("§7" + LangUtil.get(p, LangPaths.Plot.OWNER) + ": §a" + plot.getPlotOwner().getName());
             lines.add("");
 
             int score = (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore());
-            lines.add("§7Total Score: §f" + score + " §8(shared by " + (plot.getPlotMembers().size() + 1) + " members)");
-            lines.add("§7Effective Score: §6" + (plot.getSharedScore() == -1 ? 0 : plot.getSharedScore()));
+            lines.add("§7" + LangUtil.get(p, LangPaths.Plot.TOTAL_SCORE) + ": §f" + score + " §8" + LangUtil.get(p, LangPaths.Plot.GroupSystem.SHARED_BY_MEMBERS, Integer.toString(plot.getPlotMembers().size() + 1)));
+            lines.add("§7" + LangUtil.get(p, LangPaths.Plot.EFFECTIVE_SCORE) + ": §6" + (plot.getSharedScore() == -1 ? 0 : plot.getSharedScore()));
         }
 
         if (plot.isReviewed() || plot.isRejected()) {
             lines.add("");
-            lines.add("§7Accuracy: " + Utils.getPointsByColor(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
-            lines.add("§7Block Palette: " + Utils.getPointsByColor(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
-            lines.add("§7Detailing: " + Utils.getPointsByColor(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
-            lines.add("§7Technique: " + Utils.getPointsByColor(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.getPointsByColor(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
+            lines.add("§7" + LangUtil.get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.getPointsByColor(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.getPointsByColor(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
+            lines.add("§7" + LangUtil.get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.getPointsByColor(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
             lines.add("");
-            lines.add("§7Feedback:");
+            lines.add("§7" + LangUtil.get(p, LangPaths.Review.FEEDBACK) + ":");
 
             String[] splitText = plot.getReview().getFeedback().split("//");
             for(String line : splitText) {
@@ -183,19 +186,19 @@ public class PlayerPlotsMenu extends AbstractMenu {
             }
         }
         lines.add("");
-        if (plot.isReviewed() && plot.isRejected()) lines.add("§c§lRejected");
-        lines.add("§6§lStatus: §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
+        if (plot.isReviewed() && plot.isRejected()) lines.add("§c§l" + LangUtil.get(p, LangPaths.Review.REJECTED));
+        lines.add("§6§l" + LangUtil.get(p, LangPaths.Plot.STATUS) + ": §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1));
         return lines;
     }
 
     /**
      * @return Menu item
      */
-    public static ItemStack getMenuItem() {
+    public static ItemStack getMenuItem(Player p) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.WHITE_P))
-                .setName("§b§lShow Plots")
+                .setName("§b§l" + LangUtil.get(p, LangPaths.MenuTitle.SHOW_PLOTS))
                 .setLore(new LoreBuilder()
-                        .addLine("Show all your plots.").build())
+                    .addLine(LangUtil.get(p, LangPaths.MenuDescription.SHOW_PLOTS)).build())
                 .build();
     }
 }

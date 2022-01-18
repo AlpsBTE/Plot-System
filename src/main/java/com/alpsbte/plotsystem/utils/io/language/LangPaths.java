@@ -7,6 +7,7 @@ public class LangPaths {
 
     public static final class Plot {
         private static final String PLOT = "plot.";
+        public static final String PLOT_NAME = PLOT + "plot-name";
         public static final String ID = PLOT + "id";
         public static final String OWNER = PLOT + "owner";
         public static final String MEMBERS = PLOT + "members";
@@ -16,6 +17,7 @@ public class LangPaths {
         public static final String SCORE = PLOT + "score";
         public static final String TOTAL_SCORE = PLOT + "total-score";
         public static final String EFFECTIVE_SCORE = PLOT + "effective-score";
+        public static final String COMPLETED_PLOTS = PLOT + "completed-plots";
 
         public static final class GroupSystem {
             private static final String GROUP_SYSTEM = PLOT + "group-system.";
@@ -65,6 +67,7 @@ public class LangPaths {
         public static final String CANCEL_PLOT = MENU_TITLES + "cancel-plot";
         public static final String ADD_MEMBER_TO_PLOT = MENU_TITLES + "add-member-to-plot";
         public static final String COMPANION = MENU_TITLES + "companion";
+        public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
     }
 
     public static final class MenuDescription {

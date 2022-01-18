@@ -79,7 +79,7 @@ public class CompanionMenu extends AbstractMenu {
         getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem(getMenuPlayer()));
 
         // Set player plots menu item
-        getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem());
+        getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem(getMenuPlayer()));
 
         // Set player settings menu item
         getMenu().getSlot(52)

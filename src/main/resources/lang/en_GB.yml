@@ -16,6 +16,7 @@ lang:
 # | Plot
 # -----------------------------------------------------
 plot:
+  plot-name: 'Plot'
   id: 'ID'
   owner: 'Plot Owner'
   members: 'Plot Members'
@@ -25,6 +26,7 @@ plot:
   score: 'Score'
   total-score: 'Total Score'
   effective-score: 'Effective Score'
+  completed-plots: 'Completed Plots'
   group-system:
     empty-member-slot: 'Empty Member Slot'
     shared-by-members: '(shared by {number} members)'
@@ -35,7 +37,7 @@ plot:
 city-project:
   open: 'Plots Open'
   in-progress: 'Plots In Progress'
-  completed: 'Plot Completed'
+  completed: 'Plots Completed'
   no-plots-available: 'No Plots Available'
 
 # -----------------------------------------------------
@@ -74,6 +76,7 @@ menu-title:
   cancel-plot: 'Cancel'
   add-member-to-plot: 'Add Member to Plot'
   companion: 'Companion'
+  player-plots: '{name}&#39;s Plots'
 
 
 # -----------------------------------------------------
