@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -113,26 +112,25 @@ public class ReviewMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for unreviewed and unfinished plot items
-        for(int i = 0; i < plotDisplayCount; i++) {
-            int currentIteration = i;
-            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+        int index = 0;
+        for (Plot plot : plots.subList(0, plotDisplayCount)) {
+            getMenu().getSlot(index).setClickHandler((player, info) -> {
                 try {
-                    Plot plot = plots.get(currentIteration);
+                    getMenuPlayer().closeInventory();
                     if(plot.getStatus() == Status.unreviewed) {
                         if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
-                            getMenuPlayer().closeInventory();
                             plot.getWorld().teleportPlayer(getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
                         }
                     } else {
-                        getMenuPlayer().closeInventory();
                         new PlotActionsMenu(getMenuPlayer(), plot);
                     }
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                 }
             });
+            index++;
         }
 
         // Set click event for previous page item
