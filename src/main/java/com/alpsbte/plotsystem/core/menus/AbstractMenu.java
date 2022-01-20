@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -31,17 +31,20 @@ import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
 
-
 public abstract class AbstractMenu {
 
     private final Menu menu;
     private final Player menuPlayer;
 
     public AbstractMenu(int rows, String title, Player menuPlayer) {
+        this(rows, title, menuPlayer, true);
+    }
+
+    public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.menuPlayer = menuPlayer;
         this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
 
-        reloadMenuAsync();
+        if (reload) reloadMenuAsync();
     }
 
     /**
