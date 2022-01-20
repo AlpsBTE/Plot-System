@@ -76,8 +76,12 @@ public class Review {
                 .setValue(this.reviewID).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -87,8 +91,12 @@ public class Review {
                 .setValue(this.reviewID).executeQuery()) {
 
             if (rs.next()) {
-                return new Builder(UUID.fromString(rs.getString(1)));
+                String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return new Builder(UUID.fromString(s));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -99,6 +107,8 @@ public class Review {
 
             if (rs.next()) {
                 String[] scoreAsString = rs.getString("rating").split(",");
+                DatabaseConnection.closeResultSet(rs);
+
                 switch (category) {
                     case ACCURACY:
                         return Integer.parseInt(scoreAsString[0]);
@@ -114,6 +124,8 @@ public class Review {
                         return 0;
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -123,8 +135,12 @@ public class Review {
                 .setValue(this.reviewID).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getString(1);
+                String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return s;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -134,8 +150,12 @@ public class Review {
                 .setValue(this.reviewID).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getDate(1);
+                Date d = rs.getDate(1);
+                DatabaseConnection.closeResultSet(rs);
+                return d;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -186,8 +206,12 @@ public class Review {
                 .setValue(this.reviewID).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1) != 0;
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i != 0;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return false;
         }
     }

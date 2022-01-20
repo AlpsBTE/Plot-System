@@ -93,6 +93,8 @@ public class EventListener extends SpecialBlocks implements Listener {
                                 .setValue(event.getPlayer().getName())
                                 .executeUpdate();
                 }
+
+                DatabaseConnection.closeResultSet(rs);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }

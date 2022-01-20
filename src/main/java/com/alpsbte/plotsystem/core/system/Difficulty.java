@@ -28,6 +28,8 @@ public class Difficulty {
                 this.multiplier = rs.getDouble(2);
                 this.scoreRequirement = rs.getInt(3);
             }
+
+            DatabaseConnection.closeResultSet(rs);
         }
     }
 
@@ -53,6 +55,9 @@ public class Difficulty {
             while (rs.next()) {
                 difficulties.add(new Difficulty(rs.getInt(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return difficulties;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
