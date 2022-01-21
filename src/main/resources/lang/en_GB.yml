@@ -66,6 +66,7 @@ menu-title:
   submit: 'Submit'
   teleport: 'Teleport'
   abandon: 'Abandon'
+  undo-submit: 'Undo Submit'
   manage-members: 'Manage Members'
   feedback: 'Feedback | Review #{id}'
   custom-heads: 'Custom Heads'
@@ -77,6 +78,7 @@ menu-title:
   add-member-to-plot: 'Add Member to Plot'
   companion: 'Companion'
   player-plots: '{name}&#39;s Plots'
+  leave-plot: 'Leave Plot'
 
 
 # -----------------------------------------------------
@@ -97,7 +99,8 @@ menu-description:
   submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
   teleport-desc: 'Click to teleport to the plot'
   abandon-desc: 'Click to reset your plot and give it to someone else'
-  manage-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
+  undo-submit-desc: 'Click to undo your submission'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add \n and remove other players on your plot'
   feedback-desc: 'Click to view your plot review feedback'
   custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
   banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
@@ -105,6 +108,7 @@ menu-description:
   add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
   review-points-desc: 'Click to select'
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
+  leave-plot-desc: 'Click to leave this plot'
 
 
 # -----------------------------------------------------
@@ -165,6 +169,7 @@ message:
     click-to-open-feedback: 'Click Here to check your plot feedback.'
     click-to-open-review: 'Click Here to open the review menu.'
     removed-plot-member: 'Removed §6{player}§a from plot §6#{id}§a!'
+    left-plot: 'Left plot §6#{id}§a!'
   errors:
     could-not-find-player: 'Could not find that player!'
     plot-does-not-exist: 'This plot does not exist!'
@@ -173,6 +178,7 @@ message:
     only-abandon-unfinished-plots: 'You can only abandon unfinished plots!'
     only-submit-unfinished-plots: 'You can only submit unfinished plots!'
     only-undo-submissions-unreviewed-plots: 'You can only undo submissions of unreviewed plots!'
+    only-manage-members-unfinished-plots: 'You can only manage plot members if plot is unfinished!'
     only-teleport-plot: 'You can only use /tpll on a plot!'
     plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
     cannot-undo-review: 'You cannot undo a review that you have not reviewed yourself!'

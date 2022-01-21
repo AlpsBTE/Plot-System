@@ -57,6 +57,7 @@ public class LangPaths {
         public static final String SUBMIT = MENU_TITLES + "submit";
         public static final String TELEPORT = MENU_TITLES + "teleport";
         public static final String ABANDON = MENU_TITLES + "abandon";
+        public static final String UNDO_SUBMIT = MENU_TITLES + "undo-submit";
         public static final String MANAGE_MEMBERS = MENU_TITLES + "manage-members";
         public static final String FEEDBACK = MENU_TITLES + "feedback";
         public static final String CUSTOM_HEADS = MENU_TITLES + "custom-heads";
@@ -68,6 +69,7 @@ public class LangPaths {
         public static final String ADD_MEMBER_TO_PLOT = MENU_TITLES + "add-member-to-plot";
         public static final String COMPANION = MENU_TITLES + "companion";
         public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
+        public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
     }
 
     public static final class MenuDescription {
@@ -86,6 +88,7 @@ public class LangPaths {
         public static final String SUBMIT_PLOT = MENU_DESCRIPTIONS + "submit-plot-desc";
         public static final String TELEPORT = MENU_DESCRIPTIONS + "teleport-desc";
         public static final String ABANDON = MENU_DESCRIPTIONS + "abandon-desc";
+        public static final String UNDO_SUBMIT = MENU_DESCRIPTIONS + "undo-submit-desc";
         public static final String MANAGE_MEMBERS = MENU_DESCRIPTIONS + "manage-members-desc";
         public static final String FEEDBACK = MENU_DESCRIPTIONS + "feedback-desc";
         public static final String CUSTOM_HEADS = MENU_DESCRIPTIONS + "custom-heads-desc";
@@ -94,6 +97,7 @@ public class LangPaths {
         public static final String ADD_MEMBER_TO_PLOT = MENU_DESCRIPTIONS + "add-member-to-plot-desc";
         public static final String REVIEW_POINTS = MENU_DESCRIPTIONS + "review-points-desc";
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";
+        public static final String LEAVE_PLOT = MENU_DESCRIPTIONS + "leave-plot-desc";
     }
 
     public static final class Review {
@@ -155,6 +159,7 @@ public class LangPaths {
             public static final String CLICK_TO_OPEN_FEEDBACK = INFO + "click-to-open-feedback";
             public static final String CLICK_TO_OPEN_REVIEW = INFO + "click-to-open-review";
             public static final String REMOVED_PLOT_MEMBER = INFO + "removed-plot-member";
+            public static final String LEFT_PLOT = INFO + "left-plot";
         }
 
         public static final class Error {
@@ -166,6 +171,7 @@ public class LangPaths {
             public static final String ONLY_ABANDON_UNFINISHED_PLOTS = ERROR + "only-abandon-unfinished-plots";
             public static final String ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR + "only-submit-unfinished-plots";
             public static final String ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR + "only-undo-submissions-unreviewed-plots";
+            public static final String ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR + "only-manage-members-unfinished-plots";
             public static final String ONLY_TELEPORT_PLOT = ERROR + "only-teleport-plot";
             public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR + "plot-either-unclaimed-or-unreviewed";
             public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
