@@ -56,7 +56,7 @@ import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
 
-    private static final String VERSION = "2.2";
+    private static final String VERSION = "2.3";
 
     private static PlotSystem plugin;
     private ConfigManager configManager;
