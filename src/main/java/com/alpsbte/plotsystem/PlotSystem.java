@@ -299,6 +299,10 @@ public class PlotSystem extends JavaPlugin {
             return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         }
 
+        public static boolean isMultiverseInventoriesEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
+        }
+
         /**
          * @return Multiverse-Core instance
          */

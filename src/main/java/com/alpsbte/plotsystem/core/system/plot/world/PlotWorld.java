@@ -95,8 +95,10 @@ public class PlotWorld implements IPlotWorld {
         if (isWorldGenerated() && loadWorld()) {
             if (mvCore.getMVWorldManager().deleteWorld(getWorldName(), true, true) && mvCore.saveWorldConfig()) {
                 try {
-                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName())));
-                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName())));
+                    File multiverseInventoriesConfig = new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName()));
+                    File worldGuardConfig = new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName()));
+                    if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
+                    if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
                 } catch (IOException ex) {
                     Bukkit.getLogger().log(Level.WARNING, "Could not delete world configs of plot #" + plot.getID() + "!");
                     return false;
@@ -111,7 +113,7 @@ public class PlotWorld implements IPlotWorld {
     public boolean loadWorld() {
         try {
             // Generate plot if it doesn't exist
-            if (!isWorldGenerated() && !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class)) {
+            if (!isWorldGenerated() && (!plot.getFinishedSchematic().exists() || !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class))) {
                 Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
                 return false;
             } else if (isWorldGenerated())

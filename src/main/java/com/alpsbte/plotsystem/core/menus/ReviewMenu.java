@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -44,45 +43,39 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ReviewMenu extends AbstractMenu {
-
-    private final List<Plot> plots = new ArrayList<>();
-    private int plotDisplayCount = 0;
+public class ReviewMenu extends AbstractPaginatedMenu {
 
     public ReviewMenu(Player player) throws SQLException {
-        super(6, "Manage & Review Plots", player);
+        super(6, 5, "Manage & Review Plots", player);
+    }
+
+    @Override
+    protected List<?> getSource() {
+        List<Plot> plots = new ArrayList<>();
+        try {
+            plots.addAll(PlotManager.getPlots(Status.unreviewed));
+            plots.addAll(PlotManager.getPlots(Status.unfinished));
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        return plots;
     }
 
     @Override
     protected void setPreviewItems() {
-        // Set previous page item
-        getMenu().getSlot(46).setItem(MenuItems.previousPageItem());
-
         // Set close item
         getMenu().getSlot(49).setItem(MenuItems.closeMenuItem());
-
-        // Set next page item
-        getMenu().getSlot(52).setItem(MenuItems.nextPageItem());
 
         super.setPreviewItems();
     }
 
     @Override
-    protected void setMenuItemsAsync() {
-        // Get all unreviewed and unfinished plots
-        try {
-            plots.addAll(PlotManager.getPlots(Status.unreviewed));
-            plots.addAll(PlotManager.getPlots(Status.unfinished));
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
-
+    protected void setPaginatedMenuItemsAsync(List<?> source) {
         // Set unreviewed and unfinished plot items
-        plotDisplayCount = Math.min(plots.size(), 45);
-        for(int i = 0; i < plotDisplayCount; i++) {
+        List<Plot> plots = source.stream().map(p -> (Plot) p).collect(Collectors.toList());
+        int index = 0;
+        for(Plot plot : plots) {
             try {
-                Plot plot = plots.get(i);
-
                 List<String> lines = new ArrayList<>();
                 lines.add("§7ID: §f" + plot.getID());
                 lines.add("");
@@ -99,54 +92,73 @@ public class ReviewMenu extends AbstractMenu {
                 lines.add("§7City: §f" + plot.getCity().getName());
                 lines.add("§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
-                getMenu().getSlot(i).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
+                getMenu().getSlot(index).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
                         .setName(plot.getStatus() == Status.unfinished ? "§b§lManage Plot" : "§b§lReview Plot")
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                getMenu().getSlot(i).setItem(MenuItems.errorItem());
+                getMenu().getSlot(index).setItem(MenuItems.errorItem());
             }
+            index++;
         }
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setPaginatedItemClickEventsAsync(List<?> source) {
         // Set click event for unreviewed and unfinished plot items
-        for(int i = 0; i < plotDisplayCount; i++) {
-            int currentIteration = i;
-            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+        List<Plot> plots = source.stream().map(p -> (Plot) p).collect(Collectors.toList());
+        int index = 0;
+        for (Plot plot : plots) {
+            getMenu().getSlot(index).setClickHandler((player, info) -> {
                 try {
-                    Plot plot = plots.get(currentIteration);
-                    if(plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())){
-                            getMenuPlayer().closeInventory();
+                    getMenuPlayer().closeInventory();
+                    if (plot.getStatus() == Status.unreviewed) {
+                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())) {
                             plot.getWorld().teleportPlayer(getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
                         }
                     } else {
-                        getMenuPlayer().closeInventory();
                         new PlotActionsMenu(getMenuPlayer(), plot);
                     }
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                 }
             });
+            index++;
         }
+    }
 
+    @Override
+    protected void setMenuItemsAsync() {
+        // Set previous page item
+        if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem());
+
+        // Set next page item
+        if (hasNextPage()) getMenu().getSlot(52).setItem(MenuItems.nextPageItem());
+    }
+
+    @Override
+    protected void setItemClickEventsAsync() {
         // Set click event for previous page item
-        //getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
-            // Not implemented yet
-        //});
+        getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
+            if (hasPreviousPage()) {
+                previousPage();
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+            }
+        });
 
         // Set click event for close item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
         // Set click event for next page item
-        //getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            // Not implemented yet
-        //});
+        getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
+            if (hasNextPage()) {
+                nextPage();
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+            }
+        });
     }
 
     @Override
@@ -158,7 +170,7 @@ public class ReviewMenu extends AbstractMenu {
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
-                .pattern("101101101")
+                .pattern("111101111")
                 .build();
     }
 

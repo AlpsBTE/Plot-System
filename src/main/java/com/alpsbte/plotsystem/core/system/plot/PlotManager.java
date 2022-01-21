@@ -71,7 +71,8 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Status... statuses) throws SQLException {
-       return listPlots(DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery());
+        ResultSet rs = DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery();
+        return listPlots(rs);
     }
 
     public static List<Plot> getPlots(Builder builder) throws SQLException {
@@ -114,8 +115,12 @@ public class PlotManager {
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery();
 
         if (rs.next()) {
-            return rs.getDouble(1);
+            double d = rs.getDouble(1);
+            DatabaseConnection.closeResultSet(rs);
+            return d;
         }
+
+        DatabaseConnection.closeResultSet(rs);
         return 1;
     }
 
@@ -124,8 +129,12 @@ public class PlotManager {
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -137,7 +146,7 @@ public class PlotManager {
            plots.add(new Plot(rs.getInt(1)));
         }
 
-        rs.close();
+        DatabaseConnection.closeResultSet(rs);
         return plots;
     }
 
@@ -327,7 +336,13 @@ public class PlotManager {
     public static boolean plotExists(int ID) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
-            if (rs.next() && rs.getInt(1) > 0) return true;
+
+            if (rs.next() && rs.getInt(1) > 0){
+                DatabaseConnection.closeResultSet(rs);
+                return true;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
@@ -384,7 +399,7 @@ public class PlotManager {
     }
 
     public static String getMultiverseInventoriesConfigPath(String worldName) {
-        return Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName;
+        return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
     }
 
     public static String getDefaultSchematicPath() {

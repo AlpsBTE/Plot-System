@@ -30,6 +30,8 @@ public class Country {
                 this.name = rs.getString(2);
                 this.headID = rs.getString(3);
             }
+
+            DatabaseConnection.closeResultSet(rs);
         }
     }
 
@@ -55,6 +57,8 @@ public class Country {
             while (rs.next()) {
                 countries.add(new Country(rs.getInt(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return countries;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
