@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.config.ConfigManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.network.*;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
@@ -40,6 +41,7 @@ import com.alpsbte.plotsystem.core.config.ConfigNotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
@@ -47,6 +49,7 @@ import org.ipvp.canvas.MenuFunctionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +66,10 @@ public class PlotSystem extends JavaPlugin {
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
+
+    public static Queue queue;
+    public static Portals portals;
+    private long time;
 
     private static final List<HolographicDisplay> holograms = Arrays.asList(
       new ScoreLeaderboard(),
@@ -122,6 +129,9 @@ public class PlotSystem extends JavaPlugin {
         try {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
+            this.getServer().getPluginManager().registerEvents(new JumpPlates(), this);
+            this.getServer().getPluginManager().registerEvents(new LockedEvents(), this);
+            this.getServer().getPluginManager().registerEvents(new DoubleJump(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
@@ -173,6 +183,10 @@ public class PlotSystem extends JavaPlugin {
         PlotManager.checkPlotsForLastActivity();
         PlotManager.syncPlotSchematicFiles();
 
+        queue = new Queue();
+        portals = new Portals();
+        startTimer();
+
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Enabled Plot-System plugin.");
@@ -223,6 +237,37 @@ public class PlotSystem extends JavaPlugin {
                 }
             }
         }
+    }
+
+    private void startTimer() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(getPlugin(), new Runnable() {
+
+            @Override
+            public void run() {
+                time++;
+
+                // Each 60 seonds
+                if(time%(20*60) == 0){
+                    queue.tick();
+                }
+
+                // Each 5 seonds
+                if(time%(20*5) == 0){}
+
+                // Each  seond
+                if(time%20 == 0){}
+
+                // Each half seond
+                if(time%10 == 0){}
+
+                // Each tick
+                try {
+                    portals.tick();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        },0,0);
     }
 
     public static PlotSystem getPlugin() {

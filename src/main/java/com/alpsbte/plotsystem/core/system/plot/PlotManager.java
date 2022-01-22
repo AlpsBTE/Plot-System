@@ -88,6 +88,16 @@ public class PlotManager {
         return plots;
     }
 
+    public static List<Plot> getPlots(PlotDifficulty plotDifficulty, Status... statuses) throws SQLException {
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND difficulty_id = " + (plotDifficulty.ordinal() + 1) + " AND 's' = 's", statuses)).executeQuery());
+        return plots;
+    }
+
+    public static List<Plot> getPlots(Builder builder, PlotDifficulty plotDifficulty, Status... statuses) throws SQLException {
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND difficulty_id = " + (plotDifficulty.ordinal() + 1) + " AND owner_uuid = '" + builder.getUUID() , statuses)).executeQuery());
+        return plots;
+    }
+
     public static List<Plot> getPlots(int cityID, Status... statuses) throws SQLException {
         return listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND city_project_id = '" + cityID, statuses)).executeQuery());
     }
@@ -115,7 +125,9 @@ public class PlotManager {
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery();
 
         if (rs.next()) {
-            return rs.getDouble(1);
+            double d = rs.getDouble(1);
+            DatabaseConnection.closeResultSet(rs);
+            return d;
         }
 
         DatabaseConnection.closeResultSet(rs);
@@ -127,7 +139,9 @@ public class PlotManager {
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
 
             DatabaseConnection.closeResultSet(rs);

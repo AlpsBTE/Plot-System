@@ -32,7 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +47,8 @@ public class DatabaseConnection {
     private static String name;
     private static String username;
     private static String password;
+
+    private static int connectionClosed, connectionOpened;
 
     public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver");
@@ -91,9 +92,21 @@ public class DatabaseConnection {
     }
 
     public static void closeResultSet(ResultSet resultSet) throws SQLException {
+        if(resultSet.isClosed()
+        && resultSet.getStatement().isClosed()
+        && resultSet.getStatement().getConnection().isClosed())
+            return;
+
+        //Bukkit.broadcastMessage("§7Connection §cclosed (" + connectionClosed + "). - " + resultSet.getStatement());
+
         resultSet.close();
         resultSet.getStatement().close();
         resultSet.getStatement().getConnection().close();
+
+        connectionClosed++;
+
+        if(connectionOpened > connectionClosed + 5)
+            Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
     }
 
     private static void createDatabase() throws SQLException {
@@ -135,7 +148,9 @@ public class DatabaseConnection {
                     .replace("$table", table);
             try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1);
+                    int i = rs.getInt(1);
+                    DatabaseConnection.closeResultSet(rs);
+                    return i;
                 }
 
                 DatabaseConnection.closeResultSet(rs);
@@ -164,6 +179,11 @@ public class DatabaseConnection {
             Connection con = dataSource.getConnection();
             PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
             ResultSet rs = iterateValues(ps).executeQuery();
+
+            //Bukkit.broadcastMessage("§7Connection §aopened (" + connectionOpened + "). - " + rs.getStatement());
+
+
+            connectionOpened++;
 
             return rs;
         }
