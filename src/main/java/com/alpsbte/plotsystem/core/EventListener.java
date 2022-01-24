@@ -79,8 +79,8 @@ public class EventListener extends SpecialBlocks implements Listener {
                 event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
             }
             if (event.getPlayer().hasPermission("plotsystem.review")){
-                if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem())){
-                    event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
+                if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem(event.getPlayer()))){
+                    event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem(event.getPlayer()));
                 }
             }
 
@@ -168,7 +168,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
             if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))){
                 event.getPlayer().performCommand("companion");
-            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem())){
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))){
                 event.getPlayer().performCommand("review");
             }
         }
@@ -239,7 +239,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
 
             if (event.getPlayer().hasPermission("plotsystem.review")) {
-                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem(event.getPlayer()));
             }
         }
     }
@@ -249,7 +249,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked()))){
             event.setCancelled(true);
         }
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem())){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()).getPlayer()))){
             event.setCancelled(true);
         }
     }
@@ -259,7 +259,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
         }
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem())) {
+        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
         }
     }

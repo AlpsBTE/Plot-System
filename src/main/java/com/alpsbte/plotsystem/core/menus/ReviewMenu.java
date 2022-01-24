@@ -26,6 +26,8 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -46,7 +48,7 @@ import java.util.stream.Collectors;
 public class ReviewMenu extends AbstractPaginatedMenu {
 
     public ReviewMenu(Player player) throws SQLException {
-        super(6, 5, "Manage & Review Plots", player);
+        super(6, 5, LangUtil.get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
     @Override
@@ -77,27 +79,23 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         for(Plot plot : plots) {
             try {
                 List<String> lines = new ArrayList<>();
-                lines.add("§7ID: §f" + plot.getID());
+                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
                 lines.add("");
-                lines.add("§7Plot Owner: §f" + plot.getPlotOwner().getName());
-                if (!plot.getPlotMembers().isEmpty()) lines.add("§7Members: §f" + plot.getPlotMembers().stream().map(m -> {
-                            try {
-                                return m.getName();
-                            } catch (SQLException ex) {
-                                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                            }
+                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
+                if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
+                            try { return m.getName(); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex); }
                             return "";
                         }).collect(Collectors.joining(", "))
                 );
-                lines.add("§7City: §f" + plot.getCity().getName());
-                lines.add("§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
+                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
+                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
                 getMenu().getSlot(index).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
-                        .setName(plot.getStatus() == Status.unfinished ? "§b§lManage Plot" : "§b§lReview Plot")
+                        .setName(LangUtil.get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                 getMenu().getSlot(index).setItem(MenuItems.errorItem());
             }
             index++;
@@ -117,7 +115,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                         if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())) {
                             plot.getWorld().teleportPlayer(getMenuPlayer());
                         } else {
-                            getMenuPlayer().sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+                            getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                         }
                     } else {
                         new PlotActionsMenu(getMenuPlayer(), plot);
@@ -177,9 +175,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     /**
      * @return Menu item
      */
-    public static ItemStack getMenuItem(){
+    public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.BOOK, 1)
-                .setName("§b§lReview Plots §7(Right Click)")
+                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
                 .setEnchantment(true)
                 .build();
     }

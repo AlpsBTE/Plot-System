@@ -79,6 +79,7 @@ menu-title:
   companion: 'Companion'
   player-plots: '{0}&#39;s Plots'
   leave-plot: 'Leave Plot'
+  review-plots: 'Review Plots'
 
 
 # -----------------------------------------------------
@@ -185,6 +186,7 @@ message:
     can-only-tpll-to-plot: 'You can only use /tpll on a plot!'
     cannot-undo-review: 'You cannot undo a review that you have not reviewed yourself!'
     cannot-send-feedback: 'You cannot send feedback to a plot that you have not reviewed yourself!'
+    cannot-review-own-plot: 'You cannot review your own plot!'
 
     player-has-no-permissions: 'You do not have permission to do this!'
     player-has-no-invitations: 'You have no invitations!'

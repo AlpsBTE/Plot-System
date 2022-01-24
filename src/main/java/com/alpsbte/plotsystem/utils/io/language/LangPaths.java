@@ -70,6 +70,7 @@ public class LangPaths {
         public static final String COMPANION = MENU_TITLES + "companion";
         public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
         public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
+        public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
     }
 
     public static final class MenuDescription {
@@ -178,6 +179,7 @@ public class LangPaths {
             public static final String CAN_ONLY_TELEPORT_TO_PLOT = ERROR + "can-only-teleport-to-plot";
             public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
+            public static final String CANNOT_REVIEW_OWN_PLOT = ERROR + "cannot-review-own-plot";
 
             public static final String PLAYER_HAS_NO_PERMISSIONS = ERROR + "player-has-no-permissions";
             public static final String PLAYER_HAS_NO_INVITATIONS = ERROR + "player-has-no-invitations";

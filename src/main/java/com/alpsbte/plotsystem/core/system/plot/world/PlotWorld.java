@@ -170,7 +170,7 @@ public class PlotWorld implements IPlotWorld {
 
                             player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
                             if(player.hasPermission("plotsystem.review")) {
-                                player.getInventory().setItem(7, ReviewMenu.getMenuItem());
+                                player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
                             }
 
                             PlotHandler.sendLinkMessages(plot, player);
