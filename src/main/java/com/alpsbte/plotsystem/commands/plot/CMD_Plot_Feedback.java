@@ -69,10 +69,10 @@ public class CMD_Plot_Feedback extends SubCommand {
                     if (plot.isReviewed()) {
                         new FeedbackMenu(getPlayer(sender), plot.getID());
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NOT_YET_REVIEWED)));
+                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_HAS_NOT_YET_REVIEWED)));
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_PERMISSIONS)));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");

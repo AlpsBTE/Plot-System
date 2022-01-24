@@ -74,7 +74,7 @@ public class CMD_EditPlot extends BaseCommand {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_PERMISSIONS)));
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             }
         } else {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));

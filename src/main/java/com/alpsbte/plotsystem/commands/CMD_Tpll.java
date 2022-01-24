@@ -94,7 +94,7 @@ public class CMD_Tpll extends BaseCommand {
                             CompletableFuture<double[]> plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);
 
                             if(plotCoords == null) {
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ONLY_TELEPORT_PLOT)));
+                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
                                 return true;
                             }
 
@@ -129,13 +129,13 @@ public class CMD_Tpll extends BaseCommand {
                         sendInfo(sender);
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ONLY_TELEPORT_PLOT)));
+                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_PERMISSIONS)));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
         return true;
     }

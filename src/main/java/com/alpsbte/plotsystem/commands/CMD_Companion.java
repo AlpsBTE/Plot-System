@@ -40,7 +40,7 @@ public class CMD_Companion extends BaseCommand {
                 new CompanionMenu((Player) sender);
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_PERMISSIONS)));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
 
         return true;

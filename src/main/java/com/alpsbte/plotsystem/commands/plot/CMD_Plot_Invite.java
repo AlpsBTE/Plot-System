@@ -75,7 +75,7 @@ public class CMD_Plot_Invite extends SubCommand {
                 if (invite != null) {
                     Invitation.invitationsList.remove(invite);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_INVITATIONS)));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
                 }
             }
         } else {

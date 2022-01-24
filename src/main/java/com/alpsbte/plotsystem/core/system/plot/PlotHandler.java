@@ -155,9 +155,9 @@ public class PlotHandler {
         tc[1] = new TextComponent();
         tc[2] = new TextComponent();
 
-        tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_OPEN_LINK, "Google Maps"));
-        tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_OPEN_LINK, "Google Earth Web"));
-        tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_OPEN_LINK, "Open Street Map"));
+        tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"));
+        tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth Web"));
+        tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Open Street Map"));
 
         try {
             tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
@@ -196,7 +196,7 @@ public class PlotHandler {
         try {
             if (plot.getPlotMembers().size() == 0) {
                 TextComponent tc = new TextComponent();
-                tc.setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.WANT_TO_PLAY_WITH_FRIENDS));
+                tc.setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
                 tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
                 tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(player, LangPaths.Plot.MEMBERS)).create()));
 
@@ -211,9 +211,9 @@ public class PlotHandler {
     public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
         player.sendMessage("§8--------------------------");
         for(Plot plot : plots) {
-            player.sendMessage("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
+            player.sendMessage("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.REVIEWED_PLOT, "§6" + plot.getID() + "§a"));
             TextComponent tc = new TextComponent();
-            tc.setText(LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_SHOW_FEEDBACK));
+            tc.setText(LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
                     LangUtil.get(player, LangPaths.Plot.PLOT_NAME + " " + LangUtil.get(player, LangPaths.Review.FEEDBACK))).create()));
@@ -230,7 +230,7 @@ public class PlotHandler {
     public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
         player.sendMessage("§7§l> " + LangUtil.get(player, (plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS) + "!"));
         TextComponent tc = new TextComponent();
-        tc.setText(LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_SHOW_PLOTS));
+        tc.setText(LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(player, LangPaths.MenuTitle.SHOW_PLOTS)).create()));
         player.spigot().sendMessage(tc);
@@ -242,7 +242,7 @@ public class PlotHandler {
                 LangPaths.Message.Info.UNREVIEWED_PLOTS, String.valueOf(plots.size())));
 
         TextComponent tc = new TextComponent();
-        tc.setText(LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_SHOW_OPEN_REVIEWS));
+        tc.setText(LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(player, LangPaths.MenuTitle.SHOW_PLOTS)).create()));
         player.spigot().sendMessage(tc);

@@ -102,6 +102,7 @@ public class LangPaths {
 
     public static final class Review {
         private static final String REVIEW = "review.";
+        public static final String MANAGE_AND_REVIEW_PLOTS = "manage-and-review-plots";
         public static final String REVIEW_PLOT = REVIEW + "review-plot";
         public static final String MANAGE_PLOT = REVIEW + "manage-plot";
         public static final String ACCEPTED = REVIEW + "accepted";
@@ -132,6 +133,11 @@ public class LangPaths {
             private static final String ACTION = NOTES + "action.";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
+            public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
+            public static final String CLICK_TO_SHOW_FEEDBACK = ACTION + "click-to-show-feedback";
+            public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION + "click-to-show-open-reviews";
+            public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
+            public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
         }
     }
 
@@ -155,40 +161,37 @@ public class LangPaths {
             public static final String ENABLED_PLOT_PERMISSIONS = INFO + "enabled-build-permissions";
             public static final String DISABLED_PLOT_PERMISSIONS = INFO + "disabled-build-permissions";
             public static final String UPDATED_PLOT_FEEDBACK = INFO + "updated-plot-feedback";
-            public static final String CLICK_TO_OPEN_LINK = INFO + "click-to-open-link";
-            public static final String CLICK_TO_SHOW_FEEDBACK = INFO + "click-to-show-feedback";
-            public static final String CLICK_TO_SHOW_OPEN_REVIEWS = INFO + "click-to-show-open-reviews";
-            public static final String CLICK_TO_SHOW_PLOTS = INFO + "click-to-show-plots";
             public static final String REMOVED_PLOT_MEMBER = INFO + "removed-plot-member";
             public static final String LEFT_PLOT = INFO + "left-plot";
-            public static final String WANT_TO_PLAY_WITH_FRIENDS = INFO + "want-to-play-with-friends";
         }
 
         public static final class Error {
             private static final String ERROR = MESSAGE + "error.";
-            public static final String TELEPORTING_PLOT = ERROR + "could-not-find-player";
             public static final String PLOT_DOES_NOT_EXIST = ERROR + "plot-does-not-exist";
-            public static final String NO_PERMISSIONS = ERROR + "no-permissions";
-            public static final String NOT_ALLOWED = ERROR + "not-allowed";
-            public static final String ONLY_ABANDON_UNFINISHED_PLOTS = ERROR + "only-abandon-unfinished-plots";
-            public static final String ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR + "only-submit-unfinished-plots";
-            public static final String ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR + "only-undo-submissions-unreviewed-plots";
-            public static final String ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR + "only-manage-members-unfinished-plots";
-            public static final String ONLY_TELEPORT_PLOT = ERROR + "only-teleport-plot";
             public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR + "plot-either-unclaimed-or-unreviewed";
+            public static final String PLOT_HAS_NOT_YET_REVIEWED = ERROR + "plot-has-not-yet-reviewed";
+
+            public static final String CAN_ONLY_ABANDON_UNFINISHED_PLOTS = ERROR + "can-only-abandon-unfinished-plots";
+            public static final String CAN_ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR + "can-only-submit-unfinished-plots";
+            public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR + "can-only-undo-submissions-unreviewed-plots";
+            public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR + "can-only-manage-members-unfinished-plots";
+            public static final String CAN_ONLY_TELEPORT_TO_PLOT = ERROR + "can-only-teleport-to-plot";
             public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
-            public static final String ERROR_OCCURRED = ERROR + "error-occurred";
-            public static final String NOT_YET_REVIEWED = ERROR + "not-yet-reviewed";
-            public static final String NO_INVITATIONS = ERROR + "no-invitations";
+            public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
+
+            public static final String PLAYER_HAS_NO_PERMISSIONS = ERROR + "player-has-no-permissions";
+            public static final String PLAYER_HAS_NO_INVITATIONS = ERROR + "player-has-no-invitations";
+            public static final String PLAYER_IS_NOT_ALLOWED = ERROR + "player-is-not-allowed";
             public static final String PLAYER_IS_PLOT_OWNER = ERROR + "player-is-plot-owner";
             public static final String PLAYER_IS_NOT_MEMBER = ERROR + "player-is-plot-member";
             public static final String PLAYER_IS_NOT_ONLINE = ERROR + "player-is-not-online";
             public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
+            public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";
+            public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR + "player-needs-higher-score";
+
             public static final String INVALID_INPUT = ERROR + "invalid-input";
+            public static final String ERROR_OCCURRED = ERROR + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR + "command-disabled";
-            public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
-            public static final String NEED_TO_BE_ON_PLOT = ERROR + "need-to-be-on-plot";
-            public static final String NEED_HIGHER_SCORE = ERROR + "need-higher-score";
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
         }
     }

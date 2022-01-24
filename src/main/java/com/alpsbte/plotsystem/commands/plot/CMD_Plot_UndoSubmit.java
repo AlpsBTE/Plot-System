@@ -70,7 +70,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
                 sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
                 if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.FinishPlotSound, 1, 1);
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS)));
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS)));
             }
         } catch (SQLException ex) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
