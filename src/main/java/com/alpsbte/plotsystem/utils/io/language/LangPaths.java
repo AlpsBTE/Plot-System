@@ -147,8 +147,7 @@ public class LangPaths {
             public static final String FINISHED_PLOT = INFO + "finished-plot";
             public static final String UNDID_SUBMISSION = INFO + "undid-submission";
             public static final String UNDID_REVIEW = INFO + "undid-review";
-            public static final String CLICK_ME_TO_OPEN = INFO + "click-me-to-open";
-            public static final String REVIEW_PLOTS = INFO + "reviewed-plots";
+            public static final String REVIEWED_PLOT = INFO + "reviewed-plots";
             public static final String UNREVIEWED_PLOT = INFO + "unreviewed-plot";
             public static final String UNREVIEWED_PLOTS = INFO + "unreviewed-plots";
             public static final String UNFINISHED_PLOT = INFO + "unfinished-plot";
@@ -156,10 +155,13 @@ public class LangPaths {
             public static final String ENABLED_PLOT_PERMISSIONS = INFO + "enabled-build-permissions";
             public static final String DISABLED_PLOT_PERMISSIONS = INFO + "disabled-build-permissions";
             public static final String UPDATED_PLOT_FEEDBACK = INFO + "updated-plot-feedback";
-            public static final String CLICK_TO_OPEN_FEEDBACK = INFO + "click-to-open-feedback";
-            public static final String CLICK_TO_OPEN_REVIEW = INFO + "click-to-open-review";
+            public static final String CLICK_TO_OPEN_LINK = INFO + "click-to-open-link";
+            public static final String CLICK_TO_SHOW_FEEDBACK = INFO + "click-to-show-feedback";
+            public static final String CLICK_TO_SHOW_OPEN_REVIEWS = INFO + "click-to-show-open-reviews";
+            public static final String CLICK_TO_SHOW_PLOTS = INFO + "click-to-show-plots";
             public static final String REMOVED_PLOT_MEMBER = INFO + "removed-plot-member";
             public static final String LEFT_PLOT = INFO + "left-plot";
+            public static final String WANT_TO_PLAY_WITH_FRIENDS = INFO + "want-to-play-with-friends";
         }
 
         public static final class Error {

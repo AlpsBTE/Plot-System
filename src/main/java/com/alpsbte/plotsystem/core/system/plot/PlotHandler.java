@@ -30,6 +30,8 @@ import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -153,9 +155,9 @@ public class PlotHandler {
         tc[1] = new TextComponent();
         tc[2] = new TextComponent();
 
-        tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link....");
-        tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link....");
-        tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link....");
+        tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_OPEN_LINK, "Google Maps"));
+        tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_OPEN_LINK, "Google Earth Web"));
+        tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_OPEN_LINK, "Open Street Map"));
 
         try {
             tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
@@ -165,9 +167,9 @@ public class PlotHandler {
             Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", ex);
         }
 
-        tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Maps").create()));
-        tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Earth Web").create()));
-        tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Open Street Map").create()));
+        tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Maps").create()));
+        tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Earth Web").create()));
+        tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Open Street Map").create()));
 
         // Temporary fix for bedrock players
         String coords = null;
@@ -194,26 +196,27 @@ public class PlotHandler {
         try {
             if (plot.getPlotMembers().size() == 0) {
                 TextComponent tc = new TextComponent();
-                tc.setText("§7§l> §7Want to play with your friends? Click §aHere....");
+                tc.setText("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.WANT_TO_PLAY_WITH_FRIENDS));
                 tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
-                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Manage Plot Members...").create()));
+                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(player, LangPaths.Plot.MEMBERS)).create()));
 
                 player.spigot().sendMessage(tc);
                 player.sendMessage("§8--------------------------");
             }
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", e);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
     public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
         player.sendMessage("§8--------------------------");
         for(Plot plot : plots) {
-            player.sendMessage("§7§l> §aYour plot with the ID §6#" + plot.getID() + " §ahas been reviewed!");
+            player.sendMessage("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
             TextComponent tc = new TextComponent();
-            tc.setText("§6Click Here §ato check your feedback.");
+            tc.setText(LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_SHOW_FEEDBACK));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Plot Feedback").create()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
+                    LangUtil.get(player, LangPaths.Plot.PLOT_NAME + " " + LangUtil.get(player, LangPaths.Review.FEEDBACK))).create()));
             player.spigot().sendMessage(tc);
 
             if(plots.size() != plots.indexOf(plot) + 1) {
@@ -225,25 +228,23 @@ public class PlotHandler {
     }
 
     public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-        player.sendMessage("§7§l> §aYou have §6" + plots.size() + " §aunfinished plot" + (plots.size() <= 1 ? "!" : "s!"));
+        player.sendMessage("§7§l> " + LangUtil.get(player, (plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS) + "!"));
         TextComponent tc = new TextComponent();
-        tc.setText("§6Click Here §ato open your plots menu.");
+        tc.setText(LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_SHOW_PLOTS));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show Plots").create()));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(player, LangPaths.MenuTitle.SHOW_PLOTS)).create()));
         player.spigot().sendMessage(tc);
     }
 
     public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
-        if(plots.size() <= 1) {
-            player.sendMessage("§7§l> §aThere is §6" + plots.size() + " §aunreviewed plot!");
-        } else {
-            player.sendMessage("§7§l> §aThere are §6" + plots.size() + " §aunreviewed plots!");
-        }
+        player.sendMessage("§7§l> " + LangUtil.get(player, plots.size() <= 1 ?
+                LangPaths.Message.Info.UNREVIEWED_PLOT :
+                LangPaths.Message.Info.UNREVIEWED_PLOTS, String.valueOf(plots.size())));
 
         TextComponent tc = new TextComponent();
-        tc.setText("§6Click Here §ato open the review menu.");
+        tc.setText(LangUtil.get(player, LangPaths.Message.Info.CLICK_TO_SHOW_OPEN_REVIEWS));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Show unreviewed plots").create()));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(player, LangPaths.MenuTitle.SHOW_PLOTS)).create()));
         player.spigot().sendMessage(tc);
     }
 }
