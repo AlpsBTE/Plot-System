@@ -45,7 +45,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -153,38 +152,28 @@ public class PlotWorld implements IPlotWorld {
     @Override
     public boolean teleportPlayer(Player player) {
         if (loadWorld()) {
+            try {
                 player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-            long teleportDelay = isWorldGenerated() ? 0 : 10;
-            new BukkitRunnable() {
-                int counter = 0;
-                public void run(){
-                    counter++;
-                    if (isWorldGenerated() || counter == teleportDelay) {
-                        this.cancel();
-                        try {
-                            player.teleport(getSpawnPoint());
-                            player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
-                            player.setAllowFlight(true);
-                            player.setFlying(true);
+                player.teleport(getSpawnPoint());
+                player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
+                player.setAllowFlight(true);
+                player.setFlying(true);
 
-                            player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-                            if(player.hasPermission("plotsystem.review")) {
-                                player.getInventory().setItem(7, ReviewMenu.getMenuItem());
-                            }
-
-                            PlotHandler.sendLinkMessages(plot, player);
-                            PlotHandler.sendGroupTipMessage(plot, player);
-
-                            if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                                plot.setLastActivity(false);
-                            }
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                        }
-                    }
+                player.getInventory().setItem(8, CompanionMenu.getMenuItem());
+                if(player.hasPermission("plotsystem.review")) {
+                    player.getInventory().setItem(7, ReviewMenu.getMenuItem());
                 }
-            }.runTaskTimer(PlotSystem.getPlugin(), 0, teleportDelay);
+
+                PlotHandler.sendLinkMessages(plot, player);
+                PlotHandler.sendGroupTipMessage(plot, player);
+
+                if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                    plot.setLastActivity(false);
+                }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            }
             return true;
         } else player.sendMessage(Utils.getErrorMessageFormat("Could not load plot world. Please try again!"));
         return false;

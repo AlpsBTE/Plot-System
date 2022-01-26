@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -85,29 +85,27 @@ public abstract class AbstractPlotGenerator {
         this.builder = builder;
 
         if (init()) {
-            Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-                Exception exception = null;
-                try {
-                    generateWorld();
-                    generateOutlines(plot.getOutlinesSchematic());
-                    createMultiverseWorld();
-                    configureWorld(worldManager.getMVWorld(plot.getWorld().getBukkitWorld()));
-                    createProtection();
-                } catch (Exception ex) {
-                    exception = ex;
-                }
+            Exception exception = null;
+            try {
+                generateWorld();
+                generateOutlines(plot.getOutlinesSchematic());
+                createMultiverseWorld();
+                configureWorld(worldManager.getMVWorld(plot.getWorld().getBukkitWorld()));
+                createProtection();
+            } catch (Exception ex) {
+                exception = ex;
+            }
 
-                try {
-                    this.onComplete(exception != null);
-                } catch (SQLException ex) {
-                    exception = ex;
-                }
+            try {
+                this.onComplete(exception != null);
+            } catch (SQLException ex) {
+                exception = ex;
+            }
 
-                if (exception != null) {
-                    if (worldManager.isMVWorld(plot.getWorld().getWorldName())) PlotHandler.abandonPlot(plot);
-                    onException(exception);
-                }
-            });
+            if (exception != null) {
+                if (worldManager.isMVWorld(plot.getWorld().getWorldName())) PlotHandler.abandonPlot(plot);
+                onException(exception);
+            }
         }
     }
 
