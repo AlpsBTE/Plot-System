@@ -33,7 +33,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -88,28 +87,6 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         if (!failed) {
             getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
             Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
-        }
-    }
-
-    public static final class RawDefaultPlotGenerator extends DefaultPlotGenerator {
-
-        public RawDefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
-            super(plot, builder);
-        }
-
-        @Override
-        protected void generateOutlines(File plotSchematic) {
-            super.generateOutlines(getPlot().getFinishedSchematic());
-        }
-
-        @Override
-        protected boolean init() {
-            return true;
-        }
-
-        @Override
-        protected void onComplete(boolean failed) throws SQLException {
-            super.onComplete(true); // This code sucks, you know it, and I know it.
         }
     }
 }

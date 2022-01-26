@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -242,14 +241,11 @@ public class Review {
                         plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
                     }
 
-                    // Temporary disabled schematic file deletion TODO: wait for plot.getWorld().loadWorld() till the plot is generated
-                    // Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                    // Server plotServer = plot.getCity().getCountry().getServer();
-                    // if (plotServer.getFTPConfiguration() != null) {
-                    //     FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
-                    // }
-
-                    // TODO: remove build permissions
+                     Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                     Server plotServer = plot.getCity().getCountry().getServer();
+                     if (plotServer.getFTPConfiguration() != null) {
+                         FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", true);
+                     }
 
                     DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                             .setValue(review.getPlotID()).executeUpdate();
@@ -259,7 +255,7 @@ public class Review {
 
                     plot.getWorld().unloadWorld(false);
                 }
-            } catch (SQLException ex) {
+            } catch (SQLException | IOException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
         });

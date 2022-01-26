@@ -68,8 +68,6 @@ public class PlotWorld implements IPlotWorld {
         if (!isWorldGenerated()) {
             if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
                new DefaultPlotGenerator(plot, plotOwner);
-            } else if (generator.isAssignableFrom(DefaultPlotGenerator.RawDefaultPlotGenerator.RawDefaultPlotGenerator.class)) {
-                new DefaultPlotGenerator.RawDefaultPlotGenerator(plot, plotOwner);
             } else if (generator.isAssignableFrom(RawPlotGenerator.class)) {
                 new RawPlotGenerator(plot, plotOwner);
             } else return false;
@@ -112,9 +110,28 @@ public class PlotWorld implements IPlotWorld {
     public boolean loadWorld() {
         try {
             // Generate plot if it doesn't exist
-            if (!isWorldGenerated() && (!plot.getFinishedSchematic().exists() || !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class))) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
-                return false;
+            if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
+                new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
+                    @Override
+                    protected void generateOutlines(File plotSchematic) {
+                        super.generateOutlines(plot.getFinishedSchematic());
+                    }
+
+                    @Override
+                    protected boolean init() {
+                        return true;
+                    }
+
+                    @Override
+                    protected void onComplete(boolean failed) throws SQLException {
+                        plot.getPermissions().clearAllPerms();
+                        super.onComplete(true); // This code sucks
+                    }
+                };
+                if (!isWorldGenerated() || !isWorldLoaded()) {
+                    Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
+                    return false;
+                }
             } else if (isWorldGenerated())
                 return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
             return true;
