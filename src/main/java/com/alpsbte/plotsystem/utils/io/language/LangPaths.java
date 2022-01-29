@@ -11,6 +11,7 @@ public class LangPaths {
         public static final String ID = PLOT + "id";
         public static final String OWNER = PLOT + "owner";
         public static final String MEMBERS = PLOT + "members";
+        public static final String MEMBER = PLOT + "member";
         public static final String CITY = PLOT + "city";
         public static final String DIFFICULTY = PLOT + "difficulty";
         public static final String STATUS = PLOT + "status";
@@ -71,6 +72,7 @@ public class LangPaths {
         public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
         public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
         public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
+        public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
     }
 
     public static final class MenuDescription {
@@ -140,6 +142,15 @@ public class LangPaths {
             public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
         }
+
+        public static final class Anvil {
+            private static final String ANVIL = NOTES + "anvil.";
+            public static final String PLAYER_IS_OWNER = ANVIL + "player-is-owner";
+            public static final String PLAYER_ALREADY_ADDED = ANVIL + "player-already-added";
+            public static final String PLAYER_NOT_ONLINE = ANVIL + "player-not-online";
+            public static final String INVALID_INPUT = ANVIL + "invalid-input";
+            public static final String ENTER_PLAYER_NAME = ANVIL + "enter-player-name";
+        }
     }
 
     public static final class Message {
@@ -185,7 +196,7 @@ public class LangPaths {
             public static final String PLAYER_HAS_NO_INVITATIONS = ERROR + "player-has-no-invitations";
             public static final String PLAYER_IS_NOT_ALLOWED = ERROR + "player-is-not-allowed";
             public static final String PLAYER_IS_PLOT_OWNER = ERROR + "player-is-plot-owner";
-            public static final String PLAYER_IS_NOT_MEMBER = ERROR + "player-is-plot-member";
+            public static final String PLAYER_IS_PLOT_MEMBER = ERROR + "player-is-plot-member";
             public static final String PLAYER_IS_NOT_ONLINE = ERROR + "player-is-not-online";
             public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
             public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";

@@ -20,6 +20,7 @@ plot:
   id: 'ID'
   owner: 'Plot Owner'
   members: 'Plot Members'
+  member: 'Plot Member'
   city: 'City'
   difficulty: 'Difficulty'
   status: 'Status'
@@ -80,6 +81,7 @@ menu-title:
   player-plots: '{0}&#39;s Plots'
   leave-plot: 'Leave Plot'
   review-plots: 'Review Plots'
+  enter-player-name: 'Enter player name'
 
 
 # -----------------------------------------------------
@@ -149,7 +151,13 @@ note:
     click-to-show-open-reviews: '§6Click Here §ato show open reviews...'
     click-to-show-plots: '§6Click Here §ato show your plots...'
     click-to-play-with-friends: '§7Want to play with your friends? §6Click Here...'
-
+  # NOTE: Try to keep it as short as possible
+  anvil:
+    player-is-owner: 'Player is already the owner!'
+    player-already-added: 'Player already added!'
+    player-not-online: 'Player is not online!'
+    invalid-input: 'Invalid input!'
+    enter-player-name: 'Player Name...'
 
 # -----------------------------------------------------
 # | Messages
