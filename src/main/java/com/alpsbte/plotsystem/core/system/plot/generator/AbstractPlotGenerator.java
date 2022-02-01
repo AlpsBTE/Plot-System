@@ -164,7 +164,8 @@ public abstract class AbstractPlotGenerator {
                 Operations.complete(operation);
                 editSession.flushQueue();
 
-                plot.getWorld().getBukkitWorld().setSpawnLocation(plot.getWorld().getSpawnPoint());
+                Location spawnLocation = plot.getWorld().getSpawnPoint();
+                if (spawnLocation != null) plot.getWorld().getBukkitWorld().setSpawnLocation(spawnLocation);
             }
         } catch (IOException | WorldEditException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);

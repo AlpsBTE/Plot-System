@@ -168,11 +168,12 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean teleportPlayer(Player player) {
-        if (loadWorld()) {
+        Location spawnLocation;
+        if (loadWorld() && (spawnLocation = getSpawnPoint()) != null) {
             try {
                 player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-                player.teleport(getSpawnPoint());
+                player.teleport(spawnLocation);
                 player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
                 player.setAllowFlight(true);
                 player.setFlying(true);
@@ -198,15 +199,18 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public Location getSpawnPoint() {
-        Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
-                PlotManager.getPlotCenter().getX() + 0.5,
-                30,
-                PlotManager.getPlotCenter().getZ() + 0.5,
-                -90,
-                90);
-        // Set spawn point 1 block above the highest center point
-        spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-        return spawnLocation;
+        if (getBukkitWorld() != null) {
+            Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
+                    PlotManager.getPlotCenter().getX() + 0.5,
+                    30,
+                    PlotManager.getPlotCenter().getZ() + 0.5,
+                    -90,
+                    90);
+            // Set spawn point 1 block above the highest center point
+            spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+            return spawnLocation;
+        }
+        return null;
     }
 
     @Override
