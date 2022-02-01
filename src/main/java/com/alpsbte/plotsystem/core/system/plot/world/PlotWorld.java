@@ -132,9 +132,9 @@ public class PlotWorld implements IPlotWorld {
                     Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
                     return false;
                 }
+                return true;
             } else if (isWorldGenerated())
                 return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
-            return true;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
