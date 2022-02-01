@@ -442,7 +442,7 @@ public class Plot implements IPlot {
             if (slot != null) {
                 member.removePlot(slot);
             }
-            getPermissions().removeBuilderPerms(member.getUUID());
+            if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
         }
     }
 

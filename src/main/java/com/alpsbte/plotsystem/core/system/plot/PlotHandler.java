@@ -72,49 +72,47 @@ public class PlotHandler {
     }
 
     public static boolean abandonPlot(Plot plot) {
-        try {
-            if (plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
-                for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                    player.teleport(Utils.getSpawnLocation());
-                }
+        if (plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
+            for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                player.teleport(Utils.getSpawnLocation());
+            }
 
-                if (plot.getWorld().deleteWorld()) {
+            if (!plot.getWorld().deleteWorld()) {
+                Bukkit.getLogger().log(Level.SEVERE, "Failed to delete plot world with the ID " + plot.getID() + "!");
+                return false;
+            }
+        }
+
+        try {
+            CompletableFuture.runAsync(() -> {
+                try {
                     for (Builder builder : plot.getPlotMembers()) {
                         plot.removePlotMember(builder);
                     }
 
-                    try {
-                        CompletableFuture.runAsync(() -> {
-                            try {
-                                if (plot.isReviewed()) {
-                                    DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
-                                            .setValue(plot.getID()).executeUpdate();
+                    if (plot.isReviewed()) {
+                        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                                .setValue(plot.getID()).executeUpdate();
 
-                                    DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                                            .setValue(plot.getReview().getReviewID()).executeUpdate();
-                                }
-
-                                plot.getPlotOwner().removePlot(plot.getSlot());
-                                plot.setPlotOwner(null);
-                                plot.setLastActivity(true);
-                                plot.setTotalScore(-1);
-                                plot.setStatus(Status.unclaimed);
-                            } catch (SQLException ex) {
-                                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                                throw new CompletionException(ex);
-                            }
-                        }).join();
-                    } catch (CompletionException ex) {
-                        return false;
+                        DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                                .setValue(plot.getReview().getReviewID()).executeUpdate();
                     }
-                    return true;
+
+                    plot.getPlotOwner().removePlot(plot.getSlot());
+                    plot.setPlotOwner(null);
+                    plot.setLastActivity(true);
+                    plot.setTotalScore(-1);
+                    plot.setStatus(Status.unclaimed);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    throw new CompletionException(ex);
                 }
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }).join();
+        } catch (CompletionException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
+            return false;
         }
-        Bukkit.getLogger().log(Level.WARNING, "Failed to abandon plot with the ID " + plot.getID() + "!");
-        return false;
+        return true;
     }
 
     public static boolean deletePlot(Plot plot) throws SQLException {
