@@ -28,9 +28,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -46,7 +46,6 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -116,8 +115,9 @@ public class CompanionMenu extends AbstractMenu {
                                     .build())
                             .build());
                 }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            } catch (NullPointerException | SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing player slot items!", ex);
+                getMenu().getSlot(46 + i).setItem(MenuItems.errorItem());
             }
         }
 
@@ -172,49 +172,23 @@ public class CompanionMenu extends AbstractMenu {
                         Builder builder = new Builder(clickPlayer.getUniqueId());
                         int cityID = cityProjects.get(itemSlot).getID();
 
-                        if (builder.getFreeSlot() != null) {
-                            PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
-                            if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
-                                if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
-                                    clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need a higher score to build in this difficulty level."));
-                                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                                    return;
-                                }
-
-                                if (PlotGenerator.playerPlotGenerationHistory.containsKey(builder.getUUID())) {
-                                    if (PlotGenerator.playerPlotGenerationHistory.get(builder.getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
-                                        PlotGenerator.playerPlotGenerationHistory.remove(builder.getUUID());
-                                    } else {
-                                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("Please wait few seconds before creating a new plot!"));
-                                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                                        return;
-                                    }
-                                }
-
-                                clickPlayer.sendMessage(Utils.getInfoMessageFormat("Creating a new plot..."));
-                                clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
-
-                                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                                    try {
-                                        new PlotGenerator(cityID, plotDifficultyForCity, builder);
-                                    } catch (SQLException ex) {
-                                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again or contact a staff member."));
-                                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                                    }
-                                });
-                            } else {
-                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
+                        PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
+                        if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
+                            if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
+                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("You need a higher score to build in this difficulty level."));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                                return;
                             }
+
+                            new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
                         } else {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat("This city project doesn't have any more plots left. Please select another project."));
                             clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                         }
                     } catch (SQLException | ExecutionException | InterruptedException ex) {
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An internal error occurred! Please try again!"));
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("An error occurred! Please try again!"));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "An internal error occurred!", ex);
                     }
                 } else {
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);

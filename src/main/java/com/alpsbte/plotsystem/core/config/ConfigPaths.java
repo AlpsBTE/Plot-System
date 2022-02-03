@@ -26,10 +26,17 @@ package com.alpsbte.plotsystem.core.config;
 
 public abstract class ConfigPaths {
 
+    // General Behaviour
     public static final String SPAWN_WORLD = "spawn-world";
     public static final String CHECK_FOR_UPDATES = "check-for-updates";
     public static final String ENABLE_SCORE_REQUIREMENT = "enable-score-requirement";
     public static final String DEV_MODE = "dev-mode";
+    public static final String INACTIVITY_INTERVAL = "inactivity-interval";
+    public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
+
+    private static final String SYNC_FTP_FILES = "sync-ftp-files.";
+    public static final String SYNC_FTP_FILES_ENABLED = SYNC_FTP_FILES + "enabled";
+    public static final String SYNC_FTP_FILES_INTERVAL = SYNC_FTP_FILES + "sync-interval";
 
 
     // Database

@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
-import com.alpsbte.plotsystem.core.system.plot.PlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
@@ -34,20 +33,19 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -59,6 +57,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.TrapDoor;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,15 +83,20 @@ public class EventListener extends SpecialBlocks implements Listener {
                 }
             }
 
-            if(!event.getPlayer().hasPlayedBefore()) {
-                try {
-                    DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
-                            .setValue(event.getPlayer().getUniqueId().toString())
-                            .setValue(event.getPlayer().getName())
-                            .executeUpdate();
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            // Check if player even exists in database.
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
+                    .setValue(event.getPlayer().getUniqueId().toString()).executeQuery()) {
+
+                if(!rs.first()) {
+                        DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
+                                .setValue(event.getPlayer().getUniqueId().toString())
+                                .setValue(event.getPlayer().getName())
+                                .executeUpdate();
                 }
+
+                DatabaseConnection.closeResultSet(rs);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
 
             // Inform player about update
@@ -106,7 +110,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Builder builder = new Builder(event.getPlayer().getUniqueId());
                 if (!builder.getName().equals(event.getPlayer().getName())) {
                     DatabaseConnection.createStatement("UPDATE plotsystem_builders SET name = ? WHERE uuid = ?")
-                            .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId()).executeUpdate();
+                            .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId().toString()).executeUpdate();
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -203,22 +207,33 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent event) throws SQLException {
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
-        }
-        PlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        final World w = event.getPlayer().getWorld();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
+            if(PlotManager.isPlotWorld(w)) {
+                try {
+                    PlotManager.getPlotByWorld(w).getWorld().unloadWorld(false);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                }
+                DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+            }
+        }, 60L);
     }
 
     @EventHandler
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            PlotHandler.unloadPlot(PlotManager.getPlotByWorld(event.getPlayer().getWorld()));
+            PlotManager.getPlotByWorld(event.getFrom().getWorld()).getWorld().unloadWorld(false);
         }
     }
 
     @EventHandler
-    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
+    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
+        if (PlotManager.isPlotWorld(event.getFrom())) {
+            PlotManager.getPlotByWorld(event.getFrom()).getWorld().unloadWorld(false);
+        }
+
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem());
 
@@ -255,10 +270,12 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             if(item.isSimilar(SeamlessSandstone)) {
                 event.getBlockPlaced().setTypeIdAndData(43, (byte) 9, true);
+            } else if(item.isSimilar(SeamlessRedSandstone)) {
+                event.getBlockPlaced().setTypeIdAndData(181, (byte) 12, true);
             } else if(item.isSimilar(SeamlessStone)) {
                 event.getBlockPlaced().setTypeIdAndData(43, (byte) 8, true);
-            } else if(item.isSimilar(MushroomStem)) {
-                event.getBlockPlaced().setTypeIdAndData(99, (byte) 10, true);
+            } else if(item.isSimilar(SeamlessMushroomStem)) {
+                event.getBlockPlaced().setTypeIdAndData(99, (byte) 15, true);
             } else if(item.isSimilar(LightBrownMushroom)) {
                 event.getBlockPlaced().setTypeIdAndData(99, (byte) 0, true);
             } else if(item.isSimilar(BarkOakLog)) {

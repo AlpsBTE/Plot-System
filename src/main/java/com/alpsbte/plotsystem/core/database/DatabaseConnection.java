@@ -49,8 +49,10 @@ public class DatabaseConnection {
     private static String username;
     private static String password;
 
+    private static int connectionClosed, connectionOpened;
+
     public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
-        Class.forName("org.mariadb.jdbc.Driver"); // TODO: Add Support MySQL Driver
+        Class.forName("org.mariadb.jdbc.Driver");
 
         FileConfiguration configFile = PlotSystem.getPlugin().getConfigManager().getConfig();
         URL = configFile.getString(ConfigPaths.DATABASE_URL);
@@ -90,10 +92,27 @@ public class DatabaseConnection {
         return new StatementBuilder(sql);
     }
 
+    public static void closeResultSet(ResultSet resultSet) throws SQLException {
+        if(resultSet.isClosed()
+        && resultSet.getStatement().isClosed()
+        && resultSet.getStatement().getConnection().isClosed())
+            return;
+
+        resultSet.close();
+        resultSet.getStatement().close();
+        resultSet.getStatement().getConnection().close();
+
+        connectionClosed++;
+
+        if(connectionOpened > connectionClosed + 5)
+            Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
+    }
+
     private static void createDatabase() throws SQLException {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
-            Statement statement = con.createStatement();
-            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+            try (Statement statement = con.createStatement()) {
+                statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+            }
         }
     }
 
@@ -103,12 +122,13 @@ public class DatabaseConnection {
                 Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
             }
 
-            ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery();
-            if (rs.next()) {
-                if (rs.getInt(1) == 0) {
-                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
-                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
-                    con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+            try (ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery()) {
+                if (rs.next()) {
+                    if (rs.getInt(1) == 0) {
+                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
+                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
+                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -125,11 +145,16 @@ public class DatabaseConnection {
         try {
             String query ="SELECT id + 1 available_id FROM $table t WHERE NOT EXISTS (SELECT * FROM $table WHERE $table.id = t.id + 1) ORDER BY id LIMIT 1"
                     .replace("$table", table);
-            ResultSet rs = DatabaseConnection.createStatement(query).executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+            try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+                if (rs.next()) {
+                    int i = rs.getInt(1);
+                    DatabaseConnection.closeResultSet(rs);
+                    return i;
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+                return 1;
             }
-            return 1;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return 1;
@@ -145,21 +170,25 @@ public class DatabaseConnection {
         }
 
         public StatementBuilder setValue(Object value) {
-            values.add(value);
+            values.add(value instanceof Boolean ? ((boolean) value ? 1 : 0) : value);
             return this;
         }
 
         public ResultSet executeQuery() throws SQLException {
-            try (Connection con = dataSource.getConnection()) {
-                PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
-                return iterateValues(ps).executeQuery();
-            }
+            Connection con = dataSource.getConnection();
+            PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
+            ResultSet rs = iterateValues(ps).executeQuery();
+
+            connectionOpened++;
+
+            return rs;
         }
 
         public void executeUpdate() throws SQLException {
             try (Connection con = dataSource.getConnection()) {
-                PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql);
-                iterateValues(ps).executeUpdate();
+                try (PreparedStatement ps = Objects.requireNonNull(con).prepareStatement(sql)) {
+                    iterateValues(ps).executeUpdate();
+                }
             }
         }
 
@@ -183,11 +212,12 @@ public class DatabaseConnection {
                     // FTP Configurations
                     "CREATE TABLE IF NOT EXISTS `plotsystem_ftp_configurations`" +
                             "(" +
-                            " `id`       int NOT NULL AUTO_INCREMENT ," +
-                            " `address`  varchar(255) NOT NULL ," +
-                            " `port`     int NOT NULL ," +
-                            " `username` varchar(255) NOT NULL ," +
-                            " `password` varchar(255) NOT NULL ," +
+                            " `id`              int NOT NULL AUTO_INCREMENT ," +
+                            " `address`         varchar(255) NOT NULL ," +
+                            " `port`            int NOT NULL ," +
+                            " `isSFTP`          tinyint NOT NULL DEFAULT 1 ," +
+                            " `username`        varchar(255) NOT NULL ," +
+                            " `password`        varchar(255) NOT NULL ," +
                             " `schematics_path` varchar(255) NULL ," +
                             "PRIMARY KEY (`id`)" +
                             ");",
@@ -198,7 +228,6 @@ public class DatabaseConnection {
                             " `id`                   int NOT NULL AUTO_INCREMENT ," +
                             " `ftp_configuration_id` int NULL ," +
                             " `name`                 varchar(45) NOT NULL ," +
-                            " `schematic_path`       varchar(255) NULL ," +
                             "PRIMARY KEY (`id`)," +
                             "KEY `fkIdx_30` (`ftp_configuration_id`)," +
                             "CONSTRAINT `FK_29` FOREIGN KEY `fkIdx_30` (`ftp_configuration_id`) REFERENCES `plotsystem_ftp_configurations` (`id`)" +

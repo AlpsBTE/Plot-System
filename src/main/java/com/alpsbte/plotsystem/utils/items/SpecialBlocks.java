@@ -41,6 +41,17 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
+    public static ItemStack SeamlessRedSandstone = new ItemBuilder(Material.RED_SANDSTONE, 1, (byte) 2)
+            .setName("§6§lSeamless Red Sandstone").setLore(new LoreBuilder()
+                    .emptyLine()
+                    .addLines("Use this tool to place a §fSeamless Red Sandstone§7 block.",
+                            "",
+                            "§7ID: §b181:12")
+                    .emptyLine()
+                    .build())
+            .setEnchantment(true)
+            .build();
+
     public static ItemStack SeamlessStone = new ItemBuilder(Material.STONE, 1)
             .setName("§6§lSeamless Stone").setLore(new LoreBuilder()
                 .emptyLine()
@@ -68,18 +79,18 @@ public class SpecialBlocks {
                 .emptyLine()
                 .addLines("Use this tool to place a §fBrown Mushroom§7 block.",
                         "",
-                        "§7ID: §b99")
+                        "§7ID: §b99:14")
                 .emptyLine()
             .build())
             .setEnchantment(true)
             .build();
 
-    public static ItemStack MushroomStem = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
-            .setName("§6§lMushroom Stem Block").setLore(new LoreBuilder()
+    public static ItemStack SeamlessMushroomStem = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
+            .setName("§6§lSeamless Mushroom Stem Block").setLore(new LoreBuilder()
                 .emptyLine()
-                .addLines("Use this tool to place a §fMushroom Stem§7 block.",
+                .addLines("Use this tool to place a §fSeamless Mushroom Stem§7 block.",
                           "",
-                          "§7ID: §b99:10")
+                          "§7ID: §b99:15")
                 .emptyLine()
             .build())
             .setEnchantment(true)
@@ -90,7 +101,7 @@ public class SpecialBlocks {
                 .emptyLine()
                 .addLines("Use this tool to place a §fLight Brown Mushroom§7 block.",
                           "",
-                          "§7ID: §b99:0")
+                          "§7ID: §b99:11")
                 .emptyLine()
             .build())
             .setEnchantment(true)

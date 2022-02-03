@@ -20,13 +20,16 @@ public class Difficulty {
     public Difficulty(int ID) throws SQLException {
         this.ID = ID;
 
-        ResultSet rs = DatabaseConnection.createStatement("SELECT name, multiplier, score_requirment FROM plotsystem_difficulties WHERE id = ?")
-                .setValue(this.ID).executeQuery();
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, multiplier, score_requirment FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
-        if (rs.next()) {
-            this.difficulty = PlotDifficulty.valueOf(rs.getString(1));
-            this.multiplier = rs.getDouble(2);
-            this.scoreRequirement = rs.getInt(3);
+            if (rs.next()) {
+                this.difficulty = PlotDifficulty.valueOf(rs.getString(1));
+                this.multiplier = rs.getDouble(2);
+                this.scoreRequirement = rs.getInt(3);
+            }
+
+            DatabaseConnection.closeResultSet(rs);
         }
     }
 
@@ -47,13 +50,14 @@ public class Difficulty {
     }
 
     public static List<Difficulty> getDifficulties() {
-        try {
-            ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_difficulties").executeQuery();
-
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_difficulties").executeQuery()) {
             List<Difficulty> difficulties = new ArrayList<>();
             while (rs.next()) {
                 difficulties.add(new Difficulty(rs.getInt(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return difficulties;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
