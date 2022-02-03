@@ -181,6 +181,8 @@ public class LangPaths {
             public static final String PLOT_WILL_GET_ABANDONED = INFO + "plot-will-get-abandoned-warning";
             public static final String PLOT_WILL_GET_REJECTED = INFO + "plot-will-get-rejected-warning";
             public static final String SAVING_PLOT = INFO + "saving-plot";
+            public static final String CREATING_PLOT = INFO + "creating-plot";
+            public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
         }
 
         public static final class Error {
@@ -212,6 +214,8 @@ public class LangPaths {
             public static final String ERROR_OCCURRED = ERROR + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR + "command-disabled";
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
+            public static final String PLEASE_WAIT = ERROR + "please-wait";
+            public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
         }
     }
 

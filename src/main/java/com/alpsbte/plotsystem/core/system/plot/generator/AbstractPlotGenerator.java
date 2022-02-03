@@ -33,6 +33,8 @@ import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.BlockVector;
@@ -289,7 +291,7 @@ public abstract class AbstractPlotGenerator {
      */
     protected void onException(Throwable ex) {
         Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
-        builder.getPlayer().sendMessage(Utils.getErrorMessageFormat("An error occurred while generating plot! Please try again!"));
+        builder.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
     }
 

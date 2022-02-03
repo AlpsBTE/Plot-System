@@ -188,6 +188,8 @@ message:
     plot-will-get-abandoned-warning: '§c§lWARNING: §cThis plot will automatically get abandoned!'
     plot-will-get-rejected-warning: '§c§lWARNING: §cThis plot will get rejected!'
     saving-plot: 'Saving plot...'
+    creating-plot: 'Creating new plot...'
+    created-new-plot: 'Created new plot§a for §6{0}§a!'
   errors:
     plot-does-not-exist: 'This plot does not exist!'
     plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
@@ -216,6 +218,8 @@ message:
     error-occurred: 'An error occurred! Please try again!'
     command-disabled: 'This command is disabled!'
     no-plots-left: 'This city project does not have any more plots left. Please select another project.'
+    please-wait: 'Please wait a few seconds before creating a new plot!'
+    all-slots-occupied: 'All your slots are occupied! Please finish your current plots before creating a new one.'
 
 
 
