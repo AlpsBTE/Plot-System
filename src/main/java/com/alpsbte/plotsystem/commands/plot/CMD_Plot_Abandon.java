@@ -64,10 +64,10 @@ public class CMD_Plot_Abandon extends SubCommand {
 
             if (plot.getStatus() == Status.unfinished) {
                 if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
-                    PlotHandler.abandonPlot(plot);
-
-                    sender.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
-                    if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.AbandonPlotSound, 1, 1);
+                    if (PlotHandler.abandonPlot(plot)) {
+                        sender.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
+                        if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.AbandonPlotSound, 1, 1);
+                    } else sender.sendMessage(Utils.getErrorMessageFormat("An unexpected error has occurred!"));
                 } else {
                     sender.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
                 }

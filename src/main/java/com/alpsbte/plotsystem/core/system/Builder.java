@@ -63,8 +63,13 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getString(1);
+                String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return s;
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return getPlayer() != null ? getPlayer().getName() : "";
         }
     }
@@ -74,8 +79,12 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -85,8 +94,12 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                return rs.getInt(1);
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return 0;
         }
     }
@@ -98,10 +111,13 @@ public class Builder {
             if (rs.next()) {
                 for(int i = 1; i <= 3; i++) {
                     if(rs.getString(i) == null) {
+                        DatabaseConnection.closeResultSet(rs);
                         return Slot.values()[i - 1];
                     }
                 }
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -112,7 +128,11 @@ public class Builder {
 
             int plotID = -1;
             if (rs.next()) plotID = rs.getInt(1);
-            return rs.wasNull() ? null : new Plot(plotID);
+
+            boolean boo = rs.wasNull();
+            DatabaseConnection.closeResultSet(rs);
+
+            return boo ? null : new Plot(plotID);
         }
     }
 
@@ -151,8 +171,12 @@ public class Builder {
                 .setValue(name).executeQuery()) {
 
             if (rs.next()) {
-                return new Builder(java.util.UUID.fromString(rs.getString(1)));
+                String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return new Builder(java.util.UUID.fromString(s));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
@@ -165,6 +189,8 @@ public class Builder {
             while (rs.next()) {
                 scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return scoreAsFormat;
         }
     }
@@ -177,6 +203,8 @@ public class Builder {
             while (rs.next()) {
                 scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
             }
+
+            DatabaseConnection.closeResultSet(rs);
             return scoreAsFormat;
         }
     }

@@ -152,11 +152,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            try {
-                PlotHandler.teleportPlayer(plot, clickPlayer);
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+            plot.getWorld().teleportPlayer(clickPlayer);
         });
 
         // Set click event for abandon plot item

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,14 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -43,14 +42,13 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
-
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
     public DefaultPlotGenerator(int cityID, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
         this(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
-    public DefaultPlotGenerator(Plot plot, Builder builder) {
+    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
         super(plot, builder);
     }
 
@@ -87,14 +85,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed);
 
         if (!failed) {
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                try {
-                    PlotHandler.teleportPlayer(getPlot(), getBuilder().getPlayer());
-                    Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            });
+            getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
+            Bukkit.broadcastMessage(Utils.getInfoMessageFormat("Created new plot§a for §6" + getPlot().getPlotOwner().getName() + "§a!"));
         }
     }
 }

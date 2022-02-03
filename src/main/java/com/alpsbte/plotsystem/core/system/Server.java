@@ -31,6 +31,8 @@ public class Server {
 
                 this.name = rs.getString(2);
             }
+
+            DatabaseConnection.closeResultSet(rs);
         }
     }
 
@@ -52,6 +54,9 @@ public class Server {
             while (rs.next()) {
                 servers.add(new Server(rs.getInt(1)));
             }
+
+            DatabaseConnection.closeResultSet(rs);
+
             return servers;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

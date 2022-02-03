@@ -24,71 +24,43 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.io.FileUtils;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.logging.Level;
 
 public class PlotHandler {
 
-    public static void teleportPlayer(Plot plot, Player player) throws SQLException {
-        player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
-
-        loadPlot(plot);
-        player.teleport(getPlotSpawnPoint(plot));
-
-        player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
-        player.setAllowFlight(true);
-        player.setFlying(true);
-
-        player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-
-        if(player.hasPermission("plotsystem.review")) {
-            player.getInventory().setItem(7, ReviewMenu.getMenuItem());
-        }
-
-        sendLinkMessages(plot, player);
-
-        if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
-            plot.setLastActivity(false);
-        }
-    }
-
     public static void submitPlot(Plot plot) throws SQLException {
         plot.setStatus(Status.unreviewed);
 
-        if(plot.getPlotWorld() != null) {
-            for(Player player : plot.getPlotWorld().getPlayers()) {
+        if(plot.getWorld().isWorldLoaded()) {
+            for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnLocation());
             }
         }
 
-        plot.removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
         if (plot.getPlotMembers().size() != 0) {
             for (Builder builder : plot.getPlotMembers()) {
-                plot.removeBuilderPerms(builder.getUUID());
+                plot.getPermissions().removeBuilderPerms(builder.getUUID());
             }
         }
     }
@@ -96,29 +68,29 @@ public class PlotHandler {
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.addBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
-    public static void abandonPlot(Plot plot) {
+    public static boolean abandonPlot(Plot plot) {
+        if (plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
+            for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                player.teleport(Utils.getSpawnLocation());
+            }
+
+            if (!plot.getWorld().deleteWorld()) {
+                Bukkit.getLogger().log(Level.SEVERE, "Failed to delete plot world with the ID " + plot.getID() + "!");
+                return false;
+            }
+        }
+
         try {
-            if (PlotManager.plotExists(plot.getID())) {
-                loadPlot(plot); // Load Plot to be listed by Multiverse
-
-                for (Player player : plot.getPlotWorld().getPlayers()) {
-                    player.teleport(Utils.getSpawnLocation());
-                }
-
-                PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().deleteWorld(plot.getWorldName(), true, true);
-                PlotSystem.DependencyManager.getMultiverseCore().saveWorldConfig();
-            }
-
-            for (Builder builder : plot.getPlotMembers()) {
-                plot.removePlotMember(builder);
-            }
-
             CompletableFuture.runAsync(() -> {
                 try {
-                    if(plot.isReviewed()) {
+                    for (Builder builder : plot.getPlotMembers()) {
+                        plot.removePlotMember(builder);
+                    }
+
+                    if (plot.isReviewed()) {
                         DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                                 .setValue(plot.getID()).executeUpdate();
 
@@ -129,74 +101,48 @@ public class PlotHandler {
                     plot.getPlotOwner().removePlot(plot.getSlot());
                     plot.setPlotOwner(null);
                     plot.setLastActivity(true);
-                    plot.setScore(-1);
+                    plot.setTotalScore(-1);
                     plot.setStatus(Status.unclaimed);
-
-                    FileUtils.deleteDirectory(new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorldName())));
-                    FileUtils.deleteDirectory(new File(PlotManager.getWorldGuardConfigPath(plot.getWorldName())));
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A error occurred while deleting plot world and configs!", ex);
+                    throw new CompletionException(ex);
                 }
-            }).exceptionally(ex -> {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot!", ex);
-                return null;
-            });
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }).join();
+        } catch (CompletionException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
+            return false;
         }
+        return true;
     }
 
-    public static void deletePlot(Plot plot) throws SQLException {
-        if (PlotManager.plotExists(plot.getID())) abandonPlot(plot);
-
-        if (CompletableFuture.supplyAsync(() -> {
+    public static boolean deletePlot(Plot plot) throws SQLException {
+        if (plot.getWorld().isWorldGenerated() && abandonPlot(plot)) {
             try {
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        Server plotServer = plot.getCity().getCountry().getServer();
 
-                Server plotServer = plot.getCity().getCountry().getServer();
-                if (plotServer.getFTPConfiguration() != null) {
-                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", false);
-                }
-            } catch (IOException | SQLException | URISyntaxException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                        Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+
+                        if (plotServer.getFTPConfiguration() != null) {
+                            FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", false);
+                        }
+
+                        DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
+                                .setValue(plot.getID()).executeUpdate();
+                    } catch (IOException | SQLException | URISyntaxException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                        throw new CompletionException(ex);
+                    }
+                });
+            } catch (CompletionException ex) {
+                return false;
             }
-            return null;
-        }).whenComplete((result, failed) -> {
-            try {
-                DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
-                        .setValue(plot.getID()).executeUpdate();
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        }).join() == null) throw new SQLException();
-    }
-
-    public static void loadPlot(Plot plot) {
-        if(plot.getPlotWorld() == null) {
-            PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().loadWorld(plot.getWorldName());
+            return true;
         }
-    }
-
-    public static void unloadPlot(Plot plot) {
-        if(plot.getPlotWorld() != null && plot.getPlotWorld().getPlayers().isEmpty()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
-                    Bukkit.unloadWorld(plot.getWorldName(), true)), 60L);
-        }
-    }
-
-    public static Location getPlotSpawnPoint(Plot plot) {
-        Location spawnLocation = new Location(plot.getPlotWorld(),
-                PlotManager.getPlotCenter().getX() + 0.5,
-                30,
-                PlotManager.getPlotCenter().getZ() + 0.5,
-                -90,
-                90);
-        // Set spawn point 1 block above the highest center point
-        spawnLocation.setY(plot.getPlotWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-        return spawnLocation;
+        Bukkit.getLogger().log(Level.WARNING, "Failed to delete plot with the ID " + plot.getID() + "!");
+        return false;
     }
 
     public static void sendLinkMessages(Plot plot, Player player){
@@ -221,11 +167,41 @@ public class PlotHandler {
         tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Earth Web").create()));
         tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Open Street Map").create()));
 
+        // Temporary fix for bedrock players
+        String coords = null;
+        try {
+            String[] coordsSplit = plot.getGeoCoordinates().split(",");
+            double lat = Double.parseDouble(coordsSplit[0]);
+            double lon = Double.parseDouble(coordsSplit[1]);
+            DecimalFormat df = new DecimalFormat("##.#####");
+            df.setRoundingMode(RoundingMode.FLOOR);
+            coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+        }
+
         player.sendMessage("§8--------------------------");
+        if (coords != null) player.sendMessage("§7Coords: " + coords);
         player.spigot().sendMessage(tc[0]);
         player.spigot().sendMessage(tc[1]);
         player.spigot().sendMessage(tc[2]);
         player.sendMessage("§8--------------------------");
+    }
+
+    public static void sendGroupTipMessage(Plot plot, Player player) {
+        try {
+            if (plot.getPlotMembers().size() == 0) {
+                TextComponent tc = new TextComponent();
+                tc.setText("§7§l> §7Want to play with your friends? Click §aHere....");
+                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
+                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Manage Plot Members...").create()));
+
+                player.spigot().sendMessage(tc);
+                player.sendMessage("§8--------------------------");
+            }
+        } catch (SQLException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", e);
+        }
     }
 
     public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
