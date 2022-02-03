@@ -74,7 +74,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                         .build());
 
         // Set special-blocks menu item
-        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
+        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem(getMenuPlayer()));
     }
 
     @Override

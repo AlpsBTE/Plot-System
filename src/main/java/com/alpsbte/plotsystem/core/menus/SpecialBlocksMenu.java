@@ -24,6 +24,8 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
@@ -37,7 +39,7 @@ import org.ipvp.canvas.mask.Mask;
 
 public class SpecialBlocksMenu extends AbstractMenu {
     public SpecialBlocksMenu(Player player) {
-        super(3, "Special Blocks", player);
+        super(3, LangUtil.get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS), player);
     }
 
     @Override
@@ -141,11 +143,11 @@ public class SpecialBlocksMenu extends AbstractMenu {
     /**
      * @return Menu item
      */
-    public static ItemStack getMenuItem() {
+    public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLD_BLOCK ,1)
-                .setName("§b§lSPECIAL BLOCKS")
+                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS).toUpperCase())
                 .setLore(new LoreBuilder()
-                        .addLine("Open the special blocks menu to get a variety of inaccessible blocks.").build())
+                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.SPECIAL_BLOCKS)).build())
                 .build();
     }
 }
