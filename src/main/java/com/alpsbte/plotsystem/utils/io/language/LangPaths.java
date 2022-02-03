@@ -66,12 +66,13 @@ public class LangPaths {
         public static final String SPECIAL_BLOCKS = MENU_TITLES + "special-blocks";
         public static final String REVIEW_POINT = MENU_TITLES + "review-point";
         public static final String REVIEW_POINTS = MENU_TITLES + "review-points";
-        public static final String CANCEL_PLOT = MENU_TITLES + "cancel-plot";
+        public static final String CANCEL = MENU_TITLES + "cancel";
         public static final String ADD_MEMBER_TO_PLOT = MENU_TITLES + "add-member-to-plot";
         public static final String COMPANION = MENU_TITLES + "companion";
         public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
         public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
         public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
+        public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
     }
 
@@ -163,6 +164,8 @@ public class LangPaths {
             public static final String TELEPORTING_TPLL = INFO + "teleporting-tpll";
             public static final String ABANDONED_PLOT = INFO + "abandoned-plot";
             public static final String FINISHED_PLOT = INFO + "finished-plot";
+            public static final String PLOT_MARKED_REVIEWED = INFO + "plot-marked-as-reviewed";
+            public static final String PLOT_REJECTED = INFO + "plot-rejected";
             public static final String UNDID_SUBMISSION = INFO + "undid-submission";
             public static final String UNDID_REVIEW = INFO + "undid-review";
             public static final String REVIEWED_PLOT = INFO + "reviewed-plots";
@@ -175,6 +178,9 @@ public class LangPaths {
             public static final String UPDATED_PLOT_FEEDBACK = INFO + "updated-plot-feedback";
             public static final String REMOVED_PLOT_MEMBER = INFO + "removed-plot-member";
             public static final String LEFT_PLOT = INFO + "left-plot";
+            public static final String PLOT_WILL_GET_ABANDONED = INFO + "plot-will-get-abandoned-warning";
+            public static final String PLOT_WILL_GET_REJECTED = INFO + "plot-will-get-rejected-warning";
+            public static final String SAVING_PLOT = INFO + "saving-plot";
         }
 
         public static final class Error {

@@ -75,12 +75,13 @@ menu-title:
   special-blocks: 'Special Blocks'
   review-point: 'Point'
   review-points: 'Points'
-  cancel-plot: 'Cancel'
+  cancel: 'Cancel'
   add-member-to-plot: 'Add Member to Plot'
   companion: 'Companion'
   player-plots: '{0}&#39;s Plots'
   leave-plot: 'Leave Plot'
   review-plots: 'Review Plots'
+  review-plot: 'Review Plot #{0}'
   enter-player-name: 'Enter player name'
 
 
@@ -170,6 +171,8 @@ message:
     teleporting-tpll: 'Teleporting to §6{0}§a, §6{1}§a...'
     abandoned-plot: 'Abandoned plot with ID §6#{0}§a!'
     finished-plot: 'Plot §6#{0}§a by §6{1}§a has been finished!'
+    plot-marked-as-reviewed: 'Plot §6#{0}§a by §6{1}§a has been marked as reviewed!'
+    plot-rejected: 'Plot §6#{0}§a by §6{1}§a has been rejected! Send feedback using §6/sendFeedback <ID> <TEXT>§a!'
     undid-submission: 'Undid submission of plot §6#{0}§a!'
     undid-review: 'Undid review of plot §6#{0}§a by §6#{1}§a!'
     reviewed-plot: '§aYour plot §6#{0}§a has been reviewed!'
@@ -182,6 +185,9 @@ message:
     updated-plot-feedback: 'Feedback for plot §6#{0}§a has been updated!'
     removed-plot-member: 'Removed §6{0}§a from plot §6#{1}§a!'
     left-plot: 'Left plot §6#{0}§a!'
+    plot-will-get-abandoned-warning: '§c§lWARNING: §cThis plot will automatically get abandoned!'
+    plot-will-get-rejected-warning: '§c§lWARNING: §cThis plot will get rejected!'
+    saving-plot: 'Saving plot...'
   errors:
     plot-does-not-exist: 'This plot does not exist!'
     plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
