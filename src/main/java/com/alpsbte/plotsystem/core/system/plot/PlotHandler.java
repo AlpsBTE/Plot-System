@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Server;
@@ -158,21 +159,21 @@ public class PlotHandler {
 
 
         try {
-            if(PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean("shortlink.enable")) {
+            if(PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_ENABLE)) {
                 tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link or use this link: §o" + Shortlink.generateShortlink(
                         plot.getGoogleMapsLink(),
-                        PlotSystem.getPlugin().getConfigManager().getConfig().getString("shortlink.apikey"),
-                        PlotSystem.getPlugin().getConfigManager().getConfig().getString("shortlink.host")));
+                        PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_APIKEY),
+                        PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_HOST)));
 
                 tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link or use this link: §o" + Shortlink.generateShortlink(
                         plot.getGoogleEarthLink(),
-                        PlotSystem.getPlugin().getConfigManager().getConfig().getString("shortlink.apikey"),
-                        PlotSystem.getPlugin().getConfigManager().getConfig().getString("shortlink.host")));
+                        PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_APIKEY),
+                        PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_HOST)));
 
                 tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link or use this link: §o" + Shortlink.generateShortlink(
                         plot.getOSMMapsLink(),
-                        PlotSystem.getPlugin().getConfigManager().getConfig().getString("shortlink.apikey"),
-                        PlotSystem.getPlugin().getConfigManager().getConfig().getString("shortlink.host")));
+                        PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_APIKEY),
+                        PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK + ConfigPaths.SHORTLINK_HOST)));
             } else {
                 tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link....");
                 tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link....");
@@ -182,8 +183,10 @@ public class PlotHandler {
             tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
             tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
             tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
-        } catch (SQLException | IOException ex) {
+        } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", ex);
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating shortlink!", ex);
         }
 
         tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Google Maps").create()));

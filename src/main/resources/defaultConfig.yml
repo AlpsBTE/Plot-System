@@ -97,7 +97,7 @@ error-colour: §c
 shortlink:
   enable: false
   apikey: yourapi-key
-  host: https://buildthe.earth
+  host: https://your.shortlink.host
 
 # NOTE: Do not change
 config-version: 1.3

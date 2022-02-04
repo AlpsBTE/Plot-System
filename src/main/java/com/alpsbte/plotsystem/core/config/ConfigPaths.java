@@ -80,6 +80,12 @@ public abstract class ConfigPaths {
     public static final String BLOCKED_COMMANDS_BUILDERS = "blocked-commands-builders";
     public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
 
+    // SHORTLINKS
+    public static final String SHORTLINK = "shortlink.";
+    public static final String SHORTLINK_ENABLE = "enable";
+    public static final String SHORTLINK_APIKEY = "apikey";
+    public static final String SHORTLINK_HOST = "host";
+
 
     // CONFIG VERSION
     public static final String CONFIG_VERSION = "config-version";
