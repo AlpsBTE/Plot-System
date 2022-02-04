@@ -34,7 +34,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.logging.Level;
 
-public class CMD_PlotReload extends BaseCommand {
+public class CMD_PReload extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
@@ -60,7 +60,7 @@ public class CMD_PlotReload extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "plotreload" };
+        return new String[] { "preload" };
     }
 
     @Override
@@ -75,6 +75,6 @@ public class CMD_PlotReload extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.plotreload";
+        return "plotsystem.admin.preload";
     }
 }
