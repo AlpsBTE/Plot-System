@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
-import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -401,7 +400,7 @@ public class Plot implements IPlot {
         }
     }
 
-    public Vector getCenter() throws SQLException {
+    public Vector getCenter(){
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
@@ -415,6 +414,9 @@ public class Plot implements IPlot {
             }
 
             DatabaseConnection.closeResultSet(rs);
+            return null;
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;
         }
     }

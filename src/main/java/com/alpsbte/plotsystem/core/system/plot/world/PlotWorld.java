@@ -202,7 +202,7 @@ public class PlotWorld implements IPlotWorld {
         if (getBukkitWorld() != null) {
             Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
                     plot.getCenter().getX() + 0.5,
-                    30,
+                       plot.getCenter().getY(),
                     plot.getCenter().getZ() + 0.5,
                     -90,
                     90);
@@ -220,7 +220,12 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public String getWorldName() {
-        return "P-" + plot.getID();
+        try{
+            return "P-" + plot.getCity().getID();
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return null;
+        }
     }
 
     @Override
