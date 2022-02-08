@@ -406,6 +406,8 @@ public class Plot implements IPlot {
 
             if (rs.next()){
                 String s = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+
                 return Vector.toBlockPoint(
                         Integer.parseInt(s.split(",")[0]),
                         Integer.parseInt(s.split(",")[1]),
