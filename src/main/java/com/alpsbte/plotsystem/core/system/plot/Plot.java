@@ -36,6 +36,7 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -400,12 +401,22 @@ public class Plot implements IPlot {
         }
     }
 
-    public Vector getCenter() {
-        return Vector.toBlockPoint(
-                PlotManager.PLOT_SIZE / 2d,
-                5,
-                PlotManager.PLOT_SIZE  / 2d
-        );
+    public Vector getCenter() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()){
+                String s = rs.getString(1);
+                return Vector.toBlockPoint(
+                        Integer.parseInt(s.split(",")[0]),
+                        Integer.parseInt(s.split(",")[1]),
+                        Integer.parseInt(s.split(",")[2])
+                );
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return null;
+        }
     }
 
     public String getOSMMapsLink() throws SQLException {
