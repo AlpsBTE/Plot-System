@@ -264,7 +264,7 @@ public class DatabaseConnection {
                             " `uuid`            varchar(36) NOT NULL ," +
                             " `name`            varchar(16) NOT NULL ," +
                             " `score`           int DEFAULt 0 ," +
-                            " `completed_plots` int DEFAULT 0 ," +
+                            " `third_slot`      int NULL ," +
                             " `first_slot`      int NULL ," +
                             " `second_slot`     int NULL ," +
                             " `third_slot`      int NULL ," +

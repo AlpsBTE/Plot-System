@@ -119,7 +119,17 @@ public abstract class AbstractPlotGenerator {
      * Generates plot world
      */
     protected void generateWorld() {
-        if (getPlot().getWorld().isWorldGenerated()) plot.getWorld().deleteWorld();
+        if (getPlot().getWorld().isWorldGenerated()) {
+            try {
+                if(getPlot().getPlotOwner().playInVoid)
+                    plot.getWorld().deleteWorld();
+                else
+                    return;
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
+                return;
+            }
+        }
 
         worldCreator = new WorldCreator(plot.getWorld().getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);

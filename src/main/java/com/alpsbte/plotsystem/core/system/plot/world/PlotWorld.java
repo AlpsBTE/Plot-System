@@ -108,6 +108,9 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean loadWorld() {
+        if(isWorldLoaded())
+            return true;
+
         try {
             // Generate plot if it doesn't exist
             if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
@@ -151,7 +154,7 @@ public class PlotWorld implements IPlotWorld {
             }
 
             try {
-                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty()) {
+                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty() && plot.getPlotOwner().playInVoid) {
                     deleteWorld();
                     return true;
                 }

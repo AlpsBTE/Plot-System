@@ -48,6 +48,9 @@ public class Builder {
         this.UUID = UUID;
     }
 
+    //TODO create a changeable setting for it
+    public boolean playInVoid = false;
+
     public Player getPlayer() {
         return Bukkit.getPlayer(UUID);
     }

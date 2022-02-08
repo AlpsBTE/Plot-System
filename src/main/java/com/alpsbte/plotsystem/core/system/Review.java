@@ -253,6 +253,7 @@ public class Review {
                     DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
                             .setValue(review.reviewID).executeUpdate();
 
+                    if(plot.getPlotOwner().playInVoid)
                     plot.getWorld().unloadWorld(false);
                 }
             } catch (SQLException | IOException | URISyntaxException ex) {

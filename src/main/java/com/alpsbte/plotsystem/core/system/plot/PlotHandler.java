@@ -77,10 +77,18 @@ public class PlotHandler {
                 player.teleport(Utils.getSpawnLocation());
             }
 
-            if (!plot.getWorld().deleteWorld()) {
+            try {
+                if(plot.getPlotOwner().playInVoid){
+                    if (!plot.getWorld().deleteWorld()) {
+                        Bukkit.getLogger().log(Level.SEVERE, "Failed to delete plot world with the ID " + plot.getID() + "!");
+                        return false;
+                    }
+                }
+            } catch (SQLException throwables) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to delete plot world with the ID " + plot.getID() + "!");
                 return false;
             }
+
         }
 
         try {
