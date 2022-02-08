@@ -400,6 +400,14 @@ public class Plot implements IPlot {
         }
     }
 
+    public Vector getCenter() {
+        return Vector.toBlockPoint(
+                PlotManager.PLOT_SIZE / 2d,
+                5,
+                PlotManager.PLOT_SIZE  / 2d
+        );
+    }
+
     public String getOSMMapsLink() throws SQLException {
         return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinates().replace(",", "/");
     }

@@ -165,7 +165,7 @@ public class PlotManager {
 
 
         // Get plot center
-        plotCenter = PlotManager.getPlotCenter();
+        plotCenter = plot.getCenter();
 
 
         // Calculate min and max points of schematic
@@ -174,7 +174,7 @@ public class PlotManager {
 
         schematicMinPoint = Vector.toBlockPoint(
                 plotCenter.getX() - outlinesClipboardCenterX,
-                PlotManager.getPlotCenter().getY(),
+                plotCenter.getY(),
                 plotCenter.getZ() - outlinesClipboardCenterZ
         );
 
@@ -183,7 +183,6 @@ public class PlotManager {
                 256,
                 plotCenter.getZ() + outlinesClipboardCenterZ
         );
-
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
         schematicOrigin = Vector.toBlockPoint(
@@ -253,15 +252,15 @@ public class PlotManager {
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
         Vector schematicMinPoint = Vector.toBlockPoint(
-                PlotManager.getPlotCenter().getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
+                plot.getCenter().getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
                 0,
-                PlotManager.getPlotCenter().getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
+                plot.getCenter().getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
         );
 
         Vector schematicMaxPoint = Vector.toBlockPoint(
-                PlotManager.getPlotCenter().getX() + outlinesClipboardCenterX,
+                plot.getCenter().getX() + outlinesClipboardCenterX,
                 256,
-                PlotManager.getPlotCenter().getZ() + outlinesClipboardCenterZ
+                plot.getCenter().getZ() + outlinesClipboardCenterZ
         );
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
@@ -381,14 +380,6 @@ public class PlotManager {
 
     public static boolean isPlotWorld(World world) {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
-    }
-
-    public static Vector getPlotCenter() {
-        return Vector.toBlockPoint(
-                PLOT_SIZE / 2d,
-                5,
-                PLOT_SIZE  / 2d
-        );
     }
 
     public static String getWorldGuardConfigPath(String worldName) {

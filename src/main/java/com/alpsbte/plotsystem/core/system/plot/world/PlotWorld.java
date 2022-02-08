@@ -113,8 +113,8 @@ public class PlotWorld implements IPlotWorld {
             if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
                 new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
                     @Override
-                    protected void generateOutlines(File plotSchematic) {
-                        super.generateOutlines(plot.getFinishedSchematic());
+                    protected void generateOutlines(Plot plot, File plotSchematic) {
+                        super.generateOutlines(plot, plot.getFinishedSchematic());
                     }
 
                     @Override
@@ -201,9 +201,9 @@ public class PlotWorld implements IPlotWorld {
     public Location getSpawnPoint() {
         if (getBukkitWorld() != null) {
             Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
-                    PlotManager.getPlotCenter().getX() + 0.5,
+                    plot.getCenter().getX() + 0.5,
                     30,
-                    PlotManager.getPlotCenter().getZ() + 0.5,
+                    plot.getCenter().getZ() + 0.5,
                     -90,
                     90);
             // Set spawn point 1 block above the highest center point

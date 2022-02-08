@@ -88,7 +88,7 @@ public abstract class AbstractPlotGenerator {
             Exception exception = null;
             try {
                 generateWorld();
-                generateOutlines(plot.getOutlinesSchematic());
+                generateOutlines(plot, plot.getOutlinesSchematic());
                 createMultiverseWorld();
                 configureWorld(worldManager.getMVWorld(plot.getWorld().getBukkitWorld()));
                 createProtection();
@@ -145,10 +145,10 @@ public abstract class AbstractPlotGenerator {
      * Generates plot schematic and outlines
      * @param plotSchematic - schematic file
      */
-    protected void generateOutlines(File plotSchematic) {
+    protected void generateOutlines(Plot plot, File plotSchematic) {
         try {
             if (plotSchematic != null) {
-                Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter();
+                Vector buildingOutlinesCoordinates = plot.getCenter();
 
                 com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getWorld().getBukkitWorld());
                 Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
