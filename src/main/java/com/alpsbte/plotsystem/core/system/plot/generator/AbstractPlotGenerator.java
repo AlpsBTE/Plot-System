@@ -44,6 +44,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.domains.DefaultDomain;
@@ -54,6 +55,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,6 +63,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -215,9 +218,6 @@ public abstract class AbstractPlotGenerator {
      * Creates plot protection
      */
     protected void createProtection() {
-        BlockVector min = BlockVector.toBlockPoint(0, 1, 0);
-        BlockVector max = BlockVector.toBlockPoint(PlotManager.PLOT_SIZE, 256, PlotManager.PLOT_SIZE);
-
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         RegionManager regionManager = container.get(plot.getWorld().getBukkitWorld());
 
@@ -226,9 +226,24 @@ public abstract class AbstractPlotGenerator {
         globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
         globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
-        // Create protected region for plot
-        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorld().getWorldName(), min, max);
-        protectedPlotRegion.setPriority(100);
+        // Create protected region for plot from the outline of the plot
+        ProtectedRegion protectedPlotRegion;
+        try{
+            Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
+
+            if(!(outlinesClipboard.getRegion() instanceof Polygonal2DRegion)){
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection! Not poly selection used.");
+                throw new RuntimeException("Plot protection creation completed exceptionally. Not poly selection used.");
+            }
+
+            Polygonal2DRegion region = (Polygonal2DRegion) outlinesClipboard.getRegion();
+            protectedPlotRegion = new ProtectedPolygonalRegion(plot.getWorld().getWorldName(), region.getPoints(), 0, 256);
+            protectedPlotRegion.setPriority(100);
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection!", ex);
+            throw new RuntimeException("Plot protection creation completed exceptionally");
+        }
+
 
         // Add and save regions
         try {
