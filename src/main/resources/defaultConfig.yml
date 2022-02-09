@@ -91,6 +91,13 @@ message-prefix: §7§l>>
 info-colour: §a
 error-colour: §c
 
+# -----------------------------------------------------
+# | Shortlink: https://shlink.io/
+# -----------------------------------------------------
+shortlink:
+  enable: false
+  apikey: yourapi-key
+  host: https://your.shortlink.host
 
 # NOTE: Do not change
-config-version: 1.3
+config-version: 1.4
