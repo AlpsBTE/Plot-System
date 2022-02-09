@@ -379,7 +379,7 @@ public class PlotManager {
     }
 
     public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
+        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (world.getName().startsWith("P-") || world.getName().startsWith("C-"));
     }
 
     public static String getWorldGuardConfigPath(String worldName) {

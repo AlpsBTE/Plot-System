@@ -224,7 +224,11 @@ public class PlotWorld implements IPlotWorld {
     @Override
     public String getWorldName() {
         try{
-            return "P-" + plot.getCity().getID();
+            if(plot.getPlotOwner().playInVoid)
+                return "P-" + plot.getID();
+            else
+                return "C-" + plot.getCity().getID();
+
         }catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;
