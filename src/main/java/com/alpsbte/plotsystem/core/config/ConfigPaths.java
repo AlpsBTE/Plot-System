@@ -81,10 +81,10 @@ public abstract class ConfigPaths {
     public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
 
     // SHORTLINKS
-    public static final String SHORTLINK = "shortlink.";
-    public static final String SHORTLINK_ENABLE = "enable";
-    public static final String SHORTLINK_APIKEY = "apikey";
-    public static final String SHORTLINK_HOST = "host";
+    private static final String SHORTLINK = "shortlink.";
+    public static final String SHORTLINK_ENABLE = SHORTLINK + "enable";
+    public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
+    public static final String SHORTLINK_HOST = SHORTLINK + "host";
 
 
     // CONFIG VERSION

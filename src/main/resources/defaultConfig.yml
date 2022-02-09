@@ -100,4 +100,4 @@ shortlink:
   host: https://your.shortlink.host
 
 # NOTE: Do not change
-config-version: 1.3
+config-version: 1.4
