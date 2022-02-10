@@ -44,7 +44,7 @@ public class ConfigManager {
 
    // Register configuration files
    private final List<Config> configs = Arrays.asList(
-           new Config("config.yml", 1.4),
+           new Config("config.yml", 1.5),
            new Config("commands.yml", 1.0)
    );
 
