@@ -29,7 +29,7 @@ import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Server;
-import com.alpsbte.plotsystem.utils.Shortlink;
+import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
@@ -149,27 +149,25 @@ public class PlotHandler {
     }
 
     public static void sendLinkMessages(Plot plot, Player player){
-
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             TextComponent[] tc = new TextComponent[3];
             tc[0] = new TextComponent();
             tc[1] = new TextComponent();
             tc[2] = new TextComponent();
 
-
             try {
                 if(PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                    tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link or use this link: §o" + Shortlink.generateShortlink(
+                    tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link or use this link: §o" + ShortLink.generateShortLink(
                             plot.getGoogleMapsLink(),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));
 
-                    tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link or use this link: §o" + Shortlink.generateShortlink(
+                    tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link or use this link: §o" + ShortLink.generateShortLink(
                             plot.getGoogleEarthLink(),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));
 
-                    tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link or use this link: §o" + Shortlink.generateShortlink(
+                    tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link or use this link: §o" + ShortLink.generateShortLink(
                             plot.getOSMMapsLink(),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));;
@@ -212,7 +210,6 @@ public class PlotHandler {
             player.spigot().sendMessage(tc[2]);
             player.sendMessage("§8--------------------------");
         });
-
     }
 
     public static void sendGroupTipMessage(Plot plot, Player player) {
