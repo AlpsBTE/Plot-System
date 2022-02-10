@@ -209,6 +209,8 @@ public class PlotHandler {
             player.spigot().sendMessage(tc[1]);
             player.spigot().sendMessage(tc[2]);
             player.sendMessage("§8--------------------------");
+
+            PlotHandler.sendGroupTipMessage(plot, player);
         });
     }
 
