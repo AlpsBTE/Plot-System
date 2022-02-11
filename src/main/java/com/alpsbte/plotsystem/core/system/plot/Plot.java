@@ -36,6 +36,7 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,6 +97,30 @@ public class Plot implements IPlot {
             DatabaseConnection.closeResultSet(rs);
             return null;
         }
+    }
+
+    @Override
+    public List<BlockVector3> getOutline() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()){
+                List<BlockVector3> locations = new ArrayList<>();
+                String[] list = rs.getString(1).split("\\|");
+
+                for(String s : list) {
+                    String[] locs = s.split(",");
+                    locations.add(BlockVector3.at(Double.parseDouble(locs[0]), Double.parseDouble(locs[1]), Double.parseDouble(locs[2])));
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+                return locations;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        }
+
+        return null;
     }
 
     @Override
