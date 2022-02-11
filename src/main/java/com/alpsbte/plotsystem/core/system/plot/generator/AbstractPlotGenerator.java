@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
@@ -91,9 +92,9 @@ public abstract class AbstractPlotGenerator {
             Exception exception = null;
             try {
                 generateWorld();
-                generateOutlines(plot, plot.getOutlinesSchematic());
+                generateOutlines(plot.getOutlinesSchematic());
                 createMultiverseWorld();
-                configureWorld(worldManager.getMVWorld(plot.getWorld().getBukkitWorld()));
+                configureWorld(worldManager.getMVWorld(PlotWorld.getBukkitWorld(PlotWorld.getWorldName(plot, builder))));
                 createProtection();
             } catch (Exception ex) {
                 exception = ex;
@@ -106,7 +107,7 @@ public abstract class AbstractPlotGenerator {
             }
 
             if (exception != null) {
-                if (worldManager.isMVWorld(plot.getWorld().getWorldName())) PlotHandler.abandonPlot(plot);
+                if (worldManager.isMVWorld(PlotWorld.getWorldName(plot, builder))) PlotHandler.abandonPlot(plot);
                 onException(exception);
             }
         }
@@ -134,7 +135,7 @@ public abstract class AbstractPlotGenerator {
             }
         }
 
-        worldCreator = new WorldCreator(plot.getWorld().getWorldName());
+        worldCreator = new WorldCreator(PlotWorld.getWorldName(getPlot(), builder));
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
         worldCreator.generatorSettings("2;0;1;");
@@ -147,7 +148,7 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(plot.getWorld().getWorldName(), worldCreator.environment(), null, worldCreator.type(), false,
+            worldManager.addWorld(PlotWorld.getWorldName(getPlot(), getBuilder()), worldCreator.environment(), null, worldCreator.type(), false,
                     "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
             throw new RuntimeException("World Creator is not configured");
@@ -158,12 +159,13 @@ public abstract class AbstractPlotGenerator {
      * Generates plot schematic and outlines
      * @param plotSchematic - schematic file
      */
-    protected void generateOutlines(Plot plot, File plotSchematic) {
+    protected void generateOutlines(File plotSchematic) {
         try {
             if (plotSchematic != null) {
                 Vector buildingOutlinesCoordinates = plot.getCenter();
 
-                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getWorld().getBukkitWorld());
+                World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(), getBuilder()));
+                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
                 Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
 
                 // Place the bottom part of the schematic 5 blocks above 0
@@ -177,8 +179,8 @@ public abstract class AbstractPlotGenerator {
                 Operations.complete(operation);
                 editSession.flushQueue();
 
-                Location spawnLocation = plot.getWorld().getSpawnPoint();
-                if (spawnLocation != null) plot.getWorld().getBukkitWorld().setSpawnLocation(spawnLocation);
+                Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
+                if (spawnLocation != null) plotBukkitWorld.setSpawnLocation(spawnLocation);
             }
         } catch (IOException | WorldEditException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
@@ -191,16 +193,19 @@ public abstract class AbstractPlotGenerator {
      * @param mvWorld - plot world
      */
     protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
-        // Set Bukkit world game rules
-        plot.getWorld().getBukkitWorld().setGameRuleValue("randomTickSpeed", "0");
-        plot.getWorld().getBukkitWorld().setGameRuleValue("doDaylightCycle", "false");
-        plot.getWorld().getBukkitWorld().setGameRuleValue("doFireTick", "false");
-        plot.getWorld().getBukkitWorld().setGameRuleValue("doWeatherCycle", "false");
-        plot.getWorld().getBukkitWorld().setGameRuleValue("keepInventory", "true");
-        plot.getWorld().getBukkitWorld().setGameRuleValue("announceAdvancements", "false");
+
+        World bukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(),getBuilder()));
 
         // Set world time to midday
-        plot.getWorld().getBukkitWorld().setTime(6000);
+        bukkitWorld.setTime(6000);
+
+        // Set Bukkit world game rules
+        bukkitWorld.setGameRuleValue("randomTickSpeed", "0");
+        bukkitWorld.setGameRuleValue("doDaylightCycle", "false");
+        bukkitWorld.setGameRuleValue("doFireTick", "false");
+        bukkitWorld.setGameRuleValue("doWeatherCycle", "false");
+        bukkitWorld.setGameRuleValue("keepInventory", "true");
+        bukkitWorld.setGameRuleValue("announceAdvancements", "false");
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);
@@ -219,7 +224,10 @@ public abstract class AbstractPlotGenerator {
      */
     protected void createProtection() {
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = container.get(plot.getWorld().getBukkitWorld());
+
+        String worldName = PlotWorld.getWorldName(getPlot(),getBuilder());
+        World bukkitWorld = PlotWorld.getBukkitWorld(worldName);
+        RegionManager regionManager = container.get(bukkitWorld);
 
         // Create protected region for world
         GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
@@ -232,12 +240,12 @@ public abstract class AbstractPlotGenerator {
             Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
 
             if(!(outlinesClipboard.getRegion() instanceof Polygonal2DRegion)){
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection! Not poly selection used.");
-                throw new RuntimeException("Plot protection creation completed exceptionally. Not poly selection used.");
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection! No poly selection used. (" + outlinesClipboard.getRegion().toString() + ")");
+                throw new RuntimeException("Plot protection creation completed exceptionally. No poly selection used.");
             }
 
             Polygonal2DRegion region = (Polygonal2DRegion) outlinesClipboard.getRegion();
-            protectedPlotRegion = new ProtectedPolygonalRegion(plot.getWorld().getWorldName(), region.getPoints(), 0, 256);
+            protectedPlotRegion = new ProtectedPolygonalRegion(worldName, region.getPoints(), 0, 256);
             protectedPlotRegion.setPriority(100);
         }catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection!", ex);

@@ -64,8 +64,6 @@ import java.util.logging.Level;
 
 public class PlotManager {
 
-    public final static int PLOT_SIZE = 150;
-
     public static List<Plot> getPlots() throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
     }

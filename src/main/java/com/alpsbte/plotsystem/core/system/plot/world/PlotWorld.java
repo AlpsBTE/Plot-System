@@ -116,8 +116,8 @@ public class PlotWorld implements IPlotWorld {
             if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
                 new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
                     @Override
-                    protected void generateOutlines(Plot plot, File plotSchematic) {
-                        super.generateOutlines(plot, plot.getFinishedSchematic());
+                    protected void generateOutlines(File plotSchematic) {
+                        super.generateOutlines(plot.getFinishedSchematic());
                     }
 
                     @Override
@@ -202,32 +202,27 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public Location getSpawnPoint() {
-        if (getBukkitWorld() != null) {
-            Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
-                    plot.getCenter().getX() + 0.5,
-                       plot.getCenter().getY(),
-                    plot.getCenter().getZ() + 0.5,
-                    -90,
-                    90);
-            // Set spawn point 1 block above the highest center point
-            spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-            return spawnLocation;
-        }
+        World world = getBukkitWorld();
+        if (world != null)
+            return getSpawnPoint(world, plot);
+
         return null;
     }
 
     @Override
     public World getBukkitWorld() {
-        return Bukkit.getWorld(getWorldName());
+        return getBukkitWorld(getWorldName());
     }
 
     @Override
     public String getWorldName() {
         try{
-            if(plot.getPlotOwner().playInVoid)
-                return "P-" + plot.getID();
-            else
-                return "C-" + plot.getCity().getID();
+            Builder plotOwner = plot.getPlotOwner();
+
+            if(plotOwner == null)
+                return null;
+
+            return getWorldName(plot, plotOwner);
 
         }catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -254,6 +249,47 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean isWorldGenerated() {
-        return mvCore.getMVWorldManager().getMVWorld(getWorldName()) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(getWorldName());
+        String worldName = getWorldName();
+
+        if(worldName == null)
+            return false;
+
+        return mvCore.getMVWorldManager().getMVWorld(worldName) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(worldName);
+    }
+
+
+
+
+
+
+    public static Location getSpawnPoint(World world, Plot plot) {
+        if (world != null) {
+            Location spawnLocation = new Location(world,
+                    plot.getCenter().getX() + 0.5,
+                    plot.getCenter().getY(),
+                    plot.getCenter().getZ() + 0.5,
+                    -90,
+                    90);
+            // Set spawn point 1 block above the highest center point
+            spawnLocation.setY(world.getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+            return spawnLocation;
+        }
+        return null;
+    }
+
+    public static String getWorldName(Plot plot, Builder builder) {
+        try{
+            if(builder.playInVoid)
+                return "P-" + plot.getID();
+            else
+                return "C-" + plot.getCity().getID();
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return null;
+        }
+    }
+
+    public static World getBukkitWorld(String worldname) {
+        return Bukkit.getWorld(worldname);
     }
 }
