@@ -74,6 +74,7 @@ public class LangPaths {
         public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
         public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
+        public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
     }
 
     public static final class MenuDescription {
@@ -102,6 +103,7 @@ public class LangPaths {
         public static final String REVIEW_POINTS = MENU_DESCRIPTIONS + "review-points-desc";
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";
         public static final String LEAVE_PLOT = MENU_DESCRIPTIONS + "leave-plot-desc";
+        public static final String SELECT_LANGUAGE = MENU_DESCRIPTIONS + "select-language-desc";
     }
 
     public static final class Review {

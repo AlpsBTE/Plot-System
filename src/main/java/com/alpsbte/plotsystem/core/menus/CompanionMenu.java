@@ -230,7 +230,7 @@ public class CompanionMenu extends AbstractMenu {
         }));
 
         // Set click event for player settings menu item
-        getMenu().getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1)));
+        getMenu().getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer)));
     }
 
     @Override

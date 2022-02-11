@@ -83,6 +83,7 @@ menu-title:
   review-plots: 'Review Plots'
   review-plot: 'Review Plot #{0}'
   enter-player-name: 'Enter player name'
+  select-language: 'Select Language'
 
 
 # -----------------------------------------------------
@@ -113,6 +114,7 @@ menu-description:
   review-points-desc: 'Click to select'
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
   leave-plot-desc: 'Click to leave this plot'
+  select-language-desc: 'Choose your language'
 
 
 # -----------------------------------------------------
