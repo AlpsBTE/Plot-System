@@ -187,7 +187,6 @@ public class PlotWorld implements IPlotWorld {
                 }
 
                 PlotHandler.sendLinkMessages(plot, player);
-                PlotHandler.sendGroupTipMessage(plot, player);
 
                 if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
                     plot.setLastActivity(false);

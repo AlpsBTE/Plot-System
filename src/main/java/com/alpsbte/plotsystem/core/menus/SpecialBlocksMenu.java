@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -113,6 +113,9 @@ public class SpecialBlocksMenu extends AbstractMenu {
             // Barrier
             case 7:
                 return SpecialBlocks.Barrier;
+            // Structure Void
+            case 8:
+                return SpecialBlocks.StructureVoid;
 
             // Second Row
             // Bark Oak Log

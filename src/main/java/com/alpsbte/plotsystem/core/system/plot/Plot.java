@@ -28,6 +28,8 @@ import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.Vector;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -96,6 +98,30 @@ public class Plot implements IPlot {
             DatabaseConnection.closeResultSet(rs);
             return null;
         }
+    }
+
+    @Override
+    public List<BlockVector2D> getOutline() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()){
+                List<BlockVector2D> locations = new ArrayList<>();
+                String[] list = rs.getString(1).split("\\|");
+
+                for(String s : list) {
+                    String[] locs = s.split(",");
+                    locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+                return locations;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        }
+
+        return null;
     }
 
     @Override
