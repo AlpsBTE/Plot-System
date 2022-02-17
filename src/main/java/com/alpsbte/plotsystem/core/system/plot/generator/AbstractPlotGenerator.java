@@ -30,13 +30,13 @@ import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
@@ -52,11 +52,8 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sun.org.apache.xpath.internal.operations.Mult;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,7 +61,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -169,14 +165,22 @@ public abstract class AbstractPlotGenerator {
 
                 World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(), getBuilder()));
                 com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
+
                 Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
+                EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
+
+
+
+                Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+                editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
+                editSession.flushQueue();
+
 
                 // Place the bottom part of the schematic 5 blocks above 0
                 double heightDif = clipboard.getOrigin().getY() - clipboard.getMinimumPoint().getY();
                 buildingOutlinesCoordinates = buildingOutlinesCoordinates.add(0, heightDif, 0);
 
                 ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
-                EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
 
                 Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
                 Operations.complete(operation);
@@ -185,7 +189,7 @@ public abstract class AbstractPlotGenerator {
                 Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
                 if (spawnLocation != null) plotBukkitWorld.setSpawnLocation(spawnLocation);
             }
-        } catch (IOException | WorldEditException ex) {
+        } catch (IOException | WorldEditException | SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
             throw new RuntimeException("Plot outlines generation completed exceptionally");
         }

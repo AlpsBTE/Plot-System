@@ -55,6 +55,8 @@ import java.util.logging.Level;
 
 public class PlotWorld implements IPlotWorld {
 
+    public static int MAX_WORLD_HEIGHT = 256;
+
     private final Plot plot;
     private final MultiverseCore mvCore;
 
