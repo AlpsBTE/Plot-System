@@ -435,9 +435,9 @@ public class Plot implements IPlot {
                 DatabaseConnection.closeResultSet(rs);
 
                 return Vector.toBlockPoint(
-                        Integer.parseInt(s.split(",")[0]),
-                        Integer.parseInt(s.split(",")[1]),
-                        Integer.parseInt(s.split(",")[2])
+                        Double.parseDouble(s.split(",")[0]),
+                        Double.parseDouble(s.split(",")[1]),
+                        Double.parseDouble(s.split(",")[2])
                 );
             }
 
