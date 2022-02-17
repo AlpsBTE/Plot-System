@@ -91,6 +91,11 @@ public interface IPlotWorld {
     String getWorldName();
 
     /**
+     * @return region name of the plot
+     */
+    String getRegionName();
+
+    /**
      * Loads the protected plot world region from WorldGuard config
      * @return protected WorldGuard region
      */

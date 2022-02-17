@@ -52,7 +52,7 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
     protected void generateWorld() {}
 
     @Override
-    protected void configureWorld(@NotNull MultiverseWorld mvWorld) {}
+    protected void configureWorld() {}
 
     @Override
     protected void generateOutlines(@NotNull File plotSchematic) {}

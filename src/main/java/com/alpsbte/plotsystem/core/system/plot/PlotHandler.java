@@ -76,12 +76,13 @@ public class PlotHandler {
 
     public static boolean abandonPlot(Plot plot) {
         if (plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
-            for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                player.teleport(Utils.getSpawnLocation());
-            }
 
             try {
                 if(plot.getPlotOwner().playInVoid){
+                    for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                        player.teleport(Utils.getSpawnLocation());
+                    }
+
                     if (!plot.getWorld().deleteWorld()) {
                         Bukkit.getLogger().log(Level.SEVERE, "Failed to delete plot world with the ID " + plot.getID() + "!");
                         return false;

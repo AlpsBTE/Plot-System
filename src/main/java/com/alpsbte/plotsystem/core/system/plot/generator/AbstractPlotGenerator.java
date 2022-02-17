@@ -55,6 +55,7 @@ import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.Location;
@@ -93,7 +94,7 @@ public abstract class AbstractPlotGenerator {
                 generateWorld();
                 generateOutlines(plot.getOutlinesSchematic());
                 createMultiverseWorld();
-                configureWorld(worldManager.getMVWorld(PlotWorld.getBukkitWorld(PlotWorld.getWorldName(plot, builder))));
+                configureWorld();
                 createProtection();
             } catch (Exception ex) {
                 exception = ex;
@@ -147,7 +148,10 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(PlotWorld.getWorldName(getPlot(), getBuilder()), worldCreator.environment(), null, worldCreator.type(), false,
+            String worldName = PlotWorld.getWorldName(getPlot(), getBuilder());
+
+            if(!PlotWorld.isWorldLoaded(worldName))
+                worldManager.addWorld(PlotWorld.getWorldName(getPlot(), getBuilder()), worldCreator.environment(), null, worldCreator.type(), false,
                     "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
             throw new RuntimeException("World Creator is not configured");
@@ -189,11 +193,11 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Configures plot world
-     * @param mvWorld - plot world
      */
-    protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
+    protected void configureWorld() {
 
         World bukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(),getBuilder()));
+        MultiverseWorld mvWorld = worldManager.getMVWorld(bukkitWorld);
 
         // Set world time to midday
         bukkitWorld.setTime(6000);
@@ -225,6 +229,7 @@ public abstract class AbstractPlotGenerator {
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
 
         String worldName = PlotWorld.getWorldName(getPlot(),getBuilder());
+        String regionName = PlotWorld.getRegionName(getPlot(),getBuilder());
         World bukkitWorld = PlotWorld.getBukkitWorld(worldName);
         RegionManager regionManager = container.get(bukkitWorld);
 
@@ -237,8 +242,7 @@ public abstract class AbstractPlotGenerator {
         ProtectedRegion protectedPlotRegion;
         try{
             List<BlockVector2D> points = plot.getOutline();
-            builder.getPlayer().sendMessage(StringUtils.join(points, "/"));
-            protectedPlotRegion = new ProtectedPolygonalRegion(worldName, points, 0, 256);
+            protectedPlotRegion = new ProtectedPolygonalRegion(regionName, points, 0, 256);
             protectedPlotRegion.setPriority(100);
 
         }catch (Exception ex){
@@ -249,8 +253,12 @@ public abstract class AbstractPlotGenerator {
 
         // Add and save regions
         try {
+            boolean globalRegionExists = regionManager.hasRegion("__global__");
+
             if (regionManager != null) {
-                regionManager.addRegion(globalRegion);
+                if(!globalRegionExists)
+                    regionManager.addRegion(globalRegion);
+
                 regionManager.addRegion(protectedPlotRegion);
                 regionManager.saveChanges();
             } else {

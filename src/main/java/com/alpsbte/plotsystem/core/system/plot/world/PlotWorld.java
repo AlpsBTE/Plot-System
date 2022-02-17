@@ -146,6 +146,7 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
+        Bukkit.broadcastMessage("TEST");
         if(isWorldLoaded()) {
             if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
                 for (Player player : getBukkitWorld().getPlayers()) {
@@ -230,12 +231,28 @@ public class PlotWorld implements IPlotWorld {
     }
 
     @Override
+    public String getRegionName() {
+        try{
+            Builder plotOwner = plot.getPlotOwner();
+
+            if(plotOwner == null)
+                return null;
+
+            return getRegionName(plot, plotOwner);
+
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return null;
+        }
+    }
+
+    @Override
     public ProtectedRegion getProtectedRegion() {
         RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         if (loadWorld()) {
             RegionManager regionManager = container.get(getBukkitWorld());
             if (regionManager != null) {
-                return regionManager.getRegion(getWorldName().toLowerCase(Locale.ROOT));
+                return regionManager.getRegion(getRegionName().toLowerCase(Locale.ROOT));
             } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
         }
         return null;
@@ -260,6 +277,9 @@ public class PlotWorld implements IPlotWorld {
 
 
 
+    public static boolean isWorldLoaded(String worldname) {
+        return getBukkitWorld(worldname) != null;
+    }
 
     public static Location getSpawnPoint(World world, Plot plot) {
         if (world != null) {
@@ -282,6 +302,18 @@ public class PlotWorld implements IPlotWorld {
                 return "P-" + plot.getID();
             else
                 return "C-" + plot.getCity().getID();
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return null;
+        }
+    }
+
+    public static String getRegionName(Plot plot, Builder builder) {
+        try{
+            if(builder.playInVoid)
+                return "P-" + plot.getID();
+            else
+                return "C-" + plot.getCity().getID() + "-" + plot.getID();
         }catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;

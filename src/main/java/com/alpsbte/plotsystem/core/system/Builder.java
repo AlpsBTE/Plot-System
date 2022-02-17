@@ -49,7 +49,7 @@ public class Builder {
     }
 
     //TODO create a changeable setting for it
-    public boolean playInVoid = true;
+    public boolean playInVoid = false;
 
     public Player getPlayer() {
         return Bukkit.getPlayer(UUID);
