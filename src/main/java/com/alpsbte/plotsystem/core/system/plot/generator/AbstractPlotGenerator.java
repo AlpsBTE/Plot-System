@@ -36,10 +36,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
@@ -58,7 +55,9 @@ import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -237,16 +236,11 @@ public abstract class AbstractPlotGenerator {
         // Create protected region for plot from the outline of the plot
         ProtectedRegion protectedPlotRegion;
         try{
-            Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
-
-            if(!(outlinesClipboard.getRegion() instanceof Polygonal2DRegion)){
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection! No poly selection used. (" + outlinesClipboard.getRegion().toString() + ")");
-                throw new RuntimeException("Plot protection creation completed exceptionally. No poly selection used.");
-            }
-
-            Polygonal2DRegion region = (Polygonal2DRegion) outlinesClipboard.getRegion();
-            protectedPlotRegion = new ProtectedPolygonalRegion(worldName, region.getPoints(), 0, 256);
+            List<BlockVector2D> points = plot.getOutline();
+            builder.getPlayer().sendMessage(StringUtils.join(points, "/"));
+            protectedPlotRegion = new ProtectedPolygonalRegion(worldName, points, 0, 256);
             protectedPlotRegion.setPriority(100);
+
         }catch (Exception ex){
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection!", ex);
             throw new RuntimeException("Plot protection creation completed exceptionally");
