@@ -208,6 +208,7 @@ public abstract class AbstractPlotGenerator {
         bukkitWorld.setGameRuleValue("doFireTick", "false");
         bukkitWorld.setGameRuleValue("doWeatherCycle", "false");
         bukkitWorld.setGameRuleValue("keepInventory", "true");
+        bukkitWorld.setGameRuleValue("doMobSpawning", "false");
         bukkitWorld.setGameRuleValue("announceAdvancements", "false");
 
         // Configure multiverse world

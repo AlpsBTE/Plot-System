@@ -146,7 +146,6 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        Bukkit.broadcastMessage("TEST");
         if(isWorldLoaded()) {
             if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
                 for (Player player : getBukkitWorld().getPlayers()) {

@@ -71,7 +71,7 @@ public class PlotPermissions {
     public void save() {
         try {
             if(PlotManager.getPlotByWorld(plotWorld.getBukkitWorld()).getPlotOwner().playInVoid)
-            plotWorld.unloadWorld(false);
+                plotWorld.unloadWorld(false);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return;
