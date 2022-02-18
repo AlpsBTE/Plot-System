@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import org.bukkit.Bukkit;
 
@@ -68,13 +69,8 @@ public class PlotPermissions {
         return plotWorld.getProtectedRegion().getOwners().getGroups().contains("staff");
     }
 
-    public void save() {
-        try {
-            if(PlotManager.getPlotByWorld(plotWorld.getBukkitWorld()).getPlotOwner().playInVoid)
-                plotWorld.unloadWorld(false);
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return;
-        }
+    public void save(Builder builder) {
+        if(builder.playInVoid)
+            plotWorld.unloadWorld(false);
     }
 }

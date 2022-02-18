@@ -209,10 +209,13 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         final World w = event.getPlayer().getWorld();
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             try {
-                if(PlotManager.isPlotWorld(w) && new Builder(event.getPlayer().getUniqueId()).playInVoid)
-                    PlotManager.getPlotByWorld(w).getWorld().unloadWorld(false);
+                Builder builder = new Builder(event.getPlayer().getUniqueId());
+
+                if(PlotManager.isPlotWorld(w) && builder.playInVoid)
+                    PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
@@ -223,18 +226,22 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
+        Builder builder = new Builder(event.getPlayer().getUniqueId());
+
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())
         && !event.getFrom().getWorld().equals(event.getTo().getWorld())
-        && new Builder(event.getPlayer().getUniqueId()).playInVoid
+        && builder.playInVoid
         ) {
-            PlotManager.getPlotByWorld(event.getFrom().getWorld()).getWorld().unloadWorld(false);
+            PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
         }
     }
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
-        if (PlotManager.isPlotWorld(event.getFrom()) && new Builder(event.getPlayer().getUniqueId()).playInVoid ) {
-            PlotManager.getPlotByWorld(event.getFrom()).getWorld().unloadWorld(false);
+        Builder builder = new Builder(event.getPlayer().getUniqueId());
+
+        if (PlotManager.isPlotWorld(event.getFrom()) && builder.playInVoid ) {
+            PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {

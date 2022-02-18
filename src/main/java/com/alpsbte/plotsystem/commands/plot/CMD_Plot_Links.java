@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -55,7 +56,7 @@ public class CMD_Plot_Links extends SubCommand {
                         sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    PlotHandler.sendLinkMessages(PlotManager.getPlotByWorld(getPlayer(sender).getWorld()), getPlayer(sender));
+                    PlotHandler.sendLinkMessages(PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId())), getPlayer(sender));
                 } else {
                     sendInfo(sender);
                 }

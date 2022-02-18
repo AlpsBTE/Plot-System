@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.menus.FeedbackMenu;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -57,7 +58,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                         return;
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
+                    plot = PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId()));
                 } else {
                     sendInfo(sender);
                     return;

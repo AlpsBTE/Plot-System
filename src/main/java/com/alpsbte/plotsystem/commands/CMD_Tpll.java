@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -86,7 +87,7 @@ public class CMD_Tpll extends BaseCommand {
                             double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
 
                             // Get plot, that the player is in
-                            Plot plot = PlotManager.getPlotByWorld(playerWorld);
+                            Plot plot = PlotManager.getCurrentPlot(new Builder(player.getUniqueId()));
 
                             // Convert terra coordinates to plot relative coordinates
                             CompletableFuture<double[]> plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);

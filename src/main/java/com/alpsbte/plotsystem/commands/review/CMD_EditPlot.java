@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands.review;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -54,17 +55,17 @@ public class CMD_EditPlot extends BaseCommand {
                             return true;
                         }
                     } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                        plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
+                        plot = PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId()));
                     } else {
                         sendInfo(sender);
                         return true;
                     }
 
                     if(plot.getPermissions().hasReviewerPerms()) {
-                        plot.getPermissions().removeReviewerPerms().save();
+                        plot.getPermissions().removeReviewerPerms().save(new Builder(getPlayer(sender).getUniqueId()));
                         sender.sendMessage(Utils.getInfoMessageFormat("§6Disabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
                     } else {
-                        plot.getPermissions().addReviewerPerms().save();
+                        plot.getPermissions().addReviewerPerms().save(new Builder(getPlayer(sender).getUniqueId()));
                         sender.sendMessage(Utils.getInfoMessageFormat("§6Enabled §abuild permissions for Reviewers on Plot §6#" + plot.getID()));
                     }
                 } catch (SQLException ex) {

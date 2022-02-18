@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands.review;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -46,8 +47,8 @@ public class CMD_Review extends BaseCommand {
             if (getPlayer(sender) != null) {
                 try {
                     Player player = (Player) sender;
-                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getPlotByWorld(player.getWorld()).getStatus() == Status.unreviewed) {
-                        new ReviewPlotMenu(player, PlotManager.getPlotByWorld(player.getWorld()));
+                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getCurrentPlot(new Builder(player.getUniqueId())).getStatus() == Status.unreviewed) {
+                        new ReviewPlotMenu(player, PlotManager.getCurrentPlot(new Builder(player.getUniqueId())));
                     } else {
                         new ReviewMenu(player);
                     }

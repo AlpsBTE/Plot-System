@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -44,6 +45,7 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -81,6 +83,13 @@ public class PlotManager {
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
         List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
+        //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
+        // TODO: Add support for member plots
+        return plots;
+    }
+
+    public static List<Plot> getPlots(Builder builder, int cityID, Status... statuses) throws SQLException {
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID() + "' AND city_project_id = '" + cityID, statuses)).executeQuery());
         //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
         // TODO: Add support for member plots
         return plots;
@@ -323,8 +332,53 @@ public class PlotManager {
         }
     }
 
-    public static Plot getPlotByWorld(World plotWorld) throws SQLException {
-        return new Plot(Integer.parseInt(plotWorld.getName().substring(2)));
+    /** Returns the plot that the player is currently standing on or next to.
+     *  If he is standing in a single plot world it returns the plot of this world.
+     *  If he is standing in a multi plot world it returns the closest plot of all unfinished plots of this city
+     *
+     * @param builder
+     * @return the current plot of the player
+     * @throws SQLException
+     */
+    public static Plot getCurrentPlot(Builder builder) throws SQLException {
+        String worldName = builder.getPlayer().getWorld().getName();
+
+        if(worldName.startsWith("P-"))
+            return new Plot(Integer.parseInt(worldName.substring(2)));
+        else if(worldName.startsWith("C-")) {
+            int cityID = Integer.parseInt(worldName.substring(2));
+            List<Plot> plots = getPlots(cityID, Status.unfinished);
+
+            if(plots.size() == 0)
+                return getPlots(builder).get(0);
+            if(plots.size() == 1)
+                return plots.get(0);
+
+            // Find the plot in the city world that is closest to the player
+            Location playerLoc = builder.getPlayer().getLocation().clone();
+            Vector playerVector = new Vector(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
+
+            double distance = 100000000;
+            Plot chosenPlot = plots.get(0);
+            for(Plot plot : plots)
+            if(plot.getCenter().distance(playerVector) < distance){
+                distance = plot.getCenter().distance(playerVector);
+                chosenPlot = plot;
+            }
+
+            return chosenPlot;
+        }else
+            return getPlots(builder).get(0);
+    }
+
+    /** Do not use */
+    private static Plot OLDgetPlotByWorld(World plotWorld) throws SQLException {
+        String worldName = plotWorld.getName();
+
+        if(worldName.startsWith("P"))
+            return new Plot(Integer.parseInt(worldName.substring(2)));
+        else
+            return null;
     }
 
     public static boolean plotExists(int ID) {
