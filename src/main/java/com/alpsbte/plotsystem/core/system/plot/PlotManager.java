@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -472,8 +473,24 @@ public class PlotManager {
     }
 
     public static void showOutlines(){
-        for(Player player : Bukkit.getOnlinePlayers()){
+        try {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                Builder builder = new Builder(player.getUniqueId());
+                List<Plot> plots = getCachedPlots(builder);
 
+                if(plots.size() == 0)
+                    continue;
+
+                for(Plot plot : plots){
+                    if(!PlotWorld.getWorldName(plot, builder).equals(player.getLocation().getWorld().getName()))
+                        continue;
+
+                    //send particles
+                }
+            }
+
+        }catch (SQLException ex){
+            Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
         }
     }
 

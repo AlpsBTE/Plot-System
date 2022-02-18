@@ -57,6 +57,7 @@ public class Plot implements IPlot {
     private final int ID;
 
     private List<BlockVector2D> outline;
+    private CityProject city;
 
     private PlotWorld plotWorld;
     private PlotPermissions plotPermissions;
@@ -72,13 +73,20 @@ public class Plot implements IPlot {
 
     @Override
     public CityProject getCity() throws SQLException {
+        if(this.city != null)
+            return this.city;
+
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT city_project_id FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()){
                 int i = rs.getInt(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new CityProject(i);
+                CityProject cityProject = new CityProject(i);
+
+                this.city = cityProject;
+
+                return cityProject;
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -104,8 +112,8 @@ public class Plot implements IPlot {
 
     @Override
     public List<BlockVector2D> getOutline() throws SQLException {
-        if(outline != null)
-            return outline;
+        if(this.outline != null)
+            return this.outline;
 
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
@@ -119,7 +127,7 @@ public class Plot implements IPlot {
                     locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
                 }
 
-                outline = locations;
+                this.outline = locations;
 
                 DatabaseConnection.closeResultSet(rs);
                 return locations;
