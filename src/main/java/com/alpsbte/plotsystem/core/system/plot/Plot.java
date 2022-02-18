@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.BlockVector2D;
@@ -39,6 +40,8 @@ import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -57,6 +60,7 @@ public class Plot implements IPlot {
     private final int ID;
 
     private List<BlockVector2D> outline;
+    private List<BlockVector2D> blockOutline;
     private CityProject city;
 
     private PlotWorld plotWorld;
@@ -111,6 +115,7 @@ public class Plot implements IPlot {
     }
 
     @Override
+    /** return the outline of the plot which contains all corner points of the polygon */
     public List<BlockVector2D> getOutline() throws SQLException {
         if(this.outline != null)
             return this.outline;
@@ -137,6 +142,27 @@ public class Plot implements IPlot {
         }
 
         return null;
+    }
+
+    /** return the outline of the polygon with one point per Block*/
+    public List<BlockVector2D> getBlockOutline() throws SQLException {
+        if(this.blockOutline != null)
+            return this.blockOutline;
+
+        List<BlockVector2D> points = new ArrayList<>();
+        List<BlockVector2D> outline = getOutline();
+
+        for(int i = 0; i < outline.size() - 1; i++){
+            BlockVector2D b1 = outline.get(i);
+            BlockVector2D b2 = outline.get(i + 1);
+            int distance = (int) b1.distance(b2);
+
+            points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
+        }
+
+        blockOutline = points;
+
+        return points;
     }
 
     @Override

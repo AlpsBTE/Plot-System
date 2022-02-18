@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -319,6 +320,7 @@ public abstract class AbstractPlotGenerator {
             builder.setPlot(plot.getID(), builder.getFreeSlot());
             plot.setStatus(Status.unfinished);
             plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
+            PlotManager.clearCache();
         }
     }
 

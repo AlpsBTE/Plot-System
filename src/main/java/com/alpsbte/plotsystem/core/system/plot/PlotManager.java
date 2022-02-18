@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -46,6 +47,7 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -81,18 +83,22 @@ public class PlotManager {
         time++;
 
         if(time%CACHE_UPDATE_TICKS == 0)
-            cachedInProgressPlots.clear();
+            clearCache();
 
 
         showOutlines();
     }
 
+    public static void clearCache(){
+        cachedInProgressPlots.clear();
+    }
 
 
-    public static List<Plot> getCachedPlots(Builder builder){
+
+    public static List<Plot> getCachedInProgressPlots(Builder builder){
         if(!cachedInProgressPlots.containsKey(builder.getUUID())) {
             try {
-                cachedInProgressPlots.put(builder.getUUID(), getPlots(builder));
+                cachedInProgressPlots.put(builder.getUUID(), getPlots(builder, Status.unfinished));
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 return new ArrayList<>();
@@ -475,8 +481,20 @@ public class PlotManager {
     public static void showOutlines(){
         try {
             for (Player player : Bukkit.getOnlinePlayers()) {
+
+                /*
+                for(int i = 0; i < Particle.values().length; i++) {
+                    if(Particle.values()[i] != Particle.TOWN_AURA)
+                        continue;
+
+                    player.spawnParticle(Particle.values()[i], i * 5, 0, 0, 1, 0.1, 0.1, 0.1);
+                    player.sendMessage(i*5 + " - " + Particle.values()[i]);
+                }*/
+
+
                 Builder builder = new Builder(player.getUniqueId());
-                List<Plot> plots = getCachedPlots(builder);
+                List<Plot> plots = getCachedInProgressPlots(builder);
+
 
                 if(plots.size() == 0)
                     continue;
@@ -485,7 +503,11 @@ public class PlotManager {
                     if(!PlotWorld.getWorldName(plot, builder).equals(player.getLocation().getWorld().getName()))
                         continue;
 
-                    //send particles
+                    List<BlockVector2D> points = plot.getBlockOutline();
+
+                    for(BlockVector2D point : points){
+                        player.spawnParticle(Particle.TOWN_AURA, point.getX(), player.getLocation().getY(), point.getZ(), 1, 0.1 ,0.1,0.1);
+                    }
                 }
             }
 

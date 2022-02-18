@@ -28,13 +28,16 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.sk89q.worldedit.BlockVector2D;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.Vector;
 
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -146,6 +149,44 @@ public class Utils {
                 return "";
         }
     }
+
+    public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){
+        double p1X = point1.getX();
+        double p1Y = point1.getY();
+        double p1Z = point1.getZ();
+        double p2X = point2.getX();
+        double p2Y = point2.getY();
+        double p2Z = point2.getZ();
+
+        double lineAveX = (p2X-p1X)/pointsInLine;
+        double lineAveY = (p2Y-p1Y)/pointsInLine;
+        double lineAveZ = (p2Z-p1Z)/pointsInLine;
+
+        HashSet<Vector> line = new HashSet<>();
+        for(int i = 0; i <= pointsInLine; i++){
+            Vector vector = new Vector(p1X + lineAveX * i, p1Y + lineAveY * i, p1Z + lineAveZ * i);
+            line.add(vector);
+        }
+        return line;
+    }
+
+    public static HashSet<BlockVector2D> getLineBetweenPoints(BlockVector2D point1, BlockVector2D point2, int pointsInLine){
+        double p1X = point1.getX();
+        double p1Z = point1.getZ();
+        double p2X = point2.getX();
+        double p2Z = point2.getZ();
+
+        double lineAveX = (p2X-p1X)/pointsInLine;
+        double lineAveZ = (p2Z-p1Z)/pointsInLine;
+
+        HashSet<BlockVector2D> line = new HashSet<>();
+        for(int i = 0; i <= pointsInLine; i++){
+            BlockVector2D vector = new BlockVector2D(p1X + lineAveX * i, p1Z + lineAveZ * i);
+            line.add(vector);
+        }
+        return line;
+    }
+
 
     public static class CustomHead {
         private final ItemStack headItem;
