@@ -160,6 +160,10 @@ public class Plot implements IPlot {
             points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
         }
 
+        BlockVector2D first = outline.get(0);
+        BlockVector2D last = outline.get(outline.size() - 1);
+        points.addAll(Utils.getLineBetweenPoints(last, first, (int) first.distance(last)));
+
         blockOutline = points;
 
         return points;

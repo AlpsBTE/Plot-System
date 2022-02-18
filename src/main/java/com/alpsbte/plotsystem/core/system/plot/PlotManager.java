@@ -481,17 +481,6 @@ public class PlotManager {
     public static void showOutlines(){
         try {
             for (Player player : Bukkit.getOnlinePlayers()) {
-
-                /*
-                for(int i = 0; i < Particle.values().length; i++) {
-                    if(Particle.values()[i] != Particle.TOWN_AURA)
-                        continue;
-
-                    player.spawnParticle(Particle.values()[i], i * 5, 0, 0, 1, 0.1, 0.1, 0.1);
-                    player.sendMessage(i*5 + " - " + Particle.values()[i]);
-                }*/
-
-
                 Builder builder = new Builder(player.getUniqueId());
                 List<Plot> plots = getCachedInProgressPlots(builder);
 
