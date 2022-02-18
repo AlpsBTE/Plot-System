@@ -56,6 +56,8 @@ import java.util.stream.Collectors;
 public class Plot implements IPlot {
     private final int ID;
 
+    private List<BlockVector2D> outline;
+
     private PlotWorld plotWorld;
     private PlotPermissions plotPermissions;
 
@@ -102,6 +104,9 @@ public class Plot implements IPlot {
 
     @Override
     public List<BlockVector2D> getOutline() throws SQLException {
+        if(outline != null)
+            return outline;
+
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
@@ -113,6 +118,8 @@ public class Plot implements IPlot {
                     String[] locs = s.split(",");
                     locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
                 }
+
+                outline = locations;
 
                 DatabaseConnection.closeResultSet(rs);
                 return locations;

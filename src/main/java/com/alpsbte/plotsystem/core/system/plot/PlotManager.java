@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
@@ -68,7 +67,7 @@ public class PlotManager {
 
     public static int time;
 
-    public static HashMap<UUID, List<Plot>> cachedPlots = new HashMap<>();
+    public static HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
 
     public static void startTimer(){
@@ -81,7 +80,7 @@ public class PlotManager {
         time++;
 
         if(time%CACHE_UPDATE_TICKS == 0)
-            cachedPlots.clear();
+            cachedInProgressPlots.clear();
 
 
         showOutlines();
@@ -90,16 +89,16 @@ public class PlotManager {
 
 
     public static List<Plot> getCachedPlots(Builder builder){
-        if(!cachedPlots.containsKey(builder.getUUID())) {
+        if(!cachedInProgressPlots.containsKey(builder.getUUID())) {
             try {
-                cachedPlots.put(builder.getUUID(), getPlots(builder));
+                cachedInProgressPlots.put(builder.getUUID(), getPlots(builder));
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 return new ArrayList<>();
             }
         }
 
-        return cachedPlots.get(builder.getUUID());
+        return cachedInProgressPlots.get(builder.getUUID());
     }
 
     public static List<Plot> getPlots() throws SQLException {
