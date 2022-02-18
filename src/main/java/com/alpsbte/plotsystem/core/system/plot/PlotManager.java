@@ -48,6 +48,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,14 +58,49 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotManager {
+
+    public static int CACHE_UPDATE_TICKS = 20*60;
+
+    public static int time;
+
+    public static HashMap<UUID, List<Plot>> cachedPlots = new HashMap<>();
+
+
+    public static void startTimer(){
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+            tick();
+        }, 0L, 0L);
+    }
+
+    public static void tick(){
+        time++;
+
+        if(time%CACHE_UPDATE_TICKS == 0)
+            cachedPlots.clear();
+
+
+        showOutlines();
+    }
+
+
+
+    public static List<Plot> getCachedPlots(Builder builder){
+        if(!cachedPlots.containsKey(builder.getUUID())) {
+            try {
+                cachedPlots.put(builder.getUUID(), getPlots(builder));
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                return new ArrayList<>();
+            }
+        }
+
+        return cachedPlots.get(builder.getUUID());
+    }
 
     public static List<Plot> getPlots() throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
@@ -371,16 +407,6 @@ public class PlotManager {
             return getPlots(builder).get(0);
     }
 
-    /** Do not use */
-    private static Plot OLDgetPlotByWorld(World plotWorld) throws SQLException {
-        String worldName = plotWorld.getName();
-
-        if(worldName.startsWith("P"))
-            return new Plot(Integer.parseInt(worldName.substring(2)));
-        else
-            return null;
-    }
-
     public static boolean plotExists(int ID) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
@@ -445,4 +471,11 @@ public class PlotManager {
     public static String getDefaultSchematicPath() {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
+
+    public static void showOutlines(){
+        for(Player player : Bukkit.getOnlinePlayers()){
+
+        }
+    }
+
 }
