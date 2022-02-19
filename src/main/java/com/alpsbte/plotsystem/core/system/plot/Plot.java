@@ -411,10 +411,19 @@ public class Plot implements IPlot {
 
     @Override
     public File getOutlinesSchematic() {
+        return getSchematic(getID() + "");
+    }
+
+    @Override
+    public File getEnvironmentSchematic() {
+        return getSchematic(getID() + "-env");
+    }
+
+    private File getSchematic(String filename){
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schematic").toFile();
 
                     if(!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {

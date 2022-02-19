@@ -86,6 +86,7 @@ public class PlotManager {
             clearCache();
 
 
+        if(time%5 == 0)
         showOutlines();
     }
 
@@ -483,7 +484,17 @@ public class PlotManager {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Builder builder = new Builder(player.getUniqueId());
                 List<Plot> plots = getCachedInProgressPlots(builder);
+                BlockVector2D playerPos2D = new BlockVector2D(player.getLocation().getX(), player.getLocation().getZ());
 
+                /*
+                for(int i = 0; i < Particle.values().length; i++)
+                for(int i2 = 0; i2 < 5; i2++) {
+                    if(Particle.values()[i] == Particle.MOB_APPEARANCE)
+                        continue;
+
+                    player.spawnParticle(Particle.values()[i], i * 5, i2*5, 0, 1, 0.1, 0.1, 0.1, i2);
+                    //player.sendMessage(i*5 + " - " + Particle.values()[i]);
+                }*/
 
                 if(plots.size() == 0)
                     continue;
@@ -494,9 +505,11 @@ public class PlotManager {
 
                     List<BlockVector2D> points = plot.getBlockOutline();
 
-                    for(BlockVector2D point : points){
-                        player.spawnParticle(Particle.TOWN_AURA, point.getX(), player.getLocation().getY(), point.getZ(), 1, 0.1 ,0.1,0.1);
-                    }
+                    for(BlockVector2D point : points)
+                    if(point.distanceSq(playerPos2D) < 100*100)
+                    for(int y= -3; y <= 3; y+=3)
+                        player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + y, point.getZ(), 1, 0.1 ,0.1,0.1, 0);
+
                 }
             }
 

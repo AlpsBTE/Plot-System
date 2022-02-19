@@ -178,6 +178,11 @@ public interface IPlot {
     File getOutlinesSchematic();
 
     /**
+     * @return schematic file with environment only
+     */
+    File getEnvironmentSchematic();
+
+    /**
      * @return schematic file of the completed plot
      */
     File getFinishedSchematic();

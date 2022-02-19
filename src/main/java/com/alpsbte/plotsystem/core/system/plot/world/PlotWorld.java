@@ -118,8 +118,8 @@ public class PlotWorld implements IPlotWorld {
             if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
                 new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
                     @Override
-                    protected void generateOutlines(File plotSchematic) {
-                        super.generateOutlines(plot.getFinishedSchematic());
+                    protected void generateOutlines(File plotSchematic, File environmentSchematic) {
+                        super.generateOutlines(plot.getFinishedSchematic(), null);
                     }
 
                     @Override

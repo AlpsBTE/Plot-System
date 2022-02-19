@@ -41,6 +41,7 @@ import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
@@ -89,7 +90,7 @@ public abstract class AbstractPlotGenerator {
             Exception exception = null;
             try {
                 generateWorld();
-                generateOutlines(plot.getOutlinesSchematic());
+                generateOutlines(plot.getOutlinesSchematic(), plot.getEnvironmentSchematic());
                 createMultiverseWorld();
                 configureWorld();
                 createProtection();
@@ -147,7 +148,7 @@ public abstract class AbstractPlotGenerator {
         if (worldCreator != null) {
             String worldName = PlotWorld.getWorldName(getPlot(), getBuilder());
 
-            if(!PlotWorld.isWorldLoaded(worldName))
+            if(!worldManager.isMVWorld(worldName))
                 worldManager.addWorld(PlotWorld.getWorldName(getPlot(), getBuilder()), worldCreator.environment(), null, worldCreator.type(), false,
                     "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
         } else {
@@ -159,37 +160,46 @@ public abstract class AbstractPlotGenerator {
      * Generates plot schematic and outlines
      * @param plotSchematic - schematic file
      */
-    protected void generateOutlines(File plotSchematic) {
+    protected void generateOutlines(File plotSchematic, File environmentSchematic) {
         try {
-            if (plotSchematic != null) {
-                Vector buildingOutlinesCoordinates = plot.getCenter();
 
-                World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(), getBuilder()));
-                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
+            Vector buildingOutlinesCoordinates = plot.getCenter();
 
-                Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
-                EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
+            World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(), getBuilder()));
+            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
 
+            EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
+            Mask oldMask = editSession.getMask();
 
+            if(environmentSchematic != null){
+                Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
+                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
 
-                Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-                editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
-                editSession.flushQueue();
+                editSession.setMask(new OnlyAirMask(weWorld));
 
-
-                // Place the bottom part of the schematic 5 blocks above 0
-                double heightDif = clipboard.getOrigin().getY() - clipboard.getMinimumPoint().getY();
-                buildingOutlinesCoordinates = buildingOutlinesCoordinates.add(0, heightDif, 0);
-
-                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
-
-                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
+                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(true).build();
                 Operations.complete(operation);
                 editSession.flushQueue();
-
-                Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
-                if (spawnLocation != null) plotBukkitWorld.setSpawnLocation(spawnLocation);
             }
+
+            editSession.setMask(oldMask);
+            Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+            editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
+            editSession.flushQueue();
+
+            if (plotSchematic != null) {
+                Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
+                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
+
+                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(true).build();
+                Operations.complete(operation);
+                editSession.flushQueue();
+            }
+
+            Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
+            if (spawnLocation != null && getBuilder().playInVoid)
+                plotBukkitWorld.setSpawnLocation(spawnLocation);
+
         } catch (IOException | WorldEditException | SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
             throw new RuntimeException("Plot outlines generation completed exceptionally");

@@ -55,7 +55,7 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
     protected void configureWorld() {}
 
     @Override
-    protected void generateOutlines(@NotNull File plotSchematic) {}
+    protected void generateOutlines(@NotNull File plotSchematic, @NotNull File environmentSchematic) {}
 
     @Override
     protected void createProtection() {
