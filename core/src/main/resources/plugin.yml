@@ -1,0 +1,60 @@
+main: com.alpsbte.plotsystem.core.PlotSystem
+version: 2.3
+api-version: 1.12.2
+name: Plot-System
+author: R3tuxn & Cinnazeyy
+softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase]
+
+commands:
+  spawn:
+    description: Teleport to the spawn point.
+    usage: /spawn
+  companion:
+    description: Opens the Companion menu.
+    usage: /companion
+  plots:
+    description: Shows all plots of the given player.
+    usage: /plots, /plots <Player>
+  tpll:
+    description: Teleport to a position in the plot, using irl coordinates
+    usage: /tpll <lon> <lat>
+  p:
+    description: List all plot commands.
+    usage: /p help
+  plot:
+    description: List all plot commands.
+    usage: /plot help
+  review:
+    description: Opens the review or review plot menu.
+    usage: /review
+  undoreview:
+    description: Undo a review of a plot.
+    usage: /undoreview <ID>
+  sendfeedback:
+    description: Updates the feedback of a plot.
+    usage: /sendfeedback <ID> <Text>
+  editplot:
+    description: Enable/disable build permissions for reviewers on a plot.
+    usage: /editplot
+  cleanplot:
+    description: Cleans and refreshes plots due to bugs or permission changes.
+    usage: /cleanplot <All/ID>
+  deleteplot:
+    description: Delete a plot from the system.
+    usage: /deleteplot <ID>
+  sethologram:
+    description: Sets the position of a hologram
+    usage: /sethologram <name>
+  preload:
+    description: Reload config and holograms
+    usage: /preload
+  pss:
+    description: Command for setting up the database.
+    usage: /pss help
+permissions:
+  plotsystem.plot:
+    description: Builder permissions
+  plotsystem.review:
+    description: Reviewer permissions
+  plotsystem.admin:
+    description: Administrator permissions
