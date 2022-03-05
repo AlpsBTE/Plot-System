@@ -105,7 +105,7 @@ menu-description:
   teleport-desc: 'Click to teleport to the plot'
   abandon-desc: 'Click to reset your plot and give it to someone else'
   undo-submit-desc: 'Click to undo your submission'
-  manage-members-desc: 'Click to open the Plot Members menu, where you can add \n and remove other players on your plot'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add//and remove other players on your plot'
   feedback-desc: 'Click to view your plot review feedback'
   custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
   banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
@@ -130,13 +130,13 @@ review:
   reviewer: 'Reviewer'
   criteria:
     accuracy: 'Accuracy'
-    accuracy-desc: 'How accurate is the building?\n\n- Looks like in RL\n- Correct outlines\n- Correct height\n- Is completed'
+    accuracy-desc: 'How accurate is the building?////- Looks like in RL//- Correct outlines//- Correct height//- Is completed'
     block-palette: 'Block Palette'
-    block-palette-desc: 'How many different blocks are used and how creative are they?\n\n- Choice of blocks colours/textures\n- Random blocks'
+    block-palette-desc: 'How many different blocks are used and how creative are they?////- Choice of blocks colours/textures//- Random blocks'
     detailing: 'Detailing'
-    detailing-desc: 'How much detail does the building have?\n\n- Roof details\n- Details on the facades\n- Heads and Banners'
+    detailing-desc: 'How much detail does the building have?////- Roof details//- Details on the facades//- Heads and Banners'
     technique: 'Technique'
-    technique-desc: 'What building techniques have been used and how creative are they?\n\n- World-Edit\n- Special Blocks'
+    technique-desc: 'What building techniques have been used and how creative are they?////- World-Edit//- Special Blocks'
 
 
 # -----------------------------------------------------
