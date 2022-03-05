@@ -45,7 +45,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -69,8 +68,6 @@ public class PlotWorld implements IPlotWorld {
         if (!isWorldGenerated()) {
             if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
                new DefaultPlotGenerator(plot, plotOwner);
-            } else if (generator.isAssignableFrom(DefaultPlotGenerator.RawDefaultPlotGenerator.RawDefaultPlotGenerator.class)) {
-                new DefaultPlotGenerator.RawDefaultPlotGenerator(plot, plotOwner);
             } else if (generator.isAssignableFrom(RawPlotGenerator.class)) {
                 new RawPlotGenerator(plot, plotOwner);
             } else return false;
@@ -113,12 +110,31 @@ public class PlotWorld implements IPlotWorld {
     public boolean loadWorld() {
         try {
             // Generate plot if it doesn't exist
-            if (!isWorldGenerated() && (!plot.getFinishedSchematic().exists() || !generateWorld(plot.getPlotOwner(), DefaultPlotGenerator.RawDefaultPlotGenerator.class))) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
-                return false;
+            if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
+                new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
+                    @Override
+                    protected void generateOutlines(File plotSchematic) {
+                        super.generateOutlines(plot.getFinishedSchematic());
+                    }
+
+                    @Override
+                    protected boolean init() {
+                        return true;
+                    }
+
+                    @Override
+                    protected void onComplete(boolean failed) throws SQLException {
+                        plot.getPermissions().clearAllPerms();
+                        super.onComplete(true); // This code sucks
+                    }
+                };
+                if (!isWorldGenerated() || !isWorldLoaded()) {
+                    Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
+                    return false;
+                }
+                return true;
             } else if (isWorldGenerated())
                 return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
-            return true;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -152,39 +168,29 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean teleportPlayer(Player player) {
-        if (loadWorld()) {
+        Location spawnLocation;
+        if (loadWorld() && (spawnLocation = getSpawnPoint()) != null) {
+            try {
                 player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
 
-            long teleportDelay = isWorldGenerated() ? 0 : 10;
-            new BukkitRunnable() {
-                int counter = 0;
-                public void run(){
-                    counter++;
-                    if (isWorldGenerated() || counter == teleportDelay) {
-                        this.cancel();
-                        try {
-                            player.teleport(getSpawnPoint());
-                            player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
-                            player.setAllowFlight(true);
-                            player.setFlying(true);
+                player.teleport(spawnLocation);
+                player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
+                player.setAllowFlight(true);
+                player.setFlying(true);
 
                             player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
                             if(player.hasPermission("plotsystem.review")) {
                                 player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
                             }
 
-                            PlotHandler.sendLinkMessages(plot, player);
-                            PlotHandler.sendGroupTipMessage(plot, player);
+                PlotHandler.sendLinkMessages(plot, player);
 
-                            if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                                plot.setLastActivity(false);
-                            }
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                        }
-                    }
+                if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                    plot.setLastActivity(false);
                 }
-            }.runTaskTimer(PlotSystem.getPlugin(), 0, teleportDelay);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            }
             return true;
         } else player.sendMessage(Utils.getErrorMessageFormat("Could not load plot world. Please try again!"));
         return false;
@@ -192,15 +198,18 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public Location getSpawnPoint() {
-        Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
-                PlotManager.getPlotCenter().getX() + 0.5,
-                30,
-                PlotManager.getPlotCenter().getZ() + 0.5,
-                -90,
-                90);
-        // Set spawn point 1 block above the highest center point
-        spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-        return spawnLocation;
+        if (getBukkitWorld() != null) {
+            Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
+                    PlotManager.getPlotCenter().getX() + 0.5,
+                    30,
+                    PlotManager.getPlotCenter().getZ() + 0.5,
+                    -90,
+                    90);
+            // Set spawn point 1 block above the highest center point
+            spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+            return spawnLocation;
+        }
+        return null;
     }
 
     @Override

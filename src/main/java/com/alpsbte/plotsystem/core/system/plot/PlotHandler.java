@@ -30,8 +30,6 @@ import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -150,46 +148,72 @@ public class PlotHandler {
     }
 
     public static void sendLinkMessages(Plot plot, Player player){
-        TextComponent[] tc = new TextComponent[3];
-        tc[0] = new TextComponent();
-        tc[1] = new TextComponent();
-        tc[2] = new TextComponent();
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+            TextComponent[] tc = new TextComponent[3];
+            tc[0] = new TextComponent();
+            tc[1] = new TextComponent();
+            tc[2] = new TextComponent();
 
         tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"));
         tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth Web"));
         tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Open Street Map"));
+            try {
+                if(PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
+                    tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link or use this link: §o" + ShortLink.generateShortLink(
+                            plot.getGoogleMapsLink(),
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));
 
-        try {
-            tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
-            tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
-            tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", ex);
-        }
+                    tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link or use this link: §o" + ShortLink.generateShortLink(
+                            plot.getGoogleEarthLink(),
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));
+
+                    tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link or use this link: §o" + ShortLink.generateShortLink(
+                            plot.getOSMMapsLink(),
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));;
+                } else {
+                    tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link....");
+                    tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link....");
+                    tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link....");
+                }
+
+                tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
+                tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
+                tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", ex);
+            } catch (IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating shortlink!", ex);
+            }
 
         tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Maps").create()));
         tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Earth Web").create()));
         tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Open Street Map").create()));
 
-        // Temporary fix for bedrock players
-        String coords = null;
-        try {
-            String[] coordsSplit = plot.getGeoCoordinates().split(",");
-            double lat = Double.parseDouble(coordsSplit[0]);
-            double lon = Double.parseDouble(coordsSplit[1]);
-            DecimalFormat df = new DecimalFormat("##.#####");
-            df.setRoundingMode(RoundingMode.FLOOR);
-            coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-        }
+            // Temporary fix for bedrock players
+            String coords = null;
+            try {
+                String[] coordsSplit = plot.getGeoCoordinates().split(",");
+                double lat = Double.parseDouble(coordsSplit[0]);
+                double lon = Double.parseDouble(coordsSplit[1]);
+                DecimalFormat df = new DecimalFormat("##.#####");
+                df.setRoundingMode(RoundingMode.FLOOR);
+                coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            }
 
-        player.sendMessage("§8--------------------------");
-        if (coords != null) player.sendMessage("§7Coords: " + coords);
-        player.spigot().sendMessage(tc[0]);
-        player.spigot().sendMessage(tc[1]);
-        player.spigot().sendMessage(tc[2]);
-        player.sendMessage("§8--------------------------");
+            player.sendMessage("§8--------------------------");
+            if (coords != null) player.sendMessage("§7Coords: " + coords);
+            player.spigot().sendMessage(tc[0]);
+            player.spigot().sendMessage(tc[1]);
+            player.spigot().sendMessage(tc[2]);
+            player.sendMessage("§8--------------------------");
+
+            PlotHandler.sendGroupTipMessage(plot, player);
+        });
     }
 
     public static void sendGroupTipMessage(Plot plot, Player player) {

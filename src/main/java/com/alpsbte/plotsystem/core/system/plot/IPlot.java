@@ -31,6 +31,8 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,6 +65,12 @@ public interface IPlot {
      * @throws SQLException SQL database exception
      */
     Builder getPlotOwner() throws SQLException;
+
+    /**
+     * @return polygon outline of the plot
+     * @throws SQLException SQL database exception
+     */
+    List<BlockVector2D> getOutline() throws SQLException;
 
     /**
      * Sets the given builder to the plot owner

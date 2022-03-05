@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -36,7 +35,6 @@ import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -46,7 +44,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
-
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
     public DefaultPlotGenerator(int cityID, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
@@ -98,28 +95,6 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                     ex.printStackTrace();
                 }
             });
-        }
-    }
-
-    public static final class RawDefaultPlotGenerator extends DefaultPlotGenerator {
-
-        public RawDefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
-            super(plot, builder);
-        }
-
-        @Override
-        protected void generateOutlines(File plotSchematic) {
-            super.generateOutlines(getPlot().getFinishedSchematic());
-        }
-
-        @Override
-        protected boolean init() {
-            return true;
-        }
-
-        @Override
-        protected void onComplete(boolean failed) throws SQLException {
-            super.onComplete(true); // This code sucks, you know it, and I know it.
         }
     }
 }

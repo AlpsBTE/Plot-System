@@ -303,10 +303,11 @@ public class DatabaseConnection {
                             " `city_project_id` int NOT NULL ," +
                             " `difficulty_id`   int NOT NULL ," +
                             " `review_id`       int NULL ," +
-                            " `owner_uuid`     varchar(36) NULL ," +
+                            " `owner_uuid`      varchar(36) NULL ," +
                             " `member_uuids`    varchar(110) NULL ," +
                             " `status`          enum ('unclaimed', 'unfinished', 'unreviewed', 'completed') NOT NULL DEFAULT 'unclaimed' ," +
                             " `mc_coordinates`  varchar(255) NOT NULL ," +
+                            " `outline`         longtext NOT NULL ," +
                             " `score`           int NULL ," +
                             " `last_activity`   datetime NULL ," +
                             " `create_date`     datetime NOT NULL ," +
@@ -321,7 +322,9 @@ public class DatabaseConnection {
                             "CONSTRAINT `FK_69` FOREIGN KEY `fkIdx_70` (`review_id`) REFERENCES `plotsystem_reviews` (`id`)," +
                             "KEY `fkIdx_82` (`difficulty_id`)," +
                             "CONSTRAINT `FK_81` FOREIGN KEY `fkIdx_82` (`difficulty_id`) REFERENCES `plotsystem_difficulties` (`id`)" +
-                            ");"
+                            ");",
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NOT NULL;"
+
             );
         }
     }

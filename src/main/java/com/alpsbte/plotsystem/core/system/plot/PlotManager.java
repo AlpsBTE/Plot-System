@@ -294,12 +294,9 @@ public class PlotManager {
                 for(Plot plot : plots) {
                     if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                            try {
-                                PlotHandler.abandonPlot(plot);
+                            if (PlotHandler.abandonPlot(plot)) {
                                 Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
-                            } catch (Exception ex) {
-                                Bukkit.getLogger().log(Level.SEVERE, "A unknown error occurred!", ex);
-                            }
+                            } else Bukkit.getLogger().log(Level.WARNING, "An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!");
                         });
                     }
                 }
