@@ -27,10 +27,13 @@ public class LangUtil extends YamlFileFactory {
         Arrays.stream(languages).forEach(lang -> {
             if (!lang.getFile().exists()) {
                 createFile(lang);
-            } else if (lang.getDouble(LangPaths.CONFIG_VERSION) != lang.getVersion()) {
-                updateFile(lang);
             }
             reloadFile(lang);
+
+            if (lang.getDouble(LangPaths.CONFIG_VERSION) != lang.getVersion()) {
+                updateFile(lang);
+                reloadFile(lang);
+            }
         });
     }
 
