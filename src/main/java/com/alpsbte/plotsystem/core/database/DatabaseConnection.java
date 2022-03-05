@@ -270,7 +270,7 @@ public class DatabaseConnection {
                             " `third_slot`      int NULL ," +
                             "PRIMARY KEY (`uuid`)" +
                             ");",
-                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS lang varchar(5) DEFAULT 'en_GB' NOT NULL;",
+                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS lang varchar(5) NULL;",
 
                     // Reviews
                     "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
