@@ -87,14 +87,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed);
 
         if (!failed) {
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                try {
-                    getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
-                    LangUtil.broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getPlot().getPlotOwner().getName());
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            });
+            getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
+            LangUtil.broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getPlot().getPlotOwner().getName());
         }
     }
 }

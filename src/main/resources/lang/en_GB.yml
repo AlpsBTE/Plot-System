@@ -149,7 +149,8 @@ note:
   action:
     right-click: 'Right Click'
     click-to-remove-plot-member: 'Click to remove member from plot...'
-    click-to-open-link: '§6Click Here §7to open the §a{link}§7 link...'
+    click-to-open-link: '§6Click Here §7to open the §a{0}§7 link...'
+    click-to-open-link-with-shortlink: '§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}'
     click-to-show-feedback: '§6Click Here §ato show your plot feedback...'
     click-to-show-open-reviews: '§6Click Here §ato show open reviews...'
     click-to-show-plots: '§6Click Here §ato show your plots...'

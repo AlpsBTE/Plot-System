@@ -140,6 +140,7 @@ public class LangPaths {
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
+            public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";
             public static final String CLICK_TO_SHOW_FEEDBACK = ACTION + "click-to-show-feedback";
             public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION + "click-to-show-open-reviews";
             public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";

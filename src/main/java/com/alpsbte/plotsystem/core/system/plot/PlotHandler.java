@@ -24,12 +24,17 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Server;
+import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -154,29 +159,26 @@ public class PlotHandler {
             tc[1] = new TextComponent();
             tc[2] = new TextComponent();
 
-        tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"));
-        tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth Web"));
-        tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Open Street Map"));
             try {
                 if(PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                    tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link or use this link: §o" + ShortLink.generateShortLink(
+                    tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Maps", ShortLink.generateShortLink(
                             plot.getGoogleMapsLink(),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
 
-                    tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link or use this link: §o" + ShortLink.generateShortLink(
+                    tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Earth Web", ShortLink.generateShortLink(
                             plot.getGoogleEarthLink(),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
 
-                    tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link or use this link: §o" + ShortLink.generateShortLink(
+                    tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Open Street Map", ShortLink.generateShortLink(
                             plot.getOSMMapsLink(),
                             PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST)));;
+                            PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
                 } else {
-                    tc[0].setText("§7§l> §7Click me to open the §aGoogle Maps §7link....");
-                    tc[1].setText("§7§l> §7Click me to open the §aGoogle Earth Web §7link....");
-                    tc[2].setText("§7§l> §7Click me to open the §aOpen Street Map §7link....");
+                    tc[0].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"));
+                    tc[1].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth Web"));
+                    tc[2].setText("§7§l> " + LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Open Street Map"));
                 }
 
                 tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
@@ -188,9 +190,9 @@ public class PlotHandler {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating shortlink!", ex);
             }
 
-        tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Maps").create()));
-        tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Earth Web").create()));
-        tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Open Street Map").create()));
+            tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Maps").create()));
+            tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Earth Web").create()));
+            tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Open Street Map").create()));
 
             // Temporary fix for bedrock players
             String coords = null;
