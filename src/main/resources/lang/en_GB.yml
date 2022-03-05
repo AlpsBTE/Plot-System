@@ -78,7 +78,7 @@ menu-title:
   cancel: 'Cancel'
   add-member-to-plot: 'Add Member to Plot'
   companion: 'Companion'
-  player-plots: '{0}&#39;s Plots'
+  player-plots: '{0}s Plots'
   leave-plot: 'Leave Plot'
   review-plots: 'Review Plots'
   review-plot: 'Review Plot #{0}'
