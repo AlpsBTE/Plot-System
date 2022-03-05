@@ -26,7 +26,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§lEmpty Member Slot").build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {

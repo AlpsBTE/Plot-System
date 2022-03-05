@@ -5,7 +5,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.YamlFile;
 import com.alpsbte.plotsystem.utils.io.YamlFileFactory;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,7 +27,7 @@ public class LangUtil extends YamlFileFactory {
         Arrays.stream(languages).forEach(lang -> {
             if (!lang.getFile().exists()) {
                 createFile(lang);
-            } else if (lang.getDouble(ConfigPaths.CONFIG_VERSION) != lang.getVersion()) {
+            } else if (lang.getDouble(LangPaths.CONFIG_VERSION) != lang.getVersion()) {
                 updateFile(lang);
             }
             reloadFile(lang);

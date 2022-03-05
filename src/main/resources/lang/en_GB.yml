@@ -197,7 +197,6 @@ message:
     plot-does-not-exist: 'This plot does not exist!'
     plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
     plot-has-not-yet-reviewed: 'This plot has not yet been reviewed!'
-
     can-only-abandon-unfinished-plots: 'You can only abandon unfinished plots!'
     can-only-submit-unfinished-plots: 'You can only submit unfinished plots!'
     can-only-undo-submissions-unreviewed-plots: 'You can only undo submissions of unreviewed plots!'
@@ -206,7 +205,6 @@ message:
     cannot-undo-review: 'You cannot undo a review that you have not reviewed yourself!'
     cannot-send-feedback: 'You cannot send feedback to a plot that you have not reviewed yourself!'
     cannot-review-own-plot: 'You cannot review your own plot!'
-
     player-has-no-permissions: 'You do not have permission to do this!'
     player-has-no-invitations: 'You have no invitations!'
     player-is-not-allowed: 'You are not allowed to do this!'
@@ -216,7 +214,6 @@ message:
     player-not-found: 'Could not find that player!'
     player-needs-to-be-on-plot: 'You need to be on a plot in order to use this!'
     player-needs-higher-score: 'You need a higher score to build in this difficulty level.'
-
     invalid-input: 'Invalid input!'
     error-occurred: 'An error occurred! Please try again!'
     command-disabled: 'This command is disabled!'
