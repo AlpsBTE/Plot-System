@@ -17,10 +17,10 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set language item
-        getMenu().getSlot(13).setItem(MenuItems.errorItem()); // TODO: set language item
+        getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer())); // TODO: set language item
 
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override

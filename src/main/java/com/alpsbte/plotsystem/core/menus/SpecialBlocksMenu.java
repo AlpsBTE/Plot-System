@@ -52,7 +52,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
         }
 
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override

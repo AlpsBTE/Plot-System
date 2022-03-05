@@ -19,7 +19,7 @@ public class SelectLanguageMenu extends AbstractMenu {
         // TODO: set language items
 
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override

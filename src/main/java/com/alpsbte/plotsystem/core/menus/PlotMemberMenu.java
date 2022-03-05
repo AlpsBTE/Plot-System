@@ -37,7 +37,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for plot owner item
-        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -45,7 +45,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 List<Builder> plotMembers = plot.getPlotMembers();
                 for (int i = 1; i <= 3; i++) {
                     if (plotMembers.size() >= i) {
-                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
                     } else {
                         getMenu().getSlot(11 + i).setItem(emptyMemberSlotItem);
                     }
@@ -103,7 +103,7 @@ public class PlotMemberMenu extends AbstractMenu {
                         .build());
 
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override

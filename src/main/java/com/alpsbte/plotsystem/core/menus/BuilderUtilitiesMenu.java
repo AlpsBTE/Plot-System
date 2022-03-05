@@ -51,7 +51,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         super.setPreviewItems();
     }
 

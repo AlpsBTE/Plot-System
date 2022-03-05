@@ -79,7 +79,7 @@ public class PlotActionsMenu extends AbstractMenu {
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(10).setItem(MenuItems.errorItem());
+            getMenu().getSlot(10).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set teleport to plot item

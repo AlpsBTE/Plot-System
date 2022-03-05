@@ -56,7 +56,7 @@ public class FeedbackMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         super.setPreviewItems();
     }
@@ -93,7 +93,7 @@ public class FeedbackMenu extends AbstractMenu {
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(10).setItem(MenuItems.errorItem());
+            getMenu().getSlot(10).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set feedback text item
@@ -105,7 +105,7 @@ public class FeedbackMenu extends AbstractMenu {
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(13).setItem(MenuItems.errorItem());
+            getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set reviewer item
@@ -117,7 +117,7 @@ public class FeedbackMenu extends AbstractMenu {
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(13).setItem(MenuItems.errorItem());
+            getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
     }
 

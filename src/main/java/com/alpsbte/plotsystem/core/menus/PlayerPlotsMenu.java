@@ -62,10 +62,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for player head item
-        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         // Set back item
-        getMenu().getSlot(49).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         super.setPreviewItems();
     }
@@ -86,7 +86,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                             .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(4).setItem(MenuItems.errorItem());
+            getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set player plot items
@@ -107,7 +107,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                                     .build());
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    getMenu().getSlot(9 + i).setItem(MenuItems.errorItem());
+                    getMenu().getSlot(9 + i).setItem(MenuItems.errorItem(getMenuPlayer()));
                 }
             }
         } catch (SQLException ex) {

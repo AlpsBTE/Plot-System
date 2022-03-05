@@ -86,7 +86,7 @@ public class ReviewPlotMenu extends AbstractMenu {
         for(int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
-                    getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP));
+                    getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP, getMenuPlayer()));
                     break;
                 case 10:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.ARROW, 1)
@@ -211,7 +211,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(4).setItem(MenuItems.errorItem());
+            getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
     }
 

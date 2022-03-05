@@ -73,7 +73,7 @@ public class CompanionMenu extends AbstractMenu {
                         .build());
 
         // Set loading item for plots difficulty item
-        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         // Set builder utilities menu item
         getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem(getMenuPlayer()));
@@ -119,7 +119,7 @@ public class CompanionMenu extends AbstractMenu {
                 }
             } catch (NullPointerException | SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing player slot items!", ex);
-                getMenu().getSlot(46 + i).setItem(MenuItems.errorItem());
+                getMenu().getSlot(46 + i).setItem(MenuItems.errorItem(getMenuPlayer()));
             }
         }
 
@@ -168,7 +168,7 @@ public class CompanionMenu extends AbstractMenu {
         for(int i = 0; i < cityProjects.size(); i++) {
             int itemSlot = i;
             getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(MenuItems.errorItem())) {
+                if (!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(MenuItems.errorItem(getMenuPlayer()))) {
                     try {
                         clickPlayer.closeInventory();
                         Builder builder = new Builder(clickPlayer.getUniqueId());
@@ -280,7 +280,7 @@ public class CompanionMenu extends AbstractMenu {
 
                 } catch (SQLException | ExecutionException | InterruptedException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(MenuItems.errorItem());
+                    getMenu().getSlot(9 + cityProjects.indexOf(cp)).setItem(MenuItems.errorItem(getMenuPlayer()));
                 }
             }
         }
@@ -316,7 +316,7 @@ public class CompanionMenu extends AbstractMenu {
                     .build();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return MenuItems.errorItem();
+            return MenuItems.errorItem(getMenuPlayer());
         }
     }
 

@@ -66,7 +66,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected void setPreviewItems() {
         // Set close item
-        getMenu().getSlot(49).setItem(MenuItems.closeMenuItem());
+        getMenu().getSlot(49).setItem(MenuItems.closeMenuItem(getMenuPlayer()));
 
         super.setPreviewItems();
     }
@@ -96,7 +96,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                         .build());
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                getMenu().getSlot(index).setItem(MenuItems.errorItem());
+                getMenu().getSlot(index).setItem(MenuItems.errorItem(getMenuPlayer()));
             }
             index++;
         }
@@ -131,10 +131,10 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set previous page item
-        if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem());
+        if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem(getMenuPlayer()));
 
         // Set next page item
-        if (hasNextPage()) getMenu().getSlot(52).setItem(MenuItems.nextPageItem());
+        if (hasNextPage()) getMenu().getSlot(52).setItem(MenuItems.nextPageItem(getMenuPlayer()));
     }
 
     @Override
