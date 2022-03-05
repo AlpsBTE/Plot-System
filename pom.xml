@@ -13,6 +13,7 @@
 
     <modules>
         <module>core</module>
+        <module>api</module>
     </modules>
 
     <dependencies>
