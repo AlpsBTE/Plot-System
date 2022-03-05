@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.utils.io.language;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.YamlFile;
 import com.alpsbte.plotsystem.utils.io.YamlFileFactory;
@@ -14,7 +15,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Locale;
 
 public class LangUtil extends YamlFileFactory {
 
@@ -36,11 +36,11 @@ public class LangUtil extends YamlFileFactory {
     }
 
     public static String get(CommandSender sender, String key) {
-        return getLanguageFileByLocale(sender instanceof Player ? ((Player) sender).getLocale() : languages[0].tag).getTranslation(key);
+        return getLanguageFileByLocale(sender instanceof Player ? getLocaleTagByPlayer((Player) sender) : languages[0].tag).getTranslation(key);
     }
 
     public static String get(CommandSender sender, String key, String... args) {
-        return getLanguageFileByLocale(sender instanceof Player ? ((Player) sender).getLocale() : languages[0].tag).getTranslation(key, args);
+        return getLanguageFileByLocale(sender instanceof Player ? getLocaleTagByPlayer((Player) sender) : languages[0].tag).getTranslation(key, args);
     }
 
     private static LanguageFile getLanguageFileByLocale(String locale) {
@@ -48,6 +48,13 @@ public class LangUtil extends YamlFileFactory {
                 .filter(lang -> lang.tag.equals(locale))
                 .findFirst()
                 .orElse(languages[0]); // TODO: Set default language from config;
+    }
+
+    private static String getLocaleTagByPlayer(Player player) {
+        Builder builder = new Builder(player.getUniqueId());
+        if (builder.getLanguageTag() != null) {
+            return builder.getLanguageTag();
+        } else return player.getPlayer().getLocale();
     }
 
     public static void broadcast(String key) {

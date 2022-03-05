@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
-// import com.alpsbte.plotsystem.utils.io.language.LanguageFile;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
@@ -40,7 +39,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-// import java.util.logging.Level;
+import java.util.logging.Level;
 
 public class Builder {
 
@@ -221,16 +220,18 @@ public class Builder {
         return null;
     }
 
-    /*public LanguageFile getLanguage() {
+    public String getLanguageTag() {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT lang FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
             if (rs.next()) {
                 String tag = rs.getString(1);
-                return LanguageFile.languageList.stream().filter(l -> l.getTag().equals(tag)).findFirst().orElse(null);
+                DatabaseConnection.closeResultSet(rs);
+                return tag;
             }
+            DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database",ex);
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
         }
         return null;
-    }*/
+    }
 }
