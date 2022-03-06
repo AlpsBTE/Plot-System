@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class LangUtil extends YamlFileFactory {
 
-    private final static LanguageFile[] languages = new LanguageFile[] {
+    public final static LanguageFile[] languages = new LanguageFile[] {
         new LanguageFile("en_GB", 1.0),
         new LanguageFile("de_DE", 1.0, "de_AT", "de_CH")
     };
@@ -75,18 +75,14 @@ public class LangUtil extends YamlFileFactory {
         }
     }
 
-    private static class LanguageFile extends YamlFile {
+    public static class LanguageFile extends YamlFile {
         private final String tag;
-        private final String name;
-        private final String headID;
         private String[] additionalLang;
 
         public LanguageFile(String lang, double version) {
             super(Paths.get("lang", lang + ".yml"), version);
 
             this.tag = lang;
-            this.name = getString("lang.name");
-            this.headID = getString("lang.head-id");
         }
 
         public LanguageFile(String lang, double version, String... additionalLang) {
@@ -110,12 +106,12 @@ public class LangUtil extends YamlFileFactory {
             return tag;
         }
 
-        public String getName() {
-            return name;
+        public String getLangName() {
+            return getString(LangPaths.LANG_NAME);
         }
 
         public ItemStack getHead() {
-            return Utils.getItemHead(new Utils.CustomHead(headID));
+            return Utils.getItemHead(new Utils.CustomHead(getString(LangPaths.LANG_HEAD_ID)));
         }
 
         @Override

@@ -87,6 +87,7 @@ menu-title:
   review-plot: 'Review Plot #{0}'
   enter-player-name: 'Enter player name'
   select-language: 'Select Language'
+  auto-detect-language: 'Auto-Detect Language'
 
 
 # -----------------------------------------------------
@@ -114,6 +115,7 @@ menu-description:
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
   leave-plot-desc: 'Click to leave this plot'
   select-language-desc: 'Choose your language'
+  auto-detect-language-desc: 'Click to automatically detect your language'
 
 
 # -----------------------------------------------------
@@ -147,6 +149,8 @@ note:
   player-has-to-be-online: 'The player has to be online!'
   action:
     right-click: 'Right Click'
+    click-to-enable: 'Click to enable...'
+    click-to-disable: 'Click to disable...'
     click-to-remove-plot-member: 'Click to remove member from plot...'
     click-to-open-link: '§6Click Here §7to open the §a{0}§7 link...'
     click-to-open-link-with-shortlink: '§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}'
@@ -191,6 +195,7 @@ message:
     saving-plot: 'Saving plot...'
     creating-plot: 'Creating new plot...'
     created-new-plot: 'Created new plot§a for §6{0}§a!'
+    changed-language: 'Changed your language to §6{0}§a!'
   errors:
     plot-does-not-exist: 'This plot does not exist!'
     plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'

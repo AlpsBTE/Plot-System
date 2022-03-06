@@ -234,4 +234,15 @@ public class Builder {
         }
         return null;
     }
+
+    public void setLanguageTag(String langTag) throws SQLException {
+        if (langTag == null) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = DEFAULT(lang) WHERE uuid = ?")
+                    .setValue(getUUID().toString()).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = ? WHERE uuid = ?")
+                    .setValue(langTag).setValue(getUUID().toString())
+                    .executeUpdate();
+        }
+    }
 }

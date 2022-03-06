@@ -75,6 +75,7 @@ public class LangPaths {
         public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
+        public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
     }
 
     public static final class MenuDescription {
@@ -100,6 +101,7 @@ public class LangPaths {
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";
         public static final String LEAVE_PLOT = MENU_DESCRIPTIONS + "leave-plot-desc";
         public static final String SELECT_LANGUAGE = MENU_DESCRIPTIONS + "select-language-desc";
+        public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
     }
 
     public static final class Review {
@@ -134,6 +136,8 @@ public class LangPaths {
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
             public static final String RIGHT_CLICK = ACTION + "right-click";
+            public static final String CLICK_TO_ENABLE = ACTION + "click-to-enable";
+            public static final String CLICK_TO_DISABLE = ACTION + "click-to-disable";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";
@@ -182,6 +186,7 @@ public class LangPaths {
             public static final String SAVING_PLOT = INFO + "saving-plot";
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
+            public static final String CHANGED_LANGUAGE = INFO + "changed-language";
         }
 
         public static final class Error {
