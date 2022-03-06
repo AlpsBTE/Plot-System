@@ -5,6 +5,9 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
+# | [Formatting] Use // for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# |
 # | English translation by R3tuxn#7169 and Cinnazeyy#2440
 # -----------------------------------------------------
 
@@ -162,7 +165,6 @@ note:
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
-# Words that are wrapped in the {} tag are replaced afterwards. Do NOT change them!
 message:
   info:
     teleporting-plot: 'Teleporting to plot §6#{0}§a...'
