@@ -1,9 +1,11 @@
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -17,7 +19,13 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set language item
-        getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer())); // TODO: set language item
+        getMenu().getSlot(10).setItem(
+                new ItemBuilder(Utils.CustomHead.GLOBE.getAsItemStack())
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE))
+                        .setLore(new LoreBuilder()
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_LANGUAGE))
+                                .build())
+                        .build());
 
         // Set back item
         getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -26,7 +34,10 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for language item
-        getMenu().getSlot(13).setClickHandler(((clickPlayer, clickInformation) -> new SelectLanguageMenu(clickPlayer)));
+        getMenu().getSlot(10).setClickHandler(((clickPlayer, clickInformation) -> {
+            getMenuPlayer().closeInventory();
+            new SelectLanguageMenu(clickPlayer);
+        }));
 
         // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
