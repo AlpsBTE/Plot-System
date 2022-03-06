@@ -130,8 +130,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                 case 50:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
                             .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CANCEL.toUpperCase()))
-                            .setLore(new LoreBuilder()
-                                    .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.CLOSE)).build())
                             .build());
                     break;
                 default:

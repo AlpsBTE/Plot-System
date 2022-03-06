@@ -79,10 +79,6 @@ public class LangPaths {
 
     public static final class MenuDescription {
         private static final String MENU_DESCRIPTIONS = "menu-description.";
-        public static final String CLOSE = MENU_DESCRIPTIONS + "close-desc";
-        public static final String BACK = MENU_DESCRIPTIONS + "back-desc";
-        public static final String NEXT_PAGE = MENU_DESCRIPTIONS + "next-page-desc";
-        public static final String PREVIOUS_PAGE = MENU_DESCRIPTIONS + "previous-page-desc";
         public static final String ERROR = MENU_DESCRIPTIONS + "error-desc";
         public static final String NAVIGATOR = MENU_DESCRIPTIONS + "navigator-desc";
         public static final String PLOT_DIFFICULTY = MENU_DESCRIPTIONS + "plot-difficulty-desc";

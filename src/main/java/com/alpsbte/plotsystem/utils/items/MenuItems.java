@@ -38,32 +38,24 @@ public class MenuItems {
     public static ItemStack closeMenuItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
                 .setName("§c§l" + LangUtil.get(player, LangPaths.MenuTitle.CLOSE))
-                .setLore(new LoreBuilder()
-                    .addLine(LangUtil.get(player, LangPaths.MenuDescription.CLOSE)).build())
                 .build();
     }
 
     public static ItemStack backMenuItem(Player player) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.BACK_BUTTON))
                 .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.BACK))
-                .setLore(new LoreBuilder()
-                    .addLine(LangUtil.get(player, LangPaths.MenuDescription.BACK)).build())
                 .build();
     }
 
     public static ItemStack nextPageItem(Player player) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.NEXT_BUTTON))
                 .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.NEXT_PAGE))
-                .setLore(new LoreBuilder()
-                    .addLine(LangUtil.get(player, LangPaths.MenuDescription.NEXT_PAGE)).build())
                 .build();
     }
 
     public static ItemStack previousPageItem(Player player) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.PREVIOUS_BUTTON))
                 .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.PREVIOUS_PAGE))
-                .setLore(new LoreBuilder()
-                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.PREVIOUS_PAGE)).build())
                 .build();
     }
 

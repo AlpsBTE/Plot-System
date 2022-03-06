@@ -90,10 +90,6 @@ menu-title:
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  close-desc: 'Close the menu'
-  back-desc: 'Go back to the last menu'
-  next-page-desc: 'Show the next page'
-  previous-page-desc: 'Show the previous page'
   error-desc: 'An error occurred...'
   navigator-desc: 'Open the navigator menu'
   plot-difficulty-desc: 'Click to Switch...'
