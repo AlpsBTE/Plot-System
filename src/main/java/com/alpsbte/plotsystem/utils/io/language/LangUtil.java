@@ -18,7 +18,8 @@ import java.util.Arrays;
 public class LangUtil extends YamlFileFactory {
 
     private final static LanguageFile[] languages = new LanguageFile[] {
-        new LanguageFile("en_GB", 1.0)
+        new LanguageFile("en_GB", 1.0),
+        new LanguageFile("de_DE", 1.0, "de_AT", "de_CH")
     };
 
     public LangUtil() {
@@ -47,9 +48,12 @@ public class LangUtil extends YamlFileFactory {
 
     private static LanguageFile getLanguageFileByLocale(String locale) {
         return Arrays.stream(languages)
-                .filter(lang -> lang.tag.equals(locale))
+                .filter(lang -> lang.tag.equalsIgnoreCase(locale))
                 .findFirst()
-                .orElse(languages[0]); // TODO: Set default language from config;
+                .orElseGet(() -> Arrays.stream(languages)
+                        .filter(lang -> lang.additionalLang != null && Arrays.stream(lang.additionalLang).anyMatch(l -> l.equalsIgnoreCase(locale)))
+                        .findFirst()
+                        .orElse(languages[0]));
     }
 
     private static String getLocaleTagByPlayer(Player player) {
@@ -75,6 +79,7 @@ public class LangUtil extends YamlFileFactory {
         private final String tag;
         private final String name;
         private final String headID;
+        private String[] additionalLang;
 
         public LanguageFile(String lang, double version) {
             super(Paths.get("lang", lang + ".yml"), version);
@@ -82,6 +87,11 @@ public class LangUtil extends YamlFileFactory {
             this.tag = lang;
             this.name = getString("lang.name");
             this.headID = getString("lang.head-id");
+        }
+
+        public LanguageFile(String lang, double version, String... additionalLang) {
+            this(lang, version);
+            this.additionalLang = additionalLang;
         }
 
         public String getTranslation(String key) {
