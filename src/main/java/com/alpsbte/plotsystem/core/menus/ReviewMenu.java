@@ -91,7 +91,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
                 getMenu().getSlot(index).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
-                        .setName(LangUtil.get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
+                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {

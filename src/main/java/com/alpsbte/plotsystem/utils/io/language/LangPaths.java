@@ -106,7 +106,7 @@ public class LangPaths {
 
     public static final class Review {
         private static final String REVIEW = "review.";
-        public static final String MANAGE_AND_REVIEW_PLOTS = "manage-and-review-plots";
+        public static final String MANAGE_AND_REVIEW_PLOTS = REVIEW + "manage-and-review-plots";
         public static final String REVIEW_PLOT = REVIEW + "review-plot";
         public static final String MANAGE_PLOT = REVIEW + "manage-plot";
         public static final String ACCEPTED = REVIEW + "accepted";
@@ -171,7 +171,7 @@ public class LangPaths {
             public static final String PLOT_REJECTED = INFO + "plot-rejected";
             public static final String UNDID_SUBMISSION = INFO + "undid-submission";
             public static final String UNDID_REVIEW = INFO + "undid-review";
-            public static final String REVIEWED_PLOT = INFO + "reviewed-plots";
+            public static final String REVIEWED_PLOT = INFO + "reviewed-plot";
             public static final String UNREVIEWED_PLOT = INFO + "unreviewed-plot";
             public static final String UNREVIEWED_PLOTS = INFO + "unreviewed-plots";
             public static final String UNFINISHED_PLOT = INFO + "unfinished-plot";

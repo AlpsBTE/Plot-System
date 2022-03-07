@@ -237,7 +237,7 @@ public class PlotHandler {
     public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
         player.sendMessage("§8--------------------------");
         for(Plot plot : plots) {
-            player.sendMessage("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.REVIEWED_PLOT, "§6" + plot.getID() + "§a"));
+            player.sendMessage("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
             TextComponent tc = new TextComponent();
             tc.setText(LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
@@ -254,7 +254,7 @@ public class PlotHandler {
     }
 
     public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-        player.sendMessage("§7§l> " + LangUtil.get(player, (plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS) + "!"));
+        player.sendMessage("§7§l> " + LangUtil.get(player, plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS, String.valueOf(plots.size())));
         TextComponent tc = new TextComponent();
         tc.setText(LangUtil.get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));

@@ -90,7 +90,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
                 case 10:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.ARROW, 1)
-                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY.toUpperCase()))
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY))
                             .setLore(new LoreBuilder()
                                     .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY_DESC))
                                     .build())
@@ -98,7 +98,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
                 case 19:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.PAINTING, 1)
-                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE.toLowerCase()))
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE))
                             .setLore(new LoreBuilder()
                                     .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE_DESC))
                                     .build())
@@ -106,7 +106,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
                 case 28:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.EYE_OF_ENDER, 1)
-                            .setName(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING.toLowerCase()))
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING))
                             .setLore(new LoreBuilder()
                                     .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING_DESC))
                                     .build())
@@ -114,7 +114,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
                 case 37:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOOD_AXE, 1)
-                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE.toLowerCase()))
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE))
                             .setLore(new LoreBuilder()
                                     .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE_DESC))
                                     .build())
@@ -122,14 +122,14 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
                 case 48:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 13)
-                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT.toUpperCase()))
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT))
                             .setLore(new LoreBuilder()
                                     .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW)).build())
                             .build());
                     break;
                 case 50:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
-                            .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CANCEL.toUpperCase()))
+                            .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CANCEL))
                             .build());
                     break;
                 default:
