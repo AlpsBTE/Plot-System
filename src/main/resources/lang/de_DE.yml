@@ -8,7 +8,7 @@
 # | [Formatting] Use // for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
 # |
-# | German translation by R3tuxn#7169
+# | German translation by
 # -----------------------------------------------------
 
 lang:
@@ -21,101 +21,101 @@ lang:
 plot:
   plot-name: 'Plot'
   id: 'ID'
-  owner: 'Plot Besitzer'
-  members: 'Plot Mitglieder'
-  member: 'Plot Mitglieder'
-  city: 'Stadt'
-  difficulty: 'Schwierigkeit'
+  owner: 'Plot Owner'
+  members: 'Plot Members'
+  member: 'Plot Member'
+  city: 'City'
+  difficulty: 'Difficulty'
   status: 'Status'
   score: 'Score'
-  total-score: 'Gesamter Score'
-  effective-score: 'Effectiver Score'
-  completed-plots: 'Fertige Plots'
+  total-score: 'Total Score'
+  effective-score: 'Effective Score'
+  completed-plots: 'Completed Plots'
   group-system:
-    empty-member-slot: 'Leerer Mitglieder Slot'
-    shared-by-members: '(geteilt von {0} Mitgliedern)'
+    empty-member-slot: 'Empty Member Slot'
+    shared-by-members: '(shared by {0} members)'
 
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
 city-project:
-  open: 'Plots Offen'
-  in-progress: 'Plots In Bearbeitung'
-  completed: 'Plots Fertig'
-  no-plots-available: 'Keine Plots Verfügbar'
+  open: 'Plots Open'
+  in-progress: 'Plots In Progress'
+  completed: 'Plots Completed'
+  no-plots-available: 'No Plots Available'
 
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
-  automatic: 'Automatik'
-  score-multiplier: 'Score Multiplikator'
+  automatic: 'Automatic'
+  score-multiplier: 'Score Multiplier'
 
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: 'Schließen'
-  back: 'Zurück'
-  next-page: 'Nächste Seite'
-  previous-page: 'Vorherige Seite'
-  error: 'Fehler'
-  loading: 'Ladet...'
+  close: 'Close'
+  back: 'Back'
+  next-page: 'Next Page'
+  previous-page: 'Previous Page'
+  error: 'Error'
+  loading: 'Loading...'
   navigator: 'Navigator'
-  plot-difficulty: 'Plot Schwierigkeit'
+  plot-difficulty: 'Plot Difficulty'
   slot: 'Slot'
   builder-utilities: 'Builder Utilities'
-  show-plots: 'Plots Anzeigen'
-  settings: 'Einstellungen'
-  submit: 'Einsenden'
-  teleport: 'Teleportieren'
-  abandon: 'Löschen'
-  undo-submit: 'Einsendung Zurückziehen'
-  manage-members: 'Mitglieder Verwalten'
+  show-plots: 'Show Plots'
+  settings: 'Settings'
+  submit: 'Submit'
+  teleport: 'Teleport'
+  abandon: 'Abandon'
+  undo-submit: 'Undo Submit'
+  manage-members: 'Manage Members'
   feedback: 'Feedback | Review #{0}'
   custom-heads: 'Custom Heads'
   banner-maker: 'Banner Maker'
   special-blocks: 'Special Blocks'
-  review-point: 'Punkt'
-  review-points: 'Punkte'
-  cancel: 'Abbrechen'
-  add-member-to-plot: 'Mitglied zum Plot hinzufügen'
+  review-point: 'Point'
+  review-points: 'Points'
+  cancel: 'Cancel'
+  add-member-to-plot: 'Add Member to Plot'
   companion: 'Companion'
-  player-plots: '{0}’s Plots'
-  leave-plot: 'Plot Verlassen'
-  review-plots: 'Plot Bewerten'
+  player-plots: '{0}s Plots'
+  leave-plot: 'Leave Plot'
+  review-plots: 'Review Plots'
   review-plot: 'Review Plot #{0}'
-  enter-player-name: 'Spielername Eingeben'
-  select-language: 'Sprache Auswählen'
-  auto-detect-language: 'Automatische Spracherkennung'
+  enter-player-name: 'Enter player name'
+  select-language: 'Select Language'
+  auto-detect-language: 'Auto-Detect Language'
 
 
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: 'Ein Fehler ist aufgetreten...'
-  navigator-desc: 'Öffnet das Navigator Menü'
-  plot-difficulty-desc: 'Klicke zum Wechseln...'
-  slot-desc: 'Klicke auf ein City Project, um ein neues Plot zu erstellen'
-  builder-utilities-desc: 'Erhalte Zugang zu benutzerdefinierten Köpfen, Bannern und speziellen Blöcken'
-  show-plots-desc: 'Liste deine eigenen Plots auf'
-  settings-desc: 'Benutzereinstellungen ändern'
-  submit-plot-desc: 'Klicke, um dieses Plot fertigzustellen und zur Bewertung einzureichen'
-  teleport-desc: 'Klicke, um dich zum Plot zu teleportieren'
-  abandon-desc: 'Klick, um das Plot zu löschen'
-  undo-submit-desc: 'Klicke, um die Einsendung rückgängig zu machen'
-  manage-members-desc: 'Klicke, um andere Spieler auf dem Plot hinzuzufügen und zu entfernen'
-  feedback-desc: 'Klicke, um das Feedback anzuzeigen'
-  custom-heads-desc: 'Klicke, um eine Vielzahl von benutzerdefinierten Köpfen zu erhalten'
-  banner-maker-desc: 'Klicke, um benutzerdefinierte Banner zu erstellen'
-  special-blocks-desc: 'Klicke, um eine Vielzahl von unzugänglichen Blöcken zu erhalten'
-  add-member-to-plot-desc: 'Lade deine Freunde auf dein Plot ein und beginnt gemeinsam zu bauen'
-  review-points-desc: 'Klicke um auszuwählen'
-  submit-review-desc: 'Die ausgewählten Punkt einreichen und Plot als bewertet markieren'
-  leave-plot-desc: 'Klicke, um das Plot zu verlassen'
-  select-language-desc: 'Wähle deine Sprache'
-  auto-detect-language-desc: 'Klicke für eine automatische Sprachauswahl'
+  error-desc: 'An error occurred...'
+  navigator-desc: 'Open the navigator menu'
+  plot-difficulty-desc: 'Click to Switch...'
+  slot-desc: 'Click on a city project to create a new plot'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  show-plots-desc: 'Show all your plots'
+  settings-desc: 'Modify your user settings'
+  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
+  teleport-desc: 'Click to teleport to the plot'
+  abandon-desc: 'Click to reset your plot and give it to someone else'
+  undo-submit-desc: 'Click to undo your submission'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add//and remove other players on your plot'
+  feedback-desc: 'Click to view your plot review feedback'
+  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
+  banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
+  special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
+  add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
+  review-points-desc: 'Click to select'
+  submit-review-desc: 'Submit selected points and mark plot as reviewed'
+  leave-plot-desc: 'Click to leave this plot'
+  select-language-desc: 'Choose your language'
+  auto-detect-language-desc: 'Click to automatically detect your language'
 
 
 # -----------------------------------------------------
