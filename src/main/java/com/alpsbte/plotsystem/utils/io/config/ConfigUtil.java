@@ -44,10 +44,8 @@ public class ConfigUtil extends YamlFileFactory {
    public ConfigUtil() throws ConfigNotImplementedException {
        super(configs);
 
-       if (!getConfig().getFile().exists()) {
-           if (createFile(getConfig())) {
-               throw new ConfigNotImplementedException("The config file must be configured!");
-           }
+       if (!getConfig().getFile().exists() && createFile(getConfig())) {
+           throw new ConfigNotImplementedException("The config file must be configured!");
         }
 
         if (!getCommandsConfig().getFile().exists()) {

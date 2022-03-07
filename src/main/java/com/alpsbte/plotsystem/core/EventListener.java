@@ -78,10 +78,8 @@ public class EventListener extends SpecialBlocks implements Listener {
             if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem(event.getPlayer()))){
                 event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
             }
-            if (event.getPlayer().hasPermission("plotsystem.review")){
-                if (!event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem(event.getPlayer()))){
-                    event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem(event.getPlayer()));
-                }
+            if (event.getPlayer().hasPermission("plotsystem.review") && !event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem(event.getPlayer()))){
+                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem(event.getPlayer()));
             }
 
             // Check if player even exists in database.

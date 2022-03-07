@@ -42,7 +42,9 @@ public class YamlFile extends YamlConfiguration {
     public List<String> readDefaultFile() {
         try (InputStream in = getDefaultFileStream()) {
             BufferedReader input = new BufferedReader(new InputStreamReader(in));
-            return input.lines().collect(Collectors.toList());
+            List<String> lines = input.lines().collect(Collectors.toList());
+            input.close();
+            return lines;
         } catch (Exception e) {
             return new ArrayList<>();
         }

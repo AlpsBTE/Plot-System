@@ -50,7 +50,6 @@ import org.ipvp.canvas.mask.Mask;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
