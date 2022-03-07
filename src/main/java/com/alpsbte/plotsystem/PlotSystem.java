@@ -25,18 +25,19 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.core.config.ConfigManager;
+import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
-import com.alpsbte.plotsystem.core.config.ConfigNotImplementedException;
+import com.alpsbte.plotsystem.utils.io.config.ConfigNotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -59,7 +60,8 @@ public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "2.3";
 
     private static PlotSystem plugin;
-    private ConfigManager configManager;
+    private ConfigUtil configManager;
+    private LangUtil langUtil;
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
@@ -94,8 +96,8 @@ public class PlotSystem extends JavaPlugin {
 
         // Load config, if it throws an exception disable plugin
         try {
-            configManager = new ConfigManager();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded configuration file.");
+            configManager = new ConfigUtil();
+            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded configuration files.");
         } catch (ConfigNotImplementedException ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load configuration file.");
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "The config file must be configured!");
@@ -103,8 +105,19 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        this.configManager.reloadFiles();
 
-        this.configManager.reloadConfigs();
+        // Load language files
+        try {
+            langUtil = new LangUtil();
+            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded language files.");
+        } catch (Exception ex) {
+            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load language file.");
+            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         // Initialize database connection
         try {
@@ -194,8 +207,12 @@ public class PlotSystem extends JavaPlugin {
         }
     }
 
-    public ConfigManager getConfigManager() {
+    public ConfigUtil getConfigManager() {
         return configManager;
+    }
+
+    public LangUtil getLangUtil() {
+        return langUtil;
     }
 
     @Override @Deprecated
@@ -205,12 +222,12 @@ public class PlotSystem extends JavaPlugin {
 
     @Override @Deprecated
     public void reloadConfig() {
-        this.configManager.reloadConfigs();
+        this.configManager.saveFiles();
     }
 
     @Override @Deprecated
     public void saveConfig() {
-        this.configManager.saveConfigs();
+        this.configManager.saveFiles();
     }
 
     public static void reloadHolograms() {

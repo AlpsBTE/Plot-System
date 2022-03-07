@@ -4,6 +4,8 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Invitation;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
@@ -24,18 +26,18 @@ public class PlotMemberMenu extends AbstractMenu {
 
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§lEmpty Member Slot").build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
-        super(3, "Manage Members | Plot #" + plot.getID(), menuPlayer);
+        super(3,  LangUtil.get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
         this.plot = plot;
     }
 
     @Override
     protected void setPreviewItems() {
         // Set loading item for plot owner item
-        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -43,7 +45,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 List<Builder> plotMembers = plot.getPlotMembers();
                 for (int i = 1; i <= 3; i++) {
                     if (plotMembers.size() >= i) {
-                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
                     } else {
                         getMenu().getSlot(11 + i).setItem(emptyMemberSlotItem);
                     }
@@ -62,7 +64,7 @@ public class PlotMemberMenu extends AbstractMenu {
         try {
             getMenu().getSlot(10)
                     .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName("§6§lOwner").setLore(new LoreBuilder()
+                            .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
@@ -77,11 +79,11 @@ public class PlotMemberMenu extends AbstractMenu {
                     Builder builder = builders.get(i - 12);
                     getMenu().getSlot(i)
                             .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                    .setName("§b§lMember")
+                                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.MEMBER))
                                     .setLore(new LoreBuilder()
                                             .addLines(builder.getName(),
                                                     "",
-                                                    Utils.getActionFormat("Click to remove member from plot..."))
+                                                    Utils.getActionFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
                                             .build())
                                     .build());
                 }
@@ -94,14 +96,14 @@ public class PlotMemberMenu extends AbstractMenu {
         ItemStack whitePlus = Utils.getItemHead(Utils.CustomHead.ADD_BUTTON);
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§lAdd Member to Plot").setLore(new LoreBuilder()
-                                .addLines("Invite your friends to your plot, and start building together!",
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
+                                .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
                                         "",
-                                        Utils.getNoteFormat("The player has to be online!")).build())
+                                        Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
                         .build());
 
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override
@@ -115,7 +117,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
                     try {
                         plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(builder.getName() + " has been removed from plot #" + plot.getID()));
+                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
@@ -131,42 +133,42 @@ public class PlotMemberMenu extends AbstractMenu {
             new AnvilGUI.Builder()
                     .onComplete((player, text) -> {
                         try {
-                            if (Builder.getBuilderByName(text) != null){
+                            if (Builder.getBuilderByName(text) != null) {
                                 Builder builder = Builder.getBuilderByName(text);
-                                if (builder.isOnline()){
+                                if (builder.isOnline()) {
                                     // Check if player is owner of plot
-                                    if (builder.getPlayer() == plot.getPlotOwner().getPlayer()){
-                                        player.sendMessage(Utils.getErrorMessageFormat("You cannot add the plot owner as a member!"));
-                                        return AnvilGUI.Response.text("Player is already the owner!");
+                                    if (builder.getPlayer() == plot.getPlotOwner().getPlayer()) {
+                                        player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
+                                        return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_IS_OWNER));
                                     }
 
                                     // Check if player is already a member of the plot
                                     for (Builder item : plot.getPlotMembers()) {
                                         if (builder.getPlayer() == item.getPlayer()) {
-                                            player.sendMessage(Utils.getErrorMessageFormat("Player is already a member of that plot!"));
-                                            return AnvilGUI.Response.text("Player already added!");
+                                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_MEMBER)));
+                                            return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_ALREADY_ADDED));
                                         }
                                     }
 
-                                    new Invitation(builder.getPlayer(),plot);
+                                    new Invitation(builder.getPlayer(), plot);
                                     return AnvilGUI.Response.close();
                                 } else {
                                     // Builder isn't online, thus can't be asked if he/she wants to be added
-                                    player.sendMessage(Utils.getErrorMessageFormat("That player isn't online!"));
-                                    return AnvilGUI.Response.text("Player isn't online!");
+                                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
+                                    return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_NOT_ONLINE));
                                 }
                             }
                         } catch (SQLException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                         }
                         // Input was invalid or Player hasn't joined the server yet
-                        player.sendMessage(Utils.getErrorMessageFormat("Invalid Input! User either doesn't exist or hasn't joined the server yet!"));
-                        return AnvilGUI.Response.text("Invalid Input!");
+                        player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                        return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.INVALID_INPUT));
                     })
-                    .text("Player Name...")
+                    .text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
                     .itemLeft(new ItemStack(Material.NAME_TAG))
                     .itemRight(new ItemStack(Material.SKULL))
-                    .title("Enter player name.")
+                    .title(LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
                     .plugin(PlotSystem.getPlugin())
                     .open(clickPlayer);
         });

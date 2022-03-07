@@ -36,6 +36,8 @@ import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -171,17 +173,17 @@ public class PlotWorld implements IPlotWorld {
         Location spawnLocation;
         if (loadWorld() && (spawnLocation = getSpawnPoint()) != null) {
             try {
-                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to plot §6#" + plot.getID()));
+                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getID()))));
 
                 player.teleport(spawnLocation);
                 player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
                 player.setAllowFlight(true);
                 player.setFlying(true);
 
-                player.getInventory().setItem(8, CompanionMenu.getMenuItem());
-                if(player.hasPermission("plotsystem.review")) {
-                    player.getInventory().setItem(7, ReviewMenu.getMenuItem());
-                }
+                            player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
+                            if(player.hasPermission("plotsystem.review")) {
+                                player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
+                            }
 
                 PlotHandler.sendLinkMessages(plot, player);
 

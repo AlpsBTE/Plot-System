@@ -26,6 +26,8 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
@@ -58,13 +60,13 @@ public class ReviewPlotMenu extends AbstractMenu {
     boolean sentWarning = false;
 
     public ReviewPlotMenu(Player player, Plot plot) {
-        super(6, "Review Plot #" + plot.getID(), player);
+        super(6, LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
         this.plot = plot;
 
         // Check if plot is from player
         try {
             if (plot.getPlotOwner().getUUID().equals(player.getUniqueId())){
-                player.sendMessage(Utils.getErrorMessageFormat("You cannot review your own builds!"));
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -83,67 +85,50 @@ public class ReviewPlotMenu extends AbstractMenu {
         for(int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
-                    getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP));
+                    getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP, getMenuPlayer()));
                     break;
                 case 10:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.ARROW, 1)
-                            .setName("§a§lACCURACY")
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY))
                             .setLore(new LoreBuilder()
-                                    .addLines("How accurate is the building?",
-                                            "",
-                                            "- Looks like in RL",
-                                            "- Correct outlines",
-                                            "- Correct height",
-                                            "- Is completed")
+                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY_DESC))
                                     .build())
                             .build());
                     break;
                 case 19:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.PAINTING, 1)
-                            .setName("§a§lBLOCK PALETTE")
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE))
                             .setLore(new LoreBuilder()
-                                    .addLines("How many different blocks are used and how creative are they?",
-                                            "",
-                                            "- Choice of block colours/textures",
-                                            "- Random blocks")
+                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE_DESC))
                                     .build())
                             .build());
                     break;
                 case 28:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.EYE_OF_ENDER, 1)
-                            .setName("§a§lDETAILING")
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING))
                             .setLore(new LoreBuilder()
-                                    .addLines("How much detail does the building have?",
-                                            "",
-                                            "- Roof details",
-                                            "- Details on the facades",
-                                            "- Heads and Banners")
+                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING_DESC))
                                     .build())
                             .build());
                     break;
                 case 37:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOOD_AXE, 1)
-                            .setName("§a§lTECHNIQUE")
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE))
                             .setLore(new LoreBuilder()
-                                    .addLines("What building techniques have been used and how creative are they?",
-                                            "",
-                                            "- WorldEdit",
-                                            "- Used Special Blocks")
+                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE_DESC))
                                     .build())
                             .build());
                     break;
                 case 48:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 13)
-                            .setName("§a§lSUBMIT")
+                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT))
                             .setLore(new LoreBuilder()
-                                    .addLine("Submit selected points and mark plot as reviewed").build())
+                                    .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW)).build())
                             .build());
                     break;
                 case 50:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
-                            .setName("§c§lCANCEL")
-                            .setLore(new LoreBuilder()
-                                    .addLine("Close the menu").build())
+                            .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CANCEL))
                             .build());
                     break;
                 default:
@@ -153,9 +138,9 @@ public class ReviewPlotMenu extends AbstractMenu {
                     if (column > 2 && column < 9 && row > 1 && row < 6) {
                         if ((i + 1) % 9 == 3) {
                             itemPointZero[position] = new ItemBuilder(Material.WOOL, 1, (byte) 8)
-                                    .setName("§l§70 Points")
+                                    .setName("§l§70 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine("Click to select").build())
+                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
 
                             //Add Enchantment
@@ -165,38 +150,38 @@ public class ReviewPlotMenu extends AbstractMenu {
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
                             itemPointOne[position] = new ItemBuilder(Material.WOOL, 1, (byte) 14)
-                                    .setName("§l§c1 Point")
+                                    .setName("§l§c1 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINT))
                                     .setLore(new LoreBuilder()
-                                            .addLine("Click to select").build())
+                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
 
                             getMenu().getSlot(i).setItem(itemPointOne[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 5) {
                             itemPointTwo[position] = new ItemBuilder(Material.WOOL, 2, (byte) 1)
-                                    .setName("§l§62 Points")
+                                    .setName("§l§62 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine("Click to select").build())
+                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointTwo[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 6) {
                             itemPointThree[position] = new ItemBuilder(Material.WOOL, 3, (byte) 4)
-                                    .setName("§l§e3 Points")
+                                    .setName("§l§e3 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine("Click to select").build())
+                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointThree[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 7) {
                             itemPointFour[position] = new ItemBuilder(Material.WOOL, 4, (byte) 13)
-                                    .setName("§l§24 Points")
+                                    .setName("§l§24 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine("Click to select").build())
+                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFour[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 8) {
                             itemPointFive[position] = new ItemBuilder(Material.WOOL, 5, (byte) 5)
-                                    .setName("§l§a5 Points")
+                                    .setName("§l§a5 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine("Click to select").build())
+                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFive[(i - (i + 1) % 9) / 54]);
                         }
@@ -212,18 +197,18 @@ public class ReviewPlotMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         try {
             getMenu().getSlot(4).setItem(new ItemBuilder(Material.MAP, 1)
-                    .setName("§b§lReview Plot")
+                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REVIEW_PLOT))
                     .setLore(new LoreBuilder()
-                            .addLines("ID: §f" + plot.getID(),
+                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID(),
                                     "",
-                                    "§7Builder: §f" + plot.getPlotOwner().getName(),
-                                    "§7City: §f" + plot.getCity().getName(),
-                                    "§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName(),
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                             .build())
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(4).setItem(MenuItems.errorItem());
+            getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
     }
 
@@ -269,12 +254,12 @@ public class ReviewPlotMenu extends AbstractMenu {
                     if (totalRating <= 8) isRejected = true;
 
                     if (totalRating == 0 && !sentWarning) {
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat("§c§lWARNING: §cThis plot will automatically get abandoned!"));
+                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
                         sentWarning = true;
                         return;
                     } else if (isRejected && !sentWarning) {
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat("§c§lWARNING: §cThis plot will get rejected!"));
+                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
                         sentWarning = true;
                         return;
@@ -298,10 +283,10 @@ public class ReviewPlotMenu extends AbstractMenu {
                     String reviewerConfirmationMessage;
                     clickPlayer.closeInventory();
                     if (!isRejected) {
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat("Saving plot..."));
+                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
                         try {
                             if (!PlotManager.savePlotAsSchematic(plot)) {
-                                clickPlayer.sendMessage(Utils.getErrorMessageFormat("Could not save plot. Please try again!"));
+                                clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                                 Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
                                 return;
                             }
@@ -319,19 +304,19 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                         if (plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
-                            reviewerConfirmationMessage = Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §amarked as reviewed!");
+                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
 
                             // Builder gets 100% of score
                             plot.getPlotOwner().addScore(totalRating);
                         } else {
                             // Plot was made in a group
-                            StringBuilder sb = new StringBuilder(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", "));
+                            StringBuilder sb = new StringBuilder();
                             for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                                 sb.append(i == plot.getPlotMembers().size() - 1 ?
-                                        plot.getPlotMembers().get(i).getName() + " §amarked as reviewed!" :
+                                        plot.getPlotMembers().get(i).getName() :
                                         plot.getPlotMembers().get(i).getName() + ", ");
                             }
-                            reviewerConfirmationMessage = sb.toString();
+                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
 
                             // Score gets split between all participants
                             plot.getPlotOwner().addScore(plot.getSharedScore());
@@ -348,17 +333,17 @@ public class ReviewPlotMenu extends AbstractMenu {
                     } else {
                         if (plot.getPlotMembers().size() != 0) {
                             // Plot was made alone
-                            reviewerConfirmationMessage = Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!");
+                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
                         } else {
                             // Plot was made in a group
-                            StringBuilder sb = new StringBuilder(Utils.getInfoMessageFormat("Plot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", "));
+                            StringBuilder sb = new StringBuilder();
 
                             for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                                 sb.append(i == plot.getPlotMembers().size() - 1 ?
-                                        plot.getPlotMembers().get(i).getName() + " §ahas been rejected! Send feedback using §6/sendFeedback <ID> <Text> §a!" :
+                                        plot.getPlotMembers().get(i).getName() :
                                         plot.getPlotMembers().get(i).getName() + ", ");
                             }
-                            reviewerConfirmationMessage = sb.toString();
+                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
                         }
 
                         PlotHandler.undoSubmit(plot);

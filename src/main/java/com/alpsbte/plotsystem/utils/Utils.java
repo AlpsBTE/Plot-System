@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -173,6 +173,8 @@ public class Utils {
         public static CustomHead NEXT_BUTTON;
         public static CustomHead PREVIOUS_BUTTON;
 
+        public static CustomHead GLOBE;
+
         public static void loadHeadsAsync(HeadDatabaseAPI api) {
             headDatabaseAPI = api;
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
@@ -187,6 +189,8 @@ public class Utils {
                 BACK_BUTTON = new CustomHead("9226");
                 NEXT_BUTTON = new CustomHead("9223");
                 PREVIOUS_BUTTON = new CustomHead("9226");
+
+                GLOBE = new CustomHead("49973");
             });
         }
     }

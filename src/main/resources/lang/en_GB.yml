@@ -1,0 +1,230 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# |
+# | [Formatting] Use // for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# |
+# | English translation by R3tuxn#7169 and Cinnazeyy#2440
+# -----------------------------------------------------
+
+lang:
+  name: 'English (GB)'
+  head-id: '27577'
+
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
+plot:
+  plot-name: 'Plot'
+  id: 'ID'
+  owner: 'Plot Owner'
+  members: 'Plot Members'
+  member: 'Plot Member'
+  city: 'City'
+  difficulty: 'Difficulty'
+  status: 'Status'
+  score: 'Score'
+  total-score: 'Total Score'
+  effective-score: 'Effective Score'
+  completed-plots: 'Completed Plots'
+  group-system:
+    empty-member-slot: 'Empty Member Slot'
+    shared-by-members: '(shared by {0} members)'
+
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
+city-project:
+  open: 'Plots Open'
+  in-progress: 'Plots In Progress'
+  completed: 'Plots Completed'
+  no-plots-available: 'No Plots Available'
+
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
+difficulty:
+  automatic: 'Automatic'
+  score-multiplier: 'Score Multiplier'
+
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
+menu-title:
+  close: 'Close'
+  back: 'Back'
+  next-page: 'Next Page'
+  previous-page: 'Previous Page'
+  error: 'Error'
+  loading: 'Loading...'
+  navigator: 'Navigator'
+  plot-difficulty: 'Plot Difficulty'
+  slot: 'Slot'
+  builder-utilities: 'Builder Utilities'
+  show-plots: 'Show Plots'
+  settings: 'Settings'
+  submit: 'Submit'
+  teleport: 'Teleport'
+  abandon: 'Abandon'
+  undo-submit: 'Undo Submit'
+  manage-members: 'Manage Members'
+  feedback: 'Feedback | Review #{0}'
+  custom-heads: 'Custom Heads'
+  banner-maker: 'Banner Maker'
+  special-blocks: 'Special Blocks'
+  review-point: 'Point'
+  review-points: 'Points'
+  cancel: 'Cancel'
+  add-member-to-plot: 'Add Member to Plot'
+  companion: 'Companion'
+  player-plots: '{0}s Plots'
+  leave-plot: 'Leave Plot'
+  review-plots: 'Review Plots'
+  review-plot: 'Review Plot #{0}'
+  enter-player-name: 'Enter player name'
+  select-language: 'Select Language'
+  auto-detect-language: 'Auto-Detect Language'
+
+
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
+menu-description:
+  error-desc: 'An error occurred...'
+  navigator-desc: 'Open the navigator menu'
+  plot-difficulty-desc: 'Click to Switch...'
+  slot-desc: 'Click on a city project to create a new plot'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  show-plots-desc: 'Show all your plots'
+  settings-desc: 'Modify your user settings'
+  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
+  teleport-desc: 'Click to teleport to the plot'
+  abandon-desc: 'Click to reset your plot and give it to someone else'
+  undo-submit-desc: 'Click to undo your submission'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add//and remove other players on your plot'
+  feedback-desc: 'Click to view your plot review feedback'
+  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
+  banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
+  special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
+  add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
+  review-points-desc: 'Click to select'
+  submit-review-desc: 'Submit selected points and mark plot as reviewed'
+  leave-plot-desc: 'Click to leave this plot'
+  select-language-desc: 'Choose your language'
+  auto-detect-language-desc: 'Click to automatically detect your language'
+
+
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
+review:
+  review-plot: 'Review Plot'
+  manage-plot: 'Manage Plot'
+  manage-and-review-plots: 'Manage & Review Plots'
+  accepted: 'Accepted'
+  rejected: 'Rejected'
+  feedback: 'Feedback'
+  reviewer: 'Reviewer'
+  criteria:
+    accuracy: 'Accuracy'
+    accuracy-desc: 'How accurate is the building?////- Looks like in RL//- Correct outlines//- Correct height//- Is completed'
+    block-palette: 'Block Palette'
+    block-palette-desc: 'How many different blocks are used and how creative are they?////- Choice of blocks colours/textures//- Random blocks'
+    detailing: 'Detailing'
+    detailing-desc: 'How much detail does the building have?////- Roof details//- Details on the facades//- Heads and Banners'
+    technique: 'Technique'
+    technique-desc: 'What building techniques have been used and how creative are they?////- World-Edit//- Special Blocks'
+
+
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
+note:
+  wont-be-able-continue-building: 'You wont be able to continue building on this plot!'
+  score-will-be-split: 'Score will be split between all members when reviewed!'
+  player-has-to-be-online: 'The player has to be online!'
+  action:
+    right-click: 'Right Click'
+    click-to-enable: 'Click to enable...'
+    click-to-disable: 'Click to disable...'
+    click-to-remove-plot-member: 'Click to remove member from plot...'
+    click-to-open-link: '§6Click Here §7to open the §a{0}§7 link...'
+    click-to-open-link-with-shortlink: '§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}'
+    click-to-show-feedback: '§6Click Here §ato show your plot feedback...'
+    click-to-show-open-reviews: '§6Click Here §ato show open reviews...'
+    click-to-show-plots: '§6Click Here §ato show your plots...'
+    click-to-play-with-friends: '§7Want to play with your friends? §6Click Here...'
+  # NOTE: Try to keep it as short as possible
+  anvil:
+    player-is-owner: 'Player is already the owner!'
+    player-already-added: 'Player already added!'
+    player-not-online: 'Player is not online!'
+    invalid-input: 'Invalid input!'
+    enter-player-name: 'Player Name...'
+
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
+message:
+  info:
+    teleporting-plot: '§aTeleporting to plot §6#{0}§a...'
+    teleporting-spawn: '§aTeleporting to spawn...'
+    teleporting-tpll: '§aTeleporting to §6{0}§a, §6{1}§a...'
+    abandoned-plot: '§aAbandoned plot with ID §6#{0}§a!'
+    finished-plot: '§aPlot §6#{0}§a by §6{1}§a has been finished!'
+    plot-marked-as-reviewed: '§aPlot §6#{0}§a by §6{1}§a has been marked as reviewed!'
+    plot-rejected: '§aPlot §6#{0}§a by §6{1}§a has been rejected! Send feedback using §6/sendFeedback <ID> <TEXT>§a!'
+    undid-submission: '§aUndid submission of plot §6#{0}§a!'
+    undid-review: '§aUndid review of plot §6#{0}§a by §6#{1}§a!'
+    reviewed-plot: '§aYour plot §6#{0}§a has been reviewed!'
+    unreviewed-plot: '§aThere is §6{0}§a unreviewed plot!'
+    unreviewed-plots: '§aThere are §6{0}§a unreviewed plots!'
+    unfinished-plot: '§aYou have §6{0}§a unfinished plot!'
+    unfinished-plots: '§aYou have §6{0}§a unfinished plots!'
+    enabled-build-permissions: '§aEnabled build permissions for reviewers on plot §6#{0}§a!'
+    disabled-build-permissions: '§aDisabled build permissions for reviewers on plot §6#{0}§a!'
+    updated-plot-feedback: '§aFeedback for plot §6#{0}§a has been updated!'
+    removed-plot-member: '§aRemoved §6{0}§a from plot §6#{1}§a!'
+    left-plot: '§aLeft plot §6#{0}§a!'
+    plot-will-get-abandoned-warning: '§c§lWARNING: §cThis plot will automatically get abandoned!'
+    plot-will-get-rejected-warning: '§c§lWARNING: §cThis plot will get rejected!'
+    saving-plot: '§aSaving plot...'
+    creating-plot: '§aCreating new plot...'
+    created-new-plot: '§aCreated new plot§a for §6{0}§a!'
+    changed-language: '§aChanged your language to §6{0}§a!'
+  error:
+    plot-does-not-exist: 'This plot does not exist!'
+    plot-either-unclaimed-or-unreviewed: 'This plot is either unclaimed or has not been reviewed yet!'
+    plot-has-not-yet-reviewed: 'This plot has not yet been reviewed!'
+    can-only-abandon-unfinished-plots: 'You can only abandon unfinished plots!'
+    can-only-submit-unfinished-plots: 'You can only submit unfinished plots!'
+    can-only-undo-submissions-unreviewed-plots: 'You can only undo submissions of unreviewed plots!'
+    can-only-manage-members-unfinished-plots: 'You can only manage members of unfinished plots!'
+    can-only-tpll-to-plot: 'You can only use /tpll on a plot!'
+    cannot-undo-review: 'You cannot undo a review that you have not reviewed yourself!'
+    cannot-send-feedback: 'You cannot send feedback to a plot that you have not reviewed yourself!'
+    cannot-review-own-plot: 'You cannot review your own plot!'
+    player-has-no-permissions: 'You do not have permission to do this!'
+    player-has-no-invitations: 'You have no invitations!'
+    player-is-not-allowed: 'You are not allowed to do this!'
+    player-is-plot-owner: 'This player is already the plot owner!'
+    player-is-plot-member: 'This player is already a member of this plot!'
+    player-is-not-online: 'This player is not online!'
+    player-not-found: 'Could not find that player!'
+    player-needs-to-be-on-plot: 'You need to be on a plot in order to use this!'
+    player-needs-higher-score: 'You need a higher score to build in this difficulty level.'
+    invalid-input: 'Invalid input!'
+    error-occurred: 'An error occurred! Please try again!'
+    command-disabled: 'This command is disabled!'
+    no-plots-left: 'This city project does not have any more plots left. Please select another project.'
+    please-wait: 'Please wait a few seconds before creating a new plot!'
+    all-slots-occupied: 'All your slots are occupied! Please finish your current plots before creating a new one.'
+
+
+
+# NOTE: Do not change
+config-version: '1.0'

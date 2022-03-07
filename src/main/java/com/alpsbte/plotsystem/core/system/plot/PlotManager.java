@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;

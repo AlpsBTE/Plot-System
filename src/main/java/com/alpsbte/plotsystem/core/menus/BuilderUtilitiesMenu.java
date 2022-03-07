@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -38,19 +40,18 @@ import org.ipvp.canvas.mask.Mask;
 public class BuilderUtilitiesMenu extends AbstractMenu {
 
     public BuilderUtilitiesMenu(Player player) {
-        super(3, "Builder Utilities", player);
+        super(3, LangUtil.get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
 
         if(!PlotManager.isPlotWorld(player.getWorld())) {
-            player.sendMessage(Utils.getErrorMessageFormat("You need to be on a plot in order to use this!"));
             player.closeInventory();
+            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
         }
     }
 
     @Override
     protected void setPreviewItems() {
         // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem());
-
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         super.setPreviewItems();
     }
 
@@ -59,21 +60,21 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
         // Set custom-heads menu item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
-                        .setName("§b§lCUSTOM HEADS")
+                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
                         .setLore(new LoreBuilder()
-                                .addLine("Open the head menu to get a variety of custom heads.").build())
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
                         .build());
 
         // Set banner-maker menu item
         getMenu().getSlot(13)
                 .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
-                        .setName("§b§lBANNER MAKER")
+                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
                         .setLore(new LoreBuilder()
-                                .addLine("Open the banner maker menu to create your own custom banners.").build())
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
                         .build());
 
         // Set special-blocks menu item
-        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem());
+        getMenu().getSlot(16).setItem(SpecialBlocksMenu.getMenuItem(getMenuPlayer()));
     }
 
     @Override
@@ -104,11 +105,11 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     /**
      * @return Menu item
      */
-    public static ItemStack getMenuItem() {
+    public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLD_AXE)
                 .setName("§b§lBuilder Utilities")
                 .setLore(new LoreBuilder()
-                        .addLine("Get access to custom heads, banners and special blocks.").build())
+                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build()) //TODO:
                 .build();
     }
 }

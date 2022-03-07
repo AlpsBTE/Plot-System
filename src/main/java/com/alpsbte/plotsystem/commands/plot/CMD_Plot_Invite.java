@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Invitation;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -73,7 +75,7 @@ public class CMD_Plot_Invite extends SubCommand {
                 if (invite != null) {
                     Invitation.invitationsList.remove(invite);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("You have no invitations!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
                 }
             }
         } else {

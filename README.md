@@ -47,6 +47,7 @@ All used Libraries and APIs are listed below.
 ## Features
 ✔️ Support for **multiple cities** and **countries/states**<br/>
 ✔️ **User-friendly menus** and **commands**<br/>
+✔️ **Multi-Language** Support<br/>
 ✔️ Plot **Group System** (Build together with up to 5 people on one plot)<br/>
 ✔️ **SFTP/FTP** Support<br/>
 ✔️ Detailed **review system** with feedback<br/>
@@ -69,7 +70,6 @@ One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/
 
 <!-- ROADMAP -->
 ## Roadmap
-📋 Multi-Language Support<br/>
 📋 Plot Tutorial<br/>
 📋 In-Game Guidebook<br/>
 📋 Discord Integration<br/>

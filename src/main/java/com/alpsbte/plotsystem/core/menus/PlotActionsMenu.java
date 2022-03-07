@@ -25,12 +25,13 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
@@ -50,7 +51,7 @@ public class PlotActionsMenu extends AbstractMenu {
     private final boolean hasFeedback;
 
     public PlotActionsMenu(Player menuPlayer, Plot plot) throws SQLException {
-        super(3, "Plot #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
+        super(3, LangUtil.get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
 
         this.plot = plot;
         hasFeedback = plot.isReviewed() || plot.isRejected();
@@ -63,38 +64,38 @@ public class PlotActionsMenu extends AbstractMenu {
             if (plot.getStatus().equals(Status.unreviewed)) {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.FIREBALL, 1)
-                                .setName("§c§lUndo Submit").setLore(new LoreBuilder()
-                                        .addLine("Click to undo your submission.").build())
+                                .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT)).setLore(new LoreBuilder()
+                                        .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT)).build())
                                 .build());
             } else {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
-                                .setName("§a§lSubmit").setLore(new LoreBuilder()
-                                        .addLines("Click to complete this plot and submit it to be reviewed.",
+                                .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT)).setLore(new LoreBuilder()
+                                        .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT),
                                                 "",
-                                                Utils.getNoteFormat("You won't be able to continue building on this plot!"))
+                                                Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                         .build())
                                 .build());
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            getMenu().getSlot(10).setItem(MenuItems.errorItem());
+            getMenu().getSlot(10).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13)
                 .setItem(new ItemBuilder(Material.COMPASS, 1)
-                        .setName("§6§lTeleport").setLore(new LoreBuilder()
-                                .addLine("Click to teleport to the plot.").build())
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT)).setLore(new LoreBuilder()
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).build())
                         .build());
 
         // Set plot abandon item
         getMenu().getSlot(hasFeedback ? 14 : 16)
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
-                        .setName("§c§lAbandon").setLore(new LoreBuilder()
-                                .addLines("Click to reset your plot and to give it to someone else.",
+                        .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON)).setLore(new LoreBuilder()
+                                .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON),
                                         "",
-                                        Utils.getNoteFormat("You won't be able to continue building on your plot!"))
+                                        Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                 .build())
                         .build());
 
@@ -102,8 +103,8 @@ public class PlotActionsMenu extends AbstractMenu {
         if (hasFeedback) {
             getMenu().getSlot(16)
                     .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
-                            .setName("§b§lFeedback").setLore(new LoreBuilder()
-                                    .addLine("Click to view your plot review feedback.").build())
+                            .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.FEEDBACK)).setLore(new LoreBuilder()
+                                    .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK)).build())
                             .build());
         }
 
@@ -114,20 +115,19 @@ public class PlotActionsMenu extends AbstractMenu {
                 if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.ADD_BUTTON))
-                                    .setName("§b§lManage Members").setLore(new LoreBuilder()
-                                            .addLines("Click to open your Plot Member menu, where you can add",
-                                                    "and remove other players on your plot.",
+                                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS)).setLore(new LoreBuilder()
+                                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS),
                                                     "",
-                                                    Utils.getNoteFormat("Score will be split between all members when reviewed!"))
+                                                    Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.SCORE_WILL_BE_SPLIT)))
                                             .build())
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.REMOVE_BUTTON))
-                                    .setName("§b§lLeave Plot").setLore(new LoreBuilder()
-                                            .addLines("Click to leave this plot.",
+                                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT)).setLore(new LoreBuilder()
+                                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT),
                                                     "",
-                                                    Utils.getNoteFormat("You will no longer be able to continue build or get any score on it!"))
+                                                    Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                             .build())
                                     .build());
                 }
@@ -181,12 +181,12 @@ public class PlotActionsMenu extends AbstractMenu {
                         } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                             // Leave Plot
                             plot.removePlotMember(new Builder(clickPlayer.getUniqueId()));
-                            clickPlayer.sendMessage(Utils.getInfoMessageFormat("Left plot #" + plot.getID() + "!"));
+                            clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
                             clickPlayer.closeInventory();
                         }
                     } else {
                         clickPlayer.closeInventory();
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat("You can only manage plot members if plot is unfinished!"));
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
                     }
                 }
             } catch (SQLException ex) {

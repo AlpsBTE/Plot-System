@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -40,13 +42,13 @@ public class CMD_Spawn extends BaseCommand {
                 Player player = (Player) sender;
 
                 player.teleport(Utils.getSpawnLocation());
-                player.sendMessage(Utils.getInfoMessageFormat("Teleporting to spawn..."));
+                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
                 player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
         return true;
     }

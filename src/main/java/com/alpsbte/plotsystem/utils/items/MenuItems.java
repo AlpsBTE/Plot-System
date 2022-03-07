@@ -25,62 +25,57 @@
 package com.alpsbte.plotsystem.utils.items;
 
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuItems {
 
-    public static ItemStack closeMenuItem() {
+    public static ItemStack closeMenuItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
-                .setName("§c§lClose")
-                .setLore(new LoreBuilder()
-                    .addLine("Close the menu.").build())
+                .setName("§c§l" + LangUtil.get(player, LangPaths.MenuTitle.CLOSE))
                 .build();
     }
 
-    public static ItemStack backMenuItem() {
+    public static ItemStack backMenuItem(Player player) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.BACK_BUTTON))
-                .setName("§6§lBack")
-                .setLore(new LoreBuilder()
-                    .addLine("Go back to the last menu.").build())
+                .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.BACK))
                 .build();
     }
 
-    public static ItemStack nextPageItem() {
+    public static ItemStack nextPageItem(Player player) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.NEXT_BUTTON))
-                .setName("§6§lNext Page")
-                .setLore(new LoreBuilder()
-                    .addLine("Show the next page.").build())
+                .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.NEXT_PAGE))
                 .build();
     }
 
-    public static ItemStack previousPageItem() {
+    public static ItemStack previousPageItem(Player player) {
         return new ItemBuilder(Utils.getItemHead(Utils.CustomHead.PREVIOUS_BUTTON))
-                .setName("§6§lPrevious Page")
-                .setLore(new LoreBuilder()
-                        .addLine("Show the previous page.").build())
+                .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.PREVIOUS_PAGE))
                 .build();
     }
 
-    public static ItemStack errorItem() {
+    public static ItemStack errorItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
-                .setName("§c§lError")
+                .setName("§c§l" + LangUtil.get(player, LangPaths.MenuTitle.ERROR))
                 .setLore(new LoreBuilder()
-                    .addLine("An internal error occurred! Please contact a staff member!").build())
+                    .addLine(LangUtil.get(player, LangPaths.MenuDescription.ERROR)).build())
                 .build();
     }
 
-    public static ItemStack loadingItem(Material material) {
+    public static ItemStack loadingItem(Material material, Player player) {
         return new ItemBuilder(material)
-                .setName("§6§lLoading...")
+                .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.LOADING))
                 .build();
     }
 
-    public static ItemStack loadingItem(Material material, byte subId) {
+    public static ItemStack loadingItem(Material material, byte subId, Player player) {
         return new ItemBuilder(material, 1, subId)
-                .setName("§6§lLoading...")
+                .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.LOADING))
                 .build();
     }
 }
