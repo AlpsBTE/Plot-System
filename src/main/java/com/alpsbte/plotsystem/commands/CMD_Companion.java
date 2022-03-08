@@ -26,6 +26,8 @@ package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +40,7 @@ public class CMD_Companion extends BaseCommand {
                 new CompanionMenu((Player) sender);
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
 
         return true;

@@ -30,6 +30,8 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -67,7 +69,7 @@ public class CMD_Tpll extends BaseCommand {
                             args[1] = args[1].substring(0, args[1].length() - 1);
                         }
                         if (args.length != 2 && args.length != 3) {
-                            player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpll <lat> <lon>"));
+                            sendInfo(sender);
                             return true;
                         }
 
@@ -79,7 +81,7 @@ public class CMD_Tpll extends BaseCommand {
                                 lat = Double.parseDouble(args[0]);
                                 lon = Double.parseDouble(args[1]);
                             } catch (Exception ignore) {
-                                player.sendMessage(Utils.getErrorMessageFormat("§lUsage: §c/tpll <lat> <lon>"));
+                                sendInfo(sender);
                                 return true;
                             }
 
@@ -93,7 +95,7 @@ public class CMD_Tpll extends BaseCommand {
                             CompletableFuture<double[]> plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);
 
                             if(plotCoords == null) {
-                                player.sendMessage(Utils.getErrorMessageFormat("You can only teleport to your plot!"));
+                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
                                 return true;
                             }
 
@@ -115,26 +117,26 @@ public class CMD_Tpll extends BaseCommand {
 
                             DecimalFormat df = new DecimalFormat("##.#####");
                             df.setRoundingMode(RoundingMode.FLOOR);
-                            player.sendMessage(Utils.getInfoMessageFormat("Teleporting to §6" + df.format(lat) + "§a, §6" + df.format(lon)));
+                            player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
 
                         } catch (SQLException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat("A unknown error occurred! Please try again!"));
+                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         } catch (IOException | OutOfProjectionBoundsException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat("A unknown error occurred! Please try again!"));
+                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         }
                     } catch (Exception ignore) {
                         sendInfo(sender);
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat("You can only use /tpll on a plot!"));
+                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
         return true;
     }

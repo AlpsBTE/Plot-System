@@ -31,6 +31,8 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -53,14 +55,14 @@ public class CMD_Review extends BaseCommand {
                         new ReviewMenu(player);
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
         return true;
     }

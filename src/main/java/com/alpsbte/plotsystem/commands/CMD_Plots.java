@@ -27,6 +27,8 @@ package com.alpsbte.plotsystem.commands;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -48,20 +50,20 @@ public class CMD_Plots extends BaseCommand {
                         if (builder != null){
                             new PlayerPlotsMenu(player, builder);
                         } else {
-                            player.sendMessage(Utils.getErrorMessageFormat("Could not find that player!"));
+                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
                         }
                     } else {
                         new PlayerPlotsMenu(player, new Builder(player.getUniqueId()));
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
         return true;
     }

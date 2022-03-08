@@ -39,12 +39,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Builder {
 
     private final UUID UUID;
 
-    public Builder(UUID UUID) throws SQLException {
+    public Builder(UUID UUID) {
         this.UUID = UUID;
     }
 
@@ -220,5 +221,31 @@ public class Builder {
             }
         }
         return null;
+    }
+
+    public String getLanguageTag() {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT lang FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
+            if (rs.next()) {
+                String tag = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return tag;
+            }
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+        return null;
+    }
+
+    public void setLanguageTag(String langTag) throws SQLException {
+        if (langTag == null) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = DEFAULT(lang) WHERE uuid = ?")
+                    .setValue(getUUID().toString()).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = ? WHERE uuid = ?")
+                    .setValue(langTag).setValue(getUUID().toString())
+                    .executeUpdate();
+        }
     }
 }

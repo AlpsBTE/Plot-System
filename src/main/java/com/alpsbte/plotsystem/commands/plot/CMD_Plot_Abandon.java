@@ -32,6 +32,8 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -53,7 +55,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                 if (PlotManager.plotExists(plotID)) {
                     plot = new Plot(plotID);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
                 }
             } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -66,17 +68,17 @@ public class CMD_Plot_Abandon extends SubCommand {
             if (plot.getStatus() == Status.unfinished) {
                 if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
                     if (PlotHandler.abandonPlot(plot)) {
-                        sender.sendMessage(Utils.getInfoMessageFormat("Abandoned plot with the ID §6#" + plot.getID()));
+                        sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));
                         if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.AbandonPlotSound, 1, 1);
-                    } else sender.sendMessage(Utils.getErrorMessageFormat("An unexpected error has occurred!"));
+                    }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("You are not allowed to abandon this plot!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender,LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("You can only abandon unfinished plots!"));
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

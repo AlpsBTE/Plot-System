@@ -31,6 +31,8 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -53,7 +55,7 @@ public class CMD_Plot_Links extends SubCommand {
                     if (PlotManager.plotExists(plotID)) {
                         PlotHandler.sendLinkMessages(new Plot(plotID), getPlayer(sender));
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
                     PlotHandler.sendLinkMessages(PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId())), getPlayer(sender));

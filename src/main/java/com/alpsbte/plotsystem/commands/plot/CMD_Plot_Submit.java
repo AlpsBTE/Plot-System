@@ -32,6 +32,8 @@ import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -53,7 +55,7 @@ public class CMD_Plot_Submit extends SubCommand {
                 if (PlotManager.plotExists(plotID)) {
                     plot = new Plot(plotID);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("This plot does not exist!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
                 }
             } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -69,28 +71,28 @@ public class CMD_Plot_Submit extends SubCommand {
 
                     if (plot.getPlotMembers().isEmpty()) {
                         // Plot was made alone
-                        Bukkit.broadcastMessage("§7§l> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + " §ahas been finished!");
+                        LangUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), plot.getPlotOwner().getName());
                     } else {
                         // Plot was made in a group
-                        StringBuilder sb = new StringBuilder("§7§l> §aPlot §6#" + plot.getID() + " §aby §6" + plot.getPlotOwner().getName() + ", ");
+                        StringBuilder sb = new StringBuilder(plot.getPlotOwner().getName() + ", ");
 
                         for (int i = 0; i < plot.getPlotMembers().size(); i++) {
                             sb.append(i == plot.getPlotMembers().size() - 1 ?
-                                    plot.getPlotMembers().get(i).getName() + " §ahas been finished!" :
+                                    plot.getPlotMembers().get(i).getName() :
                                     plot.getPlotMembers().get(i).getName() + ", ");
                         }
-                        Bukkit.broadcastMessage(sb.toString());
+                        LangUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), sb.toString());
                     }
 
                     if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.FinishPlotSound, 1, 1);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("You can only submit unfinished plots!"));
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_SUBMIT_UNFINISHED_PLOTS)));
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("Only plot owners are allowed to submit plots!"));
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

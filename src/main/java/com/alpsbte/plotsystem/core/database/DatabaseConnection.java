@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.database;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
@@ -271,6 +271,7 @@ public class DatabaseConnection {
                             " `third_slot`      int NULL ," +
                             "PRIMARY KEY (`uuid`)" +
                             ");",
+                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS lang varchar(5) NULL;",
 
                     // Reviews
                     "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
