@@ -41,5 +41,5 @@ open class PlotDTO(id: Int) {
     var creatorUUID: String? = null
 
     @SerializedName("pasted")
-    var pasted: Boolean? = null
+    var pasted: Int? = null
 }
