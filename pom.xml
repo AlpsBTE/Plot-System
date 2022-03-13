@@ -24,6 +24,28 @@
             <version>${kotlin.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!-- Plugin Build Settings -->
@@ -48,5 +70,6 @@
 
     <properties>
         <kotlin.version>1.6.0</kotlin.version>
+        <junit.jupiter.version>5.8.1</junit.jupiter.version>
     </properties>
 </project>
