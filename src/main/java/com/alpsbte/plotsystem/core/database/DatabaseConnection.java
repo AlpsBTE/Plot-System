@@ -307,7 +307,6 @@ public class DatabaseConnection {
                             " `member_uuids`    varchar(110) NULL ," +
                             " `status`          enum ('unclaimed', 'unfinished', 'unreviewed', 'completed') NOT NULL DEFAULT 'unclaimed' ," +
                             " `mc_coordinates`  varchar(255) NOT NULL ," +
-                            " `outline`         longtext NOT NULL ," +
                             " `score`           int NULL ," +
                             " `last_activity`   datetime NULL ," +
                             " `create_date`     datetime NOT NULL ," +
