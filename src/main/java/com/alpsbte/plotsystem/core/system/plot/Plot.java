@@ -180,7 +180,6 @@ public class Plot implements IPlot {
     public void setPlotMembers(@NotNull List<Builder> plotMembers) throws SQLException {
         // Convert plot member list to string
         String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
-        Bukkit.getLogger().log(Level.SEVERE,plotMemberAsString);
 
         if(!plotMembers.isEmpty()) {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET member_uuids = ? WHERE id = ?")
