@@ -216,13 +216,13 @@ info:
     player-is-not-online: '此玩家不在线上！ '
     player-not-found: '无法找到该玩家！ '
     player-needs-to-be-on-plot: '你需要在一个建地上才能使用它！ '
-    player-needs-higher-score: '你需要更高的积分来才能在这个难度度建设。 '
-    invalid-input: '输入邀请！ '
-    error-occurred: '发生错误！请再次尝试！ '
-    command-disabled: '此命令已禁用！ '
-    no-plots-left: '此城市计画区没有剩余更多建地了。请选择其他计画区。 '
-    please-wait: '请稍后再创建一个新的建地！ '
-    all-slots-occupied: '你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。 '
+    player-needs-higher-score: '你需要更高的积分来才能在这个难度度建设。'
+    invalid-input: '输入邀请！'
+    error-occurred: '发生错误！请再次尝试！'
+    command-disabled: '此命令已禁用！'
+    no-plots-left: '此城市计画区没有剩余更多建地了。请选择其他计画区。'
+    please-wait: '请稍后再创建一个新的建地！'
+    all-slots-occupied: '你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。'
 
 
 
