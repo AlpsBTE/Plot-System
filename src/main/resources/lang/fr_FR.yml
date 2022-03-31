@@ -155,9 +155,9 @@ note:
     click-to-open-link: "§6Cliquez ici §7pour ouvrir le lien §a{0}§7..."
     click-to-open-link-with-shortlink: "§6Cliquez ici §7pour ouvrir le lien §a{0}§7 ou utilisez ce lien: §a{1}"
     click-to-show-feedback: "§6Cliquez ici §pour afficher vos commentaires sur le tracé..."
-    click-to-show-open-reviews: "§6Cliquez ici §pour afficher les avis ouverts..."
-    click-to-show-plots: "§6Cliquez ici §pour afficher vos tracés..."
-    click-to-play-with-friends: "§7Vous voulez jouer avec vos amis ? §6Cliquez ici..."
+    click-to-show-open-reviews: "§6Cliquez ici §apour afficher les avis ouverts..."
+    click-to-show-plots: "§6Cliquez ici §apour afficher vos tracés..."
+    click-to-play-with-friends: "§7Vous voulez jouer avec vos amis? §6Cliquez ici..."
   # NOTE: Try to keep it as short as possible
   anvil:
     player-is-owner: "Le joueur est déjà propriétaire!"
@@ -171,7 +171,7 @@ note:
 # -----------------------------------------------------
 message:
   info:
-    teleporting-plot: "§aTeleporting to plot §6#{0}§a..."
+    teleporting-plot: "§aTéléportation pour plot §6#{0}§a..."
     teleporting-spawn: "§aTéléportation pour spawn..."
     teleporting-tpll: "§aTéléportation au §6{0}§a, §6{1}§a..."
     abandon-plot: "§aParcelle abandonnée avec ID §6#{0}§a!"
@@ -181,9 +181,9 @@ message:
     undid-submission: "§aUndid soumission du complot §6#{0}§a!"
     undid-review: "§aUndid review of plot §6#{0}§a by §6#{1}§a!"
     review-plot: "§aVotre parcelle §6#{0}§a a été revue!"
-    unreviewed-plot: "§aIl y a §6{0}§un complot non révisé!"
+    unreviewed-plot: "§aIl y a §6{0}§a un complot non révisé!"
     unreviewed-plots: "§aIl y a §6{0}§a des parcelles non revues!"
-    unfinished-plot: "§aVous avez §6{0}§un terrain inachevé!"
+    unfinished-plot: "§aVous avez §6{0}§a un terrain inachevé!"
     unfinished-plots: "§aVous avez §6{0}§a parcelles inachevées!"
     enabled-build-permissions: "§aPermissions de construction activées pour les examinateurs sur le tracé §6#{0}§a!"
     disabled-build-permissions: "§aAutorisations de construction désactivées pour les examinateurs sur le tracé §6#{0}§a!"
