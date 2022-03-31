@@ -95,114 +95,114 @@ menu-title:
 # -----------------------------------------------------
 menu-description:
   error-desc: "Une erreur s'est produite..."
-  navigator-desc: 'Ouvrir le menu du navigateur'
-  plot-difficulty-desc: 'Cliquez pour basculer...'
-  slot-desc: 'Cliquez sur un projet de ville pour créer un nouveau plot'
+  navigator-desc: "Ouvrir le menu du navigateur"
+  plot-difficulty-desc: "Cliquez pour basculer..."
+  slot-desc: "Cliquez sur un projet de ville pour créer un nouveau plot"
   builder-utilities-desc: "Obtenez l'accès aux têtes custom, bannières et blocs spéciaux"
-  show-plots-desc: 'Afficher tous vos tracés'
-  settings-desc: 'Modifiez vos paramètres utilisateur'
-  submit-plot-desc: 'Cliquez pour terminer ce tracé et le soumettre pour une review'
+  show-plots-desc: "Afficher tous vos tracés"
+  settings-desc: "Modifiez vos paramètres utilisateur"
+  submit-plot-desc: "Cliquez pour terminer ce tracé et le soumettre pour une review"
   teleport-desc: "Cliquez pour vous téléporter sur l'intrigue"
   abandon-desc: "Cliquez pour réinitialiser votre plot et le donner à quelqu'un d'autre"
-  undo-submit-desc: 'Cliquez pour annuler votre soumission'
+  undo-submit-desc: "Cliquez pour annuler votre soumission"
   manage-members-desc: "Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter//supprimer d'autres joueurs sur votre plot"
-  feedback-desc: 'Cliquez pour afficher les commentaires sur la review de votre plot'
-  custom-heads-desc: 'Cliquez pour ouvrir le menu des têtes pour obtenir une variété de têtes personnalisées'
-  banner-maker-desc: 'Cliquez pour ouvrir le menu du créateur de bannières pour créer vos propres bannières personnalisées'
-  special-blocks-desc: 'Cliquez pour ouvrir le menu des blocs spéciaux pour obtenir une variété de blocs inaccessibles'
-  add-member-to-plot-desc: 'Invitez vos amis à votre plot et construisez ensemble'
-  review-points-desc: 'Cliquez pour sélectionner'
-  submit-review-desc: 'Soumettre les points sélectionnés et marquer le tracé comme révisé'
-  leave-plot-desc: 'Cliquez pour quitter ce tracé'
-  select-language-desc: 'Choisissez votre langue'
-  auto-detect-language-desc: 'Cliquez pour détecter automatiquement votre langue'
+  feedback-desc: "Cliquez pour afficher les commentaires sur la review de votre plot"
+  custom-heads-desc: "Cliquez pour ouvrir le menu des têtes pour obtenir une variété de têtes personnalisées"
+  banner-maker-desc: "Cliquez pour ouvrir le menu du créateur de bannières pour créer vos propres bannières personnalisées"
+  special-blocks-desc: "Cliquez pour ouvrir le menu des blocs spéciaux pour obtenir une variété de blocs inaccessibles"
+  add-member-to-plot-desc: "Invitez vos amis à votre plot et construisez ensemble"
+  review-points-desc: "Cliquez pour sélectionner"
+  submit-review-desc: "Soumettre les points sélectionnés et marquer le tracé comme révisé"
+  leave-plot-desc: "Cliquez pour quitter ce tracé"
+  select-language-desc: "Choisissez votre langue"
+  auto-detect-language-desc: "Cliquez pour détecter automatiquement votre langue"
 
 
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
 review:
-  review-plot: 'Revoir le tracé'
-  manage-plot: 'Gérer le tracé'
-  manage-and-review-plots: 'Gérer et réviser les tracés'
-  accepted: 'Accepté'
-  rejected: 'Refusé'
-  feedback: 'Commentaires'
-  reviewer: 'Relecteur'
+  review-plot: "Revoir le tracé"
+  manage-plot: "Gérer le tracé"
+  manage-and-review-plots: "Gérer et réviser les tracés"
+  accepted: "Accepté"
+  rejected: "Refusé"
+  feedback: "Commentaires"
+  reviewer: "Relecteur"
   criteria:
-    accuracy: 'Précision'
+    accuracy: "Précision"
     accuracy-desc: "Quelle est la précision du bâtiment?////- Ressemble à RL//- Contours corrects//- Hauteur correcte//- Est terminé"
-    block-palette: 'palette de blocs'
-    block-palette-desc: 'Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?////- Choix des couleurs/textures des blocs//- Blocs aléatoires'
-    detailing: 'Détail'
-    detailing-desc: 'Combien de détails le bâtiment a-t-il?////- Détails du toit//- Détails sur les façades//- Têtes et bannières'
-    technique: 'Technique'
-    technique-desc: 'Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?////- World-Edit//- Blocs spéciaux'
+    block-palette: "palette de blocs"
+    block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?////- Choix des couleurs/textures des blocs//- Blocs aléatoires"
+    detailing: "Détail"
+    detailing-desc: "Combien de détails le bâtiment a-t-il?////- Détails du toit//- Détails sur les façades//- Têtes et bannières"
+    technique: "Technique"
+    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?////- World-Edit//- Blocs spéciaux"
 
 
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
 note:
-  wont-be-able-continue-building: 'Vous ne pourrez plus continuer à construire sur ce terrain!'
-  score-will-be-split: 'Le score sera partagé entre tous les membres lors de la révision!'
-  player-has-to-be-online: 'Le joueur doit être en ligne!'
+  wont-be-able-continue-building: "Vous ne pourrez plus continuer à construire sur ce terrain!"
+  score-will-be-split: "Le score sera partagé entre tous les membres lors de la révision!"
+  player-has-to-be-online: "Le joueur doit être en ligne!"
   action:
-    right-click: 'clic droit'
-    click-to-enable: 'Cliquez pour activer...'
-    click-to-disable: 'Cliquez pour désactiver...'
-    click-to-remove-plot-member: 'Cliquez pour supprimer le membre du tracé...'
-    click-to-open-link: '§6Cliquez ici §7pour ouvrir le lien §a{0}§7...'
-    click-to-open-link-with-shortlink: '§6Cliquez ici §7pour ouvrir le lien §a{0}§7 ou utilisez ce lien: §a{1}'
-    click-to-show-feedback: '§6Cliquez ici §pour afficher vos commentaires sur le tracé...'
-    click-to-show-open-reviews: '§6Cliquez ici §pour afficher les avis ouverts...'
-    click-to-show-plots: '§6Cliquez ici §pour afficher vos tracés...'
-    click-to-play-with-friends: '§7Vous voulez jouer avec vos amis ? §6Cliquez ici...'
+    right-click: "clic droit"
+    click-to-enable: "Cliquez pour activer..."
+    click-to-disable: "Cliquez pour désactiver..."
+    click-to-remove-plot-member: "Cliquez pour supprimer le membre du tracé..."
+    click-to-open-link: "§6Cliquez ici §7pour ouvrir le lien §a{0}§7..."
+    click-to-open-link-with-shortlink: "§6Cliquez ici §7pour ouvrir le lien §a{0}§7 ou utilisez ce lien: §a{1}"
+    click-to-show-feedback: "§6Cliquez ici §pour afficher vos commentaires sur le tracé..."
+    click-to-show-open-reviews: "§6Cliquez ici §pour afficher les avis ouverts..."
+    click-to-show-plots: "§6Cliquez ici §pour afficher vos tracés..."
+    click-to-play-with-friends: "§7Vous voulez jouer avec vos amis ? §6Cliquez ici..."
   # NOTE: Try to keep it as short as possible
   anvil:
-    player-is-owner: 'Le joueur est déjà propriétaire!'
-    player-already-added: 'Joueur déjà ajouté!'
+    player-is-owner: "Le joueur est déjà propriétaire!"
+    player-already-added: "Joueur déjà ajouté!"
     player-not-online: "Le joueur n'est pas en ligne!"
-    invalid-input: 'Entrée invalide!'
-    enter-player-name: 'Nom du joueur...'
+    invalid-input: "Entrée invalide!"
+    enter-player-name: "Nom du joueur..."
 
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
 message:
   info:
-    teleporting-plot: '§aTeleporting to plot §6#{0}§a...'
-    teleporting-spawn: '§aTéléportation pour spawn...'
-    teleporting-tpll: '§aTéléportation au §6{0}§a, §6{1}§a...'
-    abandon-plot: '§aParcelle abandonnée avec ID §6#{0}§a!'
-    done-plot: '§aLe tracé §6#{0}§a par §6{1}§a est terminé!'
-    plot-marked-as-reviewed: '§aLe terrain §6#{0}§a par §6{1}§a a été marqué comme révisé!'
-    plot-rejected: '§aLe tracé §6#{0}§a par §6{1}§a a été rejeté! Envoyez des commentaires en utilisant §6/sendFeedback <ID> <TEXT>§a!'
-    undid-submission: '§aUndid soumission du complot §6#{0}§a!'
-    undid-review: '§aUndid review of plot §6#{0}§a by §6#{1}§a!'
-    review-plot: '§aVotre parcelle §6#{0}§a a été revue!'
-    unreviewed-plot: '§aIl y a §6{0}§un complot non révisé!'
-    unreviewed-plots: '§aIl y a §6{0}§a des parcelles non revues!'
-    unfinished-plot: '§aVous avez §6{0}§un terrain inachevé!'
-    unfinished-plots: '§aVous avez §6{0}§a parcelles inachevées!'
-    enabled-build-permissions: '§aPermissions de construction activées pour les examinateurs sur le tracé §6#{0}§a!'
-    disabled-build-permissions: '§aAutorisations de construction désactivées pour les examinateurs sur le tracé §6#{0}§a!'
-    updated-plot-feedback: '§aFeedback for plot §6#{0}§a has been updated!'
-    remove-plot-member: '§aSupprimé §6{0}§a du tracé §6#{1}§a!'
-    left-plot: '§aTracé de gauche §6#{0}§a!'
-    plot-will-get-abandoned-warning: '§c§lATTENTION: §cCette parcelle sera automatiquement abandonnée!'
-    plot-will-get-rejected-warning: '§c§lATTENTION: §cCette parcelle sera rejetée!'
+    teleporting-plot: "§aTeleporting to plot §6#{0}§a..."
+    teleporting-spawn: "§aTéléportation pour spawn..."
+    teleporting-tpll: "§aTéléportation au §6{0}§a, §6{1}§a..."
+    abandon-plot: "§aParcelle abandonnée avec ID §6#{0}§a!"
+    done-plot: "§aLe tracé §6#{0}§a par §6{1}§a est terminé!"
+    plot-marked-as-reviewed: "§aLe terrain §6#{0}§a par §6{1}§a a été marqué comme révisé!"
+    plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté! Envoyez des commentaires en utilisant §6/sendFeedback <ID> <TEXT>§a!"
+    undid-submission: "§aUndid soumission du complot §6#{0}§a!"
+    undid-review: "§aUndid review of plot §6#{0}§a by §6#{1}§a!"
+    review-plot: "§aVotre parcelle §6#{0}§a a été revue!"
+    unreviewed-plot: "§aIl y a §6{0}§un complot non révisé!"
+    unreviewed-plots: "§aIl y a §6{0}§a des parcelles non revues!"
+    unfinished-plot: "§aVous avez §6{0}§un terrain inachevé!"
+    unfinished-plots: "§aVous avez §6{0}§a parcelles inachevées!"
+    enabled-build-permissions: "§aPermissions de construction activées pour les examinateurs sur le tracé §6#{0}§a!"
+    disabled-build-permissions: "§aAutorisations de construction désactivées pour les examinateurs sur le tracé §6#{0}§a!"
+    updated-plot-feedback: "§aFeedback for plot §6#{0}§a has been updated!"
+    remove-plot-member: "§aSupprimé §6{0}§a du tracé §6#{1}§a!"
+    left-plot: "§aTracé de gauche §6#{0}§a!"
+    plot-will-get-abandoned-warning: "§c§lATTENTION: §cCette parcelle sera automatiquement abandonnée!"
+    plot-will-get-rejected-warning: "§c§lATTENTION: §cCette parcelle sera rejetée!"
     saving-plot: "§aEnregistrement de l'intrigue..."
     creating-plot: "§aCréation d'un nouveau tracé..."
-    created-new-plot: '§aCréé un nouveau tracé§a pour §6{0}§a!'
-    changed-language: '§aChangement de langue en §6{0}§a!'
+    created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
+    changed-language: "§aChangement de langue en §6{0}§a!"
   error:
     plot-does-not-exist: "Ce complot n'existe pas!"
     plot-either-unclaimed-or-unreviewed: "Cette parcelle est soit non réclamée, soit n'a pas encore été examinée!"
     plot-has-not-yet-reviewed: "Ce complot n'a pas encore été revu!"
     can-only-abandon-unfinished-plots: "Vous ne pouvez abandonner que les parcelles inachevées!"
     can-only-submit-unfinished-plots: "Vous ne pouvez soumettre que des tracés inachevés!"
-    can-only-undo-submissions-unreviewed-plots: 'Vous ne pouvez annuler que les soumissions de parcelles non révisées!'
+    can-only-undo-submissions-unreviewed-plots: "Vous ne pouvez annuler que les soumissions de parcelles non révisées!"
     can-only-manage-members-unfinished-plots: "Vous ne pouvez gérer que les membres des parcelles inachevées!"
     can-only-tpll-to-plot: "Vous ne pouvez utiliser /tpll que sur un tracé!"
     can-undo-review: "Vous ne pouvez pas annuler une révision que vous n'avez pas révisée vous-même!"
@@ -211,20 +211,20 @@ message:
     player-has-no-permissions: "Vous n'avez pas la permission de faire ça!"
     player-has-no-invitations: "Vous n'avez aucune invitation!"
     player-is-not-allowed: "Vous n'êtes pas autorisé à faire ça!"
-    player-is-plot-owner: 'Ce joueur est déjà le propriétaire du terrain!'
-    player-is-plot-member: 'Ce joueur est déjà membre de cette parcelle!'
+    player-is-plot-owner: "Ce joueur est déjà le propriétaire du terrain!"
+    player-is-plot-member: "Ce joueur est déjà membre de cette parcelle!"
     player-is-not-online: "Ce joueur n'est pas en ligne!"
-    player-not-found: 'Impossible de trouver ce joueur!'
+    player-not-found: "Impossible de trouver ce joueur!"
     player-needs-to-be-on-plot: "Vous devez être sur un terrain pour pouvoir l'utiliser!"
     player-needs-higher-score: "Vous avez besoin d'un score plus élevé pour intégrer ce niveau de difficulté."
-    invalid-input: 'Entrée invalide!'
+    invalid-input: "Entrée invalide!"
     error-occurred: "Une erreur s'est produite! Veuillez réessayer!"
-    command-disabled: 'Cette commande est désactivée!'
+    command-disabled: "Cette commande est désactivée!"
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."
-    please-wait: 'Veuillez patienter quelques secondes avant de créer un nouveau tracé!'
+    please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
 
 
 
 # NOTE: Do not change
-config-version: '1.0'
+config-version: "1.0"
