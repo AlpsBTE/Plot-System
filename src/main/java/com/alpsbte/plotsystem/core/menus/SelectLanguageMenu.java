@@ -68,6 +68,7 @@ public class SelectLanguageMenu extends AbstractMenu {
                 try {
                     Builder builder = new Builder(getMenuPlayer().getUniqueId());
                     builder.setLanguageTag(langFile.getTag());
+                    Utils.updatePlayerInventorySlots(clickPlayer);
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
                     getMenuPlayer().sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE, langFile.getLangName())));
                 } catch (SQLException ex) {
