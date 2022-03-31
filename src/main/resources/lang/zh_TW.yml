@@ -154,9 +154,9 @@ note:
     click-to-remove-plot-member: "點擊以從建地中移除成員..."
     click-to-open-link: "§6點擊此區 §7以開啟 §a{0}§7 連結..."
     click-to-open-link-with-shortlink: "§6點擊此區 §7以開啟 §a{0}§7 連結或使用此連結： §a{1}"
-    click-to-show-feedback: "§6點擊此區 §ato 顯示你的建地回饋..."
-    click-to-show-open-reviews: "§6點擊此區 §ato 顯示公開審核..."
-    click-to-show-plots: "§6點擊此區 §ato 顯示你的建地..."
+    click-to-show-feedback: "§6點擊此區 §a顯示你的建地回饋..."
+    click-to-show-open-reviews: "§6點擊此區 §a顯示公開審核..."
+    click-to-show-plots: "§6點擊此區 §a顯示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩嗎？ §6點擊此區..."
   # NOTE: Try to keep it as short as possible
   anvil:
