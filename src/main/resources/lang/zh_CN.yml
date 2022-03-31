@@ -170,7 +170,7 @@ note:
 # | Messages
 # -----------------------------------------------------
 message:
-info:
+  info:
     teleporting-plot: "§a传送至建地 §6#{0}§a..."
     teleporting-spawn: "§a传送至重生点..."
     teleporting-tpll: "§a传送至 §6{0}§a, §6{1}§a..."

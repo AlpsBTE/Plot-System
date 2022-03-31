@@ -78,8 +78,8 @@ public abstract class YamlFileFactory {
                 lineNumber++;
 
                 if (line.contains("\t")) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Tab found in file \"" + yamlFile.getFile().getAbsolutePath() + "\" on line #" + lineNumber + "!");
-                    throw new IllegalArgumentException("Tab found in file \"" + yamlFile.getFile().getAbsolutePath() + "\" on line # " + line + "!");
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Tab found in file '" + yamlFile.getFile().getAbsolutePath() + "' on line #" + lineNumber + "!");
+                    throw new IllegalArgumentException("Tab found in file '" + yamlFile.getFile().getAbsolutePath() + "' on line # " + line + "!");
                 }
             }
             return true;
