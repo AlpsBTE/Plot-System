@@ -60,7 +60,7 @@ public class SelectLanguageMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Set click event for language items
         for (int i = 0; i < LangUtil.languages.length; i++) {
             LangUtil.LanguageFile langFile = LangUtil.languages[i];

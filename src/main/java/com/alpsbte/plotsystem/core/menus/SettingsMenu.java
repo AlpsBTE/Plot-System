@@ -32,7 +32,7 @@ public class SettingsMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Set click event for language item
         getMenu().getSlot(10).setClickHandler(((clickPlayer, clickInformation) -> {
             getMenuPlayer().closeInventory();

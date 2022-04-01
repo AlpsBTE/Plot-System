@@ -55,7 +55,7 @@ public abstract class AbstractMenu {
     /**
      * Sets click events for the items placed in the menu after it is opened
      */
-    protected abstract void setItemClickEventsAsync();
+    protected abstract void setItemClickEvents();
 
     /**
      * Places pre-defined items in the menu before it is opened
@@ -75,13 +75,13 @@ public abstract class AbstractMenu {
 
     /**
      * Reloads all menu items and click events in the menu asynchronously
-     * {@link #setPreviewItems()}.{@link #setMenuItemsAsync()}.{@link #setItemClickEventsAsync()}
+     * {@link #setPreviewItems()}.{@link #setMenuItemsAsync()}.{@link #setItemClickEvents()}
      */
     protected void reloadMenuAsync() {
         setPreviewItems();
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             setMenuItemsAsync();
-            setItemClickEventsAsync();
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), this::setItemClickEvents);
         });
     }
 
