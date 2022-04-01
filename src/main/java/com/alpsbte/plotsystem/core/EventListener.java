@@ -75,12 +75,7 @@ public class EventListener extends SpecialBlocks implements Listener {
         // Adding user to the database
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             // Add Items
-            if (!event.getPlayer().getInventory().contains(CompanionMenu.getMenuItem(event.getPlayer()))){
-                event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
-            }
-            if (event.getPlayer().hasPermission("plotsystem.review") && !event.getPlayer().getInventory().contains(ReviewMenu.getMenuItem(event.getPlayer()))){
-                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem(event.getPlayer()));
-            }
+            Utils.updatePlayerInventorySlots(event.getPlayer());
 
             // Check if player even exists in database.
             try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")

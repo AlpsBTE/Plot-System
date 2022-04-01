@@ -12,219 +12,219 @@
 # -----------------------------------------------------
 
 lang:
-  name: '繁體中文(台灣)'
-  head-id: '11627'
+  name: "繁體中文(台灣)"
+  head-id: "11627"
 
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
 plot:
-  plot-name: '建地'
-  id: 'ID'
-  owner: '建地所有人'
-  members: '建地成員'
-  member: '建地成員'
-  city: '城市'
-  difficulty: '難度'
-  status: '狀態'
-  score: '積分'
-  total-score: '總積分'
-  effective-score: '有效積分'
-  completed-plots: '已完成建地'
+  plot-name: "建地"
+  id: "ID"
+  owner: "建地所有人"
+  members: "建地成員"
+  member: "建地成員"
+  city: "城市"
+  difficulty: "難度"
+  status: "狀態"
+  score: "積分"
+  total-score: "總積分"
+  effective-score: "有效積分"
+  completed-plots: "已完成建地"
   group-system:
-    empty-member-slot: '成員空位'
-    shared-by-members: '(由{0}位成員共享)'
+    empty-member-slot: "成員空位"
+    shared-by-members: "(由{0}位成員共享)"
 
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
 city-project:
-  open: '開啟建地'
-  in-progress: '進行中建地'
-  completed: '已完成建地'
-  no-plots-available: '無可用建地'
+  open: "開啟建地"
+  in-progress: "進行中建地"
+  completed: "已完成建地"
+  no-plots-available: "無可用建地"
 
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
-  automatic: '自動'
-  score-multiplier: '積分增幅器'
+  automatic: "自動"
+  score-multiplier: "積分增幅器"
 
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: '關閉'
-  back: '返回'
-  next-page: '下一頁'
-  previous-page: '上一頁'
-  error: '錯誤'
-  loading: '載入中...'
-  navigator: '導航員'
-  plot-difficulty: '土地難度'
-  slot: '槽位'
-  builder-utilities: '建築師公用程式'
-  show-plots: '顯示建地'
-  settings: '設定'
-  submit: '提交'
-  teleport: '傳送'
-  abandon: '放棄'
-  undo-submit: '撤回提交'
-  manage-members: '管理成員'
-  feedback: '回饋 | 審核 #{0}'
-  custom-heads: '自定義頭顱'
-  banner-maker: '旗幟產生器'
-  special-blocks: '特殊方塊'
-  review-point: '點'
-  review-points: '點'
-  cancel: '取消'
-  add-member-to-plot: '添加成員到建地'
-  companion: '夥伴'
-  player-plots: '{0}塊建地'
-  leave-plot: '離開建地'
-  review-plots: '審核建地'
-  review-plot: '審核建地 #{0}'
-  enter-player-name: '輸入玩家名稱'
-  select-language: '選擇語言'
-  auto-detect-language: '自動偵測語言'
+  close: "關閉"
+  back: "返回"
+  next-page: "下一頁"
+  previous-page: "上一頁"
+  error: "錯誤"
+  loading: "載入中..."
+  navigator: "導航員"
+  plot-difficulty: "土地難度"
+  slot: "槽位"
+  builder-utilities: "建築師公用程式"
+  show-plots: "顯示建地"
+  settings: "設定"
+  submit: "提交"
+  teleport: "傳送"
+  abandon: "放棄"
+  undo-submit: "撤回提交"
+  manage-members: "管理成員"
+  feedback: "回饋 | 審核 #{0}"
+  custom-heads: "自定義頭顱"
+  banner-maker: "旗幟產生器"
+  special-blocks: "特殊方塊"
+  review-point: "點"
+  review-points: "點"
+  cancel: "取消"
+  add-member-to-plot: "添加成員到建地"
+  companion: "夥伴"
+  player-plots: "{0}塊建地"
+  leave-plot: "離開建地"
+  review-plots: "審核建地"
+  review-plot: "審核建地 #{0}"
+  enter-player-name: "輸入玩家名稱"
+  select-language: "選擇語言"
+  auto-detect-language: "自動偵測語言"
 
 
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: '發生錯誤...'
-  navigator-desc: '開啟導航選單'
-  plot-difficulty-desc: '點擊以切換...'
-  slot-desc: '點擊城市計畫區以創建新的建地'
-  builder-utilities-desc: '獲取自定義頭顱、旗幟與特殊方塊'
-  show-plots-desc: '顯示你所有的建地'
-  settings-desc: '修改你的使用者設定'
-  submit-plot-desc: '點擊以完成此建地，並將其提交審核'
-  teleport-desc: '點擊以傳送至建地'
-  abandon-desc: '點擊以重設你的建地，並將其交付他人'
-  undo-submit-desc: '點擊以撤回你的提交'
-  manage-members-desc: '點擊以開啟建地成員選單，你可以在那添加//和移除在你建地上的其他玩家'
-  feedback-desc: '點擊以查看你的建地審核回饋'
-  custom-heads-desc: '點擊開啟頭驢選單以取得一種自定義頭驢'
-  banner-maker-desc: '點擊開啟旗幟產生器選單以創造屬於你的自定義旗幟'
-  special-blocks-desc: '點擊開啟特殊方塊選單以取得一種非常規方塊'
-  add-member-to-plot-desc: '邀請你的朋友到你的建地並開始共同建設'
-  review-points-desc: '點擊以選取'
-  submit-review-desc: '提交選取點並標記建地供審核'
-  leave-plot-desc: '點擊以離開此建地'
-  select-language-desc: '選擇你的語言'
-  auto-detect-language-desc: '點擊以自動偵測你的語言'
+  error-desc: "發生錯誤..."
+  navigator-desc: "開啟導航選單"
+  plot-difficulty-desc: "點擊以切換..."
+  slot-desc: "點擊城市計畫區以創建新的建地"
+  builder-utilities-desc: "獲取自定義頭顱、旗幟與特殊方塊"
+  show-plots-desc: "顯示你所有的建地"
+  settings-desc: "修改你的使用者設定"
+  submit-plot-desc: "點擊以完成此建地，並將其提交審核"
+  teleport-desc: "點擊以傳送至建地"
+  abandon-desc: "點擊以重設你的建地，並將其交付他人"
+  undo-submit-desc: "點擊以撤回你的提交"
+  manage-members-desc: "點擊以開啟建地成員選單，你可以在那添加//和移除在你建地上的其他玩家"
+  feedback-desc: "點擊以查看你的建地審核回饋"
+  custom-heads-desc: "點擊開啟頭驢選單以取得一種自定義頭驢"
+  banner-maker-desc: "點擊開啟旗幟產生器選單以創造屬於你的自定義旗幟"
+  special-blocks-desc: "點擊開啟特殊方塊選單以取得一種非常規方塊"
+  add-member-to-plot-desc: "邀請你的朋友到你的建地並開始共同建設"
+  review-points-desc: "點擊以選取"
+  submit-review-desc: "提交選取點並標記建地供審核"
+  leave-plot-desc: "點擊以離開此建地"
+  select-language-desc: "選擇你的語言"
+  auto-detect-language-desc: "點擊以自動偵測你的語言"
 
 
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
 review:
-  review-plot: '審核建地'
-  manage-plot: '管理建地'
-  manage-and-review-plots: '管理與審核建地'
-  accepted: '接受'
-  rejected: '駁回'
-  feedback: '回饋'
-  reviewer: '審核員'
+  review-plot: "審核建地"
+  manage-plot: "管理建地"
+  manage-and-review-plots: "管理與審核建地"
+  accepted: "接受"
+  rejected: "駁回"
+  feedback: "回饋"
+  reviewer: "審核員"
   criteria:
-    accuracy: '準確性'
-    accuracy-desc: '建築的精確度如何？////- 看起來像在真實世界//- 正確的輪廓//- 正確的高度//- 完成了'
-    block-palette: '方塊用色'
-    block-palette-desc: '使用了多少個不同的方塊，它們的創意如何？////- 方塊顏色/材質的選擇//- 隨機方塊'
-    detailing: '細節'
-    detailing-desc: '建築有多少細節？////- 屋頂細節//- 外牆上的細節//- 頭顱和旗幟'
-    technique: '技巧'
-    technique-desc: '使用了什麼建築技巧，它們的創意如何？////- World-Edit//- 特殊方塊'
+    accuracy: "準確性"
+    accuracy-desc: "建築的精確度如何？////- 看起來像在真實世界//- 正確的輪廓//- 正確的高度//- 完成了"
+    block-palette: "方塊用色"
+    block-palette-desc: "使用了多少個不同的方塊，它們的創意如何？////- 方塊顏色/材質的選擇//- 隨機方塊"
+    detailing: "細節"
+    detailing-desc: "建築有多少細節？////- 屋頂細節//- 外牆上的細節//- 頭顱和旗幟"
+    technique: "技巧"
+    technique-desc: "使用了什麼建築技巧，它們的創意如何？////- World-Edit//- 特殊方塊"
 
 
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
 note:
-  wont-be-able-continue-building: '你將無法繼續在此建地上進行建設！'
-  score-will-be-split: '審核時積分將分配給所有成員！'
-  player-has-to-be-online: '玩家必須上線！'
+  wont-be-able-continue-building: "你將無法繼續在此建地上進行建設！"
+  score-will-be-split: "審核時積分將分配給所有成員！"
+  player-has-to-be-online: "玩家必須上線！"
   action:
-    right-click: '右鍵點擊'
-    click-to-enable: '點擊以啟用...'
-    click-to-disable: '點擊以禁用...'
-    click-to-remove-plot-member: '點擊以從建地中移除成員...'
-    click-to-open-link: '§6點擊此區 §7以開啟 §a{0}§7 連結...'
-    click-to-open-link-with-shortlink: '§6點擊此區 §7以開啟 §a{0}§7 連結或使用此連結： §a{1}'
-    click-to-show-feedback: '§6點擊此區 §ato 顯示你的建地回饋...'
-    click-to-show-open-reviews: '§6點擊此區 §ato 顯示公開審核...'
-    click-to-show-plots: '§6點擊此區 §ato 顯示你的建地...'
-    click-to-play-with-friends: '§7想和你的朋友一起玩嗎？ §6點擊此區...'
+    right-click: "右鍵點擊"
+    click-to-enable: "點擊以啟用..."
+    click-to-disable: "點擊以禁用..."
+    click-to-remove-plot-member: "點擊以從建地中移除成員..."
+    click-to-open-link: "§6點擊此區 §7以開啟 §a{0}§7 連結..."
+    click-to-open-link-with-shortlink: "§6點擊此區 §7以開啟 §a{0}§7 連結或使用此連結： §a{1}"
+    click-to-show-feedback: "§6點擊此區 §a顯示你的建地回饋..."
+    click-to-show-open-reviews: "§6點擊此區 §a顯示公開審核..."
+    click-to-show-plots: "§6點擊此區 §a顯示你的建地..."
+    click-to-play-with-friends: "§7想和你的朋友一起玩嗎？ §6點擊此區..."
   # NOTE: Try to keep it as short as possible
   anvil:
-    player-is-owner: '玩家已經是所有人！'
-    player-already-added: '玩家已經被添加！'
-    player-not-online: '玩家不在線上！'
-    invalid-input: '輸入無效！'
-    enter-player-name: '玩家名稱...'
+    player-is-owner: "玩家已經是所有人！"
+    player-already-added: "玩家已經被添加！"
+    player-not-online: "玩家不在線上！"
+    invalid-input: "輸入無效！"
+    enter-player-name: "玩家名稱..."
 
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
 message:
   info:
-    teleporting-plot: '§a傳送至建地 §6#{0}§a...'
-    teleporting-spawn: '§a傳送至重生點...'
-    teleporting-tpll: '§a傳送至 §6{0}§a, §6{1}§a...'
-    abandoned-plot: '§a有ID之廢棄建地 §6#{0}§a!'
-    finished-plot: '§a §6{1}§a 的建地 §6#{0}§a 已完成！'
-    plot-marked-as-reviewed: '§a §6{1}§a 的建地 §6#{0}§a 已標記供審核！'
-    plot-rejected: '§a §6{1}§a 的建地 §6#{0}§a 已被駁回！ 使用 §6/sendFeedback <ID> <TEXT>§a發送回饋！'
-    undid-submission: '§a尚未提交的建地 §6#{0}§a！'
-    undid-review: '§a尚未審核的建地 §6#{0}§a by §6#{1}§a！'
-    reviewed-plot: '§a你的建地 §6#{0}§a 已被審核！'
-    unreviewed-plot: '§a有 §6{0}§a 處尚未審核的建地！'
-    unreviewed-plots: '§a有 §6{0}§a 處尚未審核的建地！'
-    unfinished-plot: '§a你有 §6{0}§a 處尚未審核的建地！'
-    unfinished-plots: '§a你有 §6{0}§a 處尚未審核的建地！'
-    enabled-build-permissions: '§a開啟審核員於建地的建築權限 §6#{0}§a！'
-    disabled-build-permissions: '§a禁用審核員於建地的建築權限 §6#{0}§a！'
-    updated-plot-feedback: '§a建地 §6#{0}§a 的回饋已更新！'
-    removed-plot-member: '§a從建地 §6#{1}§a 移除 §6{0}§a！'
-    left-plot: '§a剩餘建地 §6#{0}§a！'
-    plot-will-get-abandoned-warning: '§c§l警告： §c此建地將自動廢棄！'
-    plot-will-get-rejected-warning: '§c§l警告： §c此建地將被駁回！'
-    saving-plot: '§a儲存建地...'
-    creating-plot: '§a創建新建地...'
-    created-new-plot: '§a創建新建地§a 為 §6{0}§a！'
-    changed-language: '§a將你的語言變更為 §6{0}§a！'
+    teleporting-plot: "§a傳送至建地 §6#{0}§a..."
+    teleporting-spawn: "§a傳送至重生點..."
+    teleporting-tpll: "§a傳送至 §6{0}§a, §6{1}§a..."
+    abandoned-plot: "§a有ID之廢棄建地 §6#{0}§a!"
+    finished-plot: "§a §6{1}§a 的建地 §6#{0}§a 已完成！"
+    plot-marked-as-reviewed: "§a §6{1}§a 的建地 §6#{0}§a 已標記供審核！"
+    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被駁回！ 使用 §6/sendFeedback <ID> <TEXT>§a發送回饋！"
+    undid-submission: "§a尚未提交的建地 §6#{0}§a！"
+    undid-review: "§a尚未審核的建地 §6#{0}§a by §6#{1}§a！"
+    reviewed-plot: "§a你的建地 §6#{0}§a 已被審核！"
+    unreviewed-plot: "§a有 §6{0}§a 處尚未審核的建地！"
+    unreviewed-plots: "§a有 §6{0}§a 處尚未審核的建地！"
+    unfinished-plot: "§a你有 §6{0}§a 處尚未審核的建地！"
+    unfinished-plots: "§a你有 §6{0}§a 處尚未審核的建地！"
+    enabled-build-permissions: "§a開啟審核員於建地的建築權限 §6#{0}§a！"
+    disabled-build-permissions: "§a禁用審核員於建地的建築權限 §6#{0}§a！"
+    updated-plot-feedback: "§a建地 §6#{0}§a 的回饋已更新！"
+    removed-plot-member: "§a從建地 §6#{1}§a 移除 §6{0}§a！"
+    left-plot: "§a剩餘建地 §6#{0}§a！"
+    plot-will-get-abandoned-warning: "§c§l警告： §c此建地將自動廢棄！"
+    plot-will-get-rejected-warning: "§c§l警告： §c此建地將被駁回！"
+    saving-plot: "§a儲存建地..."
+    creating-plot: "§a創建新建地..."
+    created-new-plot: "§a創建新建地§a 為 §6{0}§a！"
+    changed-language: "§a將你的語言變更為 §6{0}§a！"
   error:
-    plot-does-not-exist: '此建地不存在！'
-    plot-either-unclaimed-or-unreviewed: '此建地無人認領或尚未審核！'
-    plot-has-not-yet-reviewed: '此建地尚未審核！!'
-    can-only-abandon-unfinished-plots: '你只能廢棄尚未完成的建地！'
-    can-only-submit-unfinished-plots: '你只能提交尚未完成的建地！'
-    can-only-undo-submissions-unreviewed-plots: '你只能撤回尚未審核的建地！'
-    can-only-manage-members-unfinished-plots: '你只能管理尚未完成建地的成員！'
-    can-only-tpll-to-plot: '你在建地上只能使用 /tpll ！'
-    cannot-undo-review: '你無法撤回你自己未審核過的審核！'
-    cannot-send-feedback: '你無法發送你自己未審核過的回饋！'
-    cannot-review-own-plot: '你無法審核你所有的建地！'
-    player-has-no-permissions: '你沒有權限做這個！'
-    player-has-no-invitations: '你沒有受到邀請！'
-    player-is-not-allowed: '你不被允許做這個！'
-    player-is-plot-owner: '此玩家已經是建地所有人！'
-    player-is-plot-member: '此玩家已經是此建地的成員！'
-    player-is-not-online: '此玩家不在線上！'
-    player-not-found: '無法找到該玩家！'
-    player-needs-to-be-on-plot: '你需要在一個建地上才能使用它！'
-    player-needs-higher-score: '你需要更高的積分來才能在這個難度度建設。'
-    invalid-input: '輸入邀請！'
-    error-occurred: '發生錯誤！請再次嘗試！'
-    command-disabled: '此命令已禁用！'
-    no-plots-left: '此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。'
-    please-wait: '請稍後再創建一個新的建地！'
-    all-slots-occupied: '你的所有槽位都被占用了！請在創建新的建地之前先完成您當前的建地。'
+    plot-does-not-exist: "此建地不存在！"
+    plot-either-unclaimed-or-unreviewed: "此建地無人認領或尚未審核！"
+    plot-has-not-yet-reviewed: "此建地尚未審核！!"
+    can-only-abandon-unfinished-plots: "你只能廢棄尚未完成的建地！"
+    can-only-submit-unfinished-plots: "你只能提交尚未完成的建地！"
+    can-only-undo-submissions-unreviewed-plots: "你只能撤回尚未審核的建地！"
+    can-only-manage-members-unfinished-plots: "你只能管理尚未完成建地的成員！"
+    can-only-tpll-to-plot: "你在建地上只能使用 /tpll ！"
+    cannot-undo-review: "你無法撤回你自己未審核過的審核！"
+    cannot-send-feedback: "你無法發送你自己未審核過的回饋！"
+    cannot-review-own-plot: "你無法審核你所有的建地！"
+    player-has-no-permissions: "你沒有權限做這個！"
+    player-has-no-invitations: "你沒有受到邀請！"
+    player-is-not-allowed: "你不被允許做這個！"
+    player-is-plot-owner: "此玩家已經是建地所有人！"
+    player-is-plot-member: "此玩家已經是此建地的成員！"
+    player-is-not-online: "此玩家不在線上！"
+    player-not-found: "無法找到該玩家！"
+    player-needs-to-be-on-plot: "你需要在一個建地上才能使用它！"
+    player-needs-higher-score: "你需要更高的積分來才能在這個難度度建設。"
+    invalid-input: "輸入邀請！"
+    error-occurred: "發生錯誤！請再次嘗試！"
+    command-disabled: "此命令已禁用！"
+    no-plots-left: "此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。"
+    please-wait: "請稍後再創建一個新的建地！"
+    all-slots-occupied: "你的所有槽位都被占用了！請在創建新的建地之前先完成您當前的建地。"
 
 
 
 # NOTE: Do not change
-config-version: '1.0'
+config-version: "1.0"

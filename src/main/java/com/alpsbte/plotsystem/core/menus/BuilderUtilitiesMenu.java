@@ -107,9 +107,9 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLD_AXE)
-                .setName("§b§lBuilder Utilities")
+                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build()) //TODO:
+                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
                 .build();
     }
 }

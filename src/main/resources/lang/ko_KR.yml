@@ -12,219 +12,219 @@
 # -----------------------------------------------------
 
 lang:
-  name: '한국어 (KO)'
-  head-id: '27583'
+  name: "한국어 (KO)"
+  head-id: "27583"
 
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
 plot:
-  plot-name: '플롯'
-  id: 'ID'
-  owner: '플롯 주인'
-  members: '플롯 멤버들'
-  member: '플롯 멤버'
-  city: '도시'
-  difficulty: '난이도'
-  status: '상태'
-  score: '점수'
-  total-score: '총점'
-  effective-score: '유효 점수'
-  completed-plots: '완성된 플롯들'
+  plot-name: "플롯"
+  id: "ID"
+  owner: "플롯 주인"
+  members: "플롯 멤버들"
+  member: "플롯 멤버"
+  city: "도시"
+  difficulty: "난이도"
+  status: "상태"
+  score: "점수"
+  total-score: "총점"
+  effective-score: "유효 점수"
+  completed-plots: "완성된 플롯들"
   group-system:
-    empty-member-slot: '빈 멤버 슬롯'
-    shared-by-members: '(총점/{0}명)'
+    empty-member-slot: "빈 멤버 슬롯"
+    shared-by-members: "(총점/{0}명)"
 
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
 city-project:
-  open: '개의 빈 플롯'
-  in-progress: '개의 진행 중인 플롯'
-  completed: '개의 완성된 플롯'
-  no-plots-available: '건축할 수 있는 플롯이 없음'
+  open: "개의 빈 플롯"
+  in-progress: "개의 진행 중인 플롯"
+  completed: "개의 완성된 플롯"
+  no-plots-available: "건축할 수 있는 플롯이 없음"
 
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
-  automatic: '자동'
-  score-multiplier: '점수 배수'
+  automatic: "자동"
+  score-multiplier: "점수 배수"
 
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: '닫기'
-  back: '뒤로가기'
-  next-page: '다음 페이지'
-  previous-page: '이전 페이지'
-  error: '에러'
-  loading: '로딩 중...'
-  navigator: '내비게이터'
-  plot-difficulty: '플롯 난이도'
-  slot: '슬롯'
-  builder-utilities: '건축 도구'
-  show-plots: '플롯 보이기'
-  settings: '설정'
-  submit: '제출하기'
-  teleport: '텔레포트'
-  abandon: '버리기'
-  undo-submit: '제출 취소하기'
-  manage-members: '멤버 관리하기'
-  feedback: '피드백 | 리뷰 #{0}'
-  custom-heads: '커스텀 헤드'
-  banner-maker: '현수막 제조기'
-  special-blocks: '특수 블록들'
-  review-point: '점'
-  review-points: '점'
-  cancel: '취소'
-  add-member-to-plot: '플롯에 멤버 추가하기'
-  companion: '메뉴'
-  player-plots: '{0}님의 플롯'
-  leave-plot: '플롯 떠나기'
-  review-plots: '플롯 리뷰하기'
-  review-plot: '플롯 리뷰 #{0}'
-  enter-player-name: '플레이어 이름 입력하기'
-  select-language: '언어 설정'
-  auto-detect-language: '언어 감지'
+  close: "닫기"
+  back: "뒤로가기"
+  next-page: "다음 페이지"
+  previous-page: "이전 페이지"
+  error: "에러"
+  loading: "로딩 중..."
+  navigator: "내비게이터"
+  plot-difficulty: "플롯 난이도"
+  slot: "슬롯"
+  builder-utilities: "건축 도구"
+  show-plots: "플롯 보이기"
+  settings: "설정"
+  submit: "제출하기"
+  teleport: "텔레포트"
+  abandon: "버리기"
+  undo-submit: "제출 취소하기"
+  manage-members: "멤버 관리하기"
+  feedback: "피드백 | 리뷰 #{0}"
+  custom-heads: "커스텀 헤드"
+  banner-maker: "현수막 제조기"
+  special-blocks: "특수 블록들"
+  review-point: "점"
+  review-points: "점"
+  cancel: "취소"
+  add-member-to-plot: "플롯에 멤버 추가하기"
+  companion: "메뉴"
+  player-plots: "{0}님의 플롯"
+  leave-plot: "플롯 떠나기"
+  review-plots: "플롯 리뷰하기"
+  review-plot: "플롯 리뷰 #{0}"
+  enter-player-name: "플레이어 이름 입력하기"
+  select-language: "언어 설정"
+  auto-detect-language: "언어 감지"
 
 
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: '에러가 발생했습니다.'
-  navigator-desc: '클릭하여 메뉴 열기'
-  plot-difficulty-desc: '클릭하여 변경하기'
-  slot-desc: '도시 프로젝트를 클릭해 새로운 플롯을 생성하세요'
-  builder-utilities-desc: '클릭하여 커스텀 헤드와 현수막, 그리고 특수 블록을 얻으세요'
-  show-plots-desc: '자신의 플롯 확인하기'
-  settings-desc: '사용자 설정 변경하기'
-  submit-plot-desc: '플롯이 완성되었다면 리뷰될 수 있도록 클릭해서 제출하세요'
-  teleport-desc: '클릭하여 플롯으로 이동하기'
-  abandon-desc: '클릭하여 초기화 및 다른 사람이 건축하도록 하기'
-  undo-submit-desc: '클릭하여 제출 취소하기'
-  manage-members-desc: '클릭하여 플롯에 다른 플레이어를 추가 혹은 // 제외할 수 있는 플롯 멤버 메뉴를 여세요'
-  feedback-desc: '클릭하여 플롯 리뷰 피드백 보기'
-  custom-heads-desc: '클릭하여 다양한 커스텀 헤드를 얻으세요'
-  banner-maker-desc: '클릭하여 커스텀 현수막을 제작하세요'
-  special-blocks-desc: '클릭하여 일반적으로 얻을 수 없는 특수 블록들을 얻으세요'
-  add-member-to-plot-desc: '플롯에 친구를 초대해 함께 건축하세요'
-  review-points-desc: '클릭하여 선택'
-  submit-review-desc: '선택한 점수를 부여하고 플롯을 리뷰된 것으로 표시합니다'
-  leave-plot-desc: '클릭하여 플롯에서 나가기'
-  select-language-desc: '언어를 선택하세요'
-  auto-detect-language-desc: '클릭하여 자동으로 언어 감지'
+  error-desc: "에러가 발생했습니다."
+  navigator-desc: "클릭하여 메뉴 열기"
+  plot-difficulty-desc: "클릭하여 변경하기"
+  slot-desc: "도시 프로젝트를 클릭해 새로운 플롯을 생성하세요"
+  builder-utilities-desc: "클릭하여 커스텀 헤드와 현수막, 그리고 특수 블록을 얻으세요"
+  show-plots-desc: "자신의 플롯 확인하기"
+  settings-desc: "사용자 설정 변경하기"
+  submit-plot-desc: "플롯이 완성되었다면 리뷰될 수 있도록 클릭해서 제출하세요"
+  teleport-desc: "클릭하여 플롯으로 이동하기"
+  abandon-desc: "클릭하여 초기화 및 다른 사람이 건축하도록 하기"
+  undo-submit-desc: "클릭하여 제출 취소하기"
+  manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 // 제외할 수 있는 플롯 멤버 메뉴를 여세요"
+  feedback-desc: "클릭하여 플롯 리뷰 피드백 보기"
+  custom-heads-desc: "클릭하여 다양한 커스텀 헤드를 얻으세요"
+  banner-maker-desc: "클릭하여 커스텀 현수막을 제작하세요"
+  special-blocks-desc: "클릭하여 일반적으로 얻을 수 없는 특수 블록들을 얻으세요"
+  add-member-to-plot-desc: "플롯에 친구를 초대해 함께 건축하세요"
+  review-points-desc: "클릭하여 선택"
+  submit-review-desc: "선택한 점수를 부여하고 플롯을 리뷰된 것으로 표시합니다"
+  leave-plot-desc: "클릭하여 플롯에서 나가기"
+  select-language-desc: "언어를 선택하세요"
+  auto-detect-language-desc: "클릭하여 자동으로 언어 감지"
 
 
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
 review:
-  review-plot: '플롯 리뷰하기'
-  manage-plot: '플롯 관리하기'
-  manage-and-review-plots: '플롯 리뷰 / 관리하기'
-  accepted: '승낙됨'
-  rejected: '거절됨'
-  feedback: '피드백'
-  reviewer: '검토자'
+  review-plot: "플롯 리뷰하기"
+  manage-plot: "플롯 관리하기"
+  manage-and-review-plots: "플롯 리뷰 / 관리하기"
+  accepted: "승낙됨"
+  rejected: "거절됨"
+  feedback: "피드백"
+  reviewer: "검토자"
   criteria:
-    accuracy: '정확도'
-    accuracy-desc: '얼마나 정확하게 건축되었나요?////- 현실과의 유사성//- 올바른 외곽선//- 올바른 높이//- 완성도'
-    block-palette: '블록 선정'
-    block-palette-desc: '사용된 블록이 얼마나 다양하고 창의적인가요?////- 사용된 블록의 색깔/질감//- 블록의 무작위성'
-    detailing: '디테일'
-    detailing-desc: '건물의 디테일이 얼마나 잘 구현되어있나요?////- 지붕 디테일//- 건물 정면 디테일//- 머리와 현수막의 사용'
-    technique: '기법'
-    technique-desc: '사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?////- 월드에딧//- 특수 블록'
+    accuracy: "정확도"
+    accuracy-desc: "얼마나 정확하게 건축되었나요?////- 현실과의 유사성//- 올바른 외곽선//- 올바른 높이//- 완성도"
+    block-palette: "블록 선정"
+    block-palette-desc: "사용된 블록이 얼마나 다양하고 창의적인가요?////- 사용된 블록의 색깔/질감//- 블록의 무작위성"
+    detailing: "디테일"
+    detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?////- 지붕 디테일//- 건물 정면 디테일//- 머리와 현수막의 사용"
+    technique: "기법"
+    technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?////- 월드에딧//- 특수 블록"
 
 
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
 note:
-  wont-be-able-continue-building: '더 이상 이 플롯에서 건축하실 수 없게 됩니다!'
-  score-will-be-split: '리뷰된 후에는 플롯의 모든 멤버에게 점수가 배분될 것입니다.'
-  player-has-to-be-online: '해당 플레이어가 접속 중이어야 합니다!'
+  wont-be-able-continue-building: "더 이상 이 플롯에서 건축하실 수 없게 됩니다!"
+  score-will-be-split: "리뷰된 후에는 플롯의 모든 멤버에게 점수가 배분될 것입니다."
+  player-has-to-be-online: "해당 플레이어가 접속 중이어야 합니다!"
   action:
-    right-click: '우클릭'
-    click-to-enable: '클릭하여 활성화하기'
-    click-to-disable: '클릭하여 비활성화하기'
-    click-to-remove-plot-member: '클릭하여 플롯에서 멤버 퇴출하기'
-    click-to-open-link: '§6여기§7를 클릭해 §a{0}§7 페이지를 여세요!'
-    click-to-open-link-with-shortlink: '§6여기§7를 클릭해 §a{0}§7 페이지를 열거나 이 링크를 사용하세요: §a{1}'
-    click-to-show-feedback: '§6여기§a를 클릭해 자신 플롯의 피드백을 확인하세요!'
-    click-to-show-open-reviews: '§6여기§a를 클릭해 대기 중인 리뷰들을 확인하세요!'
-    click-to-show-plots: '§6여기§a를 클릭해 자신의 플롯들을 확인하세요!'
-    click-to-play-with-friends: '§7친구와 플레이하시려면 §6여기§7를 클릭하세요!'
+    right-click: "우클릭"
+    click-to-enable: "클릭하여 활성화하기"
+    click-to-disable: "클릭하여 비활성화하기"
+    click-to-remove-plot-member: "클릭하여 플롯에서 멤버 퇴출하기"
+    click-to-open-link: "§6여기§7를 클릭해 §a{0}§7 페이지를 여세요!"
+    click-to-open-link-with-shortlink: "§6여기§7를 클릭해 §a{0}§7 페이지를 열거나 이 링크를 사용하세요: §a{1}"
+    click-to-show-feedback: "§6여기§a를 클릭해 자신 플롯의 피드백을 확인하세요!"
+    click-to-show-open-reviews: "§6여기§a를 클릭해 대기 중인 리뷰들을 확인하세요!"
+    click-to-show-plots: "§6여기§a를 클릭해 자신의 플롯들을 확인하세요!"
+    click-to-play-with-friends: "§7친구와 플레이하시려면 §6여기§7를 클릭하세요!"
   # NOTE: Try to keep it as short as possible
   anvil:
-    player-is-owner: '이미 주인인 플레이어입니다!'
-    player-already-added: '이미 추가된 플레이어입니다!'
-    player-not-online: '플레이어가 접속 중이 아닙니다!'
-    invalid-input: '잘못된 입력입니다!'
-    enter-player-name: '플레이어 이름 입력:'
+    player-is-owner: "이미 주인인 플레이어입니다!"
+    player-already-added: "이미 추가된 플레이어입니다!"
+    player-not-online: "플레이어가 접속 중이 아닙니다!"
+    invalid-input: "잘못된 입력입니다!"
+    enter-player-name: "플레이어 이름 입력:"
 
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
 message:
   info:
-    teleporting-plot: '§a플롯 §6#{0}§a(으)로 이동합니다...'
-    teleporting-spawn: '§a스폰으로 이동합니다...'
-    teleporting-tpll: '§a좌표 §6{0}§a, §6{1}§a(으)로 이동합니다...'
-    abandoned-plot: '§aID §6#{0}§a의 플롯을 버렸습니다!'
-    finished-plot: '§6{1}§a님의 플롯 §6#{0}§a(이)가 완성되었습니다!'
-    plot-marked-as-reviewed: '§6{1}§a님의 플롯 §6#{0}§a(이)가 리뷰되었습니다!'
-    plot-rejected: '§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다. §6/sendFeedback <ID> <텍스트>§a 명령어로 피드백을 보내세요!'
-    undid-submission: '§a플롯 §6#{0}§a의 제출을 취소하였습니다!'
-    undid-review: '§6{1}§a님의 플롯 §6#{0}§a의 리뷰를 취소하였습니다!'
-    reviewed-plot: '§a당신의 플롯 §6#{0}§a(이)가 리뷰되었습니다!'
-    unreviewed-plot: '§a리뷰되지 않은 플롯이 §6{0}§a개 있습니다!'
-    unreviewed-plots: '§a리뷰되지 않은 플롯이 §6{0}§a개 있습니다!'
-    unfinished-plot: '§a미완성된 플롯이 §6{0}§a개 있습니다!'
-    unfinished-plots: '§a미완성된 플롯이 §6{0}§a개 있습니다!'
-    enabled-build-permissions: '§a플롯 §6#{0}§a의 검토자 건축 권한을 활성화했습니다!'
-    disabled-build-permissions: '§a플롯 §6#{0}§a의 검토자 건축 권한을 비활성화했습니다!'
-    updated-plot-feedback: '§a플롯 §6#{0}§a의 피드백을 업데이트하였습니다!'
-    removed-plot-member: '§6{0}§a님을 플롯 §6#{1}§a에서 제외하였습니다!'
-    left-plot: '§a플롯 §6#{0}§a을 나갔습니다!'
-    plot-will-get-abandoned-warning: '§c§l경고: §c이 플롯은 자동으로 버려질 것입니다!'
-    plot-will-get-rejected-warning: '§c§l경고: §c이 플롯은 거절될 것입니다!'
-    saving-plot: '§a플롯 저장 중...'
-    creating-plot: '§a새로운 플롯 생성 중...'
-    created-new-plot: '§6{0}§a님의 플롯을 생성하였습니다!'
-    changed-language: '§a언어를 §6{0}§a(으)로 변경하였습니다!'
+    teleporting-plot: "§a플롯 §6#{0}§a(으)로 이동합니다..."
+    teleporting-spawn: "§a스폰으로 이동합니다..."
+    teleporting-tpll: "§a좌표 §6{0}§a, §6{1}§a(으)로 이동합니다..."
+    abandoned-plot: "§aID §6#{0}§a의 플롯을 버렸습니다!"
+    finished-plot: "§6{1}§a님의 플롯 §6#{0}§a(이)가 완성되었습니다!"
+    plot-marked-as-reviewed: "§6{1}§a님의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
+    plot-rejected: "§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다. §6/sendFeedback <ID> <텍스트>§a 명령어로 피드백을 보내세요!"
+    undid-submission: "§a플롯 §6#{0}§a의 제출을 취소하였습니다!"
+    undid-review: "§6{1}§a님의 플롯 §6#{0}§a의 리뷰를 취소하였습니다!"
+    reviewed-plot: "§a당신의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
+    unreviewed-plot: "§a리뷰되지 않은 플롯이 §6{0}§a개 있습니다!"
+    unreviewed-plots: "§a리뷰되지 않은 플롯이 §6{0}§a개 있습니다!"
+    unfinished-plot: "§a미완성된 플롯이 §6{0}§a개 있습니다!"
+    unfinished-plots: "§a미완성된 플롯이 §6{0}§a개 있습니다!"
+    enabled-build-permissions: "§a플롯 §6#{0}§a의 검토자 건축 권한을 활성화했습니다!"
+    disabled-build-permissions: "§a플롯 §6#{0}§a의 검토자 건축 권한을 비활성화했습니다!"
+    updated-plot-feedback: "§a플롯 §6#{0}§a의 피드백을 업데이트하였습니다!"
+    removed-plot-member: "§6{0}§a님을 플롯 §6#{1}§a에서 제외하였습니다!"
+    left-plot: "§a플롯 §6#{0}§a을 나갔습니다!"
+    plot-will-get-abandoned-warning: "§c§l경고: §c이 플롯은 자동으로 버려질 것입니다!"
+    plot-will-get-rejected-warning: "§c§l경고: §c이 플롯은 거절될 것입니다!"
+    saving-plot: "§a플롯 저장 중..."
+    creating-plot: "§a새로운 플롯 생성 중..."
+    created-new-plot: "§6{0}§a님의 플롯을 생성하였습니다!"
+    changed-language: "§a언어를 §6{0}§a(으)로 변경하였습니다!"
   error:
-    plot-does-not-exist: '존재하지 않는 플롯입니다!'
-    plot-either-unclaimed-or-unreviewed: '아직 소유되거나 검토되지 않은 플롯입니다!'
-    plot-has-not-yet-reviewed: '아직 검토되지 않은 플롯입니다!'
-    can-only-abandon-unfinished-plots: '미완성된 플롯만 버리실 수 있습니다!'
-    can-only-submit-unfinished-plots: '미완성된 플롯만 제출하실 수 있습니다!'
-    can-only-undo-submissions-unreviewed-plots: '이미 리뷰된 플롯의 제출을 취소하실 수 없습니다!'
-    can-only-manage-members-unfinished-plots: '멤버 관리는 미완성된 플롯에서만 가능합니다!'
-    can-only-tpll-to-plot: '플롯에서는 /tpll만 사용할 수 있습니다!'
-    cannot-undo-review: '오직 자신의 리뷰만 취소할 수 있습니다!'
-    cannot-send-feedback: '오직 자신이 리뷰한 플롯에만 피드백을 보낼 수 있습니다!'
-    cannot-review-own-plot: '자신의 플롯은 검토할 수 없습니다!'
-    player-has-no-permissions: '이 기능을 사용할 수 있는 권한이 없습니다!'
-    player-has-no-invitations: '초대장이 없습니다!'
-    player-is-not-allowed: '권한이 없습니다!'
-    player-is-plot-owner: '이미 플롯의 주인인 플레이어입니다!'
-    player-is-plot-member: '이미 이 플롯의 멤버인 플레이어입니다!'
-    player-is-not-online: '접속 중이 아닌 플레이어입니다!'
-    player-not-found: '플레이어를 찾을 수 없습니다!'
-    player-needs-to-be-on-plot: '플롯에서만 사용할 수 있습니다!'
-    player-needs-higher-score: '해당 난이도에서 건축하시려면 더 높은 점수가 필요합니다.'
-    invalid-input: '잘못된 입력입니다!'
-    error-occurred: '에러 발생! 다시 시도해주세요!'
-    command-disabled: '비활성화된 커맨드입니다!'
-    no-plots-left: '이 도시 프로젝트에 남아있는 플롯이 없습니다. 다른 프로젝트를 선택해주세요.'
-    please-wait: '새 플롯이 생성될 때까지 기다려주세요!'
-    all-slots-occupied: '슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요.'
+    plot-does-not-exist: "존재하지 않는 플롯입니다!"
+    plot-either-unclaimed-or-unreviewed: "아직 소유되거나 검토되지 않은 플롯입니다!"
+    plot-has-not-yet-reviewed: "아직 검토되지 않은 플롯입니다!"
+    can-only-abandon-unfinished-plots: "미완성된 플롯만 버리실 수 있습니다!"
+    can-only-submit-unfinished-plots: "미완성된 플롯만 제출하실 수 있습니다!"
+    can-only-undo-submissions-unreviewed-plots: "이미 리뷰된 플롯의 제출을 취소하실 수 없습니다!"
+    can-only-manage-members-unfinished-plots: "멤버 관리는 미완성된 플롯에서만 가능합니다!"
+    can-only-tpll-to-plot: "플롯에서는 /tpll만 사용할 수 있습니다!"
+    cannot-undo-review: "오직 자신의 리뷰만 취소할 수 있습니다!"
+    cannot-send-feedback: "오직 자신이 리뷰한 플롯에만 피드백을 보낼 수 있습니다!"
+    cannot-review-own-plot: "자신의 플롯은 검토할 수 없습니다!"
+    player-has-no-permissions: "이 기능을 사용할 수 있는 권한이 없습니다!"
+    player-has-no-invitations: "초대장이 없습니다!"
+    player-is-not-allowed: "권한이 없습니다!"
+    player-is-plot-owner: "이미 플롯의 주인인 플레이어입니다!"
+    player-is-plot-member: "이미 이 플롯의 멤버인 플레이어입니다!"
+    player-is-not-online: "접속 중이 아닌 플레이어입니다!"
+    player-not-found: "플레이어를 찾을 수 없습니다!"
+    player-needs-to-be-on-plot: "플롯에서만 사용할 수 있습니다!"
+    player-needs-higher-score: "해당 난이도에서 건축하시려면 더 높은 점수가 필요합니다."
+    invalid-input: "잘못된 입력입니다!"
+    error-occurred: "에러 발생! 다시 시도해주세요!"
+    command-disabled: "비활성화된 커맨드입니다!"
+    no-plots-left: "이 도시 프로젝트에 남아있는 플롯이 없습니다. 다른 프로젝트를 선택해주세요."
+    please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
+    all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
 
 
 
 # NOTE: Do not change
-config-version: '1.0'
+config-version: "1.0"

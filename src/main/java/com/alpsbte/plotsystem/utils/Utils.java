@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
@@ -32,6 +34,7 @@ import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -115,6 +118,18 @@ public class Utils {
         } catch (NumberFormatException ex) {
             return null;
         }
+    }
+
+    public static void updatePlayerInventorySlots(Player player) {
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+            // Add Items
+            if (!player.getInventory().contains(CompanionMenu.getMenuItem(player))) {
+                player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
+            }
+            if (player.hasPermission("plotsystem.review") && !player.getInventory().contains(ReviewMenu.getMenuItem(player))) {
+                player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
+            }
+        });
     }
 
     public static String getPointsByColor(int points) {
