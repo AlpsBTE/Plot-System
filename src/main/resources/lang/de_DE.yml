@@ -87,6 +87,7 @@ menu-title:
   review-plot: 'Review Plot #{0}'
   enter-player-name: 'Enter player name'
   select-language: 'Select Language'
+  select-plot-type: 'Select Plot Type'
   auto-detect-language: 'Auto-Detect Language'
 
 
@@ -115,6 +116,7 @@ menu-description:
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
   leave-plot-desc: 'Click to leave this plot'
   select-language-desc: 'Choose your language'
+  select-plot-type-desc: 'Choose your plot type'
   auto-detect-language-desc: 'Click to automatically detect your language'
 
 

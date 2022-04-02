@@ -27,6 +27,15 @@ public class SettingsMenu extends AbstractMenu {
                                 .build())
                         .build());
 
+        // Set Plot type item
+        getMenu().getSlot(11).setItem(
+                new ItemBuilder(Utils.CustomHead.GLOBE.getAsItemStack())
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
+                        .setLore(new LoreBuilder()
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_PLOT_TYPE))
+                                .build())
+                        .build());
+
         // Set back item
         getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
@@ -37,6 +46,12 @@ public class SettingsMenu extends AbstractMenu {
         getMenu().getSlot(10).setClickHandler(((clickPlayer, clickInformation) -> {
             getMenuPlayer().closeInventory();
             new SelectLanguageMenu(clickPlayer);
+        }));
+
+        // Set click event for plot type item
+        getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
+            getMenuPlayer().closeInventory();
+            new SelectPlotTypeMenu(clickPlayer);
         }));
 
         // Set click event for back item
