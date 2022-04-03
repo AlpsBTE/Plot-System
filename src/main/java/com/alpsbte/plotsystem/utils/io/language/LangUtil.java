@@ -69,13 +69,13 @@ public class LangUtil extends YamlFileFactory {
 
     public static void broadcast(String key) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Utils.getInfoMessageFormat(get(player,key)));
+            player.sendMessage(Utils.getInfoMessageFormat(get(player, key)));
         }
     }
 
-    public static void broadcast(String key, String... strings) {
+    public static void broadcast(String key, String... args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Utils.getInfoMessageFormat(get(player,key,strings)));
+            player.sendMessage(Utils.getInfoMessageFormat(get(player, key, args)));
         }
     }
 
@@ -95,11 +95,12 @@ public class LangUtil extends YamlFileFactory {
         }
 
         public String getTranslation(String key) {
-            return getString(key);
+            String translation = getString(key);
+            return translation != null ? translation : "undefined";
         }
 
         public String getTranslation(String key, String... args) {
-            String translation = getString(key);
+            String translation = getTranslation(key);
             for (int i = 0; i < args.length; i++) {
                 translation = translation.replace("{" + i + "}", args[i]);
             }
