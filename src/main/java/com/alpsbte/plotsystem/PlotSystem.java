@@ -25,12 +25,15 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
+import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -186,6 +189,13 @@ public class PlotSystem extends JavaPlugin {
         PlotManager.checkPlotsForLastActivity();
         PlotManager.syncPlotSchematicFiles();
 
+        try {
+            new PacketListener();
+        } catch (NoClassDefFoundError ex) {
+            Bukkit.getConsoleSender().sendMessage("");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not find Protocol-Lib! Consider installing it to avoid issues.");
+        }
+
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Enabled Plot-System plugin.");
@@ -323,6 +333,11 @@ public class PlotSystem extends JavaPlugin {
         public static WorldGuardPlugin getWorldGuard() {
             return WorldGuardPlugin.inst();
         }
+
+        /**
+         * @return Protocol Lib Instance
+         */
+        public static ProtocolManager getProtocolManager() { return ProtocolLibrary.getProtocolManager(); }
     }
 
     public static class UpdateChecker {

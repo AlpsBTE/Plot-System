@@ -56,7 +56,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Set click event for special block items
         for(int i = 0; i <= 14; i++) {
             int specialBlockID = i;
