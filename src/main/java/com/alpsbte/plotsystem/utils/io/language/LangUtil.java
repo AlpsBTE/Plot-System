@@ -19,7 +19,7 @@ public class LangUtil extends YamlFileFactory {
 
     public final static LanguageFile[] languages = new LanguageFile[] {
         new LanguageFile("en_GB", 1.0),
-        // new LanguageFile("de_DE", 1.0, "de_AT", "de_CH")
+        new LanguageFile("de_DE", 1.0, "de_AT", "de_CH"),
         new LanguageFile("fr_FR", 1.0, "fr_CA"),
         new LanguageFile("ko_KR", 1.0),
         new LanguageFile("zh_CN", 1.0),
