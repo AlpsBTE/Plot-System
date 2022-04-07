@@ -15,6 +15,7 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public class SelectPlotTypeMenu extends AbstractMenu {
@@ -35,8 +36,27 @@ public class SelectPlotTypeMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set plot type items
         getMenu().getSlot(11).setItem(
-                new ItemBuilder(Material.STONE)
-                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
+                new ItemBuilder(Utils.CustomHead.FOCUS_MODE.getAsItemStack())
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_FOCUS_MODE))
+                        .setLore(new LoreBuilder()
+                                .addLines(Utils.createMultilineFromString(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                                .build())
+                        .build());
+
+        getMenu().getSlot(13).setItem(
+                new ItemBuilder(Material.SAPLING, 1, (byte) 5)
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_INSPIRATION_MODE))
+                        .setLore(new LoreBuilder()
+                                .addLines(Utils.createMultilineFromString(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                                .build())
+                        .build());
+
+        getMenu().getSlot(15).setItem(
+                new ItemBuilder(Utils.CustomHead.CITY_INSPIRATION_MODE.getAsItemStack())
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE))
+                        .setLore(new LoreBuilder()
+                                .addLines(Utils.createMultilineFromString(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                                .build())
                         .build());
 
 
@@ -46,24 +66,6 @@ public class SelectPlotTypeMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        // Set click event for language items
-        for (int i = 0; i < LangUtil.languages.length; i++) {
-            LangUtil.LanguageFile langFile = LangUtil.languages[i];
-            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
-                try {
-                    Builder builder = new Builder(getMenuPlayer().getUniqueId());
-                    builder.setLanguageTag(langFile.getTag());
-                    getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
-                    getMenuPlayer().sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE, langFile.getLangName())));
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                    getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.ErrorSound, 1f, 1f);
-                }
-
-                getMenuPlayer().closeInventory();
-            });
-        }
-
         // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer));
     }
@@ -72,7 +74,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
+                .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111101111")
                 .build();

@@ -76,6 +76,9 @@ public class LangPaths {
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
         public static final String SELECT_PLOT_TYPE = MENU_TITLES + "select-plot-type";
+        public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
+        public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
+        public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
         public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
     }
 
@@ -103,6 +106,9 @@ public class LangPaths {
         public static final String LEAVE_PLOT = MENU_DESCRIPTIONS + "leave-plot-desc";
         public static final String SELECT_LANGUAGE = MENU_DESCRIPTIONS + "select-language-desc";
         public static final String SELECT_PLOT_TYPE = MENU_DESCRIPTIONS + "select-plot-type-desc";
+        public static final String SELECT_FOCUS_MODE = MENU_DESCRIPTIONS + "select-focus-mode-desc";
+        public static final String SELECT_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-local-inspiration-mode-desc";
+        public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
         public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
     }
 

@@ -87,8 +87,11 @@ menu-title:
   review-plot: "Review Plot #{0}"
   enter-player-name: "Enter player name"
   select-language: "Select Language"
+  select-plot-type: "Select Plot Type"
+  select-focus-mode: "Select Focus Mode"
+  select-local-inspiration-mode: "Select Inspiration Mode"
+  select-city-inspiration-mode: "Select City Inspiration Mode"
   auto-detect-language: "Auto-Detect Language"
-  select-plot-type: 'Select Plot Type'
 
 
 # -----------------------------------------------------
@@ -117,7 +120,11 @@ menu-description:
   leave-plot-desc: "Click to leave this plot"
   select-language-desc: "Choose your language"
   auto-detect-language-desc: "Click to automatically detect your language"
-  select-plot-type-desc: 'Choose your plot type'
+  select-plot-type-desc: "Choose your plot type"
+  select-focus-mode-desc: "Build your plot on a floating island in the void"
+  select-local-inspiration-mode-desc: "Build on a floating island generated with a copy of the surrounding environment as a reference"
+  select-city-inspiration-mode-desc: "Build in a copy of a specific section of the city surrounded not only by the environment but also by plots assigned to other players"
+
 
 # -----------------------------------------------------
 # | Review
@@ -228,4 +235,4 @@ message:
 
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.1"

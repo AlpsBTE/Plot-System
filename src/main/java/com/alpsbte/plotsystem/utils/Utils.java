@@ -40,6 +40,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -202,6 +203,76 @@ public class Utils {
         return line;
     }
 
+    /** This function creates a list of lines from one long string.
+     *  Given a max value of characters per line it will iterate through the string till the maximum chars value and then back until the start of the word (until a space symbol is reached).
+     *  Then it will cut that string into an extra line.
+     *  This way the function will never cut a word in half and still keep the max char value (e.g. line breaks in word)
+     *
+     * @param maxCharsPerLine: max characters per line
+     * @param lineBreaker: characters which creates a new line (e.g. \n)
+     * @return
+     */
+    public static ArrayList<String> createMultilineFromString(String text, int maxCharsPerLine, char lineBreaker){
+        ArrayList<String> list = new ArrayList();
+
+        // Split text at line breaker symbol, iterate through all subtexts and create all lists together to one large list.
+        String[] texts = text.split(String.valueOf(lineBreaker));
+
+        for(String subText : texts)
+            list.addAll(createMultilineFromString(subText, maxCharsPerLine));
+
+        return list;
+    }
+
+    public static ArrayList<String> createMultilineFromString(String text, int maxCharsPerLine){
+        int i = 0;
+        ArrayList<String> list = new ArrayList();
+        String currentText = text;
+        boolean findSpace = false;
+
+
+        // Create infinite loop with termination condition.
+        while (1==1){
+
+            // If current text is smaller than maxCharsPerLine, then add the rest of the text and return the list.
+            if(currentText == null || currentText.length() < maxCharsPerLine) {
+                if(currentText != null)
+                    list.add(currentText);
+                return list;
+            }
+
+            // If it should iterate through the word, increase i until it hits maxCharsPerLine
+            if(findSpace == false && i < maxCharsPerLine - 1){
+                i++;
+
+                // If it hit the maxCharsPerLine value, go back until it finds a space.
+            }else{
+                findSpace = true;
+
+                // If it goes back to the start without finding a space symbol, return everything.
+                if(i == 0){
+                    list.add(currentText);
+                    return list;
+                }
+
+                char currentSymbol = currentText.charAt(i);
+
+                // If it reaches a space symbol, split the text from start till i and add it to the list
+                if(currentSymbol == ' '){
+                    String firstPart = currentText.substring(0 , i);
+                    String lastPart = currentText.substring(i+1);
+
+                    list.add(firstPart);
+                    currentText = lastPart;
+                    findSpace = false;
+                }
+
+                i--;
+            }
+
+        }
+    }
+
 
     public static class CustomHead {
         private final ItemStack headItem;
@@ -230,6 +301,9 @@ public class Utils {
         public static CustomHead PREVIOUS_BUTTON;
 
         public static CustomHead GLOBE;
+        public static CustomHead PLOT_TYPE;
+        public static CustomHead FOCUS_MODE;
+        public static CustomHead CITY_INSPIRATION_MODE;
 
         public static void loadHeadsAsync(HeadDatabaseAPI api) {
             headDatabaseAPI = api;
@@ -247,6 +321,9 @@ public class Utils {
                 PREVIOUS_BUTTON = new CustomHead("9226");
 
                 GLOBE = new CustomHead("49973");
+                PLOT_TYPE = new CustomHead("4159");
+                FOCUS_MODE = new CustomHead("38199");
+                CITY_INSPIRATION_MODE = new CustomHead("38094");
             });
         }
     }
