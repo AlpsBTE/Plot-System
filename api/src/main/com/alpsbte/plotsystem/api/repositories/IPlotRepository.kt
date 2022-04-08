@@ -9,7 +9,7 @@ interface IPlotRepository {
     fun getPlots(): Array<PlotDTO>
     fun getPlots(status: PlotStatus?, isPasted: Boolean?, limit: Int?): Array<PlotDTO>
     fun getPlots(ownerUUID: String, status: PlotStatus?, limit: Int?): Array<PlotDTO>
-    fun getPlots(cityProjectId: Int, plotDifficultyId: Int?, status: PlotStatus?, limit: Int?): Array<PlotDTO>?
+    fun getPlots(cityProjectId: Int, plotDifficultyId: Int?, status: PlotStatus?, limit: Int?): Array<PlotDTO>
 
     fun addPlot(plot: PlotDTO)
 

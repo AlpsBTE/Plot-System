@@ -10,7 +10,7 @@ data class CityProjectDTO(
     var countryId: Int,
     var name: String,
     var description: String,
-    var visible: Boolean
+    var visible: Int
 )
 
 object CityProjectTable : Table<Nothing>("plotsystem_city_projects") {
@@ -18,5 +18,5 @@ object CityProjectTable : Table<Nothing>("plotsystem_city_projects") {
     val countryId = int("country_id")
     val name = varchar("name")
     val description = varchar("description")
-    val visible = boolean("visible")
+    val visible = int("visible")
 }

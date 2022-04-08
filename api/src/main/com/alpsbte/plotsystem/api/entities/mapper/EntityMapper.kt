@@ -45,7 +45,7 @@ class EntityMapper {
                 rows[CityProjectTable.countryId] ?: 0,
                 rows[CityProjectTable.name] ?: "",
                 rows[CityProjectTable.description] ?: "",
-                rows[CityProjectTable.visible] ?: true
+                rows[CityProjectTable.visible] ?: 1
             )
         }
 

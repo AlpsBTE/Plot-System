@@ -41,7 +41,7 @@ open class PlotRepositoryMySQL : IPlotRepository {
         }.map { row -> EntityMapper.mapPlotTableToDTO(row) }.toTypedArray()
     }
 
-    override fun getPlots(cityProjectId: Int, plotDifficultyId: Int?, status: PlotStatus?, limit: Int?): Array<PlotDTO>? {
+    override fun getPlots(cityProjectId: Int, plotDifficultyId: Int?, status: PlotStatus?, limit: Int?): Array<PlotDTO> {
         return database.from(PlotTable).select().limit(limit ?: 0).whereWithConditions{
             it += PlotTable.cityProjectId eq cityProjectId
 
