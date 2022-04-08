@@ -1,13 +1,13 @@
 package com.alpsbte.plotsystem.api.entities
 
+import com.google.gson.annotations.SerializedName
 import org.ktorm.schema.Table
-import org.ktorm.schema.boolean
 import org.ktorm.schema.int
 import org.ktorm.schema.varchar
 
 data class CityProjectDTO(
-    var cityId: Int,
-    var countryId: Int,
+    @SerializedName("id") var cityId: Int,
+    @SerializedName("country_id") var countryId: Int,
     var name: String,
     var description: String,
     var visible: Int

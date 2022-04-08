@@ -1,5 +1,7 @@
 package com.alpsbte.plotsystem.api.entities
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import org.ktorm.schema.Table
 import org.ktorm.schema.datetime
 import org.ktorm.schema.int
@@ -7,19 +9,19 @@ import org.ktorm.schema.varchar
 import java.time.LocalDateTime
 
 data class PlotDTO(
-    var plotId: Int,
-    var cityProjectId: Int,
-    var difficultyId: Int,
-    var reviewId: Int?,
-    var ownerUUID: String?,
-    var memberUUID: String?,
+    @SerializedName("id") var plotId: Int,
+    @SerializedName("city_project_id") var cityProjectId: Int,
+    @SerializedName("difficulty_id") var difficultyId: Int,
+    @SerializedName("review_id") var reviewId: Int?,
+    @SerializedName("owner_uuid") var ownerUUID: String?,
+    @SerializedName("member_uuids") var memberUUID: String?,
     var status: String,
-    var coordinates: String,
-    var outline: String,
+    @SerializedName("mc_coordinates") var coordinates: String,
+    @Expose var outline: String,
     var score: Int?,
-    var lastActivity: LocalDateTime?,
-    var createDate: LocalDateTime?,
-    var createPlayerUUID: String,
+    @SerializedName("last_activity") var lastActivity: LocalDateTime?,
+    @SerializedName("create_date") var createDate: LocalDateTime?,
+    @SerializedName("create_player") var createPlayerUUID: String,
     var pasted: Int
 )
 
