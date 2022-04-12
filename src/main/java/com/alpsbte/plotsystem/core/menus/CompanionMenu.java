@@ -326,7 +326,7 @@ public class CompanionMenu extends AbstractMenu {
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.NETHER_STAR, 1)
                 .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.COMPANION) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
-                .setEnchantment(true)
+                .setEnchanted(true)
                 .build();
     }
 }

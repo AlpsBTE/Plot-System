@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -51,6 +52,7 @@ public class Builder {
 
     //TODO create a changeable setting for it
     public boolean playInVoid = true;
+    public PlotType plotType;
 
     public Player getPlayer() {
         return Bukkit.getPlayer(UUID);
@@ -248,4 +250,43 @@ public class Builder {
                     .executeUpdate();
         }
     }
+
+    public PlotType getPlotTypeSetting() {
+        if(plotType != null)
+            return plotType;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                this.plotType = PlotType.byId(id);
+                DatabaseConnection.closeResultSet(rs);
+
+                return plotType;
+            }
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+        return null;
+    }
+
+    public void setPlotTypeSetting(PlotType plotType){
+        try {
+            if (plotType == null) {
+                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = DEFAULT(setting_plot_type) WHERE uuid = ?")
+                        .setValue(getUUID().toString()).executeUpdate();
+            } else {
+                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = ? WHERE uuid = ?")
+                        .setValue(plotType.getId()).setValue(getUUID().toString())
+                        .executeUpdate();
+            }
+        }catch (SQLException ex){
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+
+        this.plotType = plotType;
+    }
+
+
 }

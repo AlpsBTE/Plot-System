@@ -263,7 +263,7 @@ public class DatabaseConnection {
                             "(" +
                             " `uuid`            varchar(36) NOT NULL ," +
                             " `name`            varchar(16) NOT NULL ," +
-                            " `score`           int DEFAULt 0 ," +
+                            " `score`           int DEFAULT 0 ," +
                             " `completed_plots` int DEFAULT 0 ," +
                             " `third_slot`      int NULL ," +
                             " `first_slot`      int NULL ," +
@@ -272,6 +272,7 @@ public class DatabaseConnection {
                             "PRIMARY KEY (`uuid`)" +
                             ");",
                     "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS lang varchar(5) NULL;",
+                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS setting_plot_type int DEFAULT 1;",
 
                     // Reviews
                     "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
