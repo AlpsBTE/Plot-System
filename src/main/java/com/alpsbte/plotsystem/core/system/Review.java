@@ -253,8 +253,8 @@ public class Review {
                     DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
                             .setValue(review.reviewID).executeUpdate();
 
-                    if(plot.getPlotOwner().playInVoid)
-                    plot.getWorld().unloadWorld(false);
+                    if(plot.getPlotOwner().getPlotTypeSetting().isPlayingAlone())
+                        plot.getWorld().unloadWorld(false);
                 }
             } catch (SQLException | IOException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);

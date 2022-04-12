@@ -78,7 +78,7 @@ public class PlotHandler {
 
     public static boolean abandonPlot(Plot plot) {
         try {
-            if (plot.getPlotOwner().playInVoid && plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
+            if (plot.getPlotOwner().getPlotTypeSetting().isPlayingAlone() && plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
                 for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                     player.teleport(Utils.getSpawnLocation());
                 }

@@ -158,7 +158,7 @@ public class PlotWorld implements IPlotWorld {
             }
 
             try {
-                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty() && plot.getPlotOwner().playInVoid) {
+                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty() && plot.getPlotOwner().getPlotTypeSetting().isPlayingAlone()) {
                     deleteWorld();
                     return true;
                 }
@@ -298,7 +298,7 @@ public class PlotWorld implements IPlotWorld {
 
     public static String getWorldName(Plot plot, Builder builder) {
         try{
-            if(builder.playInVoid)
+            if(builder.getPlotTypeSetting().isPlayingAlone())
                 return "P-" + plot.getID();
             else
                 return "C-" + plot.getCity().getID();
@@ -310,7 +310,7 @@ public class PlotWorld implements IPlotWorld {
 
     public static String getRegionName(Plot plot, Builder builder) {
         try{
-            if(builder.playInVoid)
+            if(builder.getPlotTypeSetting().isPlayingAlone())
                 return "P-" + plot.getID();
             else
                 return "C-" + plot.getCity().getID() + "-" + plot.getID();

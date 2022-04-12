@@ -70,7 +70,7 @@ public class PlotPermissions {
     }
 
     public void save(Builder builder) {
-        if(builder.playInVoid)
+        if(builder.getPlotTypeSetting().isPlayingAlone())
             plotWorld.unloadWorld(false);
     }
 }

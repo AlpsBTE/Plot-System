@@ -45,14 +45,15 @@ import java.util.logging.Level;
 public class Builder {
 
     private final UUID UUID;
+    public PlotType plotType;
+
+
 
     public Builder(UUID UUID) {
         this.UUID = UUID;
     }
 
-    //TODO create a changeable setting for it
-    public boolean playInVoid = true;
-    public PlotType plotType;
+
 
     public Player getPlayer() {
         return Bukkit.getPlayer(UUID);

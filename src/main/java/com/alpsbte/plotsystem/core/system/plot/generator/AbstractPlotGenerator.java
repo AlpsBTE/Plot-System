@@ -125,7 +125,7 @@ public abstract class AbstractPlotGenerator {
     protected void generateWorld() {
         if (getPlot().getWorld().isWorldGenerated()) {
             try {
-                if(getPlot().getPlotOwner().playInVoid)
+                if(getPlot().getPlotOwner().getPlotTypeSetting().isPlayingAlone())
                     plot.getWorld().deleteWorld();
                 else
                     return;
@@ -199,7 +199,7 @@ public abstract class AbstractPlotGenerator {
             }
 
             Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
-            if (spawnLocation != null && getBuilder().playInVoid)
+            if (spawnLocation != null && getBuilder().getPlotTypeSetting().isPlayingAlone())
                 plotBukkitWorld.setSpawnLocation(spawnLocation);
 
         } catch (IOException | WorldEditException | SQLException ex) {
