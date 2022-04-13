@@ -26,11 +26,8 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import org.bukkit.Bukkit;
 
-import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class PlotPermissions {
 
@@ -70,7 +67,7 @@ public class PlotPermissions {
     }
 
     public void save(Builder builder) {
-        if(builder.getPlotTypeSetting().isPlayingAlone())
+        if(builder.getPlotTypeSetting().hasOnePlotPerWorld())
             plotWorld.unloadWorld(false);
     }
 }

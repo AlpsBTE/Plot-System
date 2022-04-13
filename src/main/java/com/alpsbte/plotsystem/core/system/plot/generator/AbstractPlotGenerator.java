@@ -125,7 +125,7 @@ public abstract class AbstractPlotGenerator {
     protected void generateWorld() {
         if (getPlot().getWorld().isWorldGenerated()) {
             try {
-                if(getPlot().getPlotOwner().getPlotTypeSetting().isPlayingAlone())
+                if(getPlot().getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld())
                     plot.getWorld().deleteWorld();
                 else
                     return;
@@ -140,6 +140,8 @@ public abstract class AbstractPlotGenerator {
         worldCreator.type(WorldType.FLAT);
         worldCreator.generatorSettings("2;0;1;");
         worldCreator.createWorld();
+
+
     }
 
     /**
@@ -162,18 +164,28 @@ public abstract class AbstractPlotGenerator {
      * Generates plot schematic and outlines
      * @param plotSchematic - schematic file
      */
-    protected void generateOutlines(File plotSchematic, File environmentSchematic) {
+
+    protected void generateOutlines(File plotSchematic, File environmentSchematic){
+        // Generate plot for the plot world of the player
+        generateOutlines(PlotWorld.getWorldName(getPlot(),getBuilder()), plotSchematic, environmentSchematic, builder.getPlotTypeSetting().hasEnvironment());
+
+        // If the player is playing in his own world, then additionally generate the plot in the city world
+        if(getBuilder().getPlotTypeSetting().hasOnePlotPerWorld())
+            generateOutlines(PlotWorld.getCityWorldName(getPlot()), plotSchematic, environmentSchematic, true);
+    }
+
+    protected void generateOutlines(String worldName, File plotSchematic, File environmentSchematic, boolean createEnvironment) {
         try {
 
             Vector buildingOutlinesCoordinates = plot.getCenter();
 
-            World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(), getBuilder()));
+            World plotBukkitWorld = PlotWorld.getBukkitWorld(worldName);
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
 
             EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
             Mask oldMask = editSession.getMask();
 
-            if(builder.getPlotTypeSetting().hasEnvironment() && environmentSchematic != null){
+            if(createEnvironment && environmentSchematic != null){
                 Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
                 ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
 
@@ -199,7 +211,7 @@ public abstract class AbstractPlotGenerator {
             }
 
             Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
-            if (spawnLocation != null && getBuilder().getPlotTypeSetting().isPlayingAlone())
+            if (spawnLocation != null && getBuilder().getPlotTypeSetting().hasOnePlotPerWorld())
                 plotBukkitWorld.setSpawnLocation(spawnLocation);
 
         } catch (IOException | WorldEditException | SQLException ex) {

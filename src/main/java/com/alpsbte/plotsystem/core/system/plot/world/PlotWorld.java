@@ -25,8 +25,6 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -158,7 +156,7 @@ public class PlotWorld implements IPlotWorld {
             }
 
             try {
-                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty() && plot.getPlotOwner().getPlotTypeSetting().isPlayingAlone()) {
+                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty() && plot.getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld()) {
                     deleteWorld();
                     return true;
                 }
@@ -298,7 +296,7 @@ public class PlotWorld implements IPlotWorld {
 
     public static String getWorldName(Plot plot, Builder builder) {
         try{
-            if(builder.getPlotTypeSetting().isPlayingAlone())
+            if(builder.getPlotTypeSetting().hasOnePlotPerWorld())
                 return "P-" + plot.getID();
             else
                 return "C-" + plot.getCity().getID();
@@ -308,9 +306,18 @@ public class PlotWorld implements IPlotWorld {
         }
     }
 
+    public static String getCityWorldName(Plot plot) {
+        try{
+            return "C-" + plot.getCity().getID();
+        }catch (Exception ex){
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return null;
+        }
+    }
+
     public static String getRegionName(Plot plot, Builder builder) {
         try{
-            if(builder.getPlotTypeSetting().isPlayingAlone())
+            if(builder.getPlotTypeSetting().hasOnePlotPerWorld())
                 return "P-" + plot.getID();
             else
                 return "C-" + plot.getCity().getID() + "-" + plot.getID();

@@ -208,7 +208,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             try {
                 Builder builder = new Builder(event.getPlayer().getUniqueId());
 
-                if(PlotManager.isPlotWorld(w) && builder.getPlotTypeSetting().isPlayingAlone())
+                if(PlotManager.isPlotWorld(w) && builder.getPlotTypeSetting().hasOnePlotPerWorld())
                     PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
@@ -224,7 +224,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())
         && !event.getFrom().getWorld().equals(event.getTo().getWorld())
-        && builder.getPlotTypeSetting().isPlayingAlone()
+        && builder.getPlotTypeSetting().hasOnePlotPerWorld()
         ) {
             PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
         }
@@ -234,7 +234,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
         Builder builder = new Builder(event.getPlayer().getUniqueId());
 
-        if (PlotManager.isPlotWorld(event.getFrom()) && builder.getPlotTypeSetting().isPlayingAlone() ) {
+        if (PlotManager.isPlotWorld(event.getFrom()) && builder.getPlotTypeSetting().hasOnePlotPerWorld() ) {
             PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
         }
 

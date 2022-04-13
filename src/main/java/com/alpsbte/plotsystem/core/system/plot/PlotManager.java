@@ -40,6 +40,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
+import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -48,6 +49,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -289,6 +291,8 @@ public class PlotManager {
         ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
         Operations.complete(forwardExtentCopy);
 
+
+
         // Write finished plot clipboard to schematic file
         File finishedSchematicFile = plot.getFinishedSchematic();
 
@@ -302,6 +306,20 @@ public class PlotManager {
 
         try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
             writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+        }
+
+
+        // If plot was created in a void world, copy the result to the city world
+        if(plot.getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld()){
+            World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getCityWorldName(plot));
+            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
+
+            Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(finishedSchematicFile)).read(weWorld.getWorldData());
+            ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
+
+            Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(region.getMinimumPoint()).ignoreAirBlocks(true).build();
+            Operations.complete(operation);
+            editSession.flushQueue();
         }
 
         // Upload to FTP server
