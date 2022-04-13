@@ -267,6 +267,15 @@ public abstract class AbstractPlotGenerator {
         GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
         globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
         globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+        globalRegion.setFlag(DefaultFlag.BLOCK_BREAK, StateFlag.State.DENY);
+        globalRegion.setFlag(DefaultFlag.BLOCK_BREAK.getRegionGroupFlag(), RegionGroup.ALL);
+        globalRegion.setFlag(DefaultFlag.BLOCK_PLACE, StateFlag.State.DENY);
+        globalRegion.setFlag(DefaultFlag.BLOCK_PLACE.getRegionGroupFlag(), RegionGroup.ALL);
+        globalRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
+        globalRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+        globalRegion.setFlag(DefaultFlag.TNT, StateFlag.State.DENY);
+        globalRegion.setFlag(DefaultFlag.TNT.getRegionGroupFlag(), RegionGroup.ALL);
+
 
         // Create protected region for plot from the outline of the plot
         ProtectedRegion protectedPlotRegion;
@@ -312,6 +321,15 @@ public abstract class AbstractPlotGenerator {
 
         protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
         protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_BREAK, StateFlag.State.ALLOW);
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_BREAK.getRegionGroupFlag(), RegionGroup.ALL);
+
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_PLACE, StateFlag.State.ALLOW);
+        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_PLACE.getRegionGroupFlag(), RegionGroup.ALL);
+
+        protectedPlotRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
+        protectedPlotRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
 
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
 

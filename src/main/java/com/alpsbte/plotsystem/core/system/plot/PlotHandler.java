@@ -83,6 +83,7 @@ public class PlotHandler {
                     player.teleport(Utils.getSpawnLocation());
                 }
 
+                if (plot.getWorld().loadWorld())
                 if (!plot.getWorld().deleteWorld()) {
                     for (Builder builder : plot.getPlotMembers())
                         plot.removePlotMember(builder);
