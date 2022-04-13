@@ -27,6 +27,9 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
+import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
+import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
@@ -72,8 +75,22 @@ public class PlotManager {
 
     public static HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
+    private static boolean ParticleAPIEnabled = false;
+    private static ParticleNativeAPI api;
+    private static Particles_1_8 particles;
+
+
 
     public static void startTimer(){
+        if(PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+            loadParticleNativeAPI();
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
+            if(PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+                loadParticleNativeAPI();
+        }, 20*10L);
+
+
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             tick();
         }, 0L, 0L);
@@ -86,12 +103,22 @@ public class PlotManager {
             clearCache();
 
 
-        if(time%5 == 0)
-        showOutlines();
+        if(time%10 == 0)
+            showOutlines();
     }
 
     public static void clearCache(){
         cachedInProgressPlots.clear();
+    }
+
+    public static void loadParticleNativeAPI(){
+        ParticleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
+
+        // get API
+        ParticleNativeAPI api = ParticleNativePlugin.getAPI();
+
+        // choose particles lists you want to use
+        particles = api.getParticles_1_8();
     }
 
 
@@ -483,18 +510,9 @@ public class PlotManager {
         try {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Builder builder = new Builder(player.getUniqueId());
+
                 List<Plot> plots = getCachedInProgressPlots(builder);
                 BlockVector2D playerPos2D = new BlockVector2D(player.getLocation().getX(), player.getLocation().getZ());
-
-                /*
-                for(int i = 0; i < Particle.values().length; i++)
-                for(int i2 = 0; i2 < 5; i2++) {
-                    if(Particle.values()[i] == Particle.MOB_APPEARANCE)
-                        continue;
-
-                    player.spawnParticle(Particle.values()[i], i * 5, i2*5, 0, 1, 0.1, 0.1, 0.1, i2);
-                    //player.sendMessage(i*5 + " - " + Particle.values()[i]);
-                }*/
 
                 if(plots.size() == 0)
                     continue;
@@ -503,13 +521,24 @@ public class PlotManager {
                     if(!PlotWorld.getWorldName(plot, builder).equals(player.getLocation().getWorld().getName()))
                         continue;
 
+                    if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment())
+                        continue;
+
                     List<BlockVector2D> points = plot.getBlockOutline();
 
                     for(BlockVector2D point : points)
                     if(point.distanceSq(playerPos2D) < 100*100)
                     for(int y= -3; y <= 3; y+=3)
-                        player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + y, point.getZ(), 1, 0.1 ,0.1,0.1, 0);
+                        if(!ParticleAPIEnabled)
+                            player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + y, point.getZ(), 1, 0.0 ,0.0,0.0, 0);
+                        else{
+                            Location loc = new Location(player.getWorld(), point.getX(), player.getLocation().getY() + y, point.getZ());
+                            // create a particle packet
+                            Object packet = particles.FLAME().packet(true, loc);
 
+                            // send this packet to player
+                            particles.sendPacket(player, packet);
+                        }
                 }
             }
 

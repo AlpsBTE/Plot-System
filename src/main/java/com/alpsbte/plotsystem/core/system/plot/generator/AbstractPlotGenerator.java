@@ -173,7 +173,7 @@ public abstract class AbstractPlotGenerator {
             EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
             Mask oldMask = editSession.getMask();
 
-            if(environmentSchematic != null){
+            if(builder.getPlotTypeSetting().hasEnvironment() && environmentSchematic != null){
                 Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
                 ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
 

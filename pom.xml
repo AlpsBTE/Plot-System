@@ -116,6 +116,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- ParticleNativeAPI -->
+        <dependency>
+            <groupId>com.github.fierioziy.particlenativeapi</groupId>
+            <artifactId>ParticleNativeAPI-plugin</artifactId>
+            <version>3.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Canvas Menu Builder -->
         <dependency>
             <groupId>com.github.IPVP-MC</groupId>

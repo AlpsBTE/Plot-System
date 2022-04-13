@@ -62,6 +62,7 @@ public class Plot implements IPlot {
     private List<BlockVector2D> outline;
     private List<BlockVector2D> blockOutline;
     private CityProject city;
+    private Builder plotOwner;
 
     private PlotWorld plotWorld;
     private PlotPermissions plotPermissions;
@@ -171,6 +172,9 @@ public class Plot implements IPlot {
 
     @Override
     public Builder getPlotOwner() throws SQLException {
+        if(plotOwner != null)
+            return plotOwner;
+
         if(getStatus() != Status.unclaimed) {
             try (ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots WHERE id = ?")
                     .setValue(this.ID).executeQuery()) {
@@ -178,7 +182,10 @@ public class Plot implements IPlot {
                 if (rs.next()){
                     String s = rs.getString(1);
                     DatabaseConnection.closeResultSet(rs);
-                    return new Builder(UUID.fromString(s));
+
+                    plotOwner = new Builder(UUID.fromString(s));
+
+                    return plotOwner;
                 }
 
                 DatabaseConnection.closeResultSet(rs);
@@ -196,6 +203,8 @@ public class Plot implements IPlot {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET owner_uuid = ? WHERE id = ?")
                     .setValue(UUID).setValue(this.ID).executeUpdate();
         }
+
+        plotOwner = null;
     }
 
     @Override

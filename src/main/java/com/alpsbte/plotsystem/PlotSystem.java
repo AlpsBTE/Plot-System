@@ -300,6 +300,13 @@ public class PlotSystem extends JavaPlugin {
             return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         }
 
+        /**
+         * @return True if ParticleNativeAPI is present
+         */
+        public static boolean isParticleNativeAPIEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("ParticleNativeAPI");
+        }
+
         public static boolean isMultiverseInventoriesEnabled() {
             return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
         }

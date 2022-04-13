@@ -26,7 +26,7 @@ public enum PlotType {
 
     /** Returns true, if the plot type only contains one plot per world.*/
     public boolean isPlayingAlone(){
-        if(id == 0)
+        if(id == 0 || id == 1)
             return true;
         else
             return false;
