@@ -35,24 +35,38 @@ import com.alpsbte.plotsystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public class Builder {
 
+    public static HashMap<UUID, Builder> builders = new HashMap<>();
+
+
     private final UUID UUID;
     public PlotType plotType;
 
 
 
-    public Builder(UUID UUID) {
+    private Builder(UUID UUID) {
         this.UUID = UUID;
     }
 
+    public static Builder byUUID(UUID uuid){
+        if(builders.containsKey(uuid))
+            return builders.get(uuid);
+
+        Builder builder = new Builder(uuid);
+        builders.put(uuid, builder);
+
+        return builders.get(uuid);
+    }
 
 
     public Player getPlayer() {
@@ -180,7 +194,7 @@ public class Builder {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new Builder(java.util.UUID.fromString(s));
+                return Builder.byUUID(java.util.UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -256,8 +270,10 @@ public class Builder {
         if(plotType != null)
             return plotType;
 
+        System.out.println("Database call.");
+
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
+                .setValue(getUUID().toString()).executeQuery()) {
             if (rs.next()) {
                 int id = rs.getInt(1);
                 this.plotType = PlotType.byId(id);

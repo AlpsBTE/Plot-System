@@ -101,7 +101,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Check if player has changed his name
             try {
-                Builder builder = new Builder(event.getPlayer().getUniqueId());
+                Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
                 if (!builder.getName().equals(event.getPlayer().getName())) {
                     DatabaseConnection.createStatement("UPDATE plotsystem_builders SET name = ? WHERE uuid = ?")
                             .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId().toString()).executeUpdate();
@@ -112,7 +112,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about new feedback
             try {
-                List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
+                List<Plot> plots = PlotManager.getPlots(Builder.byUUID(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
@@ -132,7 +132,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about unfinished plots
             try {
-                List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
+                List<Plot> plots = PlotManager.getPlots(Builder.byUUID(event.getPlayer().getUniqueId()), Status.unfinished);
                 if(plots.size() >= 1) {
                     PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
@@ -196,7 +196,7 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
         if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
-            event.getPlayer().performCommand("plots " + new Builder(event.getRightClicked().getUniqueId()).getName());
+            event.getPlayer().performCommand("plots " + Builder.byUUID(event.getRightClicked().getUniqueId()).getName());
         }
     }
 
@@ -206,7 +206,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             try {
-                Builder builder = new Builder(event.getPlayer().getUniqueId());
+                Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
 
                 if(PlotManager.isPlotWorld(w) && builder.getPlotTypeSetting().hasOnePlotPerWorld())
                     PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
@@ -220,7 +220,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
-        Builder builder = new Builder(event.getPlayer().getUniqueId());
+        Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
 
         if(PlotManager.isPlotWorld(event.getPlayer().getWorld())
         && !event.getFrom().getWorld().equals(event.getTo().getWorld())
@@ -232,7 +232,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
-        Builder builder = new Builder(event.getPlayer().getUniqueId());
+        Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
 
         if (PlotManager.isPlotWorld(event.getFrom()) && builder.getPlotTypeSetting().hasOnePlotPerWorld() ) {
             PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);

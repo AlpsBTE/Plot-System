@@ -57,17 +57,17 @@ public class CMD_EditPlot extends BaseCommand {
                             return true;
                         }
                     } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                        plot = PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId()));
+                        plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()));
                     } else {
                         sendInfo(sender);
                         return true;
                     }
 
                     if(plot.getPermissions().hasReviewerPerms()) {
-                        plot.getPermissions().removeReviewerPerms().save(new Builder(getPlayer(sender).getUniqueId()));
+                        plot.getPermissions().removeReviewerPerms().save(Builder.byUUID(getPlayer(sender).getUniqueId()));
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS,plot.getID() + "")));
                     } else {
-                        plot.getPermissions().addReviewerPerms().save(new Builder(getPlayer(sender).getUniqueId()));
+                        plot.getPermissions().addReviewerPerms().save(Builder.byUUID(getPlayer(sender).getUniqueId()));
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                     }
                 } catch (SQLException ex) {

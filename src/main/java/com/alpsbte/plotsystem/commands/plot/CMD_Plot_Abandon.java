@@ -59,7 +59,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                     return;
                 }
             } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                plot = PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId()));
+                plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()));
             } else {
                 sendInfo(sender);
                 return;

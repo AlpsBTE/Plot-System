@@ -527,7 +527,7 @@ public class PlotManager {
     public static void showOutlines(){
         try {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                Builder builder = new Builder(player.getUniqueId());
+                Builder builder = Builder.byUUID(player.getUniqueId());
 
                 List<Plot> plots = getCachedInProgressPlots(builder);
                 BlockVector2D playerPos2D = new BlockVector2D(player.getLocation().getX(), player.getLocation().getZ());

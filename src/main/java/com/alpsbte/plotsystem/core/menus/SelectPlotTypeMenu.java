@@ -30,7 +30,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
     protected void setPreviewItems() {
         super.setPreviewItems();
 
-        builder = new Builder(getMenuPlayer().getUniqueId());
+        builder = Builder.byUUID(getMenuPlayer().getUniqueId());
     }
 
     @Override

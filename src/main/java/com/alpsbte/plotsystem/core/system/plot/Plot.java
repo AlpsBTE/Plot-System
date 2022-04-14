@@ -183,7 +183,7 @@ public class Plot implements IPlot {
                     String s = rs.getString(1);
                     DatabaseConnection.closeResultSet(rs);
 
-                    plotOwner = new Builder(UUID.fromString(s));
+                    plotOwner = Builder.byUUID(UUID.fromString(s));
 
                     return plotOwner;
                 }
@@ -220,7 +220,7 @@ public class Plot implements IPlot {
                     String[] uuidMembers = members.split(",");
 
                     for (String uuid : uuidMembers) {
-                        builders.add(new Builder(UUID.fromString(uuid)));
+                        builders.add(Builder.byUUID(UUID.fromString(uuid)));
                     }
                 }
             }
@@ -387,7 +387,7 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new Builder(UUID.fromString(s));
+                return Builder.byUUID(UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);

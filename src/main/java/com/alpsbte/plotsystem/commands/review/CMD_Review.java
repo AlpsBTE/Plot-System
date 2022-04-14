@@ -49,8 +49,8 @@ public class CMD_Review extends BaseCommand {
             if (getPlayer(sender) != null) {
                 try {
                     Player player = (Player) sender;
-                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getCurrentPlot(new Builder(player.getUniqueId())).getStatus() == Status.unreviewed) {
-                        new ReviewPlotMenu(player, PlotManager.getCurrentPlot(new Builder(player.getUniqueId())));
+                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId())).getStatus() == Status.unreviewed) {
+                        new ReviewPlotMenu(player, PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId())));
                     } else {
                         new ReviewMenu(player);
                     }

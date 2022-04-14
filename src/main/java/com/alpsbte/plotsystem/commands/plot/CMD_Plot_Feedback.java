@@ -60,7 +60,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                         return;
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    plot = PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId()));
+                    plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()));
                 } else {
                     sendInfo(sender);
                     return;

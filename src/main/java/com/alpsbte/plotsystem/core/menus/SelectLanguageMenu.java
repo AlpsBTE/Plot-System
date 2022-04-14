@@ -29,7 +29,7 @@ public class SelectLanguageMenu extends AbstractMenu {
     protected void setPreviewItems() {
         super.setPreviewItems();
 
-        builder = new Builder(getMenuPlayer().getUniqueId());
+        builder = Builder.byUUID(getMenuPlayer().getUniqueId());
         isAutoDetectEnabled = builder.getLanguageTag() == null;
     }
 
@@ -66,7 +66,7 @@ public class SelectLanguageMenu extends AbstractMenu {
             LangUtil.LanguageFile langFile = LangUtil.languages[i];
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
-                    Builder builder = new Builder(getMenuPlayer().getUniqueId());
+                    Builder builder = Builder.byUUID(getMenuPlayer().getUniqueId());
                     builder.setLanguageTag(langFile.getTag());
                     Utils.updatePlayerInventorySlots(clickPlayer);
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);

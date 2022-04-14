@@ -61,7 +61,7 @@ public class LangUtil extends YamlFileFactory {
     }
 
     private static String getLocaleTagByPlayer(Player player) {
-        Builder builder = new Builder(player.getUniqueId());
+        Builder builder = Builder.byUUID(player.getUniqueId());
         if (builder.getLanguageTag() != null) {
             return builder.getLanguageTag();
         } else return player.getPlayer().getLocale();

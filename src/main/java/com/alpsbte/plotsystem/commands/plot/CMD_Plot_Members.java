@@ -37,7 +37,7 @@ public class CMD_Plot_Members extends SubCommand {
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
                     //plot members
-                    plot = PlotManager.getCurrentPlot(new Builder(getPlayer(sender).getUniqueId()));
+                    plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()));
                 } else {
                     sendInfo(sender);
                     return;
