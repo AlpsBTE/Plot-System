@@ -141,7 +141,7 @@ public class CompanionMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Set click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();

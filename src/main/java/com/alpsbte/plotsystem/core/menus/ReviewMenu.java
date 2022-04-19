@@ -138,7 +138,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Set click event for previous page item
         getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
             if (hasPreviousPage()) {

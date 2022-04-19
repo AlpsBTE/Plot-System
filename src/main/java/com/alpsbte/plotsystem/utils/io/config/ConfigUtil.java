@@ -37,7 +37,7 @@ public class ConfigUtil extends YamlFileFactory {
 
    // Register configuration files
    private static final ConfigFile[] configs = new ConfigFile[] {
-           new ConfigFile(Paths.get("config.yml"), 1.3),
+           new ConfigFile(Paths.get("config.yml"), 1.5),
            new ConfigFile(Paths.get("commands.yml"), 1.0)
     };
 
@@ -46,21 +46,17 @@ public class ConfigUtil extends YamlFileFactory {
 
        if (!getConfig().getFile().exists() && createFile(getConfig())) {
            throw new ConfigNotImplementedException("The config file must be configured!");
+        } else if (reloadFile(getConfig()) && getConfig().getDouble(ConfigPaths.CONFIG_VERSION) != getConfig().getVersion()) {
+           updateFile(getConfig());
         }
 
         if (!getCommandsConfig().getFile().exists()) {
             createFile(getCommandsConfig());
+        } else if (reloadFile(getCommandsConfig()) && getCommandsConfig().getDouble(ConfigPaths.CONFIG_VERSION) != getCommandsConfig().getVersion()){
+            updateFile(getCommandsConfig());
         }
 
-        reloadFiles();
-
-        // Check for updates
-        Arrays.stream(configs).forEach(config -> {
-            if (config.getDouble(ConfigPaths.CONFIG_VERSION) != config.getVersion()) {
-                updateFile(config);
-                reloadFiles();
-            }
-        });
+       reloadFiles();
     }
 
     public ConfigFile getConfig() {

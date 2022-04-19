@@ -116,7 +116,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Add click event for player plot items
         for(int i = 0; i < plotDisplayCount; i++) {
             int itemSlot = i;

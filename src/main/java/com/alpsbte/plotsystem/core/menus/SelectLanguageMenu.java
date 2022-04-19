@@ -60,7 +60,7 @@ public class SelectLanguageMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {
+    protected void setItemClickEvents() {
         // Set click event for language items
         for (int i = 0; i < LangUtil.languages.length; i++) {
             LangUtil.LanguageFile langFile = LangUtil.languages[i];
@@ -69,6 +69,7 @@ public class SelectLanguageMenu extends AbstractMenu {
                     Builder builder = Builder.byUUID(getMenuPlayer().getUniqueId());
                     builder.setLanguageTag(langFile.getTag());
                     Utils.updatePlayerInventorySlots(clickPlayer);
+
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
                     getMenuPlayer().sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE, langFile.getLangName())));
                 } catch (SQLException ex) {
@@ -87,8 +88,10 @@ public class SelectLanguageMenu extends AbstractMenu {
         getMenu().getSlot(25).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 builder.setLanguageTag(isAutoDetectEnabled ? LangUtil.languages[0].getTag() : null);
-                getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
+                Utils.updatePlayerInventorySlots(clickPlayer);
                 reloadMenuAsync();
+
+                getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                 getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.ErrorSound, 1f, 1f);

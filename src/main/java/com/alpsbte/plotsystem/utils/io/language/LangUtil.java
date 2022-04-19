@@ -19,9 +19,10 @@ public class LangUtil extends YamlFileFactory {
 
     public final static LanguageFile[] languages = new LanguageFile[] {
         new LanguageFile("en_GB", 1.0),
-        // new LanguageFile("de_DE", 1.0, "de_AT", "de_CH")
+        new LanguageFile("de_DE", 1.0, "de_AT", "de_CH"),
         new LanguageFile("fr_FR", 1.0, "fr_CA"),
         new LanguageFile("ko_KR", 1.0),
+        new LanguageFile("ru_RU", 1.0, "ba_RU", "tt_RU"),
         new LanguageFile("zh_CN", 1.0),
         new LanguageFile("zh_TW", 1.0, "zh_HK"),
     };
@@ -32,13 +33,10 @@ public class LangUtil extends YamlFileFactory {
         Arrays.stream(languages).forEach(lang -> {
             if (!lang.getFile().exists()) {
                 createFile(lang);
+            } else if (reloadFile(lang) && lang.getDouble(LangPaths.CONFIG_VERSION) != lang.getVersion()) {
+                updateFile(lang);
             }
             reloadFile(lang);
-
-            if (lang.getDouble(LangPaths.CONFIG_VERSION) != lang.getVersion()) {
-                updateFile(lang);
-                reloadFile(lang);
-            }
         });
     }
 
@@ -69,13 +67,13 @@ public class LangUtil extends YamlFileFactory {
 
     public static void broadcast(String key) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Utils.getInfoMessageFormat(get(player,key)));
+            player.sendMessage(Utils.getInfoMessageFormat(get(player, key)));
         }
     }
 
-    public static void broadcast(String key, String... strings) {
+    public static void broadcast(String key, String... args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Utils.getInfoMessageFormat(get(player,key,strings)));
+            player.sendMessage(Utils.getInfoMessageFormat(get(player, key, args)));
         }
     }
 
@@ -95,11 +93,12 @@ public class LangUtil extends YamlFileFactory {
         }
 
         public String getTranslation(String key) {
-            return getString(key);
+            String translation = getString(key);
+            return translation != null ? translation : "undefined";
         }
 
         public String getTranslation(String key, String... args) {
-            String translation = getString(key);
+            String translation = getTranslation(key);
             for (int i = 0; i < args.length; i++) {
                 translation = translation.replace("{" + i + "}", args[i]);
             }
