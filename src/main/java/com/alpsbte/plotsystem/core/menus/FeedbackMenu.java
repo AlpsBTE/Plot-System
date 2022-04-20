@@ -122,7 +122,7 @@ public class FeedbackMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {}
+    protected void setItemClickEventsAsync() {}
 
     @Override
     protected Mask getMask() {

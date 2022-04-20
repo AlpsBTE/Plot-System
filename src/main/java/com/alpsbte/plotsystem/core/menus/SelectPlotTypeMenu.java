@@ -77,7 +77,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for plot type items
         getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
             builder.setPlotTypeSetting(PlotType.FOCUS_MODE);

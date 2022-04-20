@@ -213,7 +213,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for close item
         getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 

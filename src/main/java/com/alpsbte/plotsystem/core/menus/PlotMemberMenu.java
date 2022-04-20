@@ -107,7 +107,7 @@ public class PlotMemberMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for member slots
         for (int i = 12; i < 15; i++) {
             int itemSlot = i;
