@@ -78,7 +78,6 @@ public class PlotManager {
     public static HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
     private static boolean ParticleAPIEnabled = false;
-    private static ParticleNativeAPI api;
     private static Particles_1_8 particles;
 
 
@@ -93,9 +92,7 @@ public class PlotManager {
         }, 20*10L);
 
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            tick();
-        }, 0L, 0L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), PlotManager::tick, 0L, 0L);
     }
 
     public static void tick(){

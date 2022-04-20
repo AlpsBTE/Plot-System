@@ -35,7 +35,6 @@ import com.alpsbte.plotsystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -48,14 +47,11 @@ public class Builder {
 
     public static HashMap<UUID, Builder> builders = new HashMap<>();
 
-
-    private final UUID UUID;
+    private final UUID uuid;
     public PlotType plotType;
 
-
-
     private Builder(UUID UUID) {
-        this.UUID = UUID;
+        this.uuid = UUID;
     }
 
     public static Builder byUUID(UUID uuid){
@@ -70,14 +66,14 @@ public class Builder {
 
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(UUID);
+        return Bukkit.getPlayer(uuid);
     }
 
     public java.util.UUID getUUID() {
-        return UUID;
+        return uuid;
     }
 
-    public boolean isOnline() { return Bukkit.getPlayer(UUID) != null; }
+    public boolean isOnline() { return Bukkit.getPlayer(uuid) != null; }
 
     public String getName() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
@@ -194,7 +190,7 @@ public class Builder {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return Builder.byUUID(java.util.UUID.fromString(s));
+                return Builder.byUUID(UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);

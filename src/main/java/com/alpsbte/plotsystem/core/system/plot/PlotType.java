@@ -16,20 +16,14 @@ public enum PlotType {
         return id;
     }
 
-    /** Returns true, if the plot type only contains environment around the plot.*/
+    // Returns true, if the plot type only contains environment around the plot.
     public boolean hasEnvironment(){
-        if(id == 1 || id == 2)
-            return true;
-        else
-            return false;
+        return id == 1 || id == 2;
     }
 
-    /** Returns true, if the plot type only contains one plot per world.*/
+    // Returns true, if the plot type only contains one plot per world.
     public boolean hasOnePlotPerWorld(){
-        if(id == 0 || id == 1)
-            return true;
-        else
-            return false;
+        return id == 0 || id == 1;
     }
 
     public static PlotType byId(int id){

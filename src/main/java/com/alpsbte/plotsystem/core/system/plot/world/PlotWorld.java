@@ -274,11 +274,6 @@ public class PlotWorld implements IPlotWorld {
 
 
 
-
-    public static boolean isWorldLoaded(String worldname) {
-        return getBukkitWorld(worldname) != null;
-    }
-
     public static Location getSpawnPoint(World world, Plot plot) {
         if (world != null) {
             Location spawnLocation = new Location(world,

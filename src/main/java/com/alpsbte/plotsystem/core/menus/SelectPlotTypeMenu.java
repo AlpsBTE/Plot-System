@@ -8,16 +8,10 @@ import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.logging.Level;
 
 public class SelectPlotTypeMenu extends AbstractMenu {
     private Builder builder;
@@ -81,17 +75,20 @@ public class SelectPlotTypeMenu extends AbstractMenu {
         // Set click event for plot type items
         getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
             builder.setPlotTypeSetting(PlotType.FOCUS_MODE);
-            new SelectPlotTypeMenu(clickPlayer);
+            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
+            reloadMenuAsync();
         }));
 
         getMenu().getSlot(13).setClickHandler(((clickPlayer, clickInformation) -> {
             builder.setPlotTypeSetting(PlotType.LOCAL_INSPIRATION_MODE);
-            new SelectPlotTypeMenu(clickPlayer);
+            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
+            reloadMenuAsync();
         }));
 
         getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
             builder.setPlotTypeSetting(PlotType.CITY_INSPIRATION_MODE);
-            new SelectPlotTypeMenu(clickPlayer);
+            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.Done, 1f, 1f);
+            reloadMenuAsync();
         }));
 
         // Set click event for back item

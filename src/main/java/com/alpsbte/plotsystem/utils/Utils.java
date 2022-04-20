@@ -232,7 +232,7 @@ public class Utils {
 
 
         // Create infinite loop with termination condition.
-        while (1==1){
+        while (true){
 
             // If current text is smaller than maxCharsPerLine, then add the rest of the text and return the list.
             if(currentText == null || currentText.length() < maxCharsPerLine) {
@@ -242,7 +242,7 @@ public class Utils {
             }
 
             // If it should iterate through the word, increase i until it hits maxCharsPerLine
-            if(findSpace == false && i < maxCharsPerLine - 1){
+            if(!findSpace && i < maxCharsPerLine - 1){
                 i++;
 
                 // If it hit the maxCharsPerLine value, go back until it finds a space.
