@@ -78,8 +78,13 @@ public class PlotHandler {
 
     public static boolean abandonPlot(Plot plot) {
         try {
-            if (plot.getPlotType().hasOnePlotPerWorld() && plot.getWorld().isWorldGenerated() && plot.getWorld().unloadWorld(true) && !plot.getWorld().deleteWorld()) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
+            if (plot.getPlotType().hasOnePlotPerWorld() && plot.getWorld().isWorldGenerated()) {
+                if (plot.getWorld().isWorldLoaded()) {
+                    for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                        player.teleport(Utils.getSpawnLocation());
+                    }
+                }
+                if (!plot.getWorld().deleteWorld()) Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
