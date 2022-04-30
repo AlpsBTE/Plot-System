@@ -87,8 +87,8 @@ public abstract class AbstractPlotGenerator {
      * @param plot - plot which should be generated
      * @param builder - builder of the plot
      */
-    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
-        this(plot, builder, plot.getWorld());
+    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
+        this(plot, builder, builder.getPlotTypeSetting().hasOnePlotPerWorld() ? plot.getWorld() : new CityPlotWorld(plot));
     }
 
 
@@ -109,7 +109,7 @@ public abstract class AbstractPlotGenerator {
             try {
                 if (builderPlotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
                     new PlotWorldGenerator(world.getWorldName());
-                }
+                } else if (!world.isWorldLoaded() && !world.loadWorld()) throw new Exception("Could not load world");
                 generateOutlines(plot.getOutlinesSchematic(), plot.getEnvironmentSchematic());
                 createPlotProtection();
             } catch (Exception ex) {

@@ -50,7 +50,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         this(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
-    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
+    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
         super(plot, builder);
     }
 

@@ -56,10 +56,14 @@ public class PlotWorld extends AbstractWorld {
     @Override
     public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         if (!isWorldGenerated()) {
-            if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-               new DefaultPlotGenerator(getPlot(), plotOwner);
-            } else return false;
-            return true;
+            try {
+                if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
+                    new DefaultPlotGenerator(getPlot(), plotOwner);
+                } else return false;
+                return true;
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
         return false;
     }
@@ -68,23 +72,28 @@ public class PlotWorld extends AbstractWorld {
     public boolean loadWorld() {
         // Generate plot if it doesn't exist
         if (!isWorldGenerated() && getPlot().getFinishedSchematic().exists()) {
-            new DefaultPlotGenerator(getPlot(), plotOwner) {
-                @Override
-                protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws DataException, SQLException, IOException, MaxChangedBlocksException {
-                    super.generateOutlines(getPlot().getFinishedSchematic(), null);
-                }
+            try {
+                new DefaultPlotGenerator(getPlot(), plotOwner) {
+                    @Override
+                    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws DataException, SQLException, IOException, MaxChangedBlocksException {
+                        super.generateOutlines(getPlot().getFinishedSchematic(), null);
+                    }
 
-                @Override
-                protected boolean init() {
-                    return true;
-                }
+                    @Override
+                    protected boolean init() {
+                        return true;
+                    }
 
-                @Override
-                protected void onComplete(boolean failed) throws SQLException {
-                    getPlot().getPermissions().clearAllPerms();
-                    super.onComplete(true);
-                }
-            };
+                    @Override
+                    protected void onComplete(boolean failed) throws SQLException {
+                        getPlot().getPermissions().clearAllPerms();
+                        super.onComplete(true);
+                    }
+                };
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+
             if (!isWorldGenerated() || !isWorldLoaded()) {
                 Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world " + getWorldName() + " for plot " + getPlot().getID() + "!");
                 return false;
