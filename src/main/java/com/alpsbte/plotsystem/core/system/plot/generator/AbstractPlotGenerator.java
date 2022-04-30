@@ -45,6 +45,8 @@ import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
@@ -64,6 +66,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -138,70 +141,60 @@ public abstract class AbstractPlotGenerator {
      * @param plotSchematic - plot schematic file
      * @param environmentSchematic - environment schematic file
      */
-    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) {
-        try {
-            final class OnlyAirMask extends ExistingBlockMask {
-                public OnlyAirMask(Extent extent) {
-                    super(extent);
+    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, DataException, MaxChangedBlocksException, SQLException {
+        final class OnlyAirMask extends ExistingBlockMask {
+            public OnlyAirMask(Extent extent) {
+                super(extent);
+            }
+
+            @Override
+            public boolean test(Vector vector) {
+                return this.getExtent().getLazyBlock(vector).getType() == 0;
+            }
+        }
+
+        com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
+        EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
+        Mask defaultMask = editSession.getMask();
+
+        if(builderPlotType.hasEnvironment() && environmentSchematic != null){
+            editSession.setMask(new OnlyAirMask(weWorld));
+            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
+            SchematicFormat.getFormat(environmentSchematic).load(environmentSchematic).place(editSession, clipboard.getMinimumPoint().setY(5), true);
+            editSession.flushQueue();
+        }
+
+        editSession.setMask(defaultMask);
+        Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+        editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
+        editSession.flushQueue();
+
+        Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
+        SchematicFormat.getFormat(plotSchematic).load(plotSchematic).place(editSession, clipboard.getMinimumPoint().setY(5), true);
+        editSession.flushQueue();
+
+        // If the player is playing in his own world, then additionally generate the plot in the city world
+        if (PlotWorld.isPlotWorld(world.getWorldName())) {
+            // Generate city plot world if it doesn't exist
+            new AbstractPlotGenerator(plot, builder, new CityPlotWorld(plot)) {
+                @Override
+                protected boolean init() {
+                    return true;
                 }
 
                 @Override
-                public boolean test(Vector vector) {
-                    return this.getExtent().getLazyBlock(vector).getType() == 0;
+                protected void createPlotProtection() {}
+
+                @Override
+                protected void onComplete(boolean failed) throws SQLException {
+                    super.onComplete(true);
                 }
-            }
 
-            Vector outlineCoords = plot.getCenter();
-            World plotBukkitWorld = world.getBukkitWorld();
-
-            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
-            EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
-            Mask oldMask = editSession.getMask();
-
-            if(builderPlotType.hasEnvironment() && environmentSchematic != null){
-                editSession.setMask(new OnlyAirMask(weWorld));
-                SchematicFormat.getFormat(environmentSchematic).load(environmentSchematic).place(editSession, outlineCoords, true);
-                editSession.flushQueue();
-            }
-
-            editSession.setMask(oldMask);
-            Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-            editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
-            editSession.flushQueue();
-
-            SchematicFormat.getFormat(plotSchematic).load(plotSchematic).place(editSession, outlineCoords, true);
-            editSession.flushQueue();
-        } catch (IOException | WorldEditException | SQLException | DataException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines", ex);
-            throw new RuntimeException("Plot outlines generation completed exceptionally");
-        }
-
-        // If the player is playing in his own world, then additionally generate the plot in the city world
-        try {
-            if (PlotWorld.isPlotWorld(world.getWorldName())) {
-                // Generate city plot world if it doesn't exist
-                new AbstractPlotGenerator(plot, builder, new CityPlotWorld(plot)) {
-                    @Override
-                    protected boolean init() {
-                        return true;
-                    }
-
-                    @Override
-                    protected void createPlotProtection() {}
-
-                    @Override
-                    protected void onComplete(boolean failed) throws SQLException {
-                        super.onComplete(true);
-                    }
-
-                    @Override
-                    protected void onException(Throwable ex) {
-                        Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
-                    }
-                };
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                @Override
+                protected void onException(Throwable ex) {
+                    Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
+                }
+            };
         }
     }
 

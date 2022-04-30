@@ -525,27 +525,13 @@ public class Plot implements IPlot {
         plotType = type;
     }
 
-    public Vector getCenter(){
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()){
-                String s = rs.getString(1);
-                DatabaseConnection.closeResultSet(rs);
-
-                return Vector.toBlockPoint(
-                        Double.parseDouble(s.split(",")[0]),
-                        Double.parseDouble(s.split(",")[1]),
-                        Double.parseDouble(s.split(",")[2])
-                );
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }catch (Exception ex){
+    public Vector getCenter() {
+        try {
+            return getMinecraftCoordinates().setY(5);
+        } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
         }
+        return null;
     }
 
     public String getOSMMapsLink() throws SQLException {
