@@ -26,6 +26,8 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
@@ -60,8 +62,10 @@ public class Plot implements IPlot {
     private List<BlockVector2D> blockOutline;
     private CityProject city;
     private Builder plotOwner;
+    private PlotType plotType;
 
     private PlotWorld plotWorld;
+    private CityPlotWorld cityPlotWorld;
     private PlotPermissions plotPermissions;
 
     public Plot(int ID) throws SQLException {
@@ -259,10 +263,19 @@ public class Plot implements IPlot {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public PlotWorld getWorld() {
-        if (plotWorld == null) plotWorld = new PlotWorld(this);
-        return plotWorld;
+    public <T extends AbstractWorld> T getWorld() {
+        try {
+            if (getPlotType().hasOnePlotPerWorld()) {
+                if (plotWorld == null) plotWorld = new PlotWorld(this);
+                return (T) plotWorld;
+            } else {
+                if (cityPlotWorld == null) cityPlotWorld = new CityPlotWorld(this);
+                return (T) cityPlotWorld;
+            }
+        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        return null;
     }
 
     @Override
@@ -483,6 +496,33 @@ public class Plot implements IPlot {
 
             return null;
         }
+    }
+
+    @Override
+    public PlotType getPlotType() throws SQLException {
+        if (plotType != null) return plotType;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT type FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                int typeId = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+
+                plotType = PlotType.byId(typeId);
+                return plotType;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return null;
+        }
+    }
+
+    @Override
+    public void setPlotType(PlotType type) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET type = ? WHERE id = ?")
+                .setValue(type.ordinal()).setValue(this.ID).executeUpdate();
+        plotType = type;
     }
 
     public Vector getCenter(){

@@ -78,19 +78,11 @@ public class PlotHandler {
 
     public static boolean abandonPlot(Plot plot) {
         try {
-            if (plot.getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld() && plot.getWorld().isWorldGenerated() && plot.getWorld().loadWorld()) {
-                for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                    player.teleport(Utils.getSpawnLocation());
-                }
-
-                if (plot.getWorld().loadWorld() && !plot.getWorld().deleteWorld()) {
-                    for (Builder builder : plot.getPlotMembers())
-                        plot.removePlotMember(builder);
-                }
-
+            if (plot.getPlotType().hasOnePlotPerWorld() && plot.getWorld().isWorldGenerated() && plot.getWorld().unloadWorld(true)) {
+                if (!plot.getWorld().deleteWorld()) Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
             }
-        } catch (SQLException throwables) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to delete plot world with the ID " + plot.getID() + "!");
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
             return false;
         }
 
@@ -114,6 +106,7 @@ public class PlotHandler {
                     plot.setLastActivity(true);
                     plot.setTotalScore(-1);
                     plot.setStatus(Status.unclaimed);
+                    plot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     throw new CompletionException(ex);

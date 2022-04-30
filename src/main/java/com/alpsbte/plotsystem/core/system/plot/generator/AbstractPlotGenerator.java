@@ -26,6 +26,9 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.core.system.plot.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -36,18 +39,16 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldedit.function.mask.ExistingBlockMask;
 import com.sk89q.worldedit.function.mask.Mask;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -55,16 +56,14 @@ import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -73,29 +72,42 @@ import java.util.List;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotGenerator {
-
-    private static final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
-    private WorldCreator worldCreator;
-
     private final Plot plot;
     private final Builder builder;
+    private final AbstractWorld world;
+
+    private final PlotType builderPlotType;
 
     /**
+     * Generates a new plot in the plot world
      * @param plot - plot which should be generated
      * @param builder - builder of the plot
      */
     public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) {
+        this(plot, builder, plot.getWorld());
+    }
+
+
+    /**
+     * Generates a new plot in the given world
+     * @param plot - plot which should be generated
+     * @param builder - builder of the plot
+     * @param world - world of the plot
+     */
+    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull AbstractWorld world) {
         this.plot = plot;
         this.builder = builder;
+        this.world = world;
+        this.builderPlotType = builder.getPlotTypeSetting();
 
         if (init()) {
             Exception exception = null;
             try {
-                generateWorld();
+                if (builderPlotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
+                    new PlotWorldGenerator(world.getWorldName());
+                }
                 generateOutlines(plot.getOutlinesSchematic(), plot.getEnvironmentSchematic());
-                createMultiverseWorld();
-                configureWorld();
-                createProtection();
+                createPlotProtection();
             } catch (Exception ex) {
                 exception = ex;
             }
@@ -107,11 +119,12 @@ public abstract class AbstractPlotGenerator {
             }
 
             if (exception != null) {
-                if (worldManager.isMVWorld(PlotWorld.getWorldName(plot, builder))) PlotHandler.abandonPlot(plot);
+                PlotHandler.abandonPlot(plot);
                 onException(exception);
             }
         }
     }
+
 
     /**
      * Executed before plot generation
@@ -119,80 +132,35 @@ public abstract class AbstractPlotGenerator {
      */
     protected abstract boolean init();
 
-    /**
-     * Generates plot world
-     */
-    protected void generateWorld() {
-        if (getPlot().getWorld().isWorldGenerated()) {
-            try {
-                if(getPlot().getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld())
-                    plot.getWorld().deleteWorld();
-                else
-                    return;
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
-                return;
-            }
-        }
-
-        worldCreator = new WorldCreator(PlotWorld.getWorldName(getPlot(), builder));
-        worldCreator.environment(org.bukkit.World.Environment.NORMAL);
-        worldCreator.type(WorldType.FLAT);
-        worldCreator.generatorSettings("2;0;1;");
-        worldCreator.createWorld();
-
-
-    }
-
-    /**
-     * Creates Multiverse world
-     */
-    protected void createMultiverseWorld() {
-        // Check if world creator is configured and add new world to multiverse world manager
-        if (worldCreator != null) {
-            String worldName = PlotWorld.getWorldName(getPlot(), getBuilder());
-
-            if(!worldManager.isMVWorld(worldName))
-                worldManager.addWorld(PlotWorld.getWorldName(getPlot(), getBuilder()), worldCreator.environment(), null, worldCreator.type(), false,
-                    "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
-        } else {
-            throw new RuntimeException("World Creator is not configured");
-        }
-    }
 
     /**
      * Generates plot schematic and outlines
-     * @param plotSchematic - schematic file
+     * @param plotSchematic - plot schematic file
+     * @param environmentSchematic - environment schematic file
      */
-
-    protected void generateOutlines(File plotSchematic, File environmentSchematic){
-        // Generate plot for the plot world of the player
-        generateOutlines(PlotWorld.getWorldName(getPlot(),getBuilder()), plotSchematic, environmentSchematic, builder.getPlotTypeSetting().hasEnvironment());
-
-        // If the player is playing in his own world, then additionally generate the plot in the city world
-        if(getBuilder().getPlotTypeSetting().hasOnePlotPerWorld())
-            generateOutlines(PlotWorld.getCityWorldName(getPlot()), plotSchematic, environmentSchematic, true);
-    }
-
-    protected void generateOutlines(String worldName, File plotSchematic, File environmentSchematic, boolean createEnvironment) {
+    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) {
         try {
+            final class OnlyAirMask extends ExistingBlockMask {
+                public OnlyAirMask(Extent extent) {
+                    super(extent);
+                }
 
-            Vector buildingOutlinesCoordinates = plot.getCenter();
+                @Override
+                public boolean test(Vector vector) {
+                    return this.getExtent().getLazyBlock(vector).getType() == 0;
+                }
+            }
 
-            World plotBukkitWorld = PlotWorld.getBukkitWorld(worldName);
+            Vector outlineCoords = plot.getCenter();
+            World plotBukkitWorld = world.getBukkitWorld();
+
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
-
-            EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
+            EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
             Mask oldMask = editSession.getMask();
 
-            if(createEnvironment && environmentSchematic != null){
-                Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
-                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
-
+            if(builderPlotType.hasEnvironment() && environmentSchematic != null){
                 editSession.setMask(new OnlyAirMask(weWorld));
-
-                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(true).build();
-                Operations.complete(operation);
+                SchematicFormat.getFormat(environmentSchematic).load(environmentSchematic).place(editSession, outlineCoords, true);
                 editSession.flushQueue();
             }
 
@@ -201,156 +169,99 @@ public abstract class AbstractPlotGenerator {
             editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
             editSession.flushQueue();
 
-            if (plotSchematic != null) {
-                Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
-                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
-
-                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(true).build();
-                Operations.complete(operation);
-                editSession.flushQueue();
-            }
-
-            Location spawnLocation = PlotWorld.getSpawnPoint(plotBukkitWorld, getPlot());
-            if (spawnLocation != null && getBuilder().getPlotTypeSetting().hasOnePlotPerWorld())
-                plotBukkitWorld.setSpawnLocation(spawnLocation);
-
-        } catch (IOException | WorldEditException | SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
+            SchematicFormat.getFormat(plotSchematic).load(plotSchematic).place(editSession, outlineCoords, true);
+            editSession.flushQueue();
+        } catch (IOException | WorldEditException | SQLException | DataException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines", ex);
             throw new RuntimeException("Plot outlines generation completed exceptionally");
+        }
+
+        // If the player is playing in his own world, then additionally generate the plot in the city world
+        try {
+            if (PlotWorld.isPlotWorld(world.getWorldName())) {
+                // Generate city plot world if it doesn't exist
+                new AbstractPlotGenerator(plot, builder, new CityPlotWorld(plot)) {
+                    @Override
+                    protected boolean init() {
+                        return true;
+                    }
+
+                    @Override
+                    protected void createPlotProtection() {}
+
+                    @Override
+                    protected void onComplete(boolean failed) throws SQLException {
+                        super.onComplete(true);
+                    }
+
+                    @Override
+                    protected void onException(Throwable ex) {
+                        Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
+                    }
+                };
+            }
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }
 
-    /**
-     * Configures plot world
-     */
-    protected void configureWorld() {
-
-        World bukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getWorldName(getPlot(),getBuilder()));
-        MultiverseWorld mvWorld = worldManager.getMVWorld(bukkitWorld);
-
-        // Set world time to midday
-        bukkitWorld.setTime(6000);
-
-        // Set Bukkit world game rules
-        bukkitWorld.setGameRuleValue("randomTickSpeed", "0");
-        bukkitWorld.setGameRuleValue("doDaylightCycle", "false");
-        bukkitWorld.setGameRuleValue("doFireTick", "false");
-        bukkitWorld.setGameRuleValue("doWeatherCycle", "false");
-        bukkitWorld.setGameRuleValue("keepInventory", "true");
-        bukkitWorld.setGameRuleValue("doMobSpawning", "false");
-        bukkitWorld.setGameRuleValue("announceAdvancements", "false");
-
-        // Configure multiverse world
-        mvWorld.setAllowFlight(true);
-        mvWorld.setGameMode(GameMode.CREATIVE);
-        mvWorld.setEnableWeather(false);
-        mvWorld.setDifficulty(Difficulty.PEACEFUL);
-        mvWorld.setAllowAnimalSpawn(false);
-        mvWorld.setAllowMonsterSpawn(false);
-        mvWorld.setAutoLoad(false);
-        mvWorld.setKeepSpawnInMemory(false);
-        worldManager.saveWorldsConfig();
-    }
 
     /**
      * Creates plot protection
      */
-    protected void createProtection() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+    protected void createPlotProtection() {
+        RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+        RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
 
-        String worldName = PlotWorld.getWorldName(getPlot(),getBuilder());
-        String regionName = PlotWorld.getRegionName(getPlot(),getBuilder());
-        World bukkitWorld = PlotWorld.getBukkitWorld(worldName);
-        RegionManager regionManager = container.get(bukkitWorld);
-
-        // Create protected region for world
-        GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
-        globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
-        globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-        globalRegion.setFlag(DefaultFlag.BLOCK_BREAK, StateFlag.State.DENY);
-        globalRegion.setFlag(DefaultFlag.BLOCK_BREAK.getRegionGroupFlag(), RegionGroup.ALL);
-        globalRegion.setFlag(DefaultFlag.BLOCK_PLACE, StateFlag.State.DENY);
-        globalRegion.setFlag(DefaultFlag.BLOCK_PLACE.getRegionGroupFlag(), RegionGroup.ALL);
-        globalRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
-        globalRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
-        globalRegion.setFlag(DefaultFlag.TNT, StateFlag.State.DENY);
-        globalRegion.setFlag(DefaultFlag.TNT.getRegionGroupFlag(), RegionGroup.ALL);
-
-
-        // Create protected region for plot from the outline of the plot
-        ProtectedRegion protectedPlotRegion;
-        try{
-            List<BlockVector2D> points = plot.getOutline();
-            protectedPlotRegion = new ProtectedPolygonalRegion(regionName, points, 0, 256);
-            protectedPlotRegion.setPriority(100);
-
-        }catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection!", ex);
-            throw new RuntimeException("Plot protection creation completed exceptionally");
-        }
-
-
-        // Add and save regions
         try {
-            boolean globalRegionExists = regionManager.hasRegion("__global__");
-
             if (regionManager != null) {
-                if(!globalRegionExists)
-                    regionManager.addRegion(globalRegion);
+                // Create protected region for plot from the outline of the plot
+                List<BlockVector2D> points = plot.getOutline();
+                ProtectedRegion protectedPlotRegion = new ProtectedPolygonalRegion(world.getRegionName(), points, 0, 256);
+                protectedPlotRegion.setPriority(100);
 
+
+                // Add and save protected region
                 regionManager.addRegion(protectedPlotRegion);
                 regionManager.saveChanges();
-            } else {
-                throw new RuntimeException("Region Manager is null");
-            }
-        } catch (StorageException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot protection!", ex);
+
+
+                // Add plot owner
+                DefaultDomain owner = protectedPlotRegion.getOwners();
+                owner.addPlayer(builder.getUUID());
+                protectedPlotRegion.setOwners(owner);
+
+
+                // Set permissions
+                protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH, StateFlag.State.ALLOW);
+                protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.OWNERS);
+                protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
+                protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
+                List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
+                allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
+                for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
+                    allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
+                    for (String command : baseCommand.getNames()) {
+                        allowedCommandsNonBuilder.add("/" + command);
+                    }
+                }
+                List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
+                blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
+
+                protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
+                protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+                protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
+                protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+
+            } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+        } catch (StorageException | SQLException ex) {
+            Bukkit.getLogger().log(Level.WARNING, "Could not save protected plot region in world " + world.getWorldName() + "!", ex);
             throw new RuntimeException("Plot protection creation completed exceptionally");
         }
-
-
-        // Add plot owner
-        DefaultDomain owner = protectedPlotRegion.getOwners();
-        owner.addPlayer(builder.getUUID());
-        protectedPlotRegion.setOwners(owner);
-
-
-        // Set permissions
-        protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.OWNERS);
-
-        protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_BREAK, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_BREAK.getRegionGroupFlag(), RegionGroup.ALL);
-
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_PLACE, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCK_PLACE.getRegionGroupFlag(), RegionGroup.ALL);
-
-        protectedPlotRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
-
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
-
-        List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
-        allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
-        for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
-            allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
-            for (String command : baseCommand.getNames()) {
-                allowedCommandsNonBuilder.add("/" + command);
-            }
-        }
-
-        List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
-        blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
-
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-
-        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
-        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
     }
+
 
     /**
      * Gets invoked when generation is completed
@@ -360,11 +271,17 @@ public abstract class AbstractPlotGenerator {
     protected void onComplete(boolean failed) throws SQLException {
         if (!failed) {
             builder.setPlot(plot.getID(), builder.getFreeSlot());
+            plot.setPlotType(builderPlotType);
             plot.setStatus(Status.unfinished);
             plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
             PlotManager.clearCache();
         }
+
+        // Unload city plot world if it is not needed anymore
+        CityPlotWorld cityPlotWorld = new CityPlotWorld(plot);
+        if (cityPlotWorld.isWorldLoaded()) cityPlotWorld.unloadWorld(false);
     }
+
 
     /**
      * Gets invoked when an exception has occurred
@@ -376,12 +293,14 @@ public abstract class AbstractPlotGenerator {
         builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
     }
 
+
     /**
      * @return - plot object
      */
     public Plot getPlot() {
         return plot;
     }
+
 
     /**
      * @return - builder object

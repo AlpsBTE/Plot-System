@@ -324,8 +324,8 @@ public class DatabaseConnection {
                             "KEY `fkIdx_82` (`difficulty_id`)," +
                             "CONSTRAINT `FK_81` FOREIGN KEY `fkIdx_82` (`difficulty_id`) REFERENCES `plotsystem_difficulties` (`id`)" +
                             ");",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NOT NULL;"
-
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NOT NULL;",
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS type int DEFAULT 1;"
             );
         }
     }

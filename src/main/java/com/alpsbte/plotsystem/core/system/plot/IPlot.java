@@ -27,11 +27,10 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -101,12 +100,12 @@ public interface IPlot {
     /**
      * @return plot world, can be null if it has not yet been generated
      */
-    PlotWorld getWorld();
+    <T extends AbstractWorld> T getWorld() throws SQLException;
 
     /**
      * @return plot permission manager to add or remove build rights
      */
-    PlotPermissions getPermissions();
+    PlotPermissions getPermissions() throws SQLException;
 
     /**
      * @return total points given for the plot
@@ -202,6 +201,20 @@ public interface IPlot {
      * @throws SQLException SQL database exception
      */
     Vector getMinecraftCoordinates() throws SQLException;
+
+    /**
+     * Returns the plot type the player has selected when creating the plot
+     * @return the plot type
+     * @throws SQLException SQL database exception
+     */
+    PlotType getPlotType() throws SQLException;
+
+    /**
+     * Sets the plot type the player has selected
+     * @param type plot type
+     * @throws SQLException SQL database exception
+     */
+    void setPlotType(PlotType type) throws SQLException;
 
     /**
      * @param pasted if true, plot has been pasted on the Terra121 server

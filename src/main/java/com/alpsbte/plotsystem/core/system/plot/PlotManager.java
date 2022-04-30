@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
@@ -307,16 +308,21 @@ public class PlotManager {
 
 
         // If plot was created in a void world, copy the result to the city world
-        if(plot.getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld()){
-            World plotBukkitWorld = PlotWorld.getBukkitWorld(PlotWorld.getCityWorldName(plot));
-            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
+        if(plot.getPlotType().hasOnePlotPerWorld()) {
+            CityPlotWorld cityPlotWorld = new CityPlotWorld(plot);
+            if (cityPlotWorld.loadWorld()) {
+                World plotBukkitWorld = cityPlotWorld.getBukkitWorld();
+                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
 
-            Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(finishedSchematicFile)).read(weWorld.getWorldData());
-            ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
+                Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(finishedSchematicFile)).read(weWorld.getWorldData());
+                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
 
-            Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(region.getMinimumPoint()).ignoreAirBlocks(true).build();
-            Operations.complete(operation);
-            editSession.flushQueue();
+                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(region.getMinimumPoint()).ignoreAirBlocks(true).build();
+                Operations.complete(operation);
+                editSession.flushQueue();
+
+                cityPlotWorld.unloadWorld(false);
+            }
         }
 
         // Upload to FTP server
@@ -426,34 +432,37 @@ public class PlotManager {
      * @throws SQLException
      */
     public static Plot getCurrentPlot(Builder builder) throws SQLException {
-        String worldName = builder.getPlayer().getWorld().getName();
+        if (builder.isOnline()) {
+            String worldName = builder.getPlayer().getWorld().getName();
 
-        if(worldName.startsWith("P-"))
-            return new Plot(Integer.parseInt(worldName.substring(2)));
-        else if(worldName.startsWith("C-")) {
-            int cityID = Integer.parseInt(worldName.substring(2));
-            List<Plot> plots = getPlots(cityID, Status.unfinished);
+            if(PlotWorld.isPlotWorld(worldName))
+                return new Plot(Integer.parseInt(worldName.substring(2)));
+            else if (CityPlotWorld.isCityPlotWorld(worldName)) {
+                int cityID = Integer.parseInt(worldName.substring(2));
+                List<Plot> plots = getPlots(cityID, Status.unfinished);
 
-            if(plots.size() == 0)
+                if(plots.size() == 0)
+                    return getPlots(builder).get(0);
+                if(plots.size() == 1)
+                    return plots.get(0);
+
+                // Find the plot in the city world that is closest to the player
+                Location playerLoc = builder.getPlayer().getLocation().clone();
+                Vector playerVector = new Vector(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
+
+                double distance = 100000000;
+                Plot chosenPlot = plots.get(0);
+                for(Plot plot : plots)
+                    if(plot.getCenter().distance(playerVector) < distance){
+                        distance = plot.getCenter().distance(playerVector);
+                        chosenPlot = plot;
+                    }
+
+                return chosenPlot;
+            } else
                 return getPlots(builder).get(0);
-            if(plots.size() == 1)
-                return plots.get(0);
-
-            // Find the plot in the city world that is closest to the player
-            Location playerLoc = builder.getPlayer().getLocation().clone();
-            Vector playerVector = new Vector(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
-
-            double distance = 100000000;
-            Plot chosenPlot = plots.get(0);
-            for(Plot plot : plots)
-            if(plot.getCenter().distance(playerVector) < distance){
-                distance = plot.getCenter().distance(playerVector);
-                chosenPlot = plot;
-            }
-
-            return chosenPlot;
-        }else
-            return getPlots(builder).get(0);
+        }
+        return null;
     }
 
     public static boolean plotExists(int ID) {
@@ -509,13 +518,6 @@ public class PlotManager {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (world.getName().startsWith("P-") || world.getName().startsWith("C-"));
     }
 
-    public static String getWorldGuardConfigPath(String worldName) {
-        return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/" + worldName;
-    }
-
-    public static String getMultiverseInventoriesConfigPath(String worldName) {
-        return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
-    }
 
     public static String getDefaultSchematicPath() {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
@@ -533,7 +535,7 @@ public class PlotManager {
                     continue;
 
                 for(Plot plot : plots){
-                    if(!PlotWorld.getWorldName(plot, builder).equals(player.getLocation().getWorld().getName()))
+                    if(!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
                         continue;
 
                     if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment())

@@ -322,6 +322,14 @@ public class PlotSystem extends JavaPlugin {
         }
 
         /**
+         * @param worldName Name of the world
+         * @return Config path for the world
+         */
+        public static String getMultiverseInventoriesConfigPath(String worldName) {
+            return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
+        }
+
+        /**
          * @return Multiverse-Core instance
          */
         public static MultiverseCore getMultiverseCore() {
@@ -340,6 +348,14 @@ public class PlotSystem extends JavaPlugin {
          */
         public static WorldGuardPlugin getWorldGuard() {
             return WorldGuardPlugin.inst();
+        }
+
+        /**
+         * @param worldName Name of the world
+         * @return Config path for the world
+         */
+        public static String getWorldGuardConfigPath(String worldName) {
+            return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/" + worldName;
         }
 
         /**

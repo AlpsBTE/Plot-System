@@ -266,10 +266,9 @@ public class Builder {
         if(plotType != null)
             return plotType;
 
-        System.out.println("Database call.");
-
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(getUUID().toString()).executeQuery()) {
+
             if (rs.next()) {
                 int id = rs.getInt(1);
                 this.plotType = PlotType.byId(id);

@@ -24,54 +24,37 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Locale;
 import java.util.logging.Level;
 
-public class PlotWorld implements IPlotWorld {
+public class PlotWorld extends AbstractWorld {
+    private final Builder plotOwner;
 
-    public static int MAX_WORLD_HEIGHT = 256;
-
-    private final Plot plot;
-    private final MultiverseCore mvCore;
-
-    public PlotWorld(Plot plot) {
-        this.plot = plot;
-        this.mvCore = PlotSystem.DependencyManager.getMultiverseCore();
+    public PlotWorld(@NotNull Plot plot) throws SQLException {
+        super("P-" + plot.getID(), plot);
+        this.plotOwner = plot.getPlotOwner();
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator) {
+    public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         if (!isWorldGenerated()) {
             if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-               new DefaultPlotGenerator(plot, plotOwner);
-            } else if (generator.isAssignableFrom(RawPlotGenerator.class)) {
-                new RawPlotGenerator(plot, plotOwner);
+               new DefaultPlotGenerator(getPlot(), plotOwner);
             } else return false;
             return true;
         }
@@ -79,250 +62,72 @@ public class PlotWorld implements IPlotWorld {
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
-        try {
-            if (deleteWorld() && generateWorld(plot.getPlotOwner(), generator))
-                return true;
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean deleteWorld() {
-        if (isWorldGenerated() && loadWorld()) {
-            if (mvCore.getMVWorldManager().deleteWorld(getWorldName(), true, true) && mvCore.saveWorldConfig()) {
-                try {
-                    File multiverseInventoriesConfig = new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName()));
-                    File worldGuardConfig = new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName()));
-                    if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
-                    if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
-                } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not delete world configs of plot #" + plot.getID() + "!");
-                    return false;
-                }
-                return true;
-            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID() + "!");
-        }
-        return false;
-    }
-
-    @Override
     public boolean loadWorld() {
-        if(isWorldLoaded())
-            return true;
-
-        try {
-            // Generate plot if it doesn't exist
-            if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
-                new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
-                    @Override
-                    protected void generateOutlines(File plotSchematic, File environmentSchematic) {
-                        super.generateOutlines(plot.getFinishedSchematic(), null);
-                    }
-
-                    @Override
-                    protected boolean init() {
-                        return true;
-                    }
-
-                    @Override
-                    protected void onComplete(boolean failed) throws SQLException {
-                        plot.getPermissions().clearAllPerms();
-                        super.onComplete(true); // This code sucks
-                    }
-                };
-                if (!isWorldGenerated() || !isWorldLoaded()) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
-                    return false;
+        // Generate plot if it doesn't exist
+        if (!isWorldGenerated() && getPlot().getFinishedSchematic().exists()) {
+            new DefaultPlotGenerator(getPlot(), plotOwner) {
+                @Override
+                protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) {
+                    super.generateOutlines(getPlot().getFinishedSchematic(), null);
                 }
-                return true;
-            } else if (isWorldGenerated())
-                return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return false;
+
+                @Override
+                protected boolean init() {
+                    return true;
+                }
+
+                @Override
+                protected void onComplete(boolean failed) throws SQLException {
+                    getPlot().getPermissions().clearAllPerms();
+                    super.onComplete(true);
+                }
+            };
+            if (!isWorldGenerated() || !isWorldLoaded()) {
+                Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world " + getWorldName() + " for plot " + getPlot().getID() + "!");
+                return false;
+            }
+            return true;
+        } else return super.loadWorld();
     }
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if(isWorldLoaded()) {
-            if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
-                for (Player player : getBukkitWorld().getPlayers()) {
-                    player.teleport(Utils.getSpawnLocation());
-                }
-            }
-
+        if (super.unloadWorld(movePlayers)) {
             try {
-                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty() && plot.getPlotOwner().getPlotTypeSetting().hasOnePlotPerWorld()) {
+                if (getPlot().getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty()) {
                     deleteWorld();
                     return true;
                 }
+                return !isWorldLoaded();
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
             }
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
-                    Bukkit.unloadWorld(getBukkitWorld(), true)), 60L);
-            return !isWorldLoaded();
         }
-        return true;
+        return false;
     }
 
     @Override
-    public boolean teleportPlayer(Player player) {
-        Location spawnLocation;
-        if (loadWorld() && (spawnLocation = getSpawnPoint()) != null) {
+    public boolean teleportPlayer(@NotNull Player player) {
+        if (super.teleportPlayer(player)) {
             try {
-                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getID()))));
+                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
-                player.teleport(spawnLocation);
                 player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
                 player.setAllowFlight(true);
                 player.setFlying(true);
 
                 Utils.updatePlayerInventorySlots(player);
+                PlotHandler.sendLinkMessages(getPlot(), player);
 
-                PlotHandler.sendLinkMessages(plot, player);
-
-                if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                    plot.setLastActivity(false);
+                if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                    getPlot().setLastActivity(false);
                 }
+
+                return true;
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
             }
-            return true;
-        } else player.sendMessage(Utils.getErrorMessageFormat("Could not load plot world. Please try again!"));
+        }
         return false;
-    }
-
-    @Override
-    public Location getSpawnPoint() {
-        World world = getBukkitWorld();
-        if (world != null)
-            return getSpawnPoint(world, plot);
-
-        return null;
-    }
-
-    @Override
-    public World getBukkitWorld() {
-        return getBukkitWorld(getWorldName());
-    }
-
-    @Override
-    public String getWorldName() {
-        try{
-            Builder plotOwner = plot.getPlotOwner();
-
-            if(plotOwner == null)
-                return null;
-
-            return getWorldName(plot, plotOwner);
-
-        }catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
-        }
-    }
-
-    @Override
-    public String getRegionName() {
-        try{
-            Builder plotOwner = plot.getPlotOwner();
-
-            if(plotOwner == null)
-                return null;
-
-            return getRegionName(plot, plotOwner);
-
-        }catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
-        }
-    }
-
-    @Override
-    public ProtectedRegion getProtectedRegion() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        if (loadWorld()) {
-            RegionManager regionManager = container.get(getBukkitWorld());
-            if (regionManager != null) {
-                return regionManager.getRegion(getRegionName().toLowerCase(Locale.ROOT));
-            } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
-        }
-        return null;
-    }
-
-    @Override
-    public boolean isWorldLoaded() {
-        return getBukkitWorld() != null;
-    }
-
-    @Override
-    public boolean isWorldGenerated() {
-        String worldName = getWorldName();
-
-        if(worldName == null)
-            return false;
-
-        return mvCore.getMVWorldManager().getMVWorld(worldName) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(worldName);
-    }
-
-
-
-
-    public static Location getSpawnPoint(World world, Plot plot) {
-        if (world != null) {
-            Location spawnLocation = new Location(world,
-                    plot.getCenter().getX() + 0.5,
-                    plot.getCenter().getY(),
-                    plot.getCenter().getZ() + 0.5,
-                    -90,
-                    90);
-            // Set spawn point 1 block above the highest center point
-            spawnLocation.setY(world.getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-            return spawnLocation;
-        }
-        return null;
-    }
-
-    public static String getWorldName(Plot plot, Builder builder) {
-        try{
-            if(builder.getPlotTypeSetting().hasOnePlotPerWorld())
-                return "P-" + plot.getID();
-            else
-                return "C-" + plot.getCity().getID();
-        }catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
-        }
-    }
-
-    public static String getCityWorldName(Plot plot) {
-        try{
-            return "C-" + plot.getCity().getID();
-        }catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
-        }
-    }
-
-    public static String getRegionName(Plot plot, Builder builder) {
-        try{
-            if(builder.getPlotTypeSetting().hasOnePlotPerWorld())
-                return "P-" + plot.getID();
-            else
-                return "C-" + plot.getCity().getID() + "-" + plot.getID();
-        }catch (Exception ex){
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
-        }
-    }
-
-    public static World getBukkitWorld(String worldname) {
-        return Bukkit.getWorld(worldname);
     }
 }

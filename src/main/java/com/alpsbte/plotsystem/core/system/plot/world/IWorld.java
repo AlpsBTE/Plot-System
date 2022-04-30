@@ -24,29 +24,28 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
+import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public interface IPlotWorld {
+public interface IWorld {
     /**
      * Generates the plot world with the required configurations and schematic
-     * @param plotOwner plow owner of the plot
      * @param generator generator type as class
      * @return true if world was generated successfully
      */
-    <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator);
+    <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator);
 
     /**
      * Regenerates the current plot with an optional new generator type
      * @param generator generator type as class
      * @return true if world was regenerated successfully
      */
-    <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator);
+    <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator);
 
     /**
      * Deletes the world file and entry in the config file
@@ -72,13 +71,14 @@ public interface IPlotWorld {
      * @param player bukkit player
      * @return true if player was teleported successfully
      */
-    boolean teleportPlayer(Player player);
+    boolean teleportPlayer(@NotNull Player player);
 
     /**
      * Returns the spawn point of the plot
      * @return center coordinates of the plot
+     * @param plotVector plot vector
      */
-    Location getSpawnPoint();
+    Location getSpawnPoint(Vector plotVector);
 
     /**
      * @return Bukkit plot world
@@ -91,7 +91,7 @@ public interface IPlotWorld {
     String getWorldName();
 
     /**
-     * @return region name of the plot
+     * @return region world name of the plot
      */
     String getRegionName();
 
