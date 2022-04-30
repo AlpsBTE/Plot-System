@@ -208,8 +208,10 @@ public class EventListener extends SpecialBlocks implements Listener {
             try {
                 Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
 
-                if(PlotManager.isPlotWorld(w) && builder.getPlotTypeSetting().hasOnePlotPerWorld())
-                    PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
+                if(PlotManager.isPlotWorld(w)) {
+                    Plot plot = PlotManager.getCurrentPlot(builder);
+                    if (plot != null) plot.getWorld().unloadWorld(false);
+                }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
@@ -222,11 +224,9 @@ public class EventListener extends SpecialBlocks implements Listener {
     public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
         Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
 
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld())
-        && !event.getFrom().getWorld().equals(event.getTo().getWorld())
-        && builder.getPlotTypeSetting().hasOnePlotPerWorld()
-        ) {
-            PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
+        if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+            Plot plot = PlotManager.getCurrentPlot(builder);
+            if (plot != null) plot.getWorld().unloadWorld(false);
         }
     }
 
@@ -234,8 +234,9 @@ public class EventListener extends SpecialBlocks implements Listener {
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
         Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
 
-        if (PlotManager.isPlotWorld(event.getFrom()) && builder.getPlotTypeSetting().hasOnePlotPerWorld() ) {
-            PlotManager.getCurrentPlot(builder).getWorld().unloadWorld(false);
+        if (PlotManager.isPlotWorld(event.getFrom())) {
+            Plot plot = PlotManager.getCurrentPlot(builder);
+            if (plot != null) plot.getWorld().unloadWorld(false);
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
