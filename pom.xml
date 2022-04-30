@@ -89,14 +89,14 @@
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FAWE-Core</artifactId>
-            <version>1.17-93</version>
+            <version>1.12</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FAWE-Bukkit</artifactId>
-            <version>1.17-93</version>
+            <version>1.12</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
