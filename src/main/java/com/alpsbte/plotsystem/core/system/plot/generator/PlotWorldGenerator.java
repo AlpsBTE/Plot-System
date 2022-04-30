@@ -12,8 +12,6 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import org.bukkit.*;
 
-import java.util.logging.Level;
-
 public class PlotWorldGenerator {
     private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
     private WorldCreator worldCreator;
@@ -23,7 +21,7 @@ public class PlotWorldGenerator {
     private static final WorldType worldType = WorldType.FLAT;
     private static final String generatorSettings = "2;0;1;";
 
-    public PlotWorldGenerator(String worldName) {
+    public PlotWorldGenerator(String worldName) throws Exception {
         this.worldName = worldName;
 
         generateWorld();
@@ -40,14 +38,14 @@ public class PlotWorldGenerator {
         worldCreator.createWorld();
     }
 
-    protected void createMultiverseWorld() {
+    protected void createMultiverseWorld() throws Exception {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
             if(!worldManager.isMVWorld(worldName))
                 worldManager.addWorld(worldName, environment, null, worldType, false,
                         "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}", false);
         } else {
-            throw new RuntimeException("World Creator is not configured");
+            throw new Exception("World Creator is not configured");
         }
     }
 
@@ -79,7 +77,7 @@ public class PlotWorldGenerator {
         worldManager.saveWorldsConfig();
     }
 
-    protected void createGlobalProtection() {
+    protected void createGlobalProtection() throws StorageException {
         RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         RegionManager regionManager = regionContainer.get(Bukkit.getWorld(worldName));
 
@@ -94,14 +92,9 @@ public class PlotWorldGenerator {
             globalRegion.setFlag(DefaultFlag.TNT, StateFlag.State.DENY);
             globalRegion.setFlag(DefaultFlag.TNT.getRegionGroupFlag(), RegionGroup.ALL);
 
-            try {
-                if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
-                regionManager.addRegion(globalRegion);
-                regionManager.saveChanges();
-            } catch (StorageException ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not save protected global region for world " + worldName + "!", ex);
-                throw new RuntimeException("Plot global protection creation completed exceptionally", ex);
-            }
+            if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
+            regionManager.addRegion(globalRegion);
+            regionManager.saveChanges();
         }
     }
 }
