@@ -33,12 +33,15 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.data.DataException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -67,7 +70,7 @@ public class PlotWorld extends AbstractWorld {
         if (!isWorldGenerated() && getPlot().getFinishedSchematic().exists()) {
             new DefaultPlotGenerator(getPlot(), plotOwner) {
                 @Override
-                protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) {
+                protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws DataException, SQLException, IOException, MaxChangedBlocksException {
                     super.generateOutlines(getPlot().getFinishedSchematic(), null);
                 }
 

@@ -12,6 +12,8 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import org.bukkit.*;
 
+import java.util.logging.Level;
+
 public class PlotWorldGenerator {
     private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
     private WorldCreator worldCreator;
@@ -95,6 +97,6 @@ public class PlotWorldGenerator {
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
             regionManager.addRegion(globalRegion);
             regionManager.saveChanges();
-        }
+        } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
 }

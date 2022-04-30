@@ -58,6 +58,7 @@ import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
@@ -202,57 +203,74 @@ public abstract class AbstractPlotGenerator {
     /**
      * Creates plot protection
      */
-    protected void createPlotProtection() {
+    protected void createPlotProtection() throws StorageException, SQLException {
         RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
 
-        try {
-            if (regionManager != null) {
-                // Create protected region for plot from the outline of the plot
-                List<BlockVector2D> points = plot.getOutline();
-                ProtectedRegion protectedPlotRegion = new ProtectedPolygonalRegion(world.getRegionName(), points, 0, 256);
-                protectedPlotRegion.setPriority(100);
+        if (regionManager != null) {
+            // Create build region for plot from the outline of the plot
+            List<BlockVector2D> points = plot.getOutline();
+            ProtectedRegion buildRegion = new ProtectedPolygonalRegion(world.getRegionName() + "-0", points, 0, PlotWorld.MAX_WORLD_HEIGHT);
+            buildRegion.setPriority(100);
+
+            // Create protected plot region for plot
+            BlockVector minPoint = BlockVector.toBlockPoint(
+                    buildRegion.getMinimumPoint().getX() - 10,
+                    0,
+                    buildRegion.getMinimumPoint().getZ() - 10
+            );
+            BlockVector maxPoint = BlockVector.toBlockPoint(
+                    buildRegion.getMaximumPoint().getX() + 10,
+                    PlotWorld.MAX_WORLD_HEIGHT,
+                    buildRegion.getMaximumPoint().getZ() + 10
+            );
+            ProtectedRegion protectedRegion = new ProtectedCuboidRegion(world.getRegionName() + "-1", minPoint, maxPoint);
+            protectedRegion.setPriority(50);
+
+            // Add plot owner
+            DefaultDomain owner = buildRegion.getOwners();
+            owner.addPlayer(builder.getUUID());
+            buildRegion.setOwners(owner);
+            protectedRegion.setOwners(owner);
 
 
-                // Add and save protected region
-                regionManager.addRegion(protectedPlotRegion);
-                regionManager.saveChanges();
+            // Add region
+            if (regionManager.hasRegion(world.getRegionName() + "-0")) regionManager.removeRegion(world.getRegionName() + "-0");
+            if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
+            regionManager.addRegion(buildRegion);
+            regionManager.addRegion(protectedRegion);
+            regionManager.saveChanges();
 
 
-                // Add plot owner
-                DefaultDomain owner = protectedPlotRegion.getOwners();
-                owner.addPlayer(builder.getUUID());
-                protectedPlotRegion.setOwners(owner);
+            // Set permissions
+            buildRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
+            buildRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+            protectedRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
+            protectedRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+            protectedRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
+            protectedRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
-
-                // Set permissions
-                protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH, StateFlag.State.ALLOW);
-                protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.OWNERS);
-                protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
-                protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-
-                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
-                List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
-                allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
-                for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
-                    allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
-                    for (String command : baseCommand.getNames()) {
-                        allowedCommandsNonBuilder.add("/" + command);
-                    }
+            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
+            List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
+            allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
+            for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
+                allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
+                for (String command : baseCommand.getNames()) {
+                    allowedCommandsNonBuilder.add("/" + command);
                 }
-                List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
-                blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
+            }
+            List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
+            blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
 
-                protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
-                protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-                protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
-                protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+            protectedRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
+            protectedRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+            protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
+            protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
 
-            } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
-        } catch (StorageException | SQLException ex) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not save protected plot region in world " + world.getWorldName() + "!", ex);
-            throw new RuntimeException("Plot protection creation completed exceptionally");
-        }
+
+            // Save changes
+            regionManager.saveChanges();
+        } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
 
 
