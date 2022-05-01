@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 public class ReviewMenu extends AbstractPaginatedMenu {
 
     public ReviewMenu(Player player) throws SQLException {
-        super(6, 5, LangUtil.get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
+        super(6, 4, LangUtil.get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
     @Override
@@ -75,9 +75,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected void setPaginatedMenuItemsAsync(List<?> source) {
         // Set unreviewed and unfinished plot items
         List<Plot> plots = source.stream().map(p -> (Plot) p).collect(Collectors.toList());
-        int index = 0;
-        for(Plot plot : plots) {
+        for(int i = 0; i < plots.size(); i++) {
             try {
+                Plot plot = plots.get(i);
                 List<String> lines = new ArrayList<>();
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
                 lines.add("");
@@ -90,15 +90,14 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
-                getMenu().getSlot(index).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
+                getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                getMenu().getSlot(index).setItem(MenuItems.errorItem(getMenuPlayer()));
+                getMenu().getSlot(i).setItem(MenuItems.errorItem(getMenuPlayer()));
             }
-            index++;
         }
     }
 
@@ -106,9 +105,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected void setPaginatedItemClickEventsAsync(List<?> source) {
         // Set click event for unreviewed and unfinished plot items
         List<Plot> plots = source.stream().map(p -> (Plot) p).collect(Collectors.toList());
-        int index = 0;
-        for (Plot plot : plots) {
-            getMenu().getSlot(index).setClickHandler((player, info) -> {
+        for (int i = 0; i < plots.size(); i++) {
+            Plot plot = plots.get(i);
+            getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
                     getMenuPlayer().closeInventory();
                     if (plot.getStatus() == Status.unreviewed) {
@@ -124,7 +123,6 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                 }
             });
-            index++;
         }
     }
 
@@ -163,7 +161,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("000000000")
+                .pattern("111111111")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
