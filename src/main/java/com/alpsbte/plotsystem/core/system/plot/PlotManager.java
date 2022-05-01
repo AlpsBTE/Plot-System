@@ -459,8 +459,7 @@ public class PlotManager {
                     }
 
                 return chosenPlot;
-            } else
-                return getPlots(builder).get(0);
+            }
         }
         return null;
     }
