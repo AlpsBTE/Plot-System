@@ -24,53 +24,53 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
 
 import java.util.UUID;
 
 public class PlotPermissions {
 
-    private final PlotWorld plotWorld;
+    private final AbstractWorld world;
 
-    public PlotPermissions(PlotWorld plotWorld) {
-        this.plotWorld = plotWorld;
+    public PlotPermissions(AbstractWorld world) {
+        this.world = world;
     }
 
     public PlotPermissions addBuilderPerms(UUID builder) {
-        plotWorld.getProtectedRegion().getOwners().addPlayer(builder);
-        plotWorld.getProtectedBuildRegion().getOwners().addPlayer(builder);
+        world.getProtectedRegion().getOwners().addPlayer(builder);
+        world.getProtectedBuildRegion().getOwners().addPlayer(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
-        plotWorld.getProtectedRegion().getOwners().removePlayer(builder);
-        plotWorld.getProtectedBuildRegion().getOwners().removePlayer(builder);
+        world.getProtectedRegion().getOwners().removePlayer(builder);
+        world.getProtectedBuildRegion().getOwners().removePlayer(builder);
         return this;
     }
 
     public PlotPermissions addReviewerPerms() {
-        plotWorld.getProtectedRegion().getOwners().addGroup("staff");
-        plotWorld.getProtectedBuildRegion().getOwners().addGroup("staff");
+        world.getProtectedRegion().getOwners().addGroup("staff");
+        world.getProtectedBuildRegion().getOwners().addGroup("staff");
         return this;
     }
 
     public PlotPermissions removeReviewerPerms() {
-        plotWorld.getProtectedRegion().getOwners().removeGroup("staff");
-        plotWorld.getProtectedBuildRegion().getOwners().removeGroup("staff");
+        world.getProtectedRegion().getOwners().removeGroup("staff");
+        world.getProtectedBuildRegion().getOwners().removeGroup("staff");
         return this;
     }
 
     public PlotPermissions clearAllPerms() {
-        plotWorld.getProtectedRegion().getOwners().removeAll();
-        plotWorld.getProtectedBuildRegion().getOwners().removeAll();
+        world.getProtectedRegion().getOwners().removeAll();
+        world.getProtectedBuildRegion().getOwners().removeAll();
         return this;
     }
 
     public boolean hasReviewerPerms() {
-        return plotWorld.getProtectedBuildRegion().getOwners().getGroups().contains("staff");
+        return world.getProtectedBuildRegion().getOwners().getGroups().contains("staff");
     }
 
     public void save() {
-        plotWorld.unloadWorld(false);
+        world.unloadWorld(false);
     }
 }
