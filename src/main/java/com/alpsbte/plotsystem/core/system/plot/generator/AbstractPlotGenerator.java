@@ -41,15 +41,12 @@ import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.function.mask.Mask;
-import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.domains.DefaultDomain;
@@ -156,7 +153,6 @@ public abstract class AbstractPlotGenerator {
 
         com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
         EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
-        Mask defaultMask = editSession.getMask();
 
         if(builderPlotType.hasEnvironment() && environmentSchematic != null){
             editSession.setMask(new OnlyAirMask(weWorld));
@@ -165,14 +161,7 @@ public abstract class AbstractPlotGenerator {
             editSession.flushQueue();
         }
 
-        editSession.setMask(defaultMask);
-        Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-        editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
-        editSession.flushQueue();
-
-        Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
-        SchematicFormat.getFormat(plotSchematic).load(plotSchematic).place(editSession, clipboard.getMinimumPoint().setY(5), true);
-        editSession.flushQueue();
+        if (!PlotWorld.resetPlotRegion(plot, world)) throw new IOException("Could not paste plot region");
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isPlotWorld(world.getWorldName())) {

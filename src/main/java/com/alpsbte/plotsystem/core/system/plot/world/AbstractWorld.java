@@ -4,8 +4,18 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.boydti.fawe.util.EditSessionBuilder;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -17,7 +27,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -165,5 +177,29 @@ public abstract class AbstractWorld implements IWorld {
 
     public static boolean isCityPlotWorld(String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("c-");
+    }
+
+    /**
+     * @param plot - the plot to reset the region
+     * @return - true if the region was reset successfully
+     * @throws SQLException - database error
+     * @throws MaxChangedBlocksException - max blocks changed error
+     * @throws IOException - file error
+     * @throws DataException - data error
+     */
+    public static boolean resetPlotRegion(Plot plot, AbstractWorld world) throws SQLException, MaxChangedBlocksException, IOException, DataException {
+        if (world.loadWorld()) {
+            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
+            EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
+            Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, plot.getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+            editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
+            editSession.flushQueue();
+
+            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
+            SchematicFormat.getFormat(plot.getOutlinesSchematic()).load(plot.getOutlinesSchematic()).place(editSession, clipboard.getMinimumPoint().setY(5), true);
+            editSession.flushQueue();
+            return true;
+        }
+        return false;
     }
 }
