@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
@@ -10,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class CityPlotWorld extends AbstractWorld {
@@ -45,5 +48,16 @@ public class CityPlotWorld extends AbstractWorld {
     @Override
     public String getRegionName() {
         return super.getRegionName() + "-" + getPlot().getID();
+    }
+
+    public List<Player> getPlayersOnPlot() {
+        List<Player> players = new ArrayList<>();
+        if (getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {
+            for (Player player : getPlot().getWorld().getBukkitWorld().getPlayers()) {
+                if (PlotManager.isPlayerOnPlot(getPlot(), player)) players.add(player);
+            }
+            return players;
+        }
+        return players;
     }
 }

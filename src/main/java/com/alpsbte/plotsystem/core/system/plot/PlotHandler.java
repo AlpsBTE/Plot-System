@@ -28,6 +28,8 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Server;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -35,6 +37,10 @@ import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -78,15 +84,32 @@ public class PlotHandler {
 
     public static boolean abandonPlot(Plot plot) {
         try {
-            if (plot.getPlotType().hasOnePlotPerWorld() && plot.getWorld().isWorldGenerated()) {
-                if (plot.getWorld().isWorldLoaded()) {
-                    for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                        player.teleport(Utils.getSpawnLocation());
+            if (plot.getWorld() instanceof PlotWorld) {
+                if (plot.getWorld().isWorldGenerated()) {
+                    if (plot.getWorld().isWorldLoaded()) {
+                        for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                            player.teleport(Utils.getSpawnLocation());
+                        }
                     }
+                    if (!plot.getWorld().deleteWorld()) Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
                 }
-                if (!plot.getWorld().deleteWorld()) Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
+            } else {
+                RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+
+                if (plot.getWorld().loadWorld()) {
+                    CityPlotWorld world = plot.getWorld();
+                    for (Player player : world.getPlayersOnPlot()) { player.teleport(Utils.getSpawnLocation()); }
+
+                    RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
+                    if (regionManager != null) {
+                        if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
+                        if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
+
+                        if (!PlotWorld.resetPlotRegion(plot, world)) throw new IOException("Could not reset plot region!");
+                    } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+                }
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | MaxChangedBlocksException | IOException | DataException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
             return false;
         }

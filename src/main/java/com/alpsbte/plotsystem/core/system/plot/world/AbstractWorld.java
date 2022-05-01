@@ -178,12 +178,18 @@ public abstract class AbstractWorld implements IWorld {
     }
 
 
-
-
+    /**
+     * @param worldName - the name of the world
+     * @return - true if the world is a plot world
+     */
     public static boolean isPlotWorld(String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("p-");
     }
 
+    /**
+     * @param worldName - the name of the world
+     * @return - true if the world is a city plot world
+     */
     public static boolean isCityPlotWorld(String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("c-");
     }

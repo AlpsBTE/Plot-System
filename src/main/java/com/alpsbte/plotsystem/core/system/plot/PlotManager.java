@@ -465,6 +465,14 @@ public class PlotManager {
         return null;
     }
 
+    public static boolean isPlayerOnPlot(Plot plot, Player player) {
+        if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
+            Location playerLoc = player.getLocation();
+            return plot.getWorld().getProtectedRegion().contains(Vector.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
+        }
+        return false;
+    }
+
     public static boolean plotExists(int ID) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
