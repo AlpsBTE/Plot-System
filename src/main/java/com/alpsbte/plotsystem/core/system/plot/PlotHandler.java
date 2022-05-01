@@ -105,7 +105,7 @@ public class PlotHandler {
                         if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                         if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
-                        if (!PlotWorld.resetPlotRegion(plot, world)) throw new IOException("Could not reset plot region!");
+                        if (!PlotWorld.resetPlotRegion(plot, plot.getOutlinesSchematic(), world)) throw new IOException("Could not reset plot region!");
                     } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
                 }
             }

@@ -39,6 +39,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.boydti.fawe.FaweAPI;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -156,12 +157,13 @@ public abstract class AbstractPlotGenerator {
 
         if(builderPlotType.hasEnvironment() && environmentSchematic != null){
             editSession.setMask(new OnlyAirMask(weWorld));
-            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
-            SchematicFormat.getFormat(environmentSchematic).load(environmentSchematic).place(editSession, clipboard.getMinimumPoint().setY(5), true);
+            FaweAPI.load(environmentSchematic).paste(editSession, plot.getCenter().setY(5), false);
+            //Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
+            //SchematicFormat.getFormat(environmentSchematic).load(environmentSchematic).place(editSession, clipboard.getMinimumPoint().setY(5), true);
             editSession.flushQueue();
         }
 
-        if (!PlotWorld.resetPlotRegion(plot, world)) throw new IOException("Could not paste plot region");
+        if (!PlotWorld.resetPlotRegion(plot, plotSchematic, world)) throw new IOException("Could not paste plot region");
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isPlotWorld(world.getWorldName())) {

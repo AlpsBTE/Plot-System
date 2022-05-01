@@ -4,18 +4,27 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.boydti.fawe.FaweAPI;
+import com.boydti.fawe.object.schematic.Schematic;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.schematic.MCEditSchematicFormat;
 import com.sk89q.worldedit.schematic.SchematicFormat;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -202,7 +211,7 @@ public abstract class AbstractWorld implements IWorld {
      * @throws IOException - file error
      * @throws DataException - data error
      */
-    public static boolean resetPlotRegion(Plot plot, AbstractWorld world) throws SQLException, MaxChangedBlocksException, IOException, DataException {
+    public static boolean resetPlotRegion(Plot plot, File plotSchematic, AbstractWorld world) throws SQLException, MaxChangedBlocksException, IOException, DataException {
         if (world.loadWorld()) {
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
             EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
@@ -210,8 +219,7 @@ public abstract class AbstractWorld implements IWorld {
             editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
             editSession.flushQueue();
 
-            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
-            SchematicFormat.getFormat(plot.getOutlinesSchematic()).load(plot.getOutlinesSchematic()).place(editSession, clipboard.getMinimumPoint().setY(5), true);
+            FaweAPI.load(plotSchematic).paste(editSession, plot.getCenter().setY(5), false);
             editSession.flushQueue();
             return true;
         }
