@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 
 import java.util.UUID;
@@ -39,35 +38,39 @@ public class PlotPermissions {
 
     public PlotPermissions addBuilderPerms(UUID builder) {
         plotWorld.getProtectedRegion().getOwners().addPlayer(builder);
+        plotWorld.getProtectedBuildRegion().getOwners().addPlayer(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
         plotWorld.getProtectedRegion().getOwners().removePlayer(builder);
+        plotWorld.getProtectedBuildRegion().getOwners().removePlayer(builder);
         return this;
     }
 
     public PlotPermissions addReviewerPerms() {
         plotWorld.getProtectedRegion().getOwners().addGroup("staff");
+        plotWorld.getProtectedBuildRegion().getOwners().addGroup("staff");
         return this;
     }
 
     public PlotPermissions removeReviewerPerms() {
         plotWorld.getProtectedRegion().getOwners().removeGroup("staff");
+        plotWorld.getProtectedBuildRegion().getOwners().removeGroup("staff");
         return this;
     }
 
     public PlotPermissions clearAllPerms() {
         plotWorld.getProtectedRegion().getOwners().removeAll();
+        plotWorld.getProtectedBuildRegion().getOwners().removeAll();
         return this;
     }
 
     public boolean hasReviewerPerms() {
-        return plotWorld.getProtectedRegion().getOwners().getGroups().contains("staff");
+        return plotWorld.getProtectedBuildRegion().getOwners().getGroups().contains("staff");
     }
 
-    public void save(Builder builder) {
-        if(builder.getPlotTypeSetting().hasOnePlotPerWorld())
-            plotWorld.unloadWorld(false);
+    public void save() {
+        plotWorld.unloadWorld(false);
     }
 }

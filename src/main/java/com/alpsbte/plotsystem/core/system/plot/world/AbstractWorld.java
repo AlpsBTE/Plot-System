@@ -144,14 +144,12 @@ public abstract class AbstractWorld implements IWorld {
 
     @Override
     public ProtectedRegion getProtectedRegion() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        if (loadWorld()) {
-            RegionManager regionManager = container.get(getBukkitWorld());
-            if (regionManager != null) {
-                return regionManager.getRegion(getWorldName().toLowerCase(Locale.ROOT));
-            } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
-        }
-        return null;
+        return getRegion(getRegionName() + "-1");
+    }
+
+    @Override
+    public ProtectedRegion getProtectedBuildRegion() {
+        return getRegion(getRegionName());
     }
 
     @Override
@@ -162,6 +160,17 @@ public abstract class AbstractWorld implements IWorld {
     @Override
     public boolean isWorldGenerated() {
         return mvCore.getMVWorldManager().getMVWorld(worldName) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(worldName);
+    }
+
+    private ProtectedRegion getRegion(String regionName) {
+        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+        if (loadWorld()) {
+            RegionManager regionManager = container.get(getBukkitWorld());
+            if (regionManager != null) {
+                return regionManager.getRegion(regionName);
+            } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
+        }
+        return null;
     }
 
     public Plot getPlot() {

@@ -64,10 +64,10 @@ public class CMD_EditPlot extends BaseCommand {
                     }
 
                     if(plot.getPermissions().hasReviewerPerms()) {
-                        plot.getPermissions().removeReviewerPerms().save(Builder.byUUID(getPlayer(sender).getUniqueId()));
+                        plot.getPermissions().removeReviewerPerms().save();
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS,plot.getID() + "")));
                     } else {
-                        plot.getPermissions().addReviewerPerms().save(Builder.byUUID(getPlayer(sender).getUniqueId()));
+                        plot.getPermissions().addReviewerPerms().save();
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                     }
                 } catch (SQLException ex) {

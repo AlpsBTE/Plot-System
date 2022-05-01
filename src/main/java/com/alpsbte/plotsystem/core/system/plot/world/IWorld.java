@@ -102,6 +102,12 @@ public interface IWorld {
     ProtectedRegion getProtectedRegion();
 
     /**
+     * Loads the protected plot world build region from WorldGuard config
+     * @return protected WorldGuard build region
+     */
+    ProtectedRegion getProtectedBuildRegion();
+
+    /**
      * Checks if the plot world is loaded to memory
      * @return true if world is loaded
      */

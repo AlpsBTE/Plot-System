@@ -62,7 +62,7 @@ public class PlotHandler {
             }
         }
 
-        plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save(Builder.byUUID(plot.getPlotOwner().getUUID()));
+        plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
         if (plot.getPlotMembers().size() != 0) {
             for (Builder builder : plot.getPlotMembers()) {
                 plot.getPermissions().removeBuilderPerms(builder.getUUID());
@@ -73,7 +73,7 @@ public class PlotHandler {
     public static void undoSubmit(Plot plot) throws SQLException {
         plot.setStatus(Status.unfinished);
 
-        plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save(Builder.byUUID(plot.getPlotOwner().getUUID()));
+        plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
     }
 
     public static boolean abandonPlot(Plot plot) {

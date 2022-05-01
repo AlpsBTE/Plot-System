@@ -199,41 +199,33 @@ public abstract class AbstractPlotGenerator {
         if (regionManager != null) {
             // Create build region for plot from the outline of the plot
             List<BlockVector2D> points = plot.getOutline();
-            ProtectedRegion buildRegion = new ProtectedPolygonalRegion(world.getRegionName() + "-0", points, 0, PlotWorld.MAX_WORLD_HEIGHT);
-            buildRegion.setPriority(100);
+            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), points, 0, PlotWorld.MAX_WORLD_HEIGHT);
+            protectedBuildRegion.setPriority(100);
 
             // Create protected plot region for plot
             BlockVector minPoint = BlockVector.toBlockPoint(
-                    buildRegion.getMinimumPoint().getX() - 10,
+                    protectedBuildRegion.getMinimumPoint().getX() - 10,
                     0,
-                    buildRegion.getMinimumPoint().getZ() - 10
+                    protectedBuildRegion.getMinimumPoint().getZ() - 10
             );
             BlockVector maxPoint = BlockVector.toBlockPoint(
-                    buildRegion.getMaximumPoint().getX() + 10,
+                    protectedBuildRegion.getMaximumPoint().getX() + 10,
                     PlotWorld.MAX_WORLD_HEIGHT,
-                    buildRegion.getMaximumPoint().getZ() + 10
+                    protectedBuildRegion.getMaximumPoint().getZ() + 10
             );
             ProtectedRegion protectedRegion = new ProtectedCuboidRegion(world.getRegionName() + "-1", minPoint, maxPoint);
             protectedRegion.setPriority(50);
 
             // Add plot owner
-            DefaultDomain owner = buildRegion.getOwners();
+            DefaultDomain owner = protectedBuildRegion.getOwners();
             owner.addPlayer(builder.getUUID());
-            buildRegion.setOwners(owner);
+            protectedBuildRegion.setOwners(owner);
             protectedRegion.setOwners(owner);
 
 
-            // Add region
-            if (regionManager.hasRegion(world.getRegionName() + "-0")) regionManager.removeRegion(world.getRegionName() + "-0");
-            if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
-            regionManager.addRegion(buildRegion);
-            regionManager.addRegion(protectedRegion);
-            regionManager.saveChanges();
-
-
             // Set permissions
-            buildRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
-            buildRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+            protectedBuildRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
+            protectedBuildRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
             protectedRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
             protectedRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
             protectedRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
@@ -257,7 +249,11 @@ public abstract class AbstractPlotGenerator {
             protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
 
 
-            // Save changes
+            // Add regions and save changes
+            if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
+            if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
+            regionManager.addRegion(protectedBuildRegion);
+            regionManager.addRegion(protectedRegion);
             regionManager.saveChanges();
         } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
