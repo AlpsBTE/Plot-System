@@ -34,7 +34,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.data.DataException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +74,7 @@ public class PlotWorld extends AbstractWorld {
             try {
                 new DefaultPlotGenerator(getPlot(), plotOwner) {
                     @Override
-                    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws DataException, SQLException, IOException, MaxChangedBlocksException {
+                    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, MaxChangedBlocksException {
                         super.generateOutlines(getPlot().getFinishedSchematic(), null);
                     }
 

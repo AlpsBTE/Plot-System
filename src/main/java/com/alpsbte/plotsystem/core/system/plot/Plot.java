@@ -117,7 +117,7 @@ public class Plot implements IPlot {
     }
 
     @Override
-    /** return the outline of the plot which contains all corner points of the polygon */
+    /* return the outline of the plot which contains all corner points of the polygon */
     public List<BlockVector2D> getOutline() throws SQLException {
         if(this.outline != null)
             return this.outline;

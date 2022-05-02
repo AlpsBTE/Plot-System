@@ -38,7 +38,6 @@ import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import net.md_5.bungee.api.chat.*;
@@ -109,7 +108,7 @@ public class PlotHandler {
                     } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
                 }
             }
-        } catch (SQLException | MaxChangedBlocksException | IOException | DataException ex) {
+        } catch (SQLException | MaxChangedBlocksException | IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
             return false;
         }

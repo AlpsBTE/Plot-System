@@ -5,26 +5,14 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.boydti.fawe.FaweAPI;
-import com.boydti.fawe.object.schematic.Schematic;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.data.DataException;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldedit.schematic.MCEditSchematicFormat;
-import com.sk89q.worldedit.schematic.SchematicFormat;
-import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -36,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
@@ -209,9 +196,8 @@ public abstract class AbstractWorld implements IWorld {
      * @throws SQLException - database error
      * @throws MaxChangedBlocksException - max blocks changed error
      * @throws IOException - file error
-     * @throws DataException - data error
      */
-    public static boolean resetPlotRegion(Plot plot, File plotSchematic, AbstractWorld world) throws SQLException, MaxChangedBlocksException, IOException, DataException {
+    public static boolean resetPlotRegion(Plot plot, File plotSchematic, AbstractWorld world) throws SQLException, MaxChangedBlocksException, IOException {
         if (world.loadWorld()) {
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
             EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();

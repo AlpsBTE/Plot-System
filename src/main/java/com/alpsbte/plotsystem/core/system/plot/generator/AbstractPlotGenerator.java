@@ -43,12 +43,8 @@ import com.boydti.fawe.FaweAPI;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.extent.Extent;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -65,7 +61,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -140,7 +135,7 @@ public abstract class AbstractPlotGenerator {
      * @param plotSchematic - plot schematic file
      * @param environmentSchematic - environment schematic file
      */
-    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, DataException, MaxChangedBlocksException, SQLException {
+    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, MaxChangedBlocksException, SQLException {
         final class OnlyAirMask extends ExistingBlockMask {
             public OnlyAirMask(Extent extent) {
                 super(extent);
@@ -158,8 +153,6 @@ public abstract class AbstractPlotGenerator {
         if(builderPlotType.hasEnvironment() && environmentSchematic != null){
             editSession.setMask(new OnlyAirMask(weWorld));
             FaweAPI.load(environmentSchematic).paste(editSession, plot.getCenter().setY(5), false);
-            //Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(environmentSchematic)).read(weWorld.getWorldData());
-            //SchematicFormat.getFormat(environmentSchematic).load(environmentSchematic).place(editSession, clipboard.getMinimumPoint().setY(5), true);
             editSession.flushQueue();
         }
 
