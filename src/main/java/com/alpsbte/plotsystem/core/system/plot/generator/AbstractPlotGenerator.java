@@ -42,9 +42,11 @@ import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.boydti.fawe.FaweAPI;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -152,8 +154,7 @@ public abstract class AbstractPlotGenerator {
 
         if(builderPlotType.hasEnvironment() && environmentSchematic != null){
             editSession.setMask(new OnlyAirMask(weWorld));
-            FaweAPI.load(environmentSchematic).paste(editSession, plot.getCenter().setY(5), false);
-            editSession.flushQueue();
+            pasteSchematic(editSession, environmentSchematic, world);
         }
 
         if (!PlotWorld.resetPlotRegion(plot, plotSchematic, world)) throw new IOException("Could not paste plot region");
@@ -298,5 +299,30 @@ public abstract class AbstractPlotGenerator {
      */
     public Builder getBuilder() {
         return builder;
+    }
+
+
+
+    /**
+     * Pastes the schematic to the plot center in the given world
+     * @param schematicFile - plot/environment schematic file
+     * @param world - world to paste in
+     */
+    public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, AbstractWorld world) throws IOException, SQLException, MaxChangedBlocksException {
+        if (world.loadWorld()) {
+            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
+            if (editSession == null) editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
+            Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+            editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
+            editSession.flushQueue();
+
+            int pasteHeight;
+            if (world instanceof CityPlotWorld) {
+                pasteHeight = ((CityPlotWorld) world).getHeight();
+            } else pasteHeight = world.getHeight();
+
+            FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(pasteHeight), false);
+            editSession.flushQueue();
+        }
     }
 }

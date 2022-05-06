@@ -6,10 +6,12 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.google.common.annotations.Beta;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,29 @@ public class CityPlotWorld extends AbstractWorld {
         return super.getRegionName() + "-" + getPlot().getID();
     }
 
+
+    @Beta
+    @Override
+    public int getHeight() throws IOException {
+        try {
+            int plotHeight = getPlot().getMinecraftCoordinates().getBlockY();
+
+            // Plots created under Y 4 are not supported for city projects
+            if (plotHeight < 0) throw new IOException("Plot height is not supported");
+
+            // Move Y height to a usable value under 256 blocks
+            while (plotHeight >= 100) {
+                plotHeight -= 100;
+            }
+            return plotHeight + super.getHeight();
+        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        return super.getHeight();
+    }
+
+    /**
+     * Gets all players located on the plot in the city plot world
+     * @return - a list of players located on the plot
+     */
     public List<Player> getPlayersOnPlot() {
         List<Player> players = new ArrayList<>();
         if (getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {

@@ -2,9 +2,9 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.boydti.fawe.FaweAPI;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.EditSession;
@@ -12,6 +12,8 @@ import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -24,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
@@ -31,6 +34,7 @@ import java.util.logging.Level;
 
 public abstract class AbstractWorld implements IWorld {
     public static final int MAX_WORLD_HEIGHT = 256;
+    public static final int MIN_WORLD_HEIGHT = 5;
 
     private final MultiverseCore mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     private final String worldName;
@@ -124,6 +128,19 @@ public abstract class AbstractWorld implements IWorld {
     }
 
     @Override
+    public int getHeight() throws IOException {
+        if (loadWorld()) {
+            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(getBukkitWorld());
+            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(weWorld.getWorldData());
+            int height = clipboard.getMaximumPoint().getBlockY() - clipboard.getMinimumPoint().getBlockY();
+
+            unloadWorld(false);
+            return MIN_WORLD_HEIGHT + (height / 2);
+        }
+        return MIN_WORLD_HEIGHT;
+    }
+
+    @Override
     public World getBukkitWorld() {
         return Bukkit.getWorld(worldName);
     }
@@ -205,8 +222,7 @@ public abstract class AbstractWorld implements IWorld {
             editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
             editSession.flushQueue();
 
-            FaweAPI.load(plotSchematic).paste(editSession, plot.getCenter().setY(5), false);
-            editSession.flushQueue();
+            AbstractPlotGenerator.pasteSchematic(null, plotSchematic, world);
             return true;
         }
         return false;
