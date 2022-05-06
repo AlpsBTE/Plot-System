@@ -269,9 +269,8 @@ public abstract class AbstractPlotGenerator {
             PlotManager.clearCache();
         }
 
-        // Unload city plot world if it is not needed anymore
-        CityPlotWorld cityPlotWorld = new CityPlotWorld(plot);
-        if (cityPlotWorld.isWorldLoaded()) cityPlotWorld.unloadWorld(false);
+        // Unload plot world if it is not needed anymore
+        if (world.isWorldLoaded()) world.unloadWorld(false);
     }
 
 
