@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -83,7 +84,7 @@ public class PlotHandler {
 
     public static boolean abandonPlot(Plot plot) {
         try {
-            if (plot.getWorld() instanceof PlotWorld) {
+            if (plot.getWorld() instanceof OnePlotWorld) {
                 if (plot.getWorld().isWorldGenerated()) {
                     if (plot.getWorld().isWorldLoaded()) {
                         for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {

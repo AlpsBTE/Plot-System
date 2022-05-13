@@ -24,15 +24,15 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 
 import java.util.UUID;
 
 public class PlotPermissions {
 
-    private final AbstractWorld world;
+    private final PlotWorld world;
 
-    public PlotPermissions(AbstractWorld world) {
+    public PlotPermissions(PlotWorld world) {
         this.world = world;
     }
 

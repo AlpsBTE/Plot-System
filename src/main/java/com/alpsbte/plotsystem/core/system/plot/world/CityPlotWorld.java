@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class CityPlotWorld extends AbstractWorld {
+public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) throws SQLException {
         super("C-" + plot.getCity().getID(), plot);
     }
@@ -26,17 +26,19 @@ public class CityPlotWorld extends AbstractWorld {
     public boolean teleportPlayer(@NotNull Player player) {
         if (super.teleportPlayer(player)) {
             try {
-                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
-
                 player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
                 player.setAllowFlight(true);
                 player.setFlying(true);
 
-                Utils.updatePlayerInventorySlots(player);
-                PlotHandler.sendLinkMessages(getPlot(), player);
+                if (getPlot() != null) {
+                    player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
-                if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                    getPlot().setLastActivity(false);
+                    Utils.updatePlayerInventorySlots(player);
+                    PlotHandler.sendLinkMessages(getPlot(), player);
+
+                    if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                        getPlot().setLastActivity(false);
+                    }
                 }
 
                 return true;
@@ -77,7 +79,7 @@ public class CityPlotWorld extends AbstractWorld {
      */
     public List<Player> getPlayersOnPlot() {
         List<Player> players = new ArrayList<>();
-        if (getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {
+        if (getPlot() != null && getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {
             for (Player player : getPlot().getWorld().getBukkitWorld().getPlayers()) {
                 if (PlotManager.isPlayerOnPlot(getPlot(), player)) players.add(player);
             }

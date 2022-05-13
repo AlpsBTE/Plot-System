@@ -27,14 +27,14 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
@@ -73,7 +73,7 @@ import java.util.logging.Level;
 public abstract class AbstractPlotGenerator {
     private final Plot plot;
     private final Builder builder;
-    private final AbstractWorld world;
+    private final PlotWorld world;
 
     private final PlotType builderPlotType;
 
@@ -93,7 +93,7 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      * @param world - world of the plot
      */
-    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull AbstractWorld world) {
+    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotWorld world) {
         this.plot = plot;
         this.builder = builder;
         this.world = world;
@@ -307,7 +307,7 @@ public abstract class AbstractPlotGenerator {
      * @param schematicFile - plot/environment schematic file
      * @param world - world to paste in
      */
-    public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, AbstractWorld world) throws IOException, SQLException, MaxChangedBlocksException {
+    public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, PlotWorld world) throws IOException, SQLException, MaxChangedBlocksException {
         if (world.loadWorld()) {
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
             if (editSession == null) editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
@@ -318,7 +318,7 @@ public abstract class AbstractPlotGenerator {
             int pasteHeight;
             if (world instanceof CityPlotWorld) {
                 pasteHeight = ((CityPlotWorld) world).getHeight();
-            } else pasteHeight = world.getHeight();
+            } else pasteHeight = ((OnePlotWorld) world).getHeight();
 
             FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(pasteHeight), false);
             editSession.flushQueue();

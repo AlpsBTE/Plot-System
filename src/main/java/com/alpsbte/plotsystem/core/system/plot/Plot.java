@@ -26,9 +26,9 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.sk89q.worldedit.BlockVector2D;
@@ -64,7 +64,7 @@ public class Plot implements IPlot {
     private Builder plotOwner;
     private PlotType plotType;
 
-    private PlotWorld plotWorld;
+    private OnePlotWorld onePlotWorld;
     private CityPlotWorld cityPlotWorld;
     private PlotPermissions plotPermissions;
 
@@ -265,11 +265,11 @@ public class Plot implements IPlot {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends AbstractWorld> T getWorld() {
+    public <T extends PlotWorld> T getWorld() {
         try {
             if (getPlotType().hasOnePlotPerWorld()) {
-                if (plotWorld == null) plotWorld = new PlotWorld(this);
-                return (T) plotWorld;
+                if (onePlotWorld == null) onePlotWorld = new OnePlotWorld(this);
+                return (T) onePlotWorld;
             } else {
                 if (cityPlotWorld == null) cityPlotWorld = new CityPlotWorld(this);
                 return (T) cityPlotWorld;

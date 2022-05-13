@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.core.system.plot.world.AbstractWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -98,9 +98,9 @@ public interface IPlot {
     Review getReview() throws SQLException;
 
     /**
-     * @return plot world, can be null if it has not yet been generated
+     * @return plot world, can be one or city plot world
      */
-    <T extends AbstractWorld> T getWorld() throws SQLException;
+    <T extends PlotWorld> T getWorld() throws SQLException;
 
     /**
      * @return plot permission manager to add or remove build rights
