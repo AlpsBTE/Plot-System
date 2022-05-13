@@ -25,9 +25,10 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
@@ -522,7 +523,7 @@ public class PlotManager {
     }
 
     public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (world.getName().startsWith("P-") || world.getName().startsWith("C-"));
+        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (OnePlotWorld.isPlotWorld(world.getName()) || CityPlotWorld.isCityPlotWorld(world.getName()));
     }
 
 
