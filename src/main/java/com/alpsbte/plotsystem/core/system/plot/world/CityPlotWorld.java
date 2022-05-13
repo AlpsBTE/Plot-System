@@ -61,16 +61,16 @@ public class CityPlotWorld extends PlotWorld {
         try {
             int plotHeight = getPlot().getMinecraftCoordinates().getBlockY();
 
-            // Plots created under Y 4 are not supported for city projects
+            // Plots created below min world height are not supported
             if (plotHeight < 0) throw new IOException("Plot height is not supported");
 
-            // Move Y height to a usable value under 256 blocks
-            while (plotHeight >= 100) {
-                plotHeight -= 100;
+            // Move Y height to a usable value below 256 blocks
+            while (plotHeight >= 150) {
+                plotHeight -= 150;
             }
-            return plotHeight + super.getHeight();
+            return MIN_WORLD_HEIGHT + (super.getHeight() / 2) + plotHeight;
         } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
-        return super.getHeight();
+        return MIN_WORLD_HEIGHT;
     }
 
     /**
