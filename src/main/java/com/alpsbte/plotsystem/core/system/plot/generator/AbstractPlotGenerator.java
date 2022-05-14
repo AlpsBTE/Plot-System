@@ -266,7 +266,7 @@ public abstract class AbstractPlotGenerator {
             plot.setPlotType(builderPlotType);
             plot.setStatus(Status.unfinished);
             plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
-            PlotManager.clearCache();
+            PlotManager.clearCache(builder.getUUID());
         }
 
         // Unload plot world if it is not needed anymore

@@ -39,12 +39,14 @@ public class PlotPermissions {
     public PlotPermissions addBuilderPerms(UUID builder) {
         world.getProtectedRegion().getOwners().addPlayer(builder);
         world.getProtectedBuildRegion().getOwners().addPlayer(builder);
+        PlotManager.clearCache(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
         world.getProtectedRegion().getOwners().removePlayer(builder);
         world.getProtectedBuildRegion().getOwners().removePlayer(builder);
+        PlotManager.clearCache(builder);
         return this;
     }
 

@@ -80,6 +80,11 @@ public class PlotHandler {
         plot.setStatus(Status.unfinished);
 
         plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        if (plot.getPlotMembers().size() != 0) {
+            for (Builder builder : plot.getPlotMembers()) {
+                plot.getPermissions().addBuilderPerms(builder.getUUID());
+            }
+        }
     }
 
     public static boolean abandonPlot(Plot plot) {
@@ -129,6 +134,7 @@ public class PlotHandler {
                                 .setValue(plot.getReview().getReviewID()).executeUpdate();
                     }
 
+                    PlotManager.clearCache(plot.getPlotOwner().getUUID());
                     plot.getPlotOwner().removePlot(plot.getSlot());
                     plot.setPlotOwner(null);
                     plot.setLastActivity(true);

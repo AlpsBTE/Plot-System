@@ -72,7 +72,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class PlotManager {
-
+    // TODO: Start -> Move to another class
     public static int CACHE_UPDATE_TICKS = 20*60;
 
     public static int time;
@@ -112,6 +112,10 @@ public class PlotManager {
         cachedInProgressPlots.clear();
     }
 
+    public static void clearCache(UUID builderUUID) {
+        cachedInProgressPlots.remove(builderUUID);
+    }
+
     public static void loadParticleNativeAPI(){
         ParticleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
 
@@ -136,6 +140,7 @@ public class PlotManager {
 
         return cachedInProgressPlots.get(builder.getUUID());
     }
+    // TODO: End -> Move to another class
 
     public static List<Plot> getPlots() throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());

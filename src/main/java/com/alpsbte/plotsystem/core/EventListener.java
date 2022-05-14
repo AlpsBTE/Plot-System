@@ -210,6 +210,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 new PlotWorld(w.getName(), null).unloadWorld(false);
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+            PlotManager.clearCache(event.getPlayer().getUniqueId());
         }, 60L);
     }
 
