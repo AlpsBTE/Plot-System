@@ -134,8 +134,10 @@ public class PlotHandler {
                                 .setValue(plot.getReview().getReviewID()).executeUpdate();
                     }
 
-                    PlotManager.clearCache(plot.getPlotOwner().getUUID());
-                    plot.getPlotOwner().removePlot(plot.getSlot());
+                    if (plot.getPlotOwner() != null) {
+                        PlotManager.clearCache(plot.getPlotOwner().getUUID());
+                        plot.getPlotOwner().removePlot(plot.getSlot());
+                    }
                     plot.setPlotOwner(null);
                     plot.setLastActivity(true);
                     plot.setTotalScore(-1);

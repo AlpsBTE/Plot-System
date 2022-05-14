@@ -557,12 +557,11 @@ public class PlotManager {
                     List<BlockVector2D> points = plot.getBlockOutline();
 
                     for(BlockVector2D point : points)
-                    if(point.distanceSq(playerPos2D) < 100*100)
-                    for(int y= -3; y <= 3; y+=3)
+                    if(point.distanceSq(playerPos2D) < 50*50)
                         if(!ParticleAPIEnabled)
-                            player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + y, point.getZ(), 1, 0.0 ,0.0,0.0, 0);
+                            player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + 1, point.getZ(), 1, 0.0 ,0.0,0.0, 0);
                         else{
-                            Location loc = new Location(player.getWorld(), point.getX(), player.getLocation().getY() + y, point.getZ());
+                            Location loc = new Location(player.getWorld(), point.getX(), player.getLocation().getY() + 1, point.getZ());
                             // create a particle packet
                             Object packet = particles.FLAME().packet(true, loc);
 

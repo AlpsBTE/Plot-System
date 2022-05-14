@@ -42,11 +42,14 @@ import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.boydti.fawe.FaweAPI;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -54,7 +57,6 @@ import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.*;
@@ -65,9 +67,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotGenerator {
@@ -194,22 +194,13 @@ public abstract class AbstractPlotGenerator {
 
         if (regionManager != null) {
             // Create build region for plot from the outline of the plot
-            List<BlockVector2D> points = plot.getOutline();
-            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), points, 0, PlotWorld.MAX_WORLD_HEIGHT);
+            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), plot.getOutline(), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedBuildRegion.setPriority(100);
 
             // Create protected plot region for plot
-            BlockVector minPoint = BlockVector.toBlockPoint(
-                    protectedBuildRegion.getMinimumPoint().getX() - 10,
-                    0,
-                    protectedBuildRegion.getMinimumPoint().getZ() - 10
-            );
-            BlockVector maxPoint = BlockVector.toBlockPoint(
-                    protectedBuildRegion.getMaximumPoint().getX() + 10,
-                    PlotWorld.MAX_WORLD_HEIGHT,
-                    protectedBuildRegion.getMaximumPoint().getZ() + 10
-            );
-            ProtectedRegion protectedRegion = new ProtectedCuboidRegion(world.getRegionName() + "-1", minPoint, maxPoint);
+            World weWorld = new BukkitWorld(world.getBukkitWorld());
+            CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), new Vector2D(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
+            ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(world.getRegionName() + "-1", cylinderRegion.polygonize(-1), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedRegion.setPriority(50);
 
             // Add plot owner
