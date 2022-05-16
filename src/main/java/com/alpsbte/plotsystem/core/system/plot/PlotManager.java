@@ -445,7 +445,7 @@ public class PlotManager {
                 return new Plot(Integer.parseInt(worldName.substring(2)));
             else if (CityPlotWorld.isCityPlotWorld(worldName)) {
                 int cityID = Integer.parseInt(worldName.substring(2));
-                List<Plot> plots = getPlots(cityID, Status.unfinished);
+                List<Plot> plots = getPlots(cityID, Status.unfinished, Status.unreviewed);
 
                 if(plots.size() == 0)
                     return getPlots(builder).get(0);

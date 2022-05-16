@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -49,11 +50,10 @@ public class CMD_Review extends BaseCommand {
             if (getPlayer(sender) != null) {
                 try {
                     Player player = (Player) sender;
-                    if (PlotManager.isPlotWorld(player.getWorld()) && PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId())).getStatus() == Status.unreviewed) {
-                        new ReviewPlotMenu(player, PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId())));
-                    } else {
-                        new ReviewMenu(player);
-                    }
+                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()));
+                    if (plot != null && plot.getStatus() == Status.unreviewed) {
+                        new ReviewPlotMenu(player, plot);
+                    } else new ReviewMenu(player);
                 } catch (SQLException ex) {
                     sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
