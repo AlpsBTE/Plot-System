@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Continent;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,11 +49,48 @@ public class Country {
     }
 
     public ItemStack getHead() {
-        return Utils.getItemHead( new Utils.CustomHead(headID));
+        return Utils.getItemHead(new Utils.CustomHead(headID));
+    }
+
+    /**
+     * Get city projects that are inside of this country
+     * <p>
+     * Might be a good idea to put this in CityProject but could work in both classes
+     *
+     * @return CityProjects inside this country
+     */
+    public List<CityProject> getCityProjects() {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects WHERE country_id = ?").setValue(getID()).executeQuery()) {
+            List<CityProject> cityProjects = new ArrayList<>();
+            while (rs.next()) {
+                cityProjects.add(new CityProject(rs.getInt(1)));
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return cityProjects;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+        return new ArrayList<>();
     }
 
     public static List<Country> getCountries() {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery()) {
+            List<Country> countries = new ArrayList<>();
+            while (rs.next()) {
+                countries.add(new Country(rs.getInt(1)));
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return countries;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<Country> getCountries(Continent continent) {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries WHERE continent = ? ORDER BY server_id").setValue(continent.databaseEnum).executeQuery()) {
             List<Country> countries = new ArrayList<>();
             while (rs.next()) {
                 countries.add(new Country(rs.getInt(1)));

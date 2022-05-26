@@ -79,12 +79,18 @@ public class CityProject {
         return visible;
     }
 
-    public static List<CityProject> getCityProjects(boolean onlyVisible) {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery()) {
+    public static List<CityProject> getCityProjects(Country country, boolean onlyVisible) {
+        // if country is not null, only get country's city projects, otherwise load all
+        DatabaseConnection.StatementBuilder statement = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects " + (country == null ? "" : "WHERE country_id = ?") + " ORDER BY country_id");
+        if (country != null) {
+            statement.setValue(country.getID());
+        }
+
+        try (ResultSet rs = statement.executeQuery()) {
             List<CityProject> cityProjects = new ArrayList<>();
             while (rs.next()) {
                 CityProject city = new CityProject(rs.getInt(1));
-                if(city.isVisible() || !onlyVisible) {
+                if (city.isVisible() || !onlyVisible) {
                     cityProjects.add(city);
                 }
             }
@@ -95,6 +101,10 @@ public class CityProject {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return new ArrayList<>();
+    }
+
+    public static List<CityProject> getCityProjects(boolean onlyVisible) {
+        return getCityProjects(null, onlyVisible);
     }
 
     public static void addCityProject(Country country, String name) throws SQLException {

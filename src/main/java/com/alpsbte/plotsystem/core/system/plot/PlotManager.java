@@ -82,14 +82,28 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND owner_uuid = '" + builder.getUUID() + "'", statuses)).executeQuery());
         //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
         // TODO: Add support for member plots
         return plots;
     }
 
     public static List<Plot> getPlots(int cityID, Status... statuses) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND city_project_id = '" + cityID, statuses)).executeQuery());
+        return listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND city_project_id = '" + cityID + "'", statuses)).executeQuery());
+    }
+
+    public static List<Plot> getPlots(List<CityProject> cities, Status... statuses) throws SQLException {
+        if(cities.size() == 0) {
+            return new ArrayList<>();
+        }
+        StringBuilder query = new StringBuilder(" AND city_project_id = ");
+
+        for (int i = 0; i < cities.size(); i++) {
+            query.append(cities.get(i).getID());
+            query.append((i != cities.size() - 1) ? " OR city_project_id = " : "");
+        }
+
+        return listPlots(DatabaseConnection.createStatement(getStatusQuery(query.toString(), statuses)).executeQuery());
     }
 
     public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
@@ -103,8 +117,8 @@ public class PlotManager {
     private static String getStatusQuery(String additionalQuery, Status... statuses) {
         StringBuilder query = new StringBuilder("SELECT id FROM plotsystem_plots WHERE status = ");
 
-        for(int i = 0; i < statuses.length; i++) {
-            query.append("'").append(statuses[i].name()).append(additionalQuery).append("'");
+        for (int i = 0; i < statuses.length; i++) {
+            query.append("'").append(statuses[i].name()).append("'").append(additionalQuery);
             query.append((i != statuses.length - 1) ? " OR status = " : "");
         }
         return query.toString();
@@ -143,7 +157,7 @@ public class PlotManager {
         List<Plot> plots = new ArrayList<>();
 
         while (rs.next()) {
-           plots.add(new Plot(rs.getInt(1)));
+            plots.add(new Plot(rs.getInt(1)));
         }
 
         DatabaseConnection.closeResultSet(rs);
@@ -224,7 +238,7 @@ public class PlotManager {
             }
         }
 
-        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+        try (ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
             writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
         }
 
@@ -277,11 +291,11 @@ public class PlotManager {
         };
 
         // Return coordinates if they are in the schematic plot region
-        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int)plotCoords[0], 15, (int)plotCoords[1]))) {
+        if (new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int) plotCoords[0], 15, (int) plotCoords[1]))) {
             return CompletableFuture.completedFuture(plotCoords);
         }
 
-       return null;
+        return null;
     }
 
     public static void checkPlotsForLastActivity() {
@@ -291,12 +305,13 @@ public class PlotManager {
                 FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
                 long millisInDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL) * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last x days
 
-                for(Plot plot : plots) {
-                    if(plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
+                for (Plot plot : plots) {
+                    if (plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                             if (PlotHandler.abandonPlot(plot)) {
                                 Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
-                            } else Bukkit.getLogger().log(Level.WARNING, "An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!");
+                            } else
+                                Bukkit.getLogger().log(Level.WARNING, "An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!");
                         });
                     }
                 }
@@ -334,7 +349,7 @@ public class PlotManager {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
 
-            if (rs.next() && rs.getInt(1) > 0){
+            if (rs.next() && rs.getInt(1) > 0) {
                 DatabaseConnection.closeResultSet(rs);
                 return true;
             }
@@ -355,11 +370,11 @@ public class PlotManager {
     public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
         // Check if plot difficulties are available
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
-        if(PlotManager.getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) easyHasPlots = true;
-        if(PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
-        if(PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
+        if (PlotManager.getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) easyHasPlots = true;
+        if (PlotManager.getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
+        if (PlotManager.getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
 
-        if(hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
+        if (hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);
         } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
@@ -387,7 +402,7 @@ public class PlotManager {
         return Vector.toBlockPoint(
                 PLOT_SIZE / 2d,
                 5,
-                PLOT_SIZE  / 2d
+                PLOT_SIZE / 2d
         );
     }
 
