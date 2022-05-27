@@ -22,9 +22,10 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.menus.*;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
@@ -50,8 +51,9 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class CompanionMenu extends AbstractMenu {
@@ -61,20 +63,20 @@ public class CompanionMenu extends AbstractMenu {
     private List<Country> countryProjects;
 
     private enum ActiveMenu {
-        CONTINENT,
         COUNTRY,
         CITY
     }
 
-    private ActiveMenu activeMenu = ActiveMenu.CONTINENT;
+    private ActiveMenu activeMenu = ActiveMenu.COUNTRY;
 
-    private Continent selectedContinent = null;
+    private final Continent selectedContinent;
     private Country selectedCountry = null;
 
     private PlotDifficulty selectedPlotDifficulty = null;
 
-    public CompanionMenu(Player player) {
+    CompanionMenu(Player player, Continent continent) {
         super(6, LangUtil.get(player, LangPaths.MenuTitle.COMPANION), player);
+        selectedContinent = continent;
     }
 
     @Override
@@ -89,55 +91,105 @@ public class CompanionMenu extends AbstractMenu {
         // Set loading item for plots difficulty item
         getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
-        // Set builder utilities menu item
-        getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem(getMenuPlayer()));
-
-        // Set player plots menu item
-        getMenu().getSlot(51).setItem(PlayerPlotsMenu.getMenuItem(getMenuPlayer()));
-
-        // Set player settings menu item
-        getMenu().getSlot(52)
-                .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
-                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SETTINGS))
-                        .setLore(new LoreBuilder()
-                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SETTINGS)).build())
-                        .build());
-
-        // Set players slot items
-        slots = new Plot[3];
-        for (int i = 0; i < 3; i++) {
-            try {
-                Builder builder = new Builder(getMenuPlayer().getUniqueId());
-                slots[i] = builder.getPlot(Slot.values()[i]);
-
-                if (slots[i] != null) {
-                    getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.MAP, 1 + i)
-                            .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
-                            .setLore(new LoreBuilder()
-                                    .addLines("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + slots[i].getID(),
-                                            "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + slots[i].getCity().getName(),
-                                            "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + slots[i].getDifficulty().name().charAt(0) + slots[i].getDifficulty().name().substring(1).toLowerCase(),
-                                            "",
-                                            "§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.STATUS) + ": §7§l" + slots[i].getStatus().name().substring(0, 1).toUpperCase() + slots[i].getStatus().name().substring(1)
-                                    ).build())
-                            .build());
-                } else {
-                    getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
-                            .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
-                            .setLore(new LoreBuilder()
-                                    .addLines("§7" + LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SLOT),
-                                            "",
-                                            "§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
-                                    .build())
-                            .build());
-                }
-            } catch (NullPointerException | SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing player slot items!", ex);
-                getMenu().getSlot(46 + i).setItem(MenuItems.errorItem(getMenuPlayer()));
-            }
+        for (Map.Entry<Integer, FooterItem> entry : getFooterItems(45, getMenuPlayer(), player -> {
+            player.closeInventory();
+            new CompanionMenu(player, selectedContinent);
+        }).entrySet()) {
+            getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
         super.setPreviewItems();
+    }
+
+    public static boolean hasContinentView() {
+        return Arrays.stream(Continent.values()).map(continent -> Country.getCountries(continent).size()).filter(count -> count > 0).count() > 1;
+    }
+
+    /**
+     * Determine what menu to open for the player
+     * @param player player to open the menu for
+     */
+    public static void open(Player player) {
+        if(hasContinentView()) {
+            new ContinentMenu(player);
+        } else {
+            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> Country.getCountries(c).size()>0).findFirst();
+
+            if(!continent.isPresent()) {
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.NO_CONTINENTS_AVAILABLE)));
+                return;
+            }
+
+            new CompanionMenu(player, continent.get());
+        }
+    }
+
+    static class FooterItem {
+        public ItemStack item;
+        public org.ipvp.canvas.slot.Slot.ClickHandler clickHandler = null;
+
+        FooterItem(ItemStack item, org.ipvp.canvas.slot.Slot.ClickHandler clickHandler) {
+            this.item = item;
+            this.clickHandler = clickHandler;
+        }
+
+        FooterItem(ItemStack item) {
+            this.item = item;
+        }
+    }
+
+    /**
+     * Get common footer items between all companion menus
+     *
+     * @param startingSlot slot to start drawing items at
+     * @param player player that is viewing this (translation purposes)
+     * @param returnToMenu a lambda to call when needing to return to current menu
+     * @return FooterItems indexed by slot number
+     */
+    public static HashMap<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
+        HashMap<Integer, FooterItem> items = new HashMap<>();
+        // Set builder utilities menu item
+        items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            new BuilderUtilitiesMenu(clickPlayer);
+        }));
+
+        // Set player plots menu item
+        items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            clickPlayer.performCommand("plots " + clickPlayer.getName());
+        }));
+
+        // Set player settings menu item
+        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
+                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.SETTINGS))
+                .setLore(new LoreBuilder()
+                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.SETTINGS)).build())
+                .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
+
+        for (int i = 0; i < 3; i++) {
+            try {
+                Builder builder = new Builder(player.getUniqueId());
+
+                final int i_ = i;
+
+                items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(Slot.values()[i], player), (clickPlayer, clickInformation) -> {
+                    clickPlayer.closeInventory();
+                    try {
+                        new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
+                    } catch (SQLException ex) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
+                    }
+                }));
+            } catch (NullPointerException | SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing player slot items!", ex);
+                items.put(startingSlot + 1 + i, new FooterItem(MenuItems.errorItem(player)));
+            }
+        }
+
+        return items;
     }
 
     private void changeMenu(ActiveMenu activeMenu) {
@@ -158,9 +210,6 @@ public class CompanionMenu extends AbstractMenu {
         // Set city project items
         try {
             switch (activeMenu) {
-                case CONTINENT:
-                    setContinentItems();
-                    break;
                 case COUNTRY:
                     countryProjects = Country.getCountries(selectedContinent);
                     setCountryItems();
@@ -201,25 +250,23 @@ public class CompanionMenu extends AbstractMenu {
         }));
 
         switch (activeMenu) {
-            case CONTINENT:
-                for (int i = 0; i < Continent.values().length; i++) {
-                    Continent continent = Continent.values()[i];
-                    getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                        selectedContinent = continent;
-                        changeMenu(ActiveMenu.COUNTRY);
+            case COUNTRY:
+                int startingSlot = 9;
+                if(hasContinentView()) {
+                    startingSlot++;
+                    getMenu().getSlot(9).setClickHandler((clickPlayer, clickInformation) -> {
+                        clickPlayer.closeInventory();
+                        new ContinentMenu(clickPlayer);
                     });
                 }
-                break;
-            case COUNTRY:
-                getMenu().getSlot(9).setClickHandler((clickPlayer, clickInformation) -> {
-                    selectedContinent = null;
-                    changeMenu(ActiveMenu.CONTINENT);
-                });
+
                 for (Country country : countryProjects) {
                     int i = countryProjects.indexOf(country);
-                    getMenu().getSlot(10 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                        selectedCountry = country;
-                        changeMenu(ActiveMenu.CITY);
+                    getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, clickInformation) -> {
+//                        selectedCountry = country;
+//                        changeMenu(ActiveMenu.CITY);
+                        clickPlayer.closeInventory();
+                        new CityProjectMenu(clickPlayer, country);
                     });
                 }
                 break;
@@ -265,39 +312,12 @@ public class CompanionMenu extends AbstractMenu {
                 break;
         }
 
-        // Set click event for player slot items
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            for (int i = 0; i < 3; i++) {
-                if (slots[i] != null) {
-                    int itemSlot = i;
-                    getMenu().getSlot(46 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                        clickPlayer.closeInventory();
-                        try {
-                            new PlotActionsMenu(clickPlayer, slots[itemSlot]);
-                        } catch (SQLException ex) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
-                        }
-                    });
-                }
-            }
-        });
-
-        // Set click event for builder utilities menu item
-        getMenu().getSlot(50).setClickHandler(((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            new BuilderUtilitiesMenu(clickPlayer);
-        }));
-
-        // Set click event for player plots menu item
-        getMenu().getSlot(51).setClickHandler(((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand("plots " + clickPlayer.getName());
-        }));
-
-        // Set click event for player settings menu item
-        getMenu().getSlot(52).setClickHandler(((clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer)));
+        for (Map.Entry<Integer, FooterItem> entry : getFooterItems(45, getMenuPlayer(), player -> {
+            player.closeInventory();
+            new CompanionMenu(player, selectedContinent);
+        }).entrySet()) {
+            getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
+        }
     }
 
     @Override
@@ -313,22 +333,14 @@ public class CompanionMenu extends AbstractMenu {
                 .build();
     }
 
-    private void setContinentItems() throws SQLException {
-        for (int i = 0; i < Continent.values().length; i++) {
-            Continent continent = Continent.values()[i];
-            List<Country> countries = Country.getCountries(continent);
-
-            getMenu().getSlot(9 + i).setItem(new ItemBuilder(Material.COMPASS)
-                    .setName("§e§l" + LangUtil.get(getMenuPlayer(), continent.langPath))
-                    .setLore(new LoreBuilder().addLines("§6" + countries.size() + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.Country.COUNTRIES)).build())
+    private void setCountryItems() throws SQLException {
+        int startingSlot = 9;
+        if(hasContinentView()) {
+            startingSlot++;
+            getMenu().getSlot(9).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9219")))
+                    .setName("§b§lBack")
                     .build());
         }
-    }
-
-    private void setCountryItems() throws SQLException {
-        getMenu().getSlot(9).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9219")))
-                .setName("§b§lBack")
-                .build());
 
         for (Country country : countryProjects) {
             ItemStack item = country.getHead();
@@ -339,7 +351,7 @@ public class CompanionMenu extends AbstractMenu {
             int plotsCompleted = PlotManager.getPlots(cities, Status.completed).size();
             int plotsUnclaimed = PlotManager.getPlots(cities, Status.unclaimed).size();
 
-            getMenu().getSlot(10 + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
+            getMenu().getSlot(startingSlot + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
                     .setName("§b§l" + country.getName())
                     .setLore(new LoreBuilder()
                             .addLines(
