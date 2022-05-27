@@ -236,6 +236,7 @@ public class LangPaths {
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
+            public static final String NO_CONTINENTS_AVAILABLE = ERROR + "no-continents-available";
         }
     }
 

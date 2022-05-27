@@ -241,6 +241,7 @@ message:
     no-plots-left: "This city project does not have any more plots left. Please select another project."
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
+    no-continents-available: "No continents available! Contact a staff member."
 
 
 
