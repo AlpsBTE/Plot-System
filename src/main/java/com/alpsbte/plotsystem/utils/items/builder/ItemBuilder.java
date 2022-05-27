@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.utils.items.builder;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -31,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemBuilder {
 
@@ -58,12 +60,16 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setName(String name) {
-        itemMeta.setDisplayName(name);
+        // replace & with formatting character §
+        // if non-formatting code is after &, & will not be replaced
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
         return this;
     }
 
     public ItemBuilder setLore(List<String> lore) {
-        itemMeta.setLore(lore);
+        // replace & with formatting character §
+        // if non-formatting code is after &, & will not be replaced
+        itemMeta.setLore(lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).collect(Collectors.toList()));
         return this;
     }
 
