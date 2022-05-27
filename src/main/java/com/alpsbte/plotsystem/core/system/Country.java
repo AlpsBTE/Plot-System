@@ -20,16 +20,19 @@ public class Country {
     private String name;
     private String headID;
 
+    private String continent;
+
     public Country(int ID) throws SQLException {
         this.ID = ID;
 
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id FROM plotsystem_countries WHERE id = ?")
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id, continent FROM plotsystem_countries WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()) {
                 this.serverID = rs.getInt(1);
                 this.name = rs.getString(2);
                 this.headID = rs.getString(3);
+                this.continent = rs.getString(4);
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -74,6 +77,10 @@ public class Country {
         return new ArrayList<>();
     }
 
+    public Continent getContinent() {
+        return Continent.fromDatabase(continent);
+    }
+
     public static List<Country> getCountries() {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery()) {
             List<Country> countries = new ArrayList<>();
@@ -104,11 +111,11 @@ public class Country {
         return new ArrayList<>();
     }
 
-    public static void addCountry(int serverID, String name) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_countries (id, name, server_id) VALUES (?, ?, ?)")
+    public static void addCountry(int serverID, String name, Continent continent) throws SQLException {
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_countries (id, name, server_id, continent) VALUES (?, ?, ?, ?)")
                 .setValue(DatabaseConnection.getTableID("plotsystem_countries"))
                 .setValue(name)
-                .setValue(serverID).executeUpdate();
+                .setValue(serverID).setValue(continent.databaseEnum).executeUpdate();
     }
 
     public static void removeCountry(int countryID) throws SQLException {
