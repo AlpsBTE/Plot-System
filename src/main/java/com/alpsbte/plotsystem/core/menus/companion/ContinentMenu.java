@@ -1,36 +1,23 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
-import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Continent;
-import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class ContinentMenu extends AbstractMenu {
     private final HashMap<Integer, Continent> layout = new HashMap<>();
 
     ContinentMenu(Player menuPlayer) {
-        super(5, "continents", menuPlayer);
+        super(5, "§n" + LangUtil.get(menuPlayer, LangPaths.MenuTitle.COMPANION_SELECT_CONTINENT), menuPlayer);
 
         layout.put(9, Continent.NORTH_AMERICA);
         layout.put(11, Continent.SOUTH_AMERICA);
@@ -64,7 +51,7 @@ public class ContinentMenu extends AbstractMenu {
         for(Map.Entry<Integer, Continent> continent : layout.entrySet()) {
             getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> {
                 clickPlayer.closeInventory();
-                new CompanionMenu(clickPlayer, continent.getValue());
+                new CountryMenu(clickPlayer, continent.getValue());
             });
         }
 

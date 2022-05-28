@@ -92,6 +92,9 @@ public class LangPaths {
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
         public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
+        public static final String COMPANION_SELECT_CONTINENT = MENU_TITLES + "companion-select-continent";
+        public static final String COMPANION_COUNTRY = MENU_TITLES + "companion-country";
+        public static final String COMPANION_CITY = MENU_TITLES + "companion-city";
     }
 
     public static final class MenuDescription {

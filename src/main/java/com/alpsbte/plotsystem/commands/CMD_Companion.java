@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
-import com.alpsbte.plotsystem.core.menus.companion.ContinentMenu;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
