@@ -34,7 +34,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CityProjectMenu(Player player, Country country, PlotDifficulty selectedPlotDifficulty) {
-        super(6, 4, country.getName() + " -> §nSelect City", player);
+        super(6, 4, country.getName() + " -> Select City", player);
         this.country = country;
         this.selectedPlotDifficulty = selectedPlotDifficulty;
     }
@@ -43,7 +43,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected void setPreviewItems() {
         // add difficulty switcher
 
-        getMenu().getSlot(4).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("37793"))).setName("Back to countries").build());
+        getMenu().getSlot(0).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9219"))).setName("Back to countries").build());
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
             player.closeInventory();
@@ -80,7 +80,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setItemClickEvents() {
-        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty);
         });
@@ -126,7 +126,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101101")
+                .pattern("011111101")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")

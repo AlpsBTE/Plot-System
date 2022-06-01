@@ -62,7 +62,7 @@ public class CountryMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CountryMenu(Player player, Continent continent) {
-        super(6, LangUtil.get(player, continent.langPath) + " -> §nSelect Country" , player);
+        super(6, LangUtil.get(player, continent.langPath) + " -> Select Country" , player);
         selectedContinent = continent;
     }
 
@@ -134,8 +134,7 @@ public class CountryMenu extends AbstractMenu {
 
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
-            startingSlot++;
-            getMenu().getSlot(9).setClickHandler((clickPlayer, clickInformation) -> {
+            getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
                 new ContinentMenu(clickPlayer);
             });
@@ -163,7 +162,7 @@ public class CountryMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
+                .pattern("011101111")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -175,10 +174,11 @@ public class CountryMenu extends AbstractMenu {
     private void setCountryItems() throws SQLException {
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
-            startingSlot++;
-            getMenu().getSlot(9).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9219")))
+            getMenu().getSlot(0).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9219")))
                     .setName("§b§lBack")
                     .build());
+        } else {
+            getMenu().getSlot(0).setItem(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build());
         }
 
         for (Country country : countryProjects) {
