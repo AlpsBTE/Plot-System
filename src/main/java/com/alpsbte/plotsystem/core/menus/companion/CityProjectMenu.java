@@ -15,6 +15,7 @@ import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,6 +53,12 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
+        getMenu().getSlot(4)
+                .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.NAVIGATOR)).setLore(new LoreBuilder()
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
+                        .build());
+
         // Set loading item for plots difficulty item
         getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
@@ -83,6 +90,12 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty);
+        });
+
+        // Set click event for navigator item
+        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            clickPlayer.performCommand(PlotSystem.getPlugin().getConfigManager().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
         });
 
         // Set click event for previous page item
@@ -126,7 +139,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("011111101")
+                .pattern("011101101")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
