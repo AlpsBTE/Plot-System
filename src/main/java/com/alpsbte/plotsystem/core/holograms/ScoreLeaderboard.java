@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -76,19 +77,14 @@ public class ScoreLeaderboard extends HolographicDisplay {
         try {
             ArrayList<DataLine> lines = new ArrayList<>();
 
-            List<Map.Entry<String, Integer>> entries = new ArrayList<>(Builder.getBuildersByScore(sortBy).entrySet());
-
             for(int index = 0; index < 10; index++) {
-                Map.Entry<String, Integer> entry = index < entries.size() ? entries.get(index) : null;
-                String username = null;
-                int score = 0;
+                lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
+            }
 
-                if(entry != null) {
-                    username = entry.getKey();
-                    score = entry.getValue();
-                }
-
-                lines.add(new LeaderboardPositionLineWithPayout(index + 1, username, score));
+            int index = 0;
+            for(Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortBy)) {
+                lines.set(index, new LeaderboardPositionLineWithPayout(index + 1, entry.getKey(), entry.getValue()));
+                index++;
             }
 
             return lines;

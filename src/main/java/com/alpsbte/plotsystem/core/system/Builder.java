@@ -210,7 +210,7 @@ public class Builder {
                 (minimumDate != null
                         ? "WHERE reviews.review_date BETWEEN " + minimumDate + " AND NOW()\n"
                         : "") +
-                "ORDER BY plots.score DESC\n" +
+                "ORDER BY score DESC\n" +
                 (limit > 0 ? "LIMIT " + limit : "");
 
         return query;
@@ -248,14 +248,32 @@ public class Builder {
         }
     }
 
-    public static Map<String, Integer> getBuildersByScore(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+    public static class DatabaseEntry<K, V> {
+        private K key;
+        private V value;
+
+        DatabaseEntry(K k, V v) {
+            this.key = k;
+            this.value = v;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+    }
+
+    public static List<DatabaseEntry<String, Integer>> getBuildersByScore(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 10);
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
-            HashMap<String, Integer> lines = new HashMap<>();
+            ArrayList<DatabaseEntry<String, Integer>> lines = new ArrayList<>();
 
             while(rs.next()) {
-                lines.put(rs.getString(2), rs.getInt(4));
+                lines.add(new DatabaseEntry<>(rs.getString(2), rs.getInt(4)));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -277,13 +295,13 @@ public class Builder {
         }
     }
 
-    public static Map<String, Integer> getBuildersByCompletedBuilds(int limit) throws SQLException {
+    public static List<DatabaseEntry<String, Integer>> getBuildersByCompletedBuilds(int limit) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
                 .setValue(limit).executeQuery()) {
 
-            HashMap<String, Integer> results = new HashMap<>();
+            ArrayList<DatabaseEntry<String, Integer>> results = new ArrayList<>();
             while (rs.next()) {
-                results.put(rs.getString(1), rs.getInt(2));
+                results.add(new DatabaseEntry<>(rs.getString(1), rs.getInt(2)));
             }
 
             DatabaseConnection.closeResultSet(rs);

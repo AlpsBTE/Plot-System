@@ -52,7 +52,7 @@ public class PlotsLeaderboard extends HolographicDisplay {
             ArrayList<DataLine> lines = new ArrayList<>();
 
             int index = 0;
-            for(Map.Entry<String, Integer> entry : Builder.getBuildersByCompletedBuilds(10).entrySet()) {
+            for(Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByCompletedBuilds(10)) {
                 index++;
                 lines.add(new LeaderboardPositionLine(index, entry.getKey(), entry.getValue()));
             }
