@@ -52,11 +52,6 @@ public class ScoreLeaderboard {
             return;
         }
 
-        PlotSystem.getPlugin().getLogger().info(getPages().size() + "");
-        for (LeaderboardTimeframe s : getPages()) {
-            PlotSystem.getPlugin().getLogger().info(s.toString());
-        }
-
         setSortBy(getPages().get(0));
 
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
@@ -65,9 +60,6 @@ public class ScoreLeaderboard {
         changeSortTask = new BukkitRunnable() {
             @Override
             public void run() {
-                // skip this check as there isn't any other pages to change to
-                if(getPages().size() == 1) return;
-
                 Enum<LeaderboardTimeframe> next = Utils.getNextListItem(getPages(), sortBy);
                 if (next == null) {
                     setSortBy(getPages().get(0));
