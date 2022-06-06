@@ -32,16 +32,12 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.utils.enums.Slot;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Builder {
@@ -187,22 +183,7 @@ public class Builder {
         }
     }
 
-    public enum BuilderScoreSort {
-        DAILY(ConfigPaths.DISPLAY_OPTIONS_SHOW_DAILY),
-        WEEKLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_WEEKLY),
-        MONTHLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_MONTHLY),
-        YEARLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_YEARLY),
-        LIFETIME(ConfigPaths.DISPLAY_OPTIONS_SHOW_LIFETIME);
-
-        public final String configPath;
-        public final String langPath;
-        BuilderScoreSort(String configPath) {
-            this.configPath = configPath;
-            this.langPath = LangPaths.Leaderboards.PAGES + name();
-        }
-    }
-
-    private static String getBuildersByScoreQuery(BuilderScoreSort sortBy, int limit) {
+    private static String getBuildersByScoreQuery(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy, int limit) {
         String minimumDate = null;
         switch (sortBy) {
             case DAILY:
@@ -235,7 +216,7 @@ public class Builder {
         return query;
     }
 
-    public static int getBuilderScorePosition(UUID uuid, BuilderScoreSort sortBy) throws SQLException {
+    public static int getBuilderScorePosition(UUID uuid, com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 0);
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -255,7 +236,7 @@ public class Builder {
         }
     }
 
-    public static int getBuildersInSort(BuilderScoreSort sortBy) throws SQLException {
+    public static int getBuildersInSort(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = "SELECT COUNT(*) FROM (" + getBuildersByScoreQuery(sortBy, 0) + ") results";
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -267,16 +248,18 @@ public class Builder {
         }
     }
 
-    public static List<String> getBuildersByScore(BuilderScoreSort sortBy) throws SQLException {
+    public static Map<String, Integer> getBuildersByScore(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 10);
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
-            List<String> scores = new ArrayList<>();
+            HashMap<String, Integer> lines = new HashMap<>();
+
             while(rs.next()) {
-                scores.add(rs.getString(2) + "," + rs.getInt(4));
+                lines.put(rs.getString(2), rs.getInt(4));
             }
+
             DatabaseConnection.closeResultSet(rs);
-            return scores;
+            return lines;
         }
     }
 
@@ -294,17 +277,17 @@ public class Builder {
         }
     }
 
-    public static List<String> getBuildersByCompletedBuilds(int limit) throws SQLException {
+    public static Map<String, Integer> getBuildersByCompletedBuilds(int limit) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
                 .setValue(limit).executeQuery()) {
 
-            List<String> scoreAsFormat = new ArrayList<>();
+            HashMap<String, Integer> results = new HashMap<>();
             while (rs.next()) {
-                scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
+                results.put(rs.getString(1), rs.getInt(2));
             }
 
             DatabaseConnection.closeResultSet(rs);
-            return scoreAsFormat;
+            return results;
         }
     }
 

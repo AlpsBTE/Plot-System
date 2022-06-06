@@ -105,15 +105,37 @@ public abstract class HolographicDisplay {
         getHologram().insertTextLine(1, getTitle());
         getHologram().insertTextLine(2, "§7---------------");
 
-        List<String> data = getDataLines();
+        List<DataLine> data = getDataLines();
         for(int i = 2; i < data.size() + 2; i++) {
-            getHologram().insertTextLine(i + 1,"§e#" + (i - 1) + " §a" +data.get(i - 2).split(",")[0] + " §7- §b" + data.get(i - 2).split(",")[1]);
+            getHologram().insertTextLine(i + 1, data.get(i - 2).getLine());
         }
 
         getHologram().insertTextLine(data.size() + 3, "§7---------------");
     }
 
-    protected abstract List<String> getDataLines();
+    public interface DataLine {
+        public String getLine();
+    }
+
+    public static class LeaderboardPositionLine implements DataLine {
+        protected int position;
+        protected int score;
+        protected String username;
+
+        public LeaderboardPositionLine(int position, String username, int score) {
+            this.position = position;
+            this.username = username;
+            this.score = score;
+        }
+
+        @Override
+        public String getLine() {
+//            return "§e#" + (i - 1) + " §a" +data.get(i - 2).split(",")[0] + " §7- §b" + data.get(i - 2).split(",")[1];
+            return "§e#" + position + " " + (username != null ? "§a" + username : "§8No one, yet") + " §7- §b" + score;
+        }
+    }
+
+    protected abstract List<DataLine> getDataLines();
 
     protected abstract ItemStack getItem();
 

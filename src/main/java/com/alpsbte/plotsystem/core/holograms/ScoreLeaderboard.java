@@ -26,23 +26,19 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.google.common.base.Strings;
+import com.alpsbte.plotsystem.core.system.Payout;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class ScoreLeaderboard extends HolographicDisplay {
-    private Builder.BuilderScoreSort sortBy = Builder.BuilderScoreSort.DAILY;
+    private com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy = com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe.DAILY;
 
     public ScoreLeaderboard() {
         super("score-leaderboard");
@@ -53,10 +49,49 @@ public class ScoreLeaderboard extends HolographicDisplay {
         return "§b§lTOP SCORE §7§o(" + StringUtils.capitalize(sortBy.toString()) + ")";
     }
 
+    private class LeaderboardPositionLineWithPayout extends LeaderboardPositionLine {
+
+        public LeaderboardPositionLineWithPayout(int position, String username, int score) {
+            super(position, username, score);
+        }
+
+        @Override
+        public String getLine() {
+            try {
+                String line = super.getLine();
+                Payout payout = Payout.getPayout(sortBy, position);
+                if(payout == null) {
+                    return line;
+                } else {
+                    return line + " §7- §e§l$" + payout.getPayoutAmount();
+                }
+            } catch (SQLException e) {
+                return super.getLine() + " §7- §cSQL ERR";
+            }
+        }
+    }
+
     @Override
-    protected List<String> getDataLines() {
+    protected List<DataLine> getDataLines() {
         try {
-            return Builder.getBuildersByScore(sortBy);
+            ArrayList<DataLine> lines = new ArrayList<>();
+
+            List<Map.Entry<String, Integer>> entries = new ArrayList<>(Builder.getBuildersByScore(sortBy).entrySet());
+
+            for(int index = 0; index < 10; index++) {
+                Map.Entry<String, Integer> entry = index < entries.size() ? entries.get(index) : null;
+                String username = null;
+                int score = 0;
+
+                if(entry != null) {
+                    username = entry.getKey();
+                    score = entry.getValue();
+                }
+
+                lines.add(new LeaderboardPositionLineWithPayout(index + 1, username, score));
+            }
+
+            return lines;
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
@@ -76,7 +111,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
         }
     }
 
-    public void setSortBy(Builder.BuilderScoreSort sortBy) {
+    public void setSortBy(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) {
         this.sortBy = sortBy;
         updateHologram();
     }

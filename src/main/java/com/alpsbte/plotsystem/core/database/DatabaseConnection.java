@@ -322,8 +322,16 @@ public class DatabaseConnection {
                             "KEY `fkIdx_82` (`difficulty_id`)," +
                             "CONSTRAINT `FK_81` FOREIGN KEY `fkIdx_82` (`difficulty_id`) REFERENCES `plotsystem_difficulties` (`id`)" +
                             ");",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NOT NULL;"
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NOT NULL;",
 
+                    // Payouts
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_payouts` (\n" +
+                            "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
+                            "  `timeframe` enum('DAILY','WEEKLY','MONTHLY','YEARLY') NOT NULL,\n" +
+                            "  `position` int(11) NOT NULL COMMENT 'position on the leaderboard for this timeframe',\n" +
+                            "  `payout_amount` int(11) NOT NULL,\n" +
+                            "  PRIMARY KEY (`id`)\n" +
+                            ")"
             );
         }
     }

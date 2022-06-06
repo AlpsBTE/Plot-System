@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.awt.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ScoreLeaderboard {
-    private Builder.BuilderScoreSort sortBy = null;
+    private LeaderboardTimeframe sortBy = null;
     private BukkitTask changeSortTask = null;
     private BukkitTask actionbarTask = null;
 
@@ -36,12 +35,12 @@ public class ScoreLeaderboard {
      *
      * @return Enabled pages based on config values
      */
-    private List<Builder.BuilderScoreSort> getPages() {
+    private List<LeaderboardTimeframe> getPages() {
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
-        return Arrays.stream(Builder.BuilderScoreSort.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
+        return Arrays.stream(LeaderboardTimeframe.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
     }
 
-    public void setSortBy(Builder.BuilderScoreSort sortBy) {
+    public void setSortBy(LeaderboardTimeframe sortBy) {
         this.sortBy = sortBy;
 
         HologramManager.<com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard>getHologram("score-leaderboard").setSortBy(sortBy);
@@ -54,7 +53,7 @@ public class ScoreLeaderboard {
         }
 
         PlotSystem.getPlugin().getLogger().info(getPages().size() + "");
-        for (Builder.BuilderScoreSort s : getPages()) {
+        for (LeaderboardTimeframe s : getPages()) {
             PlotSystem.getPlugin().getLogger().info(s.toString());
         }
 
@@ -66,11 +65,14 @@ public class ScoreLeaderboard {
         changeSortTask = new BukkitRunnable() {
             @Override
             public void run() {
-                Enum<Builder.BuilderScoreSort> next = Utils.getNextListItem(getPages(), sortBy);
+                // skip this check as there isn't any other pages to change to
+                if(getPages().size() == 1) return;
+
+                Enum<LeaderboardTimeframe> next = Utils.getNextListItem(getPages(), sortBy);
                 if (next == null) {
                     setSortBy(getPages().get(0));
                 } else {
-                    setSortBy((Builder.BuilderScoreSort) next);
+                    setSortBy((LeaderboardTimeframe) next);
                 }
             }
         }.runTaskTimer(PlotSystem.getPlugin(), changeDelay, changeDelay);
@@ -143,5 +145,20 @@ public class ScoreLeaderboard {
 
     private List<Player> showToPlayers() {
         return new ArrayList<>(Bukkit.getOnlinePlayers());
+    }
+
+    public enum LeaderboardTimeframe {
+        DAILY(ConfigPaths.DISPLAY_OPTIONS_SHOW_DAILY),
+        WEEKLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_WEEKLY),
+        MONTHLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_MONTHLY),
+        YEARLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_YEARLY),
+        LIFETIME(ConfigPaths.DISPLAY_OPTIONS_SHOW_LIFETIME);
+
+        public final String configPath;
+        public final String langPath;
+        LeaderboardTimeframe(String configPath) {
+            this.configPath = configPath;
+            this.langPath = LangPaths.Leaderboards.PAGES + name();
+        }
     }
 }
