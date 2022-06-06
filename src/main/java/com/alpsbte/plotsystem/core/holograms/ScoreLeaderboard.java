@@ -26,15 +26,23 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.google.common.base.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 public class ScoreLeaderboard extends HolographicDisplay {
+    private Builder.BuilderScoreSort sortBy = Builder.BuilderScoreSort.DAILY;
 
     public ScoreLeaderboard() {
         super("score-leaderboard");
@@ -42,13 +50,13 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
     @Override
     protected String getTitle() {
-        return "§b§lTOP SCORE";
+        return "§b§lTOP SCORE §7§o(" + StringUtils.capitalize(sortBy.toString()) + ")";
     }
 
     @Override
     protected List<String> getDataLines() {
         try {
-            return Builder.getBuildersByScore(10);
+            return Builder.getBuildersByScore(sortBy);
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
@@ -66,5 +74,10 @@ public class ScoreLeaderboard extends HolographicDisplay {
             getHologram().clearLines();
             insertLines();
         }
+    }
+
+    public void setSortBy(Builder.BuilderScoreSort sortBy) {
+        this.sortBy = sortBy;
+        updateHologram();
     }
 }

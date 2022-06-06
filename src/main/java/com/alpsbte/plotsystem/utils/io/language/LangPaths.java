@@ -223,5 +223,13 @@ public class LangPaths {
         }
     }
 
+    public static final class Leaderboards {
+        private static final String LBS = "leaderboards.";
+        public static final String PAGES = LBS + "pages.";
+        public static final String ACTIONBAR_POSITION = LBS + "actionbar-position";
+        public static final String ACTIONBAR_PERCENTAGE = LBS + "actionbar-percentage";
+        public static final String NOT_ON_LEADERBOARD = LBS + "not-on-leaderboard";
+    }
+
     public static final String CONFIG_VERSION = "config-version";
 }

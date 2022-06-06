@@ -25,11 +25,10 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
+import com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
-import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
-import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
-import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -37,7 +36,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigNotImplementedException;
@@ -52,7 +50,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -66,13 +63,9 @@ public class PlotSystem extends JavaPlugin {
     private ConfigUtil configManager;
     private LangUtil langUtil;
     private CommandManager commandManager;
+    private ScoreLeaderboard scoreLeaderboard;
 
     private boolean pluginEnabled = false;
-
-    private static final List<HolographicDisplay> holograms = Arrays.asList(
-      new ScoreLeaderboard(),
-      new PlotsLeaderboard()
-    );
 
     @Override
     public void onEnable() {
@@ -165,7 +158,7 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Extensions:");
 
         if (DependencyManager.isHolographicDisplaysEnabled()) {
-            reloadHolograms();
+            HologramManager.reloadHolograms();
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
@@ -203,6 +196,9 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+
+        scoreLeaderboard = new ScoreLeaderboard();
+        scoreLeaderboard.initialize();
     }
 
     @Override
@@ -214,6 +210,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+            scoreLeaderboard.shutdown();
         }
     }
 
@@ -240,18 +237,6 @@ public class PlotSystem extends JavaPlugin {
         this.configManager.saveFiles();
     }
 
-    public static void reloadHolograms() {
-        if (DependencyManager.isHolographicDisplaysEnabled()) {
-            for (HolographicDisplay hologram : holograms) {
-                if(plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
-                    hologram.show();
-                } else {
-                    hologram.hide();
-                }
-            }
-        }
-    }
-
     public static PlotSystem getPlugin() {
         return plugin;
     }
@@ -259,8 +244,6 @@ public class PlotSystem extends JavaPlugin {
     public CommandManager getCommandManager() {
         return commandManager;
     }
-
-    public static List<HolographicDisplay> getHolograms() { return holograms; }
 
 
     public static class DependencyManager {

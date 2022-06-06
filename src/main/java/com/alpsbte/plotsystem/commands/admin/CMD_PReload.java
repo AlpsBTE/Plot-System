@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands.admin;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -44,7 +45,7 @@ public class CMD_PReload extends BaseCommand {
                 PlotSystem.getPlugin().getConfigManager().saveFiles();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
-                PlotSystem.reloadHolograms();
+                HologramManager.reloadHolograms();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
 
                 DatabaseConnection.InitializeDatabase();

@@ -60,6 +60,7 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_SHOW_WEEKLY = DISPLAY_OPTIONS + "show-weekly";
     public static final String DISPLAY_OPTIONS_SHOW_MONTHLY = DISPLAY_OPTIONS + "show-monthly";
     public static final String DISPLAY_OPTIONS_SHOW_YEARLY = DISPLAY_OPTIONS + "show-yearly";
+    public static final String DISPLAY_OPTIONS_SHOW_LIFETIME = DISPLAY_OPTIONS + "show-lifetime";
 
 
     // Navigator
