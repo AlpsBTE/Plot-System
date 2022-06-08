@@ -216,6 +216,26 @@ public class Builder {
         return query;
     }
 
+    public static int getBuilderScore(UUID uuid, com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 0);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            boolean found = false;
+            int score = 0;
+            while(rs.next() && !found) {
+                if(rs.getString(3).equals(uuid.toString())) {
+                    found = true;
+                    score = rs.getInt(4);
+                }
+            }
+
+            if(!found) score = -1;
+
+            DatabaseConnection.closeResultSet(rs);
+            return score;
+        }
+    }
+
     public static int getBuilderScorePosition(UUID uuid, com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 0);
 

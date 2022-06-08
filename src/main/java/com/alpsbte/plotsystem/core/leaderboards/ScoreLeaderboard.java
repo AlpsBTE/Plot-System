@@ -65,7 +65,7 @@ public class ScoreLeaderboard {
         changeSortTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if(changeState >= changeDelay) {
+                if (changeState >= changeDelay) {
                     Enum<LeaderboardTimeframe> next = Utils.getNextListItem(getPages(), sortBy);
                     if (next == null) {
                         setSortBy(getPages().get(0));
@@ -107,9 +107,11 @@ public class ScoreLeaderboard {
     private BaseComponent[] rankingString(Player player) {
         int position = -1;
         int rows = 0;
+        int myScore = -1;
         try {
             position = Builder.getBuilderScorePosition(player.getUniqueId(), sortBy);
             rows = Builder.getBuildersInSort(sortBy);
+            myScore = Builder.getBuilderScore(player.getUniqueId(), sortBy);
         } catch (SQLException e) {
             e.printStackTrace();
             return TextComponent.fromLegacyText("§cSQL Exception");
@@ -143,6 +145,10 @@ public class ScoreLeaderboard {
             );
         }
 
+        if (myScore != -1) {
+            builder.append(TextComponent.fromLegacyText("§8 (§6" + myScore + " points§8)"));
+        }
+
         return builder.create();
     }
 
@@ -159,6 +165,7 @@ public class ScoreLeaderboard {
 
         public final String configPath;
         public final String langPath;
+
         LeaderboardTimeframe(String configPath) {
             this.configPath = configPath;
             this.langPath = LangPaths.Leaderboards.PAGES + name();
