@@ -68,12 +68,4 @@ public class PlotsLeaderboard extends HolographicDisplay {
     protected ItemStack getItem() {
         return new ItemStack(Material.NETHER_STAR);
     }
-
-    @Override
-    public void updateHologram() {
-        if(isPlaced()) {
-            getHologram().clearLines();
-            insertLines();
-        }
-    }
 }

@@ -99,14 +99,6 @@ public class ScoreLeaderboard extends HolographicDisplay {
         return new ItemStack(Material.NETHER_STAR);
     }
 
-    @Override
-    public void updateHologram() {
-        if(isPlaced()) {
-            getHologram().clearLines();
-            insertLines();
-        }
-    }
-
     public void setSortBy(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) {
         this.sortBy = sortBy;
         updateHologram();
