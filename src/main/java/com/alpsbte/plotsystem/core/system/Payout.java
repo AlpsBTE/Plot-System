@@ -11,9 +11,9 @@ public class Payout {
     private final int id;
     private ScoreLeaderboard.LeaderboardTimeframe timeframe;
     private int position;
-    private int payout_amount;
+    private String payout_amount;
 
-    private Payout(int id, ScoreLeaderboard.LeaderboardTimeframe timeframe, int position, int payout_amount) {
+    private Payout(int id, ScoreLeaderboard.LeaderboardTimeframe timeframe, int position, String payout_amount) {
         this.id = id;
         this.timeframe = timeframe;
         this.position = position;
@@ -33,7 +33,7 @@ public class Payout {
             Payout instance = null;
 
             if (rs.next()) {
-                instance = new Payout(rs.getInt(1), ScoreLeaderboard.LeaderboardTimeframe.valueOf(rs.getString(2)), rs.getInt(3), rs.getInt(4));
+                instance = new Payout(rs.getInt(1), ScoreLeaderboard.LeaderboardTimeframe.valueOf(rs.getString(2)), rs.getInt(3), rs.getString(4));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -53,7 +53,7 @@ public class Payout {
         return position;
     }
 
-    public int getPayoutAmount() {
+    public String getPayoutAmount() {
         return payout_amount;
     }
 }

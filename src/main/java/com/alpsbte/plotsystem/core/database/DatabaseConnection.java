@@ -329,7 +329,7 @@ public class DatabaseConnection {
                             "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
                             "  `timeframe` enum('DAILY','WEEKLY','MONTHLY','YEARLY') NOT NULL,\n" +
                             "  `position` int(11) NOT NULL COMMENT 'position on the leaderboard for this timeframe',\n" +
-                            "  `payout_amount` int(11) NOT NULL,\n" +
+                            "  `payout_amount` varchar(100) NOT NULL,\n" +
                             "  PRIMARY KEY (`id`)\n" +
                             ")"
             );

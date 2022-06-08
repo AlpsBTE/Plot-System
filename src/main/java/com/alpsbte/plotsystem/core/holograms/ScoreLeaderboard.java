@@ -66,7 +66,16 @@ public class ScoreLeaderboard extends HolographicDisplay {
                 if (payout == null) {
                     return line;
                 } else {
-                    return line + " §7- §e§l$" + payout.getPayoutAmount();
+                    String payoutAmount = payout.getPayoutAmount();
+                    try {
+                        // if payout amount can be number, prefix with dollar sign
+                        Integer.valueOf(payoutAmount);
+                        payoutAmount = "$" + payoutAmount;
+                    } catch (NumberFormatException ignored) {
+
+                    }
+
+                    return line + " §7- §e§l" + payoutAmount;
                 }
             } catch (SQLException e) {
                 return super.getLine() + " §7- §cSQL ERR";
