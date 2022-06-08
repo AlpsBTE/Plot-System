@@ -103,18 +103,27 @@ public abstract class HolographicDisplay {
         }
     }
 
+    protected String getHeader() {
+        return "§7---------------";
+    }
+
+
+    protected String getFooter() {
+        return "§7---------------";
+    }
+
     protected void insertLines() {
         replaceLine(0, getItem());
 
         replaceLine(1, getTitle());
-        replaceLine(2, "§7---------------");
+        replaceLine(2, getHeader());
 
         List<DataLine> data = getDataLines();
         for (int i = 2; i < data.size() + 2; i++) {
             replaceLine(i + 1, data.get(i - 2).getLine());
         }
 
-        replaceLine(data.size() + 3, "§7---------------");
+        replaceLine(data.size() + 3, getFooter());
     }
 
     protected void replaceLine(int line, ItemStack item) {

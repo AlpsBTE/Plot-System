@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
@@ -61,7 +63,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
             try {
                 String line = super.getLine();
                 Payout payout = Payout.getPayout(sortBy, position);
-                if(payout == null) {
+                if (payout == null) {
                     return line;
                 } else {
                     return line + " §7- §e§l$" + payout.getPayoutAmount();
@@ -72,17 +74,43 @@ public class ScoreLeaderboard extends HolographicDisplay {
         }
     }
 
+    int state = 0;
+
+    public void setState(int state) {
+        this.state = state;
+        updateHologram();
+    }
+
+    @Override
+    public String getFooter() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        long changeDelay = (config.getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL, 5) * 20L) / 15;
+
+        int highlightCount = (int) (((float) state / changeDelay) * 15);
+
+        String highlighted = "";
+        for (int i = 0; i < highlightCount; i++) {
+            highlighted += "-";
+        }
+        String notH = "";
+        for (int i = 0; i < 15 - highlightCount; i++) {
+            notH += "-";
+        }
+
+        return "§e" + highlighted + "§7" + notH;
+    }
+
     @Override
     protected List<DataLine> getDataLines() {
         try {
             ArrayList<DataLine> lines = new ArrayList<>();
 
-            for(int index = 0; index < 10; index++) {
+            for (int index = 0; index < 10; index++) {
                 lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
             }
 
             int index = 0;
-            for(Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortBy)) {
+            for (Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortBy)) {
                 lines.set(index, new LeaderboardPositionLineWithPayout(index + 1, entry.getKey(), entry.getValue()));
                 index++;
             }

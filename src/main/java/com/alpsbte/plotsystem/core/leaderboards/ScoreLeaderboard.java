@@ -29,6 +29,7 @@ public class ScoreLeaderboard {
     private LeaderboardTimeframe sortBy = null;
     private BukkitTask changeSortTask = null;
     private BukkitTask actionbarTask = null;
+    int changeState = 0;
 
     /**
      * Get all pages that are enabled
@@ -38,6 +39,10 @@ public class ScoreLeaderboard {
     private List<LeaderboardTimeframe> getPages() {
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
         return Arrays.stream(LeaderboardTimeframe.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
+    }
+
+    private void updateHolo() {
+        HologramManager.<com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard>getHologram("score-leaderboard").setState(changeState);
     }
 
     public void setSortBy(LeaderboardTimeframe sortBy) {
@@ -55,16 +60,22 @@ public class ScoreLeaderboard {
         setSortBy(getPages().get(0));
 
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
-        long changeDelay = config.getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL, 5) * 20L;
+        long changeDelay = (config.getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL, 5) * 20L) / 15;
 
         changeSortTask = new BukkitRunnable() {
             @Override
             public void run() {
-                Enum<LeaderboardTimeframe> next = Utils.getNextListItem(getPages(), sortBy);
-                if (next == null) {
-                    setSortBy(getPages().get(0));
+                if(changeState >= changeDelay) {
+                    Enum<LeaderboardTimeframe> next = Utils.getNextListItem(getPages(), sortBy);
+                    if (next == null) {
+                        setSortBy(getPages().get(0));
+                    } else {
+                        setSortBy((LeaderboardTimeframe) next);
+                    }
+                    changeState = 0;
                 } else {
-                    setSortBy((LeaderboardTimeframe) next);
+                    changeState++;
+                    updateHolo();
                 }
             }
         }.runTaskTimer(PlotSystem.getPlugin(), changeDelay, changeDelay);
