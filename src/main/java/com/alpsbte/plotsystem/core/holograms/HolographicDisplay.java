@@ -132,7 +132,6 @@ public abstract class HolographicDisplay {
         } else {
             HologramLine hline = getHologram().getLine(line);
             if (hline instanceof TextLine) {
-                Bukkit.broadcastMessage("line #" + line + " is a textline and we need itemline; destroying");
                 // we're replacing the line with a different type, so we will have to destroy old line to replace with new type
                 getHologram().insertItemLine(line, item);
                 getHologram().removeLine(line + 1);
@@ -148,7 +147,6 @@ public abstract class HolographicDisplay {
         } else {
             HologramLine hline = getHologram().getLine(line);
             if (hline instanceof ItemLine) {
-                Bukkit.broadcastMessage("line #" + line + " is a itemline and we need textline; destroying");
                 // we're replacing the line with a different type, so we will have to destroy old line to replace with new type
                 getHologram().insertTextLine(line, text);
                 getHologram().removeLine(line + 1);
@@ -185,12 +183,16 @@ public abstract class HolographicDisplay {
     protected abstract ItemStack getItem();
 
     public void updateHologram() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(PlotSystem.getPlugin(), () -> {
-            if (isPlaced()) {
+        Thread update = new Thread() {
+            @Override
+            public void run() {
+                if (isPlaced()) {
 //                hologram.clearLines();
-                insertLines();
+                    insertLines();
+                }
             }
-        }, 0, getInterval());
+        };
+        update.start();
     }
 
     public String getHologramName() {
