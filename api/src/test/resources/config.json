@@ -1,4 +1,8 @@
 {
   "api-url": "",
-  "api-key": ""
+  "api-key": "",
+  "db-url": "",
+  "db-name": "",
+  "db-user": "",
+  "db-password": ""
 }
