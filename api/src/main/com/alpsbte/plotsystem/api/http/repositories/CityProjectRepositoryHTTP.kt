@@ -8,11 +8,11 @@ import com.google.gson.reflect.TypeToken
 open class CityProjectRepositoryHTTP : ICityProjectRepository {
 
     override fun getCityProject(cityProjectId: Int): CityProjectDTO? {
-        return HTTPManager.fromJson("get_city_project/$cityProjectId", CityProjectDTO::class.java)
+        return HTTPManager.fromJson("city_project/$cityProjectId", CityProjectDTO::class.java)
     }
 
     override fun getCityProjects(): Array<CityProjectDTO> {
-        return HTTPManager.fromJson("get_city_projects", object: TypeToken<Array<CityProjectDTO?>?>() {}.type)
+        return HTTPManager.fromJson("city_projects", object: TypeToken<Array<CityProjectDTO?>?>() {}.type)
     }
 
     override fun addCityProject(cityProject: CityProjectDTO) {

@@ -9,11 +9,11 @@ import java.time.LocalDateTime
 
 open class PlotRepositoryHTTP : IPlotRepository {
     override fun getPlot(plotId: Int): PlotDTO? {
-        return HTTPManager.fromJson("get_plot/$plotId", PlotDTO::class.java)
+        return HTTPManager.fromJson("plot/$plotId", PlotDTO::class.java)
     }
 
     override fun getPlots(): Array<PlotDTO> {
-        return HTTPManager.fromJson("get_plots", object: TypeToken<Array<PlotDTO?>?>() {}.type)
+        return HTTPManager.fromJson("plots", object: TypeToken<Array<PlotDTO?>?>() {}.type)
     }
 
     override fun getPlots(status: PlotStatus?, isPasted: Boolean?, limit: Int?): Array<PlotDTO> {
@@ -22,7 +22,7 @@ open class PlotRepositoryHTTP : IPlotRepository {
         routeString += if (isPasted != null) if (routeString.isEmpty()) "?pasted=${isPasted}" else "&pasted=${isPasted}" else ""
         routeString += if (limit != null) if (routeString.isEmpty()) "?limit=$limit" else "&limit=$limit" else ""
 
-        return HTTPManager.fromJson("get_plots$routeString", object: TypeToken<Array<PlotDTO?>?>() {}.type)
+        return HTTPManager.fromJson("plots$routeString", object: TypeToken<Array<PlotDTO?>?>() {}.type)
     }
 
     override fun getPlots(ownerUUID: String, status: PlotStatus?, limit: Int?): Array<PlotDTO> {
