@@ -16,5 +16,5 @@ object DifficultyTable : Table<Nothing>("plotsystem_difficulties") {
     val difficultyId = int("id").primaryKey()
     val name = varchar("name")
     val multiplier = double("multiplier")
-    val scoreRequirements = int("score_requirment")
+    val scoreRequirements = int("score_requirement")
 }

@@ -24,6 +24,12 @@
 
 package com.alpsbte.plotsystem.core.system;
 
+import com.alpsbte.plotsystem.api.database.repositories.CityProjectRepositoryMySQL;
+import com.alpsbte.plotsystem.api.entities.CityProjectDTO;
+import com.alpsbte.plotsystem.api.entities.mapper.EntityMapper;
+import com.alpsbte.plotsystem.api.http.repositories.CityProjectRepositoryHTTP;
+import com.alpsbte.plotsystem.api.repositories.ICityProjectRepository;
+import com.alpsbte.plotsystem.core.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import org.bukkit.Bukkit;
 
@@ -32,100 +38,69 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class CityProject {
+    private static final ICityProjectRepository repository = PlotSystem.getStorageMethod() == PlotSystem.StorageMethod.API ? new CityProjectRepositoryHTTP() : new CityProjectRepositoryMySQL();
+    private final CityProjectDTO dto;
 
-    private final int ID;
-    private int countryID;
-
-    private String name;
-    private String description;
-    private boolean visible;
+    public CityProject(CityProjectDTO dto) {
+        this.dto = dto;
+    }
 
     public CityProject(int ID) throws SQLException {
-        this.ID = ID;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT country_id, name, description, visible FROM plotsystem_city_projects WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                this.countryID = rs.getInt(1);
-                this.name = rs.getString(2);
-                this.description = rs.getString(3);
-                this.visible = rs.getInt(4) == 1;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-        }
+        dto = repository.getCityProject(ID);
     }
 
     public int getID() {
-        return ID;
+        return dto.getCityId();
     }
 
     public Country getCountry() throws SQLException {
-        return new Country(countryID);
+        return new Country(dto.getCountryId());
     }
 
     public String getName() {
-        return name;
+        return dto.getName();
     }
 
     public String getDescription() {
-        return description;
+        return dto.getDescription();
     }
 
     public boolean isVisible() {
-        return visible;
+        // Waiting for https://github.com/AlpsBTE/Plot-System-API/issues/33 to be fixed; this should be a Boolean returned from dto#getVisible
+        return dto.getVisible() == 1;
     }
 
     public static List<CityProject> getCityProjects(boolean onlyVisible) {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects ORDER BY country_id").executeQuery()) {
-            List<CityProject> cityProjects = new ArrayList<>();
-            while (rs.next()) {
-                CityProject city = new CityProject(rs.getInt(1));
-                if(city.isVisible() || !onlyVisible) {
-                    cityProjects.add(city);
-                }
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return cityProjects;
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
-        return new ArrayList<>();
+        return Arrays.stream(repository.getCityProjects()).map(CityProject::new).collect(Collectors.toList());
     }
 
     public static void addCityProject(Country country, String name) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description, visible) VALUES (?, ?, ?, ?, ?)")
-                .setValue(DatabaseConnection.getTableID("plotsystem_city_projects"))
-                .setValue(name)
-                .setValue(country.getID())
-                .setValue("")
-                .setValue(true).executeUpdate();
+        // Waiting for https://github.com/AlpsBTE/Plot-System-API/issues/33 to be fixed; this should be a Boolean for visible
+        CityProjectDTO dto = new CityProjectDTO((int) Math.floor(Math.random() * 99999), country.getID(), name, "", 1);
+        repository.addCityProject(dto);
     }
 
     public static void removeCityProject(int id) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_city_projects WHERE id = ?")
-                .setValue(id).executeUpdate();
+        repository.deleteCityProject(id);
     }
 
     public static void setCityProjectName(int id, String newName) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET name = ? WHERE id = ?")
-                .setValue(newName)
-                .setValue(id).executeUpdate();
+        repository.updateCityProjectName(id, newName);
     }
 
     public static void setCityProjectDescription(int id, String description) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET description = ? WHERE id = ?")
-                .setValue(description)
-                .setValue(id).executeUpdate();
+        repository.updateCityProjectDescription(id, description);
     }
 
     public static void setCityProjectVisibility(int id, boolean isEnabled) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET visible = ? WHERE id = ?")
-                .setValue(isEnabled ? 1 : 0)
-                .setValue(id).executeUpdate();
+        repository.updateCityProjectVisibility(id, isEnabled);
+    }
+
+    @Override
+    public String toString() {
+        return "CityProject{" + "dto=" + dto + '}';
     }
 }

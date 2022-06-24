@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 
+// Idea: apiUrl should get suffixed with "/api/v1/" or supported API version
 open class HTTPManager(apiUrl: String, apiKey: String) {
     companion object {
         @JvmStatic var gson: Gson = GsonBuilder()

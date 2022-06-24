@@ -10,6 +10,7 @@ data class CityProjectDTO(
     @SerializedName("country_id") var countryId: Int,
     var name: String,
     var description: String,
+    // Waiting for https://github.com/AlpsBTE/Plot-System-API/issues/33 to be fixed; this should be a Boolean
     var visible: Int
 )
 
@@ -18,5 +19,6 @@ object CityProjectTable : Table<Nothing>("plotsystem_city_projects") {
     val countryId = int("country_id")
     val name = varchar("name")
     val description = varchar("description")
+    // Waiting for https://github.com/AlpsBTE/Plot-System-API/issues/33 to be fixed; this should be a Boolean
     val visible = int("visible")
 }

@@ -24,6 +24,8 @@
 
 package com.alpsbte.plotsystem.core;
 
+import com.alpsbte.plotsystem.api.database.DatabaseManager;
+import com.alpsbte.plotsystem.api.http.HTTPManager;
 import com.alpsbte.plotsystem.core.commands.*;
 import com.alpsbte.plotsystem.core.config.ConfigManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
@@ -63,9 +65,16 @@ public class PlotSystem extends JavaPlugin {
 
     private boolean pluginEnabled = false;
 
+    public enum StorageMethod {
+        API,
+        DATABASE
+    }
+
+    private static StorageMethod storageMethod;
+
     private static final List<HolographicDisplay> holograms = Arrays.asList(
-      new ScoreLeaderboard(),
-      new PlotsLeaderboard()
+            new ScoreLeaderboard(),
+            new PlotsLeaderboard()
     );
 
     @Override
@@ -105,16 +114,34 @@ public class PlotSystem extends JavaPlugin {
 
         this.configManager.reloadConfigs();
 
-        // Initialize database connection
         try {
-            DatabaseConnection.InitializeDatabase();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully initialized database connection.");
-        } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not initialize database connection.");
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            storageMethod = StorageMethod.valueOf(getConfig().getString("mode", "DATABASE").toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Invalid `mode` (" + getConfig().getString("mode") + ")");
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        switch(storageMethod) {
+            case DATABASE:
+                new DatabaseManager(getConfig().getString(ConfigPaths.DATABASE_URL), getConfig().getString(ConfigPaths.DATABASE_NAME), getConfig().getString(ConfigPaths.DATABASE_USERNAME), getConfig().getString(ConfigPaths.DATABASE_PASSWORD));
+                // Initialize database connection
+//                try {
+//                    DatabaseConnection.InitializeDatabase();
+//                    Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully initialized database connection.");
+//                } catch (Exception ex) {
+//                    Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not initialize database connection.");
+//                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+//
+//                    this.getServer().getPluginManager().disablePlugin(this);
+//                    return;
+//                }
+                break;
+            case API:
+                // TODO: change values to ConfigPaths
+                new HTTPManager(getConfig().getString("bte_api.url"), getConfig().getString("bte_api.api_key"));
+                break;
         }
 
         // Register event listeners
@@ -197,17 +224,20 @@ public class PlotSystem extends JavaPlugin {
         return configManager;
     }
 
-    @Override @Deprecated
+    @Override
+    @Deprecated
     public FileConfiguration getConfig() {
         return this.configManager.getConfig();
     }
 
-    @Override @Deprecated
+    @Override
+    @Deprecated
     public void reloadConfig() {
         this.configManager.reloadConfigs();
     }
 
-    @Override @Deprecated
+    @Override
+    @Deprecated
     public void saveConfig() {
         this.configManager.saveConfigs();
     }
@@ -215,7 +245,7 @@ public class PlotSystem extends JavaPlugin {
     public static void reloadHolograms() {
         if (DependencyManager.isHolographicDisplaysEnabled()) {
             for (HolographicDisplay hologram : holograms) {
-                if(plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
+                if (plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
                     hologram.show();
                 } else {
                     hologram.hide();
@@ -232,8 +262,13 @@ public class PlotSystem extends JavaPlugin {
         return commandManager;
     }
 
-    public static List<HolographicDisplay> getHolograms() { return holograms; }
+    public static List<HolographicDisplay> getHolograms() {
+        return holograms;
+    }
 
+    public static StorageMethod getStorageMethod() {
+        return storageMethod;
+    }
 
     public static class DependencyManager {
 
@@ -242,6 +277,7 @@ public class PlotSystem extends JavaPlugin {
 
         /**
          * Check for all required dependencies and inform in console about missing dependencies
+         *
          * @return True if all dependencies are present
          */
         private static boolean checkForRequiredDependencies() {
@@ -313,6 +349,7 @@ public class PlotSystem extends JavaPlugin {
 
         /**
          * Get latest plugin version from SpigotMC
+         *
          * @param version Returns latest stable version
          */
         public static void getVersion(final Consumer<String> version) {
