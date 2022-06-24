@@ -20,22 +20,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <!-- Fast Async World Edit -->
+        <!-- AlpsBTE Repo (WorldEdit, WorldGuard, FAWE) -->
         <repository>
-            <id>IntellectualSites</id>
-            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
-        </repository>
-
-        <!-- World Edit -->
-        <repository>
-            <id>sk89q-repo</id>
-            <url>https://maven.sk89q.com/repo/</url>
-        </repository>
-
-        <!-- World Guard -->
-        <repository>
-            <id>nachwahl-repo</id>
-            <url>https://maven.nachwahl.dev/</url>
+            <id>alpsbte-repo</id>
+            <url>https://mvn.alps-bte.com/repository/alps-bte/</url>
         </repository>
 
         <!-- Multiverse Core -->
