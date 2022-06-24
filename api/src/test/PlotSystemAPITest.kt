@@ -9,48 +9,35 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 class PlotSystemAPITest {
     companion object {
         private var config: Config = Gson().fromJson(PlotSystemAPITest::class.java.getResourceAsStream("config.json")?.bufferedReader(), Config::class.java);
 
-        @BeforeAll
-        fun setUp() {
-            DatabaseManager(
-                config.apiUrl,
-                config.dbName,
-                config.dbUser,
-                config.dbPassword
-            )
-
-            val plotLength = PlotRepositoryMySQL().getPlots().size
-
-            for (i in 33 until plotLength) {
-                val cityProject = CityProjectRepositoryMySQL().getCityProject(1)
-
-                if (cityProject != null) {
-                    println("City Project with the ID: ${cityProject.cityId} has the name: ${cityProject.name}")
-                    Thread.sleep(500)
-                }
-            }
+        @Test
+        fun getCityViaDatabase() {
+            DatabaseManager(config.dbURL, config.dbName, config.dbUser, config.dbPassword)
+            val cityProject = CityProjectRepositoryMySQL().getCityProject(1)
+            println(cityProject)
         }
 
         @Test
-        fun testHttpRequest() {
+        fun getCitiesViaAPI() {
             HTTPManager(config.apiUrl, config.apiKey)
             val cityProject = CityProjectRepositoryHTTP().getCityProjects()
             println(cityProject[1])
         }
 
         @Test
-        fun testHttpRequest2() {
+        fun getCityViaAPI() {
             HTTPManager(config.apiUrl, config.apiKey)
             val cityProject = CityProjectRepositoryHTTP().getCityProject(1)
             println(cityProject)
         }
 
         @Test
-        fun testHttpRequest3() {
+        fun getPlotsViaAPI() {
             HTTPManager(config.apiUrl, config.apiKey)
             val plots = PlotRepositoryHTTP().getPlots(PlotStatus.COMPLETED, false, 10)
 
