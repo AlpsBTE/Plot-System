@@ -504,7 +504,7 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 String[] mcLocation = rs.getString(1).split(",");
                 DatabaseConnection.closeResultSet(rs);
-                return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+                return new Vector((int) Math.round(Double.parseDouble(mcLocation[0])), (int) Math.round(Double.parseDouble(mcLocation[1])), (int) Math.round(Double.parseDouble(mcLocation[2])));
             }
 
             DatabaseConnection.closeResultSet(rs);

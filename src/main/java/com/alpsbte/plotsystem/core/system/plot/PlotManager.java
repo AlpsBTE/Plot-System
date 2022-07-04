@@ -42,7 +42,6 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
-import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -51,7 +50,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
-import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -64,6 +63,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -233,117 +233,87 @@ public class PlotManager {
         return plots;
     }
 
+    // TODO: MOVE CONVERSION TO SEPARATE METHODS
     public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
-        // TODO: MOVE CONVERSION TO SEPERATE METHODS
-
-        Vector terraOrigin, schematicOrigin, plotOrigin;
         Vector schematicMinPoint, schematicMaxPoint;
-        Vector plotCenter;
+        Vector plotCenter = plot.getCenter();
+        Vector terraCenter = plot.getMinecraftCoordinates();
 
         // Load plot outlines schematic as clipboard
-        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
+        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(plot.getOutlinesSchematic().toPath())).read(null);
+        if (outlinesClipboard != null) {
+            // Calculate min and max points of schematic
+            int regionCenterModX = outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0;
+            int regionCenterModZ = outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0;
+            int regionCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
+            int regionCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
-        // Get player origin coordinates on terra
-        terraOrigin = plot.getMinecraftCoordinates();
+            schematicMinPoint = Vector.toBlockPoint(
+                    plotCenter.getBlockX() - regionCenterX,
+                    plotCenter.getBlockY() - (!plot.isLegacy() ? (outlinesClipboard.getOrigin().getBlockY() - outlinesClipboard.getMinimumPoint().getBlockY()) : 0),
+                    plotCenter.getBlockZ() - regionCenterZ
+            );
 
+            schematicMaxPoint = Vector.toBlockPoint(
+                    plotCenter.getBlockX() + (regionCenterX - regionCenterModX),
+                    PlotWorld.MAX_WORLD_HEIGHT,
+                    plotCenter.getBlockZ() + (regionCenterZ - regionCenterModZ)
+            );
 
-        // Get plot center
-        plotCenter = plot.getCenter();
+            // Add additional plot sizes to relative plot schematic coordinates
+            plotCenter = Vector.toBlockPoint(
+                    Math.floor(terraCenter.getX()) - Math.floor(outlinesClipboard.getMinimumPoint().getX()) + schematicMinPoint.getX(),
+                    Math.floor(terraCenter.getY()) - Math.floor(outlinesClipboard.getMinimumPoint().getY()) + schematicMinPoint.getY(),
+                    Math.floor(terraCenter.getZ()) - Math.floor(outlinesClipboard.getMinimumPoint().getZ()) + schematicMinPoint.getZ()
+            );
 
+            // Get plot outline
+            List<BlockVector2D> plotOutlines = plot.getOutline();
 
-        // Calculate min and max points of schematic
-        int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
-        int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
+            // Load finished plot region as cuboid region
+            if (plot.getWorld().loadWorld()) {
+                com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
+                Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, schematicMinPoint.getBlockY(), schematicMaxPoint.getBlockY());
 
-        schematicMinPoint = Vector.toBlockPoint(
-                plotCenter.getX() - outlinesClipboardCenterX,
-                plotCenter.getY(),
-                plotCenter.getZ() - outlinesClipboardCenterZ
-        );
+                // Copy and write finished plot clipboard to schematic file
+                File finishedSchematicFile = plot.getFinishedSchematic();
 
-        schematicMaxPoint = Vector.toBlockPoint(
-                plotCenter.getX() + outlinesClipboardCenterX,
-                256,
-                plotCenter.getZ() + outlinesClipboardCenterZ
-        );
-
-        // Convert terra schematic coordinates into relative plot schematic coordinates
-        schematicOrigin = Vector.toBlockPoint(
-                Math.floor(terraOrigin.getX()) - Math.floor(outlinesClipboard.getMinimumPoint().getX()),
-                Math.floor(terraOrigin.getY()) - Math.floor(outlinesClipboard.getMinimumPoint().getY()),
-                Math.floor(terraOrigin.getZ()) - Math.floor(outlinesClipboard.getMinimumPoint().getZ())
-        );
-
-
-        // Add additional plot sizes to relative plot schematic coordinates
-        plotOrigin = Vector.toBlockPoint(
-                schematicOrigin.getX() + schematicMinPoint.getX(),
-                schematicOrigin.getY() + schematicMinPoint.getY(),
-                schematicOrigin.getZ() + schematicMinPoint.getZ()
-        );
-
-
-        // Load finished plot region as cuboid region
-        plot.getWorld().loadWorld();
-        CuboidRegion region = new CuboidRegion(new BukkitWorld(plot.getWorld().getBukkitWorld()), schematicMinPoint, schematicMaxPoint);
-
-
-        // Copy finished plot region to clipboard
-        Clipboard cb = new BlockArrayClipboard(region);
-        cb.setOrigin(plotOrigin);
-        EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(region.getWorld(), -1);
-        ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
-        Operations.complete(forwardExtentCopy);
-
-
-
-        // Write finished plot clipboard to schematic file
-        File finishedSchematicFile = plot.getFinishedSchematic();
-
-        if (!finishedSchematicFile.exists()) {
-            boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
-            boolean createdFile = finishedSchematicFile.createNewFile();
-            if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
-                return false;
-            }
-        }
-
-        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
-            writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
-        }
-
-
-        // If plot was created in a void world, copy the result to the city world
-        if(plot.getPlotType().hasOnePlotPerWorld()) {
-            CityPlotWorld cityPlotWorld = new CityPlotWorld(plot);
-            if (cityPlotWorld.loadWorld()) {
-                World plotBukkitWorld = cityPlotWorld.getBukkitWorld();
-                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plotBukkitWorld);
-
-                Clipboard clipboardPlot = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(finishedSchematicFile)).read(weWorld.getWorldData());
-                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardPlot, weWorld.getWorldData());
-
-                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(region.getMinimumPoint()).ignoreAirBlocks(true).build();
-                Operations.complete(operation);
-                editSession.flushQueue();
-
-                cityPlotWorld.unloadWorld(false);
-            }
-        }
-
-        // Upload to FTP server
-        if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
-            CompletableFuture.supplyAsync(() -> {
-                try {
-                    return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
-                } catch (SQLException | URISyntaxException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                if (!finishedSchematicFile.exists()) {
+                    boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
+                    boolean createdFile = finishedSchematicFile.createNewFile();
+                    if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
+                        return false;
+                    }
                 }
-                return null;
-            });
-        }
 
-        return true;
+                Clipboard cb = new BlockArrayClipboard(region);
+                cb.setOrigin(plotCenter);
+                EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(region.getWorld(), -1);
+                ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
+                Operations.complete(forwardExtentCopy);
+
+                try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+                    writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+                }
+
+                // Upload to FTP server
+                if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
+                    CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
+                        } catch (SQLException | URISyntaxException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+                        return null;
+                    });
+                }
+
+                // If plot was created in a void world, copy the result to the city world
+                // TODO: Copy finished schematic to city world
+                return true;
+            }
+        }
+        return false;
     }
 
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {

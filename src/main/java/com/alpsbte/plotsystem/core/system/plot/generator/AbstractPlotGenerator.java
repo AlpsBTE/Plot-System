@@ -187,7 +187,7 @@ public abstract class AbstractPlotGenerator {
     /**
      * Creates plot protection
      */
-    protected void createPlotProtection() throws StorageException, SQLException {
+    protected void createPlotProtection() throws StorageException, SQLException, IOException {
         RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
         RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
 
