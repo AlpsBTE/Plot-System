@@ -227,4 +227,9 @@ public interface IPlot {
      * @throws SQLException SQL database exception
      */
     boolean isReviewed() throws SQLException;
+
+    /**
+     * @return true, if plot was created before version 3.0
+     */
+    boolean isLegacy();
 }

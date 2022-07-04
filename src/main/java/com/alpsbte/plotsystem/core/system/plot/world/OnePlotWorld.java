@@ -33,7 +33,9 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -145,7 +148,11 @@ public class OnePlotWorld extends PlotWorld {
     }
 
     @Override
-    public int getHeight() throws IOException {
-        return MIN_WORLD_HEIGHT + (super.getHeight() / 2);
+    public int getPlotHeight() throws IOException {
+        if (getPlot() != null) {
+            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(getPlot().getOutlinesSchematic().toPath())).read(null);
+            return MIN_WORLD_HEIGHT + (clipboard.getOrigin().getBlockY() - clipboard.getMinimumPoint().getBlockY());
+        }
+        return MIN_WORLD_HEIGHT + (int) Math.floor((super.getPlotHeight() / 2d));
     }
 }

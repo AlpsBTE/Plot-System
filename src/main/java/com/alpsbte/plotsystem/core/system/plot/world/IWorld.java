@@ -85,7 +85,7 @@ public interface IWorld {
      * @return - the plot center Y value in the city plot world
      * @throws Exception - if the plot height is not supported
      */
-    int getHeight() throws Exception;
+    int getPlotHeight() throws Exception;
 
     /**
      * @return Bukkit plot world

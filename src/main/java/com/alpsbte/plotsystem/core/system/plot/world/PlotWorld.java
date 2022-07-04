@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Locale;
@@ -123,10 +122,10 @@ public class PlotWorld implements IWorld {
     }
 
     @Override
-    public int getHeight() throws IOException {
+    public int getPlotHeight() throws IOException {
         if (plot != null) {
-            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
-            return clipboard.getMaximumPoint().getBlockY() - clipboard.getMinimumPoint().getBlockY();
+            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(plot.getOutlinesSchematic().toPath())).read(null);
+            return clipboard.getRegion().getHeight();
         }
         return 0;
     }

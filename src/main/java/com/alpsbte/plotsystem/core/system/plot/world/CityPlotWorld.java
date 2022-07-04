@@ -7,11 +7,13 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.google.common.annotations.Beta;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,20 +59,31 @@ public class CityPlotWorld extends PlotWorld {
 
     @Beta
     @Override
-    public int getHeight() throws IOException {
+    public int getPlotHeight() throws IOException {
         try {
-            int plotHeight = getPlot().getMinecraftCoordinates().getBlockY();
-
-            // Plots created below min world height are not supported
-            if (plotHeight < 0) throw new IOException("Plot height is not supported");
-
-            // Move Y height to a usable value below 256 blocks
-            while (plotHeight >= 150) {
-                plotHeight -= 150;
-            }
-            return MIN_WORLD_HEIGHT + (super.getHeight() / 2) + plotHeight;
+            return MIN_WORLD_HEIGHT + getWorldHeight() + (int) Math.round((super.getPlotHeight() / 2d));
         } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
         return MIN_WORLD_HEIGHT;
+    }
+
+    /**
+     * Calculate additional height for the plot
+     * @return additional height
+     * @throws IOException - if an I/O error occurs
+     * @throws SQLException - if an SQL error occurs
+     */
+    @Beta
+    public int getWorldHeight() throws IOException, SQLException {
+        int plotHeight = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(getPlot().getOutlinesSchematic().toPath())).read(null).getMinimumPoint().getBlockY();
+
+        // Plots created below min world height are not supported
+        if (plotHeight < MIN_WORLD_HEIGHT) throw new IOException("Plot height is not supported");
+
+        // Move Y height to a usable value below 256 blocks
+        while (plotHeight >= 150) {
+            plotHeight -= 150;
+        }
+        return plotHeight;
     }
 
     /**

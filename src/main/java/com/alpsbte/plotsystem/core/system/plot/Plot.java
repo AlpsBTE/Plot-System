@@ -527,8 +527,10 @@ public class Plot implements IPlot {
 
     public Vector getCenter() {
         try {
-            return getMinecraftCoordinates().setY(5);
-        } catch (SQLException ex) {
+            if (!isLegacy()) {
+                return getMinecraftCoordinates().setY(this.getWorld().getPlotHeight());
+            } else return new Vector(PlotWorld.PLOT_SIZE, PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.PLOT_SIZE);
+        } catch (SQLException | IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return null;
@@ -587,5 +589,13 @@ public class Plot implements IPlot {
 
     public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
+    }
+
+    @Override
+    public boolean isLegacy() {
+        try {
+            return getPlotType() == null;
+        } catch (SQLException ignore) {}
+        return true;
     }
 }
