@@ -437,7 +437,7 @@ public class PlotManager {
      * @return the current plot of the player
      * @throws SQLException
      */
-    public static Plot getCurrentPlot(Builder builder) throws SQLException {
+    public static Plot getCurrentPlot(Builder builder, Status... statuses) throws SQLException {
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
 
@@ -445,7 +445,7 @@ public class PlotManager {
                 return new Plot(Integer.parseInt(worldName.substring(2)));
             else if (CityPlotWorld.isCityPlotWorld(worldName)) {
                 int cityID = Integer.parseInt(worldName.substring(2));
-                List<Plot> plots = getPlots(cityID, Status.unfinished, Status.unreviewed);
+                List<Plot> plots = getPlots(cityID, statuses);
 
                 if(plots.size() == 0)
                     return getPlots(builder).get(0);
@@ -571,7 +571,7 @@ public class PlotManager {
                 }
             }
 
-        }catch (SQLException ex){
+        } catch (SQLException | IOException ex) {
             Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
         }
     }

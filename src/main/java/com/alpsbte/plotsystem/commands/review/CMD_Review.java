@@ -50,7 +50,7 @@ public class CMD_Review extends BaseCommand {
             if (getPlayer(sender) != null) {
                 try {
                     Player player = (Player) sender;
-                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()));
+                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
                     if (plot != null && plot.getStatus() == Status.unreviewed) {
                         new ReviewPlotMenu(player, plot);
                     } else new ReviewMenu(player);
