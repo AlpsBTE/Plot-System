@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
@@ -137,7 +136,7 @@ public abstract class AbstractPlotGenerator {
      * @param plotSchematic - plot schematic file
      * @param environmentSchematic - environment schematic file
      */
-    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, MaxChangedBlocksException, SQLException {
+    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
         final class OnlyAirMask extends ExistingBlockMask {
             public OnlyAirMask(Extent extent) {
                 super(extent);
@@ -154,10 +153,10 @@ public abstract class AbstractPlotGenerator {
 
         if(builderPlotType.hasEnvironment() && environmentSchematic != null){
             editSession.setMask(new OnlyAirMask(weWorld));
-            pasteSchematic(editSession, environmentSchematic, world);
+            pasteSchematic(editSession, environmentSchematic, world, false);
         }
 
-        if (!PlotWorld.resetPlotRegion(plot, plotSchematic, world)) throw new IOException("Could not paste plot region");
+        pasteSchematic(editSession, plotSchematic, world, true);
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isPlotWorld(world.getWorldName())) {
@@ -298,20 +297,17 @@ public abstract class AbstractPlotGenerator {
      * @param schematicFile - plot/environment schematic file
      * @param world - world to paste in
      */
-    public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, PlotWorld world) throws IOException, SQLException, MaxChangedBlocksException {
+    public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, PlotWorld world, boolean clearArea) throws IOException, MaxChangedBlocksException, SQLException {
         if (world.loadWorld()) {
             com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
             if (editSession == null) editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
-            Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-            editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
-            editSession.flushQueue();
+            if (clearArea) {
+                Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+                editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
+                editSession.flushQueue();
+            }
 
-            int pasteHeight;
-            if (world instanceof CityPlotWorld) {
-                pasteHeight = ((CityPlotWorld) world).getHeight();
-            } else pasteHeight = ((OnePlotWorld) world).getHeight();
-
-            FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(pasteHeight), false);
+            FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(world.getPlotHeight()), false);
             editSession.flushQueue();
         }
     }

@@ -28,9 +28,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Server;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -38,7 +38,7 @@ import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import net.md_5.bungee.api.chat.*;
@@ -110,11 +110,11 @@ public class PlotHandler {
                         if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                         if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
-                        if (!PlotWorld.resetPlotRegion(plot, plot.getOutlinesSchematic(), world)) throw new IOException("Could not reset plot region!");
+                        AbstractPlotGenerator.pasteSchematic(null, plot.getOutlinesSchematic(), world, true);
                     } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
                 }
             }
-        } catch (SQLException | MaxChangedBlocksException | IOException ex) {
+        } catch (SQLException | IOException | WorldEditException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
             return false;
         }

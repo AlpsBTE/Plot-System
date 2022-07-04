@@ -74,8 +74,8 @@ public class OnePlotWorld extends PlotWorld {
             try {
                 new DefaultPlotGenerator(getPlot(), plotOwner) {
                     @Override
-                    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, MaxChangedBlocksException {
-                        super.generateOutlines(getPlot().getFinishedSchematic(), null);
+                    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, WorldEditException {
+                        super.generateOutlines(getPlot().getFinishedSchematic(), environmentSchematic);
                     }
 
                     @Override
