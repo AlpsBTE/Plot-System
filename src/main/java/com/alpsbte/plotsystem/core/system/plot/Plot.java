@@ -40,11 +40,15 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -118,7 +122,7 @@ public class Plot implements IPlot {
 
     @Override
     /* return the outline of the plot which contains all corner points of the polygon */
-    public List<BlockVector2D> getOutline() throws SQLException {
+    public List<BlockVector2D> getOutline() throws SQLException, IOException {
         if(this.outline != null)
             return this.outline;
 
@@ -127,11 +131,22 @@ public class Plot implements IPlot {
 
             if (rs.next()){
                 List<BlockVector2D> locations = new ArrayList<>();
-                String[] list = rs.getString(1).split("\\|");
+                if (isLegacy()) { // TODO: Untested
+                    Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(getOutlinesSchematic().toPath())).read(null);
+                    Vector minPoint = clipboard.getMinimumPoint(), maxPoint = clipboard.getMaximumPoint();
+                    locations.addAll(Arrays.asList(
+                        new BlockVector2D(minPoint.getBlockX(), minPoint.getBlockZ()),
+                        new BlockVector2D(minPoint.getBlockX(), -minPoint.getBlockZ()),
+                        new BlockVector2D(-maxPoint.getBlockX(), -maxPoint.getBlockZ()),
+                        new BlockVector2D(-maxPoint.getBlockX(), maxPoint.getBlockZ())
+                    ));
+                } else {
+                    String[] list = rs.getString(1).split("\\|");
 
-                for(String s : list) {
-                    String[] locs = s.split(",");
-                    locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
+                    for(String s : list) {
+                        String[] locs = s.split(",");
+                        locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
+                    }
                 }
 
                 this.outline = locations;
@@ -147,7 +162,7 @@ public class Plot implements IPlot {
     }
 
     /** return the outline of the polygon with one point per Block*/
-    public List<BlockVector2D> getBlockOutline() throws SQLException {
+    public List<BlockVector2D> getBlockOutline() throws SQLException, IOException {
         if(this.blockOutline != null)
             return this.blockOutline;
 

@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -68,8 +69,9 @@ public interface IPlot {
     /**
      * @return polygon outline of the plot
      * @throws SQLException SQL database exception
+     * @throws IOException IO exception
      */
-    List<BlockVector2D> getOutline() throws SQLException;
+    List<BlockVector2D> getOutline() throws SQLException, IOException;
 
     /**
      * Sets the given builder to the plot owner
