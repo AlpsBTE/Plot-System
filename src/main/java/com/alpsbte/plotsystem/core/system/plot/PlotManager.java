@@ -236,7 +236,8 @@ public class PlotManager {
     // TODO: MOVE CONVERSION TO SEPARATE METHODS
     public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
         Vector schematicMinPoint, schematicMaxPoint;
-        Vector plotCenter = plot.getCenter();
+        final Vector oldPlotCenter = plot.getCenter();
+        Vector plotCenter = new Vector((int) Math.round(oldPlotCenter.getX()), (int) Math.round(oldPlotCenter.getY()), (int) Math.round(oldPlotCenter.getZ()));
         Vector terraCenter = plot.getMinecraftCoordinates();
 
         // Load plot outlines schematic as clipboard
