@@ -37,33 +37,33 @@ public class PlotPermissions {
     }
 
     public PlotPermissions addBuilderPerms(UUID builder) {
-        world.getProtectedRegion().getOwners().addPlayer(builder);
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().addPlayer(builder);
         world.getProtectedBuildRegion().getOwners().addPlayer(builder);
         PlotManager.clearCache(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
-        world.getProtectedRegion().getOwners().removePlayer(builder);
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removePlayer(builder);
         world.getProtectedBuildRegion().getOwners().removePlayer(builder);
         PlotManager.clearCache(builder);
         return this;
     }
 
     public PlotPermissions addReviewerPerms() {
-        world.getProtectedRegion().getOwners().addGroup("staff");
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().addGroup("staff");
         world.getProtectedBuildRegion().getOwners().addGroup("staff");
         return this;
     }
 
     public PlotPermissions removeReviewerPerms() {
-        world.getProtectedRegion().getOwners().removeGroup("staff");
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removeGroup("staff");
         world.getProtectedBuildRegion().getOwners().removeGroup("staff");
         return this;
     }
 
     public PlotPermissions clearAllPerms() {
-        world.getProtectedRegion().getOwners().removeAll();
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removeAll();
         world.getProtectedBuildRegion().getOwners().removeAll();
         return this;
     }
