@@ -88,6 +88,10 @@ menu-title:
   enter-player-name: 'Entrer nom du joueur'
   select-language: 'Choix de la langue'
   auto-detect-language: 'Détection auto de la Langue'
+  select-plot-type: 'Select Plot Type'
+  select-focus-mode: "Select Focus Mode"
+  select-local-inspiration-mode: "Select Inspiration Mode"
+  select-city-inspiration-mode: "Select City Inspiration Mode"
 
 
 # -----------------------------------------------------
@@ -116,6 +120,10 @@ menu-description:
   leave-plot-desc: "Cliquez pour quitter ce tracé"
   select-language-desc: "Choisissez votre langue"
   auto-detect-language-desc: "Cliquez pour détecter automatiquement votre langue"
+  select-plot-type-desc: 'Choose your plot type'
+  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
 
 
 # -----------------------------------------------------
@@ -227,4 +235,4 @@ message:
 
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.1"
