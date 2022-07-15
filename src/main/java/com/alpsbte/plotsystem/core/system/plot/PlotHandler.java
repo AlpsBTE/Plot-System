@@ -63,7 +63,7 @@ public class PlotHandler {
         plot.setStatus(Status.unreviewed);
 
         if(plot.getWorld().isWorldLoaded()) {
-            for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+            for(Player player : plot.getWorld() instanceof OnePlotWorld ? plot.getWorld().getBukkitWorld().getPlayers() : ((CityPlotWorld) plot.getWorld()).getPlayersOnPlot()) {
                 player.teleport(Utils.getSpawnLocation());
             }
         }
