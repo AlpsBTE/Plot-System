@@ -487,9 +487,9 @@ public class Plot implements IPlot {
     }
 
     @Override
-    public String getGeoCoordinates() throws SQLException {
+    public String getGeoCoordinates() throws IOException {
         // Convert MC coordinates to geo coordinates
-        Vector mcCoordinates = getMinecraftCoordinates();
+        Vector mcCoordinates = getCoordinates();
         try {
             return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
         } catch (OutOfProjectionBoundsException ex) {
@@ -498,6 +498,7 @@ public class Plot implements IPlot {
         return null;
     }
 
+    @Deprecated
     @Override
     public Vector getMinecraftCoordinates() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
@@ -513,6 +514,13 @@ public class Plot implements IPlot {
 
             return null;
         }
+    }
+
+    @Override
+    public Vector getCoordinates() throws IOException {
+        Clipboard clipboard = FaweAPI.load(getOutlinesSchematic()).getClipboard();
+        if (clipboard != null) return clipboard.getOrigin();
+        return null;
     }
 
     @Override
@@ -557,15 +565,15 @@ public class Plot implements IPlot {
         return null;
     }
 
-    public String getOSMMapsLink() throws SQLException {
+    public String getOSMMapsLink() throws IOException {
         return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinates().replace(",", "/");
     }
 
-    public String getGoogleMapsLink() throws SQLException {
+    public String getGoogleMapsLink() throws IOException {
         return "https://www.google.com/maps/place/"+ getGeoCoordinates();
     }
 
-    public String getGoogleEarthLink() throws SQLException {
+    public String getGoogleEarthLink() throws IOException {
         return "https://earth.google.com/web/@" + getGeoCoordinates() + ",0a,1000d,20y,-0h,0t,0r";
     }
 

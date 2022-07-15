@@ -217,8 +217,6 @@ public class PlotHandler {
                 tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
                 tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
                 tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQl error occurred!", ex);
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating shortlink!", ex);
             }
@@ -236,7 +234,7 @@ public class PlotHandler {
                 DecimalFormat df = new DecimalFormat("##.#####");
                 df.setRoundingMode(RoundingMode.FLOOR);
                 coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
-            } catch (SQLException ex) {
+            } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
 

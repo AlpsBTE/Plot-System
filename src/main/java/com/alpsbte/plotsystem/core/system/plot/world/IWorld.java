@@ -32,6 +32,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public interface IWorld {
     /**
      * Generates the plot world with the required configurations and schematic
@@ -61,7 +63,7 @@ public interface IWorld {
 
     /**
      * Unloads the plot world from memory. Plot cannot be used anymore. Plot has to be generated.
-     * @param movePlayers - if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.
+     * @param movePlayers if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.
      * @return true if world was loaded successfully
      */
     boolean unloadWorld(boolean movePlayers);

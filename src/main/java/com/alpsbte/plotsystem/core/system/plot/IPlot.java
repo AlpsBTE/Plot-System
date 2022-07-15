@@ -192,9 +192,9 @@ public interface IPlot {
      * Returns geographic coordinates in numeric format
      * @return WG84 EPSG:4979 coordinates as double array {lon,lat} in degrees
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertToGeo(double, double)
-     * @throws SQLException SQL database exception
+     * @throws IOException fails to load schematic file
      */
-    String getGeoCoordinates() throws SQLException;
+    String getGeoCoordinates() throws IOException;
 
     /**
      * Returns in-game Minecraft coordinates on a Terra121 world
@@ -202,7 +202,16 @@ public interface IPlot {
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
      * @throws SQLException SQL database exception
      */
+    @Deprecated
     Vector getMinecraftCoordinates() throws SQLException;
+
+    /**
+     * Returns in-game Minecraft coordinates on a Terra121 world
+     * @return the in-game coordinates (x, z)
+     * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
+     * @throws IOException fails to load schematic file
+     */
+    Vector getCoordinates() throws IOException;
 
     /**
      * Returns the plot type the player has selected when creating the plot
@@ -225,13 +234,14 @@ public interface IPlot {
     void setPasted(boolean pasted) throws SQLException;
 
     /**
+     * @return plot version in which it was created
+     * @throws SQLException SQL database exception
+     */
+    double getVersion() throws SQLException;
+
+    /**
      * @return if {@link #getReview()} is null, it will return false
      * @throws SQLException SQL database exception
      */
     boolean isReviewed() throws SQLException;
-
-    /**
-     * @return true, if plot was created before version 3.0
-     */
-    boolean isLegacy();
 }
