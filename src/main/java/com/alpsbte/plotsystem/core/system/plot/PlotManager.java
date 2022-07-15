@@ -158,16 +158,23 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
-        //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
-        // TODO: Add support for member plots
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
+        plots.addAll(getPlotsAsMember(builder, statuses));
         return plots;
     }
 
     public static List<Plot> getPlots(Builder builder, int cityID, Status... statuses) throws SQLException {
         List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID() + "' AND city_project_id = '" + cityID, statuses)).executeQuery());
-        //plots.addAll(listPlots(DatabaseConnection.createStatement(getStatusQuery("id", "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0", statuses)).executeQuery()));
-        // TODO: Add support for member plots
+        plots.addAll(getPlotsAsMember(builder, statuses));
+        return plots;
+    }
+
+    // Temporary fix to receive plots of builder as member
+    private static List<Plot> getPlotsAsMember(Builder builder, Status... status) throws SQLException {
+        List<Plot> plots = new ArrayList<>();
+        for (Status stat : status) {
+            plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE status = '" + stat.name() + "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
+        }
         return plots;
     }
 
