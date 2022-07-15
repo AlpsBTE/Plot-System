@@ -67,9 +67,9 @@ public class Invitation {
     }
 
     public void AcceptInvite() throws SQLException {
-        Builder builder = new Builder(invitee.getUniqueId());
+        Builder builder = Builder.byUUID(invitee.getUniqueId());
         if (builder.getFreeSlot() != null) {
-            plot.addPlotMember(new Builder(invitee.getUniqueId()));
+            plot.addPlotMember(Builder.byUUID(invitee.getUniqueId()));
 
             // Messages Receiver
             invitee.sendMessage(Utils.getInfoMessageFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been accepted!"));

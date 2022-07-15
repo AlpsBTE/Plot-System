@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.sk89q.worldedit.BlockVector2D;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -37,7 +38,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -162,6 +166,114 @@ public class Utils {
         }
     }
 
+    public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){
+        double p1X = point1.getX();
+        double p1Y = point1.getY();
+        double p1Z = point1.getZ();
+        double p2X = point2.getX();
+        double p2Y = point2.getY();
+        double p2Z = point2.getZ();
+
+        double lineAveX = (p2X-p1X)/pointsInLine;
+        double lineAveY = (p2Y-p1Y)/pointsInLine;
+        double lineAveZ = (p2Z-p1Z)/pointsInLine;
+
+        HashSet<Vector> line = new HashSet<>();
+        for(int i = 0; i <= pointsInLine; i++){
+            Vector vector = new Vector(p1X + lineAveX * i, p1Y + lineAveY * i, p1Z + lineAveZ * i);
+            line.add(vector);
+        }
+        return line;
+    }
+
+    public static HashSet<BlockVector2D> getLineBetweenPoints(BlockVector2D point1, BlockVector2D point2, int pointsInLine){
+        double p1X = point1.getX();
+        double p1Z = point1.getZ();
+        double p2X = point2.getX();
+        double p2Z = point2.getZ();
+
+        double lineAveX = (p2X-p1X)/pointsInLine;
+        double lineAveZ = (p2Z-p1Z)/pointsInLine;
+
+        HashSet<BlockVector2D> line = new HashSet<>();
+        for(int i = 0; i <= pointsInLine; i++){
+            BlockVector2D vector = new BlockVector2D(p1X + lineAveX * i, p1Z + lineAveZ * i);
+            line.add(vector);
+        }
+        return line;
+    }
+
+    /** This function creates a list of lines from one long string.
+     *  Given a max value of characters per line it will iterate through the string till the maximum chars value and then back until the start of the word (until a space symbol is reached).
+     *  Then it will cut that string into an extra line.
+     *  This way the function will never cut a word in half and still keep the max char value (e.g. line breaks in word)
+     *
+     * @param maxCharsPerLine: max characters per line
+     * @param lineBreaker: characters which creates a new line (e.g. \n)
+     * @return
+     */
+    public static ArrayList<String> createMultilineFromString(String text, int maxCharsPerLine, char lineBreaker){
+        ArrayList<String> list = new ArrayList();
+
+        // Split text at line breaker symbol, iterate through all subtexts and create all lists together to one large list.
+        String[] texts = text.split(String.valueOf(lineBreaker));
+
+        for(String subText : texts)
+            list.addAll(createMultilineFromString(subText, maxCharsPerLine));
+
+        return list;
+    }
+
+    public static ArrayList<String> createMultilineFromString(String text, int maxCharsPerLine){
+        int i = 0;
+        ArrayList<String> list = new ArrayList();
+        String currentText = text;
+        boolean findSpace = false;
+
+
+        // Create infinite loop with termination condition.
+        while (true){
+
+            // If current text is smaller than maxCharsPerLine, then add the rest of the text and return the list.
+            if(currentText == null || currentText.length() < maxCharsPerLine) {
+                if(currentText != null)
+                    list.add(currentText);
+                return list;
+            }
+
+            // If it should iterate through the word, increase i until it hits maxCharsPerLine
+            if(!findSpace && i < maxCharsPerLine - 1){
+                i++;
+
+                // If it hit the maxCharsPerLine value, go back until it finds a space.
+            }else{
+                findSpace = true;
+
+                // If it goes back to the start without finding a space symbol, return everything.
+                if(i == 0){
+                    list.add(currentText);
+                    return list;
+                }
+
+                char currentSymbol = currentText.charAt(i);
+
+                // If it reaches a space symbol, split the text from start till i and add it to the list
+                if(currentSymbol == ' '){
+                    String firstPart = currentText.substring(0 , i);
+                    String lastPart = currentText.substring(i+1);
+
+                    list.add(firstPart);
+                    currentText = lastPart;
+                    findSpace = false;
+                }
+
+                i--;
+            }
+
+        }
+    }
+
+
     public static class CustomHead {
         private final ItemStack headItem;
 
@@ -189,6 +301,9 @@ public class Utils {
         public static CustomHead PREVIOUS_BUTTON;
 
         public static CustomHead GLOBE;
+        public static CustomHead PLOT_TYPE;
+        public static CustomHead FOCUS_MODE;
+        public static CustomHead CITY_INSPIRATION_MODE;
 
         public static void loadHeadsAsync(HeadDatabaseAPI api) {
             headDatabaseAPI = api;
@@ -206,6 +321,9 @@ public class Utils {
                 PREVIOUS_BUTTON = new CustomHead("9226");
 
                 GLOBE = new CustomHead("49973");
+                PLOT_TYPE = new CustomHead("4159");
+                FOCUS_MODE = new CustomHead("38199");
+                CITY_INSPIRATION_MODE = new CustomHead("38094");
             });
         }
     }

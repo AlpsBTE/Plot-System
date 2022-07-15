@@ -1,44 +1,13 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.boydti.fawe.FaweAPI;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -48,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,38 +25,28 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.logging.Level;
 
-public class PlotWorld implements IPlotWorld {
+public class PlotWorld implements IWorld {
+    public static final int PLOT_SIZE = 150;
+    public static final int MAX_WORLD_HEIGHT = 256;
+    public static final int MIN_WORLD_HEIGHT = 5;
 
+    private final MultiverseCore mvCore = PlotSystem.DependencyManager.getMultiverseCore();
+    private final String worldName;
     private final Plot plot;
-    private final MultiverseCore mvCore;
 
-    public PlotWorld(Plot plot) {
+    public PlotWorld(@NotNull String worldName, @Nullable Plot plot) {
+        this.worldName = worldName;
         this.plot = plot;
-        this.mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator) {
-        if (!isWorldGenerated()) {
-            if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-               new DefaultPlotGenerator(plot, plotOwner);
-            } else if (generator.isAssignableFrom(RawPlotGenerator.class)) {
-                new RawPlotGenerator(plot, plotOwner);
-            } else return false;
-            return true;
-        }
-        return false;
+    public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+        throw new UnsupportedOperationException("No world generator set for world " + getWorldName());
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
-        try {
-            if (deleteWorld() && generateWorld(plot.getPlotOwner(), generator))
-                return true;
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return false;
+    public <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator) {
+        return deleteWorld() && generateWorld(generator);
     }
 
     @Override
@@ -94,143 +54,109 @@ public class PlotWorld implements IPlotWorld {
         if (isWorldGenerated() && loadWorld()) {
             if (mvCore.getMVWorldManager().deleteWorld(getWorldName(), true, true) && mvCore.saveWorldConfig()) {
                 try {
-                    File multiverseInventoriesConfig = new File(PlotManager.getMultiverseInventoriesConfigPath(plot.getWorld().getWorldName()));
-                    File worldGuardConfig = new File(PlotManager.getWorldGuardConfigPath(plot.getWorld().getWorldName()));
+                    File multiverseInventoriesConfig = new File(PlotSystem.DependencyManager.getMultiverseInventoriesConfigPath(getWorldName()));
+                    File worldGuardConfig = new File(PlotSystem.DependencyManager.getWorldGuardConfigPath(getWorldName()));
                     if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
                     if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
                 } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not delete world configs of plot #" + plot.getID() + "!");
+                    Bukkit.getLogger().log(Level.WARNING, "Could not delete config files for world " + getWorldName() + "!");
                     return false;
                 }
                 return true;
-            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world of plot #" + plot.getID() + "!");
+            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world " + getWorldName() + "!");
         }
         return false;
     }
 
     @Override
     public boolean loadWorld() {
-        try {
-            // Generate plot if it doesn't exist
-            if (!isWorldGenerated() && plot.getFinishedSchematic().exists()) {
-                new DefaultPlotGenerator(plot, plot.getPlotOwner()) {
-                    @Override
-                    protected void generateOutlines(File plotSchematic) {
-                        super.generateOutlines(plot.getFinishedSchematic());
-                    }
-
-                    @Override
-                    protected boolean init() {
-                        return true;
-                    }
-
-                    @Override
-                    protected void onComplete(boolean failed) throws SQLException {
-                        plot.getPermissions().clearAllPerms();
-                        super.onComplete(true); // This code sucks
-                    }
-                };
-                if (!isWorldGenerated() || !isWorldLoaded()) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world of plot #" + plot.getID() + "!");
-                    return false;
-                }
+        if(isWorldGenerated()) {
+            if (isWorldLoaded()) {
                 return true;
-            } else if (isWorldGenerated())
-                return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-        }
+            } else return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
+        } else Bukkit.getLogger().log(Level.WARNING, "Could not load world " + worldName + " because it is not generated!");
         return false;
     }
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if(isWorldLoaded()) {
-            if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
-                for (Player player : getBukkitWorld().getPlayers()) {
-                    player.teleport(Utils.getSpawnLocation());
+        if (isWorldGenerated()) {
+            if(isWorldLoaded()) {
+                if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
+                    for (Player player : getBukkitWorld().getPlayers()) {
+                        player.teleport(Utils.getSpawnLocation());
+                    }
                 }
-            }
 
-            try {
-                if (plot.getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty()) {
-                    deleteWorld();
-                    return true;
-                }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-            }
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
-                    Bukkit.unloadWorld(getBukkitWorld(), true)), 60L);
-            return !isWorldLoaded();
-        }
-        return true;
-    }
-
-    @Override
-    public boolean teleportPlayer(Player player) {
-        Location spawnLocation;
-        if (loadWorld() && (spawnLocation = getSpawnPoint()) != null) {
-            try {
-                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getID()))));
-
-                player.teleport(spawnLocation);
-                player.playSound(player.getLocation(), Utils.TeleportSound, 1, 1);
-                player.setAllowFlight(true);
-                player.setFlying(true);
-
-                Utils.updatePlayerInventorySlots(player);
-
-                PlotHandler.sendLinkMessages(plot, player);
-
-                if(plot.getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                    plot.setLastActivity(false);
-                }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                Bukkit.unloadWorld(getBukkitWorld(), true);
+                return !isWorldLoaded();
             }
             return true;
-        } else player.sendMessage(Utils.getErrorMessageFormat("Could not load plot world. Please try again!"));
+        } else Bukkit.getLogger().log(Level.WARNING, "Could not unload world " + worldName + " because it is not generated!");
         return false;
     }
 
     @Override
-    public Location getSpawnPoint() {
-        if (getBukkitWorld() != null) {
-            Location spawnLocation = new Location(plot.getWorld().getBukkitWorld(),
-                    PlotManager.getPlotCenter().getX() + 0.5,
-                    30,
-                    PlotManager.getPlotCenter().getZ() + 0.5,
-                    -90,
-                    90);
-            // Set spawn point 1 block above the highest center point
-            spawnLocation.setY(plot.getWorld().getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-            return spawnLocation;
+    public boolean teleportPlayer(@NotNull Player player) {
+        if (loadWorld()) {
+            Location spawnLocation = plot != null ? getSpawnPoint(plot.getCenter()) : getBukkitWorld().getSpawnLocation();
+            // Set spawn point 1 block above the highest block at the spawn location
+            spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+
+            player.teleport(spawnLocation);
+            return true;
+        } else Bukkit.getLogger().log(Level.WARNING, "Could not teleport player " + player.getName() + " to world " + worldName + "!");
+        return false;
+    }
+
+    @Override
+    public Location getSpawnPoint(Vector plotVector) {
+        if (isWorldGenerated() && loadWorld()) {
+            return plotVector == null ? getBukkitWorld().getSpawnLocation() :
+                    new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
         }
         return null;
+    }
+
+    @Override
+    public int getPlotHeight() throws IOException {
+        throw new UnsupportedOperationException("No plot height set for " + getWorldName());
+    }
+
+    @Override
+    public int getPlotHeightCentered() throws IOException {
+        if (plot != null) {
+            Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
+            if (clipboard != null) {
+                return clipboard.getRegion().getCenter().getBlockY() - clipboard.getMinimumPoint().getBlockY();
+            }
+        }
+        return 0;
     }
 
     @Override
     public World getBukkitWorld() {
-        return Bukkit.getWorld(getWorldName());
+        return Bukkit.getWorld(worldName);
     }
 
     @Override
     public String getWorldName() {
-        return "P-" + plot.getID();
+        return worldName;
+    }
+
+    @Override
+    public String getRegionName() {
+       return worldName.toLowerCase(Locale.ROOT);
     }
 
     @Override
     public ProtectedRegion getProtectedRegion() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        if (loadWorld()) {
-            RegionManager regionManager = container.get(getBukkitWorld());
-            if (regionManager != null) {
-                return regionManager.getRegion(getWorldName().toLowerCase(Locale.ROOT));
-            } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
-        }
-        return null;
+        return getRegion(getRegionName() + "-1");
+    }
+
+    @Override
+    public ProtectedRegion getProtectedBuildRegion() {
+        return getRegion(getRegionName());
     }
 
     @Override
@@ -240,6 +166,52 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public boolean isWorldGenerated() {
-        return mvCore.getMVWorldManager().getMVWorld(getWorldName()) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(getWorldName());
+        return mvCore.getMVWorldManager().getMVWorld(worldName) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(worldName);
+    }
+
+    private ProtectedRegion getRegion(String regionName) {
+        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+        if (loadWorld()) {
+            RegionManager regionManager = container.get(getBukkitWorld());
+            if (regionManager != null) {
+                return regionManager.getRegion(regionName);
+            } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
+        }
+        return null;
+    }
+
+    public Plot getPlot() {
+        return plot;
+    }
+
+
+    /**
+     * @param worldName - the name of the world
+     * @return - true if the world is a plot world
+     */
+    public static boolean isOnePlotWorld(String worldName) {
+        return worldName.toLowerCase(Locale.ROOT).startsWith("p-");
+    }
+
+    /**
+     * @param worldName - the name of the world
+     * @return - true if the world is a city plot world
+     */
+    public static boolean isCityPlotWorld(String worldName) {
+        return worldName.toLowerCase(Locale.ROOT).startsWith("c-");
+    }
+
+    /**
+     * Returns OnePlotWorld or PlotWorld (CityPlotWorld) class depending on the world name.
+     * It won't return the CityPlotWorld class because there is no use case without a plot.
+     * @param worldName - name of the world
+     * @return - plot world
+     * @param <T> - OnePlotWorld or PlotWorld
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends PlotWorld> T getPlotWorldByName(String worldName) throws SQLException {
+        if (isOnePlotWorld(worldName)) {
+            return new Plot(Integer.parseInt(worldName.substring(2))).getWorld();
+        } else return (T) new PlotWorld(worldName, null);
     }
 }

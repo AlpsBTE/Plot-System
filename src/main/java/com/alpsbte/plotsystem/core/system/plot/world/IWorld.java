@@ -24,29 +24,30 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
+import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public interface IPlotWorld {
+import java.io.IOException;
+
+public interface IWorld {
     /**
      * Generates the plot world with the required configurations and schematic
-     * @param plotOwner plow owner of the plot
      * @param generator generator type as class
      * @return true if world was generated successfully
      */
-    <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Builder plotOwner, @NotNull Class<T> generator);
+    <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator);
 
     /**
      * Regenerates the current plot with an optional new generator type
      * @param generator generator type as class
      * @return true if world was regenerated successfully
      */
-    <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator);
+    <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator);
 
     /**
      * Deletes the world file and entry in the config file
@@ -62,7 +63,7 @@ public interface IPlotWorld {
 
     /**
      * Unloads the plot world from memory. Plot cannot be used anymore. Plot has to be generated.
-     * @param movePlayers - if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.
+     * @param movePlayers if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.
      * @return true if world was loaded successfully
      */
     boolean unloadWorld(boolean movePlayers);
@@ -72,13 +73,28 @@ public interface IPlotWorld {
      * @param player bukkit player
      * @return true if player was teleported successfully
      */
-    boolean teleportPlayer(Player player);
+    boolean teleportPlayer(@NotNull Player player);
 
     /**
      * Returns the spawn point of the plot
      * @return center coordinates of the plot
+     * @param plotVector plot vector
      */
-    Location getSpawnPoint();
+    Location getSpawnPoint(Vector plotVector);
+
+    /**
+     * Calculates the origin Y value in the plot world used for schematic pasting
+     * @return the origin Y value
+     * @throws IOException if the outline schematic fails to load
+     */
+    int getPlotHeight() throws IOException;
+
+    /**
+     * Calculates the centered Y value in the plot world
+     * @return the centered Y value
+     * @throws IOException if the outline schematic fails to load
+     */
+    int getPlotHeightCentered() throws IOException;
 
     /**
      * @return Bukkit plot world
@@ -91,10 +107,21 @@ public interface IPlotWorld {
     String getWorldName();
 
     /**
+     * @return region world name of the plot
+     */
+    String getRegionName();
+
+    /**
      * Loads the protected plot world region from WorldGuard config
      * @return protected WorldGuard region
      */
     ProtectedRegion getProtectedRegion();
+
+    /**
+     * Loads the protected plot world build region from WorldGuard config
+     * @return protected WorldGuard build region
+     */
+    ProtectedRegion getProtectedBuildRegion();
 
     /**
      * Checks if the plot world is loaded to memory

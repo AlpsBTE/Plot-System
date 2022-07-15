@@ -213,7 +213,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for close item
         getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
@@ -356,7 +356,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                         }
 
                         // Delete plot world after reviewing
-                        if (!finalIsRejected) plot.getWorld().deleteWorld();
+                        try {
+                            if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
+                                plot.getWorld().deleteWorld();
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);

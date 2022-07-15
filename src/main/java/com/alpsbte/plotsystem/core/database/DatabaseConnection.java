@@ -263,14 +263,16 @@ public class DatabaseConnection {
                             "(" +
                             " `uuid`            varchar(36) NOT NULL ," +
                             " `name`            varchar(16) NOT NULL ," +
-                            " `score`           int DEFAULt 0 ," +
+                            " `score`           int DEFAULT 0 ," +
                             " `completed_plots` int DEFAULT 0 ," +
+                            " `third_slot`      int NULL ," +
                             " `first_slot`      int NULL ," +
                             " `second_slot`     int NULL ," +
                             " `third_slot`      int NULL ," +
                             "PRIMARY KEY (`uuid`)" +
                             ");",
                     "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS lang varchar(5) NULL;",
+                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS setting_plot_type int DEFAULT 1;",
 
                     // Reviews
                     "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
@@ -322,8 +324,9 @@ public class DatabaseConnection {
                             "KEY `fkIdx_82` (`difficulty_id`)," +
                             "CONSTRAINT `FK_81` FOREIGN KEY `fkIdx_82` (`difficulty_id`) REFERENCES `plotsystem_difficulties` (`id`)" +
                             ");",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NOT NULL;"
-
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NULL DEFAULT NULL;",
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS type int NOT NULL DEFAULT 1;",
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS version DOUBLE NULL DEFAULT NULL;"
             );
         }
     }

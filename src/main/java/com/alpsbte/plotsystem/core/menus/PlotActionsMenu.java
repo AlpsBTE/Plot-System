@@ -138,7 +138,7 @@ public class PlotActionsMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for submit or undo submit plot item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
@@ -180,7 +180,7 @@ public class PlotActionsMenu extends AbstractMenu {
                             new PlotMemberMenu(plot,clickPlayer);
                         } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                             // Leave Plot
-                            plot.removePlotMember(new Builder(clickPlayer.getUniqueId()));
+                            plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
                             clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
                             clickPlayer.closeInventory();
                         }

@@ -26,10 +26,12 @@ package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
@@ -57,7 +59,7 @@ public class CMD_Plot_Links extends SubCommand {
                         sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    PlotHandler.sendLinkMessages(PlotManager.getPlotByWorld(getPlayer(sender).getWorld()), getPlayer(sender));
+                    PlotHandler.sendLinkMessages(PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed), getPlayer(sender));
                 } else {
                     sendInfo(sender);
                 }

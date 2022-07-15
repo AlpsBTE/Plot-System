@@ -188,6 +188,7 @@ public class PlotSystem extends JavaPlugin {
 
         PlotManager.checkPlotsForLastActivity();
         PlotManager.syncPlotSchematicFiles();
+        PlotManager.startTimer();
 
         try {
             new PacketListener();
@@ -309,8 +310,23 @@ public class PlotSystem extends JavaPlugin {
             return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         }
 
+        /**
+         * @return True if ParticleNativeAPI is present
+         */
+        public static boolean isParticleNativeAPIEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("ParticleNativeAPI");
+        }
+
         public static boolean isMultiverseInventoriesEnabled() {
             return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
+        }
+
+        /**
+         * @param worldName Name of the world
+         * @return Config path for the world
+         */
+        public static String getMultiverseInventoriesConfigPath(String worldName) {
+            return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
         }
 
         /**
@@ -332,6 +348,14 @@ public class PlotSystem extends JavaPlugin {
          */
         public static WorldGuardPlugin getWorldGuard() {
             return WorldGuardPlugin.inst();
+        }
+
+        /**
+         * @param worldName Name of the world
+         * @return Config path for the world
+         */
+        public static String getWorldGuardConfigPath(String worldName) {
+            return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/" + worldName;
         }
 
         /**

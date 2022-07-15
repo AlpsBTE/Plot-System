@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.menus.FeedbackMenu;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
@@ -59,7 +61,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                         return;
                     }
                 } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    plot = PlotManager.getPlotByWorld(getPlayer(sender).getWorld());
+                    plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.completed);
                 } else {
                     sendInfo(sender);
                     return;

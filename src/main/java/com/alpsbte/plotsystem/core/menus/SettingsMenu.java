@@ -19,11 +19,20 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set language item
-        getMenu().getSlot(10).setItem(
+        getMenu().getSlot(11).setItem(
                 new ItemBuilder(Utils.CustomHead.GLOBE.getAsItemStack())
                         .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE))
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_LANGUAGE))
+                                .build())
+                        .build());
+
+        // Set Plot type item
+        getMenu().getSlot(15).setItem(
+                new ItemBuilder(Utils.CustomHead.PLOT_TYPE.getAsItemStack())
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
+                        .setLore(new LoreBuilder()
+                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_PLOT_TYPE))
                                 .build())
                         .build());
 
@@ -32,11 +41,17 @@ public class SettingsMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for language item
-        getMenu().getSlot(10).setClickHandler(((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
             getMenuPlayer().closeInventory();
             new SelectLanguageMenu(clickPlayer);
+        }));
+
+        // Set click event for plot type item
+        getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
+            getMenuPlayer().closeInventory();
+            new SelectPlotTypeMenu(clickPlayer);
         }));
 
         // Set click event for back item

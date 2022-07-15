@@ -8,7 +8,7 @@
 # | [Formatting] Use // for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
 # |
-# | German translation by BlackStarHD#1333
+# | German translation by BlackStarHD#1333 and R3tuxn#7169
 # -----------------------------------------------------
 
 lang:
@@ -88,6 +88,10 @@ menu-title:
   enter-player-name: "Spielername Eingeben"
   select-language: "Sprache Auswählen"
   auto-detect-language: "Sprache Automatisch Erkennen"
+  select-plot-type: "Plot Typ Auswählen"
+  select-focus-mode: "Focus-Mode Auswählen"
+  select-local-inspiration-mode: "Inspiration-Mode Auswählen"
+  select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
 
 
 # -----------------------------------------------------
@@ -116,6 +120,10 @@ menu-description:
   leave-plot-desc: "Klicke hier, um den Plot zu verlassen"
   select-language-desc: "Wähle deine Sprache"
   auto-detect-language-desc: "Klicke hier, um deine Sprache automatisch zu erkennen"
+  select-plot-type-desc: 'Wähle dein Plot-Typ aus'
+  select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.\n\n- Keine Umgebung\n- Keine Nachbarsgrundstücke"
+  select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
+  select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
 
 
 # -----------------------------------------------------
@@ -227,4 +235,4 @@ message:
 
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.1"

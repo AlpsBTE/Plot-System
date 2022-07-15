@@ -88,6 +88,10 @@ menu-title:
   enter-player-name: "플레이어 이름 입력하기"
   select-language: "언어 설정"
   auto-detect-language: "언어 감지"
+  select-plot-type: 'Select Plot Type'
+  select-focus-mode: "Select Focus Mode"
+  select-local-inspiration-mode: "Select Inspiration Mode"
+  select-city-inspiration-mode: "Select City Inspiration Mode"
 
 
 # -----------------------------------------------------
@@ -116,6 +120,10 @@ menu-description:
   leave-plot-desc: "클릭하여 플롯에서 나가기"
   select-language-desc: "언어를 선택하세요"
   auto-detect-language-desc: "클릭하여 자동으로 언어 감지"
+  select-plot-type-desc: 'Choose your plot type'
+  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
 
 
 # -----------------------------------------------------
@@ -227,4 +235,4 @@ message:
 
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.1"
