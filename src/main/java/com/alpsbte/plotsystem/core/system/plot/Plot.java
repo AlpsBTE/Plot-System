@@ -60,6 +60,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Plot implements IPlot {
+    public static final double PLOT_VERSION = 3;
     private final int ID;
 
     private List<BlockVector2D> outline;
@@ -67,6 +68,7 @@ public class Plot implements IPlot {
     private CityProject city;
     private Builder plotOwner;
     private PlotType plotType;
+    private double plotVersion = -1;
 
     private OnePlotWorld onePlotWorld;
     private CityPlotWorld cityPlotWorld;
@@ -282,7 +284,7 @@ public class Plot implements IPlot {
     @Override
     public <T extends PlotWorld> T getWorld() {
         try {
-            if (getPlotType().hasOnePlotPerWorld()) {
+            if (getVersion() <= 2 || getPlotType().hasOnePlotPerWorld()) {
                 if (onePlotWorld == null) onePlotWorld = new OnePlotWorld(this);
                 return (T) onePlotWorld;
             } else {
@@ -569,6 +571,30 @@ public class Plot implements IPlot {
                 .setValue(pasted).setValue(this.ID).executeUpdate();
     }
 
+    @Override
+    public double getVersion() {
+        if (plotVersion != -1) return plotVersion;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT version FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                double version = rs.getDouble(1);
+                if (!rs.wasNull()) {
+                    plotVersion = version;
+                } else {
+                    plotVersion = 2; // Plot version was implemented since v3, so we assume that the plot is v2.
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+                return plotVersion;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        return PLOT_VERSION;
+    }
+
     public void addPlotMember(Builder member) throws SQLException {
         List<Builder> members = getPlotMembers();
         if (members.size() < 3 && members.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
@@ -604,13 +630,5 @@ public class Plot implements IPlot {
 
     public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
-    }
-
-    @Override
-    public boolean isLegacy() {
-        try {
-            return getPlotType() == null;
-        } catch (SQLException ignore) {}
-        return true;
     }
 }
