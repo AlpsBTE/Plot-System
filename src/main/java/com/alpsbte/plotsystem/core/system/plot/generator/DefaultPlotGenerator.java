@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -52,6 +53,10 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
 
     public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
         super(plot, builder);
+    }
+
+    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, PlotType plotType) throws SQLException {
+        super(plot, builder, plotType);
     }
 
     @Override
@@ -83,8 +88,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void onComplete(boolean failed) throws SQLException {
-        super.onComplete(failed);
+    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+        super.onComplete(failed, false);
 
         if (!failed) {
             getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());

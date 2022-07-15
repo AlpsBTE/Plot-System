@@ -544,11 +544,15 @@ public class Plot implements IPlot {
 
     public Vector getCenter() {
         try {
-            if (!isLegacy()) {
-                return getMinecraftCoordinates().setY(this.getWorld().getPlotHeight());
-            } else return new Vector(PlotWorld.PLOT_SIZE, PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.PLOT_SIZE);
-        } catch (SQLException | IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            if (getVersion() >= 3) {
+                Clipboard clipboard = FaweAPI.load(getOutlinesSchematic()).getClipboard();
+                if (clipboard != null) {
+                    Vector clipboardCenter = clipboard.getRegion().getCenter();
+                    return new Vector(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
+                }
+            } else return new Vector(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
         }
         return null;
     }

@@ -81,11 +81,18 @@ public interface IWorld {
     Location getSpawnPoint(Vector plotVector);
 
     /**
-     * Calculates the plot center height for city plot worlds and returns it
-     * @return - the plot center Y value in the city plot world
-     * @throws Exception - if the plot height is not supported
+     * Calculates the origin Y value in the plot world used for schematic pasting
+     * @return the origin Y value
+     * @throws IOException if the outline schematic fails to load
      */
-    int getPlotHeight() throws Exception;
+    int getPlotHeight() throws IOException;
+
+    /**
+     * Calculates the centered Y value in the plot world
+     * @return the centered Y value
+     * @throws IOException if the outline schematic fails to load
+     */
+    int getPlotHeightCentered() throws IOException;
 
     /**
      * @return Bukkit plot world

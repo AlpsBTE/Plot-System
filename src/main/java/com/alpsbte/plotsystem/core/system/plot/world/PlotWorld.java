@@ -4,10 +4,10 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.boydti.fawe.FaweAPI;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.logging.Level;
 
@@ -123,9 +123,16 @@ public class PlotWorld implements IWorld {
 
     @Override
     public int getPlotHeight() throws IOException {
+        throw new UnsupportedOperationException("No plot height set for " + getWorldName());
+    }
+
+    @Override
+    public int getPlotHeightCentered() throws IOException {
         if (plot != null) {
-            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(plot.getOutlinesSchematic().toPath())).read(null);
-            return clipboard.getRegion().getHeight();
+            Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
+            if (clipboard != null) {
+                return clipboard.getRegion().getCenter().getBlockY() - clipboard.getMinimumPoint().getBlockY();
+            }
         }
         return 0;
     }

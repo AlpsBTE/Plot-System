@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
@@ -73,8 +74,8 @@ public abstract class AbstractPlotGenerator {
     private final Plot plot;
     private final Builder builder;
     private final PlotWorld world;
-
-    private final PlotType builderPlotType;
+    private final double plotVersion;
+    private final PlotType plotType;
 
     /**
      * Generates a new plot in the plot world
@@ -82,9 +83,18 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      */
     public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
-        this(plot, builder, builder.getPlotTypeSetting().hasOnePlotPerWorld() ? plot.getWorld() : new CityPlotWorld(plot));
+        this(plot, builder, builder.getPlotTypeSetting());
     }
 
+    /**
+     * Generates a new plot in the given world
+     * @param plot - plot which should be generated
+     * @param builder - builder of the plot
+     * @param plotType - type of the plot
+     */
+    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotType plotType) throws SQLException {
+        this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld(plot));
+    }
 
     /**
      * Generates a new plot in the given world
@@ -92,26 +102,27 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      * @param world - world of the plot
      */
-    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotWorld world) {
+    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotType plotType, @NotNull PlotWorld world) {
         this.plot = plot;
         this.builder = builder;
         this.world = world;
-        this.builderPlotType = builder.getPlotTypeSetting();
+        this.plotVersion = plot.getVersion();
+        this.plotType = plotType;
 
         if (init()) {
             Exception exception = null;
             try {
-                if (builderPlotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
+                if (plotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
                     new PlotWorldGenerator(world.getWorldName());
                 } else if (!world.isWorldLoaded() && !world.loadWorld()) throw new Exception("Could not load world");
-                generateOutlines(plot.getOutlinesSchematic(), plot.getEnvironmentSchematic());
+                generateOutlines(plot.getOutlinesSchematic(), plotVersion >= 3 ? plot.getEnvironmentSchematic() : null);
                 createPlotProtection();
             } catch (Exception ex) {
                 exception = ex;
             }
 
             try {
-                this.onComplete(exception != null);
+                this.onComplete(exception != null, false);
             } catch (SQLException ex) {
                 exception = ex;
             }
@@ -151,7 +162,7 @@ public abstract class AbstractPlotGenerator {
         com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
         EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
 
-        if(builderPlotType.hasEnvironment() && environmentSchematic != null){
+        if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
             editSession.setMask(new OnlyAirMask(weWorld));
             pasteSchematic(editSession, environmentSchematic, world, false);
         }
@@ -159,9 +170,9 @@ public abstract class AbstractPlotGenerator {
         pasteSchematic(editSession, plotSchematic, world, true);
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
-        if (PlotWorld.isPlotWorld(world.getWorldName())) {
+        if (plotVersion >= 3 && PlotWorld.isOnePlotWorld(world.getWorldName())) {
             // Generate city plot world if it doesn't exist
-            new AbstractPlotGenerator(plot, builder, new CityPlotWorld(plot)) {
+            new AbstractPlotGenerator(plot, builder, PlotType.CITY_INSPIRATION_MODE) {
                 @Override
                 protected boolean init() {
                     return true;
@@ -171,8 +182,8 @@ public abstract class AbstractPlotGenerator {
                 protected void createPlotProtection() {}
 
                 @Override
-                protected void onComplete(boolean failed) throws SQLException {
-                    super.onComplete(true);
+                protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+                    super.onComplete(true, true);
                 }
 
                 @Override
@@ -248,19 +259,20 @@ public abstract class AbstractPlotGenerator {
     /**
      * Gets invoked when generation is completed
      * @param failed - true if generation has failed
+     * @param unloadWorld - try to unload world after generation
      * @throws SQLException - caused by a database exception
      */
-    protected void onComplete(boolean failed) throws SQLException {
+    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
         if (!failed) {
             builder.setPlot(plot.getID(), builder.getFreeSlot());
-            plot.setPlotType(builderPlotType);
+            plot.setPlotType(plotType);
             plot.setStatus(Status.unfinished);
             plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
             PlotManager.clearCache(builder.getUUID());
         }
 
         // Unload plot world if it is not needed anymore
-        if (world.isWorldLoaded()) world.unloadWorld(false);
+        if (unloadWorld) world.unloadWorld(false);
     }
 
 

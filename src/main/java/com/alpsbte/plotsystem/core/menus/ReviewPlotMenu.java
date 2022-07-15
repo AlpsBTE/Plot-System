@@ -357,8 +357,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                         // Delete plot world after reviewing
                         try {
-                            Builder builder =  plot.getPlotOwner();
-                            if (!finalIsRejected && builder.getPlotTypeSetting().hasOnePlotPerWorld())
+                            if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
                                 plot.getWorld().deleteWorld();
                         } catch (SQLException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
