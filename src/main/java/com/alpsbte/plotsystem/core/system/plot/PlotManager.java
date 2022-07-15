@@ -432,7 +432,7 @@ public class PlotManager {
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
 
-            if(PlotWorld.isPlotWorld(worldName))
+            if(PlotWorld.isOnePlotWorld(worldName))
                 return new Plot(Integer.parseInt(worldName.substring(2)));
             else if (CityPlotWorld.isCityPlotWorld(worldName)) {
                 int cityID = Integer.parseInt(worldName.substring(2));
@@ -519,7 +519,7 @@ public class PlotManager {
     }
 
     public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (OnePlotWorld.isPlotWorld(world.getName()) || CityPlotWorld.isCityPlotWorld(world.getName()));
+        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (OnePlotWorld.isOnePlotWorld(world.getName()) || CityPlotWorld.isCityPlotWorld(world.getName()));
     }
 
 

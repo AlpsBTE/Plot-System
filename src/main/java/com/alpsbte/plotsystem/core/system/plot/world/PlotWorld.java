@@ -192,7 +192,7 @@ public class PlotWorld implements IWorld {
      * @param worldName - the name of the world
      * @return - true if the world is a plot world
      */
-    public static boolean isPlotWorld(String worldName) {
+    public static boolean isOnePlotWorld(String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("p-");
     }
 
