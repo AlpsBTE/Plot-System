@@ -52,6 +52,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -103,15 +104,22 @@ public class PlotHandler {
 
                 if (plot.getWorld().loadWorld()) {
                     CityPlotWorld world = plot.getWorld();
-                    for (Player player : world.getPlayersOnPlot()) { player.teleport(Utils.getSpawnLocation()); }
+                    List<Player> playersToTeleport = new ArrayList<>(world.getPlayersOnPlot());
 
                     RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
                     if (regionManager != null) {
+                        for (Builder builder : plot.getPlotMembers()) {
+                            plot.removePlotMember(builder);
+                        }
+
                         if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                         if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
                         AbstractPlotGenerator.pasteSchematic(null, plot.getOutlinesSchematic(), world, true);
                     } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+
+                    playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
+                    if (plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(false);
                 }
             }
         } catch (SQLException | IOException | WorldEditException ex) {
@@ -122,10 +130,6 @@ public class PlotHandler {
         try {
             CompletableFuture.runAsync(() -> {
                 try {
-                    for (Builder builder : plot.getPlotMembers()) {
-                        plot.removePlotMember(builder);
-                    }
-
                     if (plot.isReviewed()) {
                         DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                                 .setValue(plot.getID()).executeUpdate();
