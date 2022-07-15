@@ -88,8 +88,7 @@ public class PlotWorld implements IWorld {
                     }
                 }
 
-                Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), (() ->
-                        Bukkit.unloadWorld(getBukkitWorld(), true)), 60L);
+                Bukkit.unloadWorld(getBukkitWorld(), true);
                 return !isWorldLoaded();
             }
             return true;
@@ -99,8 +98,8 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
-        Location spawnLocation = plot != null ? getSpawnPoint(plot.getCenter()) : getBukkitWorld().getSpawnLocation();
-        if (isWorldGenerated() && loadWorld()) {
+        if (loadWorld()) {
+            Location spawnLocation = plot != null ? getSpawnPoint(plot.getCenter()) : getBukkitWorld().getSpawnLocation();
             // Set spawn point 1 block above the highest block at the spawn location
             spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
 
@@ -113,10 +112,8 @@ public class PlotWorld implements IWorld {
     @Override
     public Location getSpawnPoint(Vector plotVector) {
         if (isWorldGenerated() && loadWorld()) {
-            Location spawnLocation = plotVector == null ? getBukkitWorld().getSpawnLocation() :
+            return plotVector == null ? getBukkitWorld().getSpawnLocation() :
                     new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
-            unloadWorld(false);
-            return spawnLocation;
         }
         return null;
     }
@@ -202,5 +199,19 @@ public class PlotWorld implements IWorld {
      */
     public static boolean isCityPlotWorld(String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("c-");
+    }
+
+    /**
+     * Returns OnePlotWorld or PlotWorld (CityPlotWorld) class depending on the world name.
+     * It won't return the CityPlotWorld class because there is no use case without a plot.
+     * @param worldName - name of the world
+     * @return - plot world
+     * @param <T> - OnePlotWorld or PlotWorld
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends PlotWorld> T getPlotWorldByName(String worldName) throws SQLException {
+        if (isOnePlotWorld(worldName)) {
+            return new Plot(Integer.parseInt(worldName.substring(2))).getWorld();
+        } else return (T) new PlotWorld(worldName, null);
     }
 }

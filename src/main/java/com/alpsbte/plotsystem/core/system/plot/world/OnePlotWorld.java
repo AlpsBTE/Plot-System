@@ -72,7 +72,7 @@ public class OnePlotWorld extends PlotWorld {
         // Generate plot if it doesn't exist
         if (getPlot() != null && !isWorldGenerated() && getPlot().getFinishedSchematic().exists()) {
             try {
-                new DefaultPlotGenerator(getPlot(), plotOwner) {
+                new DefaultPlotGenerator(getPlot(), plotOwner, getPlot().getPlotType()) {
                     @Override
                     protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, WorldEditException {
                         super.generateOutlines(getPlot().getFinishedSchematic(), environmentSchematic);
@@ -84,9 +84,9 @@ public class OnePlotWorld extends PlotWorld {
                     }
 
                     @Override
-                    protected void onComplete(boolean failed) throws SQLException {
+                    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
                         getPlot().getPermissions().clearAllPerms();
-                        super.onComplete(true);
+                        super.onComplete(true, false);
                     }
                 };
             } catch (SQLException ex) {
@@ -105,7 +105,7 @@ public class OnePlotWorld extends PlotWorld {
     public boolean unloadWorld(boolean movePlayers) {
         if (super.unloadWorld(movePlayers)) {
             try {
-                if (getPlot() != null && getPlot().getStatus() == Status.completed && getBukkitWorld().getPlayers().isEmpty()) {
+                if (getPlot() != null && getPlot().getStatus() == Status.completed) {
                     deleteWorld();
                     return true;
                 }

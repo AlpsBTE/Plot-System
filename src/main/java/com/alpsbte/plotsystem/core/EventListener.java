@@ -207,7 +207,8 @@ public class EventListener extends SpecialBlocks implements Listener {
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             if(PlotManager.isPlotWorld(w)) {
-                new PlotWorld(w.getName(), null).unloadWorld(false);
+                try { PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
+                } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
             PlotManager.clearCache(event.getPlayer().getUniqueId());
@@ -215,16 +216,9 @@ public class EventListener extends SpecialBlocks implements Listener {
     }
 
     @EventHandler
-    public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            new PlotWorld(event.getFrom().getWorld().getName(), null).unloadWorld(false);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
+    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
         if (PlotManager.isPlotWorld(event.getFrom())) {
-            new PlotWorld(event.getFrom().getName(), null).unloadWorld(false);
+            PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
