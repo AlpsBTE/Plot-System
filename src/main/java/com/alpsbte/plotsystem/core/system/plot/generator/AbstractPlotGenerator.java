@@ -170,7 +170,7 @@ public abstract class AbstractPlotGenerator {
         pasteSchematic(editSession, plotSchematic, world, true);
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
-        if (plotVersion >= 3 && PlotWorld.isOnePlotWorld(world.getWorldName())) {
+        if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
             // Generate city plot world if it doesn't exist
             new AbstractPlotGenerator(plot, builder, PlotType.CITY_INSPIRATION_MODE) {
                 @Override
