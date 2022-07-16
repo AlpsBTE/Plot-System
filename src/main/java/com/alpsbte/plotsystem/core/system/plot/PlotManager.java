@@ -159,13 +159,13 @@ public class PlotManager {
     }
 
     public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery("' AND owner_uuid = '" + builder.getUUID(), statuses)).executeQuery());
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND owner_uuid = '" + builder.getUUID().toString() + "'", statuses)).executeQuery());
         plots.addAll(getPlotsAsMember(builder, statuses));
         return plots;
     }
 
     public static List<Plot> getPlots(Builder builder, int cityID, Status... statuses) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( "' AND owner_uuid = '" + builder.getUUID() + "' AND city_project_id = '" + cityID, statuses)).executeQuery());
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( " AND owner_uuid = '" + builder.getUUID() + "' AND city_project_id = '" + cityID + "'", statuses)).executeQuery());
         plots.addAll(getPlotsAsMember(builder, statuses));
         return plots;
     }
