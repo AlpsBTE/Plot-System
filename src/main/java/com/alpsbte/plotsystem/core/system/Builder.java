@@ -238,7 +238,7 @@ public class Builder {
 
     public String getLanguageTag() {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT lang FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
+                .setValue(getUUID().toString()).executeQuery()) {
             if (rs.next()) {
                 String tag = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
