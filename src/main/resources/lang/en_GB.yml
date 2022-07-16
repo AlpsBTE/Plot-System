@@ -39,10 +39,28 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Cities"
   open: "Plots Open"
   in-progress: "Plots In Progress"
   completed: "Plots Completed"
   no-plots-available: "No Plots Available"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -89,10 +107,10 @@ menu-title:
   select-language: 'Select Language'
   auto-detect-language: 'Auto-Detect Language'
   select-plot-type: 'Select Plot Type'
-  select-focus-mode: "Select Focus Mode"
-  select-local-inspiration-mode: "Select Inspiration Mode"
-  select-city-inspiration-mode: "Select City Inspiration Mode"
-
+  select-focus-mode: 'Select Focus Mode'
+  select-local-inspiration-mode: 'Select Inspiration Mode'
+  select-city-inspiration-mode: 'Select City Inspiration Mode'
+  companion-select-continent: 'Select A Continent'
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -231,6 +249,7 @@ message:
     no-plots-left: "This city project does not have any more plots left. Please select another project."
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
+    no-continents-available: "No continents available! Contact a staff member."
 
 
 

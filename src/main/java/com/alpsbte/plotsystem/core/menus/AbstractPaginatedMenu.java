@@ -33,14 +33,13 @@ import java.util.List;
 public abstract class AbstractPaginatedMenu extends AbstractMenu {
 
     private final int maxItemsPerPage;
-    private final int totalItemsAmount;
+    private int totalItemsAmount;
     private int currentPage = 0;
 
     public AbstractPaginatedMenu(int rows, int pagedRows, String title, Player menuPlayer) {
         super(rows, title, menuPlayer, false);
 
         this.maxItemsPerPage = pagedRows * 9;
-        this.totalItemsAmount = getSource().size();
 
         reloadMenuAsync();
     }
@@ -91,14 +90,15 @@ public abstract class AbstractPaginatedMenu extends AbstractMenu {
      * @return item sources for the current page
      */
     private List<?> getItemSources() {
-        return getSource().subList(getMinIndex(), Math.min(getMaxIndex(), totalItemsAmount));
+        List<?> source = getSource();
+        return source.subList(getMinIndex(), Math.min(getMaxIndex(), source.size()));
     }
 
     /**
      * @return true if there is a next page
      */
     protected boolean hasNextPage() {
-        return getMaxIndex() < totalItemsAmount;
+        return getMaxIndex() < getSource().size();
     }
 
     /**

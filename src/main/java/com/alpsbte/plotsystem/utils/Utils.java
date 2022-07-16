@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
@@ -209,11 +209,10 @@ public class Utils {
      *  This way the function will never cut a word in half and still keep the max char value (e.g. line breaks in word)
      *
      * @param maxCharsPerLine: max characters per line
-     * @param lineBreaker: characters which creates a new line (e.g. \n)
-     * @return
+     * @param lineBreaker characters which creates a new line (e.g. \n)
      */
     public static ArrayList<String> createMultilineFromString(String text, int maxCharsPerLine, char lineBreaker){
-        ArrayList<String> list = new ArrayList();
+        ArrayList<String> list = new ArrayList<>();
 
         // Split text at line breaker symbol, iterate through all subtexts and create all lists together to one large list.
         String[] texts = text.split(String.valueOf(lineBreaker));
@@ -226,7 +225,7 @@ public class Utils {
 
     public static ArrayList<String> createMultilineFromString(String text, int maxCharsPerLine){
         int i = 0;
-        ArrayList<String> list = new ArrayList();
+        ArrayList<String> list = new ArrayList<>();
         String currentText = text;
         boolean findSpace = false;
 

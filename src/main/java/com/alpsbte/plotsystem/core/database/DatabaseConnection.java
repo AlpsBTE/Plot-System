@@ -244,6 +244,7 @@ public class DatabaseConnection {
                             "KEY `fkIdx_38` (`server_id`)," +
                             "CONSTRAINT `FK_37` FOREIGN KEY `fkIdx_38` (`server_id`) REFERENCES `plotsystem_servers` (`id`)" +
                             ");",
+                    "ALTER TABLE plotsystem_countries ADD COLUMN IF NOT EXISTS `continent` enum('europe', 'asia', 'africa', 'oceania', 'south america', 'north america') NOT NULL;",
 
                     // City Projects
                     "CREATE TABLE IF NOT EXISTS `plotsystem_city_projects`" +
@@ -326,7 +327,52 @@ public class DatabaseConnection {
                             ");",
                     "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NULL DEFAULT NULL;",
                     "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS type int NOT NULL DEFAULT 1;",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS version DOUBLE NULL DEFAULT NULL;"
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS version DOUBLE NULL DEFAULT NULL;",
+
+                    // API Keys
+                    "CREATE TABLE IF NOT EXISTS `api_keys`" +
+                            "(" +
+                            " `api_key`    varchar(32) NOT NULL ," +
+                            " `created_at` timestamp NOT NULL ," +
+                            "PRIMARY KEY (`api_key`)" +
+                            ");",
+
+                    // Build-Teams
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteams`" +
+                            "(" +
+                            " `id`      int NOT NULL AUTO_INCREMENT ," +
+                            " `name`    varchar(45) NOT NULL ," +
+                            " `api_key` varchar(32) NOT NULL ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `FK_132` (`api_key`)," +
+                            "CONSTRAINT `FK_130` FOREIGN KEY `FK_132` (`api_key`) REFERENCES `api_keys` (`api_key`)" +
+                            ");",
+
+                    // Build-Team has Countries
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteam_has_countries`" +
+                            "(" +
+                            " `id`           int NOT NULL ," +
+                            " `country_id`   int NOT NULL ," +
+                            " `buildteam_id` int NOT NULL ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `FK_115` (`buildteam_id`)," +
+                            "CONSTRAINT `FK_113` FOREIGN KEY `FK_115` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`)," +
+                            "KEY `FK_118` (`country_id`)," +
+                            "CONSTRAINT `FK_116` FOREIGN KEY `FK_118` (`country_id`) REFERENCES `plotsystem_countries` (`id`)" +
+                            ");",
+
+                    // Builder Is Reviewer
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_builder_is_reviewer`" +
+                            "(" +
+                            " `id`           int NOT NULL AUTO_INCREMENT ," +
+                            " `builder_uuid` varchar(36) NOT NULL ," +
+                            " `buildteam_id` int NOT NULL ," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `FK_138` (`builder_uuid`)," +
+                            "CONSTRAINT `FK_136` FOREIGN KEY `FK_138` (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`)," +
+                            "KEY `FK_141` (`buildteam_id`)," +
+                            "CONSTRAINT `FK_139` FOREIGN KEY `FK_141` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`)" +
+                            ");"
             );
         }
     }

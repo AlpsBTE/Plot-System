@@ -28,10 +28,12 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Continent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -128,10 +130,17 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 3 && Utils.TryParseInt(args[1]) != null) {
                 if (args[2].length() <= 45) {
+                    Continent continent;
                     try {
-                        Country.addCountry(Integer.parseInt(args[1]), args[2]);
+                        continent = Continent.valueOf(args[3].toUpperCase());
+                    }catch(IllegalArgumentException e) {
+                        sender.sendMessage(Utils.getErrorMessageFormat("Unknown continent! " + Arrays.toString(Continent.values())));
+                        return;
+                    }
+                    try {
+                        Country.addCountry(Integer.parseInt(args[1]), args[2], continent);
                         sender.sendMessage(Utils.getInfoMessageFormat("Successfully added country!"));
                     } catch (SQLException ex) {
                         sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
@@ -157,7 +166,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Server-ID", "Name" };
+            return new String[] { "Server-ID", "Name", "Continent" };
         }
 
         @Override

@@ -11,9 +11,17 @@ import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
+import java.util.function.Consumer;
+
 public class SettingsMenu extends AbstractMenu {
+    private Consumer<Player> onBack = (player) -> player.performCommand("companion");
+
     public SettingsMenu(Player player) {
         super(3, LangUtil.get(player, LangPaths.MenuTitle.SETTINGS), player);
+    }
+    public SettingsMenu(Player player, Consumer<Player> onBack) {
+        this(player);
+        this.onBack = onBack;
     }
 
     @Override
@@ -55,7 +63,7 @@ public class SettingsMenu extends AbstractMenu {
         }));
 
         // Set click event for back item
-        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> onBack.accept(clickPlayer));
     }
 
     @Override
