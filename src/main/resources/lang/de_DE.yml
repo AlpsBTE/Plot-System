@@ -232,7 +232,16 @@ message:
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
 
-
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{integer}"
+  actionbar-percentage: "Top {percentage}%"
+  not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: "1.1"
+config-version: "1.2"

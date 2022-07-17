@@ -232,7 +232,16 @@ message:
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
 
-
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{integer}"
+  actionbar-percentage: "Top {percentage}%"
+  not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: "1.1"
+config-version: "1.2"

@@ -232,7 +232,16 @@ message:
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
 
-
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{integer}"
+  actionbar-percentage: "Top {percentage}%"
+  not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: "1.1"
+config-version: "1.2"
