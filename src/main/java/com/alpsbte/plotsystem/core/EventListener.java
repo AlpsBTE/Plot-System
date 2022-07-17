@@ -25,9 +25,10 @@
 package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -101,7 +102,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Check if player has changed his name
             try {
-                Builder builder = new Builder(event.getPlayer().getUniqueId());
+                Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
                 if (!builder.getName().equals(event.getPlayer().getName())) {
                     DatabaseConnection.createStatement("UPDATE plotsystem_builders SET name = ? WHERE uuid = ?")
                             .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId().toString()).executeUpdate();
@@ -112,7 +113,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about new feedback
             try {
-                List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
+                List<Plot> plots = PlotManager.getPlots(Builder.byUUID(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
@@ -132,7 +133,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about unfinished plots
             try {
-                List<Plot> plots = PlotManager.getPlots(new Builder(event.getPlayer().getUniqueId()), Status.unfinished);
+                List<Plot> plots = PlotManager.getPlots(Builder.byUUID(event.getPlayer().getUniqueId()), Status.unfinished);
                 if(plots.size() >= 1) {
                     PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
@@ -196,36 +197,28 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
         if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
-            event.getPlayer().performCommand("plots " + new Builder(event.getRightClicked().getUniqueId()).getName());
+            event.getPlayer().performCommand("plots " + Builder.byUUID(event.getRightClicked().getUniqueId()).getName());
         }
     }
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         final World w = event.getPlayer().getWorld();
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             if(PlotManager.isPlotWorld(w)) {
-                try {
-                    PlotManager.getPlotByWorld(w).getWorld().unloadWorld(false);
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                }
-                DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+                try { PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
+                } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
             }
+            DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+            PlotManager.clearCache(event.getPlayer().getUniqueId());
         }, 60L);
-    }
-
-    @EventHandler
-    public void onPlayerTeleportEvent(PlayerTeleportEvent event) throws SQLException {
-        if(PlotManager.isPlotWorld(event.getPlayer().getWorld()) && !event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            PlotManager.getPlotByWorld(event.getFrom().getWorld()).getWorld().unloadWorld(false);
-        }
     }
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
         if (PlotManager.isPlotWorld(event.getFrom())) {
-            PlotManager.getPlotByWorld(event.getFrom()).getWorld().unloadWorld(false);
+            PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
         }
 
         if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {

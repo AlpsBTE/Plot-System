@@ -39,10 +39,28 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Cities"
   open: "Plots Open"
   in-progress: "Plots In Progress"
   completed: "Plots Completed"
   no-plots-available: "No Plots Available"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -55,67 +73,75 @@ difficulty:
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: "Close"
-  back: "Back"
-  next-page: "Next Page"
-  previous-page: "Previous Page"
-  error: "Error"
-  loading: "Loading..."
-  navigator: "Navigator"
-  plot-difficulty: "Plot Difficulty"
-  slot: "Slot"
-  builder-utilities: "Builder Utilities"
-  show-plots: "Show Plots"
-  settings: "Settings"
-  submit: "Submit"
-  teleport: "Teleport"
-  abandon: "Abandon"
-  undo-submit: "Undo Submit"
-  manage-members: "Manage Members"
-  feedback: "Feedback | Review #{0}"
-  custom-heads: "Custom Heads"
-  banner-maker: "Banner Maker"
-  special-blocks: "Special Blocks"
-  review-point: "Point"
-  review-points: "Points"
-  cancel: "Cancel"
-  add-member-to-plot: "Add Member to Plot"
-  companion: "Companion"
-  player-plots: "{0}s Plots"
-  leave-plot: "Leave Plot"
-  review-plots: "Review Plots"
-  review-plot: "Review Plot #{0}"
-  enter-player-name: "Enter player name"
-  select-language: "Select Language"
-  auto-detect-language: "Auto-Detect Language"
-
+  close: 'Close'
+  back: 'Back'
+  next-page: 'Next Page'
+  previous-page: 'Previous Page'
+  error: 'Error'
+  loading: 'Loading...'
+  navigator: 'Navigator'
+  plot-difficulty: 'Plot Difficulty'
+  slot: 'Slot'
+  builder-utilities: 'Builder Utilities'
+  show-plots: 'Show Plots'
+  settings: 'Settings'
+  submit: 'Submit'
+  teleport: 'Teleport'
+  abandon: 'Abandon'
+  undo-submit: 'Undo Submit'
+  manage-members: 'Manage Members'
+  feedback: 'Feedback | Review #{0}'
+  custom-heads: 'Custom Heads'
+  banner-maker: 'Banner Maker'
+  special-blocks: 'Special Blocks'
+  review-point: 'Point'
+  review-points: 'Points'
+  cancel: 'Cancel'
+  add-member-to-plot: 'Add Member to Plot'
+  companion: 'Companion'
+  player-plots: '{0}s Plots'
+  leave-plot: 'Leave Plot'
+  review-plots: 'Review Plots'
+  review-plot: 'Review Plot #{0}'
+  enter-player-name: 'Enter player name'
+  select-language: 'Select Language'
+  auto-detect-language: 'Auto-Detect Language'
+  select-plot-type: 'Select Plot Type'
+  select-focus-mode: 'Select Focus Mode'
+  select-local-inspiration-mode: 'Select Inspiration Mode'
+  select-city-inspiration-mode: 'Select City Inspiration Mode'
+  companion-select-continent: 'Select A Continent'
 
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: "An error occurred..."
-  navigator-desc: "Open the navigator menu"
-  plot-difficulty-desc: "Click to Switch..."
-  slot-desc: "Click on a city project to create a new plot"
-  builder-utilities-desc: "Get access to custom heads, banners and special blocks"
-  show-plots-desc: "Show all your plots"
-  settings-desc: "Modify your user settings"
-  submit-plot-desc: "Click to complete this plot and submit it to be reviewed"
-  teleport-desc: "Click to teleport to the plot"
-  abandon-desc: "Click to reset your plot and give it to someone else"
-  undo-submit-desc: "Click to undo your submission"
-  manage-members-desc: "Click to open the Plot Members menu, where you can add//and remove other players on your plot"
-  feedback-desc: "Click to view your plot review feedback"
-  custom-heads-desc: "Click to open the head menu to get a variety of custom heads"
-  banner-maker-desc: "Click to open the banner maker menu to create your own custom banners"
-  special-blocks-desc: "Click to open the special blocks menu to get a variety of inaccessible blocks"
-  add-member-to-plot-desc: "Invite your friends to your plot and start building together"
-  review-points-desc: "Click to select"
-  submit-review-desc: "Submit selected points and mark plot as reviewed"
-  leave-plot-desc: "Click to leave this plot"
-  select-language-desc: "Choose your language"
-  auto-detect-language-desc: "Click to automatically detect your language"
+  error-desc: 'An error occurred...'
+  navigator-desc: 'Open the navigator menu'
+  plot-difficulty-desc: 'Click to Switch...'
+  slot-desc: 'Click on a city project to create a new plot'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  show-plots-desc: 'Show all your plots'
+  settings-desc: 'Modify your user settings'
+  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
+  teleport-desc: 'Click to teleport to the plot'
+  abandon-desc: 'Click to reset your plot and give it to someone else'
+  undo-submit-desc: 'Click to undo your submission'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add//and remove other players on your plot'
+  feedback-desc: 'Click to view your plot review feedback'
+  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
+  banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
+  special-blocks-desc: 'Click to open the special blocks menu to get a variety of inaccessible blocks'
+  add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
+  review-points-desc: 'Click to select'
+  submit-review-desc: 'Submit selected points and mark plot as reviewed'
+  leave-plot-desc: 'Click to leave this plot'
+  select-language-desc: 'Choose your language'
+  auto-detect-language-desc: 'Click to automatically detect your language'
+  select-plot-type-desc: 'Choose your plot type'
+  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
 
 
 # -----------------------------------------------------
@@ -223,6 +249,7 @@ message:
     no-plots-left: "This city project does not have any more plots left. Please select another project."
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
+    no-continents-available: "No continents available! Contact a staff member."
 
 leaderboards:
   pages:
@@ -236,4 +263,4 @@ leaderboards:
   not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.1"

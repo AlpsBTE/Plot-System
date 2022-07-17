@@ -93,7 +93,7 @@ public class Review {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new Builder(UUID.fromString(s));
+                return Builder.byUUID(UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);

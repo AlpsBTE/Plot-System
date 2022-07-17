@@ -93,7 +93,7 @@ public class CompanionMenu extends AbstractMenu {
         slots = new Plot[3];
         for (int i = 0; i < 3; i++) {
             try {
-                Builder builder = new Builder(getMenuPlayer().getUniqueId());
+                Builder builder = Builder.byUUID(getMenuPlayer().getUniqueId());
                 slots[i] = builder.getPlot(Slot.values()[i]);
 
                 if (slots[i] != null) {
@@ -141,7 +141,7 @@ public class CompanionMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for navigator item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
@@ -171,7 +171,7 @@ public class CompanionMenu extends AbstractMenu {
                 if (!getMenu().getSlot(9 + itemSlot).getItem(clickPlayer).equals(MenuItems.errorItem(getMenuPlayer()))) {
                     try {
                         clickPlayer.closeInventory();
-                        Builder builder = new Builder(clickPlayer.getUniqueId());
+                        Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
                         int cityID = cityProjects.get(itemSlot).getID();
 
                         PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
@@ -257,7 +257,7 @@ public class CompanionMenu extends AbstractMenu {
                 ItemStack cpItem = cp.getCountry().getHead();
                 try {
                     PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
-                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), new Builder(getMenuPlayer().getUniqueId())).get();
+                            selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cp.getID(), Builder.byUUID(getMenuPlayer().getUniqueId())).get();
 
                     int plotsOpen = PlotManager.getPlots(cp.getID(), Status.unclaimed).size();
                     int plotsInProgress = PlotManager.getPlots(cp.getID(), Status.unfinished, Status.unreviewed).size();
@@ -326,7 +326,7 @@ public class CompanionMenu extends AbstractMenu {
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.NETHER_STAR, 1)
                 .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.COMPANION) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
-                .setEnchantment(true)
+                .setEnchanted(true)
                 .build();
     }
 }

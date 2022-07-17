@@ -67,11 +67,13 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setEnchantment(boolean setEnchanted) {
+    public ItemBuilder setEnchanted(boolean setEnchanted) {
         if(setEnchanted) {
             itemMeta.addEnchant(Enchantment.ARROW_DAMAGE,1,true);
+            itemMeta.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ENCHANTS });
         } else {
             itemMeta.removeEnchant(Enchantment.ARROW_DAMAGE);
+            itemMeta.removeItemFlags(new ItemFlag[] { ItemFlag.HIDE_ENCHANTS });
         }
         return this;
     }

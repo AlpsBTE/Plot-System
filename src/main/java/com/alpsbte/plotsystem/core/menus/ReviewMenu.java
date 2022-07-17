@@ -136,7 +136,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
         // Set click event for previous page item
         getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
             if (hasPreviousPage()) {
@@ -176,7 +176,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.BOOK, 1)
                 .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
-                .setEnchantment(true)
+                .setEnchanted(true)
                 .build();
     }
 }

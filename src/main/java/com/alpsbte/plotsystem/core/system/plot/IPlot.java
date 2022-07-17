@@ -31,13 +31,13 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -69,8 +69,9 @@ public interface IPlot {
     /**
      * @return polygon outline of the plot
      * @throws SQLException SQL database exception
+     * @throws IOException IO exception
      */
-    List<BlockVector2D> getOutline() throws SQLException;
+    List<BlockVector2D> getOutline() throws SQLException, IOException;
 
     /**
      * Sets the given builder to the plot owner
@@ -99,14 +100,14 @@ public interface IPlot {
     Review getReview() throws SQLException;
 
     /**
-     * @return plot world, can be null if it has not yet been generated
+     * @return plot world, can be one or city plot world
      */
-    PlotWorld getWorld();
+    <T extends PlotWorld> T getWorld() throws SQLException;
 
     /**
      * @return plot permission manager to add or remove build rights
      */
-    PlotPermissions getPermissions();
+    PlotPermissions getPermissions() throws SQLException;
 
     /**
      * @return total points given for the plot
@@ -178,6 +179,11 @@ public interface IPlot {
     File getOutlinesSchematic();
 
     /**
+     * @return schematic file with environment only
+     */
+    File getEnvironmentSchematic();
+
+    /**
      * @return schematic file of the completed plot
      */
     File getFinishedSchematic();
@@ -186,9 +192,9 @@ public interface IPlot {
      * Returns geographic coordinates in numeric format
      * @return WG84 EPSG:4979 coordinates as double array {lon,lat} in degrees
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertToGeo(double, double)
-     * @throws SQLException SQL database exception
+     * @throws IOException fails to load schematic file
      */
-    String getGeoCoordinates() throws SQLException;
+    String getGeoCoordinates() throws IOException;
 
     /**
      * Returns in-game Minecraft coordinates on a Terra121 world
@@ -196,13 +202,42 @@ public interface IPlot {
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
      * @throws SQLException SQL database exception
      */
+    @Deprecated
     Vector getMinecraftCoordinates() throws SQLException;
+
+    /**
+     * Returns in-game Minecraft coordinates on a Terra121 world
+     * @return the in-game coordinates (x, z)
+     * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
+     * @throws IOException fails to load schematic file
+     */
+    Vector getCoordinates() throws IOException;
+
+    /**
+     * Returns the plot type the player has selected when creating the plot
+     * @return the plot type
+     * @throws SQLException SQL database exception
+     */
+    PlotType getPlotType() throws SQLException;
+
+    /**
+     * Sets the plot type the player has selected
+     * @param type plot type
+     * @throws SQLException SQL database exception
+     */
+    void setPlotType(PlotType type) throws SQLException;
 
     /**
      * @param pasted if true, plot has been pasted on the Terra121 server
      * @throws SQLException SQL database exception
      */
     void setPasted(boolean pasted) throws SQLException;
+
+    /**
+     * @return plot version in which it was created
+     * @throws SQLException SQL database exception
+     */
+    double getVersion() throws SQLException;
 
     /**
      * @return if {@link #getReview()} is null, it will return false

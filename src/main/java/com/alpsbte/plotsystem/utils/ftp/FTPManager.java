@@ -80,7 +80,7 @@ public class FTPManager {
 
             // Get remote schematic and write it to local file
             FileObject remoteSchematic = remote.resolveFile(schematic.getName());
-            localSchematic.copyFrom(remoteSchematic, Selectors.SELECT_SELF);
+            if (remoteSchematic.exists()) localSchematic.copyFrom(remoteSchematic, Selectors.SELECT_SELF);
 
             localSchematic.close();
             remoteSchematic.close();

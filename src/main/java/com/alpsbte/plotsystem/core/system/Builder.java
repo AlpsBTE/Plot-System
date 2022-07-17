@@ -31,34 +31,58 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Builder {
 
-    private final UUID UUID;
+    public static HashMap<UUID, Builder> builders = new HashMap<>();
 
-    public Builder(UUID UUID) {
-        this.UUID = UUID;
+    private final UUID uuid;
+    public PlotType plotType;
+
+    private Builder(UUID UUID) {
+        this.uuid = UUID;
     }
 
+    public static Builder byUUID(UUID uuid){
+        if(builders.containsKey(uuid))
+            return builders.get(uuid);
+
+        Builder builder = new Builder(uuid);
+        builders.put(uuid, builder);
+
+        return builders.get(uuid);
+    }
+
+
     public Player getPlayer() {
-        return Bukkit.getPlayer(UUID);
+        return Bukkit.getPlayer(uuid);
     }
 
     public java.util.UUID getUUID() {
-        return UUID;
+        return uuid;
     }
 
-    public boolean isOnline() {
-        return Bukkit.getPlayer(UUID) != null;
-    }
+    public boolean isOnline() { return Bukkit.getPlayer(uuid) != null; }
 
     public String getName() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
@@ -138,6 +162,33 @@ public class Builder {
         }
     }
 
+    public ItemStack getPlotMenuItem(Slot slot, Player langPlayer) throws SQLException {
+        Plot plot = getPlot(slot);
+        int i = Arrays.asList(Slot.values()).indexOf(slot);
+
+        if (plot == null) {
+            return new ItemBuilder(Material.EMPTY_MAP, 1 + i)
+                    .setName("§b§l" + LangUtil.get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
+                    .setLore(new LoreBuilder()
+                            .addLines("§7" + LangUtil.get(langPlayer, LangPaths.MenuDescription.SLOT),
+                                    "",
+                                    "§6§l" + LangUtil.get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
+                            .build())
+                    .build();
+        }
+
+        return new ItemBuilder(Material.MAP, 1 + i)
+                .setName("§b§l" + LangUtil.get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
+                .setLore(new LoreBuilder()
+                        .addLines("§7" + LangUtil.get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),
+                                "§7" + LangUtil.get(langPlayer, LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
+                                "§7" + LangUtil.get(langPlayer, LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(),
+                                "",
+                                "§6§l" + LangUtil.get(langPlayer, LangPaths.Plot.STATUS) + ": §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1)
+                        ).build())
+                .build();
+    }
+
     public void addScore(int score) throws SQLException {
         DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
                 .setValue(getScore() + score).setValue(getUUID().toString())
@@ -175,7 +226,7 @@ public class Builder {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new Builder(java.util.UUID.fromString(s));
+                return Builder.byUUID(UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -341,7 +392,7 @@ public class Builder {
 
     public String getLanguageTag() {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT lang FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(getPlayer().getUniqueId().toString()).executeQuery()) {
+                .setValue(getUUID().toString()).executeQuery()) {
             if (rs.next()) {
                 String tag = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
@@ -364,4 +415,44 @@ public class Builder {
                     .executeUpdate();
         }
     }
+
+    public PlotType getPlotTypeSetting() {
+        if(plotType != null)
+            return plotType;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery()) {
+
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                this.plotType = PlotType.byId(id);
+                DatabaseConnection.closeResultSet(rs);
+
+                return plotType;
+            }
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+        return null;
+    }
+
+    public void setPlotTypeSetting(PlotType plotType){
+        try {
+            if (plotType == null) {
+                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = DEFAULT(setting_plot_type) WHERE uuid = ?")
+                        .setValue(getUUID().toString()).executeUpdate();
+            } else {
+                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = ? WHERE uuid = ?")
+                        .setValue(plotType.getId()).setValue(getUUID().toString())
+                        .executeUpdate();
+            }
+        }catch (SQLException ex){
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+
+        this.plotType = plotType;
+    }
+
+
 }

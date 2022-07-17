@@ -27,8 +27,11 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import com.sk89q.worldedit.BlockVector;
+import com.boydti.fawe.FaweAPI;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.Vector;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -38,10 +41,13 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
@@ -54,9 +60,18 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Plot implements IPlot {
+    public static final double PLOT_VERSION = 3;
     private final int ID;
 
-    private PlotWorld plotWorld;
+    private List<BlockVector2D> outline;
+    private List<BlockVector2D> blockOutline;
+    private CityProject city;
+    private Builder plotOwner;
+    private PlotType plotType;
+    private double plotVersion = -1;
+
+    private OnePlotWorld onePlotWorld;
+    private CityPlotWorld cityPlotWorld;
     private PlotPermissions plotPermissions;
 
     public Plot(int ID) throws SQLException {
@@ -70,13 +85,20 @@ public class Plot implements IPlot {
 
     @Override
     public CityProject getCity() throws SQLException {
+        if(this.city != null)
+            return this.city;
+
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT city_project_id FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()){
                 int i = rs.getInt(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new CityProject(i);
+                CityProject cityProject = new CityProject(i);
+
+                this.city = cityProject;
+
+                return cityProject;
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -101,31 +123,66 @@ public class Plot implements IPlot {
     }
 
     @Override
-    public List<BlockVector2D> getOutline() throws SQLException {
+    /* return the outline of the plot which contains all corner points of the polygon */
+    public List<BlockVector2D> getOutline() throws SQLException, IOException {
+        if(this.outline != null)
+            return this.outline;
+
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
+            List<BlockVector2D> locations = new ArrayList<>();
             if (rs.next()){
-                List<BlockVector2D> locations = new ArrayList<>();
-                String[] list = rs.getString(1).split("\\|");
+                String listString = rs.getString(1);
+                if (rs.wasNull() || listString.isEmpty() || getVersion() <= 2) {
+                    CuboidRegion plotRegion = PlotManager.getPlotAsRegion(this);
+                    if (plotRegion != null) locations.addAll(plotRegion.polygonize(4));
+                } else {
+                    String[] list = listString.split("\\|");
 
-                for(String s : list) {
-                    String[] locs = s.split(",");
-                    locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
+                    for (String s : list) {
+                        String[] locs = s.split(",");
+                        locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
+                    }
                 }
-
-                DatabaseConnection.closeResultSet(rs);
-                return locations;
             }
+            this.outline = locations;
 
             DatabaseConnection.closeResultSet(rs);
+            return locations;
+        }
+    }
+
+    /** return the outline of the polygon with one point per Block*/
+    public List<BlockVector2D> getBlockOutline() throws SQLException, IOException {
+        if(this.blockOutline != null)
+            return this.blockOutline;
+
+        List<BlockVector2D> points = new ArrayList<>();
+        List<BlockVector2D> outline = getOutline();
+
+        for(int i = 0; i < outline.size() - 1; i++){
+            BlockVector2D b1 = outline.get(i);
+            BlockVector2D b2 = outline.get(i + 1);
+            int distance = (int) b1.distance(b2);
+
+            points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
         }
 
-        return null;
+        BlockVector2D first = outline.get(0);
+        BlockVector2D last = outline.get(outline.size() - 1);
+        points.addAll(Utils.getLineBetweenPoints(last, first, (int) first.distance(last)));
+
+        blockOutline = points;
+
+        return points;
     }
 
     @Override
     public Builder getPlotOwner() throws SQLException {
+        if(plotOwner != null)
+            return plotOwner;
+
         if(getStatus() != Status.unclaimed) {
             try (ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots WHERE id = ?")
                     .setValue(this.ID).executeQuery()) {
@@ -133,7 +190,10 @@ public class Plot implements IPlot {
                 if (rs.next()){
                     String s = rs.getString(1);
                     DatabaseConnection.closeResultSet(rs);
-                    return new Builder(UUID.fromString(s));
+
+                    plotOwner = Builder.byUUID(UUID.fromString(s));
+
+                    return plotOwner;
                 }
 
                 DatabaseConnection.closeResultSet(rs);
@@ -151,6 +211,8 @@ public class Plot implements IPlot {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET owner_uuid = ? WHERE id = ?")
                     .setValue(UUID).setValue(this.ID).executeUpdate();
         }
+
+        plotOwner = null;
     }
 
     @Override
@@ -166,7 +228,7 @@ public class Plot implements IPlot {
                     String[] uuidMembers = members.split(",");
 
                     for (String uuid : uuidMembers) {
-                        builders.add(new Builder(UUID.fromString(uuid)));
+                        builders.add(Builder.byUUID(UUID.fromString(uuid)));
                     }
                 }
             }
@@ -208,10 +270,19 @@ public class Plot implements IPlot {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public PlotWorld getWorld() {
-        if (plotWorld == null) plotWorld = new PlotWorld(this);
-        return plotWorld;
+    public <T extends PlotWorld> T getWorld() {
+        try {
+            if (getVersion() <= 2 || getPlotType().hasOnePlotPerWorld()) {
+                if (onePlotWorld == null) onePlotWorld = new OnePlotWorld(this);
+                return (T) onePlotWorld;
+            } else {
+                if (cityPlotWorld == null) cityPlotWorld = new CityPlotWorld(this);
+                return (T) cityPlotWorld;
+            }
+        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        return null;
     }
 
     @Override
@@ -333,7 +404,7 @@ public class Plot implements IPlot {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new Builder(UUID.fromString(s));
+                return Builder.byUUID(UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -365,10 +436,19 @@ public class Plot implements IPlot {
 
     @Override
     public File getOutlinesSchematic() {
+        return getSchematic(getID() + "");
+    }
+
+    @Override
+    public File getEnvironmentSchematic() {
+        return getSchematic(getID() + "-env");
+    }
+
+    private File getSchematic(String filename){
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schematic").toFile();
 
                     if(!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
@@ -397,9 +477,9 @@ public class Plot implements IPlot {
     }
 
     @Override
-    public String getGeoCoordinates() throws SQLException {
+    public String getGeoCoordinates() throws IOException {
         // Convert MC coordinates to geo coordinates
-        Vector mcCoordinates = getMinecraftCoordinates();
+        Vector mcCoordinates = getCoordinates();
         try {
             return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
         } catch (OutOfProjectionBoundsException ex) {
@@ -408,6 +488,7 @@ public class Plot implements IPlot {
         return null;
     }
 
+    @Deprecated
     @Override
     public Vector getMinecraftCoordinates() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
@@ -425,15 +506,64 @@ public class Plot implements IPlot {
         }
     }
 
-    public String getOSMMapsLink() throws SQLException {
+    @Override
+    public Vector getCoordinates() throws IOException {
+        Clipboard clipboard = FaweAPI.load(getOutlinesSchematic()).getClipboard();
+        if (clipboard != null) return clipboard.getOrigin();
+        return null;
+    }
+
+    @Override
+    public PlotType getPlotType() throws SQLException {
+        if (plotType != null) return plotType;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT type FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                int typeId = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+
+                plotType = PlotType.byId(typeId);
+                return plotType;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return null;
+        }
+    }
+
+    @Override
+    public void setPlotType(PlotType type) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET type = ? WHERE id = ?")
+                .setValue(type.ordinal()).setValue(this.ID).executeUpdate();
+        plotType = type;
+    }
+
+    public Vector getCenter() {
+        try {
+            if (getVersion() >= 3) {
+                Clipboard clipboard = FaweAPI.load(getOutlinesSchematic()).getClipboard();
+                if (clipboard != null) {
+                    Vector clipboardCenter = clipboard.getRegion().getCenter();
+                    return new Vector(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
+                }
+            } else return new Vector(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
+        }
+        return null;
+    }
+
+    public String getOSMMapsLink() throws IOException {
         return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinates().replace(",", "/");
     }
 
-    public String getGoogleMapsLink() throws SQLException {
+    public String getGoogleMapsLink() throws IOException {
         return "https://www.google.com/maps/place/"+ getGeoCoordinates();
     }
 
-    public String getGoogleEarthLink() throws SQLException {
+    public String getGoogleEarthLink() throws IOException {
         return "https://earth.google.com/web/@" + getGeoCoordinates() + ",0a,1000d,20y,-0h,0t,0r";
     }
 
@@ -441,6 +571,30 @@ public class Plot implements IPlot {
     public void setPasted(boolean pasted) throws SQLException {
         DatabaseConnection.createStatement("UPDATE plotsystem_plots SET pasted = ? WHERE id = ?")
                 .setValue(pasted).setValue(this.ID).executeUpdate();
+    }
+
+    @Override
+    public double getVersion() {
+        if (plotVersion != -1) return plotVersion;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT version FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                double version = rs.getDouble(1);
+                if (!rs.wasNull()) {
+                    plotVersion = version;
+                } else {
+                    plotVersion = 2; // Plot version was implemented since v3, so we assume that the plot is v2.
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+                return plotVersion;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        return PLOT_VERSION;
     }
 
     public void addPlotMember(Builder member) throws SQLException {
