@@ -26,15 +26,22 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.Payout;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class ScoreLeaderboard extends HolographicDisplay {
+    private com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy = com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe.DAILY;
 
     public ScoreLeaderboard() {
         super("score-leaderboard");
@@ -42,13 +49,82 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
     @Override
     protected String getTitle() {
-        return "§b§lTOP SCORE";
+        return "§b§lTOP SCORE §7§o(" + StringUtils.capitalize(sortBy.toString()) + ")";
+    }
+
+    private class LeaderboardPositionLineWithPayout extends LeaderboardPositionLine {
+
+        public LeaderboardPositionLineWithPayout(int position, String username, int score) {
+            super(position, username, score);
+        }
+
+        @Override
+        public String getLine() {
+            try {
+                String line = super.getLine();
+                Payout payout = Payout.getPayout(sortBy, position);
+                if (payout == null) {
+                    return line;
+                } else {
+                    String payoutAmount = payout.getPayoutAmount();
+                    try {
+                        // if payout amount can be number, prefix with dollar sign
+                        Integer.valueOf(payoutAmount);
+                        payoutAmount = "$" + payoutAmount;
+                    } catch (NumberFormatException ignored) {
+
+                    }
+
+                    return line + " §7- §e§l" + payoutAmount;
+                }
+            } catch (SQLException e) {
+                return super.getLine() + " §7- §cSQL ERR";
+            }
+        }
+    }
+
+    int state = 0;
+
+    public void setState(int state) {
+        this.state = state;
+        updateHologram();
     }
 
     @Override
-    protected List<String> getDataLines() {
+    public String getFooter() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        long changeDelay = (config.getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL, 5) * 20L) / 15;
+
+        int highlightCount = (int) (((float) state / changeDelay) * 15);
+
+        String highlighted = "";
+        for (int i = 0; i < highlightCount; i++) {
+            highlighted += "-";
+        }
+        String notH = "";
+        for (int i = 0; i < 15 - highlightCount; i++) {
+            notH += "-";
+        }
+
+        return "§e" + highlighted + "§7" + notH;
+    }
+
+    @Override
+    protected List<DataLine> getDataLines() {
         try {
-            return Builder.getBuildersByScore(10);
+            ArrayList<DataLine> lines = new ArrayList<>();
+
+            for (int index = 0; index < 10; index++) {
+                lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
+            }
+
+            int index = 0;
+            for (Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortBy)) {
+                lines.set(index, new LeaderboardPositionLineWithPayout(index + 1, entry.getKey(), entry.getValue()));
+                index++;
+            }
+
+            return lines;
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
@@ -60,11 +136,8 @@ public class ScoreLeaderboard extends HolographicDisplay {
         return new ItemStack(Material.NETHER_STAR);
     }
 
-    @Override
-    public void updateHologram() {
-        if(isPlaced()) {
-            getHologram().clearLines();
-            insertLines();
-        }
+    public void setSortBy(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) {
+        this.sortBy = sortBy;
+        updateHologram();
     }
 }

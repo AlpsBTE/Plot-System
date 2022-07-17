@@ -372,7 +372,16 @@ public class DatabaseConnection {
                             "CONSTRAINT `FK_136` FOREIGN KEY `FK_138` (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`)," +
                             "KEY `FK_141` (`buildteam_id`)," +
                             "CONSTRAINT `FK_139` FOREIGN KEY `FK_141` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`)" +
-                            ");"
+                            ");",
+                            
+                    // Payouts
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_payouts` (\n" +
+                            "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
+                            "  `timeframe` enum('DAILY','WEEKLY','MONTHLY','YEARLY') NOT NULL,\n" +
+                            "  `position` int(11) NOT NULL COMMENT 'position on the leaderboard for this timeframe',\n" +
+                            "  `payout_amount` varchar(100) NOT NULL,\n" +
+                            "  PRIMARY KEY (`id`)\n" +
+                            ")"
             );
         }
     }

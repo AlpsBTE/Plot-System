@@ -251,7 +251,16 @@ message:
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
     no-continents-available: "No continents available! Contact a staff member."
 
-
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{integer}"
+  actionbar-percentage: "Top {percentage}%"
+  not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
 config-version: "1.1"

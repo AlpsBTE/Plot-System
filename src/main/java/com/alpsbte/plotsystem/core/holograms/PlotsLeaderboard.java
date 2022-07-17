@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class PlotsLeaderboard extends HolographicDisplay {
@@ -46,9 +47,17 @@ public class PlotsLeaderboard extends HolographicDisplay {
     }
 
     @Override
-    protected List<String> getDataLines() {
+    protected List<DataLine> getDataLines() {
         try {
-            return Builder.getBuildersByCompletedBuilds(10);
+            ArrayList<DataLine> lines = new ArrayList<>();
+
+            int index = 0;
+            for(Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByCompletedBuilds(10)) {
+                index++;
+                lines.add(new LeaderboardPositionLine(index, entry.getKey(), entry.getValue()));
+            }
+
+            return lines;
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
@@ -58,13 +67,5 @@ public class PlotsLeaderboard extends HolographicDisplay {
     @Override
     protected ItemStack getItem() {
         return new ItemStack(Material.NETHER_STAR);
-    }
-
-    @Override
-    public void updateHologram() {
-        if(isPlaced()) {
-            getHologram().clearLines();
-            insertLines();
-        }
     }
 }

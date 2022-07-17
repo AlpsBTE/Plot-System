@@ -40,6 +40,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
@@ -164,6 +166,26 @@ public class Utils {
             default:
                 return "";
         }
+    }
+
+    /**
+     * Get next enum in order of the enum
+     *
+     * @param <T>      The enum type
+     * @param haystack The enum class (YourEnum.class)
+     * @param needle   Current value that you want to get the next one of
+     * @return Next enum in line
+     */
+    public static <T extends Enum<T>> Enum<T> getNextEnum(Class<? extends Enum<T>> haystack, T needle) {
+        List<Enum<T>> enums = Arrays.asList(haystack.getEnumConstants());
+        return getNextListItem(enums, needle);
+    }
+
+    public static <T> T getNextListItem(List<T> haystack, T needle) {
+        if(!haystack.contains(needle) || haystack.indexOf(needle) + 1 >= haystack.size()) {
+            return null;
+        }
+        return haystack.get(haystack.indexOf(needle) + 1);
     }
 
     public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){

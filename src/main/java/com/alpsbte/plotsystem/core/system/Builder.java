@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -43,6 +44,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Arrays;
@@ -192,7 +194,7 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> PlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -200,7 +202,7 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> PlotSystem.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
@@ -232,6 +234,124 @@ public class Builder {
         }
     }
 
+    private static String getBuildersByScoreQuery(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy, int limit) {
+        String minimumDate = null;
+        switch (sortBy) {
+            case DAILY:
+                minimumDate = "(NOW() - INTERVAL 1 DAY)";
+                break;
+            case MONTHLY:
+                minimumDate = "(NOW() - INTERVAL 1 MONTH)";
+                break;
+            case YEARLY:
+                minimumDate = "(NOW() - INTERVAL 1 YEAR)";
+                break;
+            case LIFETIME:
+                // no limits
+                minimumDate = null;
+                break;
+        }
+
+        // get plot id, owner username, owner uuid, score & date
+        // sort by score & limit (if set above) by timeframe
+        String query = "SELECT plots.id, builders.name, plots.owner_uuid, plots.score, reviews.review_date\n" +
+                "FROM plotsystem_plots AS plots\n" +
+                "INNER JOIN plotsystem_reviews AS reviews ON plots.review_id = reviews.id\n" +
+                "INNER JOIN plotsystem_builders AS builders ON builders.uuid = plots.owner_uuid\n" +
+                (minimumDate != null
+                        ? "WHERE reviews.review_date BETWEEN " + minimumDate + " AND NOW()\n"
+                        : "") +
+                "ORDER BY score DESC\n" +
+                (limit > 0 ? "LIMIT " + limit : "");
+
+        return query;
+    }
+
+    public static int getBuilderScore(UUID uuid, com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 0);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            boolean found = false;
+            int score = 0;
+            while(rs.next() && !found) {
+                if(rs.getString(3).equals(uuid.toString())) {
+                    found = true;
+                    score = rs.getInt(4);
+                }
+            }
+
+            if(!found) score = -1;
+
+            DatabaseConnection.closeResultSet(rs);
+            return score;
+        }
+    }
+
+    public static int getBuilderScorePosition(UUID uuid, com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 0);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            boolean found = false;
+            int position = 0;
+            while(rs.next() && !found) {
+                position++;
+                if(rs.getString(3).equals(uuid.toString())) {
+                    found = true;
+                }
+            }
+
+            if(!found) position = -1;
+
+            DatabaseConnection.closeResultSet(rs);
+            return position;
+        }
+    }
+
+    public static int getBuildersInSort(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = "SELECT COUNT(*) FROM (" + getBuildersByScoreQuery(sortBy, 0) + ") results";
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            rs.next();
+            int position = rs.getInt(1);
+
+            DatabaseConnection.closeResultSet(rs);
+            return position;
+        }
+    }
+
+    public static class DatabaseEntry<K, V> {
+        private K key;
+        private V value;
+
+        DatabaseEntry(K k, V v) {
+            this.key = k;
+            this.value = v;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+    }
+
+    public static List<DatabaseEntry<String, Integer>> getBuildersByScore(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 10);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            ArrayList<DatabaseEntry<String, Integer>> lines = new ArrayList<>();
+
+            while(rs.next()) {
+                lines.add(new DatabaseEntry<>(rs.getString(2), rs.getInt(4)));
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return lines;
+        }
+    }
+
     public static List<String> getBuildersByScore(int limit) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, score FROM plotsystem_builders ORDER BY score DESC LIMIT ?")
                 .setValue(limit).executeQuery()) {
@@ -246,17 +366,17 @@ public class Builder {
         }
     }
 
-    public static List<String> getBuildersByCompletedBuilds(int limit) throws SQLException {
+    public static List<DatabaseEntry<String, Integer>> getBuildersByCompletedBuilds(int limit) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
                 .setValue(limit).executeQuery()) {
 
-            List<String> scoreAsFormat = new ArrayList<>();
+            ArrayList<DatabaseEntry<String, Integer>> results = new ArrayList<>();
             while (rs.next()) {
-                scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
+                results.add(new DatabaseEntry<>(rs.getString(1), rs.getInt(2)));
             }
 
             DatabaseConnection.closeResultSet(rs);
-            return scoreAsFormat;
+            return results;
         }
     }
 

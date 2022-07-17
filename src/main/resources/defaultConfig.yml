@@ -71,6 +71,7 @@ display-options:
   show-weekly: true
   show-monthly: true
   show-yearly: false
+  show-lifetime: false
 
 
 # -----------------------------------------------------
