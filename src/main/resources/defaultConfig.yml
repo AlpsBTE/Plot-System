@@ -64,14 +64,16 @@ holograms:
     z: 0
 
 # Switch hologram statistics between different time stamps
-# [interval] -> default: 5 seconds
+# [interval] -> default: 10 seconds
 display-options:
-  interval: 5
+  interval: 10
   show-daily: false
   show-weekly: true
   show-monthly: true
   show-yearly: false
   show-lifetime: false
+  action-bar-enabled: true
+  action-bar-radius: 30
 
 
 # -----------------------------------------------------
@@ -99,4 +101,4 @@ shortlink:
   host: https://your.shortlink.host
 
 # NOTE: Do not change
-config-version: 1.5
+config-version: 1.6

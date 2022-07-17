@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -72,7 +72,7 @@ public class DatabaseConnection {
         dataSource = new HikariDataSource(config);
 
         createTables();
-}
+    }
 
     @Deprecated
     public static Connection getConnection() {
@@ -94,8 +94,8 @@ public class DatabaseConnection {
 
     public static void closeResultSet(ResultSet resultSet) throws SQLException {
         if(resultSet.isClosed()
-        && resultSet.getStatement().isClosed()
-        && resultSet.getStatement().getConnection().isClosed())
+                && resultSet.getStatement().isClosed()
+                && resultSet.getStatement().getConnection().isClosed())
             return;
 
         resultSet.close();
@@ -373,7 +373,7 @@ public class DatabaseConnection {
                             "KEY `FK_141` (`buildteam_id`)," +
                             "CONSTRAINT `FK_139` FOREIGN KEY `FK_141` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`)" +
                             ");",
-                            
+
                     // Payouts
                     "CREATE TABLE IF NOT EXISTS `plotsystem_payouts` (\n" +
                             "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +

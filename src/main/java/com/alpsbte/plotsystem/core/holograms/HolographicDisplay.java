@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -37,12 +37,10 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import javax.sound.sampled.DataLine;
 import java.util.List;
 import java.util.logging.Level;
 
 public abstract class HolographicDisplay {
-
     private final String hologramName;
     private Hologram hologram;
     private boolean isPlaced = false;
@@ -52,7 +50,7 @@ public abstract class HolographicDisplay {
     }
 
     public void show() {
-        placeHologram();
+        reloadHologram();
         updateHologram();
     }
 
@@ -88,12 +86,7 @@ public abstract class HolographicDisplay {
 
         PlotSystem.getPlugin().getConfigManager().saveFiles();
 
-        if (isPlaced) {
-            hologram.delete();
-            isPlaced = false;
-        }
-
-        placeHologram();
+        reloadHologram();
     }
 
     public void placeHologram() {
@@ -106,7 +99,6 @@ public abstract class HolographicDisplay {
     protected String getHeader() {
         return "§7---------------";
     }
-
 
     protected String getFooter() {
         return "§7---------------";
@@ -130,13 +122,13 @@ public abstract class HolographicDisplay {
         if (getHologram().size() < line + 1) {
             getHologram().insertItemLine(line, item);
         } else {
-            HologramLine hline = getHologram().getLine(line);
-            if (hline instanceof TextLine) {
+            HologramLine hologramLine = getHologram().getLine(line);
+            if (hologramLine instanceof TextLine) {
                 // we're replacing the line with a different type, so we will have to destroy old line to replace with new type
                 getHologram().insertItemLine(line, item);
                 getHologram().removeLine(line + 1);
             } else {
-                ((ItemLine) hline).setItemStack(item);
+                ((ItemLine) hologramLine).setItemStack(item);
             }
         }
     }
@@ -145,16 +137,59 @@ public abstract class HolographicDisplay {
         if (getHologram().size() < line + 1) {
             getHologram().insertTextLine(line, text);
         } else {
-            HologramLine hline = getHologram().getLine(line);
-            if (hline instanceof ItemLine) {
+            HologramLine hologramLine = getHologram().getLine(line);
+            if (hologramLine instanceof ItemLine) {
                 // we're replacing the line with a different type, so we will have to destroy old line to replace with new type
                 getHologram().insertTextLine(line, text);
                 getHologram().removeLine(line + 1);
             } else {
-                ((TextLine) hline).setText(text);
+                ((TextLine) hologramLine).setText(text);
             }
         }
     }
+
+    protected abstract List<DataLine> getDataLines();
+
+    protected abstract ItemStack getItem();
+
+    public abstract void onShutdown();
+
+    public void updateHologram() {
+        if (isPlaced()) {
+            insertLines();
+        }
+    }
+
+    public void reloadHologram() {
+        if (isPlaced) {
+            hologram.delete();
+            isPlaced = false;
+        }
+        placeHologram();
+    }
+
+    public String getHologramName() {
+        return hologramName;
+    }
+
+    protected abstract String getTitle();
+
+    public Hologram getHologram() {
+        return hologram;
+    }
+
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    public long getInterval() {
+        return PlotSystem.getPlugin().getConfigManager().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
+    }
+
+    public String getDefaultPath() {
+        return ConfigPaths.HOLOGRAMS + getHologramName();
+    }
+
 
     public interface DataLine {
         String getLine();
@@ -173,47 +208,7 @@ public abstract class HolographicDisplay {
 
         @Override
         public String getLine() {
-//            return "§e#" + (i - 1) + " §a" +data.get(i - 2).split(",")[0] + " §7- §b" + data.get(i - 2).split(",")[1];
             return "§e#" + position + " " + (username != null ? "§a" + username : "§8No one, yet") + " §7- §b" + score;
         }
-    }
-
-    protected abstract List<DataLine> getDataLines();
-
-    protected abstract ItemStack getItem();
-
-    public void updateHologram() {
-        Thread update = new Thread() {
-            @Override
-            public void run() {
-                if (isPlaced()) {
-//                hologram.clearLines();
-                    insertLines();
-                }
-            }
-        };
-        update.start();
-    }
-
-    public String getHologramName() {
-        return hologramName;
-    }
-
-    protected abstract String getTitle();
-
-    public Hologram getHologram() {
-        return hologram;
-    }
-
-    public boolean isPlaced() {
-        return isPlaced;
-    }
-
-    public int getInterval() {
-        return 20 * 60;
-    }
-
-    public String getDefaultPath() {
-        return ConfigPaths.HOLOGRAMS + getHologramName();
     }
 }

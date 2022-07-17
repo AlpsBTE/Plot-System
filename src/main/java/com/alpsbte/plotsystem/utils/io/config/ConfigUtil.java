@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -35,19 +35,19 @@ import java.util.Arrays;
 
 public class ConfigUtil extends YamlFileFactory {
 
-   // Register configuration files
-   private static final ConfigFile[] configs = new ConfigFile[] {
-           new ConfigFile(Paths.get("config.yml"), 1.5),
-           new ConfigFile(Paths.get("commands.yml"), 1.0)
+    // Register configuration files
+    private static final ConfigFile[] configs = new ConfigFile[] {
+            new ConfigFile(Paths.get("config.yml"), 1.6),
+            new ConfigFile(Paths.get("commands.yml"), 1.0)
     };
 
-   public ConfigUtil() throws ConfigNotImplementedException {
-       super(configs);
+    public ConfigUtil() throws ConfigNotImplementedException {
+        super(configs);
 
-       if (!getConfig().getFile().exists() && createFile(getConfig())) {
-           throw new ConfigNotImplementedException("The config file must be configured!");
+        if (!getConfig().getFile().exists() && createFile(getConfig())) {
+            throw new ConfigNotImplementedException("The config file must be configured!");
         } else if (reloadFile(getConfig()) && getConfig().getDouble(ConfigPaths.CONFIG_VERSION) != getConfig().getVersion()) {
-           updateFile(getConfig());
+            updateFile(getConfig());
         }
 
         if (!getCommandsConfig().getFile().exists()) {
@@ -56,7 +56,7 @@ public class ConfigUtil extends YamlFileFactory {
             updateFile(getCommandsConfig());
         }
 
-       reloadFiles();
+        reloadFiles();
     }
 
     public ConfigFile getConfig() {

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,24 +27,80 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class ScoreLeaderboard extends HolographicDisplay {
-    private com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy = com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe.DAILY;
+    private LeaderboardTimeframe sortBy = LeaderboardTimeframe.DAILY;
+    private BukkitTask changeSortTask = null;
+    private BukkitTask actionbarTask = null;
+    int changeState = 0;
 
     public ScoreLeaderboard() {
         super("score-leaderboard");
+        init();
+    }
+
+    private void init() {
+        if (getPages().size() < 1) {
+            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
+            return;
+        }
+
+        sortBy = getPages().get(0);
+
+        long interval = getInterval();
+        long changeDelay = interval / 15;
+        changeSortTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (changeState >= changeDelay) {
+                    LeaderboardTimeframe next = Utils.getNextListItem(getPages(), sortBy);
+                    if (next == null) {
+                        sortBy = getPages().get(0);
+                    } else {
+                        sortBy = next;
+                    }
+                    changeState = 0;
+                } else {
+                    changeState++;
+                    updateHologram();
+                }
+            }
+        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), changeDelay, changeDelay);
+
+        actionbarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : showToPlayers()) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, rankingString(player));
+                }
+            }
+        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
     }
 
     @Override
@@ -52,58 +108,18 @@ public class ScoreLeaderboard extends HolographicDisplay {
         return "§b§lTOP SCORE §7§o(" + StringUtils.capitalize(sortBy.toString()) + ")";
     }
 
-    private class LeaderboardPositionLineWithPayout extends LeaderboardPositionLine {
-
-        public LeaderboardPositionLineWithPayout(int position, String username, int score) {
-            super(position, username, score);
-        }
-
-        @Override
-        public String getLine() {
-            try {
-                String line = super.getLine();
-                Payout payout = Payout.getPayout(sortBy, position);
-                if (payout == null) {
-                    return line;
-                } else {
-                    String payoutAmount = payout.getPayoutAmount();
-                    try {
-                        // if payout amount can be number, prefix with dollar sign
-                        Integer.valueOf(payoutAmount);
-                        payoutAmount = "$" + payoutAmount;
-                    } catch (NumberFormatException ignored) {
-
-                    }
-
-                    return line + " §7- §e§l" + payoutAmount;
-                }
-            } catch (SQLException e) {
-                return super.getLine() + " §7- §cSQL ERR";
-            }
-        }
-    }
-
-    int state = 0;
-
-    public void setState(int state) {
-        this.state = state;
-        updateHologram();
-    }
-
     @Override
     public String getFooter() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
-        long changeDelay = (config.getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL, 5) * 20L) / 15;
+        long changeDelay = getInterval() / 15;
+        int highlightCount = (int) (((float) changeState / changeDelay) * 15);
 
-        int highlightCount = (int) (((float) state / changeDelay) * 15);
-
-        String highlighted = "";
+        StringBuilder highlighted = new StringBuilder();
         for (int i = 0; i < highlightCount; i++) {
-            highlighted += "-";
+            highlighted.append("-");
         }
-        String notH = "";
+        StringBuilder notH = new StringBuilder();
         for (int i = 0; i < 15 - highlightCount; i++) {
-            notH += "-";
+            notH.append("-");
         }
 
         return "§e" + highlighted + "§7" + notH;
@@ -136,8 +152,136 @@ public class ScoreLeaderboard extends HolographicDisplay {
         return new ItemStack(Material.NETHER_STAR);
     }
 
-    public void setSortBy(com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard.LeaderboardTimeframe sortBy) {
-        this.sortBy = sortBy;
-        updateHologram();
+    @Override
+    public void onShutdown() {
+        if (changeSortTask != null) {
+            changeSortTask.cancel();
+            changeSortTask = null;
+        }
+
+        if (actionbarTask != null) {
+            actionbarTask.cancel();
+            actionbarTask = null;
+        }
+    }
+
+    @Override
+    public void reloadHologram() {
+        super.reloadHologram();
+        onShutdown();
+        init();
+    }
+
+    private List<LeaderboardTimeframe> getPages() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        return Arrays.stream(LeaderboardTimeframe.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
+    }
+
+    private final DecimalFormat df = new DecimalFormat("#.##");
+
+    private BaseComponent[] rankingString(Player player) {
+        int position;
+        int rows;
+        int myScore;
+        try {
+            position = Builder.getBuilderScorePosition(player.getUniqueId(), sortBy);
+            rows = Builder.getBuildersInSort(sortBy);
+            myScore = Builder.getBuilderScore(player.getUniqueId(), sortBy);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return TextComponent.fromLegacyText("§cSQL Exception");
+        }
+
+        ComponentBuilder builder = new ComponentBuilder("");
+        builder.append(
+                new ComponentBuilder(LangUtil.get(player, sortBy.langPath) + " ")
+                        .color(ChatColor.GREEN)
+                        .create()
+        );
+
+        if (position == -1) {
+            builder.append(
+                    new ComponentBuilder(LangUtil.get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                            .color(ChatColor.RED)
+                            .create()
+            );
+        } else if (position < 50) {
+            builder.append(
+                    new ComponentBuilder(
+                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION).replace("{integer}", position + "")
+                    ).create()
+            );
+        } else {
+            String topPercentage = df.format(position * 1.0 / rows);
+            builder.append(
+                    new ComponentBuilder(
+                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE).replace("{percentage}", topPercentage)
+                    ).create()
+            );
+        }
+
+        if (myScore != -1) {
+            builder.append(TextComponent.fromLegacyText("§8 (§6" + myScore + " points§8)"));
+        }
+
+        return builder.create();
+    }
+
+    private List<Player> showToPlayers() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLED, true);
+        int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
+        List<Player> players = new ArrayList<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getWorld().getName().equals(getLocation().getWorld().getName()) && (!actionBarEnabled || getLocation().distance(player.getLocation()) <= actionBarRadius)) {
+                players.add(player);
+            }
+        }
+        return players;
+    }
+
+    public enum LeaderboardTimeframe {
+        DAILY(ConfigPaths.DISPLAY_OPTIONS_SHOW_DAILY),
+        WEEKLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_WEEKLY),
+        MONTHLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_MONTHLY),
+        YEARLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_YEARLY),
+        LIFETIME(ConfigPaths.DISPLAY_OPTIONS_SHOW_LIFETIME);
+
+        public final String configPath;
+        public final String langPath;
+
+        LeaderboardTimeframe(String configPath) {
+            this.configPath = configPath;
+            this.langPath = LangPaths.Leaderboards.PAGES + name();
+        }
+    }
+
+    private class LeaderboardPositionLineWithPayout extends LeaderboardPositionLine {
+
+        public LeaderboardPositionLineWithPayout(int position, String username, int score) {
+            super(position, username, score);
+        }
+
+        @Override
+        public String getLine() {
+            try {
+                String line = super.getLine();
+                Payout payout = sortBy != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortBy, position) : null;
+                if (payout == null) {
+                    return line;
+                } else {
+                    String payoutAmount = payout.getPayoutAmount();
+                    try {
+                        // if payout amount can be number, prefix with dollar sign
+                        Integer.valueOf(payoutAmount);
+                        payoutAmount = "$" + payoutAmount;
+                    } catch (NumberFormatException ignored) {}
+
+                    return line + " §7- §e§l" + payoutAmount;
+                }
+            } catch (SQLException e) {
+                return super.getLine() + " §7- §cSQL ERR";
+            }
+        }
     }
 }

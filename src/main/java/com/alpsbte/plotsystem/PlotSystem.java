@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.HologramManager;
-import com.alpsbte.plotsystem.core.leaderboards.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -56,14 +56,12 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
-
     private static final String VERSION = "2.3";
 
     private static PlotSystem plugin;
     private ConfigUtil configManager;
     private LangUtil langUtil;
     private CommandManager commandManager;
-    private ScoreLeaderboard scoreLeaderboard;
 
     private boolean pluginEnabled = false;
 
@@ -197,9 +195,6 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
-
-        scoreLeaderboard = new ScoreLeaderboard();
-        scoreLeaderboard.initialize();
     }
 
     @Override
@@ -211,7 +206,8 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
-            scoreLeaderboard.shutdown();
+
+            HologramManager.getHolograms().forEach(HolographicDisplay::onShutdown);
         }
     }
 
