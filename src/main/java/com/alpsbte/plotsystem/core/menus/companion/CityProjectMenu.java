@@ -42,9 +42,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPreviewItems() {
-        // add difficulty switcher
-
-        getMenu().getSlot(0).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9219"))).setName("Back to countries").build());
+        getMenu().getSlot(0).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
             player.closeInventory();
@@ -70,15 +68,11 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         // Set previous page item
         if (hasPreviousPage()) {
             getMenu().getSlot(45).setItem(MenuItems.previousPageItem(getMenuPlayer()));
-        } else {
-            getMenu().getSlot(45).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9248"))).setName("No Previous Page").build());
         }
 
         // Set next page item
         if (hasNextPage()) {
             getMenu().getSlot(53).setItem(MenuItems.nextPageItem(getMenuPlayer()));
-        } else {
-            getMenu().getSlot(53).setItem(new ItemBuilder(Utils.getItemHead(new Utils.CustomHead("9248"))).setName("No Next Page").build());
         }
 
         // difficulty selector
@@ -144,7 +138,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
-                .pattern("000010000")
+                .pattern("100010001")
                 .build();
     }
 

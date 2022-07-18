@@ -52,13 +52,8 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class CountryMenu extends AbstractMenu {
-
-    private Plot[] slots;
-    private List<CityProject> cityProjects;
     private List<Country> countryProjects;
-
     private final Continent selectedContinent;
-
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CountryMenu(Player player, Continent continent) {
@@ -143,8 +138,6 @@ public class CountryMenu extends AbstractMenu {
         for (Country country : countryProjects) {
             int i = countryProjects.indexOf(country);
             getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, clickInformation) -> {
-//                        selectedCountry = country;
-//                        changeMenu(ActiveMenu.CITY);
                 clickPlayer.closeInventory();
                 new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty);
             });
