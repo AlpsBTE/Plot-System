@@ -39,10 +39,29 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Cities"
   open: "开启建地"
   in-progress: "进行中建地"
   completed: "已完成建地"
+  plots-available: 'Plots Available'
   no-plots-available: "无可用建地"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -81,6 +100,9 @@ menu-title:
   cancel: "取消"
   add-member-to-plot: "添加成员到建地"
   companion: "伙伴"
+  companion-select-continent: 'Select A Continent'
+  companion-select-country: 'Select A Country'
+  companion-select-city: 'Select A City'
   player-plots: "{0}块建地"
   leave-plot: "离开建地"
   review-plots: "审核建地"
@@ -92,7 +114,6 @@ menu-title:
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
-
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -125,7 +146,6 @@ menu-description:
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
 
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -146,7 +166,6 @@ review:
     detailing-desc: "建筑有多少细节？ ////- 屋顶细节//- 外墙上的细节//- 头颅和旗帜"
     technique: "技巧"
     technique-desc: "使用了什么建筑技巧，它们的创意如何？ ////- World-Edit//- 特殊方块"
-
 
 # -----------------------------------------------------
 # | Notes
@@ -239,8 +258,8 @@ leaderboards:
     MONTHLY: "Monthly"
     YEARLY: "Yearly"
     LIFETIME: "Lifetime"
-  actionbar-position: "Position #{integer}"
-  actionbar-percentage: "Top {percentage}%"
+  actionbar-position: "Position #{0}"
+  actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change

@@ -62,7 +62,7 @@ public class CountryMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CountryMenu(Player player, Continent continent) {
-        super(6, LangUtil.get(player, continent.langPath) + " -> Select Country" , player);
+        super(6, LangUtil.get(player, continent.langPath) + " -> " + LangUtil.get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY) , player);
         selectedContinent = continent;
     }
 
@@ -201,7 +201,7 @@ public class CountryMenu extends AbstractMenu {
                                     "§6" + plotsInProgress + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS),
                                     "§6" + plotsCompleted + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED),
                                     "",
-                                    (plotsUnclaimed > 0 ? "§a§lPlots Available!" : "§f§lNo Plots Available")
+                                    (plotsUnclaimed > 0 ? "§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_PLOTS_AVAILABLE) : "§f§l" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE))
                             )
                             .build())
                     .build());

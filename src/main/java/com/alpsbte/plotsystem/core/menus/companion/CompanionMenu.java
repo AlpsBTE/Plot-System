@@ -45,7 +45,7 @@ public class CompanionMenu {
             Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> Country.getCountries(c).size() > 0).findFirst();
 
             if (!continent.isPresent()) {
-                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.NO_CONTINENTS_AVAILABLE)));
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
                 return;
             }
 

@@ -208,14 +208,14 @@ public class ScoreLeaderboard extends HolographicDisplay {
         } else if (position < 50) {
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION).replace("{integer}", position + "")
+                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
                     ).create()
             );
         } else {
             String topPercentage = df.format(position * 1.0 / rows);
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE).replace("{percentage}", topPercentage)
+                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
                     ).create()
             );
         }

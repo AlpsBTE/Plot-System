@@ -27,6 +27,16 @@ public class LangPaths {
         }
     }
 
+    public static final class CityProject {
+        private static final String CITY_PROJECT = "city-project.";
+        public static final String CITIES = CITY_PROJECT + "cities";
+        public static final String PROJECT_OPEN = CITY_PROJECT + "open";
+        public static final String PROJECT_IN_PROGRESS = CITY_PROJECT + "in-progress";
+        public static final String PROJECT_COMPLETED = CITY_PROJECT + "completed";
+        public static final String PROJECT_PLOTS_AVAILABLE = CITY_PROJECT + "plots-available";
+        public static final String PROJECT_NO_PLOTS_AVAILABLE = CITY_PROJECT + "no-plots-available";
+    }
+
     public static final class Country {
         private static final String COUNTRY = "country.";
         public static final String COUNTRIES = COUNTRY + "countries";
@@ -40,15 +50,6 @@ public class LangPaths {
         public static final String OCEANIA = CONTINENT + "oceania";
         public static final String SOUTH_AMERICA = CONTINENT + "south-america";
         public static final String NORTH_AMERICA = CONTINENT + "north-america";
-    }
-
-    public static final class CityProject {
-        private static final String CITY_PROJECT = "city-project.";
-        public static final String CITIES = CITY_PROJECT + "cities";
-        public static final String PROJECT_OPEN = CITY_PROJECT + "open";
-        public static final String PROJECT_IN_PROGRESS = CITY_PROJECT + "in-progress";
-        public static final String PROJECT_COMPLETED = CITY_PROJECT + "completed";
-        public static final String PROJECT_NO_PLOTS = CITY_PROJECT + "no-plots-available";
     }
 
     public static final class Difficulty {
@@ -85,20 +86,20 @@ public class LangPaths {
         public static final String CANCEL = MENU_TITLES + "cancel";
         public static final String ADD_MEMBER_TO_PLOT = MENU_TITLES + "add-member-to-plot";
         public static final String COMPANION = MENU_TITLES + "companion";
+        public static final String COMPANION_SELECT_CONTINENT = MENU_TITLES + "companion-select-continent";
+        public static final String COMPANION_SELECT_COUNTRY = MENU_TITLES + "companion-select-country";
+        public static final String COMPANION_SELECT_CITY = MENU_TITLES + "companion-select-city";
         public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
         public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
         public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
         public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
+        public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
         public static final String SELECT_PLOT_TYPE = MENU_TITLES + "select-plot-type";
         public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
         public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
-        public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
-        public static final String COMPANION_SELECT_CONTINENT = MENU_TITLES + "companion-select-continent";
-        public static final String COMPANION_COUNTRY = MENU_TITLES + "companion-country";
-        public static final String COMPANION_CITY = MENU_TITLES + "companion-city";
     }
 
     public static final class MenuDescription {
@@ -247,7 +248,6 @@ public class LangPaths {
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
-            public static final String NO_CONTINENTS_AVAILABLE = ERROR + "no-continents-available";
         }
     }
 

@@ -39,10 +39,29 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Städte"
   open: "Offene Plots"
   in-progress: "Plots in Arbeit"
   completed: "Abgeschlossene Plots"
-  no-plots-available: "Keine Plots verfügbar"
+  plots-available: 'Plots Verfügbar'
+  no-plots-available: "Keine Plots Verfügbar"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Länder"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europa"
+  asia: "Asien"
+  africa: "Afrika"
+  oceania: "Ozeanien"
+  south-america: "Südamerika"
+  north-america: "Nordamerika"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -81,6 +100,9 @@ menu-title:
   cancel: "Abbrechen"
   add-member-to-plot: "Mitglied zum Plot Hinzufügen"
   companion: "Companion"
+  companion-select-continent: 'Wähle Ein Kontinent'
+  companion-select-country: 'Wähle Ein Land'
+  companion-select-city: 'Wähle Eine Stadt'
   player-plots: "{0}s Plots"
   leave-plot: "Plot Verlassen"
   review-plots: "Plots Bewerten"
@@ -93,7 +115,6 @@ menu-title:
   select-local-inspiration-mode: "Inspiration-Mode Auswählen"
   select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
 
-
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -104,7 +125,7 @@ menu-description:
   slot-desc: "Klicke auf eine Stadt, um einen neuen Plot zu erstellen"
   builder-utilities-desc: "Erhalte Zugang zu benutzerdefinierten Köpfen, Bannern und speziellen Blöcken"
   show-plots-desc: "Alle deine Plots anzeigen"
-  settings-desc: "Bearbeite deine Benutzer-Einstellungen"
+  settings-desc: "Bearbeite deine Benutzereinstellungen"
   submit-plot-desc: "Klicke hier, um diesen Plot abzuschließen und ihn zur Bewertung einzureichen"
   teleport-desc: "Klicke hier, um dich zum Plot zu teleportieren"
   abandon-desc: "Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben"
@@ -120,11 +141,10 @@ menu-description:
   leave-plot-desc: "Klicke hier, um den Plot zu verlassen"
   select-language-desc: "Wähle deine Sprache"
   auto-detect-language-desc: "Klicke hier, um deine Sprache automatisch zu erkennen"
-  select-plot-type-desc: 'Wähle dein Plot-Typ aus'
+  select-plot-type-desc: 'Wähle dein Plot Typ aus'
   select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.\n\n- Keine Umgebung\n- Keine Nachbarsgrundstücke"
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
-
 
 # -----------------------------------------------------
 # | Review
@@ -146,7 +166,6 @@ review:
     detailing-desc: "Wie viele Details hat das Gebäude?////- Dachdetails//- Details an den Fassaden//- Köpfe und Banner"
     technique: "Technik"
     technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?////- World-Edit//- Spezialblöcke"
-
 
 # -----------------------------------------------------
 # | Notes
@@ -234,14 +253,14 @@ message:
 
 leaderboards:
   pages:
-    DAILY: "Daily"
-    WEEKLY: "Weekly"
-    MONTHLY: "Monthly"
-    YEARLY: "Yearly"
-    LIFETIME: "Lifetime"
-  actionbar-position: "Position #{integer}"
-  actionbar-percentage: "Top {percentage}%"
-  not-on-leaderboard: "Not on leaderboard"
+    DAILY: "Heute"
+    WEEKLY: "Woche"
+    MONTHLY: "Monat"
+    YEARLY: "Jahr"
+    LIFETIME: "Gesamt"
+  actionbar-position: "Position #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Nicht auf Leaderboard"
 
 # NOTE: Do not change
 config-version: "1.2"

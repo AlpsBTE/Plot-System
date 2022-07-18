@@ -274,7 +274,7 @@ public class CompanionMenu extends AbstractMenu {
                                             "§6" + plotsInProgress + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS),
                                             "§6" + plotsCompleted + " §7" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED),
                                             "",
-                                            plotsUnclaimed != 0 ? Utils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS)
+                                            plotsUnclaimed != 0 ? Utils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
                                     ).build())
                             .build());
 

@@ -35,7 +35,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     private PlotDifficulty selectedPlotDifficulty;
 
     CityProjectMenu(Player player, Country country, PlotDifficulty selectedPlotDifficulty) {
-        super(6, 4, country.getName() + " -> Select City", player);
+        super(6, 4, country.getName() + " -> " + LangUtil.get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
         this.country = country;
         this.selectedPlotDifficulty = selectedPlotDifficulty;
     }

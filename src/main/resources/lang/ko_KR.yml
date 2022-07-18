@@ -39,10 +39,29 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Cities"
   open: "개의 빈 플롯"
   in-progress: "개의 진행 중인 플롯"
   completed: "개의 완성된 플롯"
+  plots-available: 'Plots Available'
   no-plots-available: "건축할 수 있는 플롯이 없음"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -81,6 +100,9 @@ menu-title:
   cancel: "취소"
   add-member-to-plot: "플롯에 멤버 추가하기"
   companion: "메뉴"
+  companion-select-continent: 'Select A Continent'
+  companion-select-country: 'Select A Country'
+  companion-select-city: 'Select A City'
   player-plots: "{0}님의 플롯"
   leave-plot: "플롯 떠나기"
   review-plots: "플롯 리뷰하기"
@@ -92,7 +114,6 @@ menu-title:
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
-
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -125,7 +146,6 @@ menu-description:
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
 
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -146,7 +166,6 @@ review:
     detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?////- 지붕 디테일//- 건물 정면 디테일//- 머리와 현수막의 사용"
     technique: "기법"
     technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?////- 월드에딧//- 특수 블록"
-
 
 # -----------------------------------------------------
 # | Notes
@@ -239,8 +258,8 @@ leaderboards:
     MONTHLY: "Monthly"
     YEARLY: "Yearly"
     LIFETIME: "Lifetime"
-  actionbar-position: "Position #{integer}"
-  actionbar-percentage: "Top {percentage}%"
+  actionbar-position: "Position #{0}"
+  actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
