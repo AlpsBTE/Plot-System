@@ -6,7 +6,7 @@
 
     <groupId>com.alpsbte</groupId>
     <artifactId>PlotSystem</artifactId>
-    <version>2.3</version>
+    <version>3.0</version>
 
     <repositories>
         <!-- Spigot & Bukkit -->
