@@ -167,7 +167,7 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
 
         UpdateChecker.getVersion(version -> {
-            if (version.equalsIgnoreCase(VERSION)) {
+            if (Double.parseDouble(VERSION) >= version) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
             } else {
                 UpdateChecker.isUpdateAvailable = true;
@@ -351,10 +351,10 @@ public class PlotSystem extends JavaPlugin {
          * Get latest plugin version from SpigotMC
          * @param version Returns latest stable version
          */
-        public static void getVersion(final Consumer<String> version) {
+        public static void getVersion(final Consumer<Double> version) {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
-                    version.accept(scanner.next());
+                    version.accept(Double.parseDouble(scanner.next()));
                 }
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
