@@ -459,7 +459,7 @@ public class PlotManager {
                 double distance = 100000000;
                 Plot chosenPlot = plots.get(0);
                 for(Plot plot : plots)
-                    if(plot.getCenter().distance(playerVector) < distance){
+                    if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().setY(playerVector.getY()).distance(playerVector) < distance) {
                         distance = plot.getCenter().distance(playerVector);
                         chosenPlot = plot;
                     }
