@@ -52,6 +52,7 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -60,11 +61,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -360,41 +359,32 @@ public class PlotManager {
     }
 
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
-
         // Load plot outlines schematic as clipboard
-        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(Files.newInputStream(plot.getOutlinesSchematic().toPath())).read(null);
+        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
 
-        // Calculate min and max points of schematic
-        int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
-        int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
+        if (clipboard != null) {
+            // Calculate min and max points of schematic
+            CuboidRegion plotRegion = getPlotAsRegion(plot);
 
-        Vector schematicMinPoint = Vector.toBlockPoint(
-                plot.getCenter().getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
-                0,
-                plot.getCenter().getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
-        );
+            if (plotRegion != null) {
+                // Convert terra schematic coordinates into relative plot schematic coordinates
+                double[] schematicCoords = {
+                        terraCoords[0] - clipboard.getMinimumPoint().getX(),
+                        terraCoords[1] - clipboard.getMinimumPoint().getZ()
+                };
 
-        Vector schematicMaxPoint = Vector.toBlockPoint(
-                plot.getCenter().getX() + outlinesClipboardCenterX,
-                256,
-                plot.getCenter().getZ() + outlinesClipboardCenterZ
-        );
+                // Add additional plot sizes to relative plot schematic coordinates
+                double[] plotCoords = {
+                        schematicCoords[0] + plotRegion.getMinimumPoint().getX(),
+                        schematicCoords[1] + plotRegion.getMinimumPoint().getZ()
+                };
 
-        // Convert terra schematic coordinates into relative plot schematic coordinates
-        double[] schematicCoords = {
-                terraCoords[0] - outlinesClipboard.getMinimumPoint().getX(),
-                terraCoords[1] - outlinesClipboard.getMinimumPoint().getZ()
-        };
-
-        // Add additional plot sizes to relative plot schematic coordinates
-        double[] plotCoords = {
-                schematicCoords[0] + schematicMinPoint.getX(),
-                schematicCoords[1] + schematicMinPoint.getZ()
-        };
-
-        // Return coordinates if they are in the schematic plot region
-        if (new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int) plotCoords[0], 15, (int) plotCoords[1]))) {
-            return CompletableFuture.completedFuture(plotCoords);
+                // Return coordinates if they are in the schematic plot region
+                ProtectedRegion protectedPlotRegion = plot.getWorld().getProtectedRegion() != null ? plot.getWorld().getProtectedRegion() : plot.getWorld().getProtectedBuildRegion();
+                if (protectedPlotRegion.contains(new Vector((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
+                    return CompletableFuture.completedFuture(plotCoords);
+                }
+            }
         }
 
         return null;
