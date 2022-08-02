@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
@@ -90,10 +91,10 @@ public class CMD_Tpll extends BaseCommand {
                             double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
 
                             // Get plot, that the player is in
-                            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed);
+                            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
 
                             // Convert terra coordinates to plot relative coordinates
-                            CompletableFuture<double[]> plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);
+                            CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
 
                             if(plotCoords == null) {
                                 player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
@@ -110,8 +111,8 @@ public class CMD_Tpll extends BaseCommand {
                                     highestY = i;
                                 }
                             }
-                            if (highestY < 10) {
-                                highestY = 10;
+                            if (highestY < PlotWorld.MIN_WORLD_HEIGHT) {
+                                highestY = PlotWorld.MIN_WORLD_HEIGHT;
                             }
 
                             player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1]));
