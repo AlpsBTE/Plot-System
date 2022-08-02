@@ -66,7 +66,7 @@ public class CityPlotWorld extends PlotWorld {
     @Beta
     @Override
     public int getPlotHeightCentered() throws IOException {
-        return MIN_WORLD_HEIGHT + getWorldHeight() + super.getPlotHeightCentered();
+        return Math.min(MIN_WORLD_HEIGHT + getWorldHeight() + super.getPlotHeightCentered(), PlotWorld.MAX_WORLD_HEIGHT);
     }
 
     /**
