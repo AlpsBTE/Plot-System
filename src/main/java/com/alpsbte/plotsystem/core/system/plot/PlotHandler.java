@@ -160,7 +160,7 @@ public class PlotHandler {
     }
 
     public static boolean deletePlot(Plot plot) throws SQLException {
-        if (plot.getWorld().isWorldGenerated() && abandonPlot(plot)) {
+        if (abandonPlot(plot)) {
             try {
                 CompletableFuture.runAsync(() -> {
                     try {
@@ -168,9 +168,12 @@ public class PlotHandler {
 
                         Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
                         Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                        Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + "-env.schematic"));
 
                         if (plotServer.getFTPConfiguration() != null) {
-                            FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", false);
+                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
+                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/",""), plot.getID() + ".schematic");
+                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/",""), plot.getID() + "-env.schematic");
                         }
 
                         DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
