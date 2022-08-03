@@ -120,7 +120,6 @@ public class CountryMenu extends AbstractMenu {
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.Done, 1, 1);
 
             try {
-//                setCityProjectItems();
                 setCountryItems();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

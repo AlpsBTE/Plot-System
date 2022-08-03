@@ -6,6 +6,7 @@ import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.menus.SettingsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
@@ -88,14 +89,17 @@ public class CompanionMenu {
 
                 final int i_ = i;
 
-                items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(Slot.values()[i], player), (clickPlayer, clickInformation) -> {
-                    clickPlayer.closeInventory();
-                    try {
-                        new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
-                    } catch (SQLException ex) {
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
+                Plot plot = builder.getPlot(Slot.values()[i]);
+                items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
+                    if (plot != null) {
+                        clickPlayer.closeInventory();
+                        try {
+                            new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
+                        } catch (SQLException ex) {
+                            clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
+                        }
                     }
                 }));
             } catch (NullPointerException | SQLException ex) {

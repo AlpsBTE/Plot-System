@@ -161,13 +161,10 @@ public class Builder {
         }
     }
 
-    public ItemStack getPlotMenuItem(Slot slot, Player langPlayer) throws SQLException {
-        Plot plot = getPlot(slot);
-        int i = Arrays.asList(Slot.values()).indexOf(slot);
-
+    public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
         if (plot == null) {
-            return new ItemBuilder(Material.EMPTY_MAP, 1 + i)
-                    .setName("§b§l" + LangUtil.get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
+            return new ItemBuilder(Material.EMPTY_MAP, 1 + slotIndex)
+                    .setName("§b§l" + LangUtil.get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
                     .setLore(new LoreBuilder()
                             .addLines("§7" + LangUtil.get(langPlayer, LangPaths.MenuDescription.SLOT),
                                     "",
@@ -176,8 +173,8 @@ public class Builder {
                     .build();
         }
 
-        return new ItemBuilder(Material.MAP, 1 + i)
-                .setName("§b§l" + LangUtil.get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (i + 1))
+        return new ItemBuilder(Material.MAP, 1 + slotIndex)
+                .setName("§b§l" + LangUtil.get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
                 .setLore(new LoreBuilder()
                         .addLines("§7" + LangUtil.get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),
                                 "§7" + LangUtil.get(langPlayer, LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
