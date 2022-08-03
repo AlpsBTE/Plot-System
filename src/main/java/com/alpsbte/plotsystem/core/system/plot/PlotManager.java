@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
@@ -350,7 +351,9 @@ public class PlotManager {
                     }
 
                     // If plot was created in a void world, copy the result to the city world
-                    // TODO: Copy finished schematic to city world
+                    if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE && plot.getVersion() >= 3) {
+                        AbstractPlotGenerator.pasteSchematic(null, plot.getFinishedSchematic(), new CityPlotWorld(plot), false);
+                    }
                     return true;
                 }
             }
