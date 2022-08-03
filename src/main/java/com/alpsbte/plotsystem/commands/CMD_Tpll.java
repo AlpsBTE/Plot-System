@@ -97,7 +97,7 @@ public class CMD_Tpll extends BaseCommand {
                             CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
 
                             if(plotCoords == null) {
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
+                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                                 return true;
                             }
 
@@ -115,7 +115,7 @@ public class CMD_Tpll extends BaseCommand {
                                 highestY = PlotWorld.MIN_WORLD_HEIGHT;
                             }
 
-                            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1]));
+                            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
 
                             DecimalFormat df = new DecimalFormat("##.#####");
                             df.setRoundingMode(RoundingMode.FLOOR);
@@ -132,7 +132,7 @@ public class CMD_Tpll extends BaseCommand {
                         sendInfo(sender);
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
+                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
