@@ -227,7 +227,7 @@ public class LangPaths {
             public static final String CAN_ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR + "can-only-submit-unfinished-plots";
             public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR + "can-only-undo-submissions-unreviewed-plots";
             public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR + "can-only-manage-members-unfinished-plots";
-            public static final String CAN_ONLY_TELEPORT_TO_PLOT = ERROR + "can-only-tpll-to-plot";
+            public static final String CANNOT_TELEPORT_OUTSIDE_PLOT = ERROR + "cannot-teleport-outside-plot";
             public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
             public static final String CANNOT_REVIEW_OWN_PLOT = ERROR + "cannot-review-own-plot";

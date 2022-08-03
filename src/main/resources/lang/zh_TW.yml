@@ -231,7 +231,7 @@ message:
     can-only-submit-unfinished-plots: "你只能提交尚未完成的建地！"
     can-only-undo-submissions-unreviewed-plots: "你只能撤回尚未審核的建地！"
     can-only-manage-members-unfinished-plots: "你只能管理尚未完成建地的成員！"
-    can-only-tpll-to-plot: "你在建地上只能使用 /tpll ！"
+    cannot-teleport-outside-plot: "你在建地上只能使用 /tpll ！"
     cannot-undo-review: "你無法撤回你自己未審核過的審核！"
     cannot-send-feedback: "你無法發送你自己未審核過的回饋！"
     cannot-review-own-plot: "你無法審核你所有的建地！"

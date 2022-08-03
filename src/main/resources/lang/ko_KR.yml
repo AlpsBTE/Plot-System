@@ -231,7 +231,7 @@ message:
     can-only-submit-unfinished-plots: "미완성된 플롯만 제출하실 수 있습니다!"
     can-only-undo-submissions-unreviewed-plots: "이미 리뷰된 플롯의 제출을 취소하실 수 없습니다!"
     can-only-manage-members-unfinished-plots: "멤버 관리는 미완성된 플롯에서만 가능합니다!"
-    can-only-tpll-to-plot: "플롯에서는 /tpll만 사용할 수 있습니다!"
+    cannot-teleport-outside-plot: "플롯에서는 /tpll만 사용할 수 있습니다!"
     cannot-undo-review: "오직 자신의 리뷰만 취소할 수 있습니다!"
     cannot-send-feedback: "오직 자신이 리뷰한 플롯에만 피드백을 보낼 수 있습니다!"
     cannot-review-own-plot: "자신의 플롯은 검토할 수 없습니다!"

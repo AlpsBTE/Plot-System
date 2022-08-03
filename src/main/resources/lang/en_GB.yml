@@ -231,7 +231,7 @@ message:
     can-only-submit-unfinished-plots: "You can only submit unfinished plots!"
     can-only-undo-submissions-unreviewed-plots: "You can only undo submissions of unreviewed plots!"
     can-only-manage-members-unfinished-plots: "You can only manage members of unfinished plots!"
-    can-only-tpll-to-plot: "You can only use /tpll on a plot!"
+    cannot-teleport-outside-plot: "You cannot teleport outside the plot!"
     cannot-undo-review: "You cannot undo a review that you have not reviewed yourself!"
     cannot-send-feedback: "You cannot send feedback to a plot that you have not reviewed yourself!"
     cannot-review-own-plot: "You cannot review your own plot!"

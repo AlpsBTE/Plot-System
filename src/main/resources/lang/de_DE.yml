@@ -231,7 +231,7 @@ message:
     can-only-submit-unfinished-plots: "Du kannst nur unfertige Plots abgeben!"
     can-only-undo-submissions-unreviewed-plots: "Du kannst nur Einreichungen von unbewerteten Plots rückgängig machen!"
     can-only-manage-members-unfinished-plots: "Du kannst nur Mitglieder von unfertigen Plots verwalten!"
-    can-only-tpll-to-plot: "Du kannst /tpll nur auf einem Plot verwenden!"
+    cannot-teleport-outside-plot: "Du kannst dich nicht ausserhalb des Plotes teleportieren!"
     cannot-undo-review: "Du kannst eine Bewertung nicht rückgängig machen, wenn du sie nicht selbst erstellt hast!"
     cannot-send-feedback: "Du kannst auf einen Plot kein Feedback geben, wenn du ihn nicht selbst bewertet hast!"
     cannot-review-own-plot: "Du kannst deine eigenen Plots nicht bewerten!"

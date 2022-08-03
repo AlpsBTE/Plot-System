@@ -231,7 +231,7 @@ message:
     can-only-submit-unfinished-plots: "Вы только можете отправить незавёршенные участки!Y!"
     can-only-undo-submissions-unreviewed-plots: "Вы только можете отменить заявки незавершённых участков!"
     can-only-manage-members-unfinished-plots: "Вы только можете управлять участниками незавершённых участков!"
-    can-only-tpll-to-plot: "Вы только можете использовать /tpll на участке!"
+    cannot-teleport-outside-plot: "Вы только можете использовать /tpll на участке!"
     cannot-undo-review: "Вы не можете отменить оценку которую выставляли не вы!"
     cannot-send-feedback: "Вы не можете отправить отзыв к участку который оценивали не вы!"
     cannot-review-own-plot: "Вы не можете оценить свой участок!"
