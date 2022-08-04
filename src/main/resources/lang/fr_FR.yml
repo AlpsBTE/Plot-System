@@ -114,6 +114,7 @@ menu-title:
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -145,6 +146,7 @@ menu-description:
   select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  filter-desc: "Show All"
 
 # -----------------------------------------------------
 # | Review

@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public abstract class AbstractPaginatedMenu extends AbstractMenu {
-
+    private List<?> source;
     private final int maxItemsPerPage;
     private int totalItemsAmount;
     private int currentPage = 0;
@@ -82,15 +82,16 @@ public abstract class AbstractPaginatedMenu extends AbstractMenu {
      */
     protected void setPage(int index) {
         currentPage = index;
-        reloadMenuAsync();
+        reloadMenuAsync(false);
     }
 
     /**
      * Collects all item sources for the current page
      * @return item sources for the current page
      */
-    private List<?> getItemSources() {
-        List<?> source = getSource();
+    private List<?> getItemSources(boolean reloadSources) {
+        if (reloadSources) source = getSource();
+        this.totalItemsAmount = source.size();
         return source.subList(getMinIndex(), Math.min(getMaxIndex(), source.size()));
     }
 
@@ -98,7 +99,7 @@ public abstract class AbstractPaginatedMenu extends AbstractMenu {
      * @return true if there is a next page
      */
     protected boolean hasNextPage() {
-        return getMaxIndex() < getSource().size();
+        return getMaxIndex() < totalItemsAmount;
     }
 
     /**
@@ -123,17 +124,24 @@ public abstract class AbstractPaginatedMenu extends AbstractMenu {
     }
 
     /**
-     * {@inheritDoc}
+     * @param reloadSources if true, reload the source collection for the inventory items
      */
-    @Override
-    protected void reloadMenuAsync() {
+    protected void reloadMenuAsync(boolean reloadSources) {
         getMenu().clear();
         super.reloadMenuAsync();
 
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            List<?> sources = getItemSources();
+            List<?> sources = getItemSources(reloadSources);
             setPaginatedMenuItemsAsync(sources);
             setPaginatedItemClickEventsAsync(sources);
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void reloadMenuAsync() {
+        reloadMenuAsync(true);
     }
 }

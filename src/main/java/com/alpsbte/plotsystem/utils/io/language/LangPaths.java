@@ -100,6 +100,7 @@ public class LangPaths {
         public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
         public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
+        public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
     }
 
     public static final class MenuDescription {
@@ -130,6 +131,7 @@ public class LangPaths {
         public static final String SELECT_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-local-inspiration-mode-desc";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
         public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
+        public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
     }
 
     public static final class Review {

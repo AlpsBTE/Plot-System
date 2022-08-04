@@ -114,6 +114,7 @@ menu-title:
   select-focus-mode: "Focus-Mode Auswählen"
   select-local-inspiration-mode: "Inspiration-Mode Auswählen"
   select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
+  filter-by-country: "Nach Land Filtern"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -145,6 +146,7 @@ menu-description:
   select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.\n\n- Keine Umgebung\n- Keine Nachbarsgrundstücke"
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
+  filter-desc: "Alle Anzeigen"
 
 # -----------------------------------------------------
 # | Review

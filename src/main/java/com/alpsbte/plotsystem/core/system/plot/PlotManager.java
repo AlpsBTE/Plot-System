@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
@@ -164,10 +165,10 @@ public class PlotManager {
         return plots;
     }
 
-    public static List<Plot> getPlots(Builder builder, int cityID, Status... statuses) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery( " AND owner_uuid = '" + builder.getUUID() + "' AND city_project_id = '" + cityID + "'", statuses)).executeQuery());
-        plots.addAll(getPlotsAsMember(builder, statuses));
-        return plots;
+    public static List<Plot> getPlotsByCountry(List<Country> countries, Status... status) throws SQLException {
+        List<CityProject> cities = new ArrayList<>();
+        countries.forEach(c -> cities.addAll(c.getCityProjects()));
+        return getPlots(cities, status);
     }
 
     // Temporary fix to receive plots of builder as member
@@ -187,11 +188,11 @@ public class PlotManager {
         if(cities.size() == 0) {
             return new ArrayList<>();
         }
-        StringBuilder query = new StringBuilder(" AND city_project_id = ");
+        StringBuilder query = new StringBuilder(" AND (city_project_id = ");
 
         for (int i = 0; i < cities.size(); i++) {
             query.append(cities.get(i).getID());
-            query.append((i != cities.size() - 1) ? " OR city_project_id = " : "");
+            query.append((i != cities.size() - 1) ? " OR city_project_id = " : ")");
         }
 
         return listPlots(DatabaseConnection.createStatement(getStatusQuery(query.toString(), statuses)).executeQuery());
