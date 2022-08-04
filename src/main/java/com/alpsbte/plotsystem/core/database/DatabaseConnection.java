@@ -342,7 +342,7 @@ public class DatabaseConnection {
                             "(" +
                             " `id`      int NOT NULL AUTO_INCREMENT ," +
                             " `name`    varchar(45) NOT NULL ," +
-                            " `api_key` varchar(32) NOT NULL ," +
+                            " `api_key_id` varchar(32) NULL ," +
                             "PRIMARY KEY (`id`)," +
                             "KEY `FK_132` (`api_key`)," +
                             "CONSTRAINT `FK_130` FOREIGN KEY `FK_132` (`api_key`) REFERENCES `api_keys` (`api_key`)" +
@@ -351,7 +351,7 @@ public class DatabaseConnection {
                     // Build-Team has Countries
                     "CREATE TABLE IF NOT EXISTS `plotsystem_buildteam_has_countries`" +
                             "(" +
-                            " `id`           int NOT NULL ," +
+                            " `id`           int NOT NULL AUTO_INCREMENT ," +
                             " `country_id`   int NOT NULL ," +
                             " `buildteam_id` int NOT NULL ," +
                             "PRIMARY KEY (`id`)," +
