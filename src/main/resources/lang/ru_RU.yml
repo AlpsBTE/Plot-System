@@ -250,6 +250,7 @@ message:
     no-plots-left: "У этого градостроительного проекта больше не осталось участков. Пожалуйста, выберите другой проект."
     please-wait: "Пожалуйста, подождите несколько секунд перед созданием нового участка!"
     all-slots-occupied: "Все ваши слоты заняты! Пожалуйста, завершите текущие участки, прежде чем создавать новый."
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
 
 leaderboards:
   pages:

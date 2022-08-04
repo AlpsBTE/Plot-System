@@ -250,6 +250,7 @@ message:
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
 
 leaderboards:
   pages:

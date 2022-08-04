@@ -250,6 +250,7 @@ message:
     no-plots-left: "此城市计画区没有剩余更多建地了。请选择其他计画区。"
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
 
 leaderboards:
   pages:

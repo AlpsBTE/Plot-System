@@ -250,6 +250,7 @@ message:
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
+    no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
 
 leaderboards:
   pages:

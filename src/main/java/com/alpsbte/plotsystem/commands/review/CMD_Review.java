@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -46,23 +46,28 @@ import java.util.logging.Level;
 public class CMD_Review extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            if (getPlayer(sender) != null) {
-                try {
-                    Player player = (Player) sender;
-                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
-                    if (plot != null && plot.getStatus() == Status.unreviewed) {
-                        new ReviewPlotMenu(player, plot);
-                    } else new ReviewMenu(player);
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        if (getPlayer(sender) != null) {
+            try {
+                if (sender.hasPermission(getPermission())) {
+                    Builder.Reviewer builder = Builder.byUUID(getPlayer(sender).getUniqueId()).getAsReviewer();
+                    if (builder != null) {
+                        Player player = (Player) sender;
+                        Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
+                        if (plot != null && plot.getStatus() == Status.unreviewed && builder.getCountries().contains(plot.getCity().getCountry())) {
+                            new ReviewPlotMenu(player, plot);
+                        } else new ReviewMenu(player);
+                    } else {
+                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_ASSIGNMENT_AS_REVIEWER)));
+                    }
+                } else {
+                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
         }
         return true;
     }
