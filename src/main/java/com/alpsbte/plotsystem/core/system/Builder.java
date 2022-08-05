@@ -431,7 +431,7 @@ public class Builder {
     }
 
     public Reviewer getAsReviewer() throws SQLException {
-        return isReviewer() ? new Reviewer(getUUID()) : null;
+        return new Reviewer(getUUID());
     }
 
     public boolean isReviewer() throws SQLException {

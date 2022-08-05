@@ -50,15 +50,16 @@ public class CMD_Review extends BaseCommand {
             try {
                 if (sender.hasPermission(getPermission())) {
                     Builder.Reviewer builder = Builder.byUUID(getPlayer(sender).getUniqueId()).getAsReviewer();
-                    if (builder != null) {
-                        Player player = (Player) sender;
-                        Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
-                        if (plot != null && plot.getStatus() == Status.unreviewed && builder.getCountries().contains(plot.getCity().getCountry())) {
+                    Player player = (Player) sender;
+                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
+                    if (plot != null) {
+                        int countryID = plot.getCity().getCountry().getID();
+                        if (plot.getStatus() == Status.unreviewed && builder.getCountries().stream().anyMatch(c -> c.getID() == countryID)) {
                             new ReviewPlotMenu(player, plot);
-                        } else new ReviewMenu(player);
-                    } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.NO_ASSIGNMENT_AS_REVIEWER)));
+                            return true;
+                        }
                     }
+                    new ReviewMenu(player);
                 } else {
                     sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 }

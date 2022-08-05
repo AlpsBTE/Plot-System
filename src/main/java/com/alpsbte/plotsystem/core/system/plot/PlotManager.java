@@ -165,7 +165,7 @@ public class PlotManager {
         return plots;
     }
 
-    public static List<Plot> getPlotsByCountry(List<Country> countries, Status... status) throws SQLException {
+    public static List<Plot> getPlots(List<Country> countries, Status status) throws SQLException {
         List<CityProject> cities = new ArrayList<>();
         countries.forEach(c -> cities.addAll(c.getCityProjects()));
         return getPlots(cities, status);

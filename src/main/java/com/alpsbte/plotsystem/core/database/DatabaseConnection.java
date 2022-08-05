@@ -330,11 +330,12 @@ public class DatabaseConnection {
                     "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS version DOUBLE NULL DEFAULT NULL;",
 
                     // API Keys
-                    "CREATE TABLE IF NOT EXISTS `api_keys`" +
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_api_keys`" +
                             "(" +
+                            " `id`         int NOT NULL AUTO_INCREMENT ," +
                             " `api_key`    varchar(32) NOT NULL ," +
                             " `created_at` timestamp NOT NULL ," +
-                            "PRIMARY KEY (`api_key`)" +
+                            "PRIMARY KEY (`id`)" +
                             ");",
 
                     // Build-Teams

@@ -60,7 +60,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
         try {
-            plots.addAll(PlotManager.getPlotsByCountry(countries, Status.unreviewed, Status.unfinished));
+            plots.addAll(PlotManager.getPlots(countries, Status.unreviewed));
+            plots.addAll(PlotManager.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
