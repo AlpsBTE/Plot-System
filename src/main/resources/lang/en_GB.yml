@@ -25,6 +25,7 @@ plot:
   members: "Plot Members"
   member: "Plot Member"
   city: "City"
+  country: "Country"
   difficulty: "Difficulty"
   status: "Status"
   score: "Score"
@@ -115,6 +116,7 @@ menu-title:
   select-local-inspiration-mode: 'Select Inspiration Mode'
   select-city-inspiration-mode: 'Select City Inspiration Mode'
   filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -147,6 +149,7 @@ menu-description:
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
   filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -157,6 +160,7 @@ review:
   manage-and-review-plots: "Manage & Review Plots"
   accepted: "Accepted"
   rejected: "Rejected"
+  abandoned: "Abandoned"
   feedback: "Feedback"
   reviewer: "Reviewer"
   criteria:

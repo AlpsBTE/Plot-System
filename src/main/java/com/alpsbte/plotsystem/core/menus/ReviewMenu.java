@@ -93,6 +93,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                         }).collect(Collectors.joining(", "))
                 );
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
+                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
                 getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
@@ -117,7 +118,10 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     getMenuPlayer().closeInventory();
                     if (plot.getStatus() == Status.unreviewed) {
                         if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())) {
-                            plot.getWorld().teleportPlayer(getMenuPlayer());
+                            Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
+                            if (currentPlot != null && currentPlot.getID() == plot.getID()) {
+                                new ReviewPlotMenu(getMenuPlayer(), currentPlot);
+                            } else plot.getWorld().teleportPlayer(getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                         }

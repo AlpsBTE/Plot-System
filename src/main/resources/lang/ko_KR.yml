@@ -25,6 +25,7 @@ plot:
   members: "플롯 멤버들"
   member: "플롯 멤버"
   city: "도시"
+  country: "Country"
   difficulty: "난이도"
   status: "상태"
   score: "점수"
@@ -115,6 +116,7 @@ menu-title:
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
   filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -147,6 +149,7 @@ menu-description:
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
   filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points,\nthe plot is rejected and the builder gets the plot back to improve it.\nIf the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -156,6 +159,7 @@ review:
   manage-plot: "플롯 관리하기"
   manage-and-review-plots: "플롯 리뷰 / 관리하기"
   accepted: "승낙됨"
+  abandoned: "Abandoned"
   rejected: "거절됨"
   feedback: "피드백"
   reviewer: "검토자"

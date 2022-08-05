@@ -319,6 +319,7 @@ public class Utils {
         public static CustomHead BACK_BUTTON;
         public static CustomHead NEXT_BUTTON;
         public static CustomHead PREVIOUS_BUTTON;
+        public static CustomHead INFO_BUTTON;
 
         public static CustomHead GLOBE;
         public static CustomHead PLOT_TYPE;
@@ -339,6 +340,7 @@ public class Utils {
                 BACK_BUTTON = new CustomHead("9226");
                 NEXT_BUTTON = new CustomHead("9223");
                 PREVIOUS_BUTTON = new CustomHead("9226");
+                INFO_BUTTON = new CustomHead("46488");
 
                 GLOBE = new CustomHead("49973");
                 PLOT_TYPE = new CustomHead("4159");

@@ -25,6 +25,7 @@ plot:
   members: "Plot Mitglieder"
   member: "Plot Mitglied"
   city: "Stadt"
+  country: "Land"
   difficulty: "Schwierigkeitsgrad"
   status: "Status"
   score: "Punktestand"
@@ -115,6 +116,7 @@ menu-title:
   select-local-inspiration-mode: "Inspiration-Mode Auswählen"
   select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
   filter-by-country: "Nach Land Filtern"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -147,6 +149,7 @@ menu-description:
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
   filter-desc: "Alle Anzeigen"
+  information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
 
 # -----------------------------------------------------
 # | Review
@@ -156,6 +159,7 @@ review:
   manage-plot: "Plot Verwalten"
   manage-and-review-plots: "Plots Verwalten & Bewerten"
   accepted: "Angenommen"
+  abandoned: "Gelöscht"
   rejected: "Abgelehnt"
   feedback: "Feedback"
   reviewer: "Reviewer"

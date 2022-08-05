@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -195,6 +195,10 @@ public class ReviewPlotMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
+        // Set back item
+        getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+
+        // Set plot information item
         try {
             getMenu().getSlot(4).setItem(new ItemBuilder(Material.MAP, 1)
                     .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REVIEW_PLOT))
@@ -203,6 +207,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                     "",
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName(),
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(),
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                             .build())
                     .build());
@@ -210,10 +215,28 @@ public class ReviewPlotMenu extends AbstractMenu {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
+
+        // Set review information item
+        String points = LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS);
+        getMenu().getSlot(7).setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.INFO_BUTTON))
+                .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.INFORMATION))
+                .setLore(new LoreBuilder()
+                        .addLines(Utils.createMultilineFromString( "§7" + LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                        .emptyLine()
+                        .addLines("§f" + points + " <= 0: §c" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ABANDONED),
+                                  "§f" + points + " <= 8: §e" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REJECTED),
+                                  "§f" + points + " <= 20: §a" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
+                        .build())
+                .build());
     }
 
     @Override
     protected void setItemClickEventsAsync() {
+        // Set click event for back item
+        getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> {
+            try { new ReviewMenu(getMenuPlayer()); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        });
+
         // Set click event for close item
         getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
@@ -407,6 +430,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     }
 
                     meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
 
                     ItemStack newItem = getMenu().getSlot(slot).getItem(clickPlayer);
                     newItem.setItemMeta(meta);
@@ -421,7 +445,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
+                .pattern("101101101")
                 .pattern("100000001")
                 .pattern("100000001")
                 .pattern("100000001")

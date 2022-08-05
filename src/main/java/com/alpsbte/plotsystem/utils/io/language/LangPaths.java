@@ -13,6 +13,7 @@ public class LangPaths {
         public static final String MEMBERS = PLOT + "members";
         public static final String MEMBER = PLOT + "member";
         public static final String CITY = PLOT + "city";
+        public static final String COUNTRY = PLOT + "country";
         public static final String DIFFICULTY = PLOT + "difficulty";
         public static final String STATUS = PLOT + "status";
         public static final String SCORE = PLOT + "score";
@@ -101,6 +102,7 @@ public class LangPaths {
         public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
         public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
+        public static final String INFORMATION = MENU_TITLES + "information";
     }
 
     public static final class MenuDescription {
@@ -132,6 +134,7 @@ public class LangPaths {
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
         public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
         public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
+        public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
     }
 
     public static final class Review {
@@ -140,6 +143,7 @@ public class LangPaths {
         public static final String REVIEW_PLOT = REVIEW + "review-plot";
         public static final String MANAGE_PLOT = REVIEW + "manage-plot";
         public static final String ACCEPTED = REVIEW + "accepted";
+        public static final String ABANDONED = REVIEW + "abandoned";
         public static final String REJECTED = REVIEW + "rejected";
         public static final String FEEDBACK = REVIEW + "feedback";
         public static final String REVIEWER = REVIEW + "reviewer";
