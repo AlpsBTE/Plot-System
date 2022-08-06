@@ -163,6 +163,7 @@ review:
   rejected: "驳回"
   feedback: "回馈"
   reviewer: "审核员"
+  player-language: "Player Language"
   criteria:
     accuracy: "准确性"
     accuracy-desc: "建筑的精确度如何？ ////- 看起来像在真实世界//- 正确的轮廓//- 正确的高度//- 完成了"

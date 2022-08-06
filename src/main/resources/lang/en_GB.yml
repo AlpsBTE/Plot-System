@@ -163,6 +163,7 @@ review:
   abandoned: "Abandoned"
   feedback: "Feedback"
   reviewer: "Reviewer"
+  player-language: "Player Language"
   criteria:
     accuracy: "Accuracy"
     accuracy-desc: "How accurate is the building?////- Looks like in RL//- Correct outlines//- Correct height//- Is completed"

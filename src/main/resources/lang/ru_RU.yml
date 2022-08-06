@@ -163,6 +163,7 @@ review:
   rejected: "Отклонено"
   feedback: "Отзыв"
   reviewer: "Оценщик"
+  player-language: "Player Language"
   criteria:
     accuracy: "Точность Воссоздания"
     accuracy-desc: "Насколько точно исполнено здание?////- Выглядит как в настоящей жизни//- Правильные контуры//- Правильная высота//- Полностью завершен"

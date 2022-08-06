@@ -147,6 +147,7 @@ public class LangPaths {
         public static final String REJECTED = REVIEW + "rejected";
         public static final String FEEDBACK = REVIEW + "feedback";
         public static final String REVIEWER = REVIEW + "reviewer";
+        public static final String PLAYER_LANGUAGE = REVIEW + "player-language";
 
         public static final class Criteria {
             private static final String CRITERIA = REVIEW + "criteria.";

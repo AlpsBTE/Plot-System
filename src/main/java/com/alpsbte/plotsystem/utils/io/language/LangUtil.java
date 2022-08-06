@@ -48,7 +48,7 @@ public class LangUtil extends YamlFileFactory {
         return getLanguageFileByLocale(sender instanceof Player ? getLocaleTagByPlayer((Player) sender) : languages[0].tag).getTranslation(key, args);
     }
 
-    private static LanguageFile getLanguageFileByLocale(String locale) {
+    public static LanguageFile getLanguageFileByLocale(String locale) {
         return Arrays.stream(languages)
                 .filter(lang -> lang.tag.equalsIgnoreCase(locale))
                 .findFirst()

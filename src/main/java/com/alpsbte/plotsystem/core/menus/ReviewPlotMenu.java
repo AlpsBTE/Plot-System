@@ -209,6 +209,8 @@ public class ReviewPlotMenu extends AbstractMenu {
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(),
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
+                            .emptyLine()
+                            .addLine("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.PLAYER_LANGUAGE) + ": §f" + LangUtil.getLanguageFileByLocale(plot.getPlotOwner().getLanguageTag()).getLangName())
                             .build())
                     .build());
         } catch (SQLException ex) {

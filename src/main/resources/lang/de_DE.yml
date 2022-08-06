@@ -163,6 +163,7 @@ review:
   rejected: "Abgelehnt"
   feedback: "Feedback"
   reviewer: "Reviewer"
+  player-language: "Spielersprache"
   criteria:
     accuracy: "Genauigkeit"
     accuracy-desc: "Wie akkurat ist das Gebäude?////- Sieht aus wie in RL//- Korrekte Umrisse//- Korrekte Höhen//- Ist vollständig"

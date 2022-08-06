@@ -163,6 +163,7 @@ review:
   rejected: "거절됨"
   feedback: "피드백"
   reviewer: "검토자"
+  player-language: "Player Language"
   criteria:
     accuracy: "정확도"
     accuracy-desc: "얼마나 정확하게 건축되었나요?////- 현실과의 유사성//- 올바른 외곽선//- 올바른 높이//- 완성도"
