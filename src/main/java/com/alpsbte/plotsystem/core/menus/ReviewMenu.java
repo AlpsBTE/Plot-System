@@ -115,7 +115,6 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             Plot plot = plots.get(i);
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
-                    getMenuPlayer().closeInventory();
                     if (plot.getStatus() == Status.unreviewed) {
                         if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())) {
                             Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
@@ -130,6 +129,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     }
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                    getMenuPlayer().closeInventory();
                 }
             });
         }

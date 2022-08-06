@@ -65,12 +65,6 @@ public class LangUtil extends YamlFileFactory {
         } else return player.getPlayer().getLocale();
     }
 
-    public static void broadcast(String key) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Utils.getInfoMessageFormat(get(player, key)));
-        }
-    }
-
     public static void broadcast(String key, String... args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(Utils.getInfoMessageFormat(get(player, key, args)));
