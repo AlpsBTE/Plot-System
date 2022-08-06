@@ -217,7 +217,7 @@ public class Utils {
         ArrayList<String> list = new ArrayList<>();
 
         // Split text at line breaker symbol, iterate through all subtexts and create all lists together to one large list.
-        String[] texts = text.split(String.valueOf(lineBreaker));
+        String[] texts = text.replaceAll("//", " ").split(String.valueOf(lineBreaker));
 
         for(String subText : texts)
             list.addAll(createMultilineFromString(subText, maxCharsPerLine));
