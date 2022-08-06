@@ -149,7 +149,7 @@ menu-description:
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
   filter-desc: "Show All"
-  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points,\nthe plot is rejected and the builder gets the plot back to improve it.\nIf the plot receives 0 points, it gets abandoned."
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review

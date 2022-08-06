@@ -149,7 +149,7 @@ menu-description:
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
   filter-desc: "Alle Anzeigen"
-  information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
+  information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte oder eine Kategorie 0 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
 
 # -----------------------------------------------------
 # | Review
