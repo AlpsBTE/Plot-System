@@ -211,7 +211,7 @@ message:
     abandoned-plot: "§aID §6#{0}§a의 플롯을 버렸습니다!"
     finished-plot: "§6{1}§a님의 플롯 §6#{0}§a(이)가 완성되었습니다!"
     plot-marked-as-reviewed: "§6{1}§a님의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
-    plot-rejected: "§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다. §6/sendFeedback <ID> <텍스트>§a 명령어로 피드백을 보내세요!"
+    plot-rejected: "§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다."
     undid-submission: "§a플롯 §6#{0}§a의 제출을 취소하였습니다!"
     undid-review: "§6{1}§a님의 플롯 §6#{0}§a의 리뷰를 취소하였습니다!"
     reviewed-plot: "§a당신의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
@@ -230,6 +230,8 @@ message:
     creating-plot: "§a새로운 플롯 생성 중..."
     created-new-plot: "§6{0}§a님의 플롯을 생성하였습니다!"
     changed-language: "§a언어를 §6{0}§a(으)로 변경하였습니다!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "존재하지 않는 플롯입니다!"
     plot-either-unclaimed-or-unreviewed: "아직 소유되거나 검토되지 않은 플롯입니다!"
@@ -258,6 +260,7 @@ message:
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    input-expired: "The chat input has expired!"
 
 leaderboards:
   pages:

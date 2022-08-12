@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
@@ -38,6 +39,10 @@ import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -50,6 +55,7 @@ import org.ipvp.canvas.mask.Mask;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -391,6 +397,18 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);
+
+                        try {
+                            Review.awaitReviewerFeedbackList.remove(clickPlayer.getUniqueId());
+                            Review.awaitReviewerFeedbackList.put(clickPlayer.getUniqueId(), new ChatFeedbackInput(plot.getReview()));
+                            clickPlayer.sendMessage("");
+                            clickPlayer.sendMessage("§a" + LangUtil.get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
+                            TextComponent txtComponent = new TextComponent();
+                            txtComponent.setText(LangUtil.get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
+                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(clickPlayer, LangPaths.MenuTitle.CANCEL)).create()));
+                            txtComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "cancel"));
+                            clickPlayer.spigot().sendMessage(txtComponent);
+                        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
                     });
 
                     for (Builder member : plot.getPlotMembers()) {

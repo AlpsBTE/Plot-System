@@ -24,13 +24,19 @@
 
 package com.alpsbte.plotsystem.core.system;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -38,11 +44,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Review {
+    public static HashMap<UUID, ChatFeedbackInput> awaitReviewerFeedbackList = new HashMap<>();
 
     private final int reviewID;
 
@@ -259,5 +268,19 @@ public class Review {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
         });
+    }
+
+    public static void checkReviewerFeedbackList() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+            if (!awaitReviewerFeedbackList.isEmpty()) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (awaitReviewerFeedbackList.containsKey(player.getUniqueId()) && awaitReviewerFeedbackList.get(player.getUniqueId()).getDateTime().isBefore(LocalDateTime.now().minusMinutes(5))) {
+                        awaitReviewerFeedbackList.remove(player.getUniqueId());
+                        player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.INPUT_EXPIRED)));
+                        player.playSound(player.getLocation(), Utils.ErrorSound, 1f, 1f);
+                    }
+                }
+            }
+        }, 0L, 20 * 60);
     }
 }

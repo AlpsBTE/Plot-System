@@ -222,6 +222,8 @@ public class LangPaths {
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
             public static final String CHANGED_LANGUAGE = INFO + "changed-language";
+            public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
+            public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
         }
 
         public static final class Error {
@@ -256,6 +258,7 @@ public class LangPaths {
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
             public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
+            public static final String INPUT_EXPIRED = ERROR + "input-expired";
         }
     }
 

@@ -211,7 +211,7 @@ message:
     abandoned-plot: "§a有ID之废弃建地 §6#{0}§a!"
     finished-plot: "§a §6{1}§a 的建地 §6#{0}§a 已完成！ "
     plot-marked-as-reviewed: "§a §6{1}§a 的建地 §6#{0}§a 已标记供审核！ "
-    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被驳回！使用 §6/sendFeedback <ID> <TEXT>§a发送回馈！ "
+    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被驳回！"
     undid-submission: "§a尚未提交的建地 §6#{0}§a！ "
     undid-review: "§a尚未审核的建地 §6#{0}§a by §6#{1}§a！ "
     reviewed-plot: "§a你的建地 §6#{0}§a 已被审核！ "
@@ -230,6 +230,8 @@ message:
     creating-plot: "§a创建新建地..."
     created-new-plot: "§a创建新建地§a 为 §6{0}§a！ "
     changed-language: "§a将你的语言变更为 §6{0}§a！ "
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "此建地不存在！ "
     plot-either-unclaimed-or-unreviewed: "此建地无人认领或尚未审核！ "
@@ -258,6 +260,7 @@ message:
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    input-expired: "The chat input has expired!"
 
 leaderboards:
   pages:

@@ -211,7 +211,7 @@ message:
     abandoned-plot: "§aAbandoned plot with ID §6#{0}§a!"
     finished-plot: "§aPlot §6#{0}§a by §6{1}§a has been finished!"
     plot-marked-as-reviewed: "§aPlot §6#{0}§a by §6{1}§a has been marked as reviewed!"
-    plot-rejected: "§aPlot §6#{0}§a by §6{1}§a has been rejected! Send feedback using §6/sendFeedback <ID> <TEXT>§a!"
+    plot-rejected: "§aPlot §6#{0}§a by §6{1}§a has been rejected!"
     undid-submission: "§aUndid submission of plot §6#{0}§a!"
     undid-review: "§aUndid review of plot §6#{0}§a by §6#{1}§a!"
     reviewed-plot: "§aYour plot §6#{0}§a has been reviewed!"
@@ -230,6 +230,8 @@ message:
     creating-plot: "§aCreating new plot..."
     created-new-plot: "§aCreated new plot§a for §6{0}§a!"
     changed-language: "§aChanged your language to §6{0}§a!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
@@ -258,6 +260,7 @@ message:
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    input-expired: "The chat input has expired!"
 
 leaderboards:
   pages:

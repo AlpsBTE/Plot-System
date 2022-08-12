@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
@@ -35,6 +36,8 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -50,6 +53,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -63,6 +67,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class EventListener extends SpecialBlocks implements Listener {
@@ -211,6 +216,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+            Review.awaitReviewerFeedbackList.remove(event.getPlayer().getUniqueId());
             PlotManager.clearCache(event.getPlayer().getUniqueId());
         }, 60L);
     }
@@ -277,6 +283,27 @@ public class EventListener extends SpecialBlocks implements Listener {
                 event.getBlockPlaced().setTypeIdAndData(162, (byte) 12, true);
             } else if(item.isSimilar(BarkDarkOakLog)) {
                 event.getBlockPlaced().setTypeIdAndData(162, (byte) 13, true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerChatEvent(AsyncPlayerChatEvent event) throws SQLException {
+        UUID playerUUID = event.getPlayer().getUniqueId();
+        if (Review.awaitReviewerFeedbackList.containsKey(playerUUID)) {
+            event.setCancelled(true);
+            String feedback = event.getMessage();
+
+            if (!feedback.equalsIgnoreCase("cancel")) {
+                Review review = Review.awaitReviewerFeedbackList.get(playerUUID).getReview();
+                review.setFeedback(feedback);
+                Review.awaitReviewerFeedbackList.remove(playerUUID);
+                event.getPlayer().sendMessage(Utils.getInfoMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1f, 1f);
+            } else {
+                Review.awaitReviewerFeedbackList.remove(playerUUID);
+                event.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Error.INPUT_EXPIRED)));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.ErrorSound, 1f, 1f);
             }
         }
     }

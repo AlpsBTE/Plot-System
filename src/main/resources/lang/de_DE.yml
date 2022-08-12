@@ -211,7 +211,7 @@ message:
     abandoned-plot: "§aPlot mit ID §6#{0}§a gelöscht!"
     finished-plot: "§a§6{1}§a hat den Plot §6#{0}§a fertiggestellt!"
     plot-marked-as-reviewed: "§aPlot §6#{0}§a von §6{1}§a wurde als geprüft markiert!"
-    plot-rejected: "§aPlot §6#{0}§a von §6{1}§a wurde abgelehnt! Verwende den Befehl §6/sendFeedback <ID> <TEXT>§a um ein Feedback zu hinterlassen!"
+    plot-rejected: "§aPlot §6#{0}§a von §6{1}§a wurde abgelehnt!"
     undid-submission: "§aDie Einreichung des Plots §6#{0}§a wurde rückgängig gemacht!"
     undid-review: "§aDie Bewertung des Plots §6#{0}§a von §6#{1}§a wurde rückgängig gemacht!"
     reviewed-plot: "§aDein Plot §6#{0}§a wurde bewertet!"
@@ -230,6 +230,8 @@ message:
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
     changed-language: "§aAlle Systemnachrichten sind nun auf §6{0}§a!"
+    enter-feedback: "Bitte gebe eine Bewertung für den Spieler im Chat ein."
+    input-expires-after: "§9Die Chat-Eingabe läuft nach §6{0} §9Minuten ab."
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
     plot-either-unclaimed-or-unreviewed: "Dieser Plot ist entweder unbeansprucht oder wurde noch nicht bewertet!"
@@ -258,6 +260,7 @@ message:
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
     no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
+    input-expired: "Die Chat-Eingabe ist abgelaufen!"
 
 leaderboards:
   pages:

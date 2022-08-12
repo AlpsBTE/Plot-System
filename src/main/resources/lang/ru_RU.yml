@@ -211,7 +211,7 @@ message:
     abandoned-plot: "§aПокидание участка с ID §6#{0}§a!"
     finished-plot: "§aУчасток §6#{0}§a построенный §6{1}§a был завершён!"
     plot-marked-as-reviewed: "§aУчасток §6#{0}§a построенный §6{1}§aбыл помечена как оценённый!!"
-    plot-rejected: "§aУчасток §6#{0}§a построенный §6{1}§a был отклонен! Отправьте отзыв через §6/sendFeedback <ID> <TEXT>§a!"
+    plot-rejected: "§aУчасток §6#{0}§a построенный §6{1}§a был отклонен!"
     undid-submission: "§aОтмена отправки участка §6#{0}§a!"
     undid-review: "§aОтмена оценки участка §6#{0}§a построенным §6#{1}§a!"
     reviewed-plot: "§aВаш участок §6#{0}§a был оценён!"
@@ -230,6 +230,8 @@ message:
     creating-plot: "§aСоздание нового участка..."
     created-new-plot: "§aСоздан новый участок§a для §6{0}§a!"
     changed-language: "§aВаш язык изменён на §6{0}§a!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "Этот участок не существует!"
     plot-either-unclaimed-or-unreviewed: "Этот участок не занят либо ещё не был оценён!!"
@@ -258,6 +260,7 @@ message:
     please-wait: "Пожалуйста, подождите несколько секунд перед созданием нового участка!"
     all-slots-occupied: "Все ваши слоты заняты! Пожалуйста, завершите текущие участки, прежде чем создавать новый."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    input-expired: "The chat input has expired!"
 
 leaderboards:
   pages:

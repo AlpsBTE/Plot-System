@@ -211,7 +211,7 @@ message:
     abandoned-plot: "§aParcelle abandonnée avec ID §6#{0}§a!"
     finished-plot: "§aLe tracé §6#{0}§a par §6{1}§a est terminé!"
     plot-marked-as-reviewed: "§aLe terrain §6#{0}§a par §6{1}§a a été marqué comme révisé!"
-    plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté! Envoyez des commentaires en utilisant §6/sendFeedback <ID> <TEXT>§a!"
+    plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté!"
     undid-submission: "§aUndid soumission du complot §6#{0}§a!"
     undid-review: "§aUndid review of plot §6#{0}§a by §6#{1}§a!"
     reviewed-plot: "§aVotre parcelle §6#{0}§a a été revue!"
@@ -230,6 +230,8 @@ message:
     creating-plot: "§aCréation d'un nouveau tracé..."
     created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
     changed-language: "§aChangement de langue en §6{0}§a!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "Ce complot n'existe pas!"
     plot-either-unclaimed-or-unreviewed: "Cette parcelle est soit non réclamée, soit n'a pas encore été examinée!"
@@ -258,6 +260,7 @@ message:
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    input-expired: "The chat input has expired!"
 
 leaderboards:
   pages:
