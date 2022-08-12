@@ -40,7 +40,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class CMD_EditPlot extends BaseCommand {
@@ -67,20 +66,18 @@ public class CMD_EditPlot extends BaseCommand {
                             return true;
                         }
 
-                        if (plot != null) {
-                            if (plot.getStatus() != Status.completed) {
-                                Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
-                                int countryID = plot.getCity().getCountry().getID();
-                                if (builder.isReviewer() && builder.getAsReviewer().getCountries().stream().anyMatch(c -> c.getID() == countryID) && plot.getPlotOwner().getUUID() != builder.getUUID() && plot.getPlotMembers().stream().noneMatch(b -> b.getUUID() == builder.getUUID())) {
-                                    if (plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
-                                        plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
-                                        sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
-                                    } else {
-                                        plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
-                                        sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
-                                    }
-                                    return true;
+                        if (plot != null && plot.getStatus() != Status.completed) {
+                            Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
+                            int countryID = plot.getCity().getCountry().getID();
+                            if (builder.isReviewer() && builder.getAsReviewer().getCountries().stream().anyMatch(c -> c.getID() == countryID) && plot.getPlotOwner().getUUID() != builder.getUUID() && plot.getPlotMembers().stream().noneMatch(b -> b.getUUID() == builder.getUUID())) {
+                                if (plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
+                                    plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
+                                    sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                                } else {
+                                    plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
+                                    sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                                 }
+                                return true;
                             }
                         }
                         sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));

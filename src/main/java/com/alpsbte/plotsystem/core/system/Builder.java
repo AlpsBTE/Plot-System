@@ -457,8 +457,8 @@ public class Builder {
             buildTeams.forEach(b -> {
                 try {
                     countries.addAll(b.getCountries().stream().map(Country::getID).collect(Collectors.toList()));
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
             });
 
