@@ -30,9 +30,9 @@ commands:
   undoreview:
     description: Undo a review of a plot.
     usage: /undoreview <ID>
-  sendfeedback:
+  editfeedback:
     description: Updates the feedback of a plot.
-    usage: /sendfeedback <ID> <Text>
+    usage: /editfeedback <ID> <Feedback>
   editplot:
     description: Enable/disable build permissions for reviewers on a plot.
     usage: /editplot
