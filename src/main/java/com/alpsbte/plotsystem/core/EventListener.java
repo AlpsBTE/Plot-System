@@ -106,8 +106,8 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
 
             // Check if player has changed his name
+            Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
             try {
-                Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
                 if (!builder.getName().equals(event.getPlayer().getName())) {
                     DatabaseConnection.createStatement("UPDATE plotsystem_builders SET name = ? WHERE uuid = ?")
                             .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId().toString()).executeUpdate();
@@ -118,7 +118,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about new feedback
             try {
-                List<Plot> plots = PlotManager.getPlots(Builder.byUUID(event.getPlayer().getUniqueId()), Status.completed, Status.unfinished);
+                List<Plot> plots = PlotManager.getPlots(builder, Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
@@ -138,7 +138,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about unfinished plots
             try {
-                List<Plot> plots = PlotManager.getPlots(Builder.byUUID(event.getPlayer().getUniqueId()), Status.unfinished);
+                List<Plot> plots = PlotManager.getPlots(builder, Status.unfinished);
                 if(plots.size() >= 1) {
                     PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
@@ -148,16 +148,16 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
 
             // Informing reviewer about new reviews
-            if(event.getPlayer().hasPermission("plotsystem.review")) {
-                try {
-                    List<Plot> unreviewedPlots = PlotManager.getPlots(Status.unreviewed);
+            try {
+                if(event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
+                    List<Plot> unreviewedPlots = PlotManager.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
 
                     if(unreviewedPlots.size() != 0) {
                         PlotHandler.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
                     }
-                } catch (Exception ex) {
-                    Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
                 }
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
             }
         });
     }
