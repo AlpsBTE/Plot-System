@@ -260,7 +260,7 @@ message:
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    input-expired: "The chat input has expired!"
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
 leaderboards:
   pages:

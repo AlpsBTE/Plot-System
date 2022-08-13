@@ -230,7 +230,7 @@ message:
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
     changed-language: "§aAlle Systemnachrichten sind nun auf §6{0}§a!"
-    enter-feedback: "Bitte gebe eine Bewertung für den Spieler im Chat ein."
+    enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
     input-expires-after: "§9Die Chat-Eingabe läuft nach §6{0} §9Minuten ab."
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
@@ -260,7 +260,7 @@ message:
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
     no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
-    input-expired: "Die Chat-Eingabe ist abgelaufen!"
+    feedback-input-expired: "Die Chat-Eingabe ist abgelaufen! Nutze §7/editfeedback <ID> <Text> §cum das Feedback zu bearbeiten."
 
 leaderboards:
   pages:

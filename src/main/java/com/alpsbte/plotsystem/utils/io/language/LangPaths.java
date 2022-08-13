@@ -258,7 +258,7 @@ public class LangPaths {
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
             public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
-            public static final String INPUT_EXPIRED = ERROR + "input-expired";
+            public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
         }
     }
 

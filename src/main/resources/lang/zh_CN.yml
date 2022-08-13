@@ -260,7 +260,7 @@ message:
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    input-expired: "The chat input has expired!"
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
 leaderboards:
   pages:

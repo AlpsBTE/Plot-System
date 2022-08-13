@@ -302,7 +302,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1f, 1f);
             } else {
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Error.INPUT_EXPIRED)));
+                event.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.ErrorSound, 1f, 1f);
             }
         }
