@@ -25,6 +25,7 @@ plot:
   members: "Plot Mitglieder"
   member: "Plot Mitglied"
   city: "Stadt"
+  country: "Land"
   difficulty: "Schwierigkeitsgrad"
   status: "Status"
   score: "Punktestand"
@@ -114,6 +115,8 @@ menu-title:
   select-focus-mode: "Focus-Mode Auswählen"
   select-local-inspiration-mode: "Inspiration-Mode Auswählen"
   select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
+  filter-by-country: "Nach Land Filtern"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -145,6 +148,8 @@ menu-description:
   select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.\n\n- Keine Umgebung\n- Keine Nachbarsgrundstücke"
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
+  filter-desc: "Alle Anzeigen"
+  information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte oder eine Kategorie 0 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
 
 # -----------------------------------------------------
 # | Review
@@ -154,9 +159,11 @@ review:
   manage-plot: "Plot Verwalten"
   manage-and-review-plots: "Plots Verwalten & Bewerten"
   accepted: "Angenommen"
+  abandoned: "Gelöscht"
   rejected: "Abgelehnt"
   feedback: "Feedback"
   reviewer: "Reviewer"
+  player-language: "Spielersprache"
   criteria:
     accuracy: "Genauigkeit"
     accuracy-desc: "Wie akkurat ist das Gebäude?////- Sieht aus wie in RL//- Korrekte Umrisse//- Korrekte Höhen//- Ist vollständig"
@@ -204,7 +211,7 @@ message:
     abandoned-plot: "§aPlot mit ID §6#{0}§a gelöscht!"
     finished-plot: "§a§6{1}§a hat den Plot §6#{0}§a fertiggestellt!"
     plot-marked-as-reviewed: "§aPlot §6#{0}§a von §6{1}§a wurde als geprüft markiert!"
-    plot-rejected: "§aPlot §6#{0}§a von §6{1}§a wurde abgelehnt! Verwende den Befehl §6/sendFeedback <ID> <TEXT>§a um ein Feedback zu hinterlassen!"
+    plot-rejected: "§aPlot §6#{0}§a von §6{1}§a wurde abgelehnt!"
     undid-submission: "§aDie Einreichung des Plots §6#{0}§a wurde rückgängig gemacht!"
     undid-review: "§aDie Bewertung des Plots §6#{0}§a von §6#{1}§a wurde rückgängig gemacht!"
     reviewed-plot: "§aDein Plot §6#{0}§a wurde bewertet!"
@@ -223,6 +230,8 @@ message:
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
     changed-language: "§aAlle Systemnachrichten sind nun auf §6{0}§a!"
+    enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
+    input-expires-after: "§9Die Chat-Eingabe läuft nach §6{0} §9Minuten ab."
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
     plot-either-unclaimed-or-unreviewed: "Dieser Plot ist entweder unbeansprucht oder wurde noch nicht bewertet!"
@@ -250,6 +259,8 @@ message:
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
+    no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
+    feedback-input-expired: "Die Chat-Eingabe ist abgelaufen! Nutze §7/editfeedback <ID> <Text> §cum das Feedback zu bearbeiten."
 
 leaderboards:
   pages:

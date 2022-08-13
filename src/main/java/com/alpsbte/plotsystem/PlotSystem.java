@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.HologramManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
@@ -179,6 +180,7 @@ public class PlotSystem extends JavaPlugin {
 
         PlotManager.checkPlotsForLastActivity();
         PlotManager.syncPlotSchematicFiles();
+        Review.checkReviewerFeedbackList();
         PlotManager.startTimer();
 
         try {

@@ -33,7 +33,7 @@ import com.alpsbte.plotsystem.commands.admin.setup.CMD_Setup;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
 import com.alpsbte.plotsystem.commands.review.CMD_Review;
-import com.alpsbte.plotsystem.commands.review.CMD_SendFeedback;
+import com.alpsbte.plotsystem.commands.review.CMD_EditFeedback;
 import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class CommandManager {
         // Review Commands
         add(new CMD_Review());
         add(new CMD_UndoReview());
-        add(new CMD_SendFeedback());
+        add(new CMD_EditFeedback());
         add(new CMD_EditPlot());
 
         // Admin Commands

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public class CMD_SendFeedback extends BaseCommand {
+public class CMD_EditFeedback extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
@@ -81,21 +81,21 @@ public class CMD_SendFeedback extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "sendFeedback" };
+        return new String[] { "editfeedback" };
     }
 
     @Override
     public String getDescription() {
-        return "Updates feedback of a plot.";
+        return "Updates the feedback of a plot.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID", "Name" };
+        return new String[] { "ID", "Feedback" };
     }
 
     @Override
     public String getPermission() {
-        return "plotsystem.review.sendfeedback";
+        return "plotsystem.review.editfeedback";
     }
 }

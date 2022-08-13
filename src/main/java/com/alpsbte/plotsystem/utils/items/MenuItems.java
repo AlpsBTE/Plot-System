@@ -78,4 +78,10 @@ public class MenuItems {
                 .setName("§6§l" + LangUtil.get(player, LangPaths.MenuTitle.LOADING))
                 .build();
     }
+
+    public static ItemStack filterItem(Player langPlayer) {
+        return new ItemBuilder(Material.HOPPER, 1)
+                .setName("§6§l" + LangUtil.get(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY))
+                .build();
+    }
 }

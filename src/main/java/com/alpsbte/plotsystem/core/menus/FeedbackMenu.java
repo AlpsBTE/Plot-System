@@ -101,7 +101,8 @@ public class FeedbackMenu extends AbstractMenu {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
                     .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
                     .setLore(new LoreBuilder()
-                            .addLine(plot.getReview().getFeedback()).build())
+                            .addLines(Utils.createMultilineFromString(plot.getReview().getFeedback(), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                            .build())
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

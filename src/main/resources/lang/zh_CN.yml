@@ -25,6 +25,7 @@ plot:
   members: "建地成员"
   member: "建地成员"
   city: "城市"
+  country: "Country"
   difficulty: "难度"
   status: "状态"
   score: "积分"
@@ -114,6 +115,8 @@ menu-title:
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -145,6 +148,8 @@ menu-description:
   select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -154,9 +159,11 @@ review:
   manage-plot: "管理建地"
   manage-and-review-plots: "管理与审核建地"
   accepted: "接受"
+  abandoned: "Abandoned"
   rejected: "驳回"
   feedback: "回馈"
   reviewer: "审核员"
+  player-language: "Player Language"
   criteria:
     accuracy: "准确性"
     accuracy-desc: "建筑的精确度如何？ ////- 看起来像在真实世界//- 正确的轮廓//- 正确的高度//- 完成了"
@@ -204,7 +211,7 @@ message:
     abandoned-plot: "§a有ID之废弃建地 §6#{0}§a!"
     finished-plot: "§a §6{1}§a 的建地 §6#{0}§a 已完成！ "
     plot-marked-as-reviewed: "§a §6{1}§a 的建地 §6#{0}§a 已标记供审核！ "
-    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被驳回！使用 §6/sendFeedback <ID> <TEXT>§a发送回馈！ "
+    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被驳回！"
     undid-submission: "§a尚未提交的建地 §6#{0}§a！ "
     undid-review: "§a尚未审核的建地 §6#{0}§a by §6#{1}§a！ "
     reviewed-plot: "§a你的建地 §6#{0}§a 已被审核！ "
@@ -223,6 +230,8 @@ message:
     creating-plot: "§a创建新建地..."
     created-new-plot: "§a创建新建地§a 为 §6{0}§a！ "
     changed-language: "§a将你的语言变更为 §6{0}§a！ "
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "此建地不存在！ "
     plot-either-unclaimed-or-unreviewed: "此建地无人认领或尚未审核！ "
@@ -250,6 +259,8 @@ message:
     no-plots-left: "此城市计画区没有剩余更多建地了。请选择其他计画区。"
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
 leaderboards:
   pages:

@@ -25,6 +25,7 @@ plot:
   members: "Участник собственности"
   member: "Участник Участка"
   city: "Город"
+  country: "Country"
   difficulty: "Сложность"
   status: "Статус"
   score: "Оценка"
@@ -114,6 +115,8 @@ menu-title:
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -145,6 +148,8 @@ menu-description:
   select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -154,9 +159,11 @@ review:
   manage-plot: "Управлять участком"
   manage-and-review-plots: "Управление и Оценка Участков"
   accepted: "Одобрено"
+  abandoned: "Abandoned"
   rejected: "Отклонено"
   feedback: "Отзыв"
   reviewer: "Оценщик"
+  player-language: "Player Language"
   criteria:
     accuracy: "Точность Воссоздания"
     accuracy-desc: "Насколько точно исполнено здание?////- Выглядит как в настоящей жизни//- Правильные контуры//- Правильная высота//- Полностью завершен"
@@ -204,7 +211,7 @@ message:
     abandoned-plot: "§aПокидание участка с ID §6#{0}§a!"
     finished-plot: "§aУчасток §6#{0}§a построенный §6{1}§a был завершён!"
     plot-marked-as-reviewed: "§aУчасток §6#{0}§a построенный §6{1}§aбыл помечена как оценённый!!"
-    plot-rejected: "§aУчасток §6#{0}§a построенный §6{1}§a был отклонен! Отправьте отзыв через §6/sendFeedback <ID> <TEXT>§a!"
+    plot-rejected: "§aУчасток §6#{0}§a построенный §6{1}§a был отклонен!"
     undid-submission: "§aОтмена отправки участка §6#{0}§a!"
     undid-review: "§aОтмена оценки участка §6#{0}§a построенным §6#{1}§a!"
     reviewed-plot: "§aВаш участок §6#{0}§a был оценён!"
@@ -223,6 +230,8 @@ message:
     creating-plot: "§aСоздание нового участка..."
     created-new-plot: "§aСоздан новый участок§a для §6{0}§a!"
     changed-language: "§aВаш язык изменён на §6{0}§a!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "Этот участок не существует!"
     plot-either-unclaimed-or-unreviewed: "Этот участок не занят либо ещё не был оценён!!"
@@ -250,6 +259,8 @@ message:
     no-plots-left: "У этого градостроительного проекта больше не осталось участков. Пожалуйста, выберите другой проект."
     please-wait: "Пожалуйста, подождите несколько секунд перед созданием нового участка!"
     all-slots-occupied: "Все ваши слоты заняты! Пожалуйста, завершите текущие участки, прежде чем создавать новый."
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
 leaderboards:
   pages:

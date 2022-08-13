@@ -217,7 +217,7 @@ public class Utils {
         ArrayList<String> list = new ArrayList<>();
 
         // Split text at line breaker symbol, iterate through all subtexts and create all lists together to one large list.
-        String[] texts = text.split(String.valueOf(lineBreaker));
+        String[] texts = text.replaceAll("//", " ").split(String.valueOf(lineBreaker));
 
         for(String subText : texts)
             list.addAll(createMultilineFromString(subText, maxCharsPerLine));
@@ -319,6 +319,7 @@ public class Utils {
         public static CustomHead BACK_BUTTON;
         public static CustomHead NEXT_BUTTON;
         public static CustomHead PREVIOUS_BUTTON;
+        public static CustomHead INFO_BUTTON;
 
         public static CustomHead GLOBE;
         public static CustomHead PLOT_TYPE;
@@ -339,6 +340,7 @@ public class Utils {
                 BACK_BUTTON = new CustomHead("9226");
                 NEXT_BUTTON = new CustomHead("9223");
                 PREVIOUS_BUTTON = new CustomHead("9226");
+                INFO_BUTTON = new CustomHead("46488");
 
                 GLOBE = new CustomHead("49973");
                 PLOT_TYPE = new CustomHead("4159");

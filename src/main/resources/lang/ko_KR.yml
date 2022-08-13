@@ -25,6 +25,7 @@ plot:
   members: "플롯 멤버들"
   member: "플롯 멤버"
   city: "도시"
+  country: "Country"
   difficulty: "난이도"
   status: "상태"
   score: "점수"
@@ -114,6 +115,8 @@ menu-title:
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -145,6 +148,8 @@ menu-description:
   select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -154,9 +159,11 @@ review:
   manage-plot: "플롯 관리하기"
   manage-and-review-plots: "플롯 리뷰 / 관리하기"
   accepted: "승낙됨"
+  abandoned: "Abandoned"
   rejected: "거절됨"
   feedback: "피드백"
   reviewer: "검토자"
+  player-language: "Player Language"
   criteria:
     accuracy: "정확도"
     accuracy-desc: "얼마나 정확하게 건축되었나요?////- 현실과의 유사성//- 올바른 외곽선//- 올바른 높이//- 완성도"
@@ -204,7 +211,7 @@ message:
     abandoned-plot: "§aID §6#{0}§a의 플롯을 버렸습니다!"
     finished-plot: "§6{1}§a님의 플롯 §6#{0}§a(이)가 완성되었습니다!"
     plot-marked-as-reviewed: "§6{1}§a님의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
-    plot-rejected: "§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다. §6/sendFeedback <ID> <텍스트>§a 명령어로 피드백을 보내세요!"
+    plot-rejected: "§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다."
     undid-submission: "§a플롯 §6#{0}§a의 제출을 취소하였습니다!"
     undid-review: "§6{1}§a님의 플롯 §6#{0}§a의 리뷰를 취소하였습니다!"
     reviewed-plot: "§a당신의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
@@ -223,6 +230,8 @@ message:
     creating-plot: "§a새로운 플롯 생성 중..."
     created-new-plot: "§6{0}§a님의 플롯을 생성하였습니다!"
     changed-language: "§a언어를 §6{0}§a(으)로 변경하였습니다!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "존재하지 않는 플롯입니다!"
     plot-either-unclaimed-or-unreviewed: "아직 소유되거나 검토되지 않은 플롯입니다!"
@@ -250,6 +259,8 @@ message:
     no-plots-left: "이 도시 프로젝트에 남아있는 플롯이 없습니다. 다른 프로젝트를 선택해주세요."
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
 leaderboards:
   pages:

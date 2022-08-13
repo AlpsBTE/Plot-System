@@ -42,7 +42,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPreviewItems() {
-        getMenu().getSlot(0).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+        getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
             player.closeInventory();
@@ -81,7 +81,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty);
         });
@@ -133,7 +133,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("011101101")
+                .pattern("101101101")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")

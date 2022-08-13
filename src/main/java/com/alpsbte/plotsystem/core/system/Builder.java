@@ -44,12 +44,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Builder {
 
@@ -313,8 +310,8 @@ public class Builder {
     }
 
     public static class DatabaseEntry<K, V> {
-        private K key;
-        private V value;
+        private final K key;
+        private final V value;
 
         DatabaseEntry(K k, V v) {
             this.key = k;
@@ -342,20 +339,6 @@ public class Builder {
 
             DatabaseConnection.closeResultSet(rs);
             return lines;
-        }
-    }
-
-    public static List<String> getBuildersByScore(int limit) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, score FROM plotsystem_builders ORDER BY score DESC LIMIT ?")
-                .setValue(limit).executeQuery()) {
-
-            List<String> scoreAsFormat = new ArrayList<>();
-            while (rs.next()) {
-                scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return scoreAsFormat;
         }
     }
 
@@ -445,5 +428,46 @@ public class Builder {
         }
 
         this.plotType = plotType;
+    }
+
+    public Reviewer getAsReviewer() throws SQLException {
+        return new Reviewer(getUUID());
+    }
+
+    public boolean isReviewer() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(builder_uuid) FROM plotsystem_builder_is_reviewer WHERE builder_uuid = ?")
+                .setValue(getUUID().toString()).executeQuery()) {
+
+            int count = 0;
+            if (rs.next()) count = rs.getInt(1);
+            DatabaseConnection.closeResultSet(rs);
+            return count > 0;
+        }
+    }
+
+    public static class Reviewer {
+        private final List<BuildTeam> buildTeams;
+
+        public Reviewer(UUID reviewerUUID) throws SQLException {
+            this.buildTeams = BuildTeam.getBuildTeamsByReviewer(reviewerUUID);
+        }
+
+        public List<Country> getCountries() {
+            Set<Integer> countries = new HashSet<>();
+            buildTeams.forEach(b -> {
+                try {
+                    countries.addAll(b.getCountries().stream().map(Country::getID).collect(Collectors.toList()));
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            });
+
+            return countries.stream().map(c -> {
+                try {
+                    return new Country(c);
+                } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+                return null;
+            }).collect(Collectors.toList());
+        }
     }
 }

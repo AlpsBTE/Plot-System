@@ -13,6 +13,7 @@ public class LangPaths {
         public static final String MEMBERS = PLOT + "members";
         public static final String MEMBER = PLOT + "member";
         public static final String CITY = PLOT + "city";
+        public static final String COUNTRY = PLOT + "country";
         public static final String DIFFICULTY = PLOT + "difficulty";
         public static final String STATUS = PLOT + "status";
         public static final String SCORE = PLOT + "score";
@@ -100,6 +101,8 @@ public class LangPaths {
         public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
         public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
+        public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
+        public static final String INFORMATION = MENU_TITLES + "information";
     }
 
     public static final class MenuDescription {
@@ -130,6 +133,8 @@ public class LangPaths {
         public static final String SELECT_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-local-inspiration-mode-desc";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
         public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
+        public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
+        public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
     }
 
     public static final class Review {
@@ -138,9 +143,11 @@ public class LangPaths {
         public static final String REVIEW_PLOT = REVIEW + "review-plot";
         public static final String MANAGE_PLOT = REVIEW + "manage-plot";
         public static final String ACCEPTED = REVIEW + "accepted";
+        public static final String ABANDONED = REVIEW + "abandoned";
         public static final String REJECTED = REVIEW + "rejected";
         public static final String FEEDBACK = REVIEW + "feedback";
         public static final String REVIEWER = REVIEW + "reviewer";
+        public static final String PLAYER_LANGUAGE = REVIEW + "player-language";
 
         public static final class Criteria {
             private static final String CRITERIA = REVIEW + "criteria.";
@@ -215,6 +222,8 @@ public class LangPaths {
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
             public static final String CHANGED_LANGUAGE = INFO + "changed-language";
+            public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
+            public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
         }
 
         public static final class Error {
@@ -248,6 +257,8 @@ public class LangPaths {
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
+            public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
+            public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
         }
     }
 

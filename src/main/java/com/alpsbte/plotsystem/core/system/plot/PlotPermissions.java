@@ -50,26 +50,14 @@ public class PlotPermissions {
         return this;
     }
 
-    public PlotPermissions addReviewerPerms() {
-        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().addGroup("staff");
-        world.getProtectedBuildRegion().getOwners().addGroup("staff");
-        return this;
-    }
-
-    public PlotPermissions removeReviewerPerms() {
-        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removeGroup("staff");
-        world.getProtectedBuildRegion().getOwners().removeGroup("staff");
-        return this;
-    }
-
     public PlotPermissions clearAllPerms() {
         if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removeAll();
         world.getProtectedBuildRegion().getOwners().removeAll();
         return this;
     }
 
-    public boolean hasReviewerPerms() {
-        return world.getProtectedBuildRegion().getOwners().getGroups().contains("staff");
+    public boolean hasBuildingPerms(UUID builder) {
+        return world.getProtectedBuildRegion().getOwners().contains(builder);
     }
 
     public void save() {
