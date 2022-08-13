@@ -24,10 +24,12 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
@@ -116,7 +118,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
                     if (plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())) {
+                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
                             Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
                             if (currentPlot != null && currentPlot.getID() == plot.getID()) {
                                 new ReviewPlotMenu(getMenuPlayer(), currentPlot);

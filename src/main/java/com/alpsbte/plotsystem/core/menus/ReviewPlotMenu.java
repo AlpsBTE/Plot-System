@@ -68,15 +68,6 @@ public class ReviewPlotMenu extends AbstractMenu {
     public ReviewPlotMenu(Player player, Plot plot) {
         super(6, LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
         this.plot = plot;
-
-        // Check if plot is from player
-        try {
-            if (plot.getPlotOwner().getUUID().equals(player.getUniqueId())){
-                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
     }
 
     @Override
