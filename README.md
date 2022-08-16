@@ -58,7 +58,7 @@ The inspiration mode feels like building in a normal world. By adding the surrou
 
 ![CityInspirationMode_PlotSystemBanner](https://user-images.githubusercontent.com/64250550/184683030-27f1760b-09ad-43f7-b5ed-bdd46c972246.png)
 <font size="3">
-The city inspiration mode will give you with the full building experience by combining the inspiration mode with other players. Build with your friends and others in one world next to each other and see continuous progress.
+The city inspiration mode will give you the full building experience by combining the inspiration mode with other players. Build with your friends and others in one world next to each other and see continuous progress.
 <br/><br/>⚠️ This mode is not fully stable and still in BETA
 <br/><br/>➕ Environment
 <br/>➕ Neighboring Plots
@@ -67,7 +67,7 @@ The city inspiration mode will give you with the full building experience by com
 ## Other Features
 ✔️ Support for **multiple cities** as well as for **continents** and **countries/states**<br/>
 ✔️ **User-friendly menus** and **commands**<br/>
-✔️ **Multi-Language** Support (up to 7 languages)<br/>
+✔️ **Multi-Language** Support (currently up to 7 languages)<br/>
 ✔️ Plot **Group System** (Build together with up to 5 people on one plot)<br/>
 ✔️ **SFTP/FTP** Support<br/>
 ✔️ Detailed **review system** with individual feedback<br/>
