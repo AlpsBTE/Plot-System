@@ -50,7 +50,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
 
         getMenu().getSlot(15).setItem(
                 new ItemBuilder(Utils.CustomHead.CITY_INSPIRATION_MODE.getAsItemStack())
-                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE))
+                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE) + " §7§l[§c§lBETA§7§l]") // temporary BETA tag
                         .setLore(new LoreBuilder()
                                 .addLines(Utils.createMultilineFromString(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
                                 .build())
