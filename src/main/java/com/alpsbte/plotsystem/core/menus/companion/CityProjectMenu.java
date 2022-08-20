@@ -156,7 +156,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         int slot = 9;
         for (CityProject city : cities) {
             try {
-                getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), null));
+                getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), selectedPlotDifficulty));
             } catch (SQLException e) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
                 getMenu().getSlot(slot).setItem(MenuItems.errorItem(getMenuPlayer()));
@@ -179,7 +179,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                         int cityID = city.getID();
 
                         PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
-                        if (PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
+                        if (plotDifficultyForCity != null && PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
                             if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
                                 clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
