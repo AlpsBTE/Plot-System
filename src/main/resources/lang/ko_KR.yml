@@ -46,6 +46,7 @@ city-project:
   completed: "개의 완성된 플롯"
   plots-available: 'Plots Available'
   no-plots-available: "건축할 수 있는 플롯이 없음"
+  for-your-difficulty: "({0} for your difficulty)"
 
 # -----------------------------------------------------
 # | Countries

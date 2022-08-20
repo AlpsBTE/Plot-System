@@ -36,6 +36,7 @@ public class LangPaths {
         public static final String PROJECT_COMPLETED = CITY_PROJECT + "completed";
         public static final String PROJECT_PLOTS_AVAILABLE = CITY_PROJECT + "plots-available";
         public static final String PROJECT_NO_PLOTS_AVAILABLE = CITY_PROJECT + "no-plots-available";
+        public static final String FOR_YOUR_DIFFICULTY = CITY_PROJECT + "for-your-difficulty";
     }
 
     public static final class Country {

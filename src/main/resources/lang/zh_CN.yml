@@ -46,6 +46,7 @@ city-project:
   completed: "已完成建地"
   plots-available: 'Plots Available'
   no-plots-available: "无可用建地"
+  for-your-difficulty: "({0} for your difficulty)"
 
 # -----------------------------------------------------
 # | Countries

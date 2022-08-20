@@ -46,6 +46,7 @@ city-project:
   completed: "Abgeschlossene Plots"
   plots-available: 'Plots Verfügbar'
   no-plots-available: "Keine Plots Verfügbar"
+  for-your-difficulty: "({0} für deinen Schwierigkeitsgrad)"
 
 # -----------------------------------------------------
 # | Countries

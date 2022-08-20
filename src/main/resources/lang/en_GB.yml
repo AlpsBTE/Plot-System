@@ -46,6 +46,7 @@ city-project:
   completed: "Plots Completed"
   plots-available: 'Plots Available'
   no-plots-available: "No Plots Available"
+  for-your-difficulty: "({0} for your difficulty)"
 
 # -----------------------------------------------------
 # | Countries

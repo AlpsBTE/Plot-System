@@ -100,14 +100,15 @@ public class CityProject {
             int plotsOpen = PlotManager.getPlots(getID(), Status.unclaimed).size();
             int plotsInProgress = PlotManager.getPlots(getID(), Status.unfinished, Status.unreviewed).size();
             int plotsCompleted = PlotManager.getPlots(getID(), Status.completed).size();
-            int plotsUnclaimed = PlotManager.getPlots(getID(), cpPlotDifficulty, Status.unclaimed).size();
+            int plotsUnclaimed = cpPlotDifficulty != null ? PlotManager.getPlots(getID(), cpPlotDifficulty, Status.unclaimed).size() : 0;
+            int plotsOpenForPlayer = cpPlotDifficulty != null && plotsUnclaimed != 0 ? getOpenPlotsForPlayer(getID(), cpPlotDifficulty) : 0;
 
             return new ItemBuilder(cpItem)
                     .setName("§b§l" + getName())
                     .setLore(new LoreBuilder()
                             .addLines(getDescription(),
                                     "",
-                                    "§6" + plotsOpen + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_OPEN),
+                                    "§6" + plotsOpen + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_OPEN) + " §8" + LangUtil.get(player, LangPaths.CityProject.FOR_YOUR_DIFFICULTY, (plotsOpenForPlayer == 0 ? "§c" : "§a") + plotsOpenForPlayer + "§8"),
                                     "§8---------------------",
                                     "§6" + plotsInProgress + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_IN_PROGRESS),
                                     "§6" + plotsCompleted + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_COMPLETED),
@@ -144,6 +145,14 @@ public class CityProject {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return new ArrayList<>();
+    }
+
+    private int getOpenPlotsForPlayer(int plotID, PlotDifficulty plotDifficulty) throws SQLException {
+        int openPlots = 0;
+        for (PlotDifficulty pd : PlotDifficulty.values()) {
+            if (pd.ordinal() <= plotDifficulty.ordinal()) openPlots += PlotManager.getPlots(plotID, pd, Status.unclaimed).size();
+        }
+        return openPlots;
     }
 
 

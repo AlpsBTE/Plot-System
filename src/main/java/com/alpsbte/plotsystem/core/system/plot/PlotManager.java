@@ -528,7 +528,7 @@ public class PlotManager {
                 return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
             }
         }
-        return CompletableFuture.completedFuture(PlotDifficulty.HARD); // If nothing is available return hard (plot availability will be checked later additionally)
+        return CompletableFuture.completedFuture(null); // If nothing is available return null
     }
 
     public static boolean isPlotWorld(World world) {
