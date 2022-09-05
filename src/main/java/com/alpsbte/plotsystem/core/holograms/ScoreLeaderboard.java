@@ -49,12 +49,12 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ScoreLeaderboard extends HolographicDisplay {
+    private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortBy = LeaderboardTimeframe.DAILY;
     private BukkitTask changeSortTask = null;
     private BukkitTask actionbarTask = null;
@@ -176,8 +176,6 @@ public class ScoreLeaderboard extends HolographicDisplay {
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
         return Arrays.stream(LeaderboardTimeframe.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
     }
-
-    private final DecimalFormat df = new DecimalFormat("#.##");
 
     private BaseComponent[] rankingString(Player player) {
         int position;

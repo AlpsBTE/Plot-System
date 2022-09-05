@@ -159,7 +159,7 @@ public abstract class AbstractPlotGenerator {
             }
         }
 
-        com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
+        World weWorld = new BukkitWorld(world.getBukkitWorld());
         EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
 
         if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){

@@ -68,8 +68,7 @@ public class PlotsLeaderboard extends HolographicDisplay {
         return new ItemStack(Material.NETHER_STAR);
     }
 
+    // Not needed
     @Override
-    public void onShutdown() {
-
-    }
+    public void onShutdown() {}
 }

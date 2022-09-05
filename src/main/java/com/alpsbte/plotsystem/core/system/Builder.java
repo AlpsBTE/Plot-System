@@ -187,7 +187,7 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -239,7 +239,7 @@ public class Builder {
             case YEARLY:
                 minimumDate = "(NOW() - INTERVAL 1 YEAR)";
                 break;
-            case LIFETIME:
+            default:
                 // no limits
                 break;
         }
@@ -327,7 +327,7 @@ public class Builder {
         }
     }
 
-    public static List<DatabaseEntry<String, Integer>> getBuildersByScore(com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+    public static List<DatabaseEntry<String, Integer>> getBuildersByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 10);
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
