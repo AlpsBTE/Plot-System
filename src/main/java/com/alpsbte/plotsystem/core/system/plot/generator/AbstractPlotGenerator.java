@@ -311,7 +311,7 @@ public abstract class AbstractPlotGenerator {
      */
     public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, PlotWorld world, boolean clearArea) throws IOException, MaxChangedBlocksException, SQLException {
         if (world.loadWorld()) {
-            com.sk89q.worldedit.world.World weWorld = new BukkitWorld(world.getBukkitWorld());
+            World weWorld = new BukkitWorld(world.getBukkitWorld());
             if (editSession == null) editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
             if (clearArea) {
                 Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
