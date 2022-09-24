@@ -555,7 +555,7 @@ public class PlotManager {
                     if(!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
                         continue;
 
-                    if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment())
+                    if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
                         continue;
 
                     List<BlockVector2D> points = plot.getBlockOutline();
