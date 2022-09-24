@@ -148,11 +148,7 @@ public class CityProject {
     }
 
     private int getOpenPlotsForPlayer(int plotID, PlotDifficulty plotDifficulty) throws SQLException {
-        int openPlots = 0;
-        for (PlotDifficulty pd : PlotDifficulty.values()) {
-            if (pd.ordinal() <= plotDifficulty.ordinal()) openPlots += PlotManager.getPlots(plotID, pd, Status.unclaimed).size();
-        }
-        return openPlots;
+        return PlotManager.getPlots(plotID, plotDifficulty, Status.unclaimed).size();
     }
 
 
