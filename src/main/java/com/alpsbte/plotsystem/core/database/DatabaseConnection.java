@@ -132,7 +132,7 @@ public class DatabaseConnection {
                 }
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!");
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!", ex);
         }
     }
 
@@ -339,50 +339,59 @@ public class DatabaseConnection {
                             ");",
 
                     // Build-Teams
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteams`" +
-                            "(" +
-                            " `id`      int NOT NULL AUTO_INCREMENT ," +
-                            " `name`    varchar(45) NOT NULL ," +
-                            " `api_key_id` varchar(32) NULL ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `FK_132` (`api_key`)," +
-                            "CONSTRAINT `FK_130` FOREIGN KEY `FK_132` (`api_key`) REFERENCES `api_keys` (`api_key`)" +
-                            ");",
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteams` (" +
+                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
+                            "`name` VARCHAR(45) NOT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "`api_key_id` VARCHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "PRIMARY KEY (`id`) USING BTREE," +
+                            "INDEX `FK_132` (`api_key_id`) USING BTREE," +
+                            "CONSTRAINT `FK_130` FOREIGN KEY (`api_key_id`) REFERENCES `plotsystem_test`.`api_keys` (`api_key`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            ")" +
+                            "COLLATE='utf8mb4_general_ci'" +
+                            "ENGINE=InnoDB" +
+                            ";",
 
                     // Build-Team has Countries
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteam_has_countries`" +
-                            "(" +
-                            " `id`           int NOT NULL AUTO_INCREMENT ," +
-                            " `country_id`   int NOT NULL ," +
-                            " `buildteam_id` int NOT NULL ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `FK_115` (`buildteam_id`)," +
-                            "CONSTRAINT `FK_113` FOREIGN KEY `FK_115` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`)," +
-                            "KEY `FK_118` (`country_id`)," +
-                            "CONSTRAINT `FK_116` FOREIGN KEY `FK_118` (`country_id`) REFERENCES `plotsystem_countries` (`id`)" +
-                            ");",
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteam_has_countries` (" +
+                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
+                            "`country_id` INT(11) NOT NULL," +
+                            "`buildteam_id` INT(11) NOT NULL," +
+                            "PRIMARY KEY (`id`) USING BTREE," +
+                            "INDEX `FK_115` (`buildteam_id`) USING BTREE," +
+                            "INDEX `FK_118` (`country_id`) USING BTREE," +
+                            "CONSTRAINT `FK_113` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_test`.`plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
+                            "CONSTRAINT `FK_116` FOREIGN KEY (`country_id`) REFERENCES `plotsystem_test`.`plotsystem_countries` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            ")" +
+                            "COLLATE='utf8mb4_general_ci'" +
+                            "ENGINE=InnoDB" +
+                            ";",
 
                     // Builder Is Reviewer
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_builder_is_reviewer`" +
-                            "(" +
-                            " `id`           int NOT NULL AUTO_INCREMENT ," +
-                            " `builder_uuid` varchar(36) NOT NULL ," +
-                            " `buildteam_id` int NOT NULL ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `FK_138` (`builder_uuid`)," +
-                            "CONSTRAINT `FK_136` FOREIGN KEY `FK_138` (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`)," +
-                            "KEY `FK_141` (`buildteam_id`)," +
-                            "CONSTRAINT `FK_139` FOREIGN KEY `FK_141` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`)" +
-                            ");",
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_builder_is_reviewer` (" +
+                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
+                            "`builder_uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "`buildteam_id` INT(11) NOT NULL," +
+                            "PRIMARY KEY (`id`) USING BTREE," +
+                            "INDEX `FK_138` (`builder_uuid`) USING BTREE," +
+                            "INDEX `FK_141` (`buildteam_id`) USING BTREE," +
+                            "CONSTRAINT `FK_136` FOREIGN KEY (`builder_uuid`) REFERENCES `plotsystem_test`.`plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
+                            "CONSTRAINT `FK_139` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_test`.`plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            ")" +
+                            "COLLATE='utf8mb4_general_ci'" +
+                            "ENGINE=InnoDB" +
+                            ";",
 
                     // Payouts
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_payouts` (\n" +
-                            "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                            "  `timeframe` enum('DAILY','WEEKLY','MONTHLY','YEARLY') NOT NULL,\n" +
-                            "  `position` int(11) NOT NULL COMMENT 'position on the leaderboard for this timeframe',\n" +
-                            "  `payout_amount` varchar(100) NOT NULL,\n" +
-                            "  PRIMARY KEY (`id`)\n" +
-                            ")"
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_payouts` (" +
+                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
+                            "`timeframe` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY') NOT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "`position` INT(11) NOT NULL COMMENT 'position on the leaderboard for this timeframe'," +
+                            "`payout_amount` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "PRIMARY KEY (`id`) USING BTREE" +
+                            ")" +
+                            "COLLATE='utf8mb4_general_ci'" +
+                            "ENGINE=InnoDB" +
+                            ";"
             );
         }
     }
