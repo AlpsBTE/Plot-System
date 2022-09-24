@@ -233,6 +233,9 @@ public class Builder {
             case DAILY:
                 minimumDate = "(NOW() - INTERVAL 1 DAY)";
                 break;
+            case WEEKLY:
+                minimumDate = "(NOW() - INTERVAL 1 WEEK)";
+                break;
             case MONTHLY:
                 minimumDate = "(NOW() - INTERVAL 1 MONTH)";
                 break;
@@ -246,13 +249,13 @@ public class Builder {
 
         // get plot id, owner username, owner uuid, score & date
         // sort by score & limit (if set above) by timeframe
-        return "SELECT plots.id, builders.name, plots.owner_uuid, plots.score, reviews.review_date\n" +
-                "FROM plotsystem_plots AS plots\n" +
+        return "SELECT plots.id, builders.name, plots.owner_uuid, SUM(plots.score) AS score, reviews.review_date FROM plotsystem_plots AS plots\n" +
                 "INNER JOIN plotsystem_reviews AS reviews ON plots.review_id = reviews.id\n" +
                 "INNER JOIN plotsystem_builders AS builders ON builders.uuid = plots.owner_uuid\n" +
                 (minimumDate != null
                         ? "WHERE reviews.review_date BETWEEN " + minimumDate + " AND NOW()\n"
                         : "") +
+                "GROUP BY plots.owner_uuid \n" +
                 "ORDER BY score DESC\n" +
                 (limit > 0 ? "LIMIT " + limit : "");
     }
