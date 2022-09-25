@@ -33,6 +33,11 @@ import org.ipvp.canvas.type.ChestMenu;
 
 public abstract class AbstractMenu {
 
+    public static int MAX_CHARS_PER_LINE = 30;
+    public static char LINE_BAKER = '\n';
+
+
+
     private final Menu menu;
     private final Player menuPlayer;
 
@@ -53,9 +58,9 @@ public abstract class AbstractMenu {
     protected abstract void setMenuItemsAsync();
 
     /**
-     * Sets click events for the items placed in the menu after it is opened
+     * Sets click events for the items placed in the menu async after it is opened
      */
-    protected abstract void setItemClickEvents();
+    protected abstract void setItemClickEventsAsync();
 
     /**
      * Places pre-defined items in the menu before it is opened
@@ -75,13 +80,13 @@ public abstract class AbstractMenu {
 
     /**
      * Reloads all menu items and click events in the menu asynchronously
-     * {@link #setPreviewItems()}.{@link #setMenuItemsAsync()}.{@link #setItemClickEvents()}
+     * {@link #setPreviewItems()}.{@link #setMenuItemsAsync()}.{@link #setItemClickEventsAsync()}
      */
     protected void reloadMenuAsync() {
         setPreviewItems();
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             setMenuItemsAsync();
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), this::setItemClickEvents);
+            setItemClickEventsAsync();
         });
     }
 

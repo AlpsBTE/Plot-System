@@ -6,7 +6,7 @@
 
     <groupId>com.alpsbte</groupId>
     <artifactId>PlotSystem</artifactId>
-    <version>2.3</version>
+    <version>3.0</version>
 
     <repositories>
         <!-- Spigot & Bukkit -->
@@ -89,14 +89,14 @@
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FAWE-Core</artifactId>
-            <version>1.17-93</version>
+            <version>1.12</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FAWE-Bukkit</artifactId>
-            <version>1.17-93</version>
+            <version>1.12</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -120,6 +120,14 @@
             <artifactId>anvilgui</artifactId>
             <version>1.5.0-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- ParticleNativeAPI -->
+        <dependency>
+            <groupId>com.github.fierioziy.particlenativeapi</groupId>
+            <artifactId>ParticleNativeAPI-plugin</artifactId>
+            <version>3.2.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Canvas Menu Builder -->

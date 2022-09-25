@@ -24,14 +24,19 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,6 +51,8 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ReviewMenu extends AbstractPaginatedMenu {
+    private final List<Country> countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
+    private Country filteredCountry = null;
 
     public ReviewMenu(Player player) throws SQLException {
         super(6, 4, LangUtil.get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
@@ -55,8 +62,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
         try {
-            plots.addAll(PlotManager.getPlots(Status.unreviewed));
-            plots.addAll(PlotManager.getPlots(Status.unfinished));
+            plots.addAll(PlotManager.getPlots(countries, Status.unreviewed));
+            plots.addAll(PlotManager.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -74,7 +81,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected void setPaginatedMenuItemsAsync(List<?> source) {
         // Set unreviewed and unfinished plot items
-        List<Plot> plots = source.stream().map(p -> (Plot) p).collect(Collectors.toList());
+        List<Plot> plots = getFilteredPlots(source);
         for(int i = 0; i < plots.size(); i++) {
             try {
                 Plot plot = plots.get(i);
@@ -88,6 +95,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                         }).collect(Collectors.joining(", "))
                 );
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
+                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
                 lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
                 getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
@@ -104,15 +112,17 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected void setPaginatedItemClickEventsAsync(List<?> source) {
         // Set click event for unreviewed and unfinished plot items
-        List<Plot> plots = source.stream().map(p -> (Plot) p).collect(Collectors.toList());
+        List<Plot> plots = getFilteredPlots(source);
         for (int i = 0; i < plots.size(); i++) {
             Plot plot = plots.get(i);
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
-                    getMenuPlayer().closeInventory();
                     if (plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString())) {
-                            plot.getWorld().teleportPlayer(getMenuPlayer());
+                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                            Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
+                            if (currentPlot != null && currentPlot.getID() == plot.getID()) {
+                                new ReviewPlotMenu(getMenuPlayer(), currentPlot);
+                            } else plot.getWorld().teleportPlayer(getMenuPlayer());
                         } else {
                             getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                         }
@@ -121,6 +131,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     }
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                    getMenuPlayer().closeInventory();
                 }
             });
         }
@@ -128,6 +139,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setMenuItemsAsync() {
+        // Set filter item
+        getMenu().getSlot(7).setItem(getFilterItem(getMenuPlayer()));
+
         // Set previous page item
         if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem(getMenuPlayer()));
 
@@ -136,7 +150,22 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
+        // Set click event for filter item
+        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+            if (countries.size() == 0) return;
+
+            if (filteredCountry == null) {
+                filteredCountry = countries.get(0);
+            } else {
+                int index = countries.indexOf(filteredCountry);
+                filteredCountry = index + 1 >= countries.size() ? null : countries.get(index + 1);
+            }
+
+            reloadMenuAsync(false);
+        });
+
         // Set click event for previous page item
         getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
             if (hasPreviousPage()) {
@@ -170,13 +199,40 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 .build();
     }
 
+    private List<Plot> getFilteredPlots(List<?> plots) {
+        List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).collect(Collectors.toList());
+        if (filteredCountry != null) filteredPlots = filteredPlots.stream().filter(p -> {
+            try { return p.getCity().getCountry().getID() == filteredCountry.getID();
+            } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+            return false;
+        }).collect(Collectors.toList());
+        return filteredPlots;
+    }
+
+    private ItemStack getFilterItem(Player langPlayer) {
+        LoreBuilder loreBuilder = new LoreBuilder();
+        loreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.get(langPlayer, LangPaths.MenuDescription.FILTER));
+        loreBuilder.emptyLine();
+
+        countries.forEach(c -> {
+            if (filteredCountry != null && filteredCountry.getID() == c.getID()) {
+                loreBuilder.addLine("§b§l> §f§l" + filteredCountry.getName());
+            } else loreBuilder.addLine("§7" + c.getName());
+        });
+
+        return new ItemBuilder(MenuItems.filterItem(getMenuPlayer()))
+                .setLore(loreBuilder.build())
+                .setEnchanted(filteredCountry != null)
+                .build();
+    }
+
     /**
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.BOOK, 1)
                 .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
-                .setEnchantment(true)
+                .setEnchanted(true)
                 .build();
     }
 }

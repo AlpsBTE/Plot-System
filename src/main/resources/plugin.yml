@@ -1,9 +1,9 @@
 main: com.alpsbte.plotsystem.PlotSystem
-version: 2.3
+version: 3.0
 api-version: 1.12.2
 name: Plot-System
 author: R3tuxn & Cinnazeyy
-softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase, ProtocolLib]
+softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase, ProtocolLib, ParticleNativeAPI]
 
 commands:
   spawn:
@@ -30,9 +30,9 @@ commands:
   undoreview:
     description: Undo a review of a plot.
     usage: /undoreview <ID>
-  sendfeedback:
+  editfeedback:
     description: Updates the feedback of a plot.
-    usage: /sendfeedback <ID> <Text>
+    usage: /editfeedback <ID> <Feedback>
   editplot:
     description: Enable/disable build permissions for reviewers on a plot.
     usage: /editplot

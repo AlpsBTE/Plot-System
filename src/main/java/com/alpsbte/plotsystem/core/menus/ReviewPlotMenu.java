@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
@@ -38,6 +39,10 @@ import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -50,6 +55,7 @@ import org.ipvp.canvas.mask.Mask;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -62,15 +68,6 @@ public class ReviewPlotMenu extends AbstractMenu {
     public ReviewPlotMenu(Player player, Plot plot) {
         super(6, LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
         this.plot = plot;
-
-        // Check if plot is from player
-        try {
-            if (plot.getPlotOwner().getUUID().equals(player.getUniqueId())){
-                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
     }
 
     @Override
@@ -195,6 +192,10 @@ public class ReviewPlotMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
+        // Set back item
+        getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+
+        // Set plot information item
         try {
             getMenu().getSlot(4).setItem(new ItemBuilder(Material.MAP, 1)
                     .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REVIEW_PLOT))
@@ -203,17 +204,38 @@ public class ReviewPlotMenu extends AbstractMenu {
                                     "",
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName(),
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
+                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(),
                                     "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
+                            .emptyLine()
+                            .addLine("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.PLAYER_LANGUAGE) + ": §f" + LangUtil.getLanguageFileByLocale(plot.getPlotOwner().getLanguageTag()).getLangName())
                             .build())
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
+
+        // Set review information item
+        String points = LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS);
+        getMenu().getSlot(7).setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.INFO_BUTTON))
+                .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.INFORMATION))
+                .setLore(new LoreBuilder()
+                        .addLines(Utils.createMultilineFromString( "§7" + LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                        .emptyLine()
+                        .addLines("§f" + points + " <= 0: §c" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ABANDONED),
+                                  "§f" + points + " <= 8: §e" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REJECTED),
+                                  "§f" + points + " <= 20: §a" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
+                        .build())
+                .build());
     }
 
     @Override
-    protected void setItemClickEvents() {
+    protected void setItemClickEventsAsync() {
+        // Set click event for back item
+        getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> {
+            try { new ReviewMenu(getMenuPlayer()); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        });
+
         // Set click event for close item
         getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
@@ -356,10 +378,28 @@ public class ReviewPlotMenu extends AbstractMenu {
                         }
 
                         // Delete plot world after reviewing
-                        if (!finalIsRejected) plot.getWorld().deleteWorld();
+                        try {
+                            if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
+                                plot.getWorld().deleteWorld();
+                        } catch (SQLException ex) {
+                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        }
+
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);
+
+                        try {
+                            Review.awaitReviewerFeedbackList.remove(clickPlayer.getUniqueId());
+                            Review.awaitReviewerFeedbackList.put(clickPlayer.getUniqueId(), new ChatFeedbackInput(plot.getReview()));
+                            clickPlayer.sendMessage("");
+                            clickPlayer.sendMessage("§a" + LangUtil.get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
+                            TextComponent txtComponent = new TextComponent();
+                            txtComponent.setText(LangUtil.get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
+                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(clickPlayer, LangPaths.MenuTitle.CANCEL)).create()));
+                            txtComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "cancel"));
+                            clickPlayer.spigot().sendMessage(txtComponent);
+                        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
                     });
 
                     for (Builder member : plot.getPlotMembers()) {
@@ -401,6 +441,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     }
 
                     meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
 
                     ItemStack newItem = getMenu().getSlot(slot).getItem(clickPlayer);
                     newItem.setItemMeta(meta);
@@ -415,7 +456,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
-                .pattern("111101111")
+                .pattern("101101101")
                 .pattern("100000001")
                 .pattern("100000001")
                 .pattern("100000001")

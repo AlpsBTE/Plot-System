@@ -24,11 +24,14 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
@@ -88,13 +91,13 @@ public class CMD_Tpll extends BaseCommand {
                             double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
 
                             // Get plot, that the player is in
-                            Plot plot = PlotManager.getPlotByWorld(playerWorld);
+                            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
 
                             // Convert terra coordinates to plot relative coordinates
-                            CompletableFuture<double[]> plotCoords = PlotManager.convertTerraToPlotXZ(plot, terraCoords);
+                            CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
 
                             if(plotCoords == null) {
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
+                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                                 return true;
                             }
 
@@ -108,11 +111,11 @@ public class CMD_Tpll extends BaseCommand {
                                     highestY = i;
                                 }
                             }
-                            if (highestY < 10) {
-                                highestY = 10;
+                            if (highestY < PlotWorld.MIN_WORLD_HEIGHT) {
+                                highestY = PlotWorld.MIN_WORLD_HEIGHT;
                             }
 
-                            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1]));
+                            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
 
                             DecimalFormat df = new DecimalFormat("##.#####");
                             df.setRoundingMode(RoundingMode.FLOOR);
@@ -129,7 +132,7 @@ public class CMD_Tpll extends BaseCommand {
                         sendInfo(sender);
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_TELEPORT_TO_PLOT)));
+                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");

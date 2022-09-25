@@ -53,7 +53,7 @@ public class CMD_Plots extends BaseCommand {
                             player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
                         }
                     } else {
-                        new PlayerPlotsMenu(player, new Builder(player.getUniqueId()));
+                        new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
                     }
                 } catch (SQLException ex) {
                     sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -60,6 +60,9 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_SHOW_WEEKLY = DISPLAY_OPTIONS + "show-weekly";
     public static final String DISPLAY_OPTIONS_SHOW_MONTHLY = DISPLAY_OPTIONS + "show-monthly";
     public static final String DISPLAY_OPTIONS_SHOW_YEARLY = DISPLAY_OPTIONS + "show-yearly";
+    public static final String DISPLAY_OPTIONS_SHOW_LIFETIME = DISPLAY_OPTIONS + "show-lifetime";
+    public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLED = DISPLAY_OPTIONS + "action-bar-enabled";
+    public static final String DISPLAY_OPTIONS_ACTION_BAR_RADIUS = DISPLAY_OPTIONS + "action-bar-radius";
 
 
     // Navigator

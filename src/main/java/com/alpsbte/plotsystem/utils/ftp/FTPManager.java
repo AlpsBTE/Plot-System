@@ -80,7 +80,7 @@ public class FTPManager {
 
             // Get remote schematic and write it to local file
             FileObject remoteSchematic = remote.resolveFile(schematic.getName());
-            localSchematic.copyFrom(remoteSchematic, Selectors.SELECT_SELF);
+            if (remoteSchematic.exists()) localSchematic.copyFrom(remoteSchematic, Selectors.SELECT_SELF);
 
             localSchematic.close();
             remoteSchematic.close();
@@ -90,21 +90,10 @@ public class FTPManager {
         return CompletableFuture.completedFuture(null);
     }
 
-    public static CompletableFuture<Void> deleteSchematics(String ftpURL, String schematicName, boolean onlyFinished) throws FileSystemException {
+    public static CompletableFuture<Void> deleteSchematic(String ftpURL, String schematicName) throws FileSystemException {
         try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
             fileManager.init();
             FileObject remote, remoteSchematic;
-
-            if (!onlyFinished) {
-                remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/",""), fileOptions);
-                remoteSchematic = remote.resolveFile(schematicName);
-                if (remoteSchematic.exists()) {
-                    remoteSchematic.delete();
-                    if (remote.getChildren().length == 0) {
-                        remote.delete();
-                    }
-                }
-            }
 
             remote = fileManager.resolveFile(ftpURL, fileOptions);
             remoteSchematic = remote.resolveFile(schematicName);

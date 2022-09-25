@@ -25,6 +25,7 @@ plot:
   members: "建地成員"
   member: "建地成員"
   city: "城市"
+  country: "Country"
   difficulty: "難度"
   status: "狀態"
   score: "積分"
@@ -39,10 +40,30 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Cities"
   open: "開啟建地"
   in-progress: "進行中建地"
   completed: "已完成建地"
+  plots-available: 'Plots Available'
   no-plots-available: "無可用建地"
+  for-your-difficulty: "({0} for your difficulty)"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -81,6 +102,9 @@ menu-title:
   cancel: "取消"
   add-member-to-plot: "添加成員到建地"
   companion: "夥伴"
+  companion-select-continent: 'Select A Continent'
+  companion-select-country: 'Select A Country'
+  companion-select-city: 'Select A City'
   player-plots: "{0}塊建地"
   leave-plot: "離開建地"
   review-plots: "審核建地"
@@ -88,7 +112,12 @@ menu-title:
   enter-player-name: "輸入玩家名稱"
   select-language: "選擇語言"
   auto-detect-language: "自動偵測語言"
-
+  select-plot-type: 'Select Plot Type'
+  select-focus-mode: "Select Focus Mode"
+  select-local-inspiration-mode: "Select Inspiration Mode"
+  select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -116,7 +145,12 @@ menu-description:
   leave-plot-desc: "點擊以離開此建地"
   select-language-desc: "選擇你的語言"
   auto-detect-language-desc: "點擊以自動偵測你的語言"
-
+  select-plot-type-desc: 'Choose your plot type'
+  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -126,9 +160,11 @@ review:
   manage-plot: "管理建地"
   manage-and-review-plots: "管理與審核建地"
   accepted: "接受"
+  abandoned: "Abandoned"
   rejected: "駁回"
   feedback: "回饋"
   reviewer: "審核員"
+  player-language: "Player Language"
   criteria:
     accuracy: "準確性"
     accuracy-desc: "建築的精確度如何？////- 看起來像在真實世界//- 正確的輪廓//- 正確的高度//- 完成了"
@@ -138,7 +174,6 @@ review:
     detailing-desc: "建築有多少細節？////- 屋頂細節//- 外牆上的細節//- 頭顱和旗幟"
     technique: "技巧"
     technique-desc: "使用了什麼建築技巧，它們的創意如何？////- World-Edit//- 特殊方塊"
-
 
 # -----------------------------------------------------
 # | Notes
@@ -177,7 +212,7 @@ message:
     abandoned-plot: "§a有ID之廢棄建地 §6#{0}§a!"
     finished-plot: "§a §6{1}§a 的建地 §6#{0}§a 已完成！"
     plot-marked-as-reviewed: "§a §6{1}§a 的建地 §6#{0}§a 已標記供審核！"
-    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被駁回！ 使用 §6/sendFeedback <ID> <TEXT>§a發送回饋！"
+    plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被駁回！"
     undid-submission: "§a尚未提交的建地 §6#{0}§a！"
     undid-review: "§a尚未審核的建地 §6#{0}§a by §6#{1}§a！"
     reviewed-plot: "§a你的建地 §6#{0}§a 已被審核！"
@@ -196,6 +231,8 @@ message:
     creating-plot: "§a創建新建地..."
     created-new-plot: "§a創建新建地§a 為 §6{0}§a！"
     changed-language: "§a將你的語言變更為 §6{0}§a！"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "此建地不存在！"
     plot-either-unclaimed-or-unreviewed: "此建地無人認領或尚未審核！"
@@ -204,7 +241,7 @@ message:
     can-only-submit-unfinished-plots: "你只能提交尚未完成的建地！"
     can-only-undo-submissions-unreviewed-plots: "你只能撤回尚未審核的建地！"
     can-only-manage-members-unfinished-plots: "你只能管理尚未完成建地的成員！"
-    can-only-tpll-to-plot: "你在建地上只能使用 /tpll ！"
+    cannot-teleport-outside-plot: "你在建地上只能使用 /tpll ！"
     cannot-undo-review: "你無法撤回你自己未審核過的審核！"
     cannot-send-feedback: "你無法發送你自己未審核過的回饋！"
     cannot-review-own-plot: "你無法審核你所有的建地！"
@@ -223,8 +260,19 @@ message:
     no-plots-left: "此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。"
     please-wait: "請稍後再創建一個新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！請在創建新的建地之前先完成您當前的建地。"
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
-
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.2"

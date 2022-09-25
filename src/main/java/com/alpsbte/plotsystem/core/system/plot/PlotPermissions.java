@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -30,42 +30,37 @@ import java.util.UUID;
 
 public class PlotPermissions {
 
-    private final PlotWorld plotWorld;
+    private final PlotWorld world;
 
-    public PlotPermissions(PlotWorld plotWorld) {
-        this.plotWorld = plotWorld;
+    public PlotPermissions(PlotWorld world) {
+        this.world = world;
     }
 
     public PlotPermissions addBuilderPerms(UUID builder) {
-        plotWorld.getProtectedRegion().getOwners().addPlayer(builder);
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().addPlayer(builder);
+        world.getProtectedBuildRegion().getOwners().addPlayer(builder);
+        PlotManager.clearCache(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
-        plotWorld.getProtectedRegion().getOwners().removePlayer(builder);
-        return this;
-    }
-
-    public PlotPermissions addReviewerPerms() {
-        plotWorld.getProtectedRegion().getOwners().addGroup("staff");
-        return this;
-    }
-
-    public PlotPermissions removeReviewerPerms() {
-        plotWorld.getProtectedRegion().getOwners().removeGroup("staff");
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removePlayer(builder);
+        world.getProtectedBuildRegion().getOwners().removePlayer(builder);
+        PlotManager.clearCache(builder);
         return this;
     }
 
     public PlotPermissions clearAllPerms() {
-        plotWorld.getProtectedRegion().getOwners().removeAll();
+        if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removeAll();
+        world.getProtectedBuildRegion().getOwners().removeAll();
         return this;
     }
 
-    public boolean hasReviewerPerms() {
-        return plotWorld.getProtectedRegion().getOwners().getGroups().contains("staff");
+    public boolean hasBuildingPerms(UUID builder) {
+        return world.getProtectedBuildRegion().getOwners().contains(builder);
     }
 
     public void save() {
-        plotWorld.unloadWorld(false);
+        world.unloadWorld(false);
     }
 }

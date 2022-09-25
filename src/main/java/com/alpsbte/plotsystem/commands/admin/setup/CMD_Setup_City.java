@@ -135,7 +135,7 @@ public class CMD_Setup_City extends SubCommand {
             if (args.length > 2 && Utils.TryParseInt(args[1]) != null) {
                 Country country = Country.getCountries().stream().filter(c -> c.getID() == Integer.parseInt(args[1])).findFirst().orElse(null);
                 if (country != null) {
-                    String name = appendArgs(args,2);
+                    String name = CMD_Setup.appendArgs(args,2);
                     if (name.length() <= 45) {
                         try {
                             CityProject.addCityProject(country, name);
@@ -237,7 +237,7 @@ public class CMD_Setup_City extends SubCommand {
                 // Check if City Project exits
                 try {
                     if (CityProject.getCityProjects(false).stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                        String name = appendArgs(args,2);
+                        String name = CMD_Setup.appendArgs(args,2);
                         if (name.length() <= 45) {
                             CityProject.setCityProjectName(Integer.parseInt(args[1]), name);
                             sender.sendMessage(Utils.getInfoMessageFormat("Successfully changed name of City Project with ID " + args[1] + " to '" + name + "'!"));
@@ -287,7 +287,7 @@ public class CMD_Setup_City extends SubCommand {
                 // Check if City Project exits
                 try {
                     if (CityProject.getCityProjects(false).stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                        String description = appendArgs(args,2);
+                        String description = CMD_Setup.appendArgs(args,2);
                         if (description.length() <= 255) {
                             CityProject.setCityProjectDescription(Integer.parseInt(args[1]), description);
                             sender.sendMessage(Utils.getInfoMessageFormat("Successfully set description of City Project with ID " + args[1] + " to '" + description + "'!"));
@@ -371,17 +371,5 @@ public class CMD_Setup_City extends SubCommand {
         public String getPermission() {
             return "plotsystem.admin.pss.city.setvisible";
         }
-    }
-
-    private static String appendArgs(String[] args, int startIndex) {
-        StringBuilder name = new StringBuilder();
-        for (int i = startIndex; i < args.length; i++) {
-            name.append(args[i]);
-            // Add space between words
-            if (i != args.length - 1) {
-                name.append(" ");
-            }
-        }
-        return name.toString();
     }
 }

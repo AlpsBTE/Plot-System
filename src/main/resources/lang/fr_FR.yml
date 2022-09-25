@@ -25,6 +25,7 @@ plot:
   members: 'Membres du Plot'
   member: 'Membre du Plot'
   city: 'City'
+  country: "Country"
   difficulty: 'Difficulté'
   status: 'Statut'
   score: 'Score'
@@ -39,10 +40,30 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
+  cities: "Cities"
   open: 'Plots Ouvert'
   in-progress: 'Plots En Progrès'
   completed: 'Plots Complété'
+  plots-available: 'Plots Available'
   no-plots-available: 'Aucun Plots Disponibles'
+  for-your-difficulty: "({0} for your difficulty)"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
 
 # -----------------------------------------------------
 # | Difficulty
@@ -81,6 +102,9 @@ menu-title:
   cancel: 'Annuler'
   add-member-to-plot: 'Ajouter Membre au Plot'
   companion: 'Compagnon'
+  companion-select-continent: 'Select A Continent'
+  companion-select-country: 'Select A Country'
+  companion-select-city: 'Select A City'
   player-plots: '{0}s Plots'
   leave-plot: 'Quitter Plot'
   review-plots: 'Review Plots'
@@ -88,7 +112,12 @@ menu-title:
   enter-player-name: 'Entrer nom du joueur'
   select-language: 'Choix de la langue'
   auto-detect-language: 'Détection auto de la Langue'
-
+  select-plot-type: 'Select Plot Type'
+  select-focus-mode: "Select Focus Mode"
+  select-local-inspiration-mode: "Select Inspiration Mode"
+  select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
+  information: "Info"
 
 # -----------------------------------------------------
 # | Menu Descriptions
@@ -116,7 +145,12 @@ menu-description:
   leave-plot-desc: "Cliquez pour quitter ce tracé"
   select-language-desc: "Choisissez votre langue"
   auto-detect-language-desc: "Cliquez pour détecter automatiquement votre langue"
-
+  select-plot-type-desc: 'Choose your plot type'
+  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
 # -----------------------------------------------------
 # | Review
@@ -126,9 +160,11 @@ review:
   manage-plot: "Gérer le tracé"
   manage-and-review-plots: "Gérer et réviser les tracés"
   accepted: "Accepté"
+  abandoned: "Abandoned"
   rejected: "Refusé"
   feedback: "Commentaires"
   reviewer: "Relecteur"
+  player-language: "Player Language"
   criteria:
     accuracy: "Précision"
     accuracy-desc: "Quelle est la précision du bâtiment?////- Ressemble à RL//- Contours corrects//- Hauteur correcte//- Est terminé"
@@ -138,7 +174,6 @@ review:
     detailing-desc: "Combien de détails le bâtiment a-t-il?////- Détails du toit//- Détails sur les façades//- Têtes et bannières"
     technique: "Technique"
     technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?////- World-Edit//- Blocs spéciaux"
-
 
 # -----------------------------------------------------
 # | Notes
@@ -174,13 +209,13 @@ message:
     teleporting-plot: "§aTéléportation pour plot §6#{0}§a..."
     teleporting-spawn: "§aTéléportation pour spawn..."
     teleporting-tpll: "§aTéléportation au §6{0}§a, §6{1}§a..."
-    abandon-plot: "§aParcelle abandonnée avec ID §6#{0}§a!"
-    done-plot: "§aLe tracé §6#{0}§a par §6{1}§a est terminé!"
+    abandoned-plot: "§aParcelle abandonnée avec ID §6#{0}§a!"
+    finished-plot: "§aLe tracé §6#{0}§a par §6{1}§a est terminé!"
     plot-marked-as-reviewed: "§aLe terrain §6#{0}§a par §6{1}§a a été marqué comme révisé!"
-    plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté! Envoyez des commentaires en utilisant §6/sendFeedback <ID> <TEXT>§a!"
+    plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté!"
     undid-submission: "§aUndid soumission du complot §6#{0}§a!"
     undid-review: "§aUndid review of plot §6#{0}§a by §6#{1}§a!"
-    review-plot: "§aVotre parcelle §6#{0}§a a été revue!"
+    reviewed-plot: "§aVotre parcelle §6#{0}§a a été revue!"
     unreviewed-plot: "§aIl y a §6{0}§a un complot non révisé!"
     unreviewed-plots: "§aIl y a §6{0}§a des parcelles non revues!"
     unfinished-plot: "§aVous avez §6{0}§a un terrain inachevé!"
@@ -188,7 +223,7 @@ message:
     enabled-build-permissions: "§aPermissions de construction activées pour les examinateurs sur le tracé §6#{0}§a!"
     disabled-build-permissions: "§aAutorisations de construction désactivées pour les examinateurs sur le tracé §6#{0}§a!"
     updated-plot-feedback: "§aFeedback for plot §6#{0}§a has been updated!"
-    remove-plot-member: "§aSupprimé §6{0}§a du tracé §6#{1}§a!"
+    removed-plot-member: "§aSupprimé §6{0}§a du tracé §6#{1}§a!"
     left-plot: "§aTracé de gauche §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lATTENTION: §cCette parcelle sera automatiquement abandonnée!"
     plot-will-get-rejected-warning: "§c§lATTENTION: §cCette parcelle sera rejetée!"
@@ -196,6 +231,8 @@ message:
     creating-plot: "§aCréation d'un nouveau tracé..."
     created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
     changed-language: "§aChangement de langue en §6{0}§a!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
   error:
     plot-does-not-exist: "Ce complot n'existe pas!"
     plot-either-unclaimed-or-unreviewed: "Cette parcelle est soit non réclamée, soit n'a pas encore été examinée!"
@@ -204,10 +241,10 @@ message:
     can-only-submit-unfinished-plots: "Vous ne pouvez soumettre que des tracés inachevés!"
     can-only-undo-submissions-unreviewed-plots: "Vous ne pouvez annuler que les soumissions de parcelles non révisées!"
     can-only-manage-members-unfinished-plots: "Vous ne pouvez gérer que les membres des parcelles inachevées!"
-    can-only-tpll-to-plot: "Vous ne pouvez utiliser /tpll que sur un tracé!"
-    can-undo-review: "Vous ne pouvez pas annuler une révision que vous n'avez pas révisée vous-même!"
-    cant-send-feedback: "Vous ne pouvez pas envoyer de commentaires à un tracé que vous n'avez pas révisé vous-même!"
-    can-review-own-plot: "Vous ne pouvez pas réviser votre propre intrigue!"
+    cannot-teleport-outside-plot: "Vous ne pouvez utiliser /tpll que sur un tracé!"
+    cannot-undo-review: "Vous ne pouvez pas annuler une révision que vous n'avez pas révisée vous-même!"
+    cannot-send-feedback: "Vous ne pouvez pas envoyer de commentaires à un tracé que vous n'avez pas révisé vous-même!"
+    cannot-review-own-plot: "Vous ne pouvez pas réviser votre propre intrigue!"
     player-has-no-permissions: "Vous n'avez pas la permission de faire ça!"
     player-has-no-invitations: "Vous n'avez aucune invitation!"
     player-is-not-allowed: "Vous n'êtes pas autorisé à faire ça!"
@@ -223,8 +260,19 @@ message:
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
 
-
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: "1.0"
+config-version: "1.2"

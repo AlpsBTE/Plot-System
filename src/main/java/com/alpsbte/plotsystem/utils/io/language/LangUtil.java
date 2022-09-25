@@ -18,13 +18,13 @@ import java.util.Arrays;
 public class LangUtil extends YamlFileFactory {
 
     public final static LanguageFile[] languages = new LanguageFile[] {
-        new LanguageFile("en_GB", 1.0),
-        new LanguageFile("de_DE", 1.0, "de_AT", "de_CH"),
-        new LanguageFile("fr_FR", 1.0, "fr_CA"),
-        new LanguageFile("ko_KR", 1.0),
-        new LanguageFile("ru_RU", 1.0, "ba_RU", "tt_RU"),
-        new LanguageFile("zh_CN", 1.0),
-        new LanguageFile("zh_TW", 1.0, "zh_HK"),
+        new LanguageFile("en_GB", 1.2),
+        new LanguageFile("de_DE", 1.2, "de_AT", "de_CH"),
+        new LanguageFile("fr_FR", 1.2, "fr_CA"),
+        new LanguageFile("ko_KR", 1.2),
+        new LanguageFile("ru_RU", 1.2, "ba_RU", "tt_RU"),
+        new LanguageFile("zh_CN", 1.2),
+        new LanguageFile("zh_TW", 1.2, "zh_HK"),
     };
 
     public LangUtil() {
@@ -48,7 +48,7 @@ public class LangUtil extends YamlFileFactory {
         return getLanguageFileByLocale(sender instanceof Player ? getLocaleTagByPlayer((Player) sender) : languages[0].tag).getTranslation(key, args);
     }
 
-    private static LanguageFile getLanguageFileByLocale(String locale) {
+    public static LanguageFile getLanguageFileByLocale(String locale) {
         return Arrays.stream(languages)
                 .filter(lang -> lang.tag.equalsIgnoreCase(locale))
                 .findFirst()
@@ -59,16 +59,10 @@ public class LangUtil extends YamlFileFactory {
     }
 
     private static String getLocaleTagByPlayer(Player player) {
-        Builder builder = new Builder(player.getUniqueId());
+        Builder builder = Builder.byUUID(player.getUniqueId());
         if (builder.getLanguageTag() != null) {
             return builder.getLanguageTag();
         } else return player.getPlayer().getLocale();
-    }
-
-    public static void broadcast(String key) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Utils.getInfoMessageFormat(get(player, key)));
-        }
     }
 
     public static void broadcast(String key, String... args) {

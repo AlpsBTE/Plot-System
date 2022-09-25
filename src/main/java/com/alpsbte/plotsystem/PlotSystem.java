@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,11 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.plotsystem.commands.*;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
+import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
-import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
-import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
-import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -37,7 +37,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigNotImplementedException;
@@ -52,15 +51,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
-
-    private static final String VERSION = "2.3";
+    private static final String VERSION = "3.0";
 
     private static PlotSystem plugin;
     private ConfigUtil configManager;
@@ -68,11 +65,6 @@ public class PlotSystem extends JavaPlugin {
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
-
-    private static final List<HolographicDisplay> holograms = Arrays.asList(
-      new ScoreLeaderboard(),
-      new PlotsLeaderboard()
-    );
 
     @Override
     public void onEnable() {
@@ -165,7 +157,7 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Extensions:");
 
         if (DependencyManager.isHolographicDisplaysEnabled()) {
-            reloadHolograms();
+            HologramManager.reloadHolograms();
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
@@ -176,7 +168,7 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
 
         UpdateChecker.getVersion(version -> {
-            if (version.equalsIgnoreCase(VERSION)) {
+            if (Double.parseDouble(VERSION) >= version) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
             } else {
                 UpdateChecker.isUpdateAvailable = true;
@@ -188,6 +180,8 @@ public class PlotSystem extends JavaPlugin {
 
         PlotManager.checkPlotsForLastActivity();
         PlotManager.syncPlotSchematicFiles();
+        Review.checkReviewerFeedbackList();
+        PlotManager.startTimer();
 
         try {
             new PacketListener();
@@ -214,6 +208,8 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+
+            HologramManager.getHolograms().forEach(HolographicDisplay::onShutdown);
         }
     }
 
@@ -240,18 +236,6 @@ public class PlotSystem extends JavaPlugin {
         this.configManager.saveFiles();
     }
 
-    public static void reloadHolograms() {
-        if (DependencyManager.isHolographicDisplaysEnabled()) {
-            for (HolographicDisplay hologram : holograms) {
-                if(plugin.getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
-                    hologram.show();
-                } else {
-                    hologram.hide();
-                }
-            }
-        }
-    }
-
     public static PlotSystem getPlugin() {
         return plugin;
     }
@@ -259,8 +243,6 @@ public class PlotSystem extends JavaPlugin {
     public CommandManager getCommandManager() {
         return commandManager;
     }
-
-    public static List<HolographicDisplay> getHolograms() { return holograms; }
 
 
     public static class DependencyManager {
@@ -309,8 +291,23 @@ public class PlotSystem extends JavaPlugin {
             return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         }
 
+        /**
+         * @return True if ParticleNativeAPI is present
+         */
+        public static boolean isParticleNativeAPIEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("ParticleNativeAPI");
+        }
+
         public static boolean isMultiverseInventoriesEnabled() {
             return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
+        }
+
+        /**
+         * @param worldName Name of the world
+         * @return Config path for the world
+         */
+        public static String getMultiverseInventoriesConfigPath(String worldName) {
+            return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
         }
 
         /**
@@ -335,6 +332,14 @@ public class PlotSystem extends JavaPlugin {
         }
 
         /**
+         * @param worldName Name of the world
+         * @return Config path for the world
+         */
+        public static String getWorldGuardConfigPath(String worldName) {
+            return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/" + worldName;
+        }
+
+        /**
          * @return Protocol Lib Instance
          */
         public static ProtocolManager getProtocolManager() { return ProtocolLibrary.getProtocolManager(); }
@@ -348,10 +353,10 @@ public class PlotSystem extends JavaPlugin {
          * Get latest plugin version from SpigotMC
          * @param version Returns latest stable version
          */
-        public static void getVersion(final Consumer<String> version) {
+        public static void getVersion(final Consumer<Double> version) {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
-                    version.accept(scanner.next());
+                    version.accept(Double.parseDouble(scanner.next()));
                 }
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());

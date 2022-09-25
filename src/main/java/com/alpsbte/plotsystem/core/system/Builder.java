@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,39 +25,60 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
-import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Builder {
 
-    private final UUID UUID;
+    public static HashMap<UUID, Builder> builders = new HashMap<>();
 
-    public Builder(UUID UUID) {
-        this.UUID = UUID;
+    private final UUID uuid;
+    public PlotType plotType;
+
+    private Builder(UUID UUID) {
+        this.uuid = UUID;
     }
 
+    public static Builder byUUID(UUID uuid){
+        if(builders.containsKey(uuid))
+            return builders.get(uuid);
+
+        Builder builder = new Builder(uuid);
+        builders.put(uuid, builder);
+
+        return builders.get(uuid);
+    }
+
+
     public Player getPlayer() {
-        return Bukkit.getPlayer(UUID);
+        return Bukkit.getPlayer(uuid);
     }
 
     public java.util.UUID getUUID() {
-        return UUID;
+        return uuid;
     }
 
-    public boolean isOnline() { return Bukkit.getPlayer(UUID) != null; }
+    public boolean isOnline() { return Bukkit.getPlayer(uuid) != null; }
 
     public String getName() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
@@ -110,8 +131,8 @@ public class Builder {
                 .setValue(getUUID().toString()).executeQuery()) {
 
             if (rs.next()) {
-                for(int i = 1; i <= 3; i++) {
-                    if(rs.getString(i) == null) {
+                for (int i = 1; i <= 3; i++) {
+                    if (rs.getString(i) == null) {
                         DatabaseConnection.closeResultSet(rs);
                         return Slot.values()[i - 1];
                     }
@@ -137,12 +158,36 @@ public class Builder {
         }
     }
 
+    public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
+        if (plot == null) {
+            return new ItemBuilder(Material.EMPTY_MAP, 1 + slotIndex)
+                    .setName("§b§l" + LangUtil.get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
+                    .setLore(new LoreBuilder()
+                            .addLines("§7" + LangUtil.get(langPlayer, LangPaths.MenuDescription.SLOT),
+                                    "",
+                                    "§6§l" + LangUtil.get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
+                            .build())
+                    .build();
+        }
+
+        return new ItemBuilder(Material.MAP, 1 + slotIndex)
+                .setName("§b§l" + LangUtil.get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
+                .setLore(new LoreBuilder()
+                        .addLines("§7" + LangUtil.get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),
+                                "§7" + LangUtil.get(langPlayer, LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
+                                "§7" + LangUtil.get(langPlayer, LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(),
+                                "",
+                                "§6§l" + LangUtil.get(langPlayer, LangPaths.Plot.STATUS) + ": §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1)
+                        ).build())
+                .build();
+    }
+
     public void addScore(int score) throws SQLException {
         DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> PlotSystem.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -150,7 +195,7 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> PlotSystem.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
@@ -174,7 +219,7 @@ public class Builder {
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return new Builder(java.util.UUID.fromString(s));
+                return Builder.byUUID(UUID.fromString(s));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -182,35 +227,139 @@ public class Builder {
         }
     }
 
-    public static List<String> getBuildersByScore(int limit) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, score FROM plotsystem_builders ORDER BY score DESC LIMIT ?")
-                .setValue(limit).executeQuery()) {
+    private static String getBuildersByScoreQuery(ScoreLeaderboard.LeaderboardTimeframe sortBy, int limit) {
+        String minimumDate = null;
+        switch (sortBy) {
+            case DAILY:
+                minimumDate = "(NOW() - INTERVAL 1 DAY)";
+                break;
+            case WEEKLY:
+                minimumDate = "(NOW() - INTERVAL 1 WEEK)";
+                break;
+            case MONTHLY:
+                minimumDate = "(NOW() - INTERVAL 1 MONTH)";
+                break;
+            case YEARLY:
+                minimumDate = "(NOW() - INTERVAL 1 YEAR)";
+                break;
+            default:
+                // no limits
+                break;
+        }
 
-            List<String> scoreAsFormat = new ArrayList<>();
-            while (rs.next()) {
-                scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
+        // get plot id, owner username, owner uuid, score & date
+        // sort by score & limit (if set above) by timeframe
+        return "SELECT plots.id, builders.name, plots.owner_uuid, SUM(plots.score) AS score, reviews.review_date FROM plotsystem_plots AS plots\n" +
+                "INNER JOIN plotsystem_reviews AS reviews ON plots.review_id = reviews.id\n" +
+                "INNER JOIN plotsystem_builders AS builders ON builders.uuid = plots.owner_uuid\n" +
+                (minimumDate != null
+                        ? "WHERE reviews.review_date BETWEEN " + minimumDate + " AND NOW()\n"
+                        : "") +
+                "GROUP BY plots.owner_uuid \n" +
+                "ORDER BY score DESC, builders.name\n" +
+                (limit > 0 ? "LIMIT " + limit : "");
+    }
+
+    public static int getBuilderScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 0);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            boolean found = false;
+            int score = 0;
+            while(rs.next() && !found) {
+                if(rs.getString(3).equals(uuid.toString())) {
+                    found = true;
+                    score = rs.getInt(4);
+                }
             }
 
+            if(!found) score = -1;
+
             DatabaseConnection.closeResultSet(rs);
-            return scoreAsFormat;
+            return score;
         }
     }
 
-    public static List<String> getBuildersByCompletedBuilds(int limit) throws SQLException {
+    public static int getBuilderScorePosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 0);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            boolean found = false;
+            int position = 0;
+            while(rs.next() && !found) {
+                position++;
+                if(rs.getString(3).equals(uuid.toString())) {
+                    found = true;
+                }
+            }
+
+            if(!found) position = -1;
+
+            DatabaseConnection.closeResultSet(rs);
+            return position;
+        }
+    }
+
+    public static int getBuildersInSort(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = "SELECT COUNT(*) FROM (" + getBuildersByScoreQuery(sortBy, 0) + ") results";
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            rs.next();
+            int position = rs.getInt(1);
+
+            DatabaseConnection.closeResultSet(rs);
+            return position;
+        }
+    }
+
+    public static class DatabaseEntry<K, V> {
+        private final K key;
+        private final V value;
+
+        DatabaseEntry(K k, V v) {
+            this.key = k;
+            this.value = v;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+    }
+
+    public static List<DatabaseEntry<String, Integer>> getBuildersByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        String query = getBuildersByScoreQuery(sortBy, 10);
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            ArrayList<DatabaseEntry<String, Integer>> lines = new ArrayList<>();
+
+            while(rs.next()) {
+                lines.add(new DatabaseEntry<>(rs.getString(2), rs.getInt(4)));
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return lines;
+        }
+    }
+
+    public static List<DatabaseEntry<String, Integer>> getBuildersByCompletedBuilds(int limit) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
                 .setValue(limit).executeQuery()) {
 
-            List<String> scoreAsFormat = new ArrayList<>();
+            ArrayList<DatabaseEntry<String, Integer>> results = new ArrayList<>();
             while (rs.next()) {
-                scoreAsFormat.add(rs.getString(1) + "," + rs.getInt(2));
+                results.add(new DatabaseEntry<>(rs.getString(1), rs.getInt(2)));
             }
 
             DatabaseConnection.closeResultSet(rs);
-            return scoreAsFormat;
+            return results;
         }
     }
 
-    public Slot getSlot (Plot plot) throws SQLException {
+    public Slot getSlot(Plot plot) throws SQLException {
         for (Slot slot : Slot.values()) {
             Plot slotPlot = getPlot(slot);
             if (slotPlot != null && slotPlot.getID() == plot.getID()) {
@@ -230,7 +379,7 @@ public class Builder {
             }
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while getting language setting from database", ex);
         }
         return null;
     }
@@ -243,6 +392,85 @@ public class Builder {
             DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = ? WHERE uuid = ?")
                     .setValue(langTag).setValue(getUUID().toString())
                     .executeUpdate();
+        }
+    }
+
+    public PlotType getPlotTypeSetting() {
+        if(plotType != null)
+            return plotType;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(getUUID().toString()).executeQuery()) {
+
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                this.plotType = PlotType.byId(id);
+                DatabaseConnection.closeResultSet(rs);
+
+                return plotType;
+            }
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+        return null;
+    }
+
+    public void setPlotTypeSetting(PlotType plotType){
+        try {
+            if (plotType == null) {
+                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = DEFAULT(setting_plot_type) WHERE uuid = ?")
+                        .setValue(getUUID().toString()).executeUpdate();
+            } else {
+                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = ? WHERE uuid = ?")
+                        .setValue(plotType.getId()).setValue(getUUID().toString())
+                        .executeUpdate();
+            }
+        }catch (SQLException ex){
+            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        }
+
+        this.plotType = plotType;
+    }
+
+    public Reviewer getAsReviewer() throws SQLException {
+        return new Reviewer(getUUID());
+    }
+
+    public boolean isReviewer() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(builder_uuid) FROM plotsystem_builder_is_reviewer WHERE builder_uuid = ?")
+                .setValue(getUUID().toString()).executeQuery()) {
+
+            int count = 0;
+            if (rs.next()) count = rs.getInt(1);
+            DatabaseConnection.closeResultSet(rs);
+            return count > 0;
+        }
+    }
+
+    public static class Reviewer {
+        private final List<BuildTeam> buildTeams;
+
+        public Reviewer(UUID reviewerUUID) throws SQLException {
+            this.buildTeams = BuildTeam.getBuildTeamsByReviewer(reviewerUUID);
+        }
+
+        public List<Country> getCountries() {
+            Set<Integer> countries = new HashSet<>();
+            buildTeams.forEach(b -> {
+                try {
+                    countries.addAll(b.getCountries().stream().map(Country::getID).collect(Collectors.toList()));
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            });
+
+            return countries.stream().map(c -> {
+                try {
+                    return new Country(c);
+                } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+                return null;
+            }).collect(Collectors.toList());
         }
     }
 }

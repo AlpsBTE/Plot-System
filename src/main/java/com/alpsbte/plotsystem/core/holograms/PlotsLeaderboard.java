@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -42,13 +42,21 @@ public class PlotsLeaderboard extends HolographicDisplay {
 
     @Override
     protected String getTitle() {
-        return "§b§lCOMPLETED PLOTS";
+        return "§b§lCOMPLETED PLOTS §6§l[Lifetime]";
     }
 
     @Override
-    protected List<String> getDataLines() {
+    protected List<DataLine> getDataLines() {
         try {
-            return Builder.getBuildersByCompletedBuilds(10);
+            ArrayList<DataLine> lines = new ArrayList<>();
+
+            List<Builder.DatabaseEntry<String, Integer>> entries = Builder.getBuildersByCompletedBuilds(10);
+            for(int i = 0; i < 10; i++ ) {
+                Builder.DatabaseEntry<String, Integer> entry = i < entries.size() && entries.get(i).getValue() != 0 ? entries.get(i) : null;
+                lines.add(new LeaderboardPositionLine(i + 1, entry != null ? entry.getKey() : null, entry != null ? entry.getValue() : 0));
+            }
+
+            return lines;
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
         }
@@ -61,10 +69,5 @@ public class PlotsLeaderboard extends HolographicDisplay {
     }
 
     @Override
-    public void updateHologram() {
-        if(isPlaced()) {
-            getHologram().clearLines();
-            insertLines();
-        }
-    }
+    public void onShutdown() {}
 }

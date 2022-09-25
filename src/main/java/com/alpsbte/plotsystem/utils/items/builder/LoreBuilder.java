@@ -50,6 +50,13 @@ public class LoreBuilder {
         return this;
     }
 
+    public LoreBuilder addLines(List<String> lines) {
+        for (String line : lines) {
+            addLine(line);
+        }
+        return this;
+    }
+
     public LoreBuilder emptyLine() {
         lore.add("");
         return this;

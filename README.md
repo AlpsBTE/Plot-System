@@ -30,8 +30,8 @@
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
-The Plot System is an essential part of any BuildTheEarth server system, meant to run alongside the classic Terra servers to make participating a lot easier and appeal to both the casual and power users. The plot system gives every player the opportunity to participate in the project with ease using Minecraft versions 1.12-1.17 (Vanilla). 
+# About The Project
+The Plot System is an essential part of any BuildTheEarth server system, meant to run alongside the classic Terra servers to make participating a lot easier and appeal to both the casual and power users. The plot system gives every player the opportunity to participate in the project with ease using Minecraft version 1.12 or higher, if ViaVersion is supported.
 
 After clicking on the Companion item in the hotbar, a selection window appears where you can choose a city from the list. If you now click on one of these cities, you will get to a random plot of this city and you can immediately start building. Links to Google Maps, Google Earth Web & OpenStreetMap appear when you enter the plot and allow you to quickly find your way around. 
 
@@ -40,20 +40,40 @@ The system is designed to make it easier for unexperienced people, casual player
 The plugin was programmed by the Alps BTE Team and is meant for everyone to use and help contribute. For any questions regarding setup or contribution feel free to contact us. 
 
 All used Libraries and APIs are listed below.
+# Features
+## Plot Types
+![FocusMode_PlotSystemBanner](https://user-images.githubusercontent.com/64250550/184678178-f8b5c3e5-ec35-4b6b-9b1b-ac3170148d34.png)
+<font size="3">
+The focus mode is the old well-known mode that was also used by default before the release of v3.0. Build your plot on a floating island in an empty void world. Simple and straightforward, like in the good old days.
+<br/><br/>➖ No Environment
+<br/>➖ No Neighboring Plots
+</font><br/><br/>
 
-<img src="https://user-images.githubusercontent.com/64250550/113524662-7c78b400-95b0-11eb-98dd-753600fb6f17.gif" width=100%/>
+![InspirationMode_PlotSystemBanner](https://user-images.githubusercontent.com/64250550/184681201-2f7e2103-df8d-42a3-93b0-ce42770e4fa8.png)
+<font size="3">
+The inspiration mode feels like building in a normal world. By adding the surrounding area of your plot, you will see neighboring buildings, streets and vegetation. In comparison to the focus mode, you will have a better orientation which helps you when building. This mode is selected as default, when using the Plot System for the first time.
+<br/><br/>➕ Environment
+<br/>➖ No Neighboring Plots
+</font><br/><br/>
 
+![CityInspirationMode_PlotSystemBanner](https://user-images.githubusercontent.com/64250550/184683030-27f1760b-09ad-43f7-b5ed-bdd46c972246.png)
+<font size="3">
+The city inspiration mode will give you the full building experience by combining the inspiration mode with other players. Build with your friends and others in one world next to each other and see continuous progress.
+<br/><br/>⚠️ This mode is not fully stable and still in BETA
+<br/><br/>➕ Environment
+<br/>➕ Neighboring Plots
+</font>
 
-## Features
-✔️ Support for **multiple cities** and **countries/states**<br/>
+## Other Features
+✔️ Support for **multiple cities** as well as for **continents** and **countries/states**<br/>
 ✔️ **User-friendly menus** and **commands**<br/>
-✔️ **Multi-Language** Support<br/>
+✔️ **Multi-Language** Support (currently up to 7 languages)<br/>
 ✔️ Plot **Group System** (Build together with up to 5 people on one plot)<br/>
 ✔️ **SFTP/FTP** Support<br/>
-✔️ Detailed **review system** with feedback<br/>
-✔️ Three plot **difficulty levels**<br/>
+✔️ Detailed **review system** with individual feedback<br/>
+✔️ Three plot **difficulty levels** (easy, medium and hard)<br/>
 ✔️ Building **Quality of Life tools**<br/>
-✔️ **/tpll support** on plots<br/>
+✔️ Full **/tpll support** on plots<br/>
 ✔️ **Leaderboards** when using the Holograms extension<br/>
 ✔️ Automatic **abandoning of inactive plots**<br/>
 ✔️ Automatic **placement of completed plots** on the terra server<br/>
@@ -61,7 +81,7 @@ All used Libraries and APIs are listed below.
 
 
 <!-- INSTALLATION -->
-## Installation
+# Installation
 💻 To use this system, you currently need at least two servers.</br>
 One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/AlpsBTE/Plot-System-Terra)** and the other one is a Spigot Vanilla server for the Plot-System itself.</br>
 
@@ -69,16 +89,15 @@ One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/
 
 
 <!-- ROADMAP -->
-## Roadmap
+# Roadmap
 📋 Plot Tutorial<br/>
 📋 In-Game Guidebook<br/>
 📋 Discord Integration<br/>
-📋 More and Improved Leaderboards<br/>
 📋 Statistics<br/>
 
 
 <!-- CONTRIBUTING -->
-## Contributing
+# Contributing
 🔨 Any contributions you make are greatly appreciated.
 
 * Reporting a bug
@@ -88,23 +107,13 @@ One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/
 
 
 <!-- LICENSE -->
-## License
+# License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
-<!-- CONTACTS -->
-## Contacts
-
-- R3tuxn - [R3tuxn#7169](https://discord.com/invite/vgkspay)
-- Cinnazeyy - [Cinnazeyy#2440](https://discord.com/invite/vgkspay)
-- Coppertine - [Coppertine#1718](https://discord.com/invite/vgkspay)
-
-Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE/Plot-System)
-
-
 <!-- LIBRARIES & APIS -->
-## Libraries & APIs
+# Libraries & APIs
 * [Spigot & Bukkit API](https://hub.spigotmc.org/stash/projects/SPIGOT)
 * [WorldEdit API](https://github.com/EngineHub/WorldEdit) 
 * [WorldGuard API](https://github.com/EngineHub/WorldGuard)
@@ -117,3 +126,4 @@ Project Link: [https://github.com/AlpsBTE/PlotSystem](https://github.com/AlpsBTE
 * [Maria-DB Library](https://mariadb.com/kb/en/about-mariadb-connector-j/)
 * [Hikari-CP](https://github.com/brettwooldridge/HikariCP)
 * [Apache Common VFS API](https://commons.apache.org/proper/commons-vfs/commons-vfs2/apidocs/index.html)
+* [ProtocolLIB](https://github.com/dmulloy2/ProtocolLib)

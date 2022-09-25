@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.commands.admin;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
@@ -44,7 +45,7 @@ public class CMD_SetHologram extends BaseCommand {
                     Player player = (Player)sender;
                     if (args.length == 1) {
                         // Find hologram by name
-                        HolographicDisplay hologram = PlotSystem.getHolograms().stream()
+                        HolographicDisplay hologram = HologramManager.getHolograms().stream()
                                 .filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))
                                 .findFirst()
                                 .orElse(null);
@@ -55,14 +56,14 @@ public class CMD_SetHologram extends BaseCommand {
                             player.sendMessage(Utils.getInfoMessageFormat("Successfully updated hologram location!"));
                             player.playSound(player.getLocation(), Utils.Done,1,1);
 
-                            PlotSystem.reloadHolograms();
+                            HologramManager.reloadHolograms();
                         } else {
                             player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
                         }
                     } else {
                         sendInfo(sender);
                         player.sendMessage("§8------- §6§lHolograms §8-------");
-                        for(HolographicDisplay holo : PlotSystem.getHolograms()) {
+                        for(HolographicDisplay holo : HologramManager.getHolograms()) {
                             player.sendMessage(" §6> §f" + holo.getHologramName());
                         }
                         player.sendMessage("§8--------------------------");

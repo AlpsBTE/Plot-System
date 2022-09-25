@@ -13,6 +13,7 @@ public class LangPaths {
         public static final String MEMBERS = PLOT + "members";
         public static final String MEMBER = PLOT + "member";
         public static final String CITY = PLOT + "city";
+        public static final String COUNTRY = PLOT + "country";
         public static final String DIFFICULTY = PLOT + "difficulty";
         public static final String STATUS = PLOT + "status";
         public static final String SCORE = PLOT + "score";
@@ -29,10 +30,28 @@ public class LangPaths {
 
     public static final class CityProject {
         private static final String CITY_PROJECT = "city-project.";
+        public static final String CITIES = CITY_PROJECT + "cities";
         public static final String PROJECT_OPEN = CITY_PROJECT + "open";
         public static final String PROJECT_IN_PROGRESS = CITY_PROJECT + "in-progress";
         public static final String PROJECT_COMPLETED = CITY_PROJECT + "completed";
-        public static final String PROJECT_NO_PLOTS = CITY_PROJECT + "no-plots-available";
+        public static final String PROJECT_PLOTS_AVAILABLE = CITY_PROJECT + "plots-available";
+        public static final String PROJECT_NO_PLOTS_AVAILABLE = CITY_PROJECT + "no-plots-available";
+        public static final String FOR_YOUR_DIFFICULTY = CITY_PROJECT + "for-your-difficulty";
+    }
+
+    public static final class Country {
+        private static final String COUNTRY = "country.";
+        public static final String COUNTRIES = COUNTRY + "countries";
+    }
+
+    public static final class Continent {
+        private static final String CONTINENT = "continent.";
+        public static final String EUROPE = CONTINENT + "europe";
+        public static final String ASIA = CONTINENT + "asia";
+        public static final String AFRICA = CONTINENT + "africa";
+        public static final String OCEANIA = CONTINENT + "oceania";
+        public static final String SOUTH_AMERICA = CONTINENT + "south-america";
+        public static final String NORTH_AMERICA = CONTINENT + "north-america";
     }
 
     public static final class Difficulty {
@@ -69,6 +88,9 @@ public class LangPaths {
         public static final String CANCEL = MENU_TITLES + "cancel";
         public static final String ADD_MEMBER_TO_PLOT = MENU_TITLES + "add-member-to-plot";
         public static final String COMPANION = MENU_TITLES + "companion";
+        public static final String COMPANION_SELECT_CONTINENT = MENU_TITLES + "companion-select-continent";
+        public static final String COMPANION_SELECT_COUNTRY = MENU_TITLES + "companion-select-country";
+        public static final String COMPANION_SELECT_CITY = MENU_TITLES + "companion-select-city";
         public static final String PLAYER_PLOTS = MENU_TITLES + "player-plots";
         public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
         public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
@@ -76,6 +98,12 @@ public class LangPaths {
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
         public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
+        public static final String SELECT_PLOT_TYPE = MENU_TITLES + "select-plot-type";
+        public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
+        public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
+        public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
+        public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
+        public static final String INFORMATION = MENU_TITLES + "information";
     }
 
     public static final class MenuDescription {
@@ -101,7 +129,13 @@ public class LangPaths {
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";
         public static final String LEAVE_PLOT = MENU_DESCRIPTIONS + "leave-plot-desc";
         public static final String SELECT_LANGUAGE = MENU_DESCRIPTIONS + "select-language-desc";
+        public static final String SELECT_PLOT_TYPE = MENU_DESCRIPTIONS + "select-plot-type-desc";
+        public static final String SELECT_FOCUS_MODE = MENU_DESCRIPTIONS + "select-focus-mode-desc";
+        public static final String SELECT_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-local-inspiration-mode-desc";
+        public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
         public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
+        public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
+        public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
     }
 
     public static final class Review {
@@ -110,9 +144,11 @@ public class LangPaths {
         public static final String REVIEW_PLOT = REVIEW + "review-plot";
         public static final String MANAGE_PLOT = REVIEW + "manage-plot";
         public static final String ACCEPTED = REVIEW + "accepted";
+        public static final String ABANDONED = REVIEW + "abandoned";
         public static final String REJECTED = REVIEW + "rejected";
         public static final String FEEDBACK = REVIEW + "feedback";
         public static final String REVIEWER = REVIEW + "reviewer";
+        public static final String PLAYER_LANGUAGE = REVIEW + "player-language";
 
         public static final class Criteria {
             private static final String CRITERIA = REVIEW + "criteria.";
@@ -187,6 +223,8 @@ public class LangPaths {
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
             public static final String CHANGED_LANGUAGE = INFO + "changed-language";
+            public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
+            public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
         }
 
         public static final class Error {
@@ -199,7 +237,7 @@ public class LangPaths {
             public static final String CAN_ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR + "can-only-submit-unfinished-plots";
             public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR + "can-only-undo-submissions-unreviewed-plots";
             public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR + "can-only-manage-members-unfinished-plots";
-            public static final String CAN_ONLY_TELEPORT_TO_PLOT = ERROR + "can-only-teleport-to-plot";
+            public static final String CANNOT_TELEPORT_OUTSIDE_PLOT = ERROR + "cannot-teleport-outside-plot";
             public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
             public static final String CANNOT_REVIEW_OWN_PLOT = ERROR + "cannot-review-own-plot";
@@ -220,7 +258,17 @@ public class LangPaths {
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
+            public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
+            public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
         }
+    }
+
+    public static final class Leaderboards {
+        private static final String LBS = "leaderboards.";
+        public static final String PAGES = LBS + "pages.";
+        public static final String ACTIONBAR_POSITION = LBS + "actionbar-position";
+        public static final String ACTIONBAR_PERCENTAGE = LBS + "actionbar-percentage";
+        public static final String NOT_ON_LEADERBOARD = LBS + "not-on-leaderboard";
     }
 
     public static final String CONFIG_VERSION = "config-version";
