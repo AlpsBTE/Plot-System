@@ -104,8 +104,10 @@ public class DatabaseConnection {
 
         connectionClosed++;
 
-        if(connectionOpened > connectionClosed + 5)
+        if(connectionOpened > connectionClosed + 5) {
             Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
+            Bukkit.getLogger().log(Level.SEVERE, "Connections Open: " + (connectionOpened - connectionClosed));
+        }
     }
 
     private static void createDatabase() throws SQLException {
