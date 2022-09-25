@@ -256,7 +256,7 @@ public class Builder {
                         ? "WHERE reviews.review_date BETWEEN " + minimumDate + " AND NOW()\n"
                         : "") +
                 "GROUP BY plots.owner_uuid \n" +
-                "ORDER BY score DESC\n" +
+                "ORDER BY score DESC, builders.name\n" +
                 (limit > 0 ? "LIMIT " + limit : "");
     }
 

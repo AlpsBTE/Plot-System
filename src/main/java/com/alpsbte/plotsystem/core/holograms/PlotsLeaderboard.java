@@ -42,7 +42,7 @@ public class PlotsLeaderboard extends HolographicDisplay {
 
     @Override
     protected String getTitle() {
-        return "§b§lCOMPLETED PLOTS §7§o(LIFETIME)";
+        return "§b§lCOMPLETED PLOTS §6§l[Lifetime]";
     }
 
     @Override

@@ -272,7 +272,7 @@ leaderboards:
     LIFETIME: "Lifetime"
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
-  not-on-leaderboard: "Not on leaderboard"
+  not-on-leaderboard: "Not on Leaderboard"
 
 # NOTE: Do not change
 config-version: "1.2"

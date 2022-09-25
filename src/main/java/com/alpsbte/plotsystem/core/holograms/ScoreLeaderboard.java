@@ -36,7 +36,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -105,7 +104,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
     @Override
     protected String getTitle() {
-        return "§b§lTOP SCORE §7§o(" + StringUtils.capitalize(sortBy.toString()) + ")";
+        return "§b§lTOP SCORE §6§l[" + (sortBy.toString().charAt(0) + sortBy.toString().toLowerCase().substring(1)) + "]";
     }
 
     @Override
@@ -192,8 +191,16 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
         ComponentBuilder builder = new ComponentBuilder("");
         builder.append(
-                new ComponentBuilder(LangUtil.get(player, sortBy.langPath) + " ")
-                        .color(ChatColor.GREEN)
+                new ComponentBuilder("  " + LangUtil.get(player, sortBy.langPath))
+                        .color(ChatColor.GOLD)
+                        .bold(true)
+                        .create()
+        );
+
+        builder.append(
+                new ComponentBuilder(" ➜ ")
+                        .color(ChatColor.DARK_GRAY)
+                        .bold(true)
                         .create()
         );
 
@@ -201,28 +208,29 @@ public class ScoreLeaderboard extends HolographicDisplay {
             builder.append(
                     new ComponentBuilder(LangUtil.get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
                             .color(ChatColor.RED)
+                            .bold(false)
                             .create()
             );
         } else if (position < 50) {
             builder.append(
                     new ComponentBuilder(
                             LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
-                    ).create()
+                    ).color(ChatColor.GREEN).bold(false).create()
             );
         } else {
             String topPercentage = df.format(position * 1.0 / rows);
             builder.append(
                     new ComponentBuilder(
                             LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
-                    ).create()
+                    ).bold(false).create()
             );
         }
 
         if (myScore != -1) {
-            builder.append(TextComponent.fromLegacyText("§8 (§6" + myScore + " points§8)"));
+            builder.append(TextComponent.fromLegacyText("§8 (§b" + myScore + " points§8)"));
         }
 
-        return builder.create();
+        return builder.bold(false).create();
     }
 
     private List<Player> showToPlayers() {
