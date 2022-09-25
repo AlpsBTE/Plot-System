@@ -55,7 +55,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     private int plotDisplayCount = 0;
 
     public PlayerPlotsMenu(Player menuPlayer, Builder builder) throws SQLException {
-        super(6, LangUtil.get(menuPlayer, LangPaths.MenuTitle.PLAYER_PLOTS, menuPlayer.getName() + "'"), menuPlayer);
+        super(6, LangUtil.get(menuPlayer.getPlayer(), LangPaths.MenuTitle.PLAYER_PLOTS, builder.getName() + "'"), menuPlayer);
         this.builder = builder;
     }
 
