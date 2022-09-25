@@ -46,14 +46,14 @@ All used Libraries and APIs are listed below.
 <font size="3">
 The focus mode is the old well-known mode that was also used by default before the release of v3.0. Build your plot on a floating island in an empty void world. Simple and straightforward, like in the good old days.
 <br/><br/>➖ No Environment
-<br/>➖ No Neighboring Plots
+<br/>➖ No Neighbouring Plots
 </font><br/><br/>
 
 ![InspirationMode_PlotSystemBanner](https://user-images.githubusercontent.com/64250550/184681201-2f7e2103-df8d-42a3-93b0-ce42770e4fa8.png)
 <font size="3">
-The inspiration mode feels like building in a normal world. By adding the surrounding area of your plot, you will see neighboring buildings, streets and vegetation. In comparison to the focus mode, you will have a better orientation which helps you when building. This mode is selected as default, when using the Plot System for the first time.
+The inspiration mode feels like building in a normal world. By adding the surrounding area of your plot, you will see neighbouring buildings, streets and vegetation. In comparison to the focus mode, you will have a better orientation which helps you when building. This mode is selected as default, when using the Plot System for the first time.
 <br/><br/>➕ Environment
-<br/>➖ No Neighboring Plots
+<br/>➖ No Neighbouring Plots
 </font><br/><br/>
 
 ![CityInspirationMode_PlotSystemBanner](https://user-images.githubusercontent.com/64250550/184683030-27f1760b-09ad-43f7-b5ed-bdd46c972246.png)
@@ -61,7 +61,7 @@ The inspiration mode feels like building in a normal world. By adding the surrou
 The city inspiration mode will give you the full building experience by combining the inspiration mode with other players. Build with your friends and others in one world next to each other and see continuous progress.
 <br/><br/>⚠️ This mode is not fully stable and still in BETA
 <br/><br/>➕ Environment
-<br/>➕ Neighboring Plots
+<br/>➕ Neighbouring Plots
 </font>
 
 ## Other Features
