@@ -336,7 +336,7 @@ public class DatabaseConnection {
                             "(" +
                             " `id`         int NOT NULL AUTO_INCREMENT ," +
                             " `api_key`    varchar(32) NOT NULL ," +
-                            " `created_at` timestamp NOT NULL ," +
+                            " `created_at` timestamp NOT NULL DEFAULT current_timestamp()," +
                             "PRIMARY KEY (`id`)" +
                             ");",
 
@@ -344,10 +344,10 @@ public class DatabaseConnection {
                     "CREATE TABLE IF NOT EXISTS `plotsystem_buildteams` (" +
                             "`id` INT(11) NOT NULL AUTO_INCREMENT," +
                             "`name` VARCHAR(45) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            "`api_key_id` VARCHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "`api_key_id` INT(11) NULL DEFAULT NULL," +
                             "PRIMARY KEY (`id`) USING BTREE," +
-                            "INDEX `FK_132` (`api_key_id`) USING BTREE," +
-                            "CONSTRAINT `FK_130` FOREIGN KEY (`api_key_id`) REFERENCES `plotsystem_test`.`api_keys` (`api_key`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            "KEY `FK_132` (`api_key_id`)," +
+                            "CONSTRAINT `FK_130` FOREIGN KEY `FK_132` (`api_key_id`) REFERENCES `plotsystem_api_keys` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +
@@ -359,10 +359,10 @@ public class DatabaseConnection {
                             "`country_id` INT(11) NOT NULL," +
                             "`buildteam_id` INT(11) NOT NULL," +
                             "PRIMARY KEY (`id`) USING BTREE," +
-                            "INDEX `FK_115` (`buildteam_id`) USING BTREE," +
-                            "INDEX `FK_118` (`country_id`) USING BTREE," +
-                            "CONSTRAINT `FK_113` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_test`.`plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
-                            "CONSTRAINT `FK_116` FOREIGN KEY (`country_id`) REFERENCES `plotsystem_test`.`plotsystem_countries` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            "KEY `FK_115` (`buildteam_id`)," +
+                            "KEY `FK_118` (`country_id`)," +
+                            "CONSTRAINT `FK_113` FOREIGN KEY `FK_115` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
+                            "CONSTRAINT `FK_116` FOREIGN KEY `FK_118` (`country_id`) REFERENCES `plotsystem_countries` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +
@@ -374,10 +374,10 @@ public class DatabaseConnection {
                             "`builder_uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
                             "`buildteam_id` INT(11) NOT NULL," +
                             "PRIMARY KEY (`id`) USING BTREE," +
-                            "INDEX `FK_138` (`builder_uuid`) USING BTREE," +
-                            "INDEX `FK_141` (`buildteam_id`) USING BTREE," +
-                            "CONSTRAINT `FK_136` FOREIGN KEY (`builder_uuid`) REFERENCES `plotsystem_test`.`plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
-                            "CONSTRAINT `FK_139` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_test`.`plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            "KEY `FK_138` (`builder_uuid`)," +
+                            "KEY `FK_141` (`buildteam_id`)," +
+                            "CONSTRAINT `FK_136` FOREIGN KEY `FK_138` (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
+                            "CONSTRAINT `FK_139` FOREIGN KEY `FK_141` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +
