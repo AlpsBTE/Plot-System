@@ -57,7 +57,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
-    private static final String VERSION = "3.0";
+    private static final String VERSION = "3.0.2";
 
     private static PlotSystem plugin;
     private ConfigUtil configManager;
@@ -168,7 +168,7 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
 
         UpdateChecker.getVersion(version -> {
-            if (Double.parseDouble(VERSION) >= version) {
+            if (version.equals(VERSION)) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
             } else {
                 UpdateChecker.isUpdateAvailable = true;
@@ -353,10 +353,10 @@ public class PlotSystem extends JavaPlugin {
          * Get latest plugin version from SpigotMC
          * @param version Returns latest stable version
          */
-        public static void getVersion(final Consumer<Double> version) {
+        public static void getVersion(final Consumer<String> version) {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
-                    version.accept(Double.parseDouble(scanner.next()));
+                    version.accept(scanner.next());
                 }
             } catch (IOException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
