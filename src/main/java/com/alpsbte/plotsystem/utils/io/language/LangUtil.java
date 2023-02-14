@@ -113,7 +113,7 @@ public class LangUtil extends YamlFileFactory {
 
         @Override
         public InputStream getDefaultFileStream() {
-            return PlotSystem.getPlugin().getResource("lang" + File.separator + getFile().getName());
+            return PlotSystem.getPlugin().getResource("lang/" + getFile().getName());
         }
 
         @Override
