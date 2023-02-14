@@ -74,6 +74,9 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
         long interval = getInterval();
         long changeDelay = interval / 15;
+
+        if (!PlotSystem.getPlugin().isEnabled()) return;
+
         changeSortTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -172,6 +175,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
     }
 
     private List<LeaderboardTimeframe> getPages() {
+        if (PlotSystem.getPlugin().getConfigManager() == null) return new ArrayList<>();
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
         return Arrays.stream(LeaderboardTimeframe.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
     }
