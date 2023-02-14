@@ -275,4 +275,4 @@ leaderboards:
   not-on-leaderboard: "Not on Leaderboard"
 
 # NOTE: Do not change
-config-version: "1.2"
+config-version: 1.2
