@@ -43,7 +43,7 @@ public abstract class YamlFileFactory {
 
     public boolean reloadFile(YamlFile yamlFile) {
         try (@NotNull Reader fileReader = getConfigContent(yamlFile)){
-            this.scanFile(yamlFile);
+            if (!this.scanFile(yamlFile)) throw new IOException();
             yamlFile.load(fileReader);
         } catch (IOException | InvalidConfigurationException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while reloading yaml file!", ex);
