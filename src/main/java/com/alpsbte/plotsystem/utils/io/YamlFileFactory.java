@@ -186,7 +186,7 @@ public abstract class YamlFileFactory {
     private Reader getConfigContent(YamlFile yamlFile) {
         if (!yamlFile.getFile().exists()) return new InputStreamReader(IOUtils.toInputStream("", StandardCharsets.UTF_8));
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(yamlFile.getFile()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(yamlFile.getFile().toPath()),  StandardCharsets.UTF_8))) {
             int commentNum = 0;
             int emptySpaceNum = 0;
             String addLine;
@@ -196,6 +196,8 @@ public abstract class YamlFileFactory {
 
             // Convert config file
             while ((currentLine = reader.readLine()) != null) {
+                currentLine = currentLine.replace("\uFEFF", ""); // fix for UTF-8 BOM encoding
+
                 // Add comment
                 if (currentLine.startsWith("#")) {
                     addLine = (currentLine.replaceFirst("#", "COMMENT_" + commentNum + ":")
