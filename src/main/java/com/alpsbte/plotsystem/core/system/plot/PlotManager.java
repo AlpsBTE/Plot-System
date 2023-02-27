@@ -75,11 +75,11 @@ import java.util.logging.Level;
 
 public class PlotManager {
     // TODO: Start -> Move to another class
-    public static int CACHE_UPDATE_TICKS = 20*60;
+    public static final int CACHE_UPDATE_TICKS = 20*60;
 
     public static int time;
 
-    public static HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
+    public static final HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
     private static boolean ParticleAPIEnabled = false;
     private static Particles_1_8 particles;

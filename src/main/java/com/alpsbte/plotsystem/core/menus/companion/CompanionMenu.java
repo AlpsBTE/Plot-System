@@ -152,7 +152,7 @@ public class CompanionMenu {
     }
 
     static class FooterItem {
-        public ItemStack item;
+        public final ItemStack item;
         public org.ipvp.canvas.slot.Slot.ClickHandler clickHandler = null;
 
         FooterItem(ItemStack item, org.ipvp.canvas.slot.Slot.ClickHandler clickHandler) {

@@ -1,12 +1,8 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import org.bukkit.Bukkit;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

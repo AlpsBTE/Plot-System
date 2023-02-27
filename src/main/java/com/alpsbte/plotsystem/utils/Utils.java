@@ -66,13 +66,13 @@ public class Utils {
     }
 
     // Sounds
-    public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
-    public static Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
-    public static Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    public static Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
-    public static Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
-    public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    public static Sound INVENTORY_CLICK = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
+    public static final Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
+    public static final Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
+    public static final Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    public static final Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
+    public static final Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
+    public static final Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    public static final Sound INVENTORY_CLICK = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
 
     // Spawn Location
     public static Location getSpawnLocation() {

@@ -31,7 +31,6 @@ import com.alpsbte.plotsystem.utils.io.YamlFileFactory;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class ConfigUtil extends YamlFileFactory {
 

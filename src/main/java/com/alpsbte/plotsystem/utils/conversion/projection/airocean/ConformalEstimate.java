@@ -44,8 +44,6 @@ public class ConformalEstimate extends Airocean {
                     ys[u][v] = Double.parseDouble(split[1]) * this.VECTOR_SCALE_FACTOR;
                 }
             }
-
-            sc.close();
         } catch (IOException e) {
             System.err.println("Can't load conformal: " + e);
         }

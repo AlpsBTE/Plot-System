@@ -33,8 +33,8 @@ import org.ipvp.canvas.type.ChestMenu;
 
 public abstract class AbstractMenu {
 
-    public static int MAX_CHARS_PER_LINE = 30;
-    public static char LINE_BAKER = '\n';
+    public static final int MAX_CHARS_PER_LINE = 30;
+    public static final char LINE_BAKER = '\n';
 
 
 

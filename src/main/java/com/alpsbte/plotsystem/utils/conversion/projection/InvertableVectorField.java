@@ -4,9 +4,9 @@ import com.alpsbte.plotsystem.utils.conversion.MathUtils;
 
 public class InvertableVectorField {
 
-    private double[][] VECTOR_X;
-    private double[][] VECTOR_Y;
-    private int sideLength;
+    private final double[][] VECTOR_X;
+    private final double[][] VECTOR_Y;
+    private final int sideLength;
 
     public InvertableVectorField(double[][] vx, double[][] vy) {
         this.sideLength = vx.length - 1;

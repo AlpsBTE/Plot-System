@@ -41,7 +41,7 @@ import java.util.List;
 
 public class CommandManager {
 
-    public List<BaseCommand> baseCommands = new ArrayList<BaseCommand>() {{
+    public final List<BaseCommand> baseCommands = new ArrayList<BaseCommand>() {{
         // Default Commands
         add(new CMD_Spawn());
         add(new CMD_Companion());

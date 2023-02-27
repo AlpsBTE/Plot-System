@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 
 public class Builder {
 
-    public static HashMap<UUID, Builder> builders = new HashMap<>();
+    public static final HashMap<UUID, Builder> builders = new HashMap<>();
 
     private final UUID uuid;
     public PlotType plotType;

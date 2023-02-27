@@ -30,7 +30,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class CityProjectMenu extends AbstractPaginatedMenu {
-    Country country;
+    final Country country;
     List<CityProject> projects;
     private PlotDifficulty selectedPlotDifficulty;
 

@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class Invitation {
-    public static List<Invitation> invitationsList = new ArrayList<>();
+    public static final List<Invitation> invitationsList = new ArrayList<>();
 
-    public Player invitee;
-    public Plot plot;
+    public final Player invitee;
+    public final Plot plot;
 
     private final BukkitScheduler scheduler = PlotSystem.getPlugin().getServer().getScheduler();
     private int taskID;

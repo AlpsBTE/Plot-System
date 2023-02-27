@@ -171,8 +171,8 @@ public class Airocean extends GeographicProjection {
             double centroidLambda = centroidSpherical[0];
             double centroidPhi = centroidSpherical[1];
 
-            double vertex[] = VERTICES[ISO[i][0]];
-            double v[] = new double[] {vertex[0] - centroidLambda, vertex[1]};
+            double[] vertex = VERTICES[ISO[i][0]];
+            double[] v = new double[] {vertex[0] - centroidLambda, vertex[1]};
             v = yRot(v, -centroidPhi);
 
             ROTATION_MATRICES[i] = MathUtils.produceZYZRotationMatrix(-centroidLambda, -centroidPhi, (Math.PI/2) - v[0]);

@@ -196,9 +196,9 @@ public abstract class HolographicDisplay {
     }
 
     public static class LeaderboardPositionLine implements DataLine {
-        protected int position;
-        protected int score;
-        protected String username;
+        protected final int position;
+        protected final int score;
+        protected final String username;
 
         public LeaderboardPositionLine(int position, String username, int score) {
             this.position = position;

@@ -6,7 +6,7 @@ public enum PlotType {
     LOCAL_INSPIRATION_MODE(1),
     CITY_INSPIRATION_MODE(2);
 
-    int id;
+    final int id;
 
     PlotType(int id){
         this.id = id;
