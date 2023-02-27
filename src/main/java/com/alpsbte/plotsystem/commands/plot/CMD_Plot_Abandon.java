@@ -38,6 +38,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class CMD_Plot_Abandon extends SubCommand {
@@ -65,7 +66,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                 return;
             }
 
-            if (plot.getStatus() == Status.unfinished) {
+            if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
                 if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
                     if (PlotHandler.abandonPlot(plot)) {
                         sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));

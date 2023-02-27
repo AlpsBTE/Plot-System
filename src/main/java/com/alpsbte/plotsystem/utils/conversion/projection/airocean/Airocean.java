@@ -306,8 +306,6 @@ public class Airocean extends GeographicProjection {
         double adenom = 1;
         double bdenom = 1;
 
-        //double fp = anumer + bnumer + 1; //derivative relative to tanc
-
         //int i = newton;
         for (int i = 0; i < NEWTON; i++) {
             double f = tana + tanb + tanc - R; //R = tana + tanb + tanc

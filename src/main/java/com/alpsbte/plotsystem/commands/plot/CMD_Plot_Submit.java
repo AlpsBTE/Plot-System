@@ -38,6 +38,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class CMD_Plot_Submit extends SubCommand {
@@ -65,8 +66,8 @@ public class CMD_Plot_Submit extends SubCommand {
                 return;
             }
 
-            if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
-                if (plot.getStatus() == Status.unfinished) {
+            if (sender.hasPermission("plotsystem.review") || Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
+                if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
                     PlotHandler.submitPlot(plot);
 
                     if (plot.getPlotMembers().isEmpty()) {

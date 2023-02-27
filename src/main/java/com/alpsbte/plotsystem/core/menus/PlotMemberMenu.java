@@ -20,6 +20,7 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class PlotMemberMenu extends AbstractMenu {
@@ -135,7 +136,7 @@ public class PlotMemberMenu extends AbstractMenu {
                         try {
                             if (Builder.getBuilderByName(text) != null) {
                                 Builder builder = Builder.getBuilderByName(text);
-                                if (builder.isOnline()) {
+                                if (Objects.requireNonNull(builder).isOnline()) {
                                     // Check if player is owner of plot
                                     if (builder.getPlayer() == plot.getPlotOwner().getPlayer()) {
                                         player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));

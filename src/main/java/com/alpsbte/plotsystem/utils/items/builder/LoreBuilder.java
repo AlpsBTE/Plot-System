@@ -31,7 +31,7 @@ import java.util.List;
 
 public class LoreBuilder {
 
-    private final List<String> lore = new ArrayList<String>();
+    private final List<String> lore = new ArrayList<>();
     private String defaultColor = "§7";
 
     public LoreBuilder addLine(String line) {

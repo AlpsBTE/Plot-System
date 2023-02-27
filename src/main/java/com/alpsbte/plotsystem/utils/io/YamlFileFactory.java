@@ -25,9 +25,8 @@ public abstract class YamlFileFactory {
 
     /**
      * Saves YAML files
-     * @return true if file saved successfully
      */
-    public boolean saveFiles() {
+    public void saveFiles() {
         Arrays.stream(yamlFiles).forEach(yamlFile -> {
             try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(yamlFile.getFile()))){
                 String configuration = this.prepareFileString(yamlFile.saveToString());
@@ -38,7 +37,6 @@ public abstract class YamlFileFactory {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving yaml file!", ex);
             }
         });
-        return true;
     }
 
     public boolean reloadFile(YamlFile yamlFile) {
@@ -54,11 +52,9 @@ public abstract class YamlFileFactory {
 
     /**
      * Reloads YAML files
-     * @return true if file reloaded successfully
      */
-    public boolean reloadFiles() {
+    public void reloadFiles() {
         Arrays.stream(yamlFiles).forEach(this::reloadFile);
-        return true;
     }
 
     /**
@@ -121,9 +117,8 @@ public abstract class YamlFileFactory {
     /**
      * Update YAML file from default config
      * @param yamlFile YAML file
-     * @return true if file updated successfully
      */
-    protected boolean updateFile(YamlFile yamlFile) {
+    protected void updateFile(YamlFile yamlFile) {
         // Create Backup of YAML file
         try {
             FileUtils.copyFile(yamlFile.getFile(), Paths.get(yamlFile.getFile().getParentFile().getAbsolutePath(), "old_" + yamlFile.getFileName()).toFile());
@@ -148,11 +143,9 @@ public abstract class YamlFileFactory {
             defaultFileLines.set(getIndex("config-version", defaultFileLines), "config-version: " + yamlFile.getVersion());
             Files.write(yamlFile.getFile().toPath(), defaultFileLines);
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Updated " + yamlFile.getFileName() + " to version " + yamlFile.getVersion() + ".");
-            return true;
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while updating config file!", ex);
         }
-        return false;
     }
 
     /**

@@ -70,10 +70,10 @@ public class ItemBuilder {
     public ItemBuilder setEnchanted(boolean setEnchanted) {
         if(setEnchanted) {
             itemMeta.addEnchant(Enchantment.ARROW_DAMAGE,1,true);
-            itemMeta.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ENCHANTS });
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         } else {
             itemMeta.removeEnchant(Enchantment.ARROW_DAMAGE);
-            itemMeta.removeItemFlags(new ItemFlag[] { ItemFlag.HIDE_ENCHANTS });
+            itemMeta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         return this;
     }
