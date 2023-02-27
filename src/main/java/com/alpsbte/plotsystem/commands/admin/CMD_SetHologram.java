@@ -39,45 +39,48 @@ public class CMD_SetHologram extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            if (sender.hasPermission(getPermission())){
-                if (getPlayer(sender) != null){
-                    Player player = (Player)sender;
-                    if (args.length == 1) {
-                        // Find hologram by name
-                        HolographicDisplay hologram = HologramManager.getHolograms().stream()
-                                .filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))
-                                .findFirst()
-                                .orElse(null);
-
-                        // Update hologram location
-                        if(hologram != null) {
-                            hologram.setLocation(player.getLocation());
-                            player.sendMessage(Utils.getInfoMessageFormat("Successfully updated hologram location!"));
-                            player.playSound(player.getLocation(), Utils.Done,1,1);
-
-                            HologramManager.reloadHolograms();
-                        } else {
-                            player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
-                        }
-                    } else {
-                        sendInfo(sender);
-                        player.sendMessage("§8------- §6§lHolograms §8-------");
-                        for(HolographicDisplay holo : HologramManager.getHolograms()) {
-                            player.sendMessage(" §6> §f" + holo.getHologramName());
-                        }
-                        player.sendMessage("§8--------------------------");
-                    }
-
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
-                }
-            } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
-            }
-        } else {
+        if (!PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
             sender.sendMessage(Utils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
+            return true;
         }
+
+        if (!sender.hasPermission(getPermission())){
+            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            return true;
+        }
+
+        if (getPlayer(sender) == null){
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
+
+        Player player = (Player)sender;
+        if (args.length != 1) {
+            sendInfo(sender);
+            player.sendMessage("§8------- §6§lHolograms §8-------");
+            for(HolographicDisplay holo : HologramManager.getHolograms()) {
+                player.sendMessage(" §6> §f" + holo.getHologramName());
+            }
+            player.sendMessage("§8--------------------------");
+            return true;
+        }
+
+        // Find hologram by name
+        HolographicDisplay hologram = HologramManager.getHolograms().stream()
+                .filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))
+                .findFirst()
+                .orElse(null);
+
+        // Update hologram location
+        if(hologram == null) {
+            player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
+            return true;
+        }
+        hologram.setLocation(player.getLocation());
+        player.sendMessage(Utils.getInfoMessageFormat("Successfully updated hologram location!"));
+        player.playSound(player.getLocation(), Utils.Done,1,1);
+
+        HologramManager.reloadHolograms();
         return true;
     }
 

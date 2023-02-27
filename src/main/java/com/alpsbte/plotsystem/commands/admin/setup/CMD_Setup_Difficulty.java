@@ -95,21 +95,20 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null && Utils.tryParseDouble(args[2]) != null) {
-                // Check if difficulty exists
-                try {
-                    if (Difficulty.getDifficulties().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                        Difficulty.setMultiplier(Integer.parseInt(args[1]), Double.parseDouble(args[2]));
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
-                        return;
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    return;
-                }
+            if (args.length <= 2 || Utils.TryParseInt(args[1]) == null || Utils.tryParseDouble(args[2]) == null) {
+                sendInfo(sender);
+                return;
             }
-            sendInfo(sender);
+
+            // Check if difficulty exists
+            try {
+                if (Difficulty.getDifficulties().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+                Difficulty.setMultiplier(Integer.parseInt(args[1]), Double.parseDouble(args[2]));
+                sender.sendMessage(Utils.getInfoMessageFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
 
         @Override
@@ -140,21 +139,20 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null && Utils.TryParseInt(args[2]) != null) {
-                // Check if difficulty exists
-                try {
-                    if (Difficulty.getDifficulties().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                        Difficulty.setScoreRequirement(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
-                        return;
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    return;
-                }
+            if (args.length <= 2 || Utils.TryParseInt(args[1]) == null || Utils.TryParseInt(args[2]) == null) {
+                sendInfo(sender);
+                return;
             }
-            sendInfo(sender);
+
+            // Check if difficulty exists
+            try {
+                if (Difficulty.getDifficulties().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+                Difficulty.setScoreRequirement(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                sender.sendMessage(Utils.getInfoMessageFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
 
         @Override

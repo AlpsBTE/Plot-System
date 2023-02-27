@@ -39,22 +39,23 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())){
-            try {
-                PlotSystem.getPlugin().getConfigManager().reloadFiles();
-                PlotSystem.getPlugin().getConfigManager().saveFiles();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
-
-                HologramManager.reloadHolograms();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
-
-                DatabaseConnection.InitializeDatabase();
-            } catch (Exception ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
+        if (!sender.hasPermission(getPermission())){
             sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            return true;
+        }
+
+        try {
+            PlotSystem.getPlugin().getConfigManager().reloadFiles();
+            PlotSystem.getPlugin().getConfigManager().saveFiles();
+            sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
+
+            HologramManager.reloadHolograms();
+            sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
+
+            DatabaseConnection.InitializeDatabase();
+        } catch (Exception ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

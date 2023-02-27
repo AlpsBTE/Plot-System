@@ -52,19 +52,19 @@ public class CMD_CleanPlot extends BaseCommand {
 
         // Get plot(s)
         try {
-            if (args.length > 0) {
-                if (args[0].equalsIgnoreCase("all")) {
-                    plots.addAll(PlotManager.getPlots(Status.unfinished, Status.unreviewed));
-                } else if (Utils.TryParseInt(args[0]) != null) {
-                    int plotID = Integer.parseInt(args[0]);
-                    if (PlotManager.plotExists(plotID)) {
-                        plots.add(new Plot(plotID));
-                    } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
-                        return true;
-                    }
+            if (args.length == 0) {
+                sendInfo(sender);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("all")) {
+                plots.addAll(PlotManager.getPlots(Status.unfinished, Status.unreviewed));
+            } else if (Utils.TryParseInt(args[0]) != null) {
+                int plotID = Integer.parseInt(args[0]);
+                if (PlotManager.plotExists(plotID)) {
+                    plots.add(new Plot(plotID));
                 } else {
-                    sendInfo(sender);
+                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
                     return true;
                 }
             } else {
