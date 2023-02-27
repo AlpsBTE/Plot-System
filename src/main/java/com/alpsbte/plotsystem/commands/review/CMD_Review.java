@@ -46,29 +46,30 @@ import java.util.logging.Level;
 public class CMD_Review extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (getPlayer(sender) != null) {
-            try {
-                if (sender.hasPermission(getPermission())) {
-                    Builder.Reviewer builder = Builder.byUUID(getPlayer(sender).getUniqueId()).getAsReviewer();
-                    Player player = (Player) sender;
-                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
-                    if (plot != null) {
-                        int countryID = plot.getCity().getCountry().getID();
-                        if (plot.getStatus() == Status.unreviewed && builder.getCountries().stream().anyMatch(c -> c.getID() == countryID)) {
-                            new ReviewPlotMenu(player, plot);
-                            return true;
-                        }
-                    }
-                    new ReviewMenu(player);
-                } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-                }
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
+        if (getPlayer(sender) == null) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
+
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
+
+        try {
+            Builder.Reviewer builder = Builder.byUUID(getPlayer(sender).getUniqueId()).getAsReviewer();
+            Player player = (Player) sender;
+            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
+            if (plot == null) return true;
+            int countryID = plot.getCity().getCountry().getID();
+            if (plot.getStatus() == Status.unreviewed && builder.getCountries().stream().anyMatch(c -> c.getID() == countryID)) {
+                new ReviewPlotMenu(player, plot);
+                return true;
+            }
+            new ReviewMenu(player);
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

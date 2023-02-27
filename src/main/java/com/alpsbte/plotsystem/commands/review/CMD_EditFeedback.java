@@ -42,39 +42,38 @@ public class CMD_EditFeedback extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            try {
-                if (args.length > 1 && Utils.TryParseInt(args[0]) != null){
-                    int plotID = Integer.parseInt(args[0]);
-                    if(PlotManager.plotExists(plotID)) {
-                        Plot plot = new Plot(Integer.parseInt(args[0]));
-                        if (plot.isReviewed() || plot.isRejected()) {
-                            if (getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
-                                StringBuilder feedback = new StringBuilder();
-                                for(int i = 2; i <= args.length; i++) {
-                                    feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
-                                }
-                                plot.getReview().setFeedback(feedback.toString());
-
-                                sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
-                            } else {
-                                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
-                            }
-                        } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
-                        }
-                    } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    }
-                } else {
-                    sendInfo(sender);
-                }
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
+
+        try {
+            if (args.length <= 1 || Utils.TryParseInt(args[0]) == null) { sendInfo(sender); return true; }
+            int plotID = Integer.parseInt(args[0]);
+            if(!PlotManager.plotExists(plotID)) {
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                return true;
+            }
+            Plot plot = new Plot(Integer.parseInt(args[0]));
+            if (!plot.isReviewed() && !plot.isRejected()) {
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
+                return true;
+            }
+            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
+                return true;
+            }
+
+            StringBuilder feedback = new StringBuilder();
+            for(int i = 2; i <= args.length; i++) {
+                feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
+            }
+            plot.getReview().setFeedback(feedback.toString());
+
+            sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

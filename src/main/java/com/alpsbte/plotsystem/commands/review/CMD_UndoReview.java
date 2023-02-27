@@ -41,34 +41,38 @@ import java.util.logging.Level;
 public class CMD_UndoReview extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender.hasPermission(getPermission())) {
-            try {
-                if(args.length > 0 && Utils.TryParseInt(args[0]) != null) {
-                    int plotID = Integer.parseInt(args[0]);
-                    if(PlotManager.plotExists(plotID)) {
-                        Plot plot = new Plot(plotID);
-                        if(plot.isReviewed()) {
-                            if(getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(getPlayer(sender).getUniqueId())) {
-                                Review.undoReview(plot.getReview());
-                                sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.UNDID_REVIEW, plot.getID() + "", plot.getPlotOwner().getName())));
-                            } else {
-                                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_UNDO_REVIEW)));
-                            }
-                        } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
-                        }
-                    } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    }
-                } else {
-                    sendInfo(sender);
-                }
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
+        if(!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+        }
+
+        if(args.length == 0 || Utils.TryParseInt(args[0]) == null) {
+            sendInfo(sender);
+            return true;
+        }
+
+        int plotID = Integer.parseInt(args[0]);
+        if(!PlotManager.plotExists(plotID)) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+            return true;
+        }
+
+        try {
+            Plot plot = new Plot(plotID);
+            if(!plot.isReviewed()) {
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
+                return true;
+            }
+
+            if(getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(getPlayer(sender).getUniqueId())) {
+                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_UNDO_REVIEW)));
+                return true;
+            }
+
+            Review.undoReview(plot.getReview());
+            sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.UNDID_REVIEW, plot.getID() + "", plot.getPlotOwner().getName())));
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }
