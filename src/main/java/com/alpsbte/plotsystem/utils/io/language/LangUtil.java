@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -21,6 +20,7 @@ public class LangUtil extends YamlFileFactory {
         new LanguageFile("en_GB", 1.2),
         new LanguageFile("de_DE", 1.2, "de_AT", "de_CH"),
         new LanguageFile("fr_FR", 1.2, "fr_CA"),
+        new LanguageFile("pt_PT", 1.1, "pt_BR"),
         new LanguageFile("ko_KR", 1.2),
         new LanguageFile("ru_RU", 1.2, "ba_RU", "tt_RU"),
         new LanguageFile("zh_CN", 1.2),
