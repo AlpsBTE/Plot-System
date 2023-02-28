@@ -36,9 +36,9 @@ public class SelectLanguageMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set language items
-        for (int i = 0; i < LangUtil.languages.length; i++) {
-            LangUtil.LanguageFile langFile = LangUtil.languages[i];
-            getMenu().getSlot(i + 1).setItem(
+        for (int i = 1; i <= LangUtil.languages.length; i++) {
+            LangUtil.LanguageFile langFile = LangUtil.languages[i - 1];
+            getMenu().getSlot(i + ((i >= 8) ? 2 : 0)).setItem(
                     new ItemBuilder(langFile.getHead())
                             .setName("§6§l" + langFile.getLangName())
                             .build());
@@ -62,9 +62,9 @@ public class SelectLanguageMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for language items
-        for (int i = 0; i < LangUtil.languages.length; i++) {
-            LangUtil.LanguageFile langFile = LangUtil.languages[i];
-            getMenu().getSlot(i + 1).setClickHandler((clickPlayer, clickInformation) -> {
+        for (int i = 1; i <= LangUtil.languages.length; i++) {
+            LangUtil.LanguageFile langFile = LangUtil.languages[i - 1];
+            getMenu().getSlot(i + ((i >= 8) ? 2 : 0)).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
                     Builder builder = Builder.byUUID(getMenuPlayer().getUniqueId());
                     builder.setLanguageTag(langFile.getTag());
