@@ -65,6 +65,7 @@ public class CommandManager {
 
         // Admin Setup Commands
         add(new CMD_Setup());
+        add(new CMD_Tutorial());
     }};
 
     public void init() {
