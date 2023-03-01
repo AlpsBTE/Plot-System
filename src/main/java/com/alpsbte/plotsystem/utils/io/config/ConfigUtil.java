@@ -37,7 +37,7 @@ public class ConfigUtil extends YamlFileFactory {
 
     // Register configuration files
     private static final ConfigFile[] configs = new ConfigFile[] {
-            new ConfigFile(Paths.get("config.yml"), 1.6),
+            new ConfigFile(Paths.get("config.yml"), 2.0),
             new ConfigFile(Paths.get("commands.yml"), 1.0)
     };
 

@@ -92,6 +92,7 @@ message-prefix: §7§l>>
 info-colour: §a
 error-colour: §c
 
+
 # -----------------------------------------------------
 # | Shortlink: https://shlink.io/
 # -----------------------------------------------------
@@ -100,5 +101,41 @@ shortlink:
   apikey: yourapi-key
   host: https://your.shortlink.host
 
+
+# -----------------------------------------------------
+# | Tutorials
+# -----------------------------------------------------
+tutorials:
+  enable: true
+  require-beginner-tutorial: true
+
+  # Beginner Tutorial
+  beginner:
+    schematic-path: "RESOURCES"
+    item-name: "BRICK_BLOCK"
+
+    # Set coordinates for building outlines
+    teleport-points:
+      - point-1:
+          x: 0
+          z: 0
+      - point-2:
+          x: 0
+          z: 0
+      - point-3:
+          x: 0
+          z: 0
+      - point-4:
+          x: 0
+          z: 0
+
+    # Height of the plot building, which must be calculated
+    height: 10
+    height-offset: 1
+
+  # Advanced Tutorials
+  advanced:
+
+
 # NOTE: Do not change
-config-version: 1.6
+config-version: 2.0

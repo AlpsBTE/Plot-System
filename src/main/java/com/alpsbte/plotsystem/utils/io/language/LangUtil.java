@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class LangUtil extends YamlFileFactory {
 
     public final static LanguageFile[] languages = new LanguageFile[] {
-        new LanguageFile("en_GB", 1.2),
+        new LanguageFile("en_GB", 1.3),
         new LanguageFile("de_DE", 1.2, "de_AT", "de_CH"),
         new LanguageFile("fr_FR", 1.2, "fr_CA"),
         new LanguageFile("pt_PT", 1.1, "pt_BR"),

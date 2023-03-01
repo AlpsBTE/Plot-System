@@ -26,18 +26,24 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public abstract class AbstractTutorial {
     public static List<AbstractTutorial> activeTutorials = new ArrayList<>();
 
     private final List<Class<? extends AbstractStage>> stages;
     protected Builder builder;
+    protected Player player;
     protected BukkitTask tutorialTask;
     protected AbstractStage activeStage;
     private int activeStageIndex = 0;
@@ -50,12 +56,13 @@ public abstract class AbstractTutorial {
 
     protected AbstractTutorial(Builder builder, int stageIndex) {
         this.builder = builder;
+        this.player = builder.getPlayer();
         activeTutorials.add(this);
 
         stages = setStages();
         SetStage(stageIndex);
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            if (activeStage == null) return;
+            if (!player.isOnline()) StopTutorial();
             if (activeStage.isDone) NextStage(); else activeStage.performStage();
         }, 0, 20 / 2); // every half seconds
     }
@@ -68,17 +75,21 @@ public abstract class AbstractTutorial {
     private void NextStage() {
         if (activeStageIndex + 1 >= stages.size()) {
             // TODO: complete tutorial
-            if (tutorialTask != null) tutorialTask.cancel();
-            activeTutorials.remove(this);
+            StopTutorial();
         } else {
             try {
                 // Switch to next stage
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Builder.class).newInstance(builder);
                 activeStageIndex++;
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-                // TODO: handle error
+                Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.");
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             }
         }
+    }
+
+    private void StopTutorial() {
+        if (tutorialTask != null) tutorialTask.cancel();
+        activeTutorials.remove(this);
     }
 }
