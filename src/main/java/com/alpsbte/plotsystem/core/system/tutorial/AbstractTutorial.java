@@ -64,7 +64,7 @@ public abstract class AbstractTutorial {
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             if (!player.isOnline()) StopTutorial();
             if (activeStage.isDone) NextStage(); else activeStage.performStage();
-        }, 0, 20 / 2); // every half seconds
+        }, 0, 20 / 2); // every half tick
     }
 
     private void SetStage(int stageIndex) {
@@ -86,6 +86,14 @@ public abstract class AbstractTutorial {
                 player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             }
         }
+    }
+
+    public boolean NextStageMessage() {
+        int nextActiveMessageIndex;
+        if (activeStage == null || (nextActiveMessageIndex = activeStage.activeMessageIndex + 1) >= activeStage.getMessages().size()) return false;
+        activeStage.activeMessageIndex++;
+        // TODO: Send stage message
+        return true;
     }
 
     private void StopTutorial() {

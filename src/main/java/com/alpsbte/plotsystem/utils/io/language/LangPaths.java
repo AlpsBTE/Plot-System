@@ -271,5 +271,18 @@ public class LangPaths {
         public static final String NOT_ON_LEADERBOARD = LBS + "not-on-leaderboard";
     }
 
+    public static final class Tutorials {
+        private static final String TUTORIALS = "tutorials.";
+        private static final String TUTORIALS_BEGINNER = TUTORIALS + "beginner.";
+        private static final String TUTORIALS_BEGINNER_STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
+        public static final String TUTORIALS_BEGINNER_STAGE1_TITLE = TUTORIALS_BEGINNER_STAGE1 + "stage-1-title";
+        public static final String TUTORIALS_BEGINNER_STAGE1_DESC = TUTORIALS_BEGINNER_STAGE1 + "stage-1-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE1_1 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-1";
+        public static final String TUTORIALS_BEGINNER_STAGE1_2 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-2";
+        public static final String TUTORIALS_BEGINNER_STAGE1_3 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-3";
+        public static final String TUTORIALS_BEGINNER_STAGE1_4 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-4";
+        public static final String TUTORIALS_BEGINNER_STAGE1_5 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-5";
+    }
+
     public static final String CONFIG_VERSION = "config-version";
 }

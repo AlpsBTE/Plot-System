@@ -29,13 +29,20 @@ import org.bukkit.Location;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import java.util.List;
+
 public abstract class AbstractStage {
+    protected int activeMessageIndex = -1;
     protected Builder builder;
     protected boolean isDone;
     public AbstractStage(Builder builder) {
         this.builder = builder;
     }
-    abstract void performStage();
+    protected boolean performStage() {
+        if (!isDone) return true;
+        return true;
+    }
+    abstract List<String> getMessages();
     public void onPlayerBlockPlaceEvent(BlockPlaceEvent event) {}
     public void onPlayerBlockBreakEvent(BlockBreakEvent event) {}
     public void onPlayerCommandInputEvent(String command) {}

@@ -25,7 +25,10 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.io.language.LangPaths;
+import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,8 +51,20 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        void performStage() {
+        protected boolean performStage() {
             builder.getPlayer().sendMessage("Send /companion command!");
+            return true;
+        }
+
+        @Override
+        List<String> getMessages() {
+            return Arrays.asList(
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4),
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_5)
+            );
         }
 
         @Override
