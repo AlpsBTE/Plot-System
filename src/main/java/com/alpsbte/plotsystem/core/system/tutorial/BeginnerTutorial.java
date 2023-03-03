@@ -59,6 +59,8 @@ public class BeginnerTutorial extends AbstractTutorial {
         @Override
         List<String> getMessages() {
             return Arrays.asList(
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
+                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
                     LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
                     LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
                     LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),

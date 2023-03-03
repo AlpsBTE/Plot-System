@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
@@ -35,6 +36,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -81,6 +83,8 @@ public abstract class AbstractTutorial {
                 // Switch to next stage
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Builder.class).newInstance(builder);
                 activeStageIndex++;
+                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
+                player.playSound(player.getLocation(), Utils.CreatePlotSound, 1f, 1f);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.");
                 player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
@@ -99,5 +103,20 @@ public abstract class AbstractTutorial {
     private void StopTutorial() {
         if (tutorialTask != null) tutorialTask.cancel();
         activeTutorials.remove(this);
+    }
+
+    public static class ChatHandler {
+        public static void printInfo(Player player, String[] messages) {
+            Arrays.stream(messages).forEach(player::sendMessage);
+        }
+
+        public static String[] getStageUnlockedInfo(String title, String description) {
+            LoreBuilder builder = new LoreBuilder()
+                .addLines("", " §6§l" + "NEW STAGE UNLOCKED", "  §8◆ §b" + title, ""); // TODO: set player lang
+            String[] descriptionLines = description.split("\n");
+            Arrays.stream(descriptionLines).forEach(desc -> builder.addLine("    §7▪ §f" + desc));
+            builder.addLine("");
+            return builder.build().toArray(new String[0]);
+        }
     }
 }
