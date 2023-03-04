@@ -31,21 +31,22 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
-import com.boydti.fawe.FaweAPI;
+import com.fastasyncworldedit.core.FaweAPI;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
-import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -257,14 +258,14 @@ public class PlotManager {
     }
 
     public static CuboidRegion getPlotAsRegion(Plot plot) throws IOException {
-        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
+        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
         if (clipboard != null) {
             if (plot.getVersion() >= 3) {
                 return new CuboidRegion(
-                        clipboard.getMinimumPoint().setY(plot.getWorld().getPlotHeight()),
-                        clipboard.getMaximumPoint().setY(PlotWorld.MAX_WORLD_HEIGHT));
+                        clipboard.getDimensions().getMinimum(BlockVector3.at(clipboard.getMinimumPoint().getX(),plot.getWorld().getPlotHeight(),clipboard.getMinimumPoint().getZ())),
+                        clipboard.getDimensions().getMaximum(BlockVector3.at(clipboard.getMaximumPoint().getX(),PlotWorld.MAX_WORLD_HEIGHT,clipboard.getMaximumPoint().getZ())));
             } else {
-                Vector plotCenter = plot.getCenter();
+                BlockVector3 plotCenter = plot.getCenter();
 
                 // Calculate min and max points of schematic
                 int regionCenterModX = clipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0;
@@ -272,13 +273,13 @@ public class PlotManager {
                 int outlinesClipboardCenterX = (int) Math.floor(clipboard.getRegion().getWidth() / 2d);
                 int outlinesClipboardCenterZ = (int) Math.floor(clipboard.getRegion().getLength() / 2d);
 
-                Vector schematicMinPoint = new Vector(
+                BlockVector3 schematicMinPoint = BlockVector3.at(
                         plotCenter.getX() - (outlinesClipboardCenterX - regionCenterModX),
                         PlotWorld.MIN_WORLD_HEIGHT,
                         plotCenter.getZ() - (outlinesClipboardCenterZ - regionCenterModZ)
                 );
 
-                Vector schematicMaxPoint = new Vector(
+                BlockVector3 schematicMaxPoint = BlockVector3.at(
                         plotCenter.getX() + outlinesClipboardCenterX,
                         PlotWorld.MAX_WORLD_HEIGHT,
                         plotCenter.getZ() + outlinesClipboardCenterZ
@@ -292,15 +293,15 @@ public class PlotManager {
 
     // TODO: MOVE CONVERSION TO SEPARATE METHODS
     public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
-        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
+        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
         if (clipboard != null) {
             CuboidRegion cuboidRegion = getPlotAsRegion(plot);
 
             if (cuboidRegion != null) {
-                Vector plotCenter = plot.getCenter();
+                BlockVector3 plotCenter = plot.getCenter();
 
                 // Get plot outline
-                List<BlockVector2D> plotOutlines = plot.getOutline();
+                List<BlockVector2> plotOutlines = plot.getOutline();
 
                 // Load finished plot region as cuboid region
                 if (plot.getWorld().loadWorld()) {
@@ -320,10 +321,10 @@ public class PlotManager {
 
                     Clipboard cb = new BlockArrayClipboard(region);
                     if (plot.getVersion() >= 3) {
-                        cb.setOrigin(new Vector(Math.floor(plotCenter.getX()), cuboidRegion.getMinimumY(), Math.floor(plotCenter.getZ())));
+                        cb.setOrigin(BlockVector3.at(Math.floor(plotCenter.getX()), cuboidRegion.getMinimumY(), Math.floor(plotCenter.getZ())));
                     } else {
-                        Vector terraCenter = plot.getMinecraftCoordinates();
-                        plotCenter = new Vector(
+                        BlockVector3 terraCenter = plot.getMinecraftCoordinates();
+                        plotCenter = BlockVector3.at(
                             Math.floor(terraCenter.getX()) - Math.floor(clipboard.getMinimumPoint().getX()) + cuboidRegion.getMinimumPoint().getX(),
                             Math.floor(terraCenter.getY()) - Math.floor(clipboard.getMinimumPoint().getY()) + cuboidRegion.getMinimumPoint().getY(),
                             Math.floor(terraCenter.getZ()) - Math.floor(clipboard.getMinimumPoint().getZ()) + cuboidRegion.getMinimumPoint().getZ()
@@ -335,8 +336,8 @@ public class PlotManager {
                     ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
                     Operations.complete(forwardExtentCopy);
 
-                    try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
-                        writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+                    try(ClipboardWriter writer = ClipboardFormats.findByFile(finishedSchematicFile).getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+                        writer.write(cb);
                     }
 
                     // Upload to FTP server
@@ -364,7 +365,7 @@ public class PlotManager {
 
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
         // Load plot outlines schematic as clipboard
-        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
+        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
 
         if (clipboard != null) {
             // Calculate min and max points of schematic
@@ -385,7 +386,7 @@ public class PlotManager {
 
                 // Return coordinates if they are in the schematic plot region
                 ProtectedRegion protectedPlotRegion = plot.getWorld().getProtectedRegion() != null ? plot.getWorld().getProtectedRegion() : plot.getWorld().getProtectedBuildRegion();
-                if (protectedPlotRegion.contains(new Vector((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
+                if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
                     return CompletableFuture.completedFuture(plotCoords);
                 }
             }
@@ -458,12 +459,12 @@ public class PlotManager {
 
                 // Find the plot in the city world that is closest to the player
                 Location playerLoc = builder.getPlayer().getLocation().clone();
-                Vector playerVector = new Vector(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
+                BlockVector3 playerVector = BlockVector3.at(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
 
                 double distance = 100000000;
                 Plot chosenPlot = plots.get(0);
                 for(Plot plot : plots)
-                    if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().setY(playerVector.getY()).distance(playerVector) < distance) {
+                    if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().add(0,playerVector.getY(),0).distance(playerVector) < distance) {
                         distance = plot.getCenter().distance(playerVector);
                         chosenPlot = plot;
                     }
@@ -477,7 +478,7 @@ public class PlotManager {
     public static boolean isPlayerOnPlot(Plot plot, Player player) {
         if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
             Location playerLoc = player.getLocation();
-            return plot.getWorld().getProtectedRegion().contains(Vector.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
+            return plot.getWorld().getProtectedRegion().contains(BlockVector3.at(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
         }
         return false;
     }
@@ -546,7 +547,7 @@ public class PlotManager {
                 Builder builder = Builder.byUUID(player.getUniqueId());
 
                 List<Plot> plots = getCachedInProgressPlots(builder);
-                BlockVector2D playerPos2D = new BlockVector2D(player.getLocation().getX(), player.getLocation().getZ());
+                BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
 
                 if(plots.size() == 0)
                     continue;
@@ -558,9 +559,9 @@ public class PlotManager {
                     if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
                         continue;
 
-                    List<BlockVector2D> points = plot.getBlockOutline();
+                    List<BlockVector2> points = plot.getBlockOutline();
 
-                    for(BlockVector2D point : points) if(point.distanceSq(playerPos2D) < 50*50)
+                    for(BlockVector2 point : points) if(point.distanceSq(playerPos2D) < 50*50)
                         if(!ParticleAPIEnabled)
                             player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + 1, point.getZ(), 1, 0.0 ,0.0,0.0, 0);
                         else{

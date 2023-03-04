@@ -26,7 +26,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -37,7 +37,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for plot owner item
-        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.LEGACY_SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -45,7 +45,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 List<Builder> plotMembers = plot.getPlotMembers();
                 for (int i = 1; i <= 3; i++) {
                     if (plotMembers.size() >= i) {
-                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.LEGACY_SKULL_ITEM, (byte) 3, getMenuPlayer()));
                     } else {
                         getMenu().getSlot(11 + i).setItem(emptyMemberSlotItem);
                     }
@@ -167,7 +167,7 @@ public class PlotMemberMenu extends AbstractMenu {
                     })
                     .text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
                     .itemLeft(new ItemStack(Material.NAME_TAG))
-                    .itemRight(new ItemStack(Material.SKULL))
+                    .itemRight(new ItemStack(Material.LEGACY_SKULL))
                     .title(LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
                     .plugin(PlotSystem.getPlugin())
                     .open(clickPlayer);
@@ -186,7 +186,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

@@ -63,7 +63,7 @@ public class PlotActionsMenu extends AbstractMenu {
         try {
             if (plot.getStatus().equals(Status.unreviewed)) {
                 getMenu().getSlot(10)
-                        .setItem(new ItemBuilder(Material.FIREBALL, 1)
+                        .setItem(new ItemBuilder(Material.FIRE_CHARGE, 1)
                                 .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT)).setLore(new LoreBuilder()
                                         .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT)).build())
                                 .build());
@@ -102,7 +102,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set plot feedback item
         if (hasFeedback) {
             getMenu().getSlot(16)
-                    .setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+                    .setItem(new ItemBuilder(Material.WRITABLE_BOOK)
                             .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.FEEDBACK)).setLore(new LoreBuilder()
                                     .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK)).build())
                             .build());
@@ -198,7 +198,7 @@ public class PlotActionsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

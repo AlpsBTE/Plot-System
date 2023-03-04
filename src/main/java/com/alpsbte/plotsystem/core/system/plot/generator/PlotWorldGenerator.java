@@ -3,13 +3,15 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
 
 import java.util.logging.Level;
@@ -80,19 +82,19 @@ public class PlotWorldGenerator {
     }
 
     protected void createGlobalProtection() throws StorageException {
-        RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = regionContainer.get(Bukkit.getWorld(worldName));
+        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(Bukkit.getWorld(worldName)));
 
         if (regionManager != null) {
             // Create protected region for world
             String regionName = "__global__";
             GlobalProtectedRegion globalRegion = new GlobalProtectedRegion(regionName);
-            globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
-            globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-            globalRegion.setFlag(DefaultFlag.PASSTHROUGH, StateFlag.State.DENY);
-            globalRegion.setFlag(DefaultFlag.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.ALL);
-            globalRegion.setFlag(DefaultFlag.TNT, StateFlag.State.DENY);
-            globalRegion.setFlag(DefaultFlag.TNT.getRegionGroupFlag(), RegionGroup.ALL);
+            globalRegion.setFlag(Flags.ENTRY, StateFlag.State.DENY);
+            globalRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+            globalRegion.setFlag(Flags.PASSTHROUGH, StateFlag.State.DENY);
+            globalRegion.setFlag(Flags.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.ALL);
+            globalRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
+            globalRegion.setFlag(Flags.TNT.getRegionGroupFlag(), RegionGroup.ALL);
 
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
             regionManager.addRegion(globalRegion);

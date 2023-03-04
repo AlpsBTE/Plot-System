@@ -59,7 +59,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set custom-heads menu item
         getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+                .setItem(new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
@@ -67,7 +67,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
 
         // Set banner-maker menu item
         getMenu().getSlot(13)
-                .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
+                .setItem(new ItemBuilder(Material.LEGACY_BANNER, 1, (byte) 14)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
@@ -95,7 +95,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")
@@ -106,7 +106,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player player) {
-        return new ItemBuilder(Material.GOLD_AXE)
+        return new ItemBuilder(Material.GOLDEN_AXE)
                 .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())

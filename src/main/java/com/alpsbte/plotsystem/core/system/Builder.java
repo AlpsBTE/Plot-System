@@ -160,7 +160,7 @@ public class Builder {
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
         if (plot == null) {
-            return new ItemBuilder(Material.EMPTY_MAP, 1 + slotIndex)
+            return new ItemBuilder(Material.MAP, 1 + slotIndex)
                     .setName("§b§l" + LangUtil.get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
                     .setLore(new LoreBuilder()
                             .addLines("§7" + LangUtil.get(langPlayer, LangPaths.MenuDescription.SLOT),

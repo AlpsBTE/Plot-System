@@ -6,7 +6,7 @@ import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.boydti.fawe.FaweAPI;
+import com.fastasyncworldedit.core.FaweAPI;
 import com.google.common.annotations.Beta;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import org.bukkit.Bukkit;
@@ -76,7 +76,7 @@ public class CityPlotWorld extends PlotWorld {
      */
     @Beta
     public int getWorldHeight() throws IOException {
-        Clipboard clipboard = FaweAPI.load(getPlot().getOutlinesSchematic()).getClipboard();
+        Clipboard clipboard = FaweAPI.load(getPlot().getOutlinesSchematic());
         int plotHeight = clipboard != null ? clipboard.getMinimumPoint().getBlockY() : MIN_WORLD_HEIGHT;
 
         // Plots created below min world height are not supported

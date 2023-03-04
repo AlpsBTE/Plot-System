@@ -62,7 +62,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for player head item
-        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.LEGACY_SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         // Set back item
         getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -97,8 +97,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
             for (int i = 0; i < plotDisplayCount; i++) {
                 Plot plot = plots.get(i);
                 try {
-                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.WOOL, 1, (byte) 1) :
-                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.MAP) : new ItemStack(Material.WOOL, 1, (byte) 13);
+                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.LEGACY_WOOL, 1, (byte) 1) :
+                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.LEGACY_EMPTY_MAP) : new ItemStack(Material.LEGACY_WOOL, 1, (byte) 13);
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(item)
@@ -139,7 +139,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")

@@ -39,8 +39,10 @@ import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -100,13 +102,13 @@ public class PlotHandler {
                     if (!plot.getWorld().deleteWorld()) Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
                 }
             } else {
-                RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+                RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
 
                 if (plot.getWorld().loadWorld()) {
                     CityPlotWorld world = plot.getWorld();
                     List<Player> playersToTeleport = new ArrayList<>(world.getPlayersOnPlot());
 
-                    RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
+                    RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
                     if (regionManager != null) {
                         for (Builder builder : plot.getPlotMembers()) {
                             plot.removePlotMember(builder);

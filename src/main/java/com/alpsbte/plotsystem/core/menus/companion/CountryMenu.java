@@ -75,7 +75,7 @@ public class CountryMenu extends AbstractMenu {
                         .build());
 
         // Set loading item for plots difficulty item
-        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.LEGACY_SKULL_ITEM, (byte) 3, getMenuPlayer()));
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
             player.closeInventory();
@@ -152,7 +152,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("011101111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -169,7 +169,7 @@ public class CountryMenu extends AbstractMenu {
                     .setName("§b§lBack")
                     .build());
         } else {
-            getMenu().getSlot(0).setItem(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build());
+            getMenu().getSlot(0).setItem(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build());
         }
 
         for (Country country : countryProjects) {

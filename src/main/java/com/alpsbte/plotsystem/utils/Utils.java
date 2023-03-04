@@ -30,7 +30,7 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.math.BlockVector2;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -51,12 +51,12 @@ public class Utils {
 
     // Get custom head
     public static ItemStack getItemHead(CustomHead head) {
-        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3).build();
     }
 
     // Get player head by UUID
     public static ItemStack getPlayerHead(UUID playerUUID) {
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUUID));
@@ -66,13 +66,13 @@ public class Utils {
     }
 
     // Sounds
-    public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
+    public static Sound TeleportSound = Sound.ENTITY_ENDERMAN_TELEPORT;
     public static Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
     public static Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
     public static Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
-    public static Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
+    public static Sound AbandonPlotSound = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
     public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    public static Sound INVENTORY_CLICK = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
+    public static Sound INVENTORY_CLICK = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
 
     // Spawn Location
     public static Location getSpawnLocation() {
@@ -188,7 +188,7 @@ public class Utils {
         return line;
     }
 
-    public static HashSet<BlockVector2D> getLineBetweenPoints(BlockVector2D point1, BlockVector2D point2, int pointsInLine){
+    public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine){
         double p1X = point1.getX();
         double p1Z = point1.getZ();
         double p2X = point2.getX();
@@ -197,9 +197,9 @@ public class Utils {
         double lineAveX = (p2X-p1X)/pointsInLine;
         double lineAveZ = (p2Z-p1Z)/pointsInLine;
 
-        HashSet<BlockVector2D> line = new HashSet<>();
+        HashSet<BlockVector2> line = new HashSet<>();
         for(int i = 0; i <= pointsInLine; i++){
-            BlockVector2D vector = new BlockVector2D(p1X + lineAveX * i, p1Z + lineAveZ * i);
+            BlockVector2 vector = BlockVector2.at(p1X + lineAveX * i, p1Z + lineAveZ * i);
             line.add(vector);
         }
         return line;
@@ -299,7 +299,7 @@ public class Utils {
 
         public CustomHead(String headID) {
             this.headItem = headDatabaseAPI != null && headID != null && Utils.TryParseInt(headID) != null
-                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3).build();
         }
 
         public ItemStack getAsItemStack() {

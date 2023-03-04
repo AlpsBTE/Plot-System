@@ -49,13 +49,16 @@ public class ItemBuilder {
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
-    public ItemBuilder(Material material) {
-        this(material, 1, (byte) 0);
+    public ItemBuilder(Material material, int amount) {
+        item = new ItemStack(material, amount);
+        itemMeta = item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
-    public ItemBuilder(Material material, int amount) {
-        this(material, amount, (byte) 0);
+    public ItemBuilder(Material material) {
+        this(material, 1);
     }
+
 
     public ItemBuilder setName(String name) {
         itemMeta.setDisplayName(name);

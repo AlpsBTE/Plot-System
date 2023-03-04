@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -80,7 +80,7 @@ public interface IWorld {
      * @return center coordinates of the plot
      * @param plotVector plot vector
      */
-    Location getSpawnPoint(Vector plotVector);
+    Location getSpawnPoint(BlockVector3 plotVector);
 
     /**
      * Calculates the origin Y value in the plot world used for schematic pasting

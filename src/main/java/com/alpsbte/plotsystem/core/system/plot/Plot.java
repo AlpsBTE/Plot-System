@@ -31,9 +31,6 @@ import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import com.boydti.fawe.FaweAPI;
-import com.sk89q.worldedit.BlockVector2D;
-import com.sk89q.worldedit.Vector;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
@@ -41,7 +38,11 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -63,8 +64,8 @@ public class Plot implements IPlot {
     public static final double PLOT_VERSION = 3;
     private final int ID;
 
-    private List<BlockVector2D> outline;
-    private List<BlockVector2D> blockOutline;
+    private List<BlockVector2> outline;
+    private List<BlockVector2> blockOutline;
     private CityProject city;
     private Builder plotOwner;
     private PlotType plotType;
@@ -124,14 +125,14 @@ public class Plot implements IPlot {
 
     @Override
     /* return the outline of the plot which contains all corner points of the polygon */
-    public List<BlockVector2D> getOutline() throws SQLException, IOException {
+    public List<BlockVector2> getOutline() throws SQLException, IOException {
         if(this.outline != null)
             return this.outline;
 
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
-            List<BlockVector2D> locations = new ArrayList<>();
+            List<BlockVector2> locations = new ArrayList<>();
             if (rs.next()){
                 String listString = rs.getString(1);
                 if (rs.wasNull() || listString.isEmpty() || getVersion() <= 2) {
@@ -142,7 +143,7 @@ public class Plot implements IPlot {
 
                     for (String s : list) {
                         String[] locs = s.split(",");
-                        locations.add(new BlockVector2D(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
+                        locations.add(BlockVector2.at(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
                     }
                 }
             }
@@ -154,23 +155,23 @@ public class Plot implements IPlot {
     }
 
     /** return the outline of the polygon with one point per Block*/
-    public List<BlockVector2D> getBlockOutline() throws SQLException, IOException {
+    public List<BlockVector2> getBlockOutline() throws SQLException, IOException {
         if(this.blockOutline != null)
             return this.blockOutline;
 
-        List<BlockVector2D> points = new ArrayList<>();
-        List<BlockVector2D> outline = getOutline();
+        List<BlockVector2> points = new ArrayList<>();
+        List<BlockVector2> outline = getOutline();
 
         for(int i = 0; i < outline.size() - 1; i++){
-            BlockVector2D b1 = outline.get(i);
-            BlockVector2D b2 = outline.get(i + 1);
+            BlockVector2 b1 = outline.get(i);
+            BlockVector2 b2 = outline.get(i + 1);
             int distance = (int) b1.distance(b2);
 
             points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
         }
 
-        BlockVector2D first = outline.get(0);
-        BlockVector2D last = outline.get(outline.size() - 1);
+        BlockVector2 first = outline.get(0);
+        BlockVector2 last = outline.get(outline.size() - 1);
         points.addAll(Utils.getLineBetweenPoints(last, first, (int) first.distance(last)));
 
         blockOutline = points;
@@ -479,7 +480,7 @@ public class Plot implements IPlot {
     @Override
     public String getGeoCoordinates() throws IOException {
         // Convert MC coordinates to geo coordinates
-        Vector mcCoordinates = getCoordinates();
+        BlockVector3 mcCoordinates = getCoordinates();
         try {
             return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
         } catch (OutOfProjectionBoundsException ex) {
@@ -490,14 +491,14 @@ public class Plot implements IPlot {
 
     @Deprecated
     @Override
-    public Vector getMinecraftCoordinates() throws SQLException {
+    public BlockVector3 getMinecraftCoordinates() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()) {
                 String[] mcLocation = rs.getString(1).split(",");
                 DatabaseConnection.closeResultSet(rs);
-                return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+                return BlockVector3.at(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -507,8 +508,8 @@ public class Plot implements IPlot {
     }
 
     @Override
-    public Vector getCoordinates() throws IOException {
-        Clipboard clipboard = FaweAPI.load(getOutlinesSchematic()).getClipboard();
+    public BlockVector3 getCoordinates() throws IOException {
+        Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
         if (clipboard != null) return clipboard.getOrigin();
         return null;
     }
@@ -540,15 +541,15 @@ public class Plot implements IPlot {
         plotType = type;
     }
 
-    public Vector getCenter() {
+    public BlockVector3 getCenter() {
         try {
             if (getVersion() >= 3) {
-                Clipboard clipboard = FaweAPI.load(getOutlinesSchematic()).getClipboard();
+                Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
                 if (clipboard != null) {
-                    Vector clipboardCenter = clipboard.getRegion().getCenter();
-                    return new Vector(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
+                    Vector3 clipboardCenter = clipboard.getRegion().getCenter();
+                    return BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
                 }
-            } else return new Vector(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
+            } else return BlockVector3.at(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
         }

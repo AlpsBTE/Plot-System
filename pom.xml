@@ -15,10 +15,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <!-- AlpsBTE Repo (WorldEdit, WorldGuard, FAWE) -->
+        <!-- WorldGuard -->
         <repository>
-            <id>alpsbte-repo</id>
-            <url>https://mvn.alps-bte.com/repository/alps-bte/</url>
+            <id>sk89q-repo</id>
+            <url>https://maven.enginehub.org/repo/</url>
         </repository>
 
         <!-- Multiverse Core -->
@@ -57,23 +57,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Bukkit -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- World Edit -->
-        <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>6.1.9</version>
+            <version>1.19.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -81,26 +65,24 @@
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
-            <version>6.2</version>
+            <version>7.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Fast Async World Edit -->
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
-            <artifactId>FAWE-Core</artifactId>
-            <version>1.12</version>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
-            <artifactId>FAWE-Bukkit</artifactId>
-            <version>1.12</version>
+            <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>FAWE-Core</artifactId>
+                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
                     <groupId>*</groupId>
                 </exclusion>
             </exclusions>
@@ -218,6 +200,20 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.intellectualsites.bom</groupId>
+                <artifactId>bom-1.18.x</artifactId>
+                <version>1.24</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <!-- Plugin Build Settings -->
     <build>

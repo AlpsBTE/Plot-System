@@ -31,8 +31,8 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldedit.BlockVector2D;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +71,7 @@ public interface IPlot {
      * @throws SQLException SQL database exception
      * @throws IOException IO exception
      */
-    List<BlockVector2D> getOutline() throws SQLException, IOException;
+    List<BlockVector2> getOutline() throws SQLException, IOException;
 
     /**
      * Sets the given builder to the plot owner
@@ -203,7 +203,7 @@ public interface IPlot {
      * @throws SQLException SQL database exception
      */
     @Deprecated
-    Vector getMinecraftCoordinates() throws SQLException;
+    BlockVector3 getMinecraftCoordinates() throws SQLException;
 
     /**
      * Returns in-game Minecraft coordinates on a Terra121 world
@@ -211,7 +211,7 @@ public interface IPlot {
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
      * @throws IOException fails to load schematic file
      */
-    Vector getCoordinates() throws IOException;
+    BlockVector3 getCoordinates() throws IOException;
 
     /**
      * Returns the plot type the player has selected when creating the plot
