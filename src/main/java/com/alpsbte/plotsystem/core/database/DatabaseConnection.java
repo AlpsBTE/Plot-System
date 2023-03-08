@@ -268,7 +268,6 @@ public class DatabaseConnection {
                             " `name`            varchar(16) NOT NULL ," +
                             " `score`           int DEFAULT 0 ," +
                             " `completed_plots` int DEFAULT 0 ," +
-                            " `third_slot`      int NULL ," +
                             " `first_slot`      int NULL ," +
                             " `second_slot`     int NULL ," +
                             " `third_slot`      int NULL ," +
