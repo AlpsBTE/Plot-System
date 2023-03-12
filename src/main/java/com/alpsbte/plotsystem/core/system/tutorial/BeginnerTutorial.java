@@ -24,22 +24,31 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class BeginnerTutorial extends AbstractTutorial {
 
     @Override
     protected List<Class<? extends AbstractStage>> setStages() {
         return Arrays.asList(
-                Stage1.class
+                Stage1.class,
+                Stage2.class
         );
     }
 
@@ -69,11 +78,44 @@ public class BeginnerTutorial extends AbstractTutorial {
         public StageTimeline setTasks() {
             return new StageTimeline(player)
                     .teleportPlayer(Utils.getSpawnLocation()).delay(2)
-                    .sendMessage(messages.get(2), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
-                    .sendMessage(messages.get(3), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
-                    .sendMessage(messages.get(4), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
-                    .sendMessage(messages.get(5), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
-                    .sendMessage(messages.get(6), Sound.ENTITY_VILLAGER_AMBIENT);
+                    .sendMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(getMessages().get(5), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT);
+        }
+    }
+
+    private static class Stage2 extends AbstractStage {
+        public Stage2(Player player) {
+            super(player);
+        }
+
+        @Override
+        protected List<String> setMessages() {
+            return Arrays.asList(
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
+                    "Teleported to point"
+            );
+        }
+
+        @Override
+        protected StageTimeline setTasks() {
+            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+            ConfigurationSection teleportPointsSection = config.getConfigurationSection(ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS);
+            List<double[]> teleportPoints = new ArrayList<>();
+            teleportPointsSection.getKeys(false).forEach(t -> {
+                teleportPoints.add(new double[]{
+                        config.getDouble(String.join("", ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS, ".", t, ".x")),
+                        config.getDouble(String.join("", ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS, ".", t, ".z"))
+                });
+            });
+
+            return new StageTimeline(player)
+                    .sendMessage("Teleport to the given points", Sound.ENTITY_VILLAGER_AMBIENT).delay(2)
+                    .addTask(new TeleportPointEventTask(player, getMessages(), teleportPoints, 1)).delay(1)
+                    .sendMessage("Done", Utils.FinishPlotSound);
         }
     }
 }

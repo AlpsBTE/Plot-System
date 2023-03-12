@@ -29,8 +29,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public abstract class AbstractStage {
-    protected List<String> messages;
-    public StageTimeline taskTimeline;
+    private final List<String> messages;
+    private final StageTimeline taskTimeline;
     protected Player player;
     public AbstractStage(Player player) {
         this.player = player;
@@ -40,4 +40,11 @@ public abstract class AbstractStage {
 
     protected abstract List<String> setMessages();
     protected abstract StageTimeline setTasks();
+
+    public List<String> getMessages() {
+        return messages;
+    }
+    public StageTimeline getTaskTimeline() {
+        return taskTimeline;
+    }
 }

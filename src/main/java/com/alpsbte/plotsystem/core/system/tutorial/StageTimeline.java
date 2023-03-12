@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.MessageTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.TeleportPlayerTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.DelayTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.WaitTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -38,7 +38,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class StageTimeline {
     private final Player player;
@@ -52,14 +51,10 @@ public class StageTimeline {
                 currentTask = tasks.get(i);
                 currentTask.performTask();
                 currentTaskId = i;
-                Bukkit.getLogger().log(Level.INFO, "Current Task: " + i);
                 BukkitTask task = new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (currentTask.isTaskDone()) {
-                            Bukkit.getLogger().log(Level.INFO, "Task is done!");
-                            this.cancel();
-                        }
+                        if (currentTask.isTaskDone()) this.cancel();
                     }
                 }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0);
                 while (true) if (task.isCancelled()) break;
@@ -69,6 +64,11 @@ public class StageTimeline {
 
     public StageTimeline(Player player) {
         this.player = player;
+    }
+
+    public StageTimeline addTask(AbstractTask task) {
+        tasks.add(task);
+        return this;
     }
 
     public StageTimeline sendMessage(String message, Sound soundEffect) {
@@ -82,7 +82,7 @@ public class StageTimeline {
     }
 
     public StageTimeline delay(long seconds) {
-        tasks.add(new DelayTask(null, seconds));
+        tasks.add(new WaitTask(null, seconds));
         return this;
     }
 }

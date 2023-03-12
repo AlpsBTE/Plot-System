@@ -114,18 +114,18 @@ tutorials:
     item-name: "BRICK_BLOCK"
     # Set coordinates for building outlines
     teleport-points:
-       - point-1:
-           x: 0
-           z: 0
-       - point-2:
-           x: 0
-           z: 0
-       - point-3:
-           x: 0
-           z: 0
-       - point-4:
-           x: 0
-           z: 0
+       point-1:
+         x: 0
+         z: 0
+       point-2:
+         x: 0
+         z: 0
+       point-3:
+         x: 0
+         z: 0
+       point-4:
+         x: 0
+         z: 0
     # Height of the plot building, which must be calculated
     height: 10
     height-offset: 1

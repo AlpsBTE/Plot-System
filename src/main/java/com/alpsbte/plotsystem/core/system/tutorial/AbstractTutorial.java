@@ -66,8 +66,8 @@ public abstract class AbstractTutorial {
         SetStage(stageIndex);
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             if (!player.isOnline()) StopTutorial();
-            if (activeStage.taskTimeline.currentTaskId >= activeStage.taskTimeline.tasks.size() - 1) NextStage();
-        }, 0, 20 / 2); // every half tick
+            if (activeStage.getTaskTimeline().currentTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
+        }, 0, 0);
     }
 
     private void SetStage(int stageIndex) {
@@ -78,15 +78,16 @@ public abstract class AbstractTutorial {
     private void NextStage() {
         if (activeStageIndex + 1 >= stages.size()) {
             // TODO: complete tutorial
+            player.sendMessage("Tutorial Completed");
             StopTutorial();
         } else {
             try {
                 // Switch to next stage
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Player.class).newInstance(builder.getPlayer());
                 activeStageIndex++;
-                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.setMessages().get(0), activeStage.setMessages().get(1)));
+                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
                 player.playSound(player.getLocation(), Utils.CreatePlotSound, 1f, 1f);
-                activeStage.taskTimeline.StartTimeline();
+                activeStage.getTaskTimeline().StartTimeline();
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
                 player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
@@ -107,8 +108,8 @@ public abstract class AbstractTutorial {
             Arrays.stream(messages).forEach(player::sendMessage);
         }
 
-        public static String[] getTaskMessage(String message) {
-            return new LoreBuilder().setDefaultColor(ChatColor.GRAY).addLine("").addLine("§8§l> §7" + message).addLine("").build().toArray(new String[0]);
+        public static String[] getTaskMessage(String message, ChatColor color) {
+            return new LoreBuilder().setDefaultColor(color).addLine("").addLine("§8§l> §" + color.getChar() + message).addLine("").build().toArray(new String[0]);
         }
 
         public static String[] getStageUnlockedInfo(String title, String description) {

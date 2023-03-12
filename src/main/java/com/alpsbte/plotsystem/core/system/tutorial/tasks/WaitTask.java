@@ -28,16 +28,14 @@ import com.alpsbte.plotsystem.PlotSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.logging.Level;
-
-public class DelayTask extends AbstractTask {
+public class WaitTask extends AbstractTask {
     private long delay;
 
-    public DelayTask(Player player) {
+    public WaitTask(Player player) {
         super(player);
     }
 
-    public DelayTask(Player player, long delay) {
+    public WaitTask(Player player, long delay) {
         this(player);
         this.delay = delay;
     }

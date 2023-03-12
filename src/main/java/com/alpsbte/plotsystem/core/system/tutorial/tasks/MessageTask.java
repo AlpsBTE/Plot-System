@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -39,7 +40,7 @@ public class MessageTask extends AbstractTask {
 
     @Override
     public void performTask() {
-        AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message));
+        AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY));
         if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
         setTaskDone();
     }
