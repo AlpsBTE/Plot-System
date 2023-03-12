@@ -22,22 +22,26 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.List;
+public class TeleportPlayerTask extends AbstractTask {
+    private Location location;
 
-public abstract class AbstractStage {
-    protected List<String> messages;
-    public StageTimeline taskTimeline;
-    protected Player player;
-    public AbstractStage(Player player) {
-        this.player = player;
-        messages = setMessages();
-        taskTimeline = setTasks();
+    public TeleportPlayerTask(Player player) {
+        super(player);
     }
 
-    protected abstract List<String> setMessages();
-    protected abstract StageTimeline setTasks();
+    public TeleportPlayerTask(Player player, Location location) {
+        this(player);
+        this.location = location;
+    }
+
+    @Override
+    public void performTask() {
+        player.teleport(location);
+        setTaskDone();
+    }
 }

@@ -22,22 +22,28 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
+import com.alpsbte.plotsystem.PlotSystem;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.List;
+import java.util.logging.Level;
 
-public abstract class AbstractStage {
-    protected List<String> messages;
-    public StageTimeline taskTimeline;
-    protected Player player;
-    public AbstractStage(Player player) {
-        this.player = player;
-        messages = setMessages();
-        taskTimeline = setTasks();
+public class DelayTask extends AbstractTask {
+    private long delay;
+
+    public DelayTask(Player player) {
+        super(player);
     }
 
-    protected abstract List<String> setMessages();
-    protected abstract StageTimeline setTasks();
+    public DelayTask(Player player, long delay) {
+        this(player);
+        this.delay = delay;
+    }
+
+    @Override
+    public void performTask() {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), this::setTaskDone, 20 * delay);
+    }
 }

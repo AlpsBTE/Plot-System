@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -65,7 +66,7 @@ public abstract class AbstractTutorial {
         SetStage(stageIndex);
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             if (!player.isOnline()) StopTutorial();
-            if (activeStage.isDone) NextStage(); else activeStage.performStage();
+            if (activeStage.taskTimeline.currentTaskId >= activeStage.taskTimeline.tasks.size() - 1) NextStage();
         }, 0, 20 / 2); // every half tick
     }
 
@@ -81,23 +82,19 @@ public abstract class AbstractTutorial {
         } else {
             try {
                 // Switch to next stage
-                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Builder.class).newInstance(builder);
+                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Player.class).newInstance(builder.getPlayer());
                 activeStageIndex++;
-                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
+                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.setMessages().get(0), activeStage.setMessages().get(1)));
                 player.playSound(player.getLocation(), Utils.CreatePlotSound, 1f, 1f);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.");
+                activeStage.taskTimeline.StartTimeline();
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+            } catch (InterruptedException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial task.", ex);
                 player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             }
         }
-    }
-
-    public boolean NextStageMessage() {
-        int nextActiveMessageIndex;
-        if (activeStage == null || (nextActiveMessageIndex = activeStage.activeMessageIndex + 1) >= activeStage.getMessages().size()) return false;
-        activeStage.activeMessageIndex++;
-        // TODO: Send stage message
-        return true;
     }
 
     private void StopTutorial() {
@@ -108,6 +105,10 @@ public abstract class AbstractTutorial {
     public static class ChatHandler {
         public static void printInfo(Player player, String[] messages) {
             Arrays.stream(messages).forEach(player::sendMessage);
+        }
+
+        public static String[] getTaskMessage(String message) {
+            return new LoreBuilder().setDefaultColor(ChatColor.GRAY).addLine("").addLine("§8§l> §7" + message).addLine("").build().toArray(new String[0]);
         }
 
         public static String[] getStageUnlockedInfo(String title, String description) {

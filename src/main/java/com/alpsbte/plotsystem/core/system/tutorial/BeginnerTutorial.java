@@ -25,18 +25,20 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class BeginnerTutorial extends AbstractTutorial {
 
     @Override
     protected List<Class<? extends AbstractStage>> setStages() {
-        return Collections.singletonList(
+        return Arrays.asList(
                 Stage1.class
         );
     }
@@ -46,35 +48,32 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage1 extends AbstractStage {
-        public Stage1(Builder builder) {
-            super(builder);
+        public Stage1(Player player) {
+            super(player);
         }
 
         @Override
-        protected boolean performStage() {
-            builder.getPlayer().sendMessage("Send /companion command!");
-            return true;
-        }
-
-        @Override
-        List<String> getMessages() {
+        protected List<String> setMessages() {
             return Arrays.asList(
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4),
-                    LangUtil.get(builder.getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_5)
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4),
+                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_5)
             );
         }
 
         @Override
-        public void onPlayerCommandInputEvent(String command) {
-            if (command.startsWith("companion")) {
-                builder.getPlayer().sendMessage("Received /companion command!");
-                isDone = true;
-            }
+        public StageTimeline setTasks() {
+            return new StageTimeline(player)
+                    .teleportPlayer(Utils.getSpawnLocation()).delay(2)
+                    .sendMessage(messages.get(2), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(messages.get(3), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(messages.get(4), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(messages.get(5), Sound.ENTITY_VILLAGER_AMBIENT).delay(4)
+                    .sendMessage(messages.get(6), Sound.ENTITY_VILLAGER_AMBIENT);
         }
     }
 }

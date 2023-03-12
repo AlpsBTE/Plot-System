@@ -22,22 +22,25 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
-public abstract class AbstractStage {
-    protected List<String> messages;
-    public StageTimeline taskTimeline;
-    protected Player player;
-    public AbstractStage(Player player) {
-        this.player = player;
-        messages = setMessages();
-        taskTimeline = setTasks();
+public class MessageTask extends AbstractTask {
+    private final String message;
+    private final Sound soundEffect;
+    public MessageTask(Player player, String message, Sound soundEffect) {
+        super(player);
+        this.message = message;
+        this.soundEffect = soundEffect;
     }
 
-    protected abstract List<String> setMessages();
-    protected abstract StageTimeline setTasks();
+    @Override
+    public void performTask() {
+        AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message));
+        if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
+        setTaskDone();
+    }
 }

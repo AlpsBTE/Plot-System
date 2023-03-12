@@ -22,22 +22,23 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
-public abstract class AbstractStage {
-    protected List<String> messages;
-    public StageTimeline taskTimeline;
+public abstract class AbstractTask {
     protected Player player;
-    public AbstractStage(Player player) {
+    private boolean isDone;
+    public AbstractTask(Player player) {
         this.player = player;
-        messages = setMessages();
-        taskTimeline = setTasks();
+    }
+    public abstract void performTask();
+
+    protected void setTaskDone() {
+        this.isDone = true;
     }
 
-    protected abstract List<String> setMessages();
-    protected abstract StageTimeline setTasks();
+    public boolean isTaskDone() {
+        return isDone;
+    }
 }
