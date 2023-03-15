@@ -92,9 +92,8 @@ public abstract class YamlFileFactory {
      */
     public boolean createFile(YamlFile yamlFile) {
         try {
-            if (!yamlFile.getFile().getParentFile().exists()) {
-                if(!yamlFile.getFile().getParentFile().mkdirs()) Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating directories!");
-            }
+            if (!yamlFile.getFile().getParentFile().exists() && !yamlFile.getFile().getParentFile().mkdirs())
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating directories!");
 
             if (yamlFile.getFile().createNewFile()) {
                 try (InputStream defConfigStream = yamlFile.getDefaultFileStream()) {

@@ -117,6 +117,7 @@ public class CompanionMenu {
                 case EASY: item = Utils.getItemHead(Utils.CustomHead.GREEN_CONCRETE); break;
                 case MEDIUM: item = Utils.getItemHead(Utils.CustomHead.YELLOW_CONCRETE); break;
                 case HARD: item = Utils.getItemHead(Utils.CustomHead.RED_CONCRETE); break;
+                default: break;
             }
         }
 
