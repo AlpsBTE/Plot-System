@@ -55,16 +55,11 @@ public class CMD_DeletePlot extends BaseCommand {
             return true;
         }
 
-        try {
-            sender.sendMessage(Utils.getInfoMessageFormat("Deleting plot..."));
-            if (PlotHandler.deletePlot(new Plot(plotID))) {
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
-                if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.Done, 1f, 1f);
-            } else sender.sendMessage(Utils.getErrorMessageFormat("An unexpected error has occurred!"));
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
+        sender.sendMessage(Utils.getInfoMessageFormat("Deleting plot..."));
+        if (PlotHandler.deletePlot(new Plot(plotID))) {
+            sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
+            if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.Done, 1f, 1f);
+        } else sender.sendMessage(Utils.getErrorMessageFormat("An unexpected error has occurred!"));
         return true;
     }
 
