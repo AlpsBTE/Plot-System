@@ -243,7 +243,7 @@ public class Airocean extends GeographicProjection {
         double xr = xp - yp;
         double yr = xp + yp;
 
-        //assign a order to what grid along the y=x line it is
+        //assign an order to what grid along the y=x line it is
         int gx = (int) Math.floor(xr);
         int gy = (int) Math.floor(yr);
 

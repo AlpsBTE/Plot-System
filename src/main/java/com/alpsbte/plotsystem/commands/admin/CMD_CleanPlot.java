@@ -91,7 +91,7 @@ public class CMD_CleanPlot extends BaseCommand {
                 }
 
                 if (index == plots.size() - 1) {
-                    sender.sendMessage(Utils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §aplot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §afailed!"));
+                    sender.sendMessage(Utils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §a" + "plot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §a" + "failed!"));
                     if (sender instanceof Player) ((Player) sender).playSound(((Player) sender).getLocation(), Utils.Done, 1, 1);
                     cancel();
                 } else {

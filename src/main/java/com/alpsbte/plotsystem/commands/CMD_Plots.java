@@ -41,29 +41,34 @@ import java.util.logging.Level;
 public class CMD_Plots extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            if(getPlayer(sender) != null) {
-                Player player = (Player)sender;
-                try {
-                    if(args.length >= 1) {
-                        Builder builder = Builder.getBuilderByName(args[0]);
-                        if (builder != null){
-                            new PlayerPlotsMenu(player, builder);
-                        } else {
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                        }
-                    } else {
-                        new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
-            }
-        } else {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
+
+        if(getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
+
+        Player player = (Player)sender;
+
+        try {
+            if(args.length < 1) {
+                new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
+                return true;
+            }
+
+            Builder builder = Builder.getBuilderByName(args[0]);
+            if (builder == null){
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                return true;
+            }
+
+            new PlayerPlotsMenu(player, builder);
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
         }
         return true;
     }

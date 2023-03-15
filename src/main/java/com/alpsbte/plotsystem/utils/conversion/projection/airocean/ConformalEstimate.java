@@ -65,8 +65,8 @@ public class ConformalEstimate extends Airocean {
         c[0] += 0.5;
         c[1] += MathUtils.ROOT3 / 6;
 
-        //use another interpolated vector to have a really good guess before using Newton's method
-        //Note: foward was removed for now, will need to be added back if this improvement is ever re-implemented
+        //use another interpolated vector to have a good guess before using Newton's method
+        //Note: forward was removed for now, will need to be added back if this improvement is ever re-implemented
         //c = forward.getInterpolatedVector(c[0], c[1]);
         //c = inverse.applyNewtonsMethod(x, y, c[0]/ARC + 0.5, c[1]/ARC + ROOT3/6, 1);
 

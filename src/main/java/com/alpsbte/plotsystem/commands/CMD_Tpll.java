@@ -47,98 +47,98 @@ import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class CMD_Tpll extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(sender.hasPermission(getPermission())) {
-            if (getPlayer(sender) != null) {
-                Player player = (Player) sender;
-                World playerWorld = player.getWorld();
-
-                if (PlotManager.isPlotWorld(playerWorld)) {
-                    try {
-                        // TODO: Support for NSEW geographic coordinates
-                        String[] splitCoords = args[0].split(",");
-                        if (splitCoords.length == 2 && args.length < 3) {
-                            args = splitCoords;
-                        }
-                        if (args[0].endsWith(",")) {
-                            args[0] = args[0].substring(0, args[0].length() - 1);
-                        }
-                        if (args.length > 1 && args[1].endsWith(",")) {
-                            args[1] = args[1].substring(0, args[1].length() - 1);
-                        }
-                        if (args.length != 2 && args.length != 3) {
-                            sendInfo(sender);
-                            return true;
-                        }
-
-                        try {
-                            // Parse coordinates to doubles
-                            double lat;
-                            double lon;
-                            try {
-                                lat = Double.parseDouble(args[0]);
-                                lon = Double.parseDouble(args[1]);
-                            } catch (Exception ignore) {
-                                sendInfo(sender);
-                                return true;
-                            }
-
-                            // Get the terra coordinates from the irl coordinates
-                            double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
-
-                            // Get plot, that the player is in
-                            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
-
-                            // Convert terra coordinates to plot relative coordinates
-                            CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
-
-                            if(plotCoords == null) {
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
-                                return true;
-                            }
-
-                            // TODO: Support to insert own height as parameter
-                            // Get Highest Y
-                            int highestY = 0;
-                            Location block = new Location(playerWorld, plotCoords.get()[0], 0, plotCoords.get()[1]);
-                            for (int i = 1; i < 256; i++) {
-                                block.add(0, 1, 0);
-                                if (!block.getBlock().isEmpty()) {
-                                    highestY = i;
-                                }
-                            }
-                            if (highestY < PlotWorld.MIN_WORLD_HEIGHT) {
-                                highestY = PlotWorld.MIN_WORLD_HEIGHT;
-                            }
-
-                            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
-
-                            DecimalFormat df = new DecimalFormat("##.#####");
-                            df.setRoundingMode(RoundingMode.FLOOR);
-                            player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
-
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                        } catch (IOException | OutOfProjectionBoundsException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                        }
-                    } catch (Exception ignore) {
-                        sendInfo(sender);
-                    }
-                } else {
-                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
-                }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
-            }
-        } else {
+        if(!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
+
+        if (getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        World playerWorld = player.getWorld();
+
+        if (PlotManager.isPlotWorld(playerWorld)) {
+            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
+            return true;
+        }
+
+        String[] splitCoords = args[0].split(",");
+        if (splitCoords.length == 2 && args.length < 3) {
+            args = splitCoords;
+        }
+        if (args[0].endsWith(",")) {
+            args[0] = args[0].substring(0, args[0].length() - 1);
+        }
+        if (args.length > 1 && args[1].endsWith(",")) {
+            args[1] = args[1].substring(0, args[1].length() - 1);
+        }
+        if (args.length != 2 && args.length != 3) {
+            sendInfo(sender);
+            return true;
+        }
+
+        try {
+            // Parse coordinates to doubles
+            double lat;
+            double lon;
+            try {
+                lat = Double.parseDouble(args[0]);
+                lon = Double.parseDouble(args[1]);
+            } catch (Exception ignore) {
+                sendInfo(sender);
+                return true;
+            }
+
+            // Get the terra coordinates from the irl coordinates
+            double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
+
+            // Get plot, that the player is in
+            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
+
+            // Convert terra coordinates to plot relative coordinates
+            CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
+
+            if(plotCoords == null) {
+                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
+                return true;
+            }
+
+            // Get Highest Y
+            int highestY = 0;
+            Location block = new Location(playerWorld, plotCoords.get()[0], 0, plotCoords.get()[1]);
+            for (int i = 1; i < 256; i++) {
+                block.add(0, 1, 0);
+                if (!block.getBlock().isEmpty()) {
+                    highestY = i;
+                }
+            }
+            if (highestY < PlotWorld.MIN_WORLD_HEIGHT) {
+                highestY = PlotWorld.MIN_WORLD_HEIGHT;
+            }
+
+            player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
+
+            DecimalFormat df = new DecimalFormat("##.#####");
+            df.setRoundingMode(RoundingMode.FLOOR);
+            player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
+
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+        } catch (IOException | OutOfProjectionBoundsException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
+            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+        } catch (InterruptedException | ExecutionException ex) {
+            sendInfo(sender);
         }
         return true;
     }

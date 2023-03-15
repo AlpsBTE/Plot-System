@@ -165,7 +165,7 @@ public class Builder {
                     .setLore(new LoreBuilder()
                             .addLines("§7" + LangUtil.get(langPlayer, LangPaths.MenuDescription.SLOT),
                                     "",
-                                    "§6§l" + LangUtil.get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
+                                    "§6§l" + LangUtil.get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Can't translate because name is stored in the database
                             .build())
                     .build();
         }

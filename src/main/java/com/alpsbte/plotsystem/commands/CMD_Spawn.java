@@ -37,19 +37,21 @@ public class CMD_Spawn extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            if (getPlayer(sender) != null) {
-                Player player = (Player) sender;
-
-                player.teleport(Utils.getSpawnLocation());
-                player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
-                player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
-            }
-        } else {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
         }
+
+        if (getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        player.teleport(Utils.getSpawnLocation());
+        player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
+        player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
         return true;
     }
 

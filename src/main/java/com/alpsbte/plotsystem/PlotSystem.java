@@ -350,7 +350,7 @@ public class PlotSystem extends JavaPlugin {
         private static boolean isUpdateAvailable = false;
 
         /**
-         * Get latest plugin version from SpigotMC
+         * Get the latest plugin version from SpigotMC
          * @param version Returns latest stable version
          */
         public static void getVersion(final Consumer<String> version) {

@@ -35,14 +35,13 @@ import org.bukkit.entity.Player;
 public class CMD_Companion extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            if (getPlayer(sender) != null) {
-                CompanionMenu.open((Player) sender);
-            }
-        } else {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
         }
+        if (getPlayer(sender) == null) return true;
 
+        CompanionMenu.open((Player) sender);
         return true;
     }
 

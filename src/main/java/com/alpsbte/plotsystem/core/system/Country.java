@@ -56,7 +56,7 @@ public class Country {
     }
 
     /**
-     * Get city projects that are inside of this country
+     * Get city projects that are inside this country
      * <p>
      * Might be a good idea to put this in CityProject but could work in both classes
      *
