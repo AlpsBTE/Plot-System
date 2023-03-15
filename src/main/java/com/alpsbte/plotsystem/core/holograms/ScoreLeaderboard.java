@@ -82,11 +82,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
             public void run() {
                 if (changeState >= changeDelay) {
                     LeaderboardTimeframe next = Utils.getNextListItem(getPages(), sortBy);
-                    if (next == null) {
-                        sortBy = getPages().get(0);
-                    } else {
-                        sortBy = next;
-                    }
+                    sortBy = (next == null) ? getPages().get(0) : next;
                     changeState = 0;
                 } else {
                     changeState++;
@@ -277,18 +273,15 @@ public class ScoreLeaderboard extends HolographicDisplay {
             try {
                 String line = super.getLine();
                 Payout payout = sortBy != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortBy, position) : null;
-                if (payout == null) {
-                    return line;
-                } else {
-                    String payoutAmount = payout.getPayoutAmount();
-                    try {
-                        // if payout amount can be number, prefix with dollar sign
-                        Integer.valueOf(payoutAmount);
-                        payoutAmount = "$" + payoutAmount;
-                    } catch (NumberFormatException ignored) {}
+                if (payout == null) return line;
+                String payoutAmount = payout.getPayoutAmount();
+                try {
+                    // if payout amount can be number, prefix with dollar sign
+                    Integer.valueOf(payoutAmount);
+                    payoutAmount = "$" + payoutAmount;
+                } catch (NumberFormatException ignored) {}
 
-                    return line + " §7- §e§l" + payoutAmount;
-                }
+                return line + " §7- §e§l" + payoutAmount;
             } catch (SQLException e) {
                 return super.getLine() + " §7- §cSQL ERR";
             }

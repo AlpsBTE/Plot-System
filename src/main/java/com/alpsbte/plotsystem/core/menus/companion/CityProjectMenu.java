@@ -66,14 +66,12 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set previous page item
-        if (hasPreviousPage()) {
+        if (hasPreviousPage())
             getMenu().getSlot(45).setItem(MenuItems.previousPageItem(getMenuPlayer()));
-        }
 
         // Set next page item
-        if (hasNextPage()) {
+        if (hasNextPage())
             getMenu().getSlot(53).setItem(MenuItems.nextPageItem(getMenuPlayer()));
-        }
 
         // difficulty selector
         getMenu().getSlot(7).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
@@ -102,10 +100,9 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
         // Set click event for next page item
         getMenu().getSlot(53).setClickHandler((clickPlayer, clickInformation) -> {
-            if (hasNextPage()) {
-                nextPage();
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
-            }
+            if (!hasNextPage()) return;
+            nextPage();
+            clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
         });
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
@@ -144,9 +141,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected List<?> getSource() {
-        if(projects == null) {
-            projects = CityProject.getCityProjects(country, true);
-        }
+        if(projects == null) projects = CityProject.getCityProjects(country, true);
         return projects;
     }
 
@@ -172,31 +167,33 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         for(CityProject city : cities) {
             final int _slot = slot;
             getMenu().getSlot(_slot).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!getMenu().getSlot(_slot).getItem(clickPlayer).equals(MenuItems.errorItem(getMenuPlayer()))) {
-                    try {
-                        clickPlayer.closeInventory();
-                        Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
-                        int cityID = city.getID();
+                if (getMenu().getSlot(_slot).getItem(clickPlayer).equals(MenuItems.errorItem(getMenuPlayer()))) {
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                    return;
+                }
 
-                        PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
-                        if (plotDifficultyForCity != null && PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
-                            if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
-                                clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
-                                clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                                return;
-                            }
+                clickPlayer.closeInventory();
+                Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
+                int cityID = city.getID();
 
-                            new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
-                        } else {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                        }
-                    } catch (SQLException | ExecutionException | InterruptedException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                try {
+                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
+                    if (plotDifficultyForCity == null || PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() == 0) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        return;
                     }
-                } else {
+
+                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        return;
+                    }
+
+                    new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
+                } catch (SQLException | ExecutionException | InterruptedException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
                 }
             });

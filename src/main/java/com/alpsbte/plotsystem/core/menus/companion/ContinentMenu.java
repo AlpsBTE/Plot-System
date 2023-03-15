@@ -41,9 +41,8 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        for(Map.Entry<Integer, Continent> continent : layout.entrySet()) {
+        for(Map.Entry<Integer, Continent> continent : layout.entrySet())
             getMenu().getSlot(continent.getKey()).setItem(continent.getValue().getItem(getMenuPlayer()));
-        }
     }
 
     @Override

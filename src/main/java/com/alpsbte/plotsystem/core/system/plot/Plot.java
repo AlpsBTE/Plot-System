@@ -74,7 +74,7 @@ public class Plot implements IPlot {
     private CityPlotWorld cityPlotWorld;
     private PlotPermissions plotPermissions;
 
-    public Plot(int ID) throws SQLException {
+    public Plot(int ID) {
         this.ID = ID;
     }
 

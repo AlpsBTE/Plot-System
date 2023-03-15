@@ -51,7 +51,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -60,7 +59,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class ReviewPlotMenu extends AbstractMenu {
-
     private final Plot plot;
 
     boolean sentWarning = false;
@@ -259,16 +257,17 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 6; j++) {
-                        if (getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
-                            if (i == 3) {
-                                score.append(j);
-                            } else {
-                                score.append(j).append(",");
-                            }
-                            totalRating += j;
-                            if (j <= 0) {
-                                isRejected = true;
-                            }
+                        if (getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE))
+                            continue;
+
+                        if (i == 3) {
+                            score.append(j);
+                        } else {
+                            score.append(j).append(",");
+                        }
+                        totalRating += j;
+                        if (j <= 0) {
+                            isRejected = true;
                         }
                     }
                 }
@@ -384,7 +383,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
 
-
                     clickPlayer.sendMessage(reviewerConfirmationMessage);
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);
 
@@ -402,9 +400,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 });
 
                 for (Builder member : plot.getPlotMembers()) {
-                    if (member.isOnline()) {
-                        PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
-                    }
+                    if (member.isOnline()) PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
                 }
 
                 if(plot.getPlotOwner().isOnline()) {
@@ -429,13 +425,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                 //Go through the whole points row
                 getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                     for (int j = 0; j < 6; j++) {
-                        if (getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
-                            ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
-                            ItemMeta metaPrevious = itemPrevious.getItemMeta();
-                            metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
-                            itemPrevious.setItemMeta(metaPrevious);
-                            getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
-                        }
+                        if (!getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) continue;
+
+                        ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
+                        ItemMeta metaPrevious = itemPrevious.getItemMeta();
+                        metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
+                        itemPrevious.setItemMeta(metaPrevious);
+                        getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
                     }
 
                     meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);

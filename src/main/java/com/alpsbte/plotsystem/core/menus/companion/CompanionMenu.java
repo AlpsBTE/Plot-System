@@ -21,7 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -91,15 +90,14 @@ public class CompanionMenu {
 
                 Plot plot = builder.getPlot(Slot.values()[i]);
                 items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
-                    if (plot != null) {
-                        clickPlayer.closeInventory();
-                        try {
-                            new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
-                        } catch (SQLException ex) {
-                            clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
-                            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
-                        }
+                    if (plot == null) return;
+                    clickPlayer.closeInventory();
+                    try {
+                        new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
+                    } catch (SQLException ex) {
+                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.ErrorSound, 1, 1);
+                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
                     }
                 }));
             } catch (NullPointerException | SQLException ex) {
@@ -115,12 +113,10 @@ public class CompanionMenu {
         ItemStack item = Utils.getItemHead(Utils.CustomHead.WHITE_CONCRETE);
 
         if (selectedPlotDifficulty != null) {
-            if (selectedPlotDifficulty == PlotDifficulty.EASY) {
-                item = Utils.getItemHead(Utils.CustomHead.GREEN_CONCRETE);
-            } else if (selectedPlotDifficulty == PlotDifficulty.MEDIUM) {
-                item = Utils.getItemHead(Utils.CustomHead.YELLOW_CONCRETE);
-            } else if (selectedPlotDifficulty == PlotDifficulty.HARD) {
-                item = Utils.getItemHead(Utils.CustomHead.RED_CONCRETE);
+            switch (selectedPlotDifficulty) {
+                case EASY: item = Utils.getItemHead(Utils.CustomHead.GREEN_CONCRETE); break;
+                case MEDIUM: item = Utils.getItemHead(Utils.CustomHead.YELLOW_CONCRETE); break;
+                case HARD: item = Utils.getItemHead(Utils.CustomHead.RED_CONCRETE); break;
             }
         }
 

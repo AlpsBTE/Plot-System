@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.plotsystem.PlotSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 import java.util.List;
 
 public abstract class AbstractPaginatedMenu extends AbstractMenu {
@@ -38,9 +37,7 @@ public abstract class AbstractPaginatedMenu extends AbstractMenu {
 
     public AbstractPaginatedMenu(int rows, int pagedRows, String title, Player menuPlayer) {
         super(rows, title, menuPlayer, false);
-
         this.maxItemsPerPage = pagedRows * 9;
-
         reloadMenuAsync();
     }
 

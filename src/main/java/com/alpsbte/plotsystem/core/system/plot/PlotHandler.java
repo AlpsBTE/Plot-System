@@ -159,7 +159,7 @@ public class PlotHandler {
         return true;
     }
 
-    public static boolean deletePlot(Plot plot) throws SQLException {
+    public static boolean deletePlot(Plot plot) {
         if (abandonPlot(plot)) {
             try {
                 CompletableFuture.runAsync(() -> {
@@ -272,7 +272,7 @@ public class PlotHandler {
         }
     }
 
-    public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
+    public static void sendFeedbackMessage(List<Plot> plots, Player player) {
         player.sendMessage("§8--------------------------");
         for(Plot plot : plots) {
             player.sendMessage("§7§l> " + LangUtil.get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));

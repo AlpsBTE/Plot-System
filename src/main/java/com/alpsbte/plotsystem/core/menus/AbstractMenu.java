@@ -36,8 +36,6 @@ public abstract class AbstractMenu {
     public static final int MAX_CHARS_PER_LINE = 30;
     public static final char LINE_BAKER = '\n';
 
-
-
     private final Menu menu;
     private final Player menuPlayer;
 

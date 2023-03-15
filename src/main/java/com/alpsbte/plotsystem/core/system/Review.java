@@ -225,7 +225,7 @@ public class Review {
         }
     }
 
-    public static void undoReview(Review review) throws SQLException {
+    public static void undoReview(Review review) {
         CompletableFuture.runAsync(() -> {
             try {
                 Plot plot = new Plot(review.getPlotID());

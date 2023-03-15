@@ -46,9 +46,8 @@ public class SpecialBlocksMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set special block items
         for(int i = 0; i <= 14; i++) {
-            if (getSpecialBlock(i) != null) {
-                getMenu().getSlot(i).setItem(getSpecialBlock(i));
-            }
+            if (getSpecialBlock(i) == null) continue;
+            getMenu().getSlot(i).setItem(getSpecialBlock(i));
         }
 
         // Set back item
@@ -60,14 +59,12 @@ public class SpecialBlocksMenu extends AbstractMenu {
         // Set click event for special block items
         for(int i = 0; i <= 14; i++) {
             int specialBlockID = i;
-            if (getSpecialBlock(i) != null) {
-                getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
-                    if(!clickPlayer.getInventory().contains(getSpecialBlock(specialBlockID))) {
-                        clickPlayer.getInventory().addItem(getSpecialBlock(specialBlockID));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
-                    }
-                });
-            }
+            if (getSpecialBlock(i) == null) continue;
+            getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
+                if(clickPlayer.getInventory().contains(getSpecialBlock(specialBlockID))) return;
+                clickPlayer.getInventory().addItem(getSpecialBlock(specialBlockID));
+                clickPlayer.playSound(clickPlayer.getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
+            });
         }
 
         // Set click event for back item
@@ -92,54 +89,38 @@ public class SpecialBlocksMenu extends AbstractMenu {
         switch (ID) {
             // First Row
             // Seamless Sandstone
-            case 0:
-                return SpecialBlocks.SeamlessSandstone;
+            case 0: return SpecialBlocks.SeamlessSandstone;
             // Seamless Red Sandstone
-            case 1:
-                return SpecialBlocks.SeamlessRedSandstone;
+            case 1: return SpecialBlocks.SeamlessRedSandstone;
             // Seamless Stone
-            case 2:
-                return SpecialBlocks.SeamlessStone;
+            case 2: return SpecialBlocks.SeamlessStone;
             // Red Mushroom
-            case 3:
-                return SpecialBlocks.RedMushroom;
+            case 3: return SpecialBlocks.RedMushroom;
             // Seamless Mushroom Stem
-            case 4:
-                return SpecialBlocks.SeamlessMushroomStem;
+            case 4: return SpecialBlocks.SeamlessMushroomStem;
             // Brown Mushroom
-            case 5:
-                return SpecialBlocks.BrownMushroom;
+            case 5: return SpecialBlocks.BrownMushroom;
             // Light Brown Mushroom
-            case 6:
-                return SpecialBlocks.LightBrownMushroom;
+            case 6: return SpecialBlocks.LightBrownMushroom;
             // Barrier
-            case 7:
-                return SpecialBlocks.Barrier;
+            case 7: return SpecialBlocks.Barrier;
             // Structure Void
-            case 8:
-                return SpecialBlocks.StructureVoid;
+            case 8: return SpecialBlocks.StructureVoid;
 
             // Second Row
             // Bark Oak Log
-            case 9:
-                return SpecialBlocks.BarkOakLog;
+            case 9: return SpecialBlocks.BarkOakLog;
             // Bark Spruce Log
-            case 10:
-               return SpecialBlocks.BarkSpruceLog;
+            case 10: return SpecialBlocks.BarkSpruceLog;
             // Bark Birch Log
-            case 11:
-                return SpecialBlocks.BarkBirchLog;
+            case 11: return SpecialBlocks.BarkBirchLog;
             // Bark Jungle Log
-            case 12:
-                return SpecialBlocks.BarkJungleLog;
+            case 12: return SpecialBlocks.BarkJungleLog;
             // Bark Acacia Log
-            case 13:
-                return SpecialBlocks.BarkAcaciaLog;
+            case 13: return SpecialBlocks.BarkAcaciaLog;
             // Bark Dark Oak Log
-            case 14:
-                return SpecialBlocks.BarkDarkOakLog;
-            default:
-                return null;
+            case 14: return SpecialBlocks.BarkDarkOakLog;
+            default: return null;
         }
     }
 

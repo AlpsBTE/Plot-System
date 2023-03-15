@@ -86,7 +86,7 @@ public abstract class GeographicProjection {
     /**
      * Gives an estimation of the scale of this projection.
      * This is just an estimation, as distortion is inevitable when projecting a sphere onto a flat surface,
-     * so this value varies from places to places in reality.
+     * so this value varies in reality.
      *
      * @return an estimation of the scale of this projection
      */

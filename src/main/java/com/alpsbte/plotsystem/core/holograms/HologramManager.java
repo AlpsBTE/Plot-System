@@ -37,13 +37,12 @@ public class HologramManager {
     );
 
     public static void reloadHolograms() {
-        if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            for (HolographicDisplay hologram : holograms) {
-                if (PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
-                    hologram.show();
-                } else {
-                    hologram.hide();
-                }
+        if (!PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) return;
+        for (HolographicDisplay hologram : holograms) {
+            if (PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(hologram.getDefaultPath() + ConfigPaths.HOLOGRAMS_ENABLED)) {
+                hologram.show();
+            } else {
+                hologram.hide();
             }
         }
     }

@@ -43,7 +43,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,17 +117,19 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
                     if (plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                            Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
-                            if (currentPlot != null && currentPlot.getID() == plot.getID()) {
-                                new ReviewPlotMenu(getMenuPlayer(), currentPlot);
-                            } else plot.getWorld().teleportPlayer(getMenuPlayer());
-                        } else {
-                            getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
-                        }
-                    } else {
                         new PlotActionsMenu(getMenuPlayer(), plot);
+                        return;
                     }
+
+                    if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                        getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+                        return;
+                    }
+
+                    Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
+                    if (currentPlot != null && currentPlot.getID() == plot.getID()) {
+                        new ReviewPlotMenu(getMenuPlayer(), currentPlot);
+                    } else plot.getWorld().teleportPlayer(getMenuPlayer());
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                     getMenuPlayer().closeInventory();
