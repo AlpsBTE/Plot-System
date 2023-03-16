@@ -48,6 +48,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class Utils {
+    // Sounds
+    public static final Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
+    public static final Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
+    public static final Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    public static final Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
+    public static final Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
+    public static final Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    public static final Sound INVENTORY_CLICK = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
 
     // Get custom head
     public static ItemStack getItemHead(CustomHead head) {
@@ -64,15 +72,6 @@ public class Utils {
 
         return skull;
     }
-
-    // Sounds
-    public static final Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
-    public static final Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
-    public static final Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    public static final Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
-    public static final Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
-    public static final Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    public static final Sound INVENTORY_CLICK = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
 
     // Spawn Location
     public static Location getSpawnLocation() {

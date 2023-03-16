@@ -47,14 +47,16 @@ public class CMD_EditFeedback extends BaseCommand {
             return true;
         }
 
+        if (args.length <= 1 || Utils.TryParseInt(args[0]) == null) { sendInfo(sender); return true; }
+        int plotID = Integer.parseInt(args[0]);
+
+        if(!PlotManager.plotExists(plotID)) {
+            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+            return true;
+        }
+
+        Plot plot = new Plot(plotID);
         try {
-            if (args.length <= 1 || Utils.TryParseInt(args[0]) == null) { sendInfo(sender); return true; }
-            int plotID = Integer.parseInt(args[0]);
-            if(!PlotManager.plotExists(plotID)) {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                return true;
-            }
-            Plot plot = new Plot(Integer.parseInt(args[0]));
             if (!plot.isReviewed() && !plot.isRejected()) {
                 sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
                 return true;
