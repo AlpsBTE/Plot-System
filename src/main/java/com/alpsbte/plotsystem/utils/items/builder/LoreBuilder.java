@@ -35,10 +35,10 @@ public class LoreBuilder {
     private String defaultColor = "§7";
 
     public LoreBuilder addLine(String line) {
-        String[] splitLines = line.split("//");
+        String[] splitLines = line.split("\n");
 
         for(String textLine : splitLines) {
-            lore.add(defaultColor + textLine.replace("//", ""));
+            lore.add(defaultColor + textLine.replace("\n", ""));
         }
         return this;
     }

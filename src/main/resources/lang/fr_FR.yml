@@ -5,7 +5,7 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
+# | [Formatting] Use \n for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
 # |
 # | French translation by Goul20#8557
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "Cliquez pour vous téléporter sur l'intrigue"
   abandon-desc: "Cliquez pour réinitialiser votre plot et le donner à quelqu'un d'autre"
   undo-submit-desc: "Cliquez pour annuler votre soumission"
-  manage-members-desc: "Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter//supprimer d'autres joueurs sur votre plot"
+  manage-members-desc: "Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter\nsupprimer d'autres joueurs sur votre plot"
   feedback-desc: "Cliquez pour afficher les commentaires sur la review de votre plot"
   custom-heads-desc: "Cliquez pour ouvrir le menu des têtes pour obtenir une variété de têtes personnalisées"
   banner-maker-desc: "Cliquez pour ouvrir le menu du créateur de bannières pour créer vos propres bannières personnalisées"
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "Précision"
-    accuracy-desc: "Quelle est la précision du bâtiment?////- Ressemble à RL//- Contours corrects//- Hauteur correcte//- Est terminé"
+    accuracy-desc: "Quelle est la précision du bâtiment?\n\n- Ressemble à RL\n- Contours corrects\n- Hauteur correcte\n- Est terminé"
     block-palette: "palette de blocs"
-    block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?////- Choix des couleurs/textures des blocs//- Blocs aléatoires"
+    block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?\n\n- Choix des couleurs/textures des blocs\n- Blocs aléatoires"
     detailing: "Détail"
-    detailing-desc: "Combien de détails le bâtiment a-t-il?////- Détails du toit//- Détails sur les façades//- Têtes et bannières"
+    detailing-desc: "Combien de détails le bâtiment a-t-il?\n\n- Détails du toit\n- Détails sur les façades\n- Têtes et bannières"
     technique: "Technique"
-    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?////- World-Edit//- Blocs spéciaux"
+    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?\n\n- World-Edit\n- Blocs spéciaux"
 
 # -----------------------------------------------------
 # | Notes

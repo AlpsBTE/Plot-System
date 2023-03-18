@@ -5,7 +5,7 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
+# | [Formatting] Use \n for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
 # |
 # | Chinese Traditional translation by Longhi#1912
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "點擊以傳送至建地"
   abandon-desc: "點擊以重設你的建地，並將其交付他人"
   undo-submit-desc: "點擊以撤回你的提交"
-  manage-members-desc: "點擊以開啟建地成員選單，你可以在那添加//和移除在你建地上的其他玩家"
+  manage-members-desc: "點擊以開啟建地成員選單，你可以在那添加\n和移除在你建地上的其他玩家"
   feedback-desc: "點擊以查看你的建地審核回饋"
   custom-heads-desc: "點擊開啟頭驢選單以取得一種自定義頭驢"
   banner-maker-desc: "點擊開啟旗幟產生器選單以創造屬於你的自定義旗幟"
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "準確性"
-    accuracy-desc: "建築的精確度如何？////- 看起來像在真實世界//- 正確的輪廓//- 正確的高度//- 完成了"
+    accuracy-desc: "建築的精確度如何？\n\n- 看起來像在真實世界\n- 正確的輪廓\n- 正確的高度\n- 完成了"
     block-palette: "方塊用色"
-    block-palette-desc: "使用了多少個不同的方塊，它們的創意如何？////- 方塊顏色/材質的選擇//- 隨機方塊"
+    block-palette-desc: "使用了多少個不同的方塊，它們的創意如何？\n\n- 方塊顏色/材質的選擇\n- 隨機方塊"
     detailing: "細節"
-    detailing-desc: "建築有多少細節？////- 屋頂細節//- 外牆上的細節//- 頭顱和旗幟"
+    detailing-desc: "建築有多少細節？\n\n- 屋頂細節\n- 外牆上的細節\n- 頭顱和旗幟"
     technique: "技巧"
-    technique-desc: "使用了什麼建築技巧，它們的創意如何？////- World-Edit//- 特殊方塊"
+    technique-desc: "使用了什麼建築技巧，它們的創意如何？\n\n- World-Edit\n- 特殊方塊"
 
 # -----------------------------------------------------
 # | Notes

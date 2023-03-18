@@ -5,7 +5,7 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
+# | [Formatting] Use \n for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
 # |
 # | German translation by BlackStarHD#1333 and R3tuxn#7169
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "Klicke hier, um dich zum Plot zu teleportieren"
   abandon-desc: "Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben"
   undo-submit-desc: "Klicke hier, um deine Eingabe rückgängig zu machen"
-  manage-members-desc: "Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du//andere Spieler zu deinem Plot hinzufügen oder entfernen kannst"
+  manage-members-desc: "Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du\nandere Spieler zu deinem Plot hinzufügen oder entfernen kannst"
   feedback-desc: "Klicke hier, um das Feedback zu deinem Plot anzuzeigen"
   custom-heads-desc: "Klicke hier, um eine Auswahl an benutzerdefinierten Köpfen zu erhalten"
   banner-maker-desc: "Klicke hier, um den Banner-Ersteller zu öffnen und selbstständig Banner zu erstellen"
@@ -167,13 +167,13 @@ review:
   player-language: "Spielersprache"
   criteria:
     accuracy: "Genauigkeit"
-    accuracy-desc: "Wie akkurat ist das Gebäude?////- Sieht aus wie in RL//- Korrekte Umrisse//- Korrekte Höhen//- Ist vollständig"
+    accuracy-desc: "Wie akkurat ist das Gebäude?\n\n- Sieht aus wie in RL\n- Korrekte Umrisse\n- Korrekte Höhen\n- Ist vollständig"
     block-palette: "Block-Palette"
-    block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?////- Wahl der Blockfarben/Texturen//- Randomisierte Blöcke"
+    block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?\n\n- Wahl der Blockfarben/Texturen\n- Randomisierte Blöcke"
     detailing: "Detaillierung"
-    detailing-desc: "Wie viele Details hat das Gebäude?////- Dachdetails//- Details an den Fassaden//- Köpfe und Banner"
+    detailing-desc: "Wie viele Details hat das Gebäude?\n\n- Dachdetails\n- Details an den Fassaden\n- Köpfe und Banner"
     technique: "Technik"
-    technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?////- World-Edit//- Spezialblöcke"
+    technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?\n\n- World-Edit\n- Spezialblöcke"
 
 # -----------------------------------------------------
 # | Notes

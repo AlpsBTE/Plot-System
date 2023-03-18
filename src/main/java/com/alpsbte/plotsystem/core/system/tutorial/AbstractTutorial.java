@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 public abstract class AbstractTutorial {
+    public static final int DEFAULT_STAGE_DELAY = 4;
+
     public static List<AbstractTutorial> activeTutorials = new ArrayList<>();
 
     private final List<Class<? extends AbstractStage>> stages;

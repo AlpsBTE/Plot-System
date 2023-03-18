@@ -274,6 +274,7 @@ public class LangPaths {
     public static final class Tutorials {
         private static final String TUTORIALS = "tutorials.";
         private static final String TUTORIALS_BEGINNER = TUTORIALS + "beginner.";
+
         private static final String TUTORIALS_BEGINNER_STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
         public static final String TUTORIALS_BEGINNER_STAGE1_TITLE = TUTORIALS_BEGINNER_STAGE1 + "stage-1-title";
         public static final String TUTORIALS_BEGINNER_STAGE1_DESC = TUTORIALS_BEGINNER_STAGE1 + "stage-1-desc";
@@ -282,6 +283,17 @@ public class LangPaths {
         public static final String TUTORIALS_BEGINNER_STAGE1_3 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-3";
         public static final String TUTORIALS_BEGINNER_STAGE1_4 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-4";
         public static final String TUTORIALS_BEGINNER_STAGE1_5 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-5";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE2 = TUTORIALS_BEGINNER + "stage-2.";
+        public static final String TUTORIALS_BEGINNER_STAGE2_TITLE = TUTORIALS_BEGINNER_STAGE2 + "stage-2-title";
+        public static final String TUTORIALS_BEGINNER_STAGE2_DESC = TUTORIALS_BEGINNER_STAGE2 + "stage-2-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE2_1 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-1";
+        public static final String TUTORIALS_BEGINNER_STAGE2_2 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-2";
+        public static final String TUTORIALS_BEGINNER_STAGE2_3 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-3";
+        public static final String TUTORIALS_BEGINNER_STAGE2_4 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-4";
+        public static final String TUTORIALS_BEGINNER_STAGE2_5 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-5";
+        public static final String TUTORIALS_BEGINNER_STAGE2_6 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-6";
     }
 
     public static final String CONFIG_VERSION = "config-version";

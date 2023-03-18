@@ -5,7 +5,7 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
+# | [Formatting] Use \n for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
 # |
 # | Portuguese translation by Cau#5722
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "Clique para Teletransportar para o Terreno"
   abandon-desc: "Clique para Resetar seu Terreno e Entregá-lo a Outra Pessoa"
   undo-submit-desc: "Clique para desfazer seu envio"
-  manage-members-desc: "Clique para Abrir o Menu de Membros do Terreno, Onde Você Pode adicionar//e Remover Outros Jogadores do Seu Terreno"
+  manage-members-desc: "Clique para Abrir o Menu de Membros do Terreno, Onde Você Pode adicionar\ne Remover Outros Jogadores do Seu Terreno"
   feedback-desc: "Clique para ver seu Feedback de Revisão do Terreno"
   custom-heads-desc: "Clique para Abrir o Menu de Cabeças para obter uma Variedade de Cabeças Personalizadas"
   banner-maker-desc: "Clique para Abrir o Menu do Criador de Estandartes para Criar seus Próprios Estandartes Personalizados"
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "Precisão"
-    accuracy-desc: "Quão precisa é a construção?////- Pare como na vida real//- MArcação correta//- Altura correta//- Completa"
+    accuracy-desc: "Quão precisa é a construção?\n\n- Pare como na vida real\n- MArcação correta\n- Altura correta\n- Completa"
     block-palette: "Paleta de Blocos"
-    block-palette-desc: "Quantos blocos diferentes são usados e quão criativos eles são?////- Escolha de cores/texturas de blocos//- Blocos aleatórios"
+    block-palette-desc: "Quantos blocos diferentes são usados e quão criativos eles são?\n\n- Escolha de cores/texturas de blocos\n- Blocos aleatórios"
     detailing: "Detalhamento"
-    detailing-desc: "Quão detalhada é a construção?////- Detalhes do telhado//- Detalhes na Fachada//- Cabeças e estandartes"
+    detailing-desc: "Quão detalhada é a construção?\n\n- Detalhes do telhado\n- Detalhes na Fachada\n- Cabeças e estandartes"
     technique: "Técnica"
-    technique-desc: "Quais técnicas de construção foram utilizadas e quão criativas elas são?////- World-Edit//- Blocos especiais"
+    technique-desc: "Quais técnicas de construção foram utilizadas e quão criativas elas são?\n\n- World-Edit\n- Blocos especiais"
 
 # -----------------------------------------------------
 # | Notes

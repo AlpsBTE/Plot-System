@@ -25,22 +25,24 @@
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
-import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
 public class TeleportPointEventTask extends AbstractTask implements Listener {
-    private List<String> messages;
+    public interface ITeleportPointTask {
+        void onTeleportTaskComplete(double[] teleportPoint);
+    }
+
+    private ITeleportPointTask onTeleportPointTaskComplete;
     private List<double[]> teleportPoints;
     private int offsetRange;
 
@@ -48,9 +50,12 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
         super(player);
     }
 
-    public TeleportPointEventTask(Player player, List<String> messages, List<double[]> teleportPoints, int offsetRange) {
+    public TeleportPointEventTask(Player player, double[] teleportPoint, int offsetRange) {
+        this(player, Collections.singletonList(teleportPoint), offsetRange);
+    }
+
+    public TeleportPointEventTask(Player player, List<double[]> teleportPoints, int offsetRange) {
         this(player);
-        this.messages = messages;
         this.teleportPoints = teleportPoints;
         this.offsetRange = offsetRange;
     }
@@ -78,10 +83,14 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
         }
     }
 
+    public TeleportPointEventTask onTeleportTaskComplete(ITeleportPointTask onTeleportPointTaskComplete) {
+        this.onTeleportPointTaskComplete = onTeleportPointTaskComplete;
+        return this;
+    }
+
     private void removePoint(double[] teleportPoint) {
         teleportPoints.remove(teleportPoint);
-        AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(messages.get(2), ChatColor.GREEN));
-        player.playSound(player.getLocation(), Utils.Done, 1f, 1f);
+        if (onTeleportPointTaskComplete != null) onTeleportPointTaskComplete.onTeleportTaskComplete(teleportPoint);
 
         if (teleportPoints.size() == 0) {
             setTaskDone();
