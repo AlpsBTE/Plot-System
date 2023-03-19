@@ -71,22 +71,22 @@ public class CMD_Tpll extends BaseCommand {
             return true;
         }
 
-        String[] splitCoords = args[0].split(",");
-        if (splitCoords.length == 2 && args.length < 3) {
-            args = splitCoords;
-        }
-        if (args[0].endsWith(",")) {
-            args[0] = args[0].substring(0, args[0].length() - 1);
-        }
-        if (args.length > 1 && args[1].endsWith(",")) {
-            args[1] = args[1].substring(0, args[1].length() - 1);
-        }
-        if (args.length != 2 && args.length != 3) {
-            sendInfo(sender);
-            return true;
-        }
-
         try {
+            String[] splitCoords = args[0].split(",");
+            if (splitCoords.length == 2 && args.length < 3) {
+                args = splitCoords;
+            }
+            if (args[0].endsWith(",")) {
+                args[0] = args[0].substring(0, args[0].length() - 1);
+            }
+            if (args.length > 1 && args[1].endsWith(",")) {
+                args[1] = args[1].substring(0, args[1].length() - 1);
+            }
+            if (args.length != 2 && args.length != 3) {
+                sendInfo(sender);
+                return true;
+            }
+
             // Parse coordinates to doubles
             double lat;
             double lon;
