@@ -42,11 +42,11 @@ commands:
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
-  sethologram:
-    description: Sets the position of a hologram
-    usage: /sethologram <name>
+  setleaderboard:
+    description: Sets the position of a leaderboard.
+    usage: /setleaderboard <name>
   preload:
-    description: Reload config and holograms
+    description: Reload configs and leaderboards
     usage: /preload
   pss:
     description: Command for setting up the database.
