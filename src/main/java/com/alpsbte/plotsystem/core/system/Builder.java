@@ -24,9 +24,9 @@
 
 package com.alpsbte.plotsystem.core.system;
 
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
-import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -187,7 +187,7 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::reload));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -195,7 +195,7 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramManager.getHolograms().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::updateHologram));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::reload));
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {

@@ -24,9 +24,9 @@
 
 package com.alpsbte.plotsystem;
 
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
-import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
@@ -157,7 +157,8 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Extensions:");
 
         if (DependencyManager.isHolographicDisplaysEnabled()) {
-            HologramManager.reloadHolograms();
+            HolographicDisplay.registerPlugin(this);
+            LeaderboardManager.reloadLeaderboards();
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
@@ -209,7 +210,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
-            HologramManager.getHolograms().forEach(HolographicDisplay::onShutdown);
+            // LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::onShutdown);
         }
     }
 

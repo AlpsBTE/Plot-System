@@ -31,13 +31,12 @@ import com.alpsbte.plotsystem.utils.io.YamlFileFactory;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class ConfigUtil extends YamlFileFactory {
 
     // Register configuration files
     private static final ConfigFile[] configs = new ConfigFile[] {
-            new ConfigFile(Paths.get("config.yml"), 1.6),
+            new ConfigFile(Paths.get("config.yml"), 1.7),
             new ConfigFile(Paths.get("commands.yml"), 1.0)
     };
 

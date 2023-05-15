@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.commands.admin;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -45,8 +45,8 @@ public class CMD_PReload extends BaseCommand {
                 PlotSystem.getPlugin().getConfigManager().saveFiles();
                 sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
 
-                HologramManager.reloadHolograms();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
+                LeaderboardManager.reloadLeaderboards();
+                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded leaderboards!"));
 
                 DatabaseConnection.InitializeDatabase();
             } catch (Exception ex) {
@@ -66,7 +66,7 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "Reloads configuration files and holograms.";
+        return "Reloads configuration files and leaderboards.";
     }
 
     @Override
