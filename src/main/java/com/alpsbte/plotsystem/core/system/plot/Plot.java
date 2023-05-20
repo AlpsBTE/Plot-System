@@ -24,15 +24,15 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -54,7 +54,10 @@ import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -449,7 +452,7 @@ public class Plot implements IPlot {
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schematic").toFile();
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schem").toFile();
 
                     if(!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
@@ -470,7 +473,7 @@ public class Plot implements IPlot {
     @Override
     public File getFinishedSchematic() {
         try {
-            return Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+            return Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schem").toFile();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }

@@ -25,12 +25,12 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.HologramManager;
 import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
@@ -170,7 +170,7 @@ public class Builder {
                     .build();
         }
 
-        return new ItemBuilder(Material.MAP, 1 + slotIndex)
+        return new ItemBuilder(Material.FILLED_MAP, 1 + slotIndex)
                 .setName("§b§l" + LangUtil.get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
                 .setLore(new LoreBuilder()
                         .addLines("§7" + LangUtil.get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),

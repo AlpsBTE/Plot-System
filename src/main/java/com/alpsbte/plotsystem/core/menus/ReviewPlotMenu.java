@@ -117,14 +117,14 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 48:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.LEGACY_CONCRETE, 1, (byte) 13)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.GREEN_CONCRETE, 1)
                             .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT))
                             .setLore(new LoreBuilder()
                                     .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW)).build())
                             .build());
                     break;
                 case 50:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.LEGACY_CONCRETE, 1, (byte) 14)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.RED_CONCRETE, 1)
                             .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CANCEL))
                             .build());
                     break;
@@ -134,7 +134,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     int position = ((i + 1) - (i + 1) % 9) / 54;
                     if (column > 2 && column < 9 && row > 1 && row < 6) {
                         if ((i + 1) % 9 == 3) {
-                            itemPointZero[position] = new ItemBuilder(Material.LEGACY_WOOL, 1, (byte) 8)
+                            itemPointZero[position] = new ItemBuilder(Material.LIGHT_GRAY_WOOL, 1)
                                     .setName("§l§70 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
                                             .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
@@ -146,7 +146,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             itemPointZero[position].setItemMeta(itemMeta);
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
-                            itemPointOne[position] = new ItemBuilder(Material.LEGACY_WOOL, 1, (byte) 14)
+                            itemPointOne[position] = new ItemBuilder(Material.RED_WOOL, 1)
                                     .setName("§l§c1 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINT))
                                     .setLore(new LoreBuilder()
                                             .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
@@ -154,28 +154,28 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                             getMenu().getSlot(i).setItem(itemPointOne[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 5) {
-                            itemPointTwo[position] = new ItemBuilder(Material.LEGACY_WOOL, 2, (byte) 1)
+                            itemPointTwo[position] = new ItemBuilder(Material.ORANGE_WOOL, 2)
                                     .setName("§l§62 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
                                             .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointTwo[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 6) {
-                            itemPointThree[position] = new ItemBuilder(Material.LEGACY_WOOL, 3, (byte) 4)
+                            itemPointThree[position] = new ItemBuilder(Material.YELLOW_WOOL, 3)
                                     .setName("§l§e3 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
                                             .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointThree[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 7) {
-                            itemPointFour[position] = new ItemBuilder(Material.LEGACY_WOOL, 4, (byte) 13)
+                            itemPointFour[position] = new ItemBuilder(Material.GREEN_WOOL, 4)
                                     .setName("§l§24 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
                                             .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFour[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 8) {
-                            itemPointFive[position] = new ItemBuilder(Material.LEGACY_WOOL, 5, (byte) 5)
+                            itemPointFive[position] = new ItemBuilder(Material.LIME_WOOL, 5)
                                     .setName("§l§a5 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
                                             .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
@@ -455,7 +455,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("101101101")
                 .pattern("100000001")
                 .pattern("100000001")

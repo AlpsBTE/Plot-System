@@ -157,21 +157,10 @@ public abstract class AbstractPlotGenerator {
      * @param environmentSchematic - environment schematic file
      */
     protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
-        final class OnlyAirMask extends ExistingBlockMask {
-            public OnlyAirMask(Extent extent) {
-                super(extent);
-            }
-
-            @Override
-            public boolean test(BlockVector3 vector) {
-                return this.getExtent().getBlock(vector).getBlockType().getMaterial().equals(Material.AIR);
-            }
-        }
 
         World weWorld = new BukkitWorld(world.getBukkitWorld());
         EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(world.getBukkitWorld()), -1);
         editSession.setFastMode(true);
-
 
         if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
             editSession.setMask(new OnlyAirMask(weWorld));

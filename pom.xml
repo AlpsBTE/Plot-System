@@ -72,20 +72,8 @@
         <!-- Fast Async World Edit -->
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
-            <artifactId>FastAsyncWorldEdit-Core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
-                    <groupId>*</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Multiverse Core -->
@@ -201,7 +189,7 @@
         </dependency>
     </dependencies>
 
-
+    <!-- Fast Async World Edit -->
     <dependencyManagement>
         <dependencies>
             <dependency>

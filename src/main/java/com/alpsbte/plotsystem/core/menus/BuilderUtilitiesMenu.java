@@ -25,12 +25,12 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,7 +59,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set custom-heads menu item
         getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3)
+                .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
@@ -67,7 +67,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
 
         // Set banner-maker menu item
         getMenu().getSlot(13)
-                .setItem(new ItemBuilder(Material.LEGACY_BANNER, 1, (byte) 14)
+                .setItem(new ItemBuilder(Material.RED_BANNER, 1)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
@@ -95,7 +95,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

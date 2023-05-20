@@ -42,7 +42,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -250,10 +252,10 @@ public class Review {
                         plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
                     }
 
-                     Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                     Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schem"));
                      Server plotServer = plot.getCity().getCountry().getServer();
                      if (plotServer.getFTPConfiguration() != null) {
-                         FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
+                         FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schem");
                      }
 
                     DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")

@@ -25,15 +25,15 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.*;
+import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.utils.enums.Continent;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -47,7 +47,8 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class CountryMenu extends AbstractMenu {
@@ -75,7 +76,7 @@ public class CountryMenu extends AbstractMenu {
                         .build());
 
         // Set loading item for plots difficulty item
-        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.LEGACY_SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
             player.closeInventory();
@@ -152,7 +153,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("011101111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -169,7 +170,7 @@ public class CountryMenu extends AbstractMenu {
                     .setName("§b§lBack")
                     .build());
         } else {
-            getMenu().getSlot(0).setItem(new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build());
+            getMenu().getSlot(0).setItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build());
         }
 
         for (Country country : countryProjects) {

@@ -23,11 +23,10 @@ public class PlotWorldGenerator {
     private final String worldName;
     private static final World.Environment environment = World.Environment.NORMAL;
     private static final WorldType worldType = WorldType.FLAT;
-    private static final String generatorSettings = "2;0;1;";
+    private static final String generatorSettings = "{\"layers\": [{\"block\": \"air\", \"height\": 1}],\"biome\":\"plains\"}";
 
     public PlotWorldGenerator(String worldName) throws Exception {
         this.worldName = worldName;
-
         generateWorld();
         createMultiverseWorld();
         configureWorld();

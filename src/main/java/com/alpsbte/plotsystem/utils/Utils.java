@@ -25,38 +25,34 @@
 package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
-import org.bukkit.*;
-import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Utils {
 
     // Get custom head
     public static ItemStack getItemHead(CustomHead head) {
-        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3).build();
+        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.PLAYER_HEAD, 1).build();
     }
 
     // Get player head by UUID
     public static ItemStack getPlayerHead(UUID playerUUID) {
-        ItemStack skull = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1, (short) SkullType.PLAYER.ordinal());
 
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUUID));
@@ -299,7 +295,7 @@ public class Utils {
 
         public CustomHead(String headID) {
             this.headItem = headDatabaseAPI != null && headID != null && Utils.TryParseInt(headID) != null
-                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3).build();
+                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.PLAYER_HEAD, 1).build();
         }
 
         public ItemStack getAsItemStack() {
