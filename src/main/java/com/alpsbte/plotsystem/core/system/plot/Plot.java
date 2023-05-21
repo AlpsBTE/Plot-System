@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsE
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Bukkit;

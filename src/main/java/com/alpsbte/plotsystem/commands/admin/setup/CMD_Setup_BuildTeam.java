@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
@@ -91,7 +92,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             List<BuildTeam> buildTeams = BuildTeam.getBuildTeams();
             if (buildTeams.size() != 0) {
-                sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + buildTeams.size() + " build teams registered in the database:"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + buildTeams.size() + " build teams registered in the database:"));
                 sender.sendMessage("§8--------------------------");
                 for (BuildTeam b : buildTeams) {
                     try {
@@ -101,13 +102,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                         b.getReviewers().forEach(r -> { try { reviewersAsString.add(r.getName()); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }});
                         sender.sendMessage(" §6> §b" + b.getID() + " (" + b.getName() + ") §f- Country IDs: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString) + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString));
                     } catch (SQLException ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
                 }
                 sender.sendMessage("§8--------------------------");
             } else {
-                sender.sendMessage(Utils.getInfoMessageFormat("There are currently no build teams registered in the database!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently no build teams registered in the database!"));
             }
         }
 
@@ -144,14 +145,14 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                     try {
                         String name = CMD_Setup.appendArgs(args, 1);
                         BuildTeam.addBuildTeam(name);
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully added build team with name '" + name + "'!"));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added build team with name '" + name + "'!"));
                     } catch (SQLException ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                         return;
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Build team name cannot be longer than 45 characters!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Build team name cannot be longer than 45 characters!"));
                 }
                 return;
             }
@@ -186,18 +187,18 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 1 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 1 && AlpsUtils.TryParseInt(args[1]) != null) {
                 // Check if build team exists
                 try {
                     if (BuildTeam.getBuildTeams().stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                         BuildTeam.removeBuildTeam(Integer.parseInt(args[1]));
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed build team with ID " + args[1] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed build team with ID " + args[1] + "!"));
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("Could not find any build team with ID " + args[1] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any build team with ID " + args[1] + "!"));
                         sendInfo(sender);
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
                 return;
@@ -233,21 +234,21 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null) {
                 // Check if build team exits
                 try {
                     if (BuildTeam.getBuildTeams().stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                         String name = CMD_Setup.appendArgs(args, 2);
                         if (name.length() <= 45) {
                             BuildTeam.setBuildTeamName(Integer.parseInt(args[1]), name);
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully changed name of build team with ID " + args[1] + " to '" + name + "'!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully changed name of build team with ID " + args[1] + " to '" + name + "'!"));
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Build team name cannot be longer than 45 characters!"));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Build team name cannot be longer than 45 characters!"));
                         }
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }
@@ -283,21 +284,21 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null && Utils.TryParseInt(args[2]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null && AlpsUtils.TryParseInt(args[2]) != null) {
                 // Check if build team and country exists
                 try {
                     if (BuildTeam.getBuildTeams().stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                         if (Country.getCountries().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
                             Country country = new Country(Integer.parseInt(args[2]));
                             BuildTeam.addCountry(Integer.parseInt(args[1]), country.getID());
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully added country '" + country.getName() + "' to build team with ID " + args[1] + "!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added country '" + country.getName() + "' to build team with ID " + args[1] + "!"));
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Country could not be found or is already added to the build team!"));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Country could not be found or is already added to the build team!"));
                         }
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }
@@ -333,21 +334,21 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null && Utils.TryParseInt(args[2]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null && AlpsUtils.TryParseInt(args[2]) != null) {
                 // Check if build team and country exists
                 try {
                     if (BuildTeam.getBuildTeams().stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                         if (Country.getCountries().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
                             Country country = new Country(Integer.parseInt(args[2]));
                             BuildTeam.removeCountry(Integer.parseInt(args[1]), country.getID());
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed country '" + country.getName() + "' from build team with ID " + args[1] + "!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed country '" + country.getName() + "' from build team with ID " + args[1] + "!"));
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Country could not be found or is not added to the build team!"));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Country could not be found or is not added to the build team!"));
                         }
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }
@@ -383,21 +384,21 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null) {
                 // Check if build team exits
                 try {
                     if (BuildTeam.getBuildTeams().stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                         Builder builder = Builder.getBuilderByName(args[2]);
                         if (builder != null && BuildTeam.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                             BuildTeam.addReviewer(Integer.parseInt(args[1]), builder.getUUID().toString());
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + args[1] + "!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + args[1] + "!"));
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Player could not be found or is already reviewer for this build team!"));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Player could not be found or is already reviewer for this build team!"));
                         }
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }
@@ -433,21 +434,21 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null) {
                 // Check if build team exits
                 try {
                     if (BuildTeam.getBuildTeams().stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                         Builder builder = Builder.getBuilderByName(args[2]);
                         if (builder != null && BuildTeam.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                             BuildTeam.removeReviewer(Integer.parseInt(args[1]), builder.getUUID().toString());
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed '" + builder.getName() + "' as reviewer from build team with ID " + args[1] + "!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed '" + builder.getName() + "' as reviewer from build team with ID " + args[1] + "!"));
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Player could not be found or is not a reviewer for this build team!"));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Player could not be found or is not a reviewer for this build team!"));
                         }
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }

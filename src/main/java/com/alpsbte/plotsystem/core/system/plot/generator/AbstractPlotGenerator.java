@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -30,15 +30,16 @@ import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.boydti.fawe.FaweAPI;
 import com.boydti.fawe.util.EditSessionBuilder;
 import com.sk89q.worldedit.*;
@@ -228,7 +229,7 @@ public abstract class AbstractPlotGenerator {
             protectedRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
             protectedRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
-            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
+            FileConfiguration config = ConfigUtil.getInstance().configs[1];
             List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
             allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
             for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
@@ -282,8 +283,8 @@ public abstract class AbstractPlotGenerator {
      */
     protected void onException(Throwable ex) {
         Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
-        builder.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
+        builder.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND,1,1);
     }
 
 

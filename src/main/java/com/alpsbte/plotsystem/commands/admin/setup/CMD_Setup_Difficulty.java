@@ -1,5 +1,30 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.commands.admin.setup;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Difficulty;
@@ -59,7 +84,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             List<Difficulty> difficulties = Difficulty.getDifficulties();
-            sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + difficulties.size() + " Difficulties registered in the database:"));
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + difficulties.size() + " Difficulties registered in the database:"));
             sender.sendMessage("§8--------------------------");
             for (Difficulty d : difficulties) {
                 sender.sendMessage(" §6> §b" + d.getID() + " (" + d.getDifficulty().name() + ") §f- Multiplier: " + d.getMultiplier() + " - Score Requirement: " + d.getScoreRequirement());
@@ -95,16 +120,16 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null && Utils.tryParseDouble(args[2]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null && AlpsUtils.tryParseDouble(args[2]) != null) {
                 // Check if difficulty exists
                 try {
                     if (Difficulty.getDifficulties().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
                         Difficulty.setMultiplier(Integer.parseInt(args[1]), Double.parseDouble(args[2]));
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }
@@ -140,16 +165,16 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null && Utils.TryParseInt(args[2]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null && AlpsUtils.TryParseInt(args[2]) != null) {
                 // Check if difficulty exists
                 try {
                     if (Difficulty.getDifficulties().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
                         Difficulty.setScoreRequirement(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
                         return;
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     return;
                 }

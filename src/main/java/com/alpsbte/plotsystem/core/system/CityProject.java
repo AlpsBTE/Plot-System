@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,16 @@
 
 package com.alpsbte.plotsystem.core.system;
 
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -108,12 +108,12 @@ public class CityProject {
                     .setLore(new LoreBuilder()
                             .addLines(getDescription(),
                                     "",
-                                    "§6" + plotsOpen + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_OPEN) + " §8" + LangUtil.get(player, LangPaths.CityProject.FOR_YOUR_DIFFICULTY, (plotsOpenForPlayer == 0 ? "§c" : "§a") + plotsOpenForPlayer + "§8"),
+                                    "§6" + plotsOpen + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_OPEN) + " §8" + LangUtil.getInstance().get(player, LangPaths.CityProject.FOR_YOUR_DIFFICULTY, (plotsOpenForPlayer == 0 ? "§c" : "§a") + plotsOpenForPlayer + "§8"),
                                     "§8---------------------",
-                                    "§6" + plotsInProgress + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_IN_PROGRESS),
-                                    "§6" + plotsCompleted + " §7" + LangUtil.get(player, LangPaths.CityProject.PROJECT_COMPLETED),
+                                    "§6" + plotsInProgress + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_IN_PROGRESS),
+                                    "§6" + plotsCompleted + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_COMPLETED),
                                     "",
-                                    plotsUnclaimed != 0 ? Utils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
+                                    plotsUnclaimed != 0 ? Utils.ChatUtils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
                             ).build())
                     .build();
 

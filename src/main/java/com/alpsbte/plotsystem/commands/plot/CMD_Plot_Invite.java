@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,10 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Invitation;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,7 +47,7 @@ public class CMD_Plot_Invite extends SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+            FileConfiguration config = PlotSystem.getPlugin().getConfig();
             if (getPlayer(sender) != null && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 Invitation invite = null;
                 for (Invitation item : Invitation.invitationsList) {
@@ -75,7 +74,7 @@ public class CMD_Plot_Invite extends SubCommand {
                 if (invite != null) {
                     Invitation.invitationsList.remove(invite);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
                 }
             }
         } else {

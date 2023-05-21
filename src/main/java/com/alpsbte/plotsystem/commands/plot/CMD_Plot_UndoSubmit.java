@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands.plot;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -32,8 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -50,12 +50,12 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
     public void onCommand(CommandSender sender, String[] args) {
         try {
             Plot plot;
-            if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+            if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
                 if (PlotManager.plotExists(plotID)) {
                     plot = new Plot(plotID);
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
                 }
             } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -68,13 +68,13 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
             if(plot.getStatus() == Status.unreviewed) {
                 PlotHandler.undoSubmit(plot);
 
-                sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
-                if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.FinishPlotSound, 1, 1);
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
+                if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS)));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS)));
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.utils.io.config;
+package com.alpsbte.plotsystem.utils.io;
 
 public abstract class ConfigPaths {
 
@@ -88,8 +88,4 @@ public abstract class ConfigPaths {
     public static final String SHORTLINK_ENABLE = SHORTLINK + "enable";
     public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
     public static final String SHORTLINK_HOST = SHORTLINK + "host";
-
-
-    // CONFIG VERSION
-    public static final String CONFIG_VERSION = "config-version";
 }

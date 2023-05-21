@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -97,7 +96,7 @@ public class CMD_Tpll extends BaseCommand {
                             CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
 
                             if(plotCoords == null) {
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
+                                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                                 return true;
                             }
 
@@ -119,26 +118,26 @@ public class CMD_Tpll extends BaseCommand {
 
                             DecimalFormat df = new DecimalFormat("##.#####");
                             df.setRoundingMode(RoundingMode.FLOOR);
-                            player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
+                            player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
 
                         } catch (SQLException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+                            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         } catch (IOException | OutOfProjectionBoundsException ex) {
                             Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
-                            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+                            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         }
                     } catch (Exception ignore) {
                         sendInfo(sender);
                     }
                 } else {
-                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
+                    player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
         return true;
     }

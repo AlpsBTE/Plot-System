@@ -28,9 +28,10 @@ import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import me.filoghost.holographicdisplays.api.Position;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -59,7 +60,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
     private BukkitTask actionbarTask = null;
 
-    public ScoreLeaderboard(@NotNull String id) {
+    protected ScoreLeaderboard(@NotNull String id) {
         super(id, PlotSystem.getPlugin());
     }
 
@@ -136,7 +137,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
         ComponentBuilder builder = new ComponentBuilder("");
         builder.append(
-                new ComponentBuilder("  " + LangUtil.get(player, sortByLeaderboard.langPath))
+                new ComponentBuilder("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
                         .color(ChatColor.GOLD)
                         .bold(true)
                         .create()
@@ -151,7 +152,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
         if (position == -1) {
             builder.append(
-                    new ComponentBuilder(LangUtil.get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                    new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
                             .color(ChatColor.RED)
                             .bold(false)
                             .create()
@@ -159,14 +160,14 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
         } else if (position < 50) {
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
                     ).color(ChatColor.GREEN).bold(false).create()
             );
         } else {
             String topPercentage = df.format(position * 1.0 / rows);
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
                     ).bold(false).create()
             );
         }
@@ -179,7 +180,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     }
 
     private List<Player> showToPlayers() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLED, true);
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
@@ -194,15 +195,15 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
     @Override
     public List<String> getPages() {
-        if (PlotSystem.getPlugin().getConfigManager() == null) return new ArrayList<>();
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        if (ConfigUtil.getInstance() == null) return new ArrayList<>();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         return Arrays.stream(LeaderboardTimeframe.values())
                 .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).collect(Collectors.toList());
     }
 
     @Override
     public long getInterval() {
-        return PlotSystem.getPlugin().getConfigManager().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
+        return PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
     }
 
     @Override

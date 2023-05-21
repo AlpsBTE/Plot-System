@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class PlotsLeaderboard extends HolographicDisplay {
-    public PlotsLeaderboard(String id) {
+    protected PlotsLeaderboard(String id) {
         super(id);
     }
 
