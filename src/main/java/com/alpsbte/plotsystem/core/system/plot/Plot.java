@@ -453,8 +453,12 @@ public class Plot implements IPlot {
             return CompletableFuture.supplyAsync(() -> {
                 try {
                     File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schem").toFile();
+                    if (!file.exists()) {
+                        // if .schem doesn't exist it looks for old .schematic format for backwards compatibility
+                        file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schematic").toFile();
+                    }
 
-                    if(!file.exists()) {
+                    if (!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
                             FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
                         }
