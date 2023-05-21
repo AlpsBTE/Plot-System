@@ -5,8 +5,8 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
-# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # |
 # | French translation by Goul20#8557
 # -----------------------------------------------------
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "Cliquez pour vous téléporter sur l'intrigue"
   abandon-desc: "Cliquez pour réinitialiser votre plot et le donner à quelqu'un d'autre"
   undo-submit-desc: "Cliquez pour annuler votre soumission"
-  manage-members-desc: "Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter//supprimer d'autres joueurs sur votre plot"
+  manage-members-desc: "Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter%newline%supprimer d'autres joueurs sur votre plot"
   feedback-desc: "Cliquez pour afficher les commentaires sur la review de votre plot"
   custom-heads-desc: "Cliquez pour ouvrir le menu des têtes pour obtenir une variété de têtes personnalisées"
   banner-maker-desc: "Cliquez pour ouvrir le menu du créateur de bannières pour créer vos propres bannières personnalisées"
@@ -146,9 +146,9 @@ menu-description:
   select-language-desc: "Choisissez votre langue"
   auto-detect-language-desc: "Cliquez pour détecter automatiquement votre langue"
   select-plot-type-desc: 'Choose your plot type'
-  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
-  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "Précision"
-    accuracy-desc: "Quelle est la précision du bâtiment?////- Ressemble à RL//- Contours corrects//- Hauteur correcte//- Est terminé"
+    accuracy-desc: "Quelle est la précision du bâtiment?%newline%%newline%- Ressemble à RL%newline%- Contours corrects%newline%- Hauteur correcte%newline%- Est terminé"
     block-palette: "palette de blocs"
-    block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?////- Choix des couleurs/textures des blocs//- Blocs aléatoires"
+    block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?%newline%%newline%- Choix des couleurs/textures des blocs%newline%- Blocs aléatoires"
     detailing: "Détail"
-    detailing-desc: "Combien de détails le bâtiment a-t-il?////- Détails du toit//- Détails sur les façades//- Têtes et bannières"
+    detailing-desc: "Combien de détails le bâtiment a-t-il?%newline%%newline%- Détails du toit%newline%- Détails sur les façades%newline%- Têtes et bannières"
     technique: "Technique"
-    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?////- World-Edit//- Blocs spéciaux"
+    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?%newline%%newline%- World-Edit%newline%- Blocs spéciaux"
 
 # -----------------------------------------------------
 # | Notes
@@ -275,4 +275,4 @@ leaderboards:
   not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

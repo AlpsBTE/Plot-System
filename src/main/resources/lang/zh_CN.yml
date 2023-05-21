@@ -5,8 +5,8 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
-# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # |
 # | Chinese Simplified translation by PikaNiko#7875
 # -----------------------------------------------------
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "点击以传送至建地"
   abandon-desc: "点击以重设你的建地，并将其交付他人"
   undo-submit-desc: "点击以撤回你的提交"
-  manage-members-desc: "点击以开启建地成员选单，你可以在那添加//和移除在你建地上的其他玩家"
+  manage-members-desc: "点击以开启建地成员选单，你可以在那添加%newline%和移除在你建地上的其他玩家"
   feedback-desc: "点击以查看你的建地审核回馈"
   custom-heads-desc: "点击开启头驴选单以取得一种自定义头驴"
   banner-maker-desc: "点击开启旗帜产生器选单以创造属于你的自定义旗帜"
@@ -146,9 +146,9 @@ menu-description:
   select-language-desc: "选择你的语言"
   auto-detect-language-desc: "点击以自动侦测你的语言"
   select-plot-type-desc: 'Choose your plot type'
-  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
-  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "准确性"
-    accuracy-desc: "建筑的精确度如何？ ////- 看起来像在真实世界//- 正确的轮廓//- 正确的高度//- 完成了"
+    accuracy-desc: "建筑的精确度如何？ %newline%%newline%- 看起来像在真实世界%newline%- 正确的轮廓%newline%- 正确的高度%newline%- 完成了"
     block-palette: "方块用色"
-    block-palette-desc: "使用了多少个不同的方块，它们的创意如何？ ////- 方块颜色/材质的选择//- 随机方块"
+    block-palette-desc: "使用了多少个不同的方块，它们的创意如何？ %newline%%newline%- 方块颜色/材质的选择%newline%- 随机方块"
     detailing: "细节"
-    detailing-desc: "建筑有多少细节？ ////- 屋顶细节//- 外墙上的细节//- 头颅和旗帜"
+    detailing-desc: "建筑有多少细节？ %newline%%newline%- 屋顶细节%newline%- 外墙上的细节%newline%- 头颅和旗帜"
     technique: "技巧"
-    technique-desc: "使用了什么建筑技巧，它们的创意如何？ ////- World-Edit//- 特殊方块"
+    technique-desc: "使用了什么建筑技巧，它们的创意如何？ %newline%%newline%- World-Edit%newline%- 特殊方块"
 
 # -----------------------------------------------------
 # | Notes
@@ -275,4 +275,4 @@ leaderboards:
   not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3
