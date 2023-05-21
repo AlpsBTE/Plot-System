@@ -90,7 +90,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
                     changeState = 0;
                 } else {
                     changeState++;
-                    updateHologram();
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateHologram());
                 }
             }
         }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), changeDelay, changeDelay);

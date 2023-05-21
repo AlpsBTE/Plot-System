@@ -13,7 +13,10 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
+import org.bukkit.generator.ChunkGenerator;
 
+import javax.annotation.Nonnull;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class PlotWorldGenerator {
@@ -23,7 +26,7 @@ public class PlotWorldGenerator {
     private final String worldName;
     private static final World.Environment environment = World.Environment.NORMAL;
     private static final WorldType worldType = WorldType.FLAT;
-    private static final String generatorSettings = "{\"layers\": [{\"block\": \"air\", \"height\": 1}],\"biome\":\"plains\"}";
+    private static final String generatorSettings = "{\"features\": false,\"layers\": [{\"block\": \"air\", \"height\": 1}],\"biome\":\"plains\"}";
 
     public PlotWorldGenerator(String worldName) throws Exception {
         this.worldName = worldName;
@@ -37,6 +40,7 @@ public class PlotWorldGenerator {
         worldCreator = new WorldCreator(worldName);
         worldCreator.environment(environment);
         worldCreator.type(worldType);
+        worldCreator.generator(new EmptyChunkGenerator());
         worldCreator.generatorSettings(generatorSettings);
         worldCreator.createWorld();
     }
@@ -100,4 +104,15 @@ public class PlotWorldGenerator {
             regionManager.saveChanges();
         } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
+
+    public class EmptyChunkGenerator extends ChunkGenerator {
+        @Override
+        @Nonnull
+        public ChunkData generateChunkData(@Nonnull World world, @Nonnull Random random, int x, int z, @Nonnull BiomeGrid biome) {
+            return createChunkData(world);
+        }
+    }
+
 }
+
+
