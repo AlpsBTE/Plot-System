@@ -24,12 +24,12 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -88,14 +88,14 @@ public abstract class AbstractTutorial {
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Player.class).newInstance(builder.getPlayer());
                 activeStageIndex++;
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
-                player.playSound(player.getLocation(), Utils.CreatePlotSound, 1f, 1f);
+                player.playSound(player.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1f, 1f);
                 activeStage.getTaskTimeline().StartTimeline();
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
-                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             } catch (InterruptedException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial task.", ex);
-                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             }
         }
     }

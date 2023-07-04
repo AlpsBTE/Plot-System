@@ -28,9 +28,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -63,13 +63,13 @@ public class BeginnerTutorial extends AbstractTutorial {
         @Override
         protected List<String> setMessages() {
             return Arrays.asList(
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_5)
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_5)
             );
         }
 
@@ -93,14 +93,14 @@ public class BeginnerTutorial extends AbstractTutorial {
         @Override
         protected List<String> setMessages() {
             return Arrays.asList(
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§b" + "https://goo.gl/maps/FY5zbFCoUSm1iWgd7" + "§7"),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§b" + "https://earth.google.com/web/search/48.209560382869,+16.50040542606851" + "§7"),
-                    LangUtil.get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§6" + "/plot links" + "§7")
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§b" + "https://goo.gl/maps/FY5zbFCoUSm1iWgd7" + "§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§b" + "https://earth.google.com/web/search/48.209560382869,+16.50040542606851" + "§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§6" + "/plot links" + "§7")
             );
         }
 
@@ -125,7 +125,7 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         protected StageTimeline setTasks() {
-            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+            FileConfiguration config = PlotSystem.getPlugin().getConfig();
             ConfigurationSection teleportPointsSection = config.getConfigurationSection(ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS);
             List<double[]> teleportPoints = new ArrayList<>();
             teleportPointsSection.getKeys(false).forEach(t -> teleportPoints.add(new double[]{
@@ -136,7 +136,7 @@ public class BeginnerTutorial extends AbstractTutorial {
             StageTimeline timeline = new StageTimeline(player)
                     .sendMessage("Teleport to the given points", Sound.ENTITY_VILLAGER_AMBIENT).delay(2)
                     .addTask(new TeleportPointEventTask(player, teleportPoints, 1)).delay(1)
-                    .sendMessage("Done", Utils.FinishPlotSound);
+                    .sendMessage("Done", Utils.SoundUtils.FINISH_PLOT_SOUND);
             return timeline;
         }
     }
