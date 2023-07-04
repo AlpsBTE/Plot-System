@@ -27,7 +27,8 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -35,7 +36,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Arrays;
 import java.util.List;
 
-public class LeaderboardManager {
+public final class LeaderboardManager {
+    private LeaderboardManager() {}
     private static final List<HolographicDisplay> leaderboards = Arrays.asList(
             new ScoreLeaderboard(ConfigPaths.SCORE_LEADERBOARD),
             new PlotsLeaderboard(ConfigPaths.PLOTS_LEADERBOARD)
@@ -45,14 +47,14 @@ public class LeaderboardManager {
         if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
             for (HolographicDisplay leaderboard : leaderboards) {
                 String path = ConfigPaths.HOLOGRAMS + leaderboard.getId();
-                if (PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(path + ConfigPaths.LEADERBOARD_ENABLED))
+                if (PlotSystem.getPlugin().getConfig().getBoolean(path + ConfigPaths.LEADERBOARD_ENABLED))
                     leaderboard.create(getPosition(leaderboard.getId()));
             }
         }
     }
 
     public static Position getPosition(String id) {
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         String path = ConfigPaths.HOLOGRAMS + id;
 
         return Position.of(Utils.getSpawnLocation().getWorld().getName(),
@@ -63,14 +65,14 @@ public class LeaderboardManager {
     }
 
     public static void savePosition(String id, Location newLocation) {
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         String path = ConfigPaths.HOLOGRAMS + id;
 
         config.set(path + ConfigPaths.LEADERBOARD_ENABLED, true);
         config.set(path + ConfigPaths.LEADERBOARD_X, newLocation.getX());
         config.set(path + ConfigPaths.LEADERBOARD_Y, newLocation.getY() + 4);
         config.set(path + ConfigPaths.LEADERBOARD_Z, newLocation.getZ());
-        PlotSystem.getPlugin().getConfigManager().saveFiles();
+        ConfigUtil.getInstance().saveFiles();
 
         reloadLeaderboards();
     }

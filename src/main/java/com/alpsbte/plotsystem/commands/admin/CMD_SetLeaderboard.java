@@ -53,12 +53,12 @@ public class CMD_SetLeaderboard extends BaseCommand {
                         // Update leaderboard location
                         if(leaderboard != null) {
                             LeaderboardManager.savePosition(leaderboard.getId(), getPlayer(sender).getLocation());
-                            player.sendMessage(Utils.getInfoMessageFormat("Successfully updated leaderboard location!"));
-                            player.playSound(player.getLocation(), Utils.Done,1,1);
+                            player.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully updated leaderboard location!"));
+                            player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
 
                             LeaderboardManager.reloadLeaderboards();
                         } else {
-                            player.sendMessage(Utils.getErrorMessageFormat("Leaderboard could not be found!"));
+                            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Leaderboard could not be found!"));
                         }
                     } else {
                         sendInfo(sender);
@@ -73,10 +73,10 @@ public class CMD_SetLeaderboard extends BaseCommand {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
         }
         return true;
     }

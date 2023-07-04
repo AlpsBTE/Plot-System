@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,16 @@
 
 package com.alpsbte.plotsystem.commands.review;
 
-import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -47,16 +47,16 @@ public class CMD_EditPlot extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (getPlayer(sender) != null) {
-            if (PlotSystem.getPlugin().getConfigManager().getCommandsConfig().getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
+            if (ConfigUtil.getInstance().configs[1].getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
                 if (sender.hasPermission(getPermission())) {
                     try {
                         Plot plot;
-                        if (args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+                        if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
                             int plotID = Integer.parseInt(args[0]);
                             if (PlotManager.plotExists(plotID)) {
                                 plot = new Plot(plotID);
                             } else {
-                                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                                 return true;
                             }
                         } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -72,24 +72,24 @@ public class CMD_EditPlot extends BaseCommand {
                             if (builder.isReviewer() && builder.getAsReviewer().getCountries().stream().anyMatch(c -> c.getID() == countryID) && plot.getPlotOwner().getUUID() != builder.getUUID() && plot.getPlotMembers().stream().noneMatch(b -> b.getUUID() == builder.getUUID())) {
                                 if (plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
                                     plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
-                                    sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                                    sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                                 } else {
                                     plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
-                                    sender.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                                    sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                                 }
                                 return true;
                             }
                         }
-                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                     } catch (SQLException ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
             }
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");

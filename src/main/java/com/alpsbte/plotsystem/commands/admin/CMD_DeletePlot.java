@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -40,27 +41,27 @@ public class CMD_DeletePlot extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if(sender.hasPermission(getPermission())) {
-            if(args.length > 0 && Utils.TryParseInt(args[0]) != null) {
+            if(args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
                 if(PlotManager.plotExists(plotID)) {
                     try {
-                        sender.sendMessage(Utils.getInfoMessageFormat("Deleting plot..."));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Deleting plot..."));
                         if (PlotHandler.deletePlot(new Plot(plotID))) {
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
-                            if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.Done, 1f, 1f);
-                        } else sender.sendMessage(Utils.getErrorMessageFormat("An unexpected error has occurred!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
+                            if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
+                        } else sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An unexpected error has occurred!"));
                     } catch (SQLException ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
                 }
             } else {
                sendInfo(sender);
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
     }

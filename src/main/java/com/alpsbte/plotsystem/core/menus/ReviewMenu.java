@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,19 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -55,7 +55,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     private Country filteredCountry = null;
 
     public ReviewMenu(Player player) throws SQLException {
-        super(6, 4, LangUtil.get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
+        super(6, 4, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
     @Override
@@ -86,20 +86,20 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             try {
                 Plot plot = plots.get(i);
                 List<String> lines = new ArrayList<>();
-                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
+                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
                 lines.add("");
-                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
-                if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
+                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
+                if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
                             try { return m.getName(); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex); }
                             return "";
                         }).collect(Collectors.joining(", "))
                 );
-                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
-                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
-                lines.add("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
+                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
+                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
+                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
                 getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
-                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
+                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {
@@ -118,13 +118,13 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
                     if (plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
                             Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
                             if (currentPlot != null && currentPlot.getID() == plot.getID()) {
                                 new ReviewPlotMenu(getMenuPlayer(), currentPlot);
                             } else plot.getWorld().teleportPlayer(getMenuPlayer());
                         } else {
-                            getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+                            getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                         }
                     } else {
                         new PlotActionsMenu(getMenuPlayer(), plot);
@@ -153,7 +153,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected void setItemClickEventsAsync() {
         // Set click event for filter item
         getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
             if (countries.size() == 0) return;
 
             if (filteredCountry == null) {
@@ -170,7 +170,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
             if (hasPreviousPage()) {
                 previousPage();
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
             }
         });
 
@@ -181,7 +181,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
             if (hasNextPage()) {
                 nextPage();
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
             }
         });
     }
@@ -211,7 +211,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     private ItemStack getFilterItem(Player langPlayer) {
         LoreBuilder loreBuilder = new LoreBuilder();
-        loreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.get(langPlayer, LangPaths.MenuDescription.FILTER));
+        loreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.FILTER));
         loreBuilder.emptyLine();
 
         countries.forEach(c -> {
@@ -231,7 +231,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.BOOK, 1)
-                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
                 .setEnchanted(true)
                 .build();
     }
