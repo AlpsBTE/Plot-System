@@ -38,11 +38,12 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class TeleportPointEventTask extends AbstractTask implements Listener {
-    public interface ITeleportPointTask {
+    @FunctionalInterface
+    public interface ITeleportPointAction {
         void onTeleportTaskComplete(double[] teleportPoint);
     }
 
-    private ITeleportPointTask onTeleportPointTaskComplete;
+    private ITeleportPointAction onTeleportPointAction;
     private List<double[]> teleportPoints;
     private int offsetRange;
 
@@ -50,14 +51,15 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
         super(player);
     }
 
-    public TeleportPointEventTask(Player player, double[] teleportPoint, int offsetRange) {
-        this(player, Collections.singletonList(teleportPoint), offsetRange);
+    public TeleportPointEventTask(Player player, double[] teleportPoint, int offsetRange, ITeleportPointAction onTeleportAction) {
+        this(player, Collections.singletonList(teleportPoint), offsetRange, onTeleportAction);
     }
 
-    public TeleportPointEventTask(Player player, List<double[]> teleportPoints, int offsetRange) {
+    public TeleportPointEventTask(Player player, List<double[]> teleportPoints, int offsetRange, ITeleportPointAction onTeleportAction) {
         this(player);
         this.teleportPoints = teleportPoints;
         this.offsetRange = offsetRange;
+        this.onTeleportPointAction = onTeleportAction;
     }
 
     @Override
@@ -83,18 +85,18 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
         }
     }
 
-    public TeleportPointEventTask onTeleportTaskComplete(ITeleportPointTask onTeleportPointTaskComplete) {
-        this.onTeleportPointTaskComplete = onTeleportPointTaskComplete;
-        return this;
-    }
-
     private void removePoint(double[] teleportPoint) {
         teleportPoints.remove(teleportPoint);
-        if (onTeleportPointTaskComplete != null) onTeleportPointTaskComplete.onTeleportTaskComplete(teleportPoint);
+        onTeleportPointAction.onTeleportTaskComplete(teleportPoint);
 
         if (teleportPoints.size() == 0) {
             setTaskDone();
             HandlerList.unregisterAll(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "TeleportPointEventTask";
     }
 }

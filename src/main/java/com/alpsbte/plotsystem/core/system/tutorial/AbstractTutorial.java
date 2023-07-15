@@ -26,12 +26,16 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -49,6 +53,8 @@ public abstract class AbstractTutorial {
     private final List<Class<? extends AbstractStage>> stages;
     protected Builder builder;
     protected Player player;
+    protected TutorialHologram hologram = new TutorialHologram("tutorial-hologram", PlotSystem.getPlugin());
+
     protected BukkitTask tutorialTask;
     protected AbstractStage activeStage;
     private int activeStageIndex = 0;
@@ -64,11 +70,14 @@ public abstract class AbstractTutorial {
         this.player = builder.getPlayer();
         activeTutorials.add(this);
 
+        hologram.create(Position.of(player.getLocation().add(0, 4, 0)));
+
         stages = setStages();
         SetStage(stageIndex);
+
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             if (!player.isOnline()) StopTutorial();
-            if (activeStage.getTaskTimeline().currentTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
+            if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
         }, 0, 0);
     }
 
@@ -85,8 +94,13 @@ public abstract class AbstractTutorial {
         } else {
             try {
                 // Switch to next stage
-                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Player.class).newInstance(builder.getPlayer());
+                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Player.class, TutorialHologram.class).newInstance(builder.getPlayer(), hologram);
                 activeStageIndex++;
+
+                hologram.updateStage(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
+                        "§6§lSTAGE " + (activeStageIndex + 1) + ": §b§l" + activeStage.getMessages().get(0),
+                        activeStage.getMessages().subList(2, activeStage.getMessages().size()));
+
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
                 player.playSound(player.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1f, 1f);
                 activeStage.getTaskTimeline().StartTimeline();

@@ -29,10 +29,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-public class MessageTask extends AbstractTask {
+public class ChatMessageTask extends AbstractTask {
     private final String message;
     private final Sound soundEffect;
-    public MessageTask(Player player, String message, Sound soundEffect) {
+    public ChatMessageTask(Player player, String message, Sound soundEffect) {
         super(player);
         this.message = message;
         this.soundEffect = soundEffect;
@@ -43,5 +43,10 @@ public class MessageTask extends AbstractTask {
         AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY));
         if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
         setTaskDone();
+    }
+
+    @Override
+    public String toString() {
+        return "ChatMessageTask";
     }
 }

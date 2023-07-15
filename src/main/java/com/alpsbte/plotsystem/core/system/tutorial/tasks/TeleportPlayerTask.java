@@ -44,4 +44,9 @@ public class TeleportPlayerTask extends AbstractTask {
         player.teleport(location);
         setTaskDone();
     }
+
+    @Override
+    public String toString() {
+        return "TeleportTask";
+    }
 }

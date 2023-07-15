@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -56,8 +57,8 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage1 extends AbstractStage {
-        public Stage1(Player player) {
-            super(player);
+        public Stage1(Player player, TutorialHologram hologram) {
+            super(player, hologram);
         }
 
         @Override
@@ -75,19 +76,20 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         public StageTimeline setTasks() {
-            return new StageTimeline(player)
-                    .teleportPlayer(Utils.getSpawnLocation()).delay(DEFAULT_STAGE_DELAY)
-                    .sendMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT).delay(5)
-                    .sendMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT).delay(5)
-                    .sendMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT).delay(6)
-                    .sendMessage(getMessages().get(5), Sound.ENTITY_VILLAGER_AMBIENT).delay(5)
-                    .sendMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT).delay(5);
+            return new StageTimeline(player, hologram)
+                    .teleportPlayer(Utils.getSpawnLocation())
+                    .delay(5)
+                    .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
+                    .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
+                    .nextHologramPage(Sound.ENTITY_BLAZE_SHOOT, 11)
+                    .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
+                    .nextHologramPage(Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 8);
         }
     }
 
     private static class Stage2 extends AbstractStage {
-        public Stage2(Player player) {
-            super(player);
+        public Stage2(Player player, TutorialHologram hologram) {
+            super(player, hologram);
         }
 
         @Override
@@ -106,21 +108,28 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         protected StageTimeline setTasks() {
-            StageTimeline timeline = new StageTimeline(player);
+            StageTimeline timeline = new StageTimeline(player, hologram);
             timeline.delay(DEFAULT_STAGE_DELAY);
-            for (int i = 2; i < getMessages().size(); i++) timeline.sendMessage(getMessages().get(i), Sound.ENTITY_VILLAGER_AMBIENT).delay(5);
+            for (int i = 2; i < getMessages().size(); i++) timeline.sendChatMessage(getMessages().get(i), Sound.ENTITY_VILLAGER_AMBIENT).delay(2);
             return timeline;
         }
     }
 
     private static class Stage3 extends AbstractStage {
-        public Stage3(Player player) {
-            super(player);
+        public Stage3(Player player, TutorialHologram hologram) {
+            super(player, hologram);
         }
 
         @Override
         protected List<String> setMessages() {
-            return null;
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_3),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_4)
+            );
         }
 
         @Override
@@ -133,11 +142,14 @@ public class BeginnerTutorial extends AbstractTutorial {
                     config.getDouble(String.join("", ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS, ".", t, ".z"))
             }));
 
-            StageTimeline timeline = new StageTimeline(player)
-                    .sendMessage("Teleport to the given points", Sound.ENTITY_VILLAGER_AMBIENT).delay(2)
-                    .addTask(new TeleportPointEventTask(player, teleportPoints, 1)).delay(1)
-                    .sendMessage("Done", Utils.SoundUtils.FINISH_PLOT_SOUND);
-            return timeline;
+            return new StageTimeline(player, hologram)
+                    .sendChatMessage("Teleport to the given points", Sound.ENTITY_VILLAGER_AMBIENT).delay(2)
+                    .addTask(new TeleportPointEventTask(player, teleportPoints, 1, (double[] teleportPoint) -> {
+                        player.sendMessage("§7Teleporting to §b" + teleportPoint[0] + "§7, §b" + teleportPoint[1] + "§7...");
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    }))
+                    .delay(1)
+                    .sendChatMessage("Done", Utils.SoundUtils.FINISH_PLOT_SOUND);
         }
     }
 }

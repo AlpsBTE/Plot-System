@@ -25,28 +25,44 @@
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import org.bukkit.Bukkit;
+import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-public class WaitTask extends AbstractTask {
-    private long delay;
+public class HologramMessageTask extends AbstractTask {
+    private BukkitTask waitTask = null;
+    private final Sound soundEffect;
+    private final TutorialHologram hologram;
+    private final long interval;
 
-    public WaitTask(Player player) {
+    public HologramMessageTask(Player player, TutorialHologram hologram, Sound soundEffect, long interval) {
         super(player);
-    }
-
-    public WaitTask(Player player, long delay) {
-        this(player);
-        this.delay = delay;
+        this.soundEffect = soundEffect;
+        this.hologram = hologram;
+        this.interval = interval;
     }
 
     @Override
     public void performTask() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), this::setTaskDone, 20 * delay);
+        hologram.updateInterval(interval);
+        hologram.nextPage();
+        if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
+
+        waitTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (hologram.changePageTask.isCancelled()) {
+                    setTaskDone();
+                    waitTask.cancel();
+                }
+            }
+        }.runTaskTimer(PlotSystem.getPlugin(), 0, 1);
     }
 
     @Override
     public String toString() {
-        return "WaitTask";
+        return "HologramMessageTask";
     }
 }

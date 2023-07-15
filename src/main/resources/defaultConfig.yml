@@ -111,7 +111,7 @@ tutorials:
   # Beginner Tutorial
   beginner:
     schematic-path: "RESOURCES"
-    item-name: "BRICK_BLOCK"
+    item-name: "BRICK"
     # Set coordinates for building outlines
     teleport-points:
        point-1:

@@ -25,10 +25,8 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.MessageTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.TeleportPlayerTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.WaitTask;
+import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -38,32 +36,36 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class StageTimeline {
     private final Player player;
+    private final TutorialHologram hologram;
+
     public List<AbstractTask> tasks = new ArrayList<>();
     private AbstractTask currentTask;
-    public int currentTaskId;
+    public int lastTaskId;
 
     public void StartTimeline() throws InterruptedException {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             for (int i = 0; i < tasks.size(); i++) {
                 currentTask = tasks.get(i);
+                Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (i + 1) + " of " + tasks.size() + "] for player " + player.getName());
                 currentTask.performTask();
-                currentTaskId = i;
                 BukkitTask task = new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (currentTask.isTaskDone()) this.cancel();
                     }
                 }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0);
-                while (true) if (task.isCancelled()) break;
+                while (true) if (task.isCancelled()) { lastTaskId = i; break; }
             }
         });
     }
 
-    public StageTimeline(Player player) {
+    public StageTimeline(Player player, TutorialHologram hologram) {
         this.player = player;
+        this.hologram = hologram;
     }
 
     public StageTimeline addTask(AbstractTask task) {
@@ -71,8 +73,18 @@ public class StageTimeline {
         return this;
     }
 
-    public StageTimeline sendMessage(String message, Sound soundEffect) {
-        tasks.add(new MessageTask(player, message, soundEffect));
+    public StageTimeline nextHologramPage(Sound soundEffect) {
+        tasks.add(new HologramMessageTask(player, hologram, soundEffect, 0));
+        return this;
+    }
+
+    public StageTimeline nextHologramPage(Sound soundEffect, long delay) {
+        tasks.add(new HologramMessageTask(player, hologram, soundEffect, delay));
+        return this;
+    }
+
+    public StageTimeline sendChatMessage(String message, Sound soundEffect) {
+        tasks.add(new ChatMessageTask(player, message, soundEffect));
         return this;
     }
 

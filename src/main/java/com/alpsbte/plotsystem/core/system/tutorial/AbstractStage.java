@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -31,9 +32,11 @@ import java.util.List;
 public abstract class AbstractStage {
     private final List<String> messages;
     private final StageTimeline taskTimeline;
-    protected Player player;
-    public AbstractStage(Player player) {
+    protected final Player player;
+    protected final TutorialHologram hologram;
+    public AbstractStage(Player player, TutorialHologram hologram) {
         this.player = player;
+        this.hologram = hologram;
         messages = setMessages();
         taskTimeline = setTasks();
     }
