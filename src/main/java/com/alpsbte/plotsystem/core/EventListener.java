@@ -26,14 +26,13 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -117,7 +116,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about new feedback
             try {
-                List<Plot> plots = PlotManager.getPlots(builder, Status.completed, Status.unfinished);
+                List<Plot> plots = Plot.getPlots(builder, Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
@@ -128,7 +127,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 }
 
                 if(reviewedPlots.size() >= 1) {
-                    PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
+                    PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, event.getPlayer());
                     event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
                 }
             } catch (Exception ex) {
@@ -137,9 +136,9 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about unfinished plots
             try {
-                List<Plot> plots = PlotManager.getPlots(builder, Status.unfinished);
+                List<Plot> plots = Plot.getPlots(builder, Status.unfinished);
                 if(plots.size() >= 1) {
-                    PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+                    PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
                 }
             } catch (Exception ex){
@@ -149,10 +148,10 @@ public class EventListener extends SpecialBlocks implements Listener {
             // Informing reviewer about new reviews
             try {
                 if(event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
-                    List<Plot> unreviewedPlots = PlotManager.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
+                    List<Plot> unreviewedPlots = Plot.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
 
                     if(unreviewedPlots.size() != 0) {
-                        PlotHandler.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
+                        PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
                     }
                 }
             } catch (Exception ex) {
@@ -210,23 +209,23 @@ public class EventListener extends SpecialBlocks implements Listener {
         final World w = event.getPlayer().getWorld();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-            if(PlotManager.isPlotWorld(w)) {
+            if(PlotUtils.isPlotWorld(w)) {
                 try { PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
                 } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
             Review.awaitReviewerFeedbackList.remove(event.getPlayer().getUniqueId());
-            PlotManager.clearCache(event.getPlayer().getUniqueId());
+            PlotUtils.Cache.clearCache(event.getPlayer().getUniqueId());
         }, 60L);
     }
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
-        if (PlotManager.isPlotWorld(event.getFrom())) {
+        if (PlotUtils.isPlotWorld(event.getFrom())) {
             PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
         }
 
-        if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+        if (PlotUtils.isPlotWorld(event.getPlayer().getWorld())) {
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
 
             if (event.getPlayer().hasPermission("plotsystem.review")) {

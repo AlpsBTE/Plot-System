@@ -34,7 +34,6 @@ import com.alpsbte.plotsystem.core.menus.SettingsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -155,7 +154,7 @@ public class CompanionMenu {
                     .setLore(new LoreBuilder()
                             .addLines("",
                                     selectedPlotDifficulty != null ? Utils.ChatUtils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC),
-                                    selectedPlotDifficulty != null ? "§7" + LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": §fx" + PlotManager.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
+                                    selectedPlotDifficulty != null ? "§7" + LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": §fx" + Plot.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
                                     "",
                                     "§7" + LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY))
                             .build())

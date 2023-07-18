@@ -28,7 +28,7 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -55,10 +55,10 @@ public class CMD_CleanPlot extends BaseCommand {
         try {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("all")) {
-                    plots.addAll(PlotManager.getPlots(Status.unfinished, Status.unreviewed));
+                    plots.addAll(Plot.getPlots(Status.unfinished, Status.unreviewed));
                 } else if (AlpsUtils.TryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
-                    if (PlotManager.plotExists(plotID)) {
+                    if (PlotUtils.plotExists(plotID)) {
                         plots.add(new Plot(plotID));
                     } else {
                         sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));

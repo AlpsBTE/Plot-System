@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public interface IWorld {
     /**
@@ -87,7 +88,7 @@ public interface IWorld {
      * @return the origin Y value
      * @throws IOException if the outline schematic fails to load
      */
-    int getPlotHeight() throws IOException;
+    int getPlotHeight() throws IOException, SQLException;
 
     /**
      * Calculates the centered Y value in the plot world

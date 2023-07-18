@@ -30,7 +30,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -62,8 +62,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
         try {
-            plots.addAll(PlotManager.getPlots(countries, Status.unreviewed));
-            plots.addAll(PlotManager.getPlots(countries, Status.unfinished));
+            plots.addAll(Plot.getPlots(countries, Status.unreviewed));
+            plots.addAll(Plot.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -119,7 +119,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 try {
                     if (plot.getStatus() == Status.unreviewed) {
                         if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                            Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
+                            Plot currentPlot = (Plot) PlotUtils.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
                             if (currentPlot != null && currentPlot.getID() == plot.getID()) {
                                 new ReviewPlotMenu(getMenuPlayer(), currentPlot);
                             } else plot.getWorld().teleportPlayer(getMenuPlayer());

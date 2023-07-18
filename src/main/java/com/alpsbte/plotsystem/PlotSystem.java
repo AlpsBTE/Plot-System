@@ -31,8 +31,8 @@ import com.alpsbte.alpslib.utils.heads.CustomHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.PacketListener;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -181,10 +181,10 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
-        PlotManager.checkPlotsForLastActivity();
-        PlotManager.syncPlotSchematicFiles();
+        PlotUtils.checkPlotsForLastActivity();
+        PlotUtils.syncPlotSchematicFiles();
         Review.checkReviewerFeedbackList();
-        PlotManager.startTimer();
+        PlotUtils.Effects.startTimer();
 
         try {
             new PacketListener();

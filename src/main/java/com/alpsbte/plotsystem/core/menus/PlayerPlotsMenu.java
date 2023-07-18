@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -92,7 +91,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         // Set player plot items
         try {
-            plots = PlotManager.getPlots(builder);
+            plots = Plot.getPlots(builder);
 
             plotDisplayCount = Math.min(plots.size(), 36);
             for (int i = 0; i < plotDisplayCount; i++) {

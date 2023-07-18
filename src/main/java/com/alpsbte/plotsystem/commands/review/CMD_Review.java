@@ -29,7 +29,7 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -50,7 +50,7 @@ public class CMD_Review extends BaseCommand {
                 if (sender.hasPermission(getPermission())) {
                     Builder.Reviewer builder = Builder.byUUID(getPlayer(sender).getUniqueId()).getAsReviewer();
                     Player player = (Player) sender;
-                    Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
+                    Plot plot = (Plot) PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
                     if (plot != null) {
                         int countryID = plot.getCity().getCountry().getID();
                         if (plot.getStatus() == Status.unreviewed && builder.getCountries().stream().anyMatch(c -> c.getID() == countryID)) {

@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot.utils;
 
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 
@@ -39,14 +39,14 @@ public class PlotPermissions {
     public PlotPermissions addBuilderPerms(UUID builder) {
         if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().addPlayer(builder);
         world.getProtectedBuildRegion().getOwners().addPlayer(builder);
-        PlotManager.clearCache(builder);
+        PlotUtils.Cache.clearCache(builder);
         return this;
     }
 
     public PlotPermissions removeBuilderPerms(UUID builder) {
         if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removePlayer(builder);
         world.getProtectedBuildRegion().getOwners().removePlayer(builder);
-        PlotManager.clearCache(builder);
+        PlotUtils.Cache.clearCache(builder);
         return this;
     }
 

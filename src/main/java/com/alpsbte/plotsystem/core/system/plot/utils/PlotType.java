@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.plot;
+package com.alpsbte.plotsystem.core.system.plot.utils;
 
 public enum PlotType {
 

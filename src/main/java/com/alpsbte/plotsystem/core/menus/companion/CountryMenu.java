@@ -31,7 +31,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.*;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -177,10 +177,10 @@ public class CountryMenu extends AbstractMenu {
             ItemStack item = country.getHead();
 
             List<CityProject> cities = country.getCityProjects();
-            int plotsOpen = PlotManager.getPlots(cities, Status.unclaimed).size();
-            int plotsInProgress = PlotManager.getPlots(cities, Status.unfinished, Status.unreviewed).size();
-            int plotsCompleted = PlotManager.getPlots(cities, Status.completed).size();
-            int plotsUnclaimed = PlotManager.getPlots(cities, Status.unclaimed).size();
+            int plotsOpen = Plot.getPlots(cities, Status.unclaimed).size();
+            int plotsInProgress = Plot.getPlots(cities, Status.unfinished, Status.unreviewed).size();
+            int plotsCompleted = Plot.getPlots(cities, Status.completed).size();
+            int plotsUnclaimed = Plot.getPlots(cities, Status.unclaimed).size();
 
             getMenu().getSlot(startingSlot + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
                     .setName("§b§l" + country.getName())

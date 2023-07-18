@@ -25,8 +25,6 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class LangPaths {
-    private static final String LANG = "lang.";
-
     public static final class Plot {
         private static final String PLOT = "plot.";
         public static final String PLOT_NAME = PLOT + "plot-name";

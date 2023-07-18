@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.commands.review;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
@@ -46,7 +46,7 @@ public class CMD_EditFeedback extends BaseCommand {
             try {
                 if (args.length > 1 && AlpsUtils.TryParseInt(args[0]) != null){
                     int plotID = Integer.parseInt(args[0]);
-                    if(PlotManager.plotExists(plotID)) {
+                    if(PlotUtils.plotExists(plotID)) {
                         Plot plot = new Plot(Integer.parseInt(args[0]));
                         if (plot.isReviewed() || plot.isRejected()) {
                             if (getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
