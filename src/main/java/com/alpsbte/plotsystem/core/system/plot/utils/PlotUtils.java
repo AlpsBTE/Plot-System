@@ -253,7 +253,7 @@ public final class PlotUtils {
         return false;
     }
 
-    public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException, SQLException {
+    public static CompletableFuture<double[]> convertTerraToPlotXZ(AbstractPlot plot, double[] terraCoords) throws IOException, SQLException {
         // Load plot outlines schematic as clipboard
         Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic()).getClipboard();
 
