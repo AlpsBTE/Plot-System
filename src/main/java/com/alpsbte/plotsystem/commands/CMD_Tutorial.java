@@ -10,13 +10,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.sql.SQLException;
+
 public class CMD_Tutorial extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
-                new BeginnerTutorial(Builder.byUUID(getPlayer(sender).getUniqueId()));
+                try {
+                    new BeginnerTutorial(Builder.byUUID(getPlayer(sender).getUniqueId()));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }

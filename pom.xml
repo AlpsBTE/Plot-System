@@ -142,7 +142,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-io</artifactId>
-            <version>1.0.20</version>
+            <version>1.0.27</version>
             <scope>compile</scope>
         </dependency>
 
@@ -222,18 +222,22 @@
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                </includes>
+                <filtering>false</filtering>
             </resource>
             <resource>
                 <targetPath>./lang</targetPath>
                 <directory>${basedir}/src/main/resources/lang</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>./tutorial</targetPath>
+                <directory>${basedir}/src/main/resources/tutorial</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>./tutorial/schematics</targetPath>
+                <directory>${basedir}/src/main/resources/tutorial/schematics</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <!-- IMPORTANT: Plugin Building Path -->

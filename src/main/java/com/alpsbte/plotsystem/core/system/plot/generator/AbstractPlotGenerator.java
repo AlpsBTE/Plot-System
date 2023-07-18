@@ -26,17 +26,15 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.system.plot.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.*;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -72,18 +70,17 @@ import java.util.*;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotGenerator {
-    private final Plot plot;
+    protected final AbstractPlot plot;
     private final Builder builder;
-    private final PlotWorld world;
-    private final double plotVersion;
-    private final PlotType plotType;
+    protected final PlotWorld world;
+    protected final PlotType plotType;
 
     /**
      * Generates a new plot in the plot world
      * @param plot - plot which should be generated
      * @param builder - builder of the plot
      */
-    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
+    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
         this(plot, builder, builder.getPlotTypeSetting());
     }
 
@@ -93,8 +90,8 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      * @param plotType - type of the plot
      */
-    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotType plotType) throws SQLException {
-        this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld(plot));
+    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) throws SQLException {
+        this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld((Plot) plot));
     }
 
     /**
@@ -103,20 +100,20 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      * @param world - world of the plot
      */
-    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotType plotType, @NotNull PlotWorld world) {
+    private AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType, @NotNull PlotWorld world) {
         this.plot = plot;
         this.builder = builder;
         this.world = world;
-        this.plotVersion = plot.getVersion();
         this.plotType = plotType;
 
         if (init()) {
             Exception exception = null;
             try {
+                Bukkit.getLogger().log(Level.INFO, "[Generation 2] " + plotType.hasOnePlotPerWorld() + " | " + world.isWorldGenerated());
                 if (plotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
                     new PlotWorldGenerator(world.getWorldName());
                 } else if (!world.isWorldLoaded() && !world.loadWorld()) throw new Exception("Could not load world");
-                generateOutlines(plot.getOutlinesSchematic(), plotVersion >= 3 ? plot.getEnvironmentSchematic() : null);
+                generateOutlines(plot.getOutlinesSchematic(), plot.getVersion() >= 3 ? plot.getEnvironmentSchematic() : null);
                 createPlotProtection();
             } catch (Exception ex) {
                 exception = ex;
@@ -129,7 +126,7 @@ public abstract class AbstractPlotGenerator {
             }
 
             if (exception != null) {
-                PlotHandler.abandonPlot(plot);
+                PlotUtils.Actions.abandonPlot(plot);
                 onException(exception);
             }
         }
@@ -160,39 +157,10 @@ public abstract class AbstractPlotGenerator {
             }
         }
 
-        World weWorld = new BukkitWorld(world.getBukkitWorld());
+        World weWorld = new BukkitWorld(plot.getWorld().getBukkitWorld());
         EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
-
-        if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
-            editSession.setMask(new OnlyAirMask(weWorld));
-            pasteSchematic(editSession, environmentSchematic, world, false);
-        }
-
-        pasteSchematic(editSession, plotSchematic, world, true);
-
-        // If the player is playing in his own world, then additionally generate the plot in the city world
-        if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
-            // Generate city plot world if it doesn't exist
-            new AbstractPlotGenerator(plot, builder, PlotType.CITY_INSPIRATION_MODE) {
-                @Override
-                protected boolean init() {
-                    return true;
-                }
-
-                @Override
-                protected void createPlotProtection() {}
-
-                @Override
-                protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
-                    super.onComplete(true, true);
-                }
-
-                @Override
-                protected void onException(Throwable ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
-                }
-            };
-        }
+        editSession.setMask(new OnlyAirMask(weWorld));
+        pasteSchematic(editSession, environmentSchematic, plot.getWorld(), false);
     }
 
 
@@ -264,14 +232,6 @@ public abstract class AbstractPlotGenerator {
      * @throws SQLException - caused by a database exception
      */
     protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
-        if (!failed) {
-            builder.setPlot(plot.getID(), builder.getFreeSlot());
-            plot.setPlotType(plotType);
-            plot.setStatus(Status.unfinished);
-            plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
-            PlotManager.clearCache(builder.getUUID());
-        }
-
         // Unload plot world if it is not needed anymore
         if (unloadWorld) world.unloadWorld(false);
     }
@@ -291,7 +251,7 @@ public abstract class AbstractPlotGenerator {
     /**
      * @return - plot object
      */
-    public Plot getPlot() {
+    public AbstractPlot getPlot() {
         return plot;
     }
 

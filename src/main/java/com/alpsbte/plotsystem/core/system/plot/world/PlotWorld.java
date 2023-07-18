@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -56,9 +57,9 @@ public class PlotWorld implements IWorld {
 
     private final MultiverseCore mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     private final String worldName;
-    private final Plot plot;
+    private final AbstractPlot plot;
 
-    public PlotWorld(@NotNull String worldName, @Nullable Plot plot) {
+    public PlotWorld(@NotNull String worldName, @Nullable AbstractPlot plot) {
         this.worldName = worldName;
         this.plot = plot;
     }
@@ -204,7 +205,7 @@ public class PlotWorld implements IWorld {
         return null;
     }
 
-    public Plot getPlot() {
+    public AbstractPlot getPlot() {
         return plot;
     }
 
@@ -214,7 +215,7 @@ public class PlotWorld implements IWorld {
      * @return - true if the world is a plot world
      */
     public static boolean isOnePlotWorld(String worldName) {
-        return worldName.toLowerCase(Locale.ROOT).startsWith("p-");
+        return worldName.toLowerCase(Locale.ROOT).startsWith("p-") || worldName.toLowerCase(Locale.ROOT).startsWith("t-");
     }
 
     /**

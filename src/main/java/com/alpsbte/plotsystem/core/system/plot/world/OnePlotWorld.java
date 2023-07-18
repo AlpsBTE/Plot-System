@@ -25,10 +25,14 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
+import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -47,8 +51,8 @@ import java.util.logging.Level;
 public class OnePlotWorld extends PlotWorld {
     private final Builder plotOwner;
 
-    public OnePlotWorld(@NotNull Plot plot) throws SQLException {
-        super("P-" + plot.getID(), plot);
+    public OnePlotWorld(@NotNull AbstractPlot plot) throws SQLException {
+        super((plot instanceof TutorialPlot ? "T-" : "P-") + plot.getID(), plot);
         this.plotOwner = plot.getPlotOwner();
     }
 
@@ -56,7 +60,7 @@ public class OnePlotWorld extends PlotWorld {
     public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         if (!isWorldGenerated()) {
             try {
-                if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
+                if (generator.isAssignableFrom(DefaultPlotGenerator.class) && getPlot().getPlotType() != PlotType.TUTORIAL) {
                     new DefaultPlotGenerator(getPlot(), plotOwner);
                 } else return false;
                 return true;
@@ -70,25 +74,31 @@ public class OnePlotWorld extends PlotWorld {
     @Override
     public boolean loadWorld() {
         // Generate plot if it doesn't exist
-        if (getPlot() != null && !isWorldGenerated() && getPlot().getFinishedSchematic().exists()) {
+        if (getPlot() != null && !isWorldGenerated()) {
             try {
-                new DefaultPlotGenerator(getPlot(), plotOwner, getPlot().getPlotType()) {
-                    @Override
-                    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, WorldEditException {
-                        super.generateOutlines(getPlot().getFinishedSchematic(), environmentSchematic);
-                    }
+                if (getPlot().getPlotType() != PlotType.TUTORIAL && ((Plot) getPlot()).getCompletedSchematic().exists()) {
+                    new DefaultPlotGenerator(getPlot(), plotOwner, getPlot().getPlotType()) {
+                        @Override
+                        protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, WorldEditException {
+                            super.generateOutlines(((Plot) getPlot()).getCompletedSchematic(), environmentSchematic);
+                        }
 
-                    @Override
-                    protected boolean init() {
-                        return true;
-                    }
+                        @Override
+                        protected boolean init() {
+                            return true;
+                        }
 
-                    @Override
-                    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
-                        getPlot().getPermissions().clearAllPerms();
-                        super.onComplete(true, false);
-                    }
-                };
+                        @Override
+                        protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+                            getPlot().getPermissions().clearAllPerms();
+                            super.onComplete(true, false);
+                        }
+                    };
+                } else {
+                    new TutorialPlotGenerator(getPlot(), plotOwner) {
+
+                    };
+                }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -126,10 +136,11 @@ public class OnePlotWorld extends PlotWorld {
                 player.setFlying(true);
 
                 if (getPlot() != null) {
-                    player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
-
+                    if (getPlot().getPlotType() != PlotType.TUTORIAL) {
+                        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+                        PlotUtils.ChatFormatting.sendLinkMessages((Plot) getPlot(), player);
+                    }
                     Utils.updatePlayerInventorySlots(player);
-                    PlotHandler.sendLinkMessages(getPlot(), player);
 
                     if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
                         getPlot().setLastActivity(false);

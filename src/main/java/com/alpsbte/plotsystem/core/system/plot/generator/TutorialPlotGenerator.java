@@ -22,40 +22,29 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.plot.utils;
+package com.alpsbte.plotsystem.core.system.plot.generator;
 
-public enum PlotType {
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import org.jetbrains.annotations.NotNull;
 
-    FOCUS_MODE(0),
-    LOCAL_INSPIRATION_MODE(1),
-    CITY_INSPIRATION_MODE(2),
-    TUTORIAL(3);
+import java.sql.SQLException;
 
-    final int id;
-
-    PlotType(int id){
-        this.id = id;
+public class TutorialPlotGenerator extends AbstractPlotGenerator {
+    public TutorialPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
+        super(plot, builder, PlotType.TUTORIAL);
     }
 
-    public int getId() {
-        return id;
+    @Override
+    protected boolean init() {
+        return true;
     }
 
-    // Returns true, if the plot type only contains environment around the plot.
-    public boolean hasEnvironment(){
-        return id == 1 || id == 2 || id == 3;
-    }
+    @Override
+    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+        super.onComplete(failed, false);
 
-    // Returns true, if the plot type only contains one plot per world.
-    public boolean hasOnePlotPerWorld(){
-        return id == 0 || id == 1 || id == 3;
-    }
-
-    public static PlotType byId(int id){
-        for(PlotType plotType : values())
-            if(plotType.getId() == id)
-                return plotType;
-
-        return null;
+        if (!failed) plot.getWorld().teleportPlayer(getBuilder().getPlayer());
     }
 }

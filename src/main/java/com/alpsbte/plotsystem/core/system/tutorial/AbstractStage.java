@@ -25,17 +25,21 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public abstract class AbstractStage {
     private final List<String> messages;
     private final StageTimeline taskTimeline;
+    protected final TutorialPlot plot;
     protected final Player player;
     protected final TutorialHologram hologram;
-    public AbstractStage(Player player, TutorialHologram hologram) {
-        this.player = player;
+    public AbstractStage(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+        this.plot = plot;
+        this.player = plot.getPlotOwner().getPlayer();
         this.hologram = hologram;
         messages = setMessages();
         taskTimeline = setTasks();

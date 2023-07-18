@@ -24,22 +24,25 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class BeginnerTutorial extends AbstractTutorial {
 
@@ -52,13 +55,13 @@ public class BeginnerTutorial extends AbstractTutorial {
         );
     }
 
-    public BeginnerTutorial(Builder builder) {
-        super(builder);
+    public BeginnerTutorial(Builder builder) throws SQLException {
+        super(builder, TutorialCategory.BEGINNER.getId());
     }
 
     private static class Stage1 extends AbstractStage {
-        public Stage1(Player player, TutorialHologram hologram) {
-            super(player, hologram);
+        public Stage1(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+            super(plot, hologram);
         }
 
         @Override
@@ -76,34 +79,43 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         public StageTimeline setTasks() {
-            return new StageTimeline(player, hologram)
-                    .teleportPlayer(Utils.getSpawnLocation())
-                    .delay(5)
-                    .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
-                    .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
-                    .nextHologramPage(Sound.ENTITY_BLAZE_SHOOT, 11)
-                    .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
-                    .nextHologramPage(Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 8);
+            try {
+                return new StageTimeline(player, hologram)
+                        .teleportPlayer(plot.getWorld().getSpawnPoint(null))
+                        .delay(5)
+                        .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
+                        .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
+                        .nextHologramPage(Sound.ENTITY_BLAZE_SHOOT, 11)
+                        .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
+                        .nextHologramPage(Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 8);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     private static class Stage2 extends AbstractStage {
-        public Stage2(Player player, TutorialHologram hologram) {
-            super(player, hologram);
+        public Stage2(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+            super(plot, hologram);
         }
 
         @Override
         protected List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§b" + "https://goo.gl/maps/FY5zbFCoUSm1iWgd7" + "§7"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§b" + "https://earth.google.com/web/search/48.209560382869,+16.50040542606851" + "§7"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§6" + "/plot links" + "§7")
-            );
+            try {
+                return Arrays.asList(
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§b" + plot.getGoogleMapsLink() + "§7"),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§b" + plot.getGoogleEarthLink() + "§7"),
+                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§6" + "/plot links" + "§7")
+                );
+            } catch (IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while loading the tutorial messages!", ex);
+            }
+            return null;
         }
 
         @Override
@@ -116,8 +128,8 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage3 extends AbstractStage {
-        public Stage3(Player player, TutorialHologram hologram) {
-            super(player, hologram);
+        public Stage3(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+            super(plot, hologram);
         }
 
         @Override
@@ -134,13 +146,24 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         protected StageTimeline setTasks() {
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            ConfigurationSection teleportPointsSection = config.getConfigurationSection(ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS);
             List<double[]> teleportPoints = new ArrayList<>();
-            teleportPointsSection.getKeys(false).forEach(t -> teleportPoints.add(new double[]{
-                    config.getDouble(String.join("", ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS, ".", t, ".x")),
-                    config.getDouble(String.join("", ConfigPaths.TUTORIAL_BEGINNER_TELEPORT_POINTS, ".", t, ".z"))
-            }));
+            List<String> teleportCoordinates = Arrays.asList(
+                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_1),
+                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_2),
+                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_3),
+                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_4)
+            );
+            teleportCoordinates.forEach(c -> {
+                double[] points = new double[2];
+                String[] pointsSplit = c.trim().split(",");
+                points[0] = Double.parseDouble(pointsSplit[0]);
+                points[1] = Double.parseDouble(pointsSplit[1]);
+                try {
+                    teleportPoints.add(CoordinateConversion.convertFromGeo(points[0], points[1]));
+                } catch (OutOfProjectionBoundsException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while converting coordinates", ex);
+                }
+            });
 
             return new StageTimeline(player, hologram)
                     .sendChatMessage("Teleport to the given points", Sound.ENTITY_VILLAGER_AMBIENT).delay(2)

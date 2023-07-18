@@ -98,13 +98,5 @@ public abstract class ConfigPaths {
     public static final String TUTORIAL_REQUIRE_BEGINNER_TUTORIAL = TUTORIALS + "require-beginner-tutorial";
 
     private static final String TUTORIAL_BEGINNER = TUTORIALS + "beginner.";
-    public static final String TUTORIAL_BEGINNER_SCHEMATIC_PATH = TUTORIAL_BEGINNER + "schematic-path";
     public static final String TUTORIAL_BEGINNER_ITEM_NAME = TUTORIAL_BEGINNER + "item-name";
-    public static final String TUTORIAL_BEGINNER_TELEPORT_POINTS = TUTORIAL_BEGINNER + "teleport-points";
-    public static final String TUTORIAL_BEGINNER_HEIGHT = TUTORIAL_BEGINNER + "height";
-    public static final String TUTORIAL_BEGINNER_HEIGHT_OFFSET = TUTORIAL_BEGINNER + "height-offset";
-
-
-    // CONFIG VERSION
-    public static final String CONFIG_VERSION = "config-version";
 }

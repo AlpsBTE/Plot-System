@@ -22,40 +22,24 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.plot.utils;
+package com.alpsbte.plotsystem.utils.io;
 
-public enum PlotType {
+public abstract class TutorialPaths {
+    public static final String TUTORIAL_ID = "tutorial-id";
+    public static final String SPAWN_COORDINATES = "spawn-coordinates";
+    public static final String SPAWN_COORDINATES_YAW = "spawn-coordinates-yaw";
+    public static final String SPAWN_COORDINATES_PITCH = "spawn-coordinates-pitch";
+    public static final String PLOT_OUTLINES = "plot-outlines";
 
-    FOCUS_MODE(0),
-    LOCAL_INSPIRATION_MODE(1),
-    CITY_INSPIRATION_MODE(2),
-    TUTORIAL(3);
 
-    final int id;
-
-    PlotType(int id){
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    // Returns true, if the plot type only contains environment around the plot.
-    public boolean hasEnvironment(){
-        return id == 1 || id == 2 || id == 3;
-    }
-
-    // Returns true, if the plot type only contains one plot per world.
-    public boolean hasOnePlotPerWorld(){
-        return id == 0 || id == 1 || id == 3;
-    }
-
-    public static PlotType byId(int id){
-        for(PlotType plotType : values())
-            if(plotType.getId() == id)
-                return plotType;
-
-        return null;
+    public static final class Beginner {
+        private static final String BEGINNER = "beginner.";
+        private static final String TELEPORT_COORDINATES = BEGINNER + "teleport-coordinates.";
+        public static final String POINT_1 = TELEPORT_COORDINATES + "point-1";
+        public static final String POINT_2 = TELEPORT_COORDINATES + "point-2";
+        public static final String POINT_3 = TELEPORT_COORDINATES + "point-3";
+        public static final String POINT_4 = TELEPORT_COORDINATES + "point-4";
+        public static final String HEIGHT = BEGINNER + "height";
+        public static final String HEIGHT_OFFSET = BEGINNER + "height-offset";
     }
 }

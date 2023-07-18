@@ -28,18 +28,23 @@ import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
+import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.sk89q.worldedit.Vector;
 import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +58,7 @@ public abstract class AbstractTutorial {
     private final List<Class<? extends AbstractStage>> stages;
     protected Builder builder;
     protected Player player;
+    protected TutorialPlot plot;
     protected TutorialHologram hologram = new TutorialHologram("tutorial-hologram", PlotSystem.getPlugin());
 
     protected BukkitTask tutorialTask;
@@ -61,19 +67,28 @@ public abstract class AbstractTutorial {
 
     protected abstract List<Class<? extends AbstractStage>> setStages();
 
-    protected AbstractTutorial(Builder builder) {
-        this(builder, 0);
-    }
-
-    protected AbstractTutorial(Builder builder, int stageIndex) {
+    protected AbstractTutorial(Builder builder, int tutorialId) throws SQLException {
         this.builder = builder;
         this.player = builder.getPlayer();
+        stages = setStages();
+
+        if (TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId) == null) {
+            plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), tutorialId);
+        } else plot = TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId);
+
+        if (plot == null) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
+            return;
+        }
+        Bukkit.getLogger().log(Level.INFO, "[Generation 1]: Start");
+        new TutorialPlotGenerator(plot, builder);
+        Bukkit.getLogger().log(Level.INFO, "[Generation]: End");
         activeTutorials.add(this);
 
-        hologram.create(Position.of(player.getLocation().add(0, 4, 0)));
+        Vector hologramPosition = plot.getCenter().add(0, 8, 0);
+        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramPosition.getX(), hologramPosition.getY(), hologramPosition.getZ())));
 
-        stages = setStages();
-        SetStage(stageIndex);
+        SetStage(plot.getStage());
 
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             if (!player.isOnline()) StopTutorial();
@@ -94,7 +109,7 @@ public abstract class AbstractTutorial {
         } else {
             try {
                 // Switch to next stage
-                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(Player.class, TutorialHologram.class).newInstance(builder.getPlayer(), hologram);
+                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(TutorialPlot.class, TutorialHologram.class).newInstance(plot, hologram);
                 activeStageIndex++;
 
                 hologram.updateStage(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),

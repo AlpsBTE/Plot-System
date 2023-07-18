@@ -1,0 +1,34 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# |
+# | [Tutorial Config - Beginner]
+# -----------------------------------------------------
+tutorial-category: 'beginner'
+
+# Coordinates of the spawn point of the tutorial plot (used to teleport the player)
+spawn-coordinates: '46.62709609650068, 14.380532789030537'
+spawn-coordinates-yaw: 160
+spawn-coordinates-pitch: 0
+
+plot-outlines: '3693350.0,-4531330.0|3693355.0,-4531345.0|3693375.0,-4531338.0|3693370.0,-4531324.0'
+
+# -----------------------------------------------------
+# | Beginner Tutorial
+# -----------------------------------------------------
+beginner:
+  # Coordinates for the building outlines
+  teleport-coordinates:
+    point-1: '46.62716242828459, 14.380456515792552'
+    point-2: '46.62715565042116, 14.380625800738844'
+    point-3: '46.62722811009899, 14.380639171054824'
+    point-4: '46.62724407740807, 14.380467583140344'
+  # Height of the plot building, which must be calculated
+  height: 7
+  height-offset: 1
+
+
+config-version: 1.0

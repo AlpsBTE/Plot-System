@@ -108,6 +108,7 @@ shortlink:
 tutorials:
   enable: true
   require-beginner-tutorial: true
+  item-name-beginner: "BRICK"
   # Beginner Tutorial
   beginner:
     schematic-path: "RESOURCES"
