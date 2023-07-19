@@ -29,6 +29,7 @@ public abstract class TutorialPaths {
     public static final String SPAWN_COORDINATES = "spawn-coordinates";
     public static final String SPAWN_COORDINATES_YAW = "spawn-coordinates-yaw";
     public static final String SPAWN_COORDINATES_PITCH = "spawn-coordinates-pitch";
+    public static final String HOLOGRAM_COORDINATES = "hologram-coordinates";
     public static final String PLOT_OUTLINES = "plot-outlines";
 
 

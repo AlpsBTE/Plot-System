@@ -10,11 +10,14 @@
 tutorial-category: 'beginner'
 
 # Coordinates of the spawn point of the tutorial plot (used to teleport the player)
-spawn-coordinates: '46.62709609650068, 14.380532789030537'
-spawn-coordinates-yaw: 160
+spawn-coordinates: '3693357.5,-4531324.5'
+spawn-coordinates-yaw: 150
 spawn-coordinates-pitch: 0
 
-plot-outlines: '3693350.0,-4531330.0|3693355.0,-4531345.0|3693375.0,-4531338.0|3693370.0,-4531324.0'
+# Coordinates of the hologram (used to display the tutorial information)
+hologram-coordinates: '3693348.5,-4531329.5'
+
+plot-outlines: '3693351.0,-4531330.0|3693370.0,-4531324.0|3693375.0,-4531339.0|3693355.0,-4531346.0'
 
 # -----------------------------------------------------
 # | Beginner Tutorial
@@ -22,13 +25,13 @@ plot-outlines: '3693350.0,-4531330.0|3693355.0,-4531345.0|3693375.0,-4531338.0|3
 beginner:
   # Coordinates for the building outlines
   teleport-coordinates:
-    point-1: '46.62716242828459, 14.380456515792552'
-    point-2: '46.62715565042116, 14.380625800738844'
-    point-3: '46.62722811009899, 14.380639171054824'
-    point-4: '46.62724407740807, 14.380467583140344'
+    point-1: '3693354.0,-4531332.0'
+    point-2: '3693367.0,-4531328.0'
+    point-3: '3693370.0,-4531337.0'
+    point-4: '3693357.0,-4531342.0'
   # Height of the plot building, which must be calculated
   height: 7
   height-offset: 1
 
 
-config-version: 1.0
+config-version: 1.1

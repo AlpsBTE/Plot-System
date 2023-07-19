@@ -37,7 +37,7 @@ public class ConfigUtil {
         configUtilInstance = new ConfigurationUtil(new ConfigurationUtil.ConfigFile[]{
                 new ConfigurationUtil.ConfigFile(Paths.get("config.yml"), 1.7, true),
                 new ConfigurationUtil.ConfigFile(Paths.get("commands.yml"), 1.0, false),
-                new ConfigurationUtil.ConfigFile(Paths.get("tutorial", "tutorial_beginner.yml"), 1.0, false)
+                new ConfigurationUtil.ConfigFile(Paths.get("tutorial", "tutorial_beginner.yml"), 1.1, false)
         });
     }
 
