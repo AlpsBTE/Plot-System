@@ -27,8 +27,10 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.boydti.fawe.FaweAPI;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.Vector;
@@ -40,6 +42,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -123,12 +126,8 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
-        if (loadWorld()) {
-            Location spawnLocation = plot != null ? getSpawnPoint(plot.getCenter()) : getBukkitWorld().getSpawnLocation();
-            // Set spawn point 1 block above the highest block at the spawn location
-            spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-
-            player.teleport(spawnLocation);
+        if (loadWorld() && plot != null) {
+            player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()));
             return true;
         } else Bukkit.getLogger().log(Level.WARNING, "Could not teleport player " + player.getName() + " to world " + worldName + "!");
         return false;
@@ -137,8 +136,24 @@ public class PlotWorld implements IWorld {
     @Override
     public Location getSpawnPoint(Vector plotVector) {
         if (isWorldGenerated() && loadWorld()) {
-            return plotVector == null ? getBukkitWorld().getSpawnLocation() :
-                    new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
+            Location spawnLocation;
+            if (plotVector == null) {
+                if (plot instanceof TutorialPlot) {
+                    FileConfiguration config = ((TutorialPlot) plot).getTutorialConfig();
+                    String[] spawnPoint = config.getString(TutorialPaths.SPAWN_COORDINATES).split(",");
+                    double yaw = config.getDouble(TutorialPaths.SPAWN_COORDINATES_YAW);
+                    double pitch = config.getDouble(TutorialPaths.SPAWN_COORDINATES_PITCH);
+                    spawnLocation = new Location(getBukkitWorld(), Double.parseDouble(spawnPoint[0]), 0, Double.parseDouble(spawnPoint[1]), (float) yaw, (float) pitch);
+                } else {
+                    spawnLocation = getBukkitWorld().getSpawnLocation();
+                }
+            } else {
+                spawnLocation = new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
+            }
+
+            // Set spawn point 1 block above the highest block at the spawn location
+            spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+            return spawnLocation;
         }
         return null;
     }
