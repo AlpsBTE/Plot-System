@@ -34,7 +34,8 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.sk89q.worldedit.Vector;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import com.sk89q.worldedit.Vector2D;
 import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -80,13 +81,13 @@ public abstract class AbstractTutorial {
             Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
             return;
         }
-        Bukkit.getLogger().log(Level.INFO, "[Generation 1]: Start");
         new TutorialPlotGenerator(plot, builder);
-        Bukkit.getLogger().log(Level.INFO, "[Generation]: End");
         activeTutorials.add(this);
 
-        Vector hologramPosition = plot.getCenter().add(0, 8, 0);
-        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramPosition.getX(), hologramPosition.getY(), hologramPosition.getZ())));
+        String[] hologramPosition = plot.getTutorialConfig().getString(TutorialPaths.HOLOGRAM_COORDINATES).split(",");
+        Vector2D hologramVector = new Vector2D(Double.parseDouble(hologramPosition[0]), Double.parseDouble(hologramPosition[1]));
+        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramVector.getX(),
+                plot.getWorld().getBukkitWorld().getHighestBlockYAt(hologramVector.getBlockX(), hologramVector.getBlockZ()) + 4, hologramVector.getZ())));
 
         SetStage(plot.getStage());
 
