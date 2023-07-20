@@ -29,20 +29,16 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 public class BeginnerTutorial extends AbstractTutorial {
 
@@ -70,27 +66,29 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2, "§8§l►§r§f"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_5)
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4)
+            );
+        }
+
+        @Override
+        protected List<String> setHologramContent() {
+            return Arrays.asList(
+                    getMessages().get(2),
+                    getMessages().get(3),
+                    "{empty}",
+                    getMessages().get(4),
+                    getMessages().get(5)
             );
         }
 
         @Override
         public StageTimeline setTasks() {
-            try {
-                return new StageTimeline(player, hologram)
-                        .teleportPlayer(plot.getWorld().getSpawnPoint(null))
-                        .delay(5)
-                        .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
-                        .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
-                        .nextHologramPage(Sound.ENTITY_BLAZE_SHOOT, 11)
-                        .nextHologramPage(Sound.ENTITY_VILLAGER_AMBIENT, 8)
-                        .nextHologramPage(Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 8);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            return new StageTimeline(player, hologram)
+                    .delay(2)
+                    .updateHologramContent(setHologramContent(), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .delay(15);
         }
     }
 
@@ -101,29 +99,39 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         protected List<String> setMessages() {
-            try {
-                return Arrays.asList(
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§b" + plot.getGoogleMapsLink() + "§7"),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§b" + plot.getGoogleEarthLink() + "§7"),
-                        LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§6" + "/plot links" + "§7")
-                );
-            } catch (IOException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while loading the tutorial messages!", ex);
-            }
-            return null;
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§a§lGoogle Maps §8§l►§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4, "§a§lGoogle Earth §8§l►§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§8§l/plot links§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6)
+            );
+        }
+
+        @Override
+        protected List<String> setHologramContent() {
+            return Arrays.asList(
+                    getMessages().get(2),
+                    getMessages().get(3),
+                    "{empty}",
+                    getMessages().get(4),
+                    getMessages().get(5),
+                    "{empty}",
+                    getMessages().get(6)
+            );
         }
 
         @Override
         protected StageTimeline setTasks() {
-            StageTimeline timeline = new StageTimeline(player, hologram);
-            timeline.delay(DEFAULT_STAGE_DELAY);
-            for (int i = 2; i < getMessages().size(); i++) timeline.sendChatMessage(getMessages().get(i), Sound.ENTITY_VILLAGER_AMBIENT).delay(2);
-            return timeline;
+            return new StageTimeline(player, hologram)
+                    .delay(2)
+                    .updateHologramContent(setHologramContent(), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .delay(3)
+                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .delay(15);
         }
     }
 
@@ -140,7 +148,20 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_1),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_2),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_3),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_4)
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_4, "§8§l" + "/tpll <lon> <lat>" + "§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_5, "§a§l" + "4" + "§r§f")
+            );
+        }
+
+        @Override
+        protected List<String> setHologramContent() {
+            return Arrays.asList(
+                    getMessages().get(2),
+                    getMessages().get(3),
+                    "{empty}",
+                    getMessages().get(4),
+                    getMessages().get(5),
+                    getMessages().get(6)
             );
         }
 
@@ -154,22 +175,18 @@ public class BeginnerTutorial extends AbstractTutorial {
                     plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_4)
             );
             teleportCoordinates.forEach(c -> {
-                double[] points = new double[2];
                 String[] pointsSplit = c.trim().split(",");
-                points[0] = Double.parseDouble(pointsSplit[0]);
-                points[1] = Double.parseDouble(pointsSplit[1]);
-                try {
-                    teleportPoints.add(CoordinateConversion.convertFromGeo(points[0], points[1]));
-                } catch (OutOfProjectionBoundsException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while converting coordinates", ex);
-                }
+                teleportPoints.add(new double[] {Double.parseDouble(pointsSplit[0]), Double.parseDouble(pointsSplit[1])});
             });
 
             return new StageTimeline(player, hologram)
-                    .sendChatMessage("Teleport to the given points", Sound.ENTITY_VILLAGER_AMBIENT).delay(2)
+                    .updateHologramContent(setHologramContent(), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .sendChatMessage(setMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT)
                     .addTask(new TeleportPointEventTask(player, teleportPoints, 1, (double[] teleportPoint) -> {
-                        player.sendMessage("§7Teleporting to §b" + teleportPoint[0] + "§7, §b" + teleportPoint[1] + "§7...");
-                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        player.getWorld().getBlockAt((int) teleportPoint[0],
+                                player.getWorld().getHighestBlockYAt((int) teleportPoint[0], (int) teleportPoint[1]), (int) teleportPoint[1])
+                                .setTypeIdAndData(Material.CONCRETE_POWDER.getId(), (byte) 5, false);
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0.8f);
                     }))
                     .delay(1)
                     .sendChatMessage("Done", Utils.SoundUtils.FINISH_PLOT_SOUND);

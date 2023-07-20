@@ -37,10 +37,8 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.sk89q.worldedit.Vector2D;
 import me.filoghost.holographicdisplays.api.Position;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -52,15 +50,13 @@ import java.util.List;
 import java.util.logging.Level;
 
 public abstract class AbstractTutorial {
-    public static final int DEFAULT_STAGE_DELAY = 4;
-
     public static List<AbstractTutorial> activeTutorials = new ArrayList<>();
 
     private final List<Class<? extends AbstractStage>> stages;
     protected Builder builder;
     protected Player player;
     protected TutorialPlot plot;
-    protected TutorialHologram hologram = new TutorialHologram("tutorial-hologram", PlotSystem.getPlugin());
+    protected TutorialHologram hologram = new TutorialHologram("tutorial-hologram");
 
     protected BukkitTask tutorialTask;
     protected AbstractStage activeStage;
@@ -86,15 +82,17 @@ public abstract class AbstractTutorial {
 
         String[] hologramPosition = plot.getTutorialConfig().getString(TutorialPaths.HOLOGRAM_COORDINATES).split(",");
         Vector2D hologramVector = new Vector2D(Double.parseDouble(hologramPosition[0]), Double.parseDouble(hologramPosition[1]));
-        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramVector.getX(),
-                plot.getWorld().getBukkitWorld().getHighestBlockYAt(hologramVector.getBlockX(), hologramVector.getBlockZ()) + 4, hologramVector.getZ())));
+        int hologramY = plot.getWorld().getBukkitWorld().getHighestBlockYAt(hologramVector.getBlockX(), hologramVector.getBlockZ()) + 2;
+        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramVector.getX(), hologramY , hologramVector.getZ())));
+        hologram.getHologram().setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
+        hologram.setDefaultHologramHeight(hologramY);
 
         SetStage(plot.getStage());
 
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             if (!player.isOnline()) StopTutorial();
             if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
-        }, 0, 0);
+        }, 0, 10);
     }
 
     private void SetStage(int stageIndex) {
@@ -113,12 +111,11 @@ public abstract class AbstractTutorial {
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(TutorialPlot.class, TutorialHologram.class).newInstance(plot, hologram);
                 activeStageIndex++;
 
-                hologram.updateStage(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
-                        "§6§lSTAGE " + (activeStageIndex + 1) + ": §b§l" + activeStage.getMessages().get(0),
-                        activeStage.getMessages().subList(2, activeStage.getMessages().size()));
+                hologram.updateHeader(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
+                        "§b§lSTAGE " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
 
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
-                player.playSound(player.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1f, 1f);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.1f);
                 activeStage.getTaskTimeline().StartTimeline();
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
@@ -133,6 +130,7 @@ public abstract class AbstractTutorial {
     private void StopTutorial() {
         if (tutorialTask != null) tutorialTask.cancel();
         activeTutorials.remove(this);
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> hologram.remove());
     }
 
     public static class ChatHandler {
@@ -146,9 +144,9 @@ public abstract class AbstractTutorial {
 
         public static String[] getStageUnlockedInfo(String title, String description) {
             LoreBuilder builder = new LoreBuilder()
-                .addLines("", " §6§l" + "NEW STAGE UNLOCKED", "  §8◆ §b" + title, ""); // TODO: set player lang
-            String[] descriptionLines = description.split("\n");
-            Arrays.stream(descriptionLines).forEach(desc -> builder.addLine("    §7▪ §f" + desc));
+                .addLines("", " §b§l" + "NEW STAGE UNLOCKED", "  §f§l◆ §6§l" + title, ""); // TODO: set player lang
+            String[] descriptionLines = description.split("%newline%");
+            Arrays.stream(descriptionLines).forEach(desc -> builder.addLine("    §7§l▪ §f" + desc));
             builder.addLine("");
             return builder.build().toArray(new String[0]);
         }

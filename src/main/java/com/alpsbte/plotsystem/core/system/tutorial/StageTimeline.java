@@ -73,13 +73,8 @@ public class StageTimeline {
         return this;
     }
 
-    public StageTimeline nextHologramPage(Sound soundEffect) {
-        tasks.add(new HologramMessageTask(player, hologram, soundEffect, 0));
-        return this;
-    }
-
-    public StageTimeline nextHologramPage(Sound soundEffect, long delay) {
-        tasks.add(new HologramMessageTask(player, hologram, soundEffect, delay));
+    public StageTimeline updateHologramContent(List<String> content, Sound soundEffect) {
+        tasks.add(new HologramMessageTask(player, hologram, soundEffect, content));
         return this;
     }
 

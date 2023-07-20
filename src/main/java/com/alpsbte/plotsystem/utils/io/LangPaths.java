@@ -302,7 +302,6 @@ public abstract class LangPaths {
         public static final String TUTORIALS_BEGINNER_STAGE1_2 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-2";
         public static final String TUTORIALS_BEGINNER_STAGE1_3 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-3";
         public static final String TUTORIALS_BEGINNER_STAGE1_4 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-4";
-        public static final String TUTORIALS_BEGINNER_STAGE1_5 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-5";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE2 = TUTORIALS_BEGINNER + "stage-2.";
@@ -323,5 +322,6 @@ public abstract class LangPaths {
         public static final String TUTORIALS_BEGINNER_STAGE3_2 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-2";
         public static final String TUTORIALS_BEGINNER_STAGE3_3 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-3";
         public static final String TUTORIALS_BEGINNER_STAGE3_4 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-4";
+        public static final String TUTORIALS_BEGINNER_STAGE3_5 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-5";
     }
 }

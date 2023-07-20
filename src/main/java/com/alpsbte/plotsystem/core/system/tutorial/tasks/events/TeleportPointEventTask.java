@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -35,7 +34,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 public class TeleportPointEventTask extends AbstractTask implements Listener {
     @FunctionalInterface
@@ -76,8 +74,6 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
         int blockZ = event.getTo().getBlockZ();
 
         for (double[] teleportPoint : teleportPoints) {
-            Bukkit.getLogger().log(Level.INFO, "BlockX: " + blockX + " | TeleportPointX: " + teleportPoint[0]);
-            Bukkit.getLogger().log(Level.INFO, "BlockZ: " + blockZ + " | TeleportPointZ: " + teleportPoint[1]);
             if (blockX < ((int) teleportPoint[0] - offsetRange) || blockX > ((int) teleportPoint[0] + offsetRange)) continue;
             if (blockZ < ((int) teleportPoint[1] - offsetRange) || blockZ > ((int) teleportPoint[1] + offsetRange)) continue;
             removePoint(teleportPoint);

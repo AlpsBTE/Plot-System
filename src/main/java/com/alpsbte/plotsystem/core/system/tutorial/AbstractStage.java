@@ -46,6 +46,7 @@ public abstract class AbstractStage {
     }
 
     protected abstract List<String> setMessages();
+    protected abstract List<String> setHologramContent();
     protected abstract StageTimeline setTasks();
 
     public List<String> getMessages() {

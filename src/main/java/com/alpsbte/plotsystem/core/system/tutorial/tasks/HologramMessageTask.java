@@ -24,41 +24,29 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+
+import java.util.List;
 
 public class HologramMessageTask extends AbstractTask {
-    private BukkitTask waitTask = null;
-    private final Sound soundEffect;
     private final TutorialHologram hologram;
-    private final long interval;
+    private final Sound soundEffect;
+    private final List<String> content;
 
-    public HologramMessageTask(Player player, TutorialHologram hologram, Sound soundEffect, long interval) {
+    public HologramMessageTask(Player player, TutorialHologram hologram, Sound soundEffect, List<String> content) {
         super(player);
         this.soundEffect = soundEffect;
         this.hologram = hologram;
-        this.interval = interval;
+        this.content = content;
     }
 
     @Override
     public void performTask() {
-        hologram.updateInterval(interval);
-        hologram.nextPage();
+        hologram.updateContent(content);
         if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
-
-        waitTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (hologram.changePageTask.isCancelled()) {
-                    setTaskDone();
-                    waitTask.cancel();
-                }
-            }
-        }.runTaskTimer(PlotSystem.getPlugin(), 0, 1);
+        setTaskDone();
     }
 
     @Override

@@ -24,40 +24,27 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class TutorialHologram extends HolographicPagedDisplay {
-    private static final int MAX_LINES_PAGE = 48;
-    private static final String LINE_BREAKER = "%newline%";
-
+public class TutorialHologram extends HolographicDisplay {
     private Material materialItem = Material.GRASS;
     private String title = "";
-    private List<String> pages = new ArrayList<>();
-    private long interval = 0;
+    private List<String> content = new ArrayList<>();
+    private int hologramHeight = PlotWorld.MIN_WORLD_HEIGHT;
 
-    public TutorialHologram(@NotNull String id, @NotNull Plugin plugin) {
-        super(id, plugin);
-        automaticallySkipPage = false;
-    }
-
-    @Override
-    public long getInterval() {
-        return interval * 20L;
-    }
-
-    @Override
-    public List<String> getPages() {
-        return pages;
+    public TutorialHologram(@NotNull String id) {
+        super(id);
     }
 
     @Override
@@ -71,20 +58,58 @@ public class TutorialHologram extends HolographicPagedDisplay {
     }
 
     @Override
+    public List<DataLine<?>> getHeader() {
+        return Arrays.asList(
+                new ItemLine(this.getItem()),
+                new TextLine(this.getTitle()),
+                new TextLine("{empty}")
+        );
+    }
+
+    @Override
     public List<DataLine<?>> getContent() {
         List<DataLine<?>> lines = new ArrayList<>();
-        AlpsUtils.createMultilineFromString(sortByPage, MAX_LINES_PAGE, LINE_BREAKER).forEach(line -> lines.add(new TextLine(line)));
+        content.forEach(line -> lines.add(new TextLine(line)));
         return lines;
     }
 
-    public void updateInterval(long interval) {
-        this.interval = interval;
+    @Override
+    public List<DataLine<?>> getFooter() {
+        return Arrays.asList(
+               new TextLine("{empty}"),
+               new TextLine("§e§lClick To Continue")
+        );
     }
 
-    public void updateStage(Material materialItem, String title, List<String> pages) {
+    private void moveHologram(int amountLines) {
+        amountLines += getHeader().size();
+        amountLines += getFooter().size();
+        double height = 0;
+        for (int i = 0; i < amountLines; i++) height += 0.25;
+
+        Location location = getHologram().getPosition().toLocation();
+        location.setY(hologramHeight + height);
+        getHologram().setPosition(location);
+    }
+
+    public void setDefaultHologramHeight(int height) {
+        hologramHeight = height;
+    }
+
+    public void updateHeader(Material materialItem, String title) {
         this.materialItem = materialItem;
         this.title = title;
-        this.pages = pages;
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateDataLines(0, getHeader()));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            moveHologram(0);
+            updateDataLines(0, getHeader());
+        });
+    }
+
+    public void updateContent(List<String> content) {
+        this.content = content;
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            moveHologram(content.size());
+            reload();
+        });
     }
 }
