@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.CustomTask;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -86,8 +86,7 @@ public class BeginnerTutorial extends AbstractTutorial {
         @Override
         public StageTimeline setTasks() {
             return new StageTimeline(player, hologram)
-                    .delay(2)
-                    .updateHologramContent(setHologramContent(), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .updateHologramContent(getHologramContent(), null)
                     .delay(15);
         }
     }
@@ -127,9 +126,8 @@ public class BeginnerTutorial extends AbstractTutorial {
         @Override
         protected StageTimeline setTasks() {
             return new StageTimeline(player, hologram)
-                    .delay(2)
-                    .updateHologramContent(setHologramContent(), Sound.ENTITY_VILLAGER_AMBIENT)
-                    .delay(3)
+                    .updateHologramContent(getHologramContent(), null)
+                    .delay(5)
                     .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT)
                     .delay(15);
         }
@@ -149,7 +147,8 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_2),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_3),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_4, "§8§l" + "/tpll <lon> <lat>" + "§r§f"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_5, "§a§l" + "4" + "§r§f")
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_5, "§a§l" + "4" + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_6)
             );
         }
 
@@ -160,8 +159,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     getMessages().get(3),
                     "{empty}",
                     getMessages().get(4),
-                    getMessages().get(5),
-                    getMessages().get(6)
+                    getMessages().get(5)
             );
         }
 
@@ -180,16 +178,22 @@ public class BeginnerTutorial extends AbstractTutorial {
             });
 
             return new StageTimeline(player, hologram)
-                    .updateHologramContent(setHologramContent(), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .updateHologramContent(getHologramContent(), null)
+                    .delay(5)
                     .sendChatMessage(setMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT)
-                    .addTask(new TeleportPointEventTask(player, teleportPoints, 1, (double[] teleportPoint) -> {
-                        player.getWorld().getBlockAt((int) teleportPoint[0],
-                                player.getWorld().getHighestBlockYAt((int) teleportPoint[0], (int) teleportPoint[1]), (int) teleportPoint[1])
-                                .setTypeIdAndData(Material.CONCRETE_POWDER.getId(), (byte) 5, false);
-                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0.8f);
+                    .addTask(new CustomTask(player, () -> {
+                        hologram.updateFooter(0, teleportPoints.size());
+                        hologram.updateFooter(true);
                     }))
+                    .addTeleportEvent(player, teleportPoints, 1, (double[] teleportPoint, int pointsRemaining) -> {
+                        player.getWorld().getBlockAt((int) teleportPoint[0],
+                                player.getWorld().getHighestBlockYAt(plot.getCenter().getBlockX(), plot.getCenter().getBlockZ()), (int) teleportPoint[1])
+                                .setTypeIdAndData(Material.CONCRETE_POWDER.getId(), (byte) 5, false);
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+                        hologram.updateFooter(teleportCoordinates.size() - pointsRemaining, teleportCoordinates.size());
+                    })
                     .delay(1)
-                    .sendChatMessage("Done", Utils.SoundUtils.FINISH_PLOT_SOUND);
+                    .sendChatMessage(getMessages().get(7), Utils.SoundUtils.FINISH_PLOT_SOUND);
         }
     }
 }

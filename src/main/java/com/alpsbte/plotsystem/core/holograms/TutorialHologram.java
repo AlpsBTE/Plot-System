@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,10 +40,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TutorialHologram extends HolographicDisplay {
+    @FunctionalInterface
+    public interface FooterClickAction {
+        void onClick(Player player);
+    }
+
     private Material materialItem = Material.GRASS;
     private String title = "";
     private List<String> content = new ArrayList<>();
     private int hologramHeight = PlotWorld.MIN_WORLD_HEIGHT;
+    private boolean showFooter;
+    private int currentTask;
+    private int totalTasks;
 
     public TutorialHologram(@NotNull String id) {
         super(id);
@@ -77,8 +87,19 @@ public class TutorialHologram extends HolographicDisplay {
     public List<DataLine<?>> getFooter() {
         return Arrays.asList(
                new TextLine("{empty}"),
-               new TextLine("§e§lClick To Continue")
+               new TextLine(showFooter ? "§8§l[" + (currentTask >= totalTasks ?
+                       "§e§lClick To Continue" : "§a§l" + currentTask + " §8§l/ §a§l" + totalTasks + " Tasks") + "§8§l]" : "{empty}")
         );
+        // TODO: Add multi-language support
+    }
+
+    public void onFooterClickEvent(FooterClickAction action) {
+        updateFooter(0, 0);
+        updateFooter(true);
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 2);
+            line.setClickListener((clickEvent) -> action.onClick(clickEvent.getPlayer()));
+        });
     }
 
     private void moveHologram(int amountLines) {
@@ -99,10 +120,7 @@ public class TutorialHologram extends HolographicDisplay {
     public void updateHeader(Material materialItem, String title) {
         this.materialItem = materialItem;
         this.title = title;
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            moveHologram(0);
-            updateDataLines(0, getHeader());
-        });
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateDataLines(0, getHeader()));
     }
 
     public void updateContent(List<String> content) {
@@ -111,5 +129,16 @@ public class TutorialHologram extends HolographicDisplay {
             moveHologram(content.size());
             reload();
         });
+    }
+
+    public void updateFooter(boolean showFooter) {
+        this.showFooter = showFooter;
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateDataLines(getHologram().getLines().size() - 2, getFooter()));
+    }
+
+    public void updateFooter(int currentTask, int totalTasks) {
+        this.currentTask = currentTask;
+        this.totalTasks = totalTasks;
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateDataLines(getHologram().getLines().size() - 2, getFooter()));
     }
 }

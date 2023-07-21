@@ -300,6 +300,7 @@ tutorials:
       stage-3-3: 'Open Google-Maps and right click on one of the edges of the building to copy the coordinates.'
       stage-3-4: 'Use the command {0} to teleport to the location in-game.'
       stage-3-5: 'Teleport to all {0} edges of the building to continue.'
+      stage-3-6: 'Great job! You have teleported to all edges of the building.'
 
 # NOTE: Do not change
 config-version: 1.3

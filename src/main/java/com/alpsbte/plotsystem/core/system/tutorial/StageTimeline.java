@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -36,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 public class StageTimeline {
@@ -48,17 +50,34 @@ public class StageTimeline {
 
     public void StartTimeline() throws InterruptedException {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+            AtomicBoolean isLastTask = new AtomicBoolean(false);
+            boolean isActionStarted = false;
+
             for (int i = 0; i < tasks.size(); i++) {
                 currentTask = tasks.get(i);
                 Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (i + 1) + " of " + tasks.size() + "] for player " + player.getName());
                 currentTask.performTask();
+
                 BukkitTask task = new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (currentTask.isTaskDone()) this.cancel();
                     }
                 }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0);
-                while (true) if (task.isCancelled()) { lastTaskId = i; break; }
+
+                while (true) {
+                    if (task.isCancelled()) {
+                        if (i == tasks.size() - 1) {
+                            if (!isActionStarted) {
+                                hologram.onFooterClickEvent(action -> isLastTask.set(true));
+                                isActionStarted = true;
+                                continue;
+                            } else if (!isLastTask.get()) continue;
+                        }
+                        lastTaskId = i;
+                        break;
+                    }
+                }
             }
         });
     }
@@ -85,6 +104,11 @@ public class StageTimeline {
 
     public StageTimeline teleportPlayer(Location location) {
         tasks.add(new TeleportPlayerTask(player, location));
+        return this;
+    }
+
+    public StageTimeline addTeleportEvent(Player player, List<double[]> teleportPoint, int offsetRange, TeleportPointEventTask.ITeleportPointAction onTeleportAction) {
+        tasks.add(new TeleportPointEventTask(player, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }
 

@@ -113,6 +113,7 @@ public abstract class AbstractTutorial {
 
                 hologram.updateHeader(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
                         "§b§lSTAGE " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
+                hologram.updateFooter(false);
 
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.1f);

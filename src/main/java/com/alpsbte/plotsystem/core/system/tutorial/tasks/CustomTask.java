@@ -22,44 +22,31 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
-import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.util.List;
-
-public abstract class AbstractStage {
-    protected final TutorialPlot plot;
-    protected final Player player;
-    protected final TutorialHologram hologram;
-
-    private final List<String> messages;
-    private final List<String> hologramContent;
-    private final StageTimeline taskTimeline;
-    public AbstractStage(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
-        this.plot = plot;
-        this.player = plot.getPlotOwner().getPlayer();
-        this.hologram = hologram;
-
-        messages = setMessages();
-        hologramContent = setHologramContent();
-        taskTimeline = setTasks();
+public class CustomTask extends AbstractTask {
+    @FunctionalInterface
+    public interface CustomTaskAction {
+        void performAction();
     }
 
-    protected abstract List<String> setMessages();
-    protected abstract List<String> setHologramContent();
-    protected abstract StageTimeline setTasks();
+    private final CustomTaskAction action;
 
-    public List<String> getMessages() {
-        return messages;
+    public CustomTask(Player player, CustomTaskAction action) {
+        super(player);
+        this.action = action;
     }
-    public List<String> getHologramContent() {
-        return hologramContent;
+
+    @Override
+    public void performTask() {
+        action.performAction();
+        setTaskDone();
     }
-    public StageTimeline getTaskTimeline() {
-        return taskTimeline;
+
+    @Override
+    public String toString() {
+        return "CustomTask";
     }
 }

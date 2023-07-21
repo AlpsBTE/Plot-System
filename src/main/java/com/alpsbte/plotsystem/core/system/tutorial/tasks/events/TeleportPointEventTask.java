@@ -32,13 +32,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.Collections;
 import java.util.List;
 
 public class TeleportPointEventTask extends AbstractTask implements Listener {
     @FunctionalInterface
     public interface ITeleportPointAction {
-        void onTeleportTaskComplete(double[] teleportPoint);
+        void onTeleportTaskComplete(double[] teleportPoint, int pointsRemaining);
     }
 
     private ITeleportPointAction onTeleportPointAction;
@@ -47,10 +46,6 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
 
     public TeleportPointEventTask(Player player) {
         super(player);
-    }
-
-    public TeleportPointEventTask(Player player, double[] teleportPoint, int offsetRange, ITeleportPointAction onTeleportAction) {
-        this(player, Collections.singletonList(teleportPoint), offsetRange, onTeleportAction);
     }
 
     public TeleportPointEventTask(Player player, List<double[]> teleportPoints, int offsetRange, ITeleportPointAction onTeleportAction) {
@@ -83,11 +78,11 @@ public class TeleportPointEventTask extends AbstractTask implements Listener {
 
     private void removePoint(double[] teleportPoint) {
         teleportPoints.remove(teleportPoint);
-        onTeleportPointAction.onTeleportTaskComplete(teleportPoint);
+        onTeleportPointAction.onTeleportTaskComplete(teleportPoint, teleportPoints.size());
 
         if (teleportPoints.size() == 0) {
-            setTaskDone();
             HandlerList.unregisterAll(this);
+            setTaskDone();
         }
     }
 
