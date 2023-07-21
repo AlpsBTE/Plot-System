@@ -89,20 +89,26 @@ public abstract class AbstractTutorial {
 
         SetStage(plot.getStage());
 
+        final String worldName = plot.getWorld().getWorldName();
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            if (!player.isOnline()) StopTutorial();
-            if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
+            try {
+                if (!player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial();
+                if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }, 0, 10);
     }
 
-    private void SetStage(int stageIndex) {
+    private void SetStage(int stageIndex) throws SQLException {
         activeStageIndex = stageIndex - 1;
         NextStage();
     }
 
-    private void NextStage() {
+    private void NextStage() throws SQLException {
         if (activeStageIndex + 1 >= stages.size()) {
             // TODO: complete tutorial
+
             player.sendMessage("Tutorial Completed");
             StopTutorial();
         } else {
@@ -116,7 +122,7 @@ public abstract class AbstractTutorial {
                 hologram.updateFooter(false);
 
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.1f);
+                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
                 activeStage.getTaskTimeline().StartTimeline();
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
@@ -131,7 +137,16 @@ public abstract class AbstractTutorial {
     private void StopTutorial() {
         if (tutorialTask != null) tutorialTask.cancel();
         activeTutorials.remove(this);
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> hologram.remove());
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            try {
+                plot.getWorld().unloadWorld(true);
+                hologram.remove();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        });
+
+        // TODO: save stage to database
     }
 
     public static class ChatHandler {

@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
@@ -41,14 +41,14 @@ public interface IWorld {
      * @param generator generator type as class
      * @return true if world was generated successfully
      */
-    <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator);
 
     /**
      * Regenerates the current plot with an optional new generator type
      * @param generator generator type as class
      * @return true if world was regenerated successfully
      */
-    <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator);
 
     /**
      * Deletes the world file and entry in the config file

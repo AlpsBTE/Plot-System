@@ -109,7 +109,6 @@ public abstract class AbstractPlotGenerator {
         if (init()) {
             Exception exception = null;
             try {
-                Bukkit.getLogger().log(Level.INFO, "[Generation 2] " + plotType.hasOnePlotPerWorld() + " | " + world.isWorldGenerated());
                 if (plotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
                     new PlotWorldGenerator(world.getWorldName());
                 } else if (!world.isWorldLoaded() && !world.loadWorld()) throw new Exception("Could not load world");

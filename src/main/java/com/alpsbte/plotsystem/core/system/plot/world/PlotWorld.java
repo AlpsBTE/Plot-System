@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.boydti.fawe.FaweAPI;
@@ -68,12 +68,12 @@ public class PlotWorld implements IWorld {
     }
 
     @Override
-    public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         throw new UnsupportedOperationException("No world generator set for world " + getWorldName());
     }
 
     @Override
-    public <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
         return deleteWorld() && generateWorld(generator);
     }
 
@@ -251,7 +251,8 @@ public class PlotWorld implements IWorld {
     @SuppressWarnings("unchecked")
     public static <T extends PlotWorld> T getPlotWorldByName(String worldName) throws SQLException {
         if (isOnePlotWorld(worldName)) {
-            return new Plot(Integer.parseInt(worldName.substring(2))).getWorld();
+            int id = Integer.parseInt(worldName.substring(2));
+            return worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id).getWorld() : new TutorialPlot(id).getWorld();
         } else return (T) new PlotWorld(worldName, null);
     }
 }

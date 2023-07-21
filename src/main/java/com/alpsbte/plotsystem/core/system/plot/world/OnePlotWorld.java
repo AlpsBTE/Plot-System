@@ -28,9 +28,9 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -57,11 +57,13 @@ public class OnePlotWorld extends PlotWorld {
     }
 
     @Override
-    public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         if (!isWorldGenerated()) {
             try {
-                if (generator.isAssignableFrom(DefaultPlotGenerator.class) && getPlot().getPlotType() != PlotType.TUTORIAL) {
+                if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
                     new DefaultPlotGenerator(getPlot(), plotOwner);
+                } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
+                    new TutorialPlotGenerator(getPlot(), plotOwner);
                 } else return false;
                 return true;
             } catch (SQLException ex) {
@@ -94,11 +96,7 @@ public class OnePlotWorld extends PlotWorld {
                             super.onComplete(true, false);
                         }
                     };
-                } else {
-                    new TutorialPlotGenerator(getPlot(), plotOwner) {
-
-                    };
-                }
+                } else generateWorld(TutorialPlotGenerator.class);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -115,7 +113,7 @@ public class OnePlotWorld extends PlotWorld {
     public boolean unloadWorld(boolean movePlayers) {
         if (super.unloadWorld(movePlayers)) {
             try {
-                if (getPlot() != null && getPlot().getStatus() == Status.completed) {
+                if (getPlot() != null && (getPlot().getStatus() == Status.completed || getPlot().getPlotType() == PlotType.TUTORIAL)) {
                     deleteWorld();
                     return true;
                 }
