@@ -49,40 +49,49 @@ public class StageTimeline {
     private AbstractTask currentTask;
     public int lastTaskId;
     private final AtomicBoolean isWaitingForConfirmation = new AtomicBoolean(true);
+    private BukkitTask timelineTask;
 
     public void StartTimeline() throws InterruptedException {
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            boolean isActionStarted = false;
+        timelineTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                boolean isActionStarted = false;
 
-            for (int i = 0; i < tasks.size(); i++) {
-                currentTask = tasks.get(i);
-                Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (i + 1) + " of " + tasks.size() + "] for player " + player.getName());
-                currentTask.performTask();
+                for (int i = 0; i < tasks.size(); i++) {
+                    currentTask = tasks.get(i);
+                    Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (i + 1) + " of " + tasks.size() + "] for player " + player.getName());
+                    currentTask.performTask();
 
-                BukkitTask task = new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (currentTask.isTaskDone()) this.cancel();
-                    }
-                }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0);
-
-                while (true) {
-                    if (task.isCancelled()) {
-                        if (currentTask instanceof WaitForConfirmationTask || i == tasks.size() - 1) {
-                            if (!isActionStarted) {
-                                hologram.onFooterClickEvent(action -> isWaitingForConfirmation.set(false));
-                                isActionStarted = true;
-                                continue;
-                            } else if (isWaitingForConfirmation.get()) continue;
+                    BukkitTask task = new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (timelineTask.isCancelled() || currentTask.isTaskDone()) this.cancel();
                         }
-                        isWaitingForConfirmation.set(true);
-                        isActionStarted = false;
-                        lastTaskId = i;
-                        break;
+                    }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0);
+
+                    while (true) {
+                        if (timelineTask.isCancelled()) return;
+                        if (task.isCancelled()) {
+                            if (currentTask instanceof WaitForConfirmationTask || i == tasks.size() - 1) {
+                                if (!isActionStarted) {
+                                    hologram.onFooterClickEvent(action -> isWaitingForConfirmation.set(false));
+                                    isActionStarted = true;
+                                    continue;
+                                } else if (isWaitingForConfirmation.get()) continue;
+                            }
+                            isWaitingForConfirmation.set(true);
+                            isActionStarted = false;
+                            lastTaskId = i;
+                            break;
+                        }
                     }
                 }
             }
-        });
+        }.runTaskAsynchronously(PlotSystem.getPlugin());
+    }
+
+    public void StopTimeline() {
+        if (timelineTask != null) timelineTask.cancel();
     }
 
     public StageTimeline(Player player, TutorialHologram hologram) {

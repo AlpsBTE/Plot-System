@@ -141,6 +141,7 @@ public abstract class AbstractTutorial {
     private void StopTutorial() {
         if (tutorialTask != null) tutorialTask.cancel();
         activeTutorials.remove(this);
+        activeStage.getTaskTimeline().StopTimeline();
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
                 plot.getWorld().unloadWorld(true);
