@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +48,8 @@ public class BeginnerTutorial extends AbstractTutorial {
         return Arrays.asList(
                 Stage1.class,
                 Stage2.class,
-                Stage3.class
+                Stage3.class,
+                Stage4.class
         );
     }
 
@@ -56,7 +58,7 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage1 extends AbstractStage {
-        public Stage1(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+        public Stage1(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
             super(plot, hologram);
         }
 
@@ -73,26 +75,21 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected List<String> setHologramContent() {
-            return Arrays.asList(
-                    getMessages().get(2),
-                    getMessages().get(3),
-                    "{empty}",
-                    getMessages().get(4),
-                    getMessages().get(5)
-            );
-        }
-
-        @Override
         public StageTimeline setTasks() {
             return new StageTimeline(player, hologram)
-                    .updateHologramContent(getHologramContent(), null)
+                    .updateHologramContent(Arrays.asList(
+                            getMessages().get(2),
+                            getMessages().get(3),
+                            "{empty}",
+                            getMessages().get(4),
+                            getMessages().get(5)
+                    ), null)
                     .delay(15);
         }
     }
 
     private static class Stage2 extends AbstractStage {
-        public Stage2(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+        public Stage2(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
             super(plot, hologram);
         }
 
@@ -106,35 +103,61 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§a§lGoogle Maps §8§l►§r§f"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4, "§a§lGoogle Earth §8§l►§r§f"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§8§l/plot links§r§f"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6)
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§8Google Maps§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§8Google Earth§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_7),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_8),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_9),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_10),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_11),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_12)
             );
         }
 
         @Override
-        protected List<String> setHologramContent() {
-            return Arrays.asList(
-                    getMessages().get(2),
-                    getMessages().get(3),
-                    "{empty}",
-                    getMessages().get(4),
-                    getMessages().get(5),
-                    "{empty}",
-                    getMessages().get(6)
-            );
-        }
-
-        @Override
-        protected StageTimeline setTasks() {
+        protected StageTimeline setTasks() throws IOException {
             return new StageTimeline(player, hologram)
-                    .updateHologramContent(getHologramContent(), null)
-                    .delay(5)
-                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT)
-                    .delay(15);
+                    .updateHologramContent(Arrays.asList(
+                            getMessages().get(2),
+                            getMessages().get(3),
+                            "{empty}",
+                            getMessages().get(4),
+                            getMessages().get(5),
+                            "{empty}",
+                            getMessages().get(6)
+                    ), null)
+                    .delay(10)
+                    .waitForConfirmation()
+                    .updateHologramContent(Arrays.asList(
+                            "§a§lGoogle Maps",
+                            getMessages().get(7),
+                            "{empty}",
+                            getMessages().get(9),
+                            getMessages().get(10),
+                            getMessages().get(11)
+                    ), Sound.UI_BUTTON_CLICK)
+                    .delay(2)
+                    .sendClickableChatMessage(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"),
+                            Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§a§lGoogle Maps", plot.getGoogleMapsLink())
+                    .delay(8)
+                    .waitForConfirmation()
+                    .updateHologramContent(Arrays.asList(
+                            "§a§lGoogle Earth",
+                            getMessages().get(8),
+                            "{empty}",
+                            getMessages().get(12),
+                            getMessages().get(13),
+                            getMessages().get(14)
+                    ), Sound.UI_BUTTON_CLICK)
+                    .delay(2)
+                    .sendClickableChatMessage(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth"),
+                            Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§a§lGoogle Earth", plot.getGoogleEarthLink())
+                    .delay(8);
         }
     }
 
     private static class Stage3 extends AbstractStage {
-        public Stage3(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+        public Stage3(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
             super(plot, hologram);
         }
 
@@ -153,17 +176,6 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected List<String> setHologramContent() {
-            return Arrays.asList(
-                    getMessages().get(2),
-                    getMessages().get(3),
-                    "{empty}",
-                    getMessages().get(4),
-                    getMessages().get(5)
-            );
-        }
-
-        @Override
         protected StageTimeline setTasks() {
             List<double[]> teleportPoints = new ArrayList<>();
             List<String> teleportCoordinates = Arrays.asList(
@@ -178,7 +190,13 @@ public class BeginnerTutorial extends AbstractTutorial {
             });
 
             return new StageTimeline(player, hologram)
-                    .updateHologramContent(getHologramContent(), null)
+                    .updateHologramContent(Arrays.asList(
+                            getMessages().get(2),
+                            getMessages().get(3),
+                            "{empty}",
+                            getMessages().get(4),
+                            getMessages().get(5)
+                    ), null)
                     .delay(5)
                     .sendChatMessage(setMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT)
                     .addTask(new CustomTask(player, () -> {
@@ -194,6 +212,23 @@ public class BeginnerTutorial extends AbstractTutorial {
                     })
                     .delay(1)
                     .sendChatMessage(getMessages().get(7), Utils.SoundUtils.FINISH_PLOT_SOUND);
+        }
+    }
+
+    private static class Stage4 extends AbstractStage {
+
+        public Stage4(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
+            super(plot, hologram);
+        }
+
+        @Override
+        protected List<String> setMessages() {
+            return null;
+        }
+
+        @Override
+        protected StageTimeline setTasks() {
+            return null;
         }
     }
 }

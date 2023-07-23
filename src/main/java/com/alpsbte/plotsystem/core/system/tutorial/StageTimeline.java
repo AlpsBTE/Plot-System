@@ -28,8 +28,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.HologramMessageTask;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,10 +48,10 @@ public class StageTimeline {
     public List<AbstractTask> tasks = new ArrayList<>();
     private AbstractTask currentTask;
     public int lastTaskId;
+    private final AtomicBoolean isWaitingForConfirmation = new AtomicBoolean(true);
 
     public void StartTimeline() throws InterruptedException {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            AtomicBoolean isLastTask = new AtomicBoolean(false);
             boolean isActionStarted = false;
 
             for (int i = 0; i < tasks.size(); i++) {
@@ -67,13 +68,15 @@ public class StageTimeline {
 
                 while (true) {
                     if (task.isCancelled()) {
-                        if (i == tasks.size() - 1) {
+                        if (currentTask instanceof WaitForConfirmationTask || i == tasks.size() - 1) {
                             if (!isActionStarted) {
-                                hologram.onFooterClickEvent(action -> isLastTask.set(true));
+                                hologram.onFooterClickEvent(action -> isWaitingForConfirmation.set(false));
                                 isActionStarted = true;
                                 continue;
-                            } else if (!isLastTask.get()) continue;
+                            } else if (isWaitingForConfirmation.get()) continue;
                         }
+                        isWaitingForConfirmation.set(true);
+                        isActionStarted = false;
                         lastTaskId = i;
                         break;
                     }
@@ -102,8 +105,8 @@ public class StageTimeline {
         return this;
     }
 
-    public StageTimeline teleportPlayer(Location location) {
-        tasks.add(new TeleportPlayerTask(player, location));
+    public StageTimeline sendClickableChatMessage(String message, Sound soundEffect, String hoverText, String clickableLink) {
+        tasks.add(new ChatMessageTask(player, message, soundEffect, hoverText, clickableLink));
         return this;
     }
 
@@ -114,6 +117,11 @@ public class StageTimeline {
 
     public StageTimeline delay(long seconds) {
         tasks.add(new WaitTask(null, seconds));
+        return this;
+    }
+
+    public StageTimeline waitForConfirmation() {
+        tasks.add(new WaitForConfirmationTask(null));
         return this;
     }
 }

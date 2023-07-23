@@ -38,6 +38,10 @@ import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.sk89q.worldedit.Vector2D;
 import me.filoghost.holographicdisplays.api.Position;
 import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -150,12 +154,28 @@ public abstract class AbstractTutorial {
     }
 
     public static class ChatHandler {
+        public static void printInfo(Player player, TextComponent[] messages) {
+            player.sendMessage("");
+            for (TextComponent message : messages) player.spigot().sendMessage(message);
+            player.sendMessage("");
+        }
+
         public static void printInfo(Player player, String[] messages) {
-            Arrays.stream(messages).forEach(player::sendMessage);
+            player.sendMessage("");
+            for (String message : messages) player.sendMessage(message);
+            player.sendMessage("");
+        }
+
+        public static void printInfo(Player player, String message, String hoverText, String link) {
+            TextComponent tc = new TextComponent();
+            tc.setText(message);
+            tc.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+            printInfo(player, new TextComponent[]{tc});
         }
 
         public static String[] getTaskMessage(String message, ChatColor color) {
-            return new LoreBuilder().setDefaultColor(color).addLine("").addLine("§8§l> §" + color.getChar() + message).addLine("").build().toArray(new String[0]);
+            return new LoreBuilder().setDefaultColor(color).addLine("§8§l> §" + color.getChar() + message).build().toArray(new String[0]);
         }
 
         public static String[] getStageUnlockedInfo(String title, String description) {
@@ -163,7 +183,6 @@ public abstract class AbstractTutorial {
                 .addLines("", " §b§l" + "NEW STAGE UNLOCKED", "  §f§l◆ §6§l" + title, ""); // TODO: set player lang
             String[] descriptionLines = description.split("%newline%");
             Arrays.stream(descriptionLines).forEach(desc -> builder.addLine("    §7§l▪ §f" + desc));
-            builder.addLine("");
             return builder.build().toArray(new String[0]);
         }
     }

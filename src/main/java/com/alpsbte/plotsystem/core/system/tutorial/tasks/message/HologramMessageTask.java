@@ -22,9 +22,10 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
 
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 

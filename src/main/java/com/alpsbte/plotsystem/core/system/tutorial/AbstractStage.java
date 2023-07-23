@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -37,27 +38,21 @@ public abstract class AbstractStage {
     protected final TutorialHologram hologram;
 
     private final List<String> messages;
-    private final List<String> hologramContent;
     private final StageTimeline taskTimeline;
-    public AbstractStage(TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+    public AbstractStage(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
         this.plot = plot;
         this.player = plot.getPlotOwner().getPlayer();
         this.hologram = hologram;
 
         messages = setMessages();
-        hologramContent = setHologramContent();
         taskTimeline = setTasks();
     }
 
     protected abstract List<String> setMessages();
-    protected abstract List<String> setHologramContent();
-    protected abstract StageTimeline setTasks();
+    protected abstract StageTimeline setTasks() throws IOException;
 
     public List<String> getMessages() {
         return messages;
-    }
-    public List<String> getHologramContent() {
-        return hologramContent;
     }
     public StageTimeline getTaskTimeline() {
         return taskTimeline;

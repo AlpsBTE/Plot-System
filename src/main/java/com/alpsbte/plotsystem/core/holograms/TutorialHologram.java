@@ -98,7 +98,10 @@ public class TutorialHologram extends HolographicDisplay {
         updateFooter(true);
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 2);
-            line.setClickListener((clickEvent) -> action.onClick(clickEvent.getPlayer()));
+            line.setClickListener((clickEvent) -> {
+                updateFooter(false);
+                action.onClick(clickEvent.getPlayer());
+            });
         });
     }
 

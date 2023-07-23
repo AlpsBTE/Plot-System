@@ -22,9 +22,10 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,15 +33,26 @@ import org.bukkit.entity.Player;
 public class ChatMessageTask extends AbstractTask {
     private final String message;
     private final Sound soundEffect;
+    private final String hoverText;
+    private final String clickableLink;
+
     public ChatMessageTask(Player player, String message, Sound soundEffect) {
+        this(player, message, soundEffect, null, null);
+    }
+
+    public ChatMessageTask(Player player, String message, Sound soundEffect, String hoverText, String clickableLink) {
         super(player);
         this.message = message;
         this.soundEffect = soundEffect;
+        this.hoverText = hoverText;
+        this.clickableLink = clickableLink;
     }
 
     @Override
     public void performTask() {
-        AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY));
+        if (hoverText == null || clickableLink == null) {
+            AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY));
+        } else AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY)[0], hoverText, clickableLink);
         if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
         setTaskDone();
     }

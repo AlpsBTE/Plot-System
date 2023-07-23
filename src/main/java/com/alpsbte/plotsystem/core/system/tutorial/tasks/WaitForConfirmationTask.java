@@ -24,29 +24,21 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class TeleportPlayerTask extends AbstractTask {
-    private Location location;
+public class WaitForConfirmationTask extends AbstractTask {
 
-    public TeleportPlayerTask(Player player) {
+    public WaitForConfirmationTask(Player player) {
         super(player);
-    }
-
-    public TeleportPlayerTask(Player player, Location location) {
-        this(player);
-        this.location = location;
     }
 
     @Override
     public void performTask() {
-        player.teleport(location);
         setTaskDone();
     }
 
     @Override
     public String toString() {
-        return "TeleportTask";
+        return "WaitForConfirmationTask";
     }
 }
