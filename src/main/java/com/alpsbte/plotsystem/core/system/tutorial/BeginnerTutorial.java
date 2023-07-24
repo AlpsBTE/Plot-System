@@ -60,7 +60,7 @@ public class BeginnerTutorial extends AbstractTutorial {
 
     private static class Stage1 extends AbstractStage {
         public Stage1(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram);
+            super(plot, hologram, 0);
         }
 
         @Override
@@ -91,7 +91,7 @@ public class BeginnerTutorial extends AbstractTutorial {
 
     private static class Stage2 extends AbstractStage {
         public Stage2(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram);
+            super(plot, hologram, 0);
         }
 
         @Override
@@ -159,7 +159,7 @@ public class BeginnerTutorial extends AbstractTutorial {
 
     private static class Stage3 extends AbstractStage {
         public Stage3(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram);
+            super(plot, hologram, 0);
         }
 
         @Override
@@ -219,7 +219,7 @@ public class BeginnerTutorial extends AbstractTutorial {
     private static class Stage4 extends AbstractStage {
 
         public Stage4(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram);
+            super(plot, hologram, 3);
         }
 
         @Override

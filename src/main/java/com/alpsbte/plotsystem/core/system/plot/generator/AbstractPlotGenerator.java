@@ -156,10 +156,14 @@ public abstract class AbstractPlotGenerator {
             }
         }
 
-        World weWorld = new BukkitWorld(plot.getWorld().getBukkitWorld());
+        World weWorld = new BukkitWorld(world.getBukkitWorld());
         EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
         editSession.setMask(new OnlyAirMask(weWorld));
-        pasteSchematic(editSession, environmentSchematic, plot.getWorld(), false);
+
+        if(plot.getVersion() >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
+            pasteSchematic(editSession, environmentSchematic, world, false);
+        }
+        pasteSchematic(editSession, plotSchematic, world, true);
     }
 
 
@@ -279,8 +283,10 @@ public abstract class AbstractPlotGenerator {
                 editSession.flushQueue();
             }
 
+            Bukkit.getLogger().log(Level.INFO, "Going to paste schematic: "+ schematicFile.getName());
             FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(world.getPlotHeight()), false);
             editSession.flushQueue();
+            Bukkit.getLogger().log(Level.INFO, "Pasted schematic successfully: "+ schematicFile.getName());
         }
     }
 }

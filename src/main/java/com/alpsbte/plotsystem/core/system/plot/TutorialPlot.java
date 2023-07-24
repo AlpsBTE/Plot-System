@@ -200,10 +200,19 @@ public class TutorialPlot extends AbstractPlot {
         return file;
     }
 
+    public File getOutlinesSchematic(int stageId) {
+        try {
+            return getSchematicFile(getTutorialId() + "-" + stageId);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            return null;
+        }
+    }
+
     @Override
     public File getOutlinesSchematic() {
         try {
-            return getSchematicFile(getTutorialId() + "-" + getStage());
+            return getOutlinesSchematic(getStage());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;

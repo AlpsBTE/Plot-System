@@ -36,13 +36,15 @@ public abstract class AbstractStage {
     protected final TutorialPlot plot;
     protected final Player player;
     protected final TutorialHologram hologram;
+    protected final int schematicId;
 
     private final List<String> messages;
     private final StageTimeline taskTimeline;
-    public AbstractStage(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
+    public AbstractStage(TutorialPlot plot, TutorialHologram hologram, int schematicId) throws SQLException, IOException {
         this.plot = plot;
         this.player = plot.getPlotOwner().getPlayer();
         this.hologram = hologram;
+        this.schematicId = schematicId;
 
         messages = setMessages();
         taskTimeline = setTasks();

@@ -26,9 +26,14 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.sk89q.worldedit.WorldEditException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class TutorialPlotGenerator extends AbstractPlotGenerator {
@@ -39,6 +44,16 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     @Override
     protected boolean init() {
         return true;
+    }
+
+    public void generateOutlines(int schematicId) throws SQLException, IOException, WorldEditException {
+        generateOutlines(((TutorialPlot)plot).getOutlinesSchematic(schematicId), null);
+    }
+
+    @Override
+    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
+        pasteSchematic(null, plotSchematic, world, false);
+        if (environmentSchematic != null) pasteSchematic(null, environmentSchematic, world, false);
     }
 
     @Override

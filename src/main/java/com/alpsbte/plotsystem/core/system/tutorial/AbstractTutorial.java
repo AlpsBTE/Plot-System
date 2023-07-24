@@ -62,6 +62,7 @@ public abstract class AbstractTutorial {
     protected TutorialPlot plot;
     protected TutorialHologram hologram = new TutorialHologram("tutorial-hologram");
 
+    private TutorialPlotGenerator plotGenerator;
     protected BukkitTask tutorialTask;
     protected AbstractStage activeStage;
     private int activeStageIndex = 0;
@@ -81,7 +82,7 @@ public abstract class AbstractTutorial {
             Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
             return;
         }
-        new TutorialPlotGenerator(plot, builder);
+        plotGenerator = new TutorialPlotGenerator(plot, builder);
         activeTutorials.add(this);
 
         String[] hologramPosition = plot.getTutorialConfig().getString(TutorialPaths.HOLOGRAM_COORDINATES).split(",");
@@ -120,6 +121,8 @@ public abstract class AbstractTutorial {
                 // Switch to next stage
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(TutorialPlot.class, TutorialHologram.class).newInstance(plot, hologram);
                 activeStageIndex++;
+
+                plotGenerator.generateOutlines(activeStage.schematicId);
 
                 hologram.updateHeader(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
                         "§b§lSTAGE " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
