@@ -32,6 +32,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -223,12 +224,45 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         protected List<String> setMessages() {
-            return null;
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_3),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_4, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_5, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_6)
+            );
         }
 
         @Override
         protected StageTimeline setTasks() {
-            return null;
+            int height = plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT);
+            int offset = plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
+
+            StageTimeline stage = new StageTimeline(player, hologram);
+            stage.updateHologramContent(Arrays.asList(
+                    getMessages().get(2),
+                    "{empty}",
+                    getMessages().get(3)
+            ), Sound.UI_BUTTON_CLICK)
+            .delay(5)
+            .sendChatMessage(setMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+            .addTask(new CustomTask(player, () -> {
+                hologram.updateFooter(0, 1);
+                hologram.updateFooter(true);
+            }))
+            .addPlayerChatEvent(player, height, offset, 3, (isCorrect, attemptsLeft) -> {
+                if (!isCorrect && attemptsLeft > 0) {
+                    AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(getMessages().get(7), ChatColor.GRAY));
+                } else {
+                    hologram.updateFooter(1, 1);
+                    stage.delay(1);
+                    stage.sendChatMessage(isCorrect ? getMessages().get(5) : getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+                }
+            });
+            return stage;
         }
     }
 }

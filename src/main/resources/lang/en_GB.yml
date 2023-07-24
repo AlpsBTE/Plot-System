@@ -311,6 +311,11 @@ tutorials:
       stage-4-title: 'Building Heights'
       stage-4-desc: 'How do I measure the height of a building?'
       stage-4-1: 'Now that we have the building outlines, we need to measure the height of the building.'
+      stage-4-2: 'Open §aGoogle Earth§f and calculate the height of the §afacade§f by%newline%subtracting the height of the ground from the height of the roof.'
+      stage-4-3: 'Enter the §aheight§7 of the building in the chat to continue.'
+      stage-4-4: 'Well done! The height of the building is {0} blocks.'
+      stage-4-5: 'You´ve almost made it! The height of the building is {0} blocks.'
+      stage-4-6: 'You´ve almost made it! Try again.'
 
 # NOTE: Do not change
 config-version: 1.3

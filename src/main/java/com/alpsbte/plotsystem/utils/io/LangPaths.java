@@ -330,5 +330,16 @@ public abstract class LangPaths {
         public static final String TUTORIALS_BEGINNER_STAGE3_4 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-4";
         public static final String TUTORIALS_BEGINNER_STAGE3_5 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-5";
         public static final String TUTORIALS_BEGINNER_STAGE3_6 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-6";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE4 = TUTORIALS_BEGINNER + "stage-4.";
+        public static final String TUTORIALS_BEGINNER_STAGE4_TITLE = TUTORIALS_BEGINNER_STAGE4 + "stage-4-title";
+        public static final String TUTORIALS_BEGINNER_STAGE4_DESC = TUTORIALS_BEGINNER_STAGE4 + "stage-4-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE4_1 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-1";
+        public static final String TUTORIALS_BEGINNER_STAGE4_2 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-2";
+        public static final String TUTORIALS_BEGINNER_STAGE4_3 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-3";
+        public static final String TUTORIALS_BEGINNER_STAGE4_4 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-4";
+        public static final String TUTORIALS_BEGINNER_STAGE4_5 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-5";
+        public static final String TUTORIALS_BEGINNER_STAGE4_6 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-6";
     }
 }

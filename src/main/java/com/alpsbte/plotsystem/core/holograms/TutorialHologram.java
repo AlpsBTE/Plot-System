@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
@@ -40,6 +41,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TutorialHologram extends HolographicDisplay {
+    private final static int MAX_HOLOGRAM_LENGTH = 128;
+    private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
+
     @FunctionalInterface
     public interface FooterClickAction {
         void onClick(Player player);
@@ -79,7 +83,10 @@ public class TutorialHologram extends HolographicDisplay {
     @Override
     public List<DataLine<?>> getContent() {
         List<DataLine<?>> lines = new ArrayList<>();
-        content.forEach(line -> lines.add(new TextLine(line)));
+        content.forEach(line -> {
+            List<String> innerLines = AlpsUtils.createMultilineFromString(line, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
+            innerLines.forEach(innerLine -> lines.add(new TextLine(innerLine)));
+        });
         return lines;
     }
 

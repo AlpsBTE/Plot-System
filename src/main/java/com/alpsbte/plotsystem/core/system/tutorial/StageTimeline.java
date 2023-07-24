@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.PlayerChatEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.HologramMessageTask;
@@ -121,6 +122,11 @@ public class StageTimeline {
 
     public StageTimeline addTeleportEvent(Player player, List<double[]> teleportPoint, int offsetRange, TeleportPointEventTask.ITeleportPointAction onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, teleportPoint, offsetRange, onTeleportAction));
+        return this;
+    }
+
+    public StageTimeline addPlayerChatEvent(Player player, int expectedValue, int offset, int maxAttempts, PlayerChatEventTask.IPlayerChatAction onChatAction) {
+        tasks.add(new PlayerChatEventTask(player, expectedValue, offset, maxAttempts, onChatAction));
         return this;
     }
 
