@@ -28,7 +28,6 @@ import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.CustomTask;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
@@ -76,7 +75,7 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        public StageTimeline setTasks() {
+        protected StageTimeline setTasks() {
             return new StageTimeline(player, hologram)
                     .updateHologramContent(Arrays.asList(
                             getMessages().get(2),
@@ -104,8 +103,8 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, "§a§lGoogle Maps §8§l►§r§f"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4, "§a§lGoogle Earth §8§l►§r§f"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_5, "§8§l/plot links§r§f"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§8Google Maps§r§f"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "§8Google Earth§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "Google Maps"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_6, "Google Earth"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_7),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_8),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_9),
@@ -126,7 +125,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                             getMessages().get(5),
                             "{empty}",
                             getMessages().get(6)
-                    ), null)
+                    ), Sound.UI_BUTTON_CLICK)
                     .delay(10)
                     .waitForConfirmation()
                     .updateHologramContent(Arrays.asList(
@@ -139,7 +138,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(2)
                     .sendClickableChatMessage(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"),
-                            Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§a§lGoogle Maps", plot.getGoogleMapsLink())
+                            Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§aGoogle Maps", plot.getGoogleMapsLink())
                     .delay(8)
                     .waitForConfirmation()
                     .updateHologramContent(Arrays.asList(
@@ -152,7 +151,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(2)
                     .sendClickableChatMessage(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth"),
-                            Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§a§lGoogle Earth", plot.getGoogleEarthLink())
+                            Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§aGoogle Earth", plot.getGoogleEarthLink())
                     .delay(8);
         }
     }
@@ -171,7 +170,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_2),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_3),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_4, "§8§l" + "/tpll <lon> <lat>" + "§r§f"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_5, "§a§l" + "4" + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_5, "§a" + "4" + "§r§7"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_6)
             );
         }
@@ -197,9 +196,9 @@ public class BeginnerTutorial extends AbstractTutorial {
                             "{empty}",
                             getMessages().get(4),
                             getMessages().get(5)
-                    ), null)
+                    ), Sound.UI_BUTTON_CLICK)
                     .delay(5)
-                    .sendChatMessage(setMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT)
+                    .sendChatMessage(setMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
                     .addTask(new CustomTask(player, () -> {
                         hologram.updateFooter(0, teleportPoints.size());
                         hologram.updateFooter(true);
@@ -212,7 +211,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                         hologram.updateFooter(teleportCoordinates.size() - pointsRemaining, teleportCoordinates.size());
                     })
                     .delay(1)
-                    .sendChatMessage(getMessages().get(7), Utils.SoundUtils.FINISH_PLOT_SOUND);
+                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
         }
     }
 

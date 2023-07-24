@@ -46,7 +46,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,12 +96,12 @@ public abstract class AbstractTutorial {
         final String worldName = plot.getWorld().getWorldName();
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
-                if (!player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial();
+                if (activeStage == null || !player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial(false);
                 if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-        }, 0, 10);
+        }, 0, 20);
     }
 
     private void SetStage(int stageIndex) throws SQLException {
@@ -115,7 +114,7 @@ public abstract class AbstractTutorial {
             // TODO: complete tutorial
 
             player.sendMessage("Tutorial Completed");
-            StopTutorial();
+            StopTutorial(true);
         } else {
             try {
                 // Switch to next stage
@@ -125,30 +124,29 @@ public abstract class AbstractTutorial {
                 plotGenerator.generateOutlines(activeStage.schematicId);
 
                 hologram.updateHeader(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
-                        "§b§lSTAGE " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
+                        "§b§lStage " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
                 hologram.updateFooter(false);
 
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
-                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+                player.playSound(player.getLocation(), activeStageIndex == 0 ? Utils.SoundUtils.TELEPORT_SOUND : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
                 activeStage.getTaskTimeline().StartTimeline();
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+
+            } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
-                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
-            } catch (InterruptedException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial task.", ex);
                 player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             }
         }
     }
 
-    private void StopTutorial() {
+    private void StopTutorial(boolean isCompleted) {
         if (tutorialTask != null) tutorialTask.cancel();
         activeTutorials.remove(this);
-        activeStage.getTaskTimeline().StopTimeline();
+        if (activeStage != null) activeStage.getTaskTimeline().StopTimeline();
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
-                plot.getWorld().unloadWorld(true);
                 hologram.remove();
+                plot.getWorld().unloadWorld(true);
+                if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }

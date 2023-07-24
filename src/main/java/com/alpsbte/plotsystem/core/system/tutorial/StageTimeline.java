@@ -52,7 +52,7 @@ public class StageTimeline {
     private final AtomicBoolean isWaitingForConfirmation = new AtomicBoolean(true);
     private BukkitTask timelineTask;
 
-    public void StartTimeline() throws InterruptedException {
+    public void StartTimeline() {
         timelineTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -68,7 +68,7 @@ public class StageTimeline {
                         public void run() {
                             if (timelineTask.isCancelled() || currentTask.isTaskDone()) this.cancel();
                         }
-                    }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0);
+                    }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0); // TODO: Fix performance issue with 0 tick delay
 
                     while (true) {
                         if (timelineTask.isCancelled()) return;
