@@ -24,24 +24,8 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
 
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-public class PlayerCommandEventTask extends AbstractTask implements Listener {
-    public PlayerCommandEventTask(Player player) {
-        super(player);
-    }
-
-    @Override
-    public void performTask() {
-
-    }
-
-    @EventHandler
-    private void onPlayerUseCommandEvent(PlayerCommandPreprocessEvent event) {
-
-    }
+public interface EventTask extends Listener {
+    void unregister();
 }

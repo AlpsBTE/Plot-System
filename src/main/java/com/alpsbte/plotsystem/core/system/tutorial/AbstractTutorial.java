@@ -56,62 +56,61 @@ public abstract class AbstractTutorial {
     public static List<AbstractTutorial> activeTutorials = new ArrayList<>();
 
     private final List<Class<? extends AbstractStage>> stages;
-    protected Builder builder;
-    protected Player player;
-    protected TutorialPlot plot;
-    protected TutorialHologram hologram = new TutorialHologram("tutorial-hologram");
-
+    private final Player player;
+    private final TutorialPlot plot;
+    private final TutorialHologram hologram = new TutorialHologram("tutorial-hologram");
     private TutorialPlotGenerator plotGenerator;
-    protected BukkitTask tutorialTask;
-    protected AbstractStage activeStage;
+    private BukkitTask tutorialTask;
+    private AbstractStage activeStage;
     private int activeStageIndex = 0;
 
     protected abstract List<Class<? extends AbstractStage>> setStages();
 
     protected AbstractTutorial(Builder builder, int tutorialId) throws SQLException {
-        this.builder = builder;
         this.player = builder.getPlayer();
         stages = setStages();
 
+        // Get tutorial plot
         if (TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId) == null) {
             plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), tutorialId);
         } else plot = TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId);
 
+        // Check if tutorial plot is null
         if (plot == null) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
             return;
         }
+
+        // Generate tutorial world
         plotGenerator = new TutorialPlotGenerator(plot, builder);
+
+        // Create tutorial hologram
+        createHologram();
+
+        // Set stage and add tutorial to active tutorials
+        setStage(plot.getStage());
         activeTutorials.add(this);
 
-        String[] hologramPosition = plot.getTutorialConfig().getString(TutorialPaths.HOLOGRAM_COORDINATES).split(",");
-        Vector2D hologramVector = new Vector2D(Double.parseDouble(hologramPosition[0]), Double.parseDouble(hologramPosition[1]));
-        int hologramY = plot.getWorld().getBukkitWorld().getHighestBlockYAt(hologramVector.getBlockX(), hologramVector.getBlockZ()) + 2;
-        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramVector.getX(), hologramY , hologramVector.getZ())));
-        hologram.getHologram().setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
-        hologram.setDefaultHologramHeight(hologramY);
-
-        SetStage(plot.getStage());
-
+        // Start tutorial
         final String worldName = plot.getWorld().getWorldName();
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
                 if (activeStage == null || !player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial(false);
-                if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) NextStage();
+                if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) nextStage();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }, 0, 20);
     }
 
-    private void SetStage(int stageIndex) throws SQLException {
+    private void setStage(int stageIndex) throws SQLException {
         activeStageIndex = stageIndex - 1;
-        NextStage();
+        nextStage();
     }
 
-    private void NextStage() throws SQLException {
+    private void nextStage() throws SQLException {
         if (activeStageIndex + 1 >= stages.size()) {
-            // TODO: complete tutorial
+            // TODO: Complete tutorial
 
             player.sendMessage("Tutorial Completed");
             StopTutorial(true);
@@ -121,11 +120,12 @@ public abstract class AbstractTutorial {
                 activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(TutorialPlot.class, TutorialHologram.class).newInstance(plot, hologram);
                 activeStageIndex++;
 
-                plotGenerator.generateOutlines(activeStage.schematicId);
+                // Generate plot schematic for stage
+                plotGenerator.generateOutlines(activeStage.initSchematicId);
 
-                hologram.updateHeader(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_BEGINNER_ITEM_NAME)),
+                hologram.updateHeader(Material.valueOf(plot.getTutorialConfig().getString(TutorialPaths.TUTORIAL_ITEM_NAME)),
                         "§b§lStage " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
-                hologram.updateFooter(false);
+                hologram.setFooterVisibility(false);
 
                 ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
                 player.playSound(player.getLocation(), activeStageIndex == 0 ? Utils.SoundUtils.TELEPORT_SOUND : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
@@ -155,6 +155,23 @@ public abstract class AbstractTutorial {
         // TODO: save stage to database
     }
 
+    private void createHologram() throws SQLException {
+        // Load position from config and convert to vector
+        String[] hologramPosition = plot.getTutorialConfig().getString(TutorialPaths.HOLOGRAM_COORDINATES).split(",");
+        Vector2D hologramVector = new Vector2D(Double.parseDouble(hologramPosition[0]), Double.parseDouble(hologramPosition[1]));
+
+        // Get the highest block at hologram position and add 2 to get the y coordinate
+        int hologramY = plot.getWorld().getBukkitWorld().getHighestBlockYAt(hologramVector.getBlockX(), hologramVector.getBlockZ()) + 2;
+
+        // Create hologram
+        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramVector.getX(), hologramY , hologramVector.getZ())));
+        hologram.getHologram().setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
+        hologram.setDefaultHologramHeight(hologramY);
+    }
+
+
+
+    // TODO: MOVE SOMEWHERE ELSE
     public static class ChatHandler {
         public static void printInfo(Player player, TextComponent[] messages) {
             player.sendMessage("");

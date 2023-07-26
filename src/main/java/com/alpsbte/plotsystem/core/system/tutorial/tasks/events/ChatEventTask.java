@@ -31,22 +31,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class PlayerChatEventTask extends AbstractTask implements Listener {
-    @FunctionalInterface
-    public interface IPlayerChatAction {
-        void onPlayerChat(boolean isCorrect, int attemptsLeft);
-    }
-
+public class ChatEventTask extends AbstractTask implements EventTask {
     private final int expectedValue;
     private final int offset;
-    private final IPlayerChatAction onChatAction;
+    private final BiTaskAction<Boolean, Integer> onChatAction;
 
     private int attemptsLeft;
 
-    public PlayerChatEventTask(Player player, int expectedValue, int offset, int maxAttempts, IPlayerChatAction onChatAction) {
+    public ChatEventTask(Player player, int expectedValue, int offset, int maxAttempts, BiTaskAction<Boolean, Integer> onChatAction) {
         super(player);
         this.expectedValue = expectedValue;
         this.offset = offset;
@@ -69,17 +63,20 @@ public class PlayerChatEventTask extends AbstractTask implements Listener {
         if (AlpsUtils.TryParseInt(message) != null) {
             int value = Integer.parseInt(message);
             if (value >= expectedValue - offset && value <= expectedValue + offset) {
-                onChatAction.onPlayerChat(true, attemptsLeft);
+                onChatAction.performAction(true, attemptsLeft);
                 attemptsLeft = 0;
             } else {
                 attemptsLeft--;
-                onChatAction.onPlayerChat(false, attemptsLeft);
+                onChatAction.performAction(false, attemptsLeft);
             }
         }
 
-        if (attemptsLeft <= 0) {
-            HandlerList.unregisterAll(this);
-            setTaskDone();
-        }
+        if (attemptsLeft <= 0) unregister();
+    }
+
+    @Override
+    public void unregister() {
+        HandlerList.unregisterAll(this);
+        setTaskDone();
     }
 }

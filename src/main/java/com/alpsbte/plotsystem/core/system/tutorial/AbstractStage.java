@@ -36,15 +36,15 @@ public abstract class AbstractStage {
     protected final TutorialPlot plot;
     protected final Player player;
     protected final TutorialHologram hologram;
-    protected final int schematicId;
+    protected final int initSchematicId;
 
     private final List<String> messages;
     private final StageTimeline taskTimeline;
-    public AbstractStage(TutorialPlot plot, TutorialHologram hologram, int schematicId) throws SQLException, IOException {
+    public AbstractStage(TutorialPlot plot, TutorialHologram hologram, int initSchematicId) throws SQLException, IOException {
         this.plot = plot;
         this.player = plot.getPlotOwner().getPlayer();
         this.hologram = hologram;
-        this.schematicId = schematicId;
+        this.initSchematicId = initSchematicId;
 
         messages = setMessages();
         taskTimeline = setTasks();
@@ -58,5 +58,9 @@ public abstract class AbstractStage {
     }
     public StageTimeline getTaskTimeline() {
         return taskTimeline;
+    }
+
+    protected static String getEmptyLine() {
+        return "{empty}";
     }
 }

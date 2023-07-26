@@ -192,6 +192,7 @@ public abstract class LangPaths {
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
             public static final String RIGHT_CLICK = ACTION + "right-click";
+            public static final String LEFT_CLICK = ACTION + "left-click";
             public static final String CLICK_TO_ENABLE = ACTION + "click-to-enable";
             public static final String CLICK_TO_DISABLE = ACTION + "click-to-disable";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
@@ -338,8 +339,26 @@ public abstract class LangPaths {
         public static final String TUTORIALS_BEGINNER_STAGE4_1 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-1";
         public static final String TUTORIALS_BEGINNER_STAGE4_2 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-2";
         public static final String TUTORIALS_BEGINNER_STAGE4_3 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-3";
-        public static final String TUTORIALS_BEGINNER_STAGE4_4 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-4";
-        public static final String TUTORIALS_BEGINNER_STAGE4_5 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-5";
-        public static final String TUTORIALS_BEGINNER_STAGE4_6 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-6";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE5 = TUTORIALS_BEGINNER + "stage-5.";
+        public static final String TUTORIALS_BEGINNER_STAGE5_TITLE = TUTORIALS_BEGINNER_STAGE5 + "stage-5-title";
+        public static final String TUTORIALS_BEGINNER_STAGE5_DESC = TUTORIALS_BEGINNER_STAGE5 + "stage-5-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE5_1 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-1";
+        public static final String TUTORIALS_BEGINNER_STAGE5_2 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-2";
+        public static final String TUTORIALS_BEGINNER_STAGE5_3 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-3";
+        public static final String TUTORIALS_BEGINNER_STAGE5_4 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-4";
+        public static final String TUTORIALS_BEGINNER_STAGE5_5 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-5";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE6 = TUTORIALS_BEGINNER + "stage-6.";
+        public static final String TUTORIALS_BEGINNER_STAGE6_TITLE = TUTORIALS_BEGINNER_STAGE6 + "stage-6-title";
+        public static final String TUTORIALS_BEGINNER_STAGE6_DESC = TUTORIALS_BEGINNER_STAGE6 + "stage-6-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE6_1 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-1";
+        public static final String TUTORIALS_BEGINNER_STAGE6_2 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-2";
+        public static final String TUTORIALS_BEGINNER_STAGE6_3 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-3";
+        public static final String TUTORIALS_BEGINNER_STAGE6_4 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-4";
+        public static final String TUTORIALS_BEGINNER_STAGE6_5 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-5";
+        public static final String TUTORIALS_BEGINNER_STAGE6_6 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-6";
     }
 }

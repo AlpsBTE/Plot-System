@@ -24,29 +24,24 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-public class CustomTask extends AbstractTask {
-    @FunctionalInterface
-    public interface CustomTaskAction {
-        void performAction();
-    }
+public class PlaySoundTask extends AbstractTask {
+    private final Sound sound;
+    private final float volume;
+    private final float pitch;
 
-    private final CustomTaskAction action;
-
-    public CustomTask(Player player, CustomTaskAction action) {
+    public PlaySoundTask(Player player, Sound sound, float volume, float pitch) {
         super(player);
-        this.action = action;
+        this.sound = sound;
+        this.volume = volume;
+        this.pitch = pitch;
     }
 
     @Override
     public void performTask() {
-        action.performAction();
+        player.playSound(player.getLocation(), sound, volume, pitch);
         setTaskDone();
-    }
-
-    @Override
-    public String toString() {
-        return "CustomTask";
     }
 }

@@ -27,10 +27,11 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.PlayerChatEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.ChatEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.HologramMessageTask;
+import com.sk89q.worldedit.Vector;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -70,7 +71,15 @@ public class StageTimeline {
                         }
                     }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0); // TODO: Fix performance issue with 0 tick delay
 
+                    int lastProgress = -1;
                     while (true) {
+                        // Check if task has progress and if yes, update hologram footer
+                        if (currentTask.hasProgress() && currentTask.getProgress() > lastProgress) {
+                            lastProgress = currentTask.getProgress();
+                            hologram.updateProgress(currentTask.getProgress(), currentTask.getTotalProgress());
+                            continue;
+                        }
+
                         if (timelineTask.isCancelled()) return;
                         if (task.isCancelled()) {
                             if (currentTask instanceof WaitForConfirmationTask || i == tasks.size() - 1) {
@@ -105,6 +114,11 @@ public class StageTimeline {
         return this;
     }
 
+    public StageTimeline playSound(Sound sound, float volume, float pitch) {
+        tasks.add(new PlaySoundTask(player, sound, volume, pitch));
+        return this;
+    }
+
     public StageTimeline updateHologramContent(List<String> content, Sound soundEffect) {
         tasks.add(new HologramMessageTask(player, hologram, soundEffect, content));
         return this;
@@ -120,13 +134,13 @@ public class StageTimeline {
         return this;
     }
 
-    public StageTimeline addTeleportEvent(Player player, List<double[]> teleportPoint, int offsetRange, TeleportPointEventTask.ITeleportPointAction onTeleportAction) {
+    public StageTimeline addTeleportEvent(Player player, List<Vector> teleportPoint, int offsetRange, AbstractTask.TaskAction<Vector> onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }
 
-    public StageTimeline addPlayerChatEvent(Player player, int expectedValue, int offset, int maxAttempts, PlayerChatEventTask.IPlayerChatAction onChatAction) {
-        tasks.add(new PlayerChatEventTask(player, expectedValue, offset, maxAttempts, onChatAction));
+    public StageTimeline addPlayerChatEvent(Player player, int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
+        tasks.add(new ChatEventTask(player, expectedValue, offset, maxAttempts, onChatAction));
         return this;
     }
 

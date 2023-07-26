@@ -194,15 +194,15 @@ public class TutorialPlot extends AbstractPlot {
 
         try {
             FileUtils.copyInputStreamToFile(PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".schematic.gz"), file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while copying the schematic file!", ex);
         }
         return file;
     }
 
-    public File getOutlinesSchematic(int stageId) {
+    public File getOutlinesSchematic(int schematicId) {
         try {
-            return getSchematicFile(getTutorialId() + "-" + stageId);
+            return getSchematicFile(getTutorialId() + "-" + schematicId);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;
@@ -211,12 +211,7 @@ public class TutorialPlot extends AbstractPlot {
 
     @Override
     public File getOutlinesSchematic() {
-        try {
-            return getOutlinesSchematic(getStage());
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            return null;
-        }
+        return getOutlinesSchematic(0);
     }
 
     @Override

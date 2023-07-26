@@ -53,9 +53,9 @@ public class TutorialHologram extends HolographicDisplay {
     private String title = "";
     private List<String> content = new ArrayList<>();
     private int hologramHeight = PlotWorld.MIN_WORLD_HEIGHT;
-    private boolean showFooter;
-    private int currentTask;
-    private int totalTasks;
+    private boolean isFooterVisible;
+    private int currentProgress;
+    private int totalProgress;
 
     public TutorialHologram(@NotNull String id) {
         super(id);
@@ -94,19 +94,18 @@ public class TutorialHologram extends HolographicDisplay {
     public List<DataLine<?>> getFooter() {
         return Arrays.asList(
                new TextLine("{empty}"),
-               new TextLine(showFooter ? "§8§l[" + (currentTask >= totalTasks ?
-                       "§e§lClick To Continue" : "§a§l" + currentTask + " §8§l/ §a§l" + totalTasks + " Tasks") + "§8§l]" : "{empty}")
+               new TextLine(isFooterVisible ? "§8§l[" + (currentProgress >= totalProgress ?
+                       "§e§lClick To Continue" : "§a§l" + currentProgress + " §8§l/ §a§l" + totalProgress + " Tasks") + "§8§l]" : "{empty}")
         );
         // TODO: Add multi-language support
     }
 
     public void onFooterClickEvent(FooterClickAction action) {
-        updateFooter(0, 0);
-        updateFooter(true);
+        updateProgress(0, 0);
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 2);
             line.setClickListener((clickEvent) -> {
-                updateFooter(false);
+                setFooterVisibility(false);
                 action.onClick(clickEvent.getPlayer());
             });
         });
@@ -141,14 +140,14 @@ public class TutorialHologram extends HolographicDisplay {
         });
     }
 
-    public void updateFooter(boolean showFooter) {
-        this.showFooter = showFooter;
+    public void setFooterVisibility(boolean isVisible) {
+        this.isFooterVisible = isVisible;
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateDataLines(getHologram().getLines().size() - 2, getFooter()));
     }
 
-    public void updateFooter(int currentTask, int totalTasks) {
-        this.currentTask = currentTask;
-        this.totalTasks = totalTasks;
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateDataLines(getHologram().getLines().size() - 2, getFooter()));
+    public void updateProgress(int currentProgress, int totalProgress) {
+        this.currentProgress = currentProgress;
+        this.totalProgress = totalProgress;
+        setFooterVisibility(true);
     }
 }

@@ -8,6 +8,7 @@
 # | [Tutorial Config - Beginner]
 # -----------------------------------------------------
 tutorial-category: 'beginner'
+tutorial-item-name: "BRICK"
 
 # Coordinates of the spawn point of the tutorial plot (used to teleport the player)
 spawn-coordinates: '3693357.5,-4531324.5'
@@ -24,11 +25,14 @@ plot-outlines: '3693351.0,-4531330.0|3693370.0,-4531324.0|3693375.0,-4531339.0|3
 # -----------------------------------------------------
 beginner:
   # Coordinates for the building outlines
-  teleport-coordinates:
+  building-coordinates:
     point-1: '3693354.0,-4531333.0'
-    point-2: '3693367.0,-4531329.0'
+    point-2: '3693367.0,-4531328.0'
     point-3: '3693370.0,-4531337.0'
     point-4: '3693357.0,-4531342.0'
+  # BaseBlock for the building outline
+  base-block: 'WOOL'
+  base-block-id: 35
   # Height of the plot building, which must be calculated
   height: 7
   height-offset: 1

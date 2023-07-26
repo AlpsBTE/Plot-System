@@ -175,6 +175,15 @@ public class Utils {
     }
 
 
+    public static class TutorialUtils {
+        public static void setBlockAt(World world, com.sk89q.worldedit.Vector vector, Material material, int data) {
+            Location loc = new Location(world, vector.getX(), vector.getY(), vector.getZ());
+            loc.getBlock().setType(material);
+            loc.getBlock().setData((byte) data);
+        }
+    }
+
+
 
     public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){
         double p1X = point1.getX();

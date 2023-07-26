@@ -27,19 +27,21 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.CustomTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit.LineCmdEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit.WandCmdEventTask;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import com.sk89q.worldedit.Vector;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class BeginnerTutorial extends AbstractTutorial {
 
@@ -49,7 +51,9 @@ public class BeginnerTutorial extends AbstractTutorial {
                 Stage1.class,
                 Stage2.class,
                 Stage3.class,
-                Stage4.class
+                Stage4.class,
+                Stage5.class,
+                Stage6.class
         );
     }
 
@@ -80,7 +84,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     .updateHologramContent(Arrays.asList(
                             getMessages().get(2),
                             getMessages().get(3),
-                            "{empty}",
+                            getEmptyLine(),
                             getMessages().get(4),
                             getMessages().get(5)
                     ), null)
@@ -120,10 +124,10 @@ public class BeginnerTutorial extends AbstractTutorial {
                     .updateHologramContent(Arrays.asList(
                             getMessages().get(2),
                             getMessages().get(3),
-                            "{empty}",
+                            getEmptyLine(),
                             getMessages().get(4),
                             getMessages().get(5),
-                            "{empty}",
+                            getEmptyLine(),
                             getMessages().get(6)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(10)
@@ -131,7 +135,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     .updateHologramContent(Arrays.asList(
                             "§a§lGoogle Maps",
                             getMessages().get(7),
-                            "{empty}",
+                            getEmptyLine(),
                             getMessages().get(9),
                             getMessages().get(10),
                             getMessages().get(11)
@@ -144,7 +148,7 @@ public class BeginnerTutorial extends AbstractTutorial {
                     .updateHologramContent(Arrays.asList(
                             "§a§lGoogle Earth",
                             getMessages().get(8),
-                            "{empty}",
+                            getEmptyLine(),
                             getMessages().get(12),
                             getMessages().get(13),
                             getMessages().get(14)
@@ -177,38 +181,19 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         @Override
         protected StageTimeline setTasks() {
-            List<double[]> teleportPoints = new ArrayList<>();
-            List<String> teleportCoordinates = Arrays.asList(
-                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_1),
-                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_2),
-                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_3),
-                    plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_4)
-            );
-            teleportCoordinates.forEach(c -> {
-                String[] pointsSplit = c.trim().split(",");
-                teleportPoints.add(new double[] {Double.parseDouble(pointsSplit[0]), Double.parseDouble(pointsSplit[1])});
-            });
-
             return new StageTimeline(player, hologram)
                     .updateHologramContent(Arrays.asList(
                             getMessages().get(2),
                             getMessages().get(3),
-                            "{empty}",
+                            getEmptyLine(),
                             getMessages().get(4),
                             getMessages().get(5)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(5)
                     .sendChatMessage(setMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
-                    .addTask(new CustomTask(player, () -> {
-                        hologram.updateFooter(0, teleportPoints.size());
-                        hologram.updateFooter(true);
-                    }))
-                    .addTeleportEvent(player, teleportPoints, 1, (double[] teleportPoint, int pointsRemaining) -> {
-                        player.getWorld().getBlockAt((int) teleportPoint[0],
-                                player.getWorld().getHighestBlockYAt(plot.getCenter().getBlockX(), plot.getCenter().getBlockZ()), (int) teleportPoint[1])
-                                .setTypeIdAndData(Material.CONCRETE_POWDER.getId(), (byte) 5, false);
-                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
-                        hologram.updateFooter(teleportCoordinates.size() - pointsRemaining, teleportCoordinates.size());
+                    .addTeleportEvent(player, getBuildingPoints(player, plot), 1, (teleportPoint) -> {
+                        Utils.TutorialUtils.setBlockAt(player.getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1f, 1f);
                     })
                     .delay(1)
                     .sendChatMessage(getMessages().get(7), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
@@ -216,9 +201,8 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage4 extends AbstractStage {
-
         public Stage4(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 3);
+            super(plot, hologram, 0);
         }
 
         @Override
@@ -228,10 +212,91 @@ public class BeginnerTutorial extends AbstractTutorial {
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_DESC),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_1),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_2),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_3),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_4, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_5, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_6)
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_3, "§a//wand§r§7")
+            );
+        }
+
+        @Override
+        protected StageTimeline setTasks() {
+            return new StageTimeline(player, hologram)
+                .updateHologramContent(Arrays.asList(
+                        getMessages().get(2),
+                        getMessages().get(3)
+                ), Sound.UI_BUTTON_CLICK)
+                .delay(5)
+                .sendChatMessage(getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+                .addTask(new WandCmdEventTask(player))
+                .playSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+        }
+    }
+
+    private static class Stage5 extends AbstractStage {
+        public Stage5(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
+            super(plot, hologram, 0);
+        }
+
+        @Override
+        protected List<String> setMessages() {
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_2, "§8§l//line <pattern>§r§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_3,
+                            "§a" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + "§f",
+                                    "§a" + LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + "§f"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_4, "§a//line wool§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_5)
+            );
+        }
+
+        @Override
+        protected StageTimeline setTasks() {
+            List<Vector> buildingPoints = getBuildingPoints(player, plot);
+
+            // Map building points to lines
+            Map<Vector, Vector> buildingLinePoints = new HashMap<>();
+            buildingLinePoints.put(buildingPoints.get(0), buildingPoints.get(1));
+            buildingLinePoints.put(buildingPoints.get(1), buildingPoints.get(2));
+            buildingLinePoints.put(buildingPoints.get(2), buildingPoints.get(3));
+            buildingLinePoints.put(buildingPoints.get(3), buildingPoints.get(0));
+
+            return new StageTimeline(player, hologram)
+                    .updateHologramContent(Arrays.asList(
+                            getMessages().get(2),
+                            getEmptyLine(),
+                            getMessages().get(3),
+                            getMessages().get(4)
+                    ), Sound.UI_BUTTON_CLICK)
+                    .delay(5)
+                    .sendChatMessage(getMessages().get(5), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+                    .addTask(new LineCmdEventTask(player, plot.getTutorialConfig().getString(TutorialPaths.Beginner.BASE_BLOCK),
+                            plot.getTutorialConfig().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID), buildingLinePoints, ((minPoint, maxPoint) -> {
+                        buildingLinePoints.remove(minPoint);
+                        Utils.TutorialUtils.setBlockAt(player.getWorld(), minPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        Utils.TutorialUtils.setBlockAt(player.getWorld(), maxPoint, Material.CONCRETE_POWDER, (byte) 5);
+                    })))
+                    .delay(1)
+                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+        }
+    }
+
+    private static class Stage6 extends AbstractStage {
+        public Stage6(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
+            super(plot, hologram, 1);
+        }
+
+        @Override
+        protected List<String> setMessages() {
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_DESC),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_1),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_2),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_3),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_4, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_5, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_6)
             );
         }
 
@@ -243,25 +308,48 @@ public class BeginnerTutorial extends AbstractTutorial {
             StageTimeline stage = new StageTimeline(player, hologram);
             stage.updateHologramContent(Arrays.asList(
                     getMessages().get(2),
-                    "{empty}",
+                    getEmptyLine(),
                     getMessages().get(3)
             ), Sound.UI_BUTTON_CLICK)
             .delay(5)
             .sendChatMessage(setMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
-            .addTask(new CustomTask(player, () -> {
-                hologram.updateFooter(0, 1);
-                hologram.updateFooter(true);
-            }))
             .addPlayerChatEvent(player, height, offset, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
                     AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(getMessages().get(7), ChatColor.GRAY));
                 } else {
-                    hologram.updateFooter(1, 1);
                     stage.delay(1);
                     stage.sendChatMessage(isCorrect ? getMessages().get(5) : getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
                 }
             });
             return stage;
         }
+    }
+
+    /**
+     * Get the building points from the config and convert them to Vector
+     * @param player player who is doing the tutorial
+     * @param plot plot where the tutorial is taking place
+     * @return list of building points as Vector
+     */
+    private static List<Vector> getBuildingPoints(Player player, TutorialPlot plot) {
+        // Read coordinates from config
+        List<String> buildingPointsAsString = Arrays.asList(
+                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_1),
+                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_2),
+                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_3),
+                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_4)
+        );
+
+        // Convert coordinates to Vector
+        List<Vector> buildingPoints = new ArrayList<>();
+        buildingPointsAsString.forEach(c -> {
+            String[] pointsSplit = c.trim().split(",");
+            double x = Double.parseDouble(pointsSplit[0]);
+            double z = Double.parseDouble(pointsSplit[1]);
+            double y = player.getWorld().getHighestBlockYAt((int) x, (int) z);
+            buildingPoints.add(new Vector(x, y, z));
+        });
+
+        return buildingPoints;
     }
 }

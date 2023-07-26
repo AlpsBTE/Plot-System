@@ -283,10 +283,8 @@ public abstract class AbstractPlotGenerator {
                 editSession.flushQueue();
             }
 
-            Bukkit.getLogger().log(Level.INFO, "Going to paste schematic: "+ schematicFile.getName());
             FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(world.getPlotHeight()), false);
             editSession.flushQueue();
-            Bukkit.getLogger().log(Level.INFO, "Pasted schematic successfully: "+ schematicFile.getName());
         }
     }
 }

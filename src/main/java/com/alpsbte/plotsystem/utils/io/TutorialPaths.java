@@ -25,7 +25,8 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class TutorialPaths {
-    public static final String TUTORIAL_ID = "tutorial-id";
+    public static final String TUTORIAL_CATEGORY = "tutorial-category";
+    public static final String TUTORIAL_ITEM_NAME = "tutorial-item-name";
     public static final String SPAWN_COORDINATES = "spawn-coordinates";
     public static final String SPAWN_COORDINATES_YAW = "spawn-coordinates-yaw";
     public static final String SPAWN_COORDINATES_PITCH = "spawn-coordinates-pitch";
@@ -35,11 +36,13 @@ public abstract class TutorialPaths {
 
     public static final class Beginner {
         private static final String BEGINNER = "beginner.";
-        private static final String TELEPORT_COORDINATES = BEGINNER + "teleport-coordinates.";
+        private static final String TELEPORT_COORDINATES = BEGINNER + "building-coordinates.";
         public static final String POINT_1 = TELEPORT_COORDINATES + "point-1";
         public static final String POINT_2 = TELEPORT_COORDINATES + "point-2";
         public static final String POINT_3 = TELEPORT_COORDINATES + "point-3";
         public static final String POINT_4 = TELEPORT_COORDINATES + "point-4";
+        public static final String BASE_BLOCK = BEGINNER + "base-block";
+        public static final String BASE_BLOCK_ID = BEGINNER + "base-block-id";
         public static final String HEIGHT = BEGINNER + "height";
         public static final String HEIGHT_OFFSET = BEGINNER + "height-offset";
     }
