@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
@@ -342,11 +343,13 @@ public class BeginnerTutorial extends AbstractTutorial {
 
         // Convert coordinates to Vector
         List<Vector> buildingPoints = new ArrayList<>();
+
+        World world = plot.getWorld().getBukkitWorld();
         buildingPointsAsString.forEach(c -> {
             String[] pointsSplit = c.trim().split(",");
             double x = Double.parseDouble(pointsSplit[0]);
             double z = Double.parseDouble(pointsSplit[1]);
-            double y = player.getWorld().getHighestBlockYAt((int) x, (int) z);
+            double y = AlpsUtils.getHighestBlockYAt(world, (int) x, (int) z);
             buildingPoints.add(new Vector(x, y, z));
         });
 
