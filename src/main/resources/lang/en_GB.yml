@@ -331,6 +331,18 @@ tutorials:
       stage-6-4: 'Well done! The height of the building is {0} blocks.'
       stage-6-5: 'You´ve almost made it! The height of the building is {0} blocks.'
       stage-6-6: 'You´ve almost made it! Try again.'
+    stage-7:
+      stage-7-title: 'Building Shells'
+      stage-7-desc: 'How do I create building shells?'
+    stage-8:
+      stage-8-title: 'Windows'
+      stage-8-desc: 'How do I add windows to my builds?'
+    stage-9:
+      stage-9-title: 'Texturing'
+      stage-9-desc: 'How do I texture my builds?'
+    stage-10:
+      stage-10-title: 'Detailing'
+      stage-10-desc: 'How do I detail my builds?'
 
 # NOTE: Do not change
 config-version: 1.3

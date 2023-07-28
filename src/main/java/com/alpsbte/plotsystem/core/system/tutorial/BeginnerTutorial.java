@@ -43,7 +43,6 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 
 public class BeginnerTutorial extends AbstractTutorial {
     @Override
@@ -54,7 +53,11 @@ public class BeginnerTutorial extends AbstractTutorial {
                 Stage3.class,
                 Stage4.class,
                 Stage5.class,
-                Stage6.class
+                Stage6.class,
+                Stage7.class,
+                Stage8.class,
+                Stage9.class,
+                Stage10.class
         );
     }
 
@@ -352,6 +355,110 @@ public class BeginnerTutorial extends AbstractTutorial {
         @Override
         public int getInitialSchematicID() {
             return 1;
+        }
+    }
+
+    private static class Stage7 implements Stage {
+        protected Stage7() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_DESC),
+                    "TODO"
+            );
+        }
+
+        @Override
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException, SQLException {
+            List<String> messages = getMessages(player);
+            return new StageTimeline(player, hologram)
+                    .updateHologramContent(Collections.singletonList(messages.get(2)), Sound.UI_BUTTON_CLICK)
+                    .delay(5);
+        }
+
+        @Override
+        public int getInitialSchematicID() {
+            return 2;
+        }
+    }
+
+    private static class Stage8 implements Stage {
+        protected Stage8() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_DESC),
+                    "TODO"
+            );
+        }
+
+        @Override
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException, SQLException {
+            List<String> messages = getMessages(player);
+            return new StageTimeline(player, hologram)
+                    .updateHologramContent(Collections.singletonList(messages.get(2)), Sound.UI_BUTTON_CLICK)
+                    .delay(5);
+        }
+
+        @Override
+        public int getInitialSchematicID() {
+            return 4;
+        }
+    }
+
+    private static class Stage9 implements Stage {
+        protected Stage9() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_DESC),
+                    "TODO"
+            );
+        }
+
+        @Override
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException, SQLException {
+            List<String> messages = getMessages(player);
+            return new StageTimeline(player, hologram)
+                    .updateHologramContent(Collections.singletonList(messages.get(2)), Sound.UI_BUTTON_CLICK)
+                    .delay(5);
+        }
+
+        @Override
+        public int getInitialSchematicID() {
+            return 5;
+        }
+    }
+
+    private static class Stage10 implements Stage {
+        protected Stage10() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
+            return Arrays.asList(
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TITLE),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_DESC),
+                    "TODO"
+            );
+        }
+
+        @Override
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException, SQLException {
+            List<String> messages = getMessages(player);
+            return new StageTimeline(player, hologram)
+                    .updateHologramContent(Collections.singletonList(messages.get(2)), Sound.UI_BUTTON_CLICK)
+                    .delay(5);
+        }
+
+        @Override
+        public int getInitialSchematicID() {
+            return 6;
         }
     }
 

@@ -360,5 +360,25 @@ public abstract class LangPaths {
         public static final String TUTORIALS_BEGINNER_STAGE6_4 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-4";
         public static final String TUTORIALS_BEGINNER_STAGE6_5 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-5";
         public static final String TUTORIALS_BEGINNER_STAGE6_6 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-6";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE7 = TUTORIALS_BEGINNER + "stage-7.";
+        public static final String TUTORIALS_BEGINNER_STAGE7_TITLE = TUTORIALS_BEGINNER_STAGE7 + "stage-7-title";
+        public static final String TUTORIALS_BEGINNER_STAGE7_DESC = TUTORIALS_BEGINNER_STAGE7 + "stage-7-desc";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE8 = TUTORIALS_BEGINNER + "stage-8.";
+        public static final String TUTORIALS_BEGINNER_STAGE8_TITLE = TUTORIALS_BEGINNER_STAGE8 + "stage-8-title";
+        public static final String TUTORIALS_BEGINNER_STAGE8_DESC = TUTORIALS_BEGINNER_STAGE8 + "stage-8-desc";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE9 = TUTORIALS_BEGINNER + "stage-9.";
+        public static final String TUTORIALS_BEGINNER_STAGE9_TITLE = TUTORIALS_BEGINNER_STAGE9 + "stage-9-title";
+        public static final String TUTORIALS_BEGINNER_STAGE9_DESC = TUTORIALS_BEGINNER_STAGE9 + "stage-9-desc";
+
+
+        private static final String TUTORIALS_BEGINNER_STAGE10 = TUTORIALS_BEGINNER + "stage-10.";
+        public static final String TUTORIALS_BEGINNER_STAGE10_TITLE = TUTORIALS_BEGINNER_STAGE10 + "stage-10-title";
+        public static final String TUTORIALS_BEGINNER_STAGE10_DESC = TUTORIALS_BEGINNER_STAGE10 + "stage-10-desc";
     }
 }

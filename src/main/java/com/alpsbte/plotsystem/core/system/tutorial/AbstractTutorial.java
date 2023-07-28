@@ -135,7 +135,7 @@ public abstract class AbstractTutorial {
                 // Start tasks timeline
                 activeStageTimeline.StartTimeline();
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial.", ex);
                 player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
             }
         }
