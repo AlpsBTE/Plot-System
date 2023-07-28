@@ -121,7 +121,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
-                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent() && plot.getPlotOwner().getPlayer().equals(event.getPlayer())) {
+                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
                         reviewedPlots.add(plot);
                         plot.getReview().setFeedbackSent(true);
                     }
