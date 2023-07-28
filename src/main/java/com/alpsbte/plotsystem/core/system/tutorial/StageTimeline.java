@@ -67,7 +67,10 @@ public class StageTimeline {
                     BukkitTask task = new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if (timelineTask.isCancelled() || currentTask.isTaskDone()) this.cancel();
+                            if (timelineTask.isCancelled()) {
+                                currentTask.setTaskDone();
+                                this.cancel();
+                            } else if (currentTask.isTaskDone()) this.cancel();
                         }
                     }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0); // TODO: Fix performance issue with 0 tick delay
 

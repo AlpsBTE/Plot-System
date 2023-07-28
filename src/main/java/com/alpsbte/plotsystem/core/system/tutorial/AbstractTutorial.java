@@ -147,6 +147,9 @@ public abstract class AbstractTutorial {
                 hologram.remove();
                 plot.getWorld().unloadWorld(true);
                 if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+
+                Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
+                Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
