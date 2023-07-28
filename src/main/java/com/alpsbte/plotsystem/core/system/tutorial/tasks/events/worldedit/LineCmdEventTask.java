@@ -35,9 +35,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -76,21 +75,18 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
 
         updateProgress();
         minPoint = null; maxPoint = null;
-        if (linePoints.size() == 0) unregister();
+        if (linePoints.size() == 0) setTaskDone();
         return true;
     }
 
-    @EventHandler
     @Override
-    protected void onPlayerUseCommandEvent(PlayerCommandPreprocessEvent event) {
-        super.onPlayerUseCommandEvent(event);
+    public void performEvent(PlayerEvent event) {
+        if (event instanceof PlayerInteractEvent) {
+            onPlayerInteractEvent((PlayerInteractEvent) event);
+        } else super.performEvent(event);
     }
 
-    @EventHandler
-    @Override
-    protected void onPlayerInteractEvent(PlayerInteractEvent event) {
-        if (!event.getPlayer().getUniqueId().toString().equals(player.getUniqueId().toString())) return;
-
+    private void onPlayerInteractEvent(PlayerInteractEvent event) {
         // Check if player has a wooden axe in his hand
         if (event.getClickedBlock() == null || event.getItem() == null || !event.getItem().equals(new ItemStack(Material.WOOD_AXE))) return;
 

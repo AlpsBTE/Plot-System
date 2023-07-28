@@ -24,8 +24,12 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
 
-import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerEvent;
 
-public interface EventTask extends Listener {
-    void unregister();
+public interface EventTask {
+    /**
+     * Performs the event check in the given task
+     * @param event The event to check
+     */
+    void performEvent(PlayerEvent event);
 }

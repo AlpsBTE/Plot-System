@@ -32,7 +32,9 @@ import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.utils.PacketListener;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -132,6 +134,8 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
             this.getServer().getPluginManager().registerEvents(new CustomHeadEventListener(), this);
+            if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
+                this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");

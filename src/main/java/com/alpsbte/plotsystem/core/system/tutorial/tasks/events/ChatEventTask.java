@@ -25,13 +25,11 @@
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerEvent;
 
 public class ChatEventTask extends AbstractTask implements EventTask {
     private final int expectedValue;
@@ -41,7 +39,7 @@ public class ChatEventTask extends AbstractTask implements EventTask {
     private int attemptsLeft;
 
     public ChatEventTask(Player player, int expectedValue, int offset, int maxAttempts, BiTaskAction<Boolean, Integer> onChatAction) {
-        super(player);
+        super(player, 1);
         this.expectedValue = expectedValue;
         this.offset = offset;
         this.onChatAction = onChatAction;
@@ -51,32 +49,28 @@ public class ChatEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performTask() {
-        PlotSystem.getPlugin().getServer().getPluginManager().registerEvents(this, PlotSystem.getPlugin());
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    private void onPlayerChatEvent(AsyncPlayerChatEvent event) {
-        if (!event.getPlayer().getUniqueId().toString().equals(player.getUniqueId().toString())) return;
-        event.setCancelled(true);
-
-        String message = event.getMessage();
-        if (AlpsUtils.TryParseInt(message) != null) {
-            int value = Integer.parseInt(message);
-            if (value >= expectedValue - offset && value <= expectedValue + offset) {
-                onChatAction.performAction(true, attemptsLeft);
-                attemptsLeft = 0;
-            } else {
-                attemptsLeft--;
-                onChatAction.performAction(false, attemptsLeft);
-            }
-        }
-
-        if (attemptsLeft <= 0) unregister();
+        TutorialEventListener.runningEventTasks.put(player.getUniqueId().toString(), this);
     }
 
     @Override
-    public void unregister() {
-        HandlerList.unregisterAll(this);
-        setTaskDone();
+    public void performEvent(PlayerEvent event) {
+        if (event instanceof AsyncPlayerChatEvent) {
+            AsyncPlayerChatEvent chatEvent = (AsyncPlayerChatEvent) event;
+            chatEvent.setCancelled(true);
+
+            String message = chatEvent.getMessage();
+            if (AlpsUtils.TryParseInt(message) != null) {
+                int value = Integer.parseInt(message);
+                if (value >= expectedValue - offset && value <= expectedValue + offset) {
+                    onChatAction.performAction(true, attemptsLeft);
+                    attemptsLeft = 0;
+                } else {
+                    attemptsLeft--;
+                    onChatAction.performAction(false, attemptsLeft);
+                }
+            }
+
+            if (attemptsLeft <= 0) setTaskDone();
+        }
     }
 }

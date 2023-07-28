@@ -24,25 +24,18 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit;
 
-import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.EventTask;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerEvent;
 
 public abstract class AbstractCmdEventTask extends AbstractTask implements EventTask {
     protected String expectedCommand;
     protected String[] args1;
 
     private final boolean isCancelCmdEvent;
-
-    @Override
-    public void performTask() {
-        PlotSystem.getPlugin().getServer().getPluginManager().registerEvents(this, PlotSystem.getPlugin());
-    }
 
     public AbstractCmdEventTask(Player player, String expectedCommand, int totalProgress, boolean cancelCmdEvent) {
         this(player, expectedCommand, new String[0], totalProgress, cancelCmdEvent);
@@ -55,24 +48,21 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
         this.isCancelCmdEvent = cancelCmdEvent;
     }
 
-    protected abstract boolean onCommand(String[] args);
-
-    @EventHandler
-    protected void onPlayerUseCommandEvent(PlayerCommandPreprocessEvent event) {
-        if (!event.getPlayer().getUniqueId().toString().equals(player.getUniqueId().toString())) return;
-
-        if (event.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
-            onCommand(event.getMessage().replaceFirst(expectedCommand, "").trim().split(" "));
-            if (isCancelCmdEvent) event.setCancelled(true);
-        }
+    @Override
+    public void performTask() {
+        TutorialEventListener.runningEventTasks.put(player.getUniqueId().toString(), this);
     }
 
-    @EventHandler
-    protected void onPlayerInteractEvent(PlayerInteractEvent event) {}
+    protected abstract boolean onCommand(String[] args);
 
     @Override
-    public void unregister() {
-        HandlerList.unregisterAll(this);
-        setTaskDone();
+    public void performEvent(PlayerEvent event) {
+        if (event instanceof PlayerCommandPreprocessEvent) {
+            PlayerCommandPreprocessEvent cmdEvent = (PlayerCommandPreprocessEvent) event;
+            if (cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
+                onCommand(cmdEvent.getMessage().replaceFirst(expectedCommand, "").trim().split(" "));
+                if (isCancelCmdEvent) cmdEvent.setCancelled(true);
+            }
+        }
     }
 }

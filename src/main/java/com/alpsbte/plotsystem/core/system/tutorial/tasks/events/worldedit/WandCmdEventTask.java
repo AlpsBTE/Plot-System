@@ -25,8 +25,6 @@
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class WandCmdEventTask extends AbstractCmdEventTask {
     public WandCmdEventTask(Player player) {
@@ -36,13 +34,7 @@ public class WandCmdEventTask extends AbstractCmdEventTask {
     @Override
     protected boolean onCommand(String[] args) {
         updateProgress();
-        unregister();
+        setTaskDone();
         return true;
-    }
-
-    @Override
-    @EventHandler
-    protected void onPlayerUseCommandEvent(PlayerCommandPreprocessEvent event) {
-        super.onPlayerUseCommandEvent(event);
     }
 }

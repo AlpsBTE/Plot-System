@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
 import com.alpsbte.plotsystem.core.system.tutorial.StageTimeline;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractTask {
@@ -72,7 +73,8 @@ public abstract class AbstractTask {
      * Call this method when the task is done.
      * If the task is not set to done, the stage timeline won't continue.
      */
-    protected void setTaskDone() {
+    public void setTaskDone() {
+        if (player != null) TutorialEventListener.runningEventTasks.remove(player.getUniqueId().toString());
         this.isDone = true;
     }
 
