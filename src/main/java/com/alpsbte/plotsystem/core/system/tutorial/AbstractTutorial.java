@@ -31,7 +31,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
@@ -55,16 +54,17 @@ import java.util.logging.Level;
 public abstract class AbstractTutorial {
     public static List<AbstractTutorial> activeTutorials = new ArrayList<>();
 
-    private final List<Class<? extends AbstractStage>> stages;
+    private final List<Class<? extends Stage>> stages;
     private final Player player;
     private final TutorialPlot plot;
     private final TutorialHologram hologram = new TutorialHologram("tutorial-hologram");
     private TutorialPlotGenerator plotGenerator;
     private BukkitTask tutorialTask;
-    private AbstractStage activeStage;
+
+    private StageTimeline activeStageTimeline;
     private int activeStageIndex = 0;
 
-    protected abstract List<Class<? extends AbstractStage>> setStages();
+    protected abstract List<Class<? extends Stage>> setStages();
 
     protected AbstractTutorial(Builder builder, int tutorialId) throws SQLException {
         this.player = builder.getPlayer();
@@ -95,8 +95,8 @@ public abstract class AbstractTutorial {
         final String worldName = plot.getWorld().getWorldName();
         tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
-                if (activeStage == null || !player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial(false);
-                if (activeStage.getTaskTimeline().lastTaskId >= activeStage.getTaskTimeline().tasks.size() - 1) nextStage();
+                if (activeStageTimeline == null || !player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial(false);
+                if (activeStageTimeline.lastTaskId >= activeStageTimeline.tasks.size() - 1) nextStage();
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -117,20 +117,23 @@ public abstract class AbstractTutorial {
         } else {
             try {
                 // Switch to next stage
-                activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor(TutorialPlot.class, TutorialHologram.class).newInstance(plot, hologram);
+                Stage activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor().newInstance();
+                List<String> activeStageMessages = activeStage.getMessages(player);
+                activeStageTimeline = activeStage.getTimeline(player, plot, hologram);
                 activeStageIndex++;
 
                 // Generate plot schematic for stage
-                plotGenerator.generateOutlines(activeStage.initSchematicId);
+                plotGenerator.generateOutlines(activeStage.getInitialSchematicID());
 
                 hologram.updateHeader(Material.valueOf(plot.getTutorialConfig().getString(TutorialPaths.TUTORIAL_ITEM_NAME)),
-                        "§b§lStage " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStage.getMessages().get(0));
+                        "§b§lStage " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStageMessages.get(0));
                 hologram.setFooterVisibility(false);
 
-                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStage.getMessages().get(0), activeStage.getMessages().get(1)));
+                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStageMessages.get(0), activeStageMessages.get(1)));
                 player.playSound(player.getLocation(), activeStageIndex == 0 ? Utils.SoundUtils.TELEPORT_SOUND : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-                activeStage.getTaskTimeline().StartTimeline();
 
+                // Start tasks timeline
+                activeStageTimeline.StartTimeline();
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize tutorial stage.", ex);
                 player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
@@ -141,7 +144,7 @@ public abstract class AbstractTutorial {
     private void StopTutorial(boolean isCompleted) {
         if (tutorialTask != null) tutorialTask.cancel();
         activeTutorials.remove(this);
-        if (activeStage != null) activeStage.getTaskTimeline().StopTimeline();
+        if (activeStageTimeline != null) activeStageTimeline.StopTimeline();
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
                 hologram.remove();

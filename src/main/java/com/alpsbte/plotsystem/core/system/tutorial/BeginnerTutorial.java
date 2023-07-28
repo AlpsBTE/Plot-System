@@ -31,23 +31,23 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit.LineCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit.WandCmdEventTask;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.sk89q.worldedit.Vector;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class BeginnerTutorial extends AbstractTutorial {
-
     @Override
-    protected List<Class<? extends AbstractStage>> setStages() {
+    protected List<Class<? extends Stage>> setStages() {
         return Arrays.asList(
                 Stage1.class,
                 Stage2.class,
@@ -62,13 +62,11 @@ public class BeginnerTutorial extends AbstractTutorial {
         super(builder, TutorialCategory.BEGINNER.getId());
     }
 
-    private static class Stage1 extends AbstractStage {
-        public Stage1(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 0);
-        }
+    private static class Stage1 implements Stage {
+        protected Stage1() {}
 
         @Override
-        protected List<String> setMessages() {
+        public List<String> getMessages(Player player) {
             return Arrays.asList(
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
@@ -80,26 +78,30 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected StageTimeline setTasks() {
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) {
+            List<String> messages = getMessages(player);
             return new StageTimeline(player, hologram)
                     .updateHologramContent(Arrays.asList(
-                            getMessages().get(2),
-                            getMessages().get(3),
-                            getEmptyLine(),
-                            getMessages().get(4),
-                            getMessages().get(5)
+                            messages.get(2),
+                            messages.get(3),
+                            EMPTY_LINE,
+                            messages.get(4),
+                            messages.get(5)
                     ), null)
                     .delay(15);
         }
-    }
-
-    private static class Stage2 extends AbstractStage {
-        public Stage2(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 0);
-        }
 
         @Override
-        protected List<String> setMessages() {
+        public int getInitialSchematicID() {
+            return 0;
+        }
+    }
+
+    private static class Stage2 implements Stage {
+        protected Stage2() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
             return Arrays.asList(
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
@@ -120,26 +122,27 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected StageTimeline setTasks() throws IOException {
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException {
+            List<String> messages = getMessages(player);
             return new StageTimeline(player, hologram)
                     .updateHologramContent(Arrays.asList(
-                            getMessages().get(2),
-                            getMessages().get(3),
-                            getEmptyLine(),
-                            getMessages().get(4),
-                            getMessages().get(5),
-                            getEmptyLine(),
-                            getMessages().get(6)
+                            messages.get(2),
+                            messages.get(3),
+                            EMPTY_LINE,
+                            messages.get(4),
+                            messages.get(5),
+                            EMPTY_LINE,
+                            messages.get(6)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(10)
                     .waitForConfirmation()
                     .updateHologramContent(Arrays.asList(
                             "§a§lGoogle Maps",
-                            getMessages().get(7),
-                            getEmptyLine(),
-                            getMessages().get(9),
-                            getMessages().get(10),
-                            getMessages().get(11)
+                            messages.get(7),
+                            EMPTY_LINE,
+                            messages.get(9),
+                            messages.get(10),
+                            messages.get(11)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(2)
                     .sendClickableChatMessage(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"),
@@ -148,26 +151,29 @@ public class BeginnerTutorial extends AbstractTutorial {
                     .waitForConfirmation()
                     .updateHologramContent(Arrays.asList(
                             "§a§lGoogle Earth",
-                            getMessages().get(8),
-                            getEmptyLine(),
-                            getMessages().get(12),
-                            getMessages().get(13),
-                            getMessages().get(14)
+                            messages.get(8),
+                            EMPTY_LINE,
+                            messages.get(12),
+                            messages.get(13),
+                            messages.get(14)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(2)
                     .sendClickableChatMessage(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth"),
                             Sound.ENTITY_EXPERIENCE_ORB_PICKUP, "§aGoogle Earth", plot.getGoogleEarthLink())
                     .delay(8);
         }
-    }
-
-    private static class Stage3 extends AbstractStage {
-        public Stage3(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 0);
-        }
 
         @Override
-        protected List<String> setMessages() {
+        public int getInitialSchematicID() {
+            return 0;
+        }
+    }
+
+    private static class Stage3 implements Stage {
+        protected Stage3() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
             return Arrays.asList(
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_DESC),
@@ -181,33 +187,38 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected StageTimeline setTasks() {
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+            List<String> messages = getMessages(player);
             return new StageTimeline(player, hologram)
                     .updateHologramContent(Arrays.asList(
-                            getMessages().get(2),
-                            getMessages().get(3),
-                            getEmptyLine(),
-                            getMessages().get(4),
-                            getMessages().get(5)
+                            messages.get(2),
+                            messages.get(3),
+                            EMPTY_LINE,
+                            messages.get(4),
+                            messages.get(5)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(5)
-                    .sendChatMessage(setMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
-                    .addTeleportEvent(player, getBuildingPoints(player, plot), 1, (teleportPoint) -> {
+                    .sendChatMessage(messages.get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+                    .addTeleportEvent(player, getBuildingPoints(plot), 1, (teleportPoint) -> {
                         Utils.TutorialUtils.setBlockAt(player.getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1f, 1f);
+                        player.playSound(new Location(player.getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
+                                Sound.BLOCK_NOTE_PLING, 1f, 1f);
                     })
                     .delay(1)
-                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
-        }
-    }
-
-    private static class Stage4 extends AbstractStage {
-        public Stage4(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 0);
+                    .sendChatMessage(messages.get(7), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
         }
 
         @Override
-        protected List<String> setMessages() {
+        public int getInitialSchematicID() {
+            return 0;
+        }
+    }
+
+    private static class Stage4 implements Stage {
+        protected Stage4() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
             return Arrays.asList(
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_DESC),
@@ -218,26 +229,33 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected StageTimeline setTasks() {
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) {
+            List<String> messages = getMessages(player);
             return new StageTimeline(player, hologram)
                 .updateHologramContent(Arrays.asList(
-                        getMessages().get(2),
-                        getMessages().get(3)
+                        messages.get(2),
+                        messages.get(3)
                 ), Sound.UI_BUTTON_CLICK)
                 .delay(5)
-                .sendChatMessage(getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+                .sendChatMessage(messages.get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
                 .addTask(new WandCmdEventTask(player))
                 .playSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
         }
-    }
-
-    private static class Stage5 extends AbstractStage {
-        public Stage5(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 0);
-        }
 
         @Override
-        protected List<String> setMessages() {
+        public int getInitialSchematicID() {
+            return 0;
+        }
+    }
+
+    private static class Stage5 implements Stage {
+        private final static String BASE_BLOCK = ConfigUtil.getInstance().configs[2].getString(TutorialPaths.Beginner.BASE_BLOCK);
+        private final static int BASE_BLOCK_ID = ConfigUtil.getInstance().configs[2].getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
+
+        protected Stage5() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
             return Arrays.asList(
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_DESC),
@@ -252,8 +270,8 @@ public class BeginnerTutorial extends AbstractTutorial {
         }
 
         @Override
-        protected StageTimeline setTasks() {
-            List<Vector> buildingPoints = getBuildingPoints(player, plot);
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws SQLException {
+            List<Vector> buildingPoints = getBuildingPoints(plot);
 
             // Map building points to lines
             Map<Vector, Vector> buildingLinePoints = new HashMap<>();
@@ -262,83 +280,93 @@ public class BeginnerTutorial extends AbstractTutorial {
             buildingLinePoints.put(buildingPoints.get(2), buildingPoints.get(3));
             buildingLinePoints.put(buildingPoints.get(3), buildingPoints.get(0));
 
+            List<String> messages = getMessages(player);
             return new StageTimeline(player, hologram)
                     .updateHologramContent(Arrays.asList(
-                            getMessages().get(2),
-                            getEmptyLine(),
-                            getMessages().get(3),
-                            getMessages().get(4)
+                            messages.get(2),
+                            EMPTY_LINE,
+                            messages.get(3),
+                            messages.get(4)
                     ), Sound.UI_BUTTON_CLICK)
                     .delay(5)
-                    .sendChatMessage(getMessages().get(5), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
-                    .addTask(new LineCmdEventTask(player, plot.getTutorialConfig().getString(TutorialPaths.Beginner.BASE_BLOCK),
-                            plot.getTutorialConfig().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID), buildingLinePoints, ((minPoint, maxPoint) -> {
+                    .sendChatMessage(messages.get(5), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+                    .addTask(new LineCmdEventTask(player, BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         buildingLinePoints.remove(minPoint);
+
                         Utils.TutorialUtils.setBlockAt(player.getWorld(), minPoint, Material.CONCRETE_POWDER, (byte) 5);
                         Utils.TutorialUtils.setBlockAt(player.getWorld(), maxPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1f, 1f);
                     })))
                     .delay(1)
-                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
-        }
-    }
-
-    private static class Stage6 extends AbstractStage {
-        public Stage6(TutorialPlot plot, TutorialHologram hologram) throws SQLException, IOException {
-            super(plot, hologram, 1);
+                    .sendChatMessage(messages.get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
         }
 
         @Override
-        protected List<String> setMessages() {
+        public int getInitialSchematicID() {
+            return 0;
+        }
+    }
+
+    private static class Stage6 implements Stage {
+        private final static int HEIGHT = ConfigUtil.getInstance().configs[2].getInt(TutorialPaths.Beginner.HEIGHT);
+        private final static int HEIGHT_OFFSET = ConfigUtil.getInstance().configs[2].getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
+
+        protected Stage6() {}
+
+        @Override
+        public List<String> getMessages(Player player) {
             return Arrays.asList(
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TITLE),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_DESC),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_1),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_2),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_3),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_4, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
-                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_5, "§a" + plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT) + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_4, "§a" + HEIGHT + "§r§7"),
+                    LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_5, "§a" + HEIGHT_OFFSET + "§r§7"),
                     LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_6)
             );
         }
 
         @Override
-        protected StageTimeline setTasks() {
-            int height = plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT);
-            int offset = plot.getTutorialConfig().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
-
+        public StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) {
+            List<String> messages = getMessages(player);
             StageTimeline stage = new StageTimeline(player, hologram);
             stage.updateHologramContent(Arrays.asList(
-                    getMessages().get(2),
-                    getEmptyLine(),
-                    getMessages().get(3)
+                    messages.get(2),
+                    EMPTY_LINE,
+                    messages.get(3)
             ), Sound.UI_BUTTON_CLICK)
             .delay(5)
-            .sendChatMessage(setMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
-            .addPlayerChatEvent(player, height, offset, 3, (isCorrect, attemptsLeft) -> {
+            .sendChatMessage(messages.get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP)
+            .addPlayerChatEvent(player, HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
-                    AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(getMessages().get(7), ChatColor.GRAY));
+                    AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(messages.get(7), ChatColor.GRAY));
                 } else {
                     stage.delay(1);
-                    stage.sendChatMessage(isCorrect ? getMessages().get(5) : getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+                    stage.sendChatMessage(isCorrect ? messages.get(5) : messages.get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
                 }
             });
             return stage;
+        }
+
+        @Override
+        public int getInitialSchematicID() {
+            return 1;
         }
     }
 
     /**
      * Get the building points from the config and convert them to Vector
-     * @param player player who is doing the tutorial
-     * @param plot plot where the tutorial is taking place
      * @return list of building points as Vector
      */
-    private static List<Vector> getBuildingPoints(Player player, TutorialPlot plot) {
+    private static List<Vector> getBuildingPoints(TutorialPlot plot) throws SQLException {
         // Read coordinates from config
+        FileConfiguration config = ConfigUtil.getInstance().configs[2];
         List<String> buildingPointsAsString = Arrays.asList(
-                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_1),
-                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_2),
-                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_3),
-                plot.getTutorialConfig().getString(TutorialPaths.Beginner.POINT_4)
+                config.getString(TutorialPaths.Beginner.POINT_1),
+                config.getString(TutorialPaths.Beginner.POINT_2),
+                config.getString(TutorialPaths.Beginner.POINT_3),
+                config.getString(TutorialPaths.Beginner.POINT_4)
         );
 
         // Convert coordinates to Vector

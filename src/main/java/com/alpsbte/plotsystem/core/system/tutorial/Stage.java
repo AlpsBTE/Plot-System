@@ -32,35 +32,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class AbstractStage {
-    protected final TutorialPlot plot;
-    protected final Player player;
-    protected final TutorialHologram hologram;
-    protected final int initSchematicId;
+public interface Stage {
+    String EMPTY_LINE = "{empty}";
 
-    private final List<String> messages;
-    private final StageTimeline taskTimeline;
-    public AbstractStage(TutorialPlot plot, TutorialHologram hologram, int initSchematicId) throws SQLException, IOException {
-        this.plot = plot;
-        this.player = plot.getPlotOwner().getPlayer();
-        this.hologram = hologram;
-        this.initSchematicId = initSchematicId;
-
-        messages = setMessages();
-        taskTimeline = setTasks();
-    }
-
-    protected abstract List<String> setMessages();
-    protected abstract StageTimeline setTasks() throws IOException;
-
-    public List<String> getMessages() {
-        return messages;
-    }
-    public StageTimeline getTaskTimeline() {
-        return taskTimeline;
-    }
-
-    protected static String getEmptyLine() {
-        return "{empty}";
-    }
+    List<String> getMessages(Player player);
+    StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException, SQLException;
+    int getInitialSchematicID();
 }
