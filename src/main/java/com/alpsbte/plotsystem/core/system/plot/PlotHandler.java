@@ -280,7 +280,7 @@ public class PlotHandler {
             tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                    LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK))).create()));
+                    LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)).create()));
             player.spigot().sendMessage(tc);
 
             if(plots.size() != plots.indexOf(plot) + 1) {
