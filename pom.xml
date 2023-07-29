@@ -142,7 +142,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-io</artifactId>
-            <version>1.0.30</version>
+            <version>1.0.31</version>
             <scope>compile</scope>
         </dependency>
 

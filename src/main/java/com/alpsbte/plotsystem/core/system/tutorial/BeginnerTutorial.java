@@ -252,8 +252,8 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage5 implements Stage {
-        private final static String BASE_BLOCK = ConfigUtil.getInstance().configs[2].getString(TutorialPaths.Beginner.BASE_BLOCK);
-        private final static int BASE_BLOCK_ID = ConfigUtil.getInstance().configs[2].getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
+        private final static String BASE_BLOCK = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getString(TutorialPaths.Beginner.BASE_BLOCK);
+        private final static int BASE_BLOCK_ID = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
 
         protected Stage5() {}
 
@@ -311,8 +311,8 @@ public class BeginnerTutorial extends AbstractTutorial {
     }
 
     private static class Stage6 implements Stage {
-        private final static int HEIGHT = ConfigUtil.getInstance().configs[2].getInt(TutorialPaths.Beginner.HEIGHT);
-        private final static int HEIGHT_OFFSET = ConfigUtil.getInstance().configs[2].getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
+        private final static int HEIGHT = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT);
+        private final static int HEIGHT_OFFSET = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
 
         protected Stage6() {}
 
@@ -468,7 +468,7 @@ public class BeginnerTutorial extends AbstractTutorial {
      */
     private static List<Vector> getBuildingPoints(TutorialPlot plot) throws SQLException {
         // Read coordinates from config
-        FileConfiguration config = ConfigUtil.getInstance().configs[2];
+        FileConfiguration config = ConfigUtil.getTutorialInstance().getBeginnerTutorial();
         List<String> buildingPointsAsString = Arrays.asList(
                 config.getString(TutorialPaths.Beginner.POINT_1),
                 config.getString(TutorialPaths.Beginner.POINT_2),

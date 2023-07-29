@@ -54,7 +54,7 @@ public class TutorialPlot extends AbstractPlot {
 
     public TutorialPlot(int id) throws SQLException {
         super(id);
-        tutorialConfig = ConfigUtil.getInstance().configs[2 + getTutorialId()];
+        tutorialConfig = ConfigUtil.getTutorialInstance().configs[getTutorialId()];
     }
 
     public int getTutorialId() throws SQLException {
