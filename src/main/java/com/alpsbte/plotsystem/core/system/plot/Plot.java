@@ -196,8 +196,11 @@ public class Plot extends AbstractPlot {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
-            String points = rs.getString(1);
-            List<BlockVector2D> pointVectors = getOutlinePoints(rs.wasNull() ? null : points);
+            List<BlockVector2D> pointVectors = new ArrayList<>();
+            if (rs.next()) {
+                String points = rs.getString(1);
+                pointVectors = getOutlinePoints(rs.wasNull() ? null : points);
+            }
 
             DatabaseConnection.closeResultSet(rs);
             return pointVectors;
