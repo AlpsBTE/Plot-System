@@ -27,10 +27,9 @@ package com.alpsbte.plotsystem.utils.io;
 public abstract class TutorialPaths {
     public static final String TUTORIAL_CATEGORY = "tutorial-category";
     public static final String TUTORIAL_ITEM_NAME = "tutorial-item-name";
-    public static final String SPAWN_COORDINATES = "spawn-coordinates";
-    public static final String SPAWN_COORDINATES_YAW = "spawn-coordinates-yaw";
-    public static final String SPAWN_COORDINATES_PITCH = "spawn-coordinates-pitch";
-    public static final String HOLOGRAM_COORDINATES = "hologram-coordinates";
+    public static final String TUTORIAL_SPAWNS = "tutorial-spawns";
+    public static final String TUTORIAL_WORLDS_SPAWN_PLAYER = "spawn-player";
+    public static final String TUTORIAL_WORLDS_SPAWN_NPC = "spawn-npc";
     public static final String PLOT_OUTLINES = "plot-outlines";
 
 

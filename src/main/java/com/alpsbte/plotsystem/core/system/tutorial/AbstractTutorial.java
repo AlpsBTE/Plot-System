@@ -24,188 +24,169 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.io.TutorialPaths;
-import com.sk89q.worldedit.Vector2D;
-import me.filoghost.holographicdisplays.api.Position;
-import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-public abstract class AbstractTutorial {
-    public static List<AbstractTutorial> activeTutorials = new ArrayList<>();
+public abstract class AbstractTutorial implements TutorialListener {
+    public static List<TutorialListener> activeTutorials = new ArrayList<>();
 
-    private final List<Class<? extends Stage>> stages;
-    private final Player player;
-    private final TutorialPlot plot;
-    private final TutorialHologram hologram = new TutorialHologram("tutorial-hologram");
-    private TutorialPlotGenerator plotGenerator;
-    private BukkitTask tutorialTask;
+    public final Player player;
+    private List<Class<? extends AbstractStage>> stages;
+    private List<TutorialWorld> worlds;
+    protected AbstractStage currentStage;
 
-    private StageTimeline activeStageTimeline;
-    private int activeStageIndex = 0;
 
-    protected abstract List<Class<? extends Stage>> setStages();
+    private StageTimeline stageTimeline;
+    protected int activeStageIndex = 0;
 
-    protected AbstractTutorial(Builder builder, int tutorialId) throws SQLException {
-        this.player = builder.getPlayer();
-        stages = setStages();
+    protected TutorialNPC npc;
+    protected int currentWorldIndex = -1;
 
-        // Get tutorial plot
-        if (TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId) == null) {
-            plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), tutorialId);
-        } else plot = TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId);
+    protected abstract AbstractStage getStage() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+    protected abstract List<TutorialWorld> setWorlds();
+    protected abstract List<Class<? extends AbstractStage>> setStages();
 
-        // Check if tutorial plot is null
-        if (plot == null) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
-            return;
-        }
-
-        // Generate tutorial world
-        plotGenerator = new TutorialPlotGenerator(plot, builder);
-
-        // Create tutorial hologram
-        createHologram();
-
-        // Set stage and add tutorial to active tutorials
-        setStage(plot.getStage());
+    protected AbstractTutorial(Player player) {
+        this.player = player;
         activeTutorials.add(this);
-
-        // Start tutorial
-        final String worldName = plot.getWorld().getWorldName();
-        tutorialTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            try {
-                if (activeStageTimeline == null || !player.isOnline() || !player.getWorld().getName().equals(worldName)) StopTutorial(false);
-                if (activeStageTimeline.lastTaskId >= activeStageTimeline.tasks.size() - 1) nextStage();
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        }, 0, 20);
     }
 
-    private void setStage(int stageIndex) throws SQLException {
+    protected void initTutorialStage() {
+        worlds = setWorlds();
+        stages = setStages();
+    }
+
+    protected void setStage(int stageIndex) throws SQLException {
         activeStageIndex = stageIndex - 1;
         nextStage();
     }
 
-    private void nextStage() throws SQLException {
+    protected void nextStage() throws SQLException {
         if (activeStageIndex + 1 >= stages.size()) {
-            // TODO: Complete tutorial
-
-            player.sendMessage("Tutorial Completed");
             StopTutorial(true);
         } else {
-            try {
-                // Switch to next stage
-                Stage activeStage = stages.get(activeStageIndex + 1).getDeclaredConstructor().newInstance();
-                List<String> activeStageMessages = activeStage.getMessages(player);
-                activeStageTimeline = activeStage.getTimeline(player, plot, hologram);
-                activeStageIndex++;
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                try {
+                    // Switch to next stage
+                    currentStage = getStage();
 
-                // Generate plot schematic for stage
-                plotGenerator.generateOutlines(activeStage.getInitialSchematicID());
+                    // Check if player has to switch world
+                    if (currentStage.getInitWorldIndex() != currentWorldIndex) {
+                        onSwitchWorld(player, currentStage.getInitWorldIndex());
+                        currentWorldIndex = currentStage.getInitWorldIndex();
+                    }
 
-                hologram.updateHeader(Material.valueOf(plot.getTutorialConfig().getString(TutorialPaths.TUTORIAL_ITEM_NAME)),
-                        "§b§lStage " + (activeStageIndex + 1) + " §f§l◆ §6§l" + activeStageMessages.get(0));
-                hologram.setFooterVisibility(false);
+                    // Ge the timeline of the current stage and increase the active stage index
+                    stageTimeline = currentStage.getTimeline();
+                    activeStageIndex++;
 
-                ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(activeStageMessages.get(0), activeStageMessages.get(1)));
-                player.playSound(player.getLocation(), activeStageIndex == 0 ? Utils.SoundUtils.TELEPORT_SOUND : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+                    // Send new stage unlocked message to player
+                    ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(currentStage.getMessages().get(0), currentStage.getMessages().get(1)));
+                    player.playSound(player.getLocation(), activeStageIndex == 0 ? Utils.SoundUtils.TELEPORT_SOUND : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
 
-                // Start tasks timeline
-                activeStageTimeline.StartTimeline();
-            } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial.", ex);
-                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
-            }
+                    // Start tasks timeline
+                    stageTimeline.StartTimeline();
+                } catch (Exception ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial.", ex);
+                    player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                }
+            });
         }
     }
 
-    private void StopTutorial(boolean isCompleted) {
-        if (tutorialTask != null) tutorialTask.cancel();
+    protected void StopTutorial(boolean isCompleted) {
         activeTutorials.remove(this);
-        if (activeStageTimeline != null) activeStageTimeline.StopTimeline();
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            try {
-                hologram.remove();
-                plot.getWorld().unloadWorld(true);
-                if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        if (stageTimeline != null) stageTimeline.StopTimeline();
+        if (npc != null) npc.tutorialNPC.remove();
 
-                Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
-                Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        });
+        if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
+        Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
 
         // TODO: save stage to database
     }
 
-    private void createHologram() throws SQLException {
-        // Load position from config and convert to vector
-        String[] hologramPosition = plot.getTutorialConfig().getString(TutorialPaths.HOLOGRAM_COORDINATES).split(",");
-        Vector2D hologramVector = new Vector2D(Double.parseDouble(hologramPosition[0]), Double.parseDouble(hologramPosition[1]));
-
-        // Get the highest block at hologram position and add 2 to get the y coordinate
-        int hologramY = plot.getWorld().getBukkitWorld().getHighestBlockYAt(hologramVector.getBlockX(), hologramVector.getBlockZ()) + 2;
-
-        // Create hologram
-        hologram.create(Position.of(new Location(plot.getWorld().getBukkitWorld(), hologramVector.getX(), hologramY , hologramVector.getZ())));
-        hologram.getHologram().setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
-        hologram.setDefaultHologramHeight(hologramY);
+    @Override
+    public void onTaskDone(Player player, int taskId) {
+        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+        if (taskId >= stageTimeline.tasks.size() - 1) {
+            try {
+                nextStage();
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }
     }
 
+    @Override
+    public void onSwitchWorld(Player player, int tutorialWorldIndex) {
+        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+        TutorialWorld world = worlds.get(tutorialWorldIndex);
+        setTutorialWorld(Bukkit.getWorld(world.getWorldName()), world);
+    }
 
+    private void setTutorialWorld(World bukkitWorld, TutorialWorld world) {
+        TutorialWorld.SpawnPoint playerSpawnPoint = world.getPlayerSpawnLocation();
+
+        player.teleport(new Location(bukkitWorld,
+                playerSpawnPoint.getX(),
+                AlpsUtils.getHighestBlockYAt(bukkitWorld, (int) playerSpawnPoint.getX(), (int) playerSpawnPoint.getZ()) + 1,
+                playerSpawnPoint.getZ(),
+                playerSpawnPoint.getYaw(),
+                playerSpawnPoint.getPitch()));
+
+        TutorialWorld.SpawnPoint npcSpawnPoint = world.getNpcSpawnLocation();
+        Location npcLocation = new Location(bukkitWorld,
+                npcSpawnPoint.getX(),
+                AlpsUtils.getHighestBlockYAt(bukkitWorld, (int) npcSpawnPoint.getX(), (int) npcSpawnPoint.getZ()) + 1,
+                npcSpawnPoint.getZ(),
+                npcSpawnPoint.getYaw(),
+                npcSpawnPoint.getPitch());
+
+        if (npc == null) {
+            npc = new TutorialNPC(npcLocation);
+        } else npc.tutorialNPC.teleport(npcLocation);
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    public List<TutorialWorld> getWorlds() {
+        return worlds;
+    }
+
+    public List<Class<? extends AbstractStage>> getStages() {
+        return stages;
+    }
 
     // TODO: MOVE SOMEWHERE ELSE
     public static class ChatHandler {
-        public static void printInfo(Player player, TextComponent[] messages) {
-            player.sendMessage("");
-            for (TextComponent message : messages) player.spigot().sendMessage(message);
-            player.sendMessage("");
-        }
-
         public static void printInfo(Player player, String[] messages) {
             player.sendMessage("");
             for (String message : messages) player.sendMessage(message);
             player.sendMessage("");
         }
 
-        public static void printInfo(Player player, String message, String hoverText, String link) {
-            TextComponent tc = new TextComponent();
-            tc.setText(message);
-            tc.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
-            printInfo(player, new TextComponent[]{tc});
-        }
-
-        public static String[] getTaskMessage(String message, ChatColor color) {
-            return new LoreBuilder().setDefaultColor(color).addLine("§8§l> §" + color.getChar() + message).build().toArray(new String[0]);
-        }
-
         public static String[] getStageUnlockedInfo(String title, String description) {
             LoreBuilder builder = new LoreBuilder()
-                .addLines("", " §b§l" + "NEW STAGE UNLOCKED", "  §f§l◆ §6§l" + title, ""); // TODO: set player lang
+                .addLines("§b§l" + "NEW STAGE UNLOCKED", "  §f§l◆ §6§l" + title, ""); // TODO: set player lang
             String[] descriptionLines = description.split("%newline%");
             Arrays.stream(descriptionLines).forEach(desc -> builder.addLine("    §7§l▪ §f" + desc));
             return builder.build().toArray(new String[0]);

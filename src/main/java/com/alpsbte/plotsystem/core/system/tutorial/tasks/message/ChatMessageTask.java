@@ -24,35 +24,38 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
 
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
-import org.bukkit.ChatColor;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.md_5.bungee.api.chat.*;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
+import static net.md_5.bungee.api.ChatColor.*;
+
 public class ChatMessageTask extends AbstractTask {
-    private final String message;
+    private static final String TASK_PREFIX = DARK_GRAY + "> " + GRAY;
+    private static final String CONTINUE_TASK_MESSAGE = DARK_GRAY + "[" + GREEN + "{0}" + DARK_GRAY + "]";
+
+    private final Object[] messages;
     private final Sound soundEffect;
-    private final String hoverText;
-    private final String clickableLink;
+    private final boolean waitToContinue;
 
-    public ChatMessageTask(Player player, String message, Sound soundEffect) {
-        this(player, message, soundEffect, null, null);
-    }
-
-    public ChatMessageTask(Player player, String message, Sound soundEffect, String hoverText, String clickableLink) {
+    public ChatMessageTask(Player player, Object[] messages, Sound soundEffect, boolean waitToContinue) {
         super(player);
-        this.message = message;
+        this.messages = messages;
         this.soundEffect = soundEffect;
-        this.hoverText = hoverText;
-        this.clickableLink = clickableLink;
+        this.waitToContinue = waitToContinue;
     }
 
     @Override
     public void performTask() {
-        if (hoverText == null || clickableLink == null) {
-            AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY));
-        } else AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(message, ChatColor.GRAY)[0], hoverText, clickableLink);
+        sendTaskMessage(player, messages, waitToContinue);
         if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
         setTaskDone();
     }
@@ -60,5 +63,55 @@ public class ChatMessageTask extends AbstractTask {
     @Override
     public String toString() {
         return "ChatMessageTask";
+    }
+
+
+    public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
+        // Send task message
+        player.sendMessage(StringUtils.EMPTY);
+        for (Object message : messages) {
+            if (message instanceof String) {
+                List<String> messageLines = AlpsUtils.createMultilineFromString((String) message, -1, Utils.ChatUtils.LINE_BREAKER);
+                messageLines.forEach(msg -> player.sendMessage((!msg.equals(StringUtils.EMPTY) ? TASK_PREFIX : StringUtils.EMPTY) + msg));
+            } else if (message instanceof ClickableTaskMessage) {
+                TextComponent component = ((ClickableTaskMessage) message).getComponent();
+                component.setText(TASK_PREFIX + component.getText());
+                player.spigot().sendMessage(component);
+            }
+        }
+
+        // Send continue task message
+        player.sendMessage(StringUtils.EMPTY);
+        if (waitToContinue) player.spigot().sendMessage(getContinueTextComponent(player));
+    }
+
+    private static TextComponent getContinueTextComponent(Player player) {
+        return new ClickableTaskMessage(CONTINUE_TASK_MESSAGE.replace("{0}",
+                LangUtil.getInstance().get(player, LangPaths.Note.Action.CONTINUE)),
+                GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED),
+                "/tutorial continue",
+                ClickEvent.Action.RUN_COMMAND).getComponent();
+    }
+
+
+    public static class ClickableTaskMessage {
+        private final String message;
+        private final String hoverText;
+        private final String clickExecute;
+        private final ClickEvent.Action clickAction;
+
+        public ClickableTaskMessage(String message, String hoverText, String clickExecute, ClickEvent.Action clickAction) {
+            this.message = message;
+            this.hoverText = hoverText;
+            this.clickExecute = clickExecute;
+            this.clickAction = clickAction;
+        }
+
+        public TextComponent getComponent() {
+            TextComponent clickableMessage = new TextComponent(message);
+            clickableMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+            clickableMessage.setClickEvent(new ClickEvent(clickAction, clickExecute));
+            return clickableMessage;
+        }
     }
 }

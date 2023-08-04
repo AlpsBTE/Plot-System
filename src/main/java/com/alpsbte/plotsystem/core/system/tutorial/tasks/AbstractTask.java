@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
-import com.alpsbte.plotsystem.core.system.tutorial.StageTimeline;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import org.bukkit.entity.Player;
 

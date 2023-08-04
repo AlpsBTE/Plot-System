@@ -138,15 +138,7 @@ public class PlotWorld implements IWorld {
         if (isWorldGenerated() && loadWorld()) {
             Location spawnLocation;
             if (plotVector == null) {
-                if (plot instanceof TutorialPlot) {
-                    FileConfiguration config = ((TutorialPlot) plot).getTutorialConfig();
-                    String[] spawnPoint = config.getString(TutorialPaths.SPAWN_COORDINATES).split(",");
-                    double yaw = config.getDouble(TutorialPaths.SPAWN_COORDINATES_YAW);
-                    double pitch = config.getDouble(TutorialPaths.SPAWN_COORDINATES_PITCH);
-                    spawnLocation = new Location(getBukkitWorld(), Double.parseDouble(spawnPoint[0]), 0, Double.parseDouble(spawnPoint[1]), (float) yaw, (float) pitch);
-                } else {
-                    spawnLocation = getBukkitWorld().getSpawnLocation();
-                }
+                spawnLocation = getBukkitWorld().getSpawnLocation();
             } else {
                 spawnLocation = new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
             }

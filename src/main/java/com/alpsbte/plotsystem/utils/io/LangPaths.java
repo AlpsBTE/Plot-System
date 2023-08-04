@@ -191,8 +191,10 @@ public abstract class LangPaths {
 
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
+            public static final String CONTINUE = ACTION + "continue";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";
+            public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
             public static final String CLICK_TO_ENABLE = ACTION + "click-to-enable";
             public static final String CLICK_TO_DISABLE = ACTION + "click-to-disable";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";

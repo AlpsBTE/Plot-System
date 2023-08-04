@@ -83,6 +83,7 @@ public class Utils {
 
 
     public static class ChatUtils {
+        public static final String LINE_BREAKER = "%newline%";
         private static final String messagePrefix =  PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
         public static String getInfoMessageFormat(String info) {

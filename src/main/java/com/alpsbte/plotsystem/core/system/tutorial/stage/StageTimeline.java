@@ -22,15 +22,16 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.ChatEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.ContinueCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.HologramMessageTask;
 import com.sk89q.worldedit.Vector;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -40,25 +41,20 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 public class StageTimeline {
     private final Player player;
-    private final TutorialHologram hologram;
+    private final TutorialPlot plot;
 
     public List<AbstractTask> tasks = new ArrayList<>();
     private AbstractTask currentTask;
-    public int lastTaskId;
-    private final AtomicBoolean isWaitingForConfirmation = new AtomicBoolean(true);
     private BukkitTask timelineTask;
 
     public void StartTimeline() {
         timelineTask = new BukkitRunnable() {
             @Override
             public void run() {
-                boolean isActionStarted = false;
-
                 for (int i = 0; i < tasks.size(); i++) {
                     currentTask = tasks.get(i);
                     Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (i + 1) + " of " + tasks.size() + "] for player " + player.getName());
@@ -79,22 +75,14 @@ public class StageTimeline {
                         // Check if task has progress and if yes, update hologram footer
                         if (currentTask.hasProgress() && currentTask.getProgress() > lastProgress) {
                             lastProgress = currentTask.getProgress();
-                            hologram.updateProgress(currentTask.getProgress(), currentTask.getTotalProgress());
+                            // hologram.updateProgress(currentTask.getProgress(), currentTask.getTotalProgress());
                             continue;
                         }
 
                         if (timelineTask.isCancelled()) return;
                         if (task.isCancelled()) {
-                            if (currentTask instanceof WaitForConfirmationTask || i == tasks.size() - 1) {
-                                if (!isActionStarted) {
-                                    hologram.onFooterClickEvent(action -> isWaitingForConfirmation.set(false));
-                                    isActionStarted = true;
-                                    continue;
-                                } else if (isWaitingForConfirmation.get()) continue;
-                            }
-                            isWaitingForConfirmation.set(true);
-                            isActionStarted = false;
-                            lastTaskId = i;
+                            final int lastTaskId = i;
+                            AbstractTutorial.activeTutorials.forEach(t -> t.onTaskDone(player, lastTaskId));
                             break;
                         }
                     }
@@ -107,9 +95,9 @@ public class StageTimeline {
         if (timelineTask != null) timelineTask.cancel();
     }
 
-    public StageTimeline(Player player, TutorialHologram hologram) {
+    public StageTimeline(Player player, TutorialPlot plot) {
         this.player = player;
-        this.hologram = hologram;
+        this.plot = plot;
     }
 
     public StageTimeline addTask(AbstractTask task) {
@@ -123,37 +111,36 @@ public class StageTimeline {
     }
 
     public StageTimeline updateHologramContent(List<String> content, Sound soundEffect) {
-        tasks.add(new HologramMessageTask(player, hologram, soundEffect, content));
+        // tasks.add(new HologramMessageTask(player, hologram, soundEffect, content));
         return this;
     }
 
-    public StageTimeline sendChatMessage(String message, Sound soundEffect) {
-        tasks.add(new ChatMessageTask(player, message, soundEffect));
+    public StageTimeline sendChatMessage(String message, Sound soundEffect, boolean waitToContinue) {
+        return sendChatMessage(new Object[] {message} , soundEffect, waitToContinue);
+    }
+
+    public StageTimeline sendChatMessage(ChatMessageTask.ClickableTaskMessage message, Sound soundEffect, boolean waitToContinue) {
+        return sendChatMessage(new Object[] {message} , soundEffect, waitToContinue);
+    }
+
+    public StageTimeline sendChatMessage(Object[] messages, Sound soundEffect, boolean waitToContinue) {
+        tasks.add(new ChatMessageTask(player, messages, soundEffect, waitToContinue));
+        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player)); // Add task to wait for player to continue
         return this;
     }
 
-    public StageTimeline sendClickableChatMessage(String message, Sound soundEffect, String hoverText, String clickableLink) {
-        tasks.add(new ChatMessageTask(player, message, soundEffect, hoverText, clickableLink));
-        return this;
-    }
-
-    public StageTimeline addTeleportEvent(Player player, List<Vector> teleportPoint, int offsetRange, AbstractTask.TaskAction<Vector> onTeleportAction) {
+    public StageTimeline addTeleportEvent(List<Vector> teleportPoint, int offsetRange, AbstractTask.TaskAction<Vector> onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }
 
-    public StageTimeline addPlayerChatEvent(Player player, int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
+    public StageTimeline addPlayerChatEvent(int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
         tasks.add(new ChatEventTask(player, expectedValue, offset, maxAttempts, onChatAction));
         return this;
     }
 
     public StageTimeline delay(long seconds) {
         tasks.add(new WaitTask(null, seconds));
-        return this;
-    }
-
-    public StageTimeline waitForConfirmation() {
-        tasks.add(new WaitForConfirmationTask(null));
         return this;
     }
 }

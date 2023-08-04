@@ -22,23 +22,37 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import org.bukkit.entity.Player;
 
-public class WaitForConfirmationTask extends AbstractTask {
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
-    public WaitForConfirmationTask(Player player) {
-        super(player);
+public abstract class AbstractStage {
+    private final Player player;
+    private final int initWorldIndex;
+    private final List<String> messages;
+
+    protected AbstractStage(Player player, int initWorldIndex) {
+        this.player = player;
+        this.initWorldIndex = initWorldIndex;
+
+        this.messages = setMessages();
+    }
+    protected abstract List<String> setMessages();
+    public abstract StageTimeline getTimeline() throws IOException, SQLException;
+
+    public Player getPlayer() {
+        return player;
     }
 
-    @Override
-    public void performTask() {
-        setTaskDone();
+    public int getInitWorldIndex() {
+        return initWorldIndex;
     }
 
-    @Override
-    public String toString() {
-        return "WaitForConfirmationTask";
+    public List<String> getMessages() {
+        return messages;
     }
 }

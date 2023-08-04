@@ -60,6 +60,6 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
         super.onComplete(failed, false);
 
-        if (!failed) plot.getWorld().teleportPlayer(getBuilder().getPlayer());
+        // if (!failed) plot.getWorld().teleportPlayer(getBuilder().getPlayer());
     }
 }

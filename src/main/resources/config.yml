@@ -88,7 +88,7 @@ navigator:
 # -----------------------------------------------------
 # | Formatting: Info/Error message outputs
 # -----------------------------------------------------
-message-prefix: §7§l>>
+message-prefix: §8[§6Plot-System§8] §7
 info-colour: §a
 error-colour: §c
 
@@ -108,7 +108,9 @@ shortlink:
 tutorials:
   enable: true
   require-beginner-tutorial: true
+  tutorial-npc-texture: 'ewogICJ0aW1lc3RhbXAiIDogMTY0OTA0MzYzODU3MywKICAicHJvZmlsZUlkIiA6ICI5MWYwNGZlOTBmMzY0M2I1OGYyMGUzMzc1Zjg2ZDM5ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdG9ybVN0b3JteSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yNzgxYjg4ZTllZGNhOGNlNWRlMzk4OTkyYzVjM2Q0NTU0ZmVkYjZmZTFiMTIzMmJkNzIwZWUyMTgyZTY4YTcyIgogICAgfQogIH0KfQ=='
+  tutorial-npc-signature: 'OpazPbpK6Z+N4ehJdDORPAc+llPyczl23AEZ0aerldJUzUr15L/1yNLOmyGjo81vgjkGq5LYW43yRImtbQAg0vGHqO3u8M5PhcjKrkuezp2DTS+2nZLoN3r+mRxoUXVWWfwkOKmAzPn7TzLHGprMS6nDwJyXt0y+GQG2TYX1Wt2EsMAHSUwiLu/ykraU+JIbKEKOEaEFTRQJYZE1+I8MjA0s8cZEKokbu8LmIZRJcFvipm+pGLVioCH0z20wo7rPBNKAwDInZIsituKb/2etmaioXHadC31rkJk6PeXu3o6MFEnW20bnY5Dh9cOJQWNEM3jU4d7/DtYEBPzUaZdYoaL44jBAHC0S4pHmrIzHbGXeiSCKvhfVDtQClHtZXHVJFrjLhtW2mhVs/H5fWCah8tr9He4ogIzQ6KRME6SFOFWWmWj2A3emDlAH1lxQwPJhlig+ssuZGHPtib+4Xnq+42qwKRJKb/zmrgRzHR4LH600falI3mFpjDhKCs1hxfULrln//bMRkvb1vnNm7+Z1Zg7y5D6/3A7KNQTFASwldqQYm5dq5NC7/UBICH8Emi3qL4eqvWdFrcuH/B2lnD0rxaqVq18U3T65cGOevxl/p525p/UJSuGSP0fTOoddp/7IjCphZKL8IYVqqQjsu4tBqEQwrnaUk8hJKzGIstVUMSA='
 
 
 # NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

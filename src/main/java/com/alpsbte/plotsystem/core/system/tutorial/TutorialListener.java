@@ -22,20 +22,13 @@
  *  SOFTWARE.
  */
 
+
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-
-public interface Stage {
-    String EMPTY_LINE = "{empty}";
-
-    List<String> getMessages(Player player);
-    StageTimeline getTimeline(Player player, TutorialPlot plot, TutorialHologram hologram) throws IOException, SQLException;
-    int getInitialSchematicID();
+public interface TutorialListener {
+    Player getPlayer();
+    void onTaskDone(Player player, int taskId);
+    void onSwitchWorld(Player player, int tutorialWorldIndex);
 }
