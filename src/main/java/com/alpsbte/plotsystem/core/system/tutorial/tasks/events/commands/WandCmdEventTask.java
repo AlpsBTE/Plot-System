@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
 
 import org.bukkit.entity.Player;
 

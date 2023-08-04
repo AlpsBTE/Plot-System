@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
@@ -31,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEvent;
 
+import java.util.Arrays;
+
 public abstract class AbstractCmdEventTask extends AbstractTask implements EventTask {
     protected String expectedCommand;
     protected String[] args1;
@@ -38,7 +40,7 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
     private final boolean isCancelCmdEvent;
 
     public AbstractCmdEventTask(Player player, String expectedCommand, int totalProgress, boolean cancelCmdEvent) {
-        this(player, expectedCommand, new String[0], totalProgress, cancelCmdEvent);
+        this(player, expectedCommand, null, totalProgress, cancelCmdEvent);
     }
 
     public AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, int totalProgress, boolean cancelCmdEvent) {
@@ -60,7 +62,15 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
         if (event instanceof PlayerCommandPreprocessEvent) {
             PlayerCommandPreprocessEvent cmdEvent = (PlayerCommandPreprocessEvent) event;
             if (cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
-                onCommand(cmdEvent.getMessage().replaceFirst(expectedCommand, "").trim().split(" "));
+
+                // Check if the expected args are used
+                String[] args = cmdEvent.getMessage().replaceFirst(expectedCommand, "").trim().split(" ");
+                if (args1 != null && args1.length > 0) {
+                    if (args.length == 0) return;
+                    if (Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0]))) return;
+                }
+
+                if (!onCommand(args)) return;
                 if (isCancelCmdEvent) cmdEvent.setCancelled(true);
             }
         }

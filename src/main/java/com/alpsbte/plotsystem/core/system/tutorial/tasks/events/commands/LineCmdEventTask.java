@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.worldedit;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -40,7 +40,6 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -59,10 +58,6 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
 
     @Override
     protected boolean onCommand(String[] args) {
-        // Check if the expected pattern is used
-        if (args == null || args.length != 1) return false;
-        if (Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0]))) return false;
-
         // Check if the player has selected valid points
         if (minPoint == null || maxPoint == null) return false;
 
