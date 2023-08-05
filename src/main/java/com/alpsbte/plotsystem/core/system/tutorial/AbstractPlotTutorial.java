@@ -22,7 +22,6 @@
  *  SOFTWARE.
  */
 
-
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -40,11 +39,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public abstract class AbstractPlotTutorial extends AbstractTutorial {
+public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorialListener {
     protected final int tutorialId;
+    protected int currentSchematicId;
 
     protected final TutorialPlot plot;
     protected TutorialPlotGenerator plotGenerator;
+
     protected AbstractPlotTutorial(Player player, int tutorialId) throws SQLException {
         super(player);
         this.tutorialId = tutorialId;
@@ -74,6 +75,19 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial {
     }
 
     @Override
+    protected void nextStage() {
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            super.nextStage();
+
+            // Paste plot schematic outline if player is in tutorial world, and it has not been pasted yet
+            int initSchematicId = ((AbstractPlotStage)currentStage).getInitSchematicId();
+            if (plotGenerator != null && currentWorldIndex == 1 && initSchematicId != currentSchematicId) {
+                onPasteSchematicOutlines(player, initSchematicId);
+            }
+        });
+    }
+
+    @Override
     protected void StopTutorial(boolean isCompleted) {
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
@@ -91,11 +105,24 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial {
         try {
             if (tutorialWorldIndex == 1 && plotGenerator == null) {
                 plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(player.getUniqueId()));
-                plotGenerator.generateOutlines(((AbstractPlotStage) currentStage).getInitSchematicId());
+                onPasteSchematicOutlines(player, ((AbstractPlotStage) currentStage).getInitSchematicId());
             }
             super.onSwitchWorld(player, tutorialWorldIndex);
-        } catch (SQLException | IOException | WorldEditException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while switching tutorial world!", ex);
+        }
+    }
+
+    @Override
+    public void onPasteSchematicOutlines(Player player, int schematicId) {
+        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+        try {
+            if (currentWorldIndex == 1 && plotGenerator != null) {
+                plotGenerator.generateOutlines(schematicId);
+                currentSchematicId = schematicId;
+            }
+        } catch (SQLException | IOException | WorldEditException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
         }
     }
 }

@@ -110,11 +110,6 @@ public class StageTimeline {
         return this;
     }
 
-    public StageTimeline updateHologramContent(List<String> content, Sound soundEffect) {
-        // tasks.add(new HologramMessageTask(player, hologram, soundEffect, content));
-        return this;
-    }
-
     public StageTimeline sendChatMessage(String message, Sound soundEffect, boolean waitToContinue) {
         return sendChatMessage(new Object[] {message} , soundEffect, waitToContinue);
     }
@@ -136,6 +131,21 @@ public class StageTimeline {
 
     public StageTimeline addPlayerChatEvent(int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
         tasks.add(new ChatEventTask(player, expectedValue, offset, maxAttempts, onChatAction));
+        return this;
+    }
+
+    public StageTimeline teleport(int tutorialWorldIndex) {
+        tasks.add(new TeleportTask(player, tutorialWorldIndex));
+        return this;
+    }
+
+    public StageTimeline teleport(Location location) {
+        tasks.add(new TeleportTask(player, location));
+        return this;
+    }
+
+    public StageTimeline pasteSchematicOutline(int schematicId) {
+        tasks.add(new PasteSchematicOutlinesTask(player, schematicId));
         return this;
     }
 
