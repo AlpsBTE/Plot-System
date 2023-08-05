@@ -74,8 +74,9 @@ public abstract class AbstractTask {
      * If the task is not set to done, the stage timeline won't continue.
      */
     public void setTaskDone() {
-        if (player != null) TutorialEventListener.runningEventTasks.remove(player.getUniqueId().toString());
         this.isDone = true;
+        TutorialEventListener.runningEventTasks.remove(player.getUniqueId().toString());
+        StageTimeline.activeTimelines.forEach(timeline -> timeline.onTaskDone(player, this));
     }
 
     /**

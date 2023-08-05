@@ -28,7 +28,6 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import org.bukkit.entity.Player;
 
 public interface TutorialListener {
-    Player getPlayer();
-    void onTaskDone(Player player, int taskId);
+    void onStageComplete(Player player);
     void onSwitchWorld(Player player, int tutorialWorldIndex);
 }

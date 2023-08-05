@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.ChatEventTask;
@@ -33,7 +32,10 @@ import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEve
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.ContinueCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
 import com.sk89q.worldedit.Vector;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,61 +45,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class StageTimeline {
-    private final Player player;
-    private final TutorialPlot plot;
+public class StageTimeline implements TimeLineListener {
+    public static List<TimeLineListener> activeTimelines = new ArrayList<>();
 
-    public List<AbstractTask> tasks = new ArrayList<>();
+    private final List<AbstractTask> tasks = new ArrayList<>();
+    private final Player player;
+    private int currentTaskId = -1;
     private AbstractTask currentTask;
-    private BukkitTask timelineTask;
+    private BukkitTask taskProgressTask;
 
     public void StartTimeline() {
-        timelineTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < tasks.size(); i++) {
-                    currentTask = tasks.get(i);
-                    Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (i + 1) + " of " + tasks.size() + "] for player " + player.getName());
-                    currentTask.performTask();
+        activeTimelines.add(this);
+        nextTask();
+    }
 
-                    BukkitTask task = new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (timelineTask.isCancelled()) {
-                                currentTask.setTaskDone();
-                                this.cancel();
-                            } else if (currentTask.isTaskDone()) this.cancel();
-                        }
-                    }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 0); // TODO: Fix performance issue with 0 tick delay
+    private void nextTask() {
+        currentTask = tasks.get(currentTaskId + 1);
+        Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (currentTaskId + 2) + " of " + tasks.size() + "] for player " + player.getName());
+        currentTaskId = currentTaskId + 1;
 
-                    int lastProgress = -1;
-                    while (true) {
-                        // Check if task has progress and if yes, update hologram footer
-                        if (currentTask.hasProgress() && currentTask.getProgress() > lastProgress) {
-                            lastProgress = currentTask.getProgress();
-                            // hologram.updateProgress(currentTask.getProgress(), currentTask.getTotalProgress());
-                            continue;
-                        }
-
-                        if (timelineTask.isCancelled()) return;
-                        if (task.isCancelled()) {
-                            final int lastTaskId = i;
-                            AbstractTutorial.activeTutorials.forEach(t -> t.onTaskDone(player, lastTaskId));
-                            break;
-                        }
-                    }
+        // Check if task has progress and if yes, update action bar
+        if (currentTask.hasProgress()) {
+            if (taskProgressTask != null) taskProgressTask.cancel();
+            taskProgressTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (currentTask.getProgress() == currentTask.getTotalProgress()) this.cancel();
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                            TextComponent.fromLegacyText("§eTask: " + currentTask.getProgress() + " / " + currentTask.getTotalProgress()));
                 }
-            }
-        }.runTaskAsynchronously(PlotSystem.getPlugin());
+            }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
+        }
+
+        currentTask.performTask();
     }
 
-    public void StopTimeline() {
-        if (timelineTask != null) timelineTask.cancel();
+    @Override
+    public void onTaskDone(Player player, AbstractTask task) {
+        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString()) && task != currentTask) return;
+
+        if (currentTaskId >= tasks.size() - 1) {
+            activeTimelines.remove(StageTimeline.this);
+            AbstractTutorial.activeTutorials.forEach(t -> t.onStageComplete(player));
+        } else nextTask();
     }
 
-    public StageTimeline(Player player, TutorialPlot plot) {
+    @Override
+    public void onStopTimeLine(Player player) {
+        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+
+        if (taskProgressTask != null) taskProgressTask.cancel();
+        if (currentTask != null) currentTask.setTaskDone();
+        activeTimelines.remove(StageTimeline.this);
+    }
+
+    public StageTimeline(Player player) {
         this.player = player;
-        this.plot = plot;
     }
 
     public StageTimeline addTask(AbstractTask task) {
@@ -150,7 +153,7 @@ public class StageTimeline {
     }
 
     public StageTimeline delay(long seconds) {
-        tasks.add(new WaitTask(null, seconds));
+        tasks.add(new WaitTask(player, seconds));
         return this;
     }
 }

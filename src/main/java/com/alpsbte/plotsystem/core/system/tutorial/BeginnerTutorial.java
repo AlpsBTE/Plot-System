@@ -104,8 +104,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            return new StageTimeline(getPlayer(), getPlot())
+            return new StageTimeline(getPlayer())
                     // TODO: Add task to click on the NPC to continue as player task
+                    .delay(2)
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT, true)
@@ -137,7 +138,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() throws IOException {
-            return new StageTimeline(getPlayer(), getPlot())
+            return new StageTimeline(getPlayer())
+                    .delay(2)
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
                             getMessages().get(3),
@@ -174,7 +176,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() throws SQLException, IOException {
-            return new StageTimeline(getPlayer(), getPlot())
+            return new StageTimeline(getPlayer())
+                    .delay(3)
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new ChatMessageTask.ClickableTaskMessage(getMessages().get(4), GRAY + Stage2.GOOGLE_MAPS,
@@ -193,7 +196,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
     private static class Stage4 extends AbstractPlotStage {
         protected Stage4(Player player, TutorialPlot plot) throws SQLException, IOException {
-            super(player, 1, plot, 1);
+            super(player, 1, plot, 0);
         }
 
         @Override
@@ -209,7 +212,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            return new StageTimeline(getPlayer(), getPlot())
+            return new StageTimeline(getPlayer())
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT, false)
@@ -223,7 +226,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         private final static int BASE_BLOCK_ID = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
 
         protected Stage5(Player player, TutorialPlot plot) throws SQLException, IOException {
-            super(player, 1, plot, 1);
+            super(player, 1, plot, 0);
         }
 
         @Override
@@ -252,7 +255,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             buildingLinePoints.put(buildingPoints.get(2), buildingPoints.get(3));
             buildingLinePoints.put(buildingPoints.get(3), buildingPoints.get(0));
 
-            return new StageTimeline(getPlayer(), getPlot())
+            return new StageTimeline(getPlayer())
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .delay(5)
@@ -274,7 +277,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         private final static int HEIGHT_OFFSET = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
 
         protected Stage6(Player player, TutorialPlot plot) throws SQLException, IOException {
-            super(player, 1, plot, 2);
+            super(player, 1, plot, 1);
         }
 
         @Override
@@ -293,7 +296,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            StageTimeline stage = new StageTimeline(getPlayer(), getPlot());
+            StageTimeline stage = new StageTimeline(getPlayer());
             stage.delay(5)
             .sendChatMessage(getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true)
             .addPlayerChatEvent(HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
@@ -310,7 +313,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
     private static class Stage7 extends AbstractPlotStage {
         protected Stage7(Player player, TutorialPlot plot) throws SQLException, IOException {
-            super(player, 1, plot, 3);
+            super(player, 1, plot, 2);
         }
 
         @Override
@@ -324,8 +327,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            return new StageTimeline(getPlayer(), getPlot())
-                    .updateHologramContent(Collections.singletonList(getMessages().get(2)), Sound.UI_BUTTON_CLICK)
+            return new StageTimeline(getPlayer())
                     .delay(5);
         }
     }
@@ -346,8 +348,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            return new StageTimeline(getPlayer(), getPlot())
-                    .updateHologramContent(Collections.singletonList(getMessages().get(2)), Sound.UI_BUTTON_CLICK)
+            return new StageTimeline(getPlayer())
                     .delay(5);
         }
     }
@@ -368,8 +369,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            return new StageTimeline(getPlayer(), getPlot())
-                    .updateHologramContent(Collections.singletonList(getMessages().get(2)), Sound.UI_BUTTON_CLICK)
+            return new StageTimeline(getPlayer())
                     .delay(5);
         }
     }
@@ -390,8 +390,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() {
-            return new StageTimeline(getPlayer(), getPlot())
-                    .updateHologramContent(Collections.singletonList(getMessages().get(2)), Sound.UI_BUTTON_CLICK)
+            return new StageTimeline(getPlayer())
                     .delay(5);
         }
     }

@@ -45,7 +45,7 @@ import java.util.logging.Level;
 public abstract class AbstractTutorial implements TutorialListener {
     public static List<TutorialListener> activeTutorials = new ArrayList<>();
 
-    public final Player player;
+    protected final Player player;
     private List<Class<? extends AbstractStage>> stages;
     private List<TutorialWorld> worlds;
     protected AbstractStage currentStage;
@@ -111,7 +111,7 @@ public abstract class AbstractTutorial implements TutorialListener {
 
     protected void StopTutorial(boolean isCompleted) {
         activeTutorials.remove(this);
-        if (stageTimeline != null) stageTimeline.StopTimeline();
+        if (stageTimeline != null) StageTimeline.activeTimelines.forEach(timeLine -> timeLine.onStopTimeLine(player));
         if (npc != null) npc.tutorialNPC.remove();
 
         if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
@@ -122,7 +122,7 @@ public abstract class AbstractTutorial implements TutorialListener {
     }
 
     @Override
-    public void onTaskDone(Player player, int taskId) {
+    public void onStageComplete(Player player) {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
         if (taskId >= stageTimeline.tasks.size() - 1) {
             try {
@@ -161,11 +161,6 @@ public abstract class AbstractTutorial implements TutorialListener {
         if (npc == null) {
             npc = new TutorialNPC(npcLocation);
         } else npc.tutorialNPC.teleport(npcLocation);
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
     }
 
     public List<TutorialWorld> getWorlds() {
