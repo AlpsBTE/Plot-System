@@ -36,7 +36,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,20 +62,20 @@ public abstract class AbstractTutorial implements TutorialListener {
 
     protected AbstractTutorial(Player player) {
         this.player = player;
-        activeTutorials.add(this);
     }
 
-    protected void initTutorialStage() {
+    protected void initTutorial() {
+        activeTutorials.add(this);
         worlds = setWorlds();
         stages = setStages();
     }
 
-    protected void setStage(int stageIndex) throws SQLException {
+    protected void setStage(int stageIndex) {
         activeStageIndex = stageIndex - 1;
         nextStage();
     }
 
-    protected void nextStage() throws SQLException {
+    protected void nextStage() {
         if (activeStageIndex + 1 >= stages.size()) {
             StopTutorial(true);
         } else {
@@ -96,11 +95,13 @@ public abstract class AbstractTutorial implements TutorialListener {
                     activeStageIndex++;
 
                     // Send new stage unlocked message to player
-                    ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(currentStage.getMessages().get(0), currentStage.getMessages().get(1)));
-                    player.playSound(player.getLocation(), activeStageIndex == 0 ? Utils.SoundUtils.TELEPORT_SOUND : Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+                    Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
+                        ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(currentStage.getMessages().get(0), currentStage.getMessages().get(1)));
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.7f);
 
-                    // Start tasks timeline
-                    stageTimeline.StartTimeline();
+                        // Start tasks timeline
+                        stageTimeline.StartTimeline();
+                    }, 20);
                 } catch (Exception ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial.", ex);
                     player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
@@ -124,13 +125,7 @@ public abstract class AbstractTutorial implements TutorialListener {
     @Override
     public void onStageComplete(Player player) {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
-        if (taskId >= stageTimeline.tasks.size() - 1) {
-            try {
-                nextStage();
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        }
+        nextStage();
     }
 
     @Override

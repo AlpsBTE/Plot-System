@@ -63,7 +63,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         }
 
         // Initialize tutorial worlds and stages
-        initTutorialStage();
+        initTutorial();
 
         // Set the current stage from the player
         setStage(plot.getStage());

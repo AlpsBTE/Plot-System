@@ -25,7 +25,6 @@
 
 package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -44,12 +43,7 @@ public class CMD_Tutorial extends BaseCommand {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
-                if (args.length > 0 && args[0].equalsIgnoreCase(getParameter()[0])) {
-                    if (AbstractTutorial.activeTutorials.stream().noneMatch(t ->
-                            t.getPlayer().getUniqueId().toString().equals(getPlayer(sender).getUniqueId().toString()))) return false;
-                    getPlayer(sender).sendMessage(Utils.ChatUtils.getErrorMessageFormat(
-                            LangUtil.getInstance().get(getPlayer(sender), LangPaths.Message.Error.COMMAND_DISABLED)));
-                } else {
+                if (args.length == 0) {
                     try {
                         new BeginnerTutorial(getPlayer(sender));
                     } catch (SQLException ex) {
