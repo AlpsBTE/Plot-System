@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
@@ -75,28 +74,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    protected void nextStage() {
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            super.nextStage();
-
-            // Paste plot schematic outline if player is in tutorial world, and it has not been pasted yet
-            int initSchematicId = ((AbstractPlotStage)currentStage).getInitSchematicId();
-            if (plotGenerator != null && currentWorldIndex == 1 && initSchematicId != currentSchematicId) {
-                onPasteSchematicOutlines(player, initSchematicId);
-            }
-        });
-    }
-
-    @Override
-    protected void StopTutorial(boolean isCompleted) {
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            try {
-                plot.getWorld().unloadWorld(true);
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while unloading tutorial world!", ex);
-            }
-            super.StopTutorial(isCompleted);
-        });
+    protected void prepareNextStage() throws SQLException, IOException {
+        onPasteSchematicOutlines(player, ((AbstractPlotStage) currentStage).getInitSchematicId());
+        super.prepareNextStage();
     }
 
     @Override

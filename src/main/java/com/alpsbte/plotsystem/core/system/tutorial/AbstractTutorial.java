@@ -35,7 +35,9 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,32 +92,37 @@ public abstract class AbstractTutorial implements TutorialListener {
                         onSwitchWorld(player, currentStage.getInitWorldIndex());
                     }
 
-                    // Ge the timeline of the current stage and increase the active stage index
-                    stageTimeline = currentStage.getTimeline();
-                    activeStageIndex++;
-
-                    // Send new stage unlocked message to player
-                    Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
-                        ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(currentStage.getMessages().get(0), currentStage.getMessages().get(1)));
-                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.7f);
-
-                        // Start tasks timeline
-                        stageTimeline.StartTimeline();
-                    }, 20);
+                    prepareNextStage();
                 } catch (Exception ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial.", ex);
+                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing next stage!", ex);
                     player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
                 }
             });
         }
     }
 
-    protected void StopTutorial(boolean isCompleted) {
+    protected void prepareNextStage() throws SQLException, IOException {
+        // Ge the timeline of the current stage and increase the active stage index
+        stageTimeline = currentStage.getTimeline();
+        activeStageIndex++;
+
+        // Send new stage unlocked message to player
+        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
+            ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(currentStage.getMessages().get(0), currentStage.getMessages().get(1)));
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.7f);
+
+            // Start tasks timeline
+            stageTimeline.StartTimeline();
+        }, 20 * 2);
+    }
+
+    @Override
+    public void onTutorialStop(Player player, boolean isComplete) {
         activeTutorials.remove(this);
         if (stageTimeline != null) stageTimeline.onStopTimeLine(player);
         if (npc != null) npc.tutorialNPC.remove();
 
-        if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        if (isComplete) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
         Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
 
