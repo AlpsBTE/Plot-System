@@ -28,13 +28,10 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public abstract class AbstractPlotStage extends AbstractStage {
     private final TutorialPlot plot;
     private final int initSchematicId;
-    protected AbstractPlotStage(Player player, int initWorldIndex, TutorialPlot plot, int initSchematicId) throws SQLException, IOException {
+    protected AbstractPlotStage(Player player, int initWorldIndex, TutorialPlot plot, int initSchematicId) {
         super(player, initWorldIndex);
         this.plot = plot;
         this.initSchematicId = initSchematicId;

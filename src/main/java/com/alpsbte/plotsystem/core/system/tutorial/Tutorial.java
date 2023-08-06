@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 
 public interface Tutorial {
     Player getPlayer();
+    TutorialNPC getNPC();
     World getCurrentWorld();
     void onStageComplete(Player player);
     void onSwitchWorld(Player player, int tutorialWorldIndex);

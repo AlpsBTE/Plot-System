@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.ChatEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.InteractNPCEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.ContinueCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
@@ -45,14 +46,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class StageTimeline implements TimeLineListener {
-    public static List<TimeLineListener> activeTimelines = new ArrayList<>();
+import static net.md_5.bungee.api.ChatColor.GRAY;
+
+public class StageTimeline implements TutorialTimeLine {
+    public static List<TutorialTimeLine> activeTimelines = new ArrayList<>();
 
     private final List<AbstractTask> tasks = new ArrayList<>();
     private final Player player;
     private int currentTaskId = -1;
     private AbstractTask currentTask;
     private BukkitTask taskProgressTask;
+
+    public StageTimeline(Player player) {
+        this.player = player;
+    }
 
     public void StartTimeline() {
         activeTimelines.add(this);
@@ -66,13 +73,14 @@ public class StageTimeline implements TimeLineListener {
 
         // Check if task has progress and if yes, update action bar
         if (currentTask.hasProgress()) {
+            AbstractTask.sendAssignmentMessage(player, currentTask.getAssignmentMessage());
             if (taskProgressTask != null) taskProgressTask.cancel();
             taskProgressTask = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (currentTask.getProgress() == currentTask.getTotalProgress()) this.cancel();
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                            TextComponent.fromLegacyText("§eTask: " + currentTask.getProgress() + " / " + currentTask.getTotalProgress()));
+                    if (currentTask.getProgress() == currentTask.getTotalProgress()) {
+                        this.cancel();
+                    } else updatePlayerActionBar();
                 }
             }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
         }
@@ -91,6 +99,12 @@ public class StageTimeline implements TimeLineListener {
     }
 
     @Override
+    public void onAssignmentUpdate(Player player, AbstractTask task) {
+        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString()) && task != currentTask) return;
+        updatePlayerActionBar();
+    }
+
+    @Override
     public void onStopTimeLine(Player player) {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
 
@@ -99,8 +113,9 @@ public class StageTimeline implements TimeLineListener {
         activeTimelines.remove(StageTimeline.this);
     }
 
-    public StageTimeline(Player player) {
-        this.player = player;
+    private void updatePlayerActionBar() {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                TextComponent.fromLegacyText(GRAY + " [" + currentTask.getProgress() + "/" + currentTask.getTotalProgress() + "] " + currentTask.getAssignmentMessage()));
     }
 
     public StageTimeline addTask(AbstractTask task) {
@@ -127,13 +142,13 @@ public class StageTimeline implements TimeLineListener {
         return this;
     }
 
-    public StageTimeline addTeleportEvent(List<Vector> teleportPoint, int offsetRange, AbstractTask.TaskAction<Vector> onTeleportAction) {
-        tasks.add(new TeleportPointEventTask(player, teleportPoint, offsetRange, onTeleportAction));
+    public StageTimeline addTeleportEvent(String assignmentMessage, List<Vector> teleportPoint, int offsetRange, AbstractTask.TaskAction<Vector> onTeleportAction) {
+        tasks.add(new TeleportPointEventTask(player, assignmentMessage, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }
 
-    public StageTimeline addPlayerChatEvent(int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
-        tasks.add(new ChatEventTask(player, expectedValue, offset, maxAttempts, onChatAction));
+    public StageTimeline addPlayerChatEvent(String assignmentMessage, int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
+        tasks.add(new ChatEventTask(player, assignmentMessage, expectedValue, offset, maxAttempts, onChatAction));
         return this;
     }
 
@@ -149,6 +164,11 @@ public class StageTimeline implements TimeLineListener {
 
     public StageTimeline pasteSchematicOutline(int schematicId) {
         tasks.add(new PasteSchematicOutlinesTask(player, schematicId));
+        return this;
+    }
+
+    public StageTimeline interactNPC(String assignmentMessage) {
+        tasks.add(new InteractNPCEventTask(player, assignmentMessage));
         return this;
     }
 

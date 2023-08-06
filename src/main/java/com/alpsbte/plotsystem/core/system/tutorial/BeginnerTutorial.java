@@ -86,31 +86,36 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage1 extends AbstractPlotStage {
-        protected Stage1(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage1(Player player, TutorialPlot plot) {
             super(player, 0, plot, -1);
         }
 
         @Override
+        public String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_DESC),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_1, GOLD + getPlayer().getName() + GRAY),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_2),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_3),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_4)
-            );
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + getPlayer().getName() + GRAY);
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TASKS);
         }
 
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    // TODO: Add task to click on the NPC to continue as player task
-                    .delay(2)
+                    .delay(1)
+                    .interactNPC(getTasks().get(0))
+                    .delay(3)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(5), Sound.ENTITY_VILLAGER_AMBIENT, true);
+                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true);
         }
     }
 
@@ -118,106 +123,126 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public static final String GOOGLE_MAPS = "Google Maps" + GRAY;
         public static final String GOOGLE_EARTH = "Google Earth" + GRAY;
 
-        protected Stage2(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage2(Player player, TutorialPlot plot) {
             super(player, 0, plot, -1);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_DESC),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_1, GOLD + GOOGLE_MAPS, GOLD + GOOGLE_EARTH),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_2, GOLD + GOOGLE_MAPS),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + GOOGLE_MAPS),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_3, GOLD + GOOGLE_EARTH),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + GOOGLE_EARTH),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_4, GOLD + "/plot links" + GRAY)
-            );
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + GOOGLE_MAPS, CHAT_HIGHLIGHT_COLOR + GOOGLE_EARTH,
+                    GOOGLE_MAPS,
+                    LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, CHAT_HIGHLIGHT_COLOR + GOOGLE_MAPS),
+                    GOOGLE_EARTH,
+                    LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, CHAT_HIGHLIGHT_COLOR + GOOGLE_EARTH),
+                    CHAT_HIGHLIGHT_COLOR + "/plot links" + GRAY);
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TASKS);
         }
 
         @Override
         public StageTimeline getTimeline() throws IOException {
             return new StageTimeline(getPlayer())
-                    .delay(2)
-                    .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .delay(3)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(new Object[] {
+                            getMessages().get(1),
+                            StringUtils.EMPTY,
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(2), GRAY + GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
+                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
                             getMessages().get(3),
                             StringUtils.EMPTY,
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(4), GRAY + GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(4), GRAY + GOOGLE_EARTH, getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(new Object[] {
-                            getMessages().get(5),
-                            StringUtils.EMPTY,
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(6), GRAY + GOOGLE_EARTH, getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT, true);
+                    .sendChatMessage(getMessages().get(5), Sound.ENTITY_VILLAGER_AMBIENT, true);
         }
     }
 
     private static class Stage3 extends AbstractPlotStage {
-        protected Stage3(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage3(Player player, TutorialPlot plot) {
             super(player, 1, plot, 0);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_DESC),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_1),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_2),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_3, Stage2.GOOGLE_MAPS),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_4, GOLD + "/tpll <lat> <lon>" + GRAY),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_5, GREEN + "4" + GRAY),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_6)
-            );
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + Stage2.GOOGLE_MAPS,
+                    CHAT_HIGHLIGHT_COLOR + "/tpll <lat> <lon>" + GRAY,
+                    CHAT_HIGHLIGHT_COLOR + "4" + GRAY);
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TASKS,
+                    CHAT_HIGHLIGHT_COLOR + "4" + YELLOW,
+                    CHAT_HIGHLIGHT_COLOR + "/tpll" + YELLOW);
         }
 
         @Override
         public StageTimeline getTimeline() throws SQLException, IOException {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(new ChatMessageTask.ClickableTaskMessage(getMessages().get(4), GRAY + Stage2.GOOGLE_MAPS,
-                            getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL) ,Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .delay(2)
-                    // TODO: add player task information
-                    .addTeleportEvent(getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(new Object[] {
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(2), GRAY + Stage2.GOOGLE_MAPS,
+                                    getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL),
+                            StringUtils.EMPTY,
+                            getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT
+                    }, Sound.ENTITY_VILLAGER_AMBIENT , true)
+                    .delay(1)
+                    .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
                         Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
                         getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
                                 Sound.BLOCK_NOTE_PLING, 1f, 1f);
                     })
-                    .delay(1)
-                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true);
+                    .delay(1);
         }
     }
 
     private static class Stage4 extends AbstractPlotStage {
-        protected Stage4(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage4(Player player, TutorialPlot plot) {
             super(player, 1, plot, 0);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_DESC),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_1),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_2),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_3, GOLD +"//wand" + GRAY)
-            );
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_MESSAGES);
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TASKS,
+                    CHAT_HIGHLIGHT_COLOR + "//wand" + YELLOW);
         }
 
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .addTask(new WandCmdEventTask(getPlayer()))
-                    .playSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+                    .delay(3)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .delay(1)
+                    .addTask(new WandCmdEventTask(getPlayer(), getTasks().get(0)));
         }
     }
 
@@ -225,23 +250,27 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         private final static String BASE_BLOCK = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getString(TutorialPaths.Beginner.BASE_BLOCK);
         private final static int BASE_BLOCK_ID = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
 
-        protected Stage5(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage5(Player player, TutorialPlot plot) {
             super(player, 1, plot, 0);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_DESC),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_1),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_2, "§8§l//line <pattern>§r§f"),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_3,
-                            "§a" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + "§f",
-                                    "§a" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + "§f"),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_4, "§a//line wool§r§7"),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_5)
-            );
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + "//line <pattern>" + GRAY,
+                    CHAT_HIGHLIGHT_COLOR + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + GRAY,
+                    CHAT_HIGHLIGHT_COLOR + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + GRAY);
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TASKS,
+                    CHAT_HIGHLIGHT_COLOR + "//line wool" + YELLOW);
         }
 
         @Override
@@ -256,19 +285,21 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             buildingLinePoints.put(buildingPoints.get(3), buildingPoints.get(0));
 
             return new StageTimeline(getPlayer())
-                    .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .delay(5)
-                    .sendChatMessage(getMessages().get(5), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true)
-                    .addTask(new LineCmdEventTask(getPlayer(), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
+                    .delay(3)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(new String[] {
+                            getMessages().get(0),
+                            StringUtils.EMPTY,
+                            getMessages().get(1)
+                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .delay(1)
+                    .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         buildingLinePoints.remove(minPoint);
 
                         Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.CONCRETE_POWDER, (byte) 5);
                         Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.CONCRETE_POWDER, (byte) 5);
                         getPlayer().playSound(getPlayer().getLocation(), Sound.BLOCK_NOTE_PLING, 1f, 1f);
-                    })))
-                    .delay(1)
-                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true);
+                    })));
         }
     }
 
@@ -276,15 +307,18 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         private final static int HEIGHT = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT);
         private final static int HEIGHT_OFFSET = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
 
-        protected Stage6(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage6(Player player, TutorialPlot plot) {
             super(player, 1, plot, 1);
+        }
+
+        @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
             return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_DESC),
                     LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_1),
                     LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_2),
                     LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_3),
@@ -295,11 +329,16 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TASKS);
+        }
+
+        @Override
         public StageTimeline getTimeline() {
             StageTimeline stage = new StageTimeline(getPlayer());
             stage.delay(5)
             .sendChatMessage(getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true)
-            .addPlayerChatEvent(HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
+            .addPlayerChatEvent(getTasks().get(0), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
                    // AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(messages.get(7), GRAY));
                 } else {
@@ -312,17 +351,23 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage7 extends AbstractPlotStage {
-        protected Stage7(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage7(Player player, TutorialPlot plot) {
             super(player, 1, plot, 2);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_DESC),
-                    "TODO"
-            );
+            return null;
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS);
         }
 
         @Override
@@ -333,17 +378,23 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage8 extends AbstractPlotStage {
-        protected Stage8(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage8(Player player, TutorialPlot plot) {
             super(player, 1, plot, 4);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_DESC),
-                    "TODO"
-            );
+            return null;
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TASKS);
         }
 
         @Override
@@ -354,17 +405,23 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage9 extends AbstractPlotStage {
-        protected Stage9(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage9(Player player, TutorialPlot plot) {
             super(player, 1, plot, 5);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_DESC),
-                    "TODO"
-            );
+            return null;
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS);
         }
 
         @Override
@@ -375,17 +432,23 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage10 extends AbstractPlotStage {
-        protected Stage10(Player player, TutorialPlot plot) throws SQLException, IOException {
+        protected Stage10(Player player, TutorialPlot plot) {
             super(player, 1, plot, 6);
         }
 
         @Override
+        protected String setTitle() {
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TITLE);
+        }
+
+        @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TITLE),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_DESC),
-                    "TODO"
-            );
+            return null;
+        }
+
+        @Override
+        protected List<String> setTasks() {
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS);
         }
 
         @Override

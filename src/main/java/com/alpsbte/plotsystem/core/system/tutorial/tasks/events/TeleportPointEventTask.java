@@ -38,8 +38,8 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
     private final List<Vector> teleportPoints;
     private final int offsetRange;
 
-    public TeleportPointEventTask(Player player, List<Vector> teleportPoints, int offsetRange, TaskAction<Vector> onTeleportAction) {
-        super(player, teleportPoints.size());
+    public TeleportPointEventTask(Player player, String assignmentMessage, List<Vector> teleportPoints, int offsetRange, TaskAction<Vector> onTeleportAction) {
+        super(player, assignmentMessage, teleportPoints.size());
         this.teleportPoints = teleportPoints;
         this.offsetRange = offsetRange;
         this.onTeleportAction = onTeleportAction;

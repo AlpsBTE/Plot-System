@@ -38,8 +38,8 @@ public class ChatEventTask extends AbstractTask implements EventTask {
 
     private int attemptsLeft;
 
-    public ChatEventTask(Player player, int expectedValue, int offset, int maxAttempts, BiTaskAction<Boolean, Integer> onChatAction) {
-        super(player, 1);
+    public ChatEventTask(Player player, String assignmentMessage, int expectedValue, int offset, int maxAttempts, BiTaskAction<Boolean, Integer> onChatAction) {
+        super(player, assignmentMessage, 1);
         this.expectedValue = expectedValue;
         this.offset = offset;
         this.onChatAction = onChatAction;

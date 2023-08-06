@@ -300,87 +300,62 @@ public abstract class LangPaths {
 
         private static final String TUTORIALS_BEGINNER_STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
         public static final String TUTORIALS_BEGINNER_STAGE1_TITLE = TUTORIALS_BEGINNER_STAGE1 + "stage-1-title";
-        public static final String TUTORIALS_BEGINNER_STAGE1_DESC = TUTORIALS_BEGINNER_STAGE1 + "stage-1-desc";
-        public static final String TUTORIALS_BEGINNER_STAGE1_1 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-1";
-        public static final String TUTORIALS_BEGINNER_STAGE1_2 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-2";
-        public static final String TUTORIALS_BEGINNER_STAGE1_3 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-3";
-        public static final String TUTORIALS_BEGINNER_STAGE1_4 = TUTORIALS_BEGINNER_STAGE1 + "stage-1-4";
+        public static final String TUTORIALS_BEGINNER_STAGE1_MESSAGES = TUTORIALS_BEGINNER_STAGE1 + "stage-1-messages";
+        public static final String TUTORIALS_BEGINNER_STAGE1_TASKS = TUTORIALS_BEGINNER_STAGE1 + "stage-1-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE2 = TUTORIALS_BEGINNER + "stage-2.";
         public static final String TUTORIALS_BEGINNER_STAGE2_TITLE = TUTORIALS_BEGINNER_STAGE2 + "stage-2-title";
-        public static final String TUTORIALS_BEGINNER_STAGE2_DESC = TUTORIALS_BEGINNER_STAGE2 + "stage-2-desc";
-        public static final String TUTORIALS_BEGINNER_STAGE2_1 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-1";
-        public static final String TUTORIALS_BEGINNER_STAGE2_2 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-2";
-        public static final String TUTORIALS_BEGINNER_STAGE2_3 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-3";
-        public static final String TUTORIALS_BEGINNER_STAGE2_4 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-4";
-        public static final String TUTORIALS_BEGINNER_STAGE2_5 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-5";
-        public static final String TUTORIALS_BEGINNER_STAGE2_6 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-6";
-        public static final String TUTORIALS_BEGINNER_STAGE2_7 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-7";
-        public static final String TUTORIALS_BEGINNER_STAGE2_8 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-8";
-        public static final String TUTORIALS_BEGINNER_STAGE2_9 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-9";
-        public static final String TUTORIALS_BEGINNER_STAGE2_10 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-10";
-        public static final String TUTORIALS_BEGINNER_STAGE2_11 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-11";
-        public static final String TUTORIALS_BEGINNER_STAGE2_12 = TUTORIALS_BEGINNER_STAGE2 + "stage-2-12";
+        public static final String TUTORIALS_BEGINNER_STAGE2_MESSAGES = TUTORIALS_BEGINNER_STAGE2 + "stage-2-messages";
+        public static final String TUTORIALS_BEGINNER_STAGE2_TASKS = TUTORIALS_BEGINNER_STAGE2 + "stage-2-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE3 = TUTORIALS_BEGINNER + "stage-3.";
         public static final String TUTORIALS_BEGINNER_STAGE3_TITLE = TUTORIALS_BEGINNER_STAGE3 + "stage-3-title";
-        public static final String TUTORIALS_BEGINNER_STAGE3_DESC = TUTORIALS_BEGINNER_STAGE3 + "stage-3-desc";
-        public static final String TUTORIALS_BEGINNER_STAGE3_1 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-1";
-        public static final String TUTORIALS_BEGINNER_STAGE3_2 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-2";
-        public static final String TUTORIALS_BEGINNER_STAGE3_3 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-3";
-        public static final String TUTORIALS_BEGINNER_STAGE3_4 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-4";
-        public static final String TUTORIALS_BEGINNER_STAGE3_5 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-5";
-        public static final String TUTORIALS_BEGINNER_STAGE3_6 = TUTORIALS_BEGINNER_STAGE3 + "stage-3-6";
+        public static final String TUTORIALS_BEGINNER_STAGE3_MESSAGES = TUTORIALS_BEGINNER_STAGE3 + "stage-3-messages";
+        public static final String TUTORIALS_BEGINNER_STAGE3_TASKS = TUTORIALS_BEGINNER_STAGE3 + "stage-3-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE4 = TUTORIALS_BEGINNER + "stage-4.";
         public static final String TUTORIALS_BEGINNER_STAGE4_TITLE = TUTORIALS_BEGINNER_STAGE4 + "stage-4-title";
-        public static final String TUTORIALS_BEGINNER_STAGE4_DESC = TUTORIALS_BEGINNER_STAGE4 + "stage-4-desc";
-        public static final String TUTORIALS_BEGINNER_STAGE4_1 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-1";
-        public static final String TUTORIALS_BEGINNER_STAGE4_2 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-2";
-        public static final String TUTORIALS_BEGINNER_STAGE4_3 = TUTORIALS_BEGINNER_STAGE4 + "stage-4-3";
+        public static final String TUTORIALS_BEGINNER_STAGE4_MESSAGES = TUTORIALS_BEGINNER_STAGE4 + "stage-4-messages";
+        public static final String TUTORIALS_BEGINNER_STAGE4_TASKS = TUTORIALS_BEGINNER_STAGE4 + "stage-4-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE5 = TUTORIALS_BEGINNER + "stage-5.";
         public static final String TUTORIALS_BEGINNER_STAGE5_TITLE = TUTORIALS_BEGINNER_STAGE5 + "stage-5-title";
-        public static final String TUTORIALS_BEGINNER_STAGE5_DESC = TUTORIALS_BEGINNER_STAGE5 + "stage-5-desc";
-        public static final String TUTORIALS_BEGINNER_STAGE5_1 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-1";
-        public static final String TUTORIALS_BEGINNER_STAGE5_2 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-2";
-        public static final String TUTORIALS_BEGINNER_STAGE5_3 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-3";
-        public static final String TUTORIALS_BEGINNER_STAGE5_4 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-4";
-        public static final String TUTORIALS_BEGINNER_STAGE5_5 = TUTORIALS_BEGINNER_STAGE5 + "stage-5-5";
+        public static final String TUTORIALS_BEGINNER_STAGE5_MESSAGES = TUTORIALS_BEGINNER_STAGE5 + "stage-5-messages";
+        public static final String TUTORIALS_BEGINNER_STAGE5_TASKS = TUTORIALS_BEGINNER_STAGE5 + "stage-5-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE6 = TUTORIALS_BEGINNER + "stage-6.";
         public static final String TUTORIALS_BEGINNER_STAGE6_TITLE = TUTORIALS_BEGINNER_STAGE6 + "stage-6-title";
-        public static final String TUTORIALS_BEGINNER_STAGE6_DESC = TUTORIALS_BEGINNER_STAGE6 + "stage-6-desc";
         public static final String TUTORIALS_BEGINNER_STAGE6_1 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-1";
         public static final String TUTORIALS_BEGINNER_STAGE6_2 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-2";
         public static final String TUTORIALS_BEGINNER_STAGE6_3 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-3";
         public static final String TUTORIALS_BEGINNER_STAGE6_4 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-4";
         public static final String TUTORIALS_BEGINNER_STAGE6_5 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-5";
         public static final String TUTORIALS_BEGINNER_STAGE6_6 = TUTORIALS_BEGINNER_STAGE6 + "stage-6-6";
+        public static final String TUTORIALS_BEGINNER_STAGE6_TASKS = TUTORIALS_BEGINNER_STAGE6 + "stage-6-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE7 = TUTORIALS_BEGINNER + "stage-7.";
         public static final String TUTORIALS_BEGINNER_STAGE7_TITLE = TUTORIALS_BEGINNER_STAGE7 + "stage-7-title";
-        public static final String TUTORIALS_BEGINNER_STAGE7_DESC = TUTORIALS_BEGINNER_STAGE7 + "stage-7-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE7_TASKS = TUTORIALS_BEGINNER_STAGE7 + "stage-7-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE8 = TUTORIALS_BEGINNER + "stage-8.";
         public static final String TUTORIALS_BEGINNER_STAGE8_TITLE = TUTORIALS_BEGINNER_STAGE8 + "stage-8-title";
-        public static final String TUTORIALS_BEGINNER_STAGE8_DESC = TUTORIALS_BEGINNER_STAGE8 + "stage-8-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE8_TASKS = TUTORIALS_BEGINNER_STAGE8 + "stage-8-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE9 = TUTORIALS_BEGINNER + "stage-9.";
         public static final String TUTORIALS_BEGINNER_STAGE9_TITLE = TUTORIALS_BEGINNER_STAGE9 + "stage-9-title";
-        public static final String TUTORIALS_BEGINNER_STAGE9_DESC = TUTORIALS_BEGINNER_STAGE9 + "stage-9-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE9_TASKS = TUTORIALS_BEGINNER_STAGE9 + "stage-9-tasks";
 
 
         private static final String TUTORIALS_BEGINNER_STAGE10 = TUTORIALS_BEGINNER + "stage-10.";
         public static final String TUTORIALS_BEGINNER_STAGE10_TITLE = TUTORIALS_BEGINNER_STAGE10 + "stage-10-title";
-        public static final String TUTORIALS_BEGINNER_STAGE10_DESC = TUTORIALS_BEGINNER_STAGE10 + "stage-10-desc";
+        public static final String TUTORIALS_BEGINNER_STAGE10_TASKS = TUTORIALS_BEGINNER_STAGE10 + "stage-10-tasks";
     }
 }

@@ -27,8 +27,8 @@ package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
 import org.bukkit.entity.Player;
 
 public class WandCmdEventTask extends AbstractCmdEventTask {
-    public WandCmdEventTask(Player player) {
-        super(player, "//wand", 1, false);
+    public WandCmdEventTask(Player player, String assignmentMessage) {
+        super(player, "//wand", assignmentMessage, 1, false);
     }
 
     @Override

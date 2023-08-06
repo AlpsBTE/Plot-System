@@ -24,9 +24,14 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+
+import static net.md_5.bungee.api.ChatColor.*;
 
 public abstract class AbstractTask {
     @FunctionalInterface
@@ -41,6 +46,7 @@ public abstract class AbstractTask {
 
     protected Player player;
 
+    private final String assignmentMessage;
     private int progress;
     private final int totalProgress;
     private boolean isDone;
@@ -50,16 +56,18 @@ public abstract class AbstractTask {
      * @param player The player who is doing the task.
      */
     public AbstractTask(Player player) {
-        this(player, 0);
+        this(player, null, 0);
     }
 
     /**
      * This constructor is used if the task has progress.
      * @param player The player who is doing the task.
+     * @param assignmentMessage The message which is displayed in the action bar and chat.
      * @param totalProgress The total progress which is needed to complete the task.
      */
-    public AbstractTask(Player player, int totalProgress) {
+    public AbstractTask(Player player, String assignmentMessage, int totalProgress) {
         this.player = player;
+        this.assignmentMessage = assignmentMessage;
         this.totalProgress = totalProgress;
     }
 
@@ -87,6 +95,15 @@ public abstract class AbstractTask {
         if (progress + 1 <= totalProgress) {
             progress++;
         }
+        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onAssignmentUpdate(player, this);
+    }
+
+    /**
+     * Get the message which is displayed in the action bar and chat.
+     * @return assignmentMessage
+     */
+    public String getAssignmentMessage() {
+        return getAssignmentMessageFormat(assignmentMessage);
     }
 
     /**
@@ -119,5 +136,16 @@ public abstract class AbstractTask {
      */
     public boolean hasProgress() {
         return totalProgress > 0;
+    }
+
+    public static String getAssignmentMessageFormat(String assignmentMessage) {
+        return YELLOW + assignmentMessage;
+    }
+
+    public static void sendAssignmentMessage(Player player, String assignmentMessage) {
+        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("§8[§6PS§8] " + assignmentMessage);
+        player.sendMessage(StringUtils.EMPTY);
+        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
     }
 }

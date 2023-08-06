@@ -54,6 +54,12 @@ public class TutorialEventListener implements Listener {
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
     }
 
+    @EventHandler
+    private void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
+        if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
+        runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onPlayerChatEvent(AsyncPlayerChatEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;

@@ -50,8 +50,8 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     private Vector minPoint;
     private Vector maxPoint;
 
-    public LineCmdEventTask(Player player, String blockName, int blockId, Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
-        super(player, "//line", new String[] { blockName, String.valueOf(blockId) }, linePoints.size(),true);
+    public LineCmdEventTask(Player player, String assignmentMessage, String blockName, int blockId, Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
+        super(player, "//line", new String[] { blockName, String.valueOf(blockId) },  assignmentMessage, linePoints.size(),true);
         this.linePoints = linePoints;
         this.lineCmdAction = lineCmdAction;
     }

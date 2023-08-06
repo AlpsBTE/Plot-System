@@ -25,13 +25,13 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
@@ -39,11 +39,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
+import static net.md_5.bungee.api.ChatColor.GOLD;
+
 public abstract class AbstractTutorial implements Tutorial {
+    public static final String CHAT_HIGHLIGHT_COLOR = GOLD.toString();
     public static List<Tutorial> activeTutorials = new ArrayList<>();
 
     protected final Player player;
@@ -108,7 +110,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
         // Send new stage unlocked message to player
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
-            ChatHandler.printInfo(player, ChatHandler.getStageUnlockedInfo(currentStage.getMessages().get(0), currentStage.getMessages().get(1)));
+            sendStageUnlockedInfo(player, currentStage.getTitle());
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.7f);
 
             // Start tasks timeline
@@ -171,6 +173,11 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
+    public TutorialNPC getNPC() {
+        return npc;
+    }
+
+    @Override
     public World getCurrentWorld() {
         return Bukkit.getWorld(worlds.get(currentWorldIndex).getWorldName());
     }
@@ -183,20 +190,15 @@ public abstract class AbstractTutorial implements Tutorial {
         return stages;
     }
 
-    // TODO: MOVE SOMEWHERE ELSE
-    public static class ChatHandler {
-        public static void printInfo(Player player, String[] messages) {
-            player.sendMessage("");
-            for (String message : messages) player.sendMessage(message);
-            player.sendMessage("");
-        }
+    public static Tutorial getTutorialByPlayer(Player player) {
+        return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
+                tutorial.getPlayer().getUniqueId().toString().equals(player.getUniqueId().toString())).findAny().orElse(null);
+    }
 
-        public static String[] getStageUnlockedInfo(String title, String description) {
-            LoreBuilder builder = new LoreBuilder()
-                .addLines("§b§l" + "NEW STAGE UNLOCKED", "  §f§l◆ §6§l" + title, ""); // TODO: set player lang
-            String[] descriptionLines = description.split("%newline%");
-            Arrays.stream(descriptionLines).forEach(desc -> builder.addLine("    §7§l▪ §f" + desc));
-            return builder.build().toArray(new String[0]);
-        }
+    public static void sendStageUnlockedInfo(Player player, String title) {
+        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("§b§l" + "NEW STAGE UNLOCKED");
+        player.sendMessage("  §f§l◆ §6§l" + title);
+        player.sendMessage(StringUtils.EMPTY);
     }
 }

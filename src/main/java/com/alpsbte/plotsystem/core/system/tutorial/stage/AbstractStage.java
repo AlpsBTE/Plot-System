@@ -33,15 +33,23 @@ import java.util.List;
 public abstract class AbstractStage {
     private final Player player;
     private final int initWorldIndex;
+
+    private final String title;
     private final List<String> messages;
+    private final List<String> tasks;
 
     protected AbstractStage(Player player, int initWorldIndex) {
         this.player = player;
         this.initWorldIndex = initWorldIndex;
 
+        this.title = setTitle();
         this.messages = setMessages();
+        this.tasks = setTasks();
     }
+
+    protected abstract String setTitle();
     protected abstract List<String> setMessages();
+    protected abstract List<String> setTasks();
     public abstract StageTimeline getTimeline() throws IOException, SQLException;
 
     public Player getPlayer() {
@@ -52,7 +60,15 @@ public abstract class AbstractStage {
         return initWorldIndex;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public List<String> getMessages() {
         return messages;
+    }
+
+    public List<String> getTasks() {
+        return tasks;
     }
 }
