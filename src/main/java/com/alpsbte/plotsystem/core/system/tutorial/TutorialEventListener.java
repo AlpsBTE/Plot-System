@@ -69,7 +69,7 @@ public class TutorialEventListener implements Listener {
 
     @EventHandler
     private void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
-        TutorialListener tutorial = AbstractTutorial.activeTutorials.stream().filter(t ->
+        Tutorial tutorial = AbstractTutorial.activeTutorials.stream().filter(t ->
                         t.getPlayer().getUniqueId().toString().equals(event.getPlayer().getUniqueId().toString())).findFirst().orElse(null);
         if (tutorial != null && (tutorial.getCurrentWorld() == null || !tutorial.getCurrentWorld().getName().equals(event.getPlayer().getWorld().getName())))
             tutorial.onTutorialStop(event.getPlayer(), false);

@@ -22,10 +22,16 @@
  *  SOFTWARE.
  */
 
+
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public interface PlotTutorialListener extends TutorialListener {
-    void onPasteSchematicOutlines(Player player, int schematicId);
+public interface Tutorial {
+    Player getPlayer();
+    World getCurrentWorld();
+    void onStageComplete(Player player);
+    void onSwitchWorld(Player player, int tutorialWorldIndex);
+    void onTutorialStop(Player player, boolean isComplete);
 }

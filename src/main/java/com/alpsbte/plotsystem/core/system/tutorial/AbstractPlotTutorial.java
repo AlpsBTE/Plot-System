@@ -38,7 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorialListener {
+public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected final int tutorialId;
     protected int currentSchematicId;
 

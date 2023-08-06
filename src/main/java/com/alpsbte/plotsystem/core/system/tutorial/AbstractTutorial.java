@@ -43,8 +43,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-public abstract class AbstractTutorial implements TutorialListener {
-    public static List<TutorialListener> activeTutorials = new ArrayList<>();
+public abstract class AbstractTutorial implements Tutorial {
+    public static List<Tutorial> activeTutorials = new ArrayList<>();
 
     protected final Player player;
     private List<Class<? extends AbstractStage>> stages;

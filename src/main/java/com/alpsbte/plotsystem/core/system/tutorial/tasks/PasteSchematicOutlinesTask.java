@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.tasks;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
-import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorialListener;
+import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -42,7 +42,7 @@ public class PasteSchematicOutlinesTask extends AbstractTask {
     public void performTask() {
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             for (int i = 0; i < AbstractPlotTutorial.activeTutorials.size(); i++)
-                ((PlotTutorialListener) AbstractPlotTutorial.activeTutorials.get(i)).onPasteSchematicOutlines(player, schematicId);
+                ((PlotTutorial) AbstractPlotTutorial.activeTutorials.get(i)).onPasteSchematicOutlines(player, schematicId);
             setTaskDone();
         });
     }
