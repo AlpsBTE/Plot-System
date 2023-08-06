@@ -77,7 +77,7 @@ public abstract class AbstractTutorial implements TutorialListener {
 
     protected void nextStage() {
         if (activeStageIndex + 1 >= stages.size()) {
-            StopTutorial(true);
+            onTutorialStop(player, true);
         } else {
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 try {
@@ -86,8 +86,8 @@ public abstract class AbstractTutorial implements TutorialListener {
 
                     // Check if player has to switch world
                     if (currentStage.getInitWorldIndex() != currentWorldIndex) {
-                        onSwitchWorld(player, currentStage.getInitWorldIndex());
                         currentWorldIndex = currentStage.getInitWorldIndex();
+                        onSwitchWorld(player, currentStage.getInitWorldIndex());
                     }
 
                     // Ge the timeline of the current stage and increase the active stage index
@@ -112,7 +112,7 @@ public abstract class AbstractTutorial implements TutorialListener {
 
     protected void StopTutorial(boolean isCompleted) {
         activeTutorials.remove(this);
-        if (stageTimeline != null) StageTimeline.activeTimelines.forEach(timeLine -> timeLine.onStopTimeLine(player));
+        if (stageTimeline != null) stageTimeline.onStopTimeLine(player);
         if (npc != null) npc.tutorialNPC.remove();
 
         if (isCompleted) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
@@ -156,6 +156,16 @@ public abstract class AbstractTutorial implements TutorialListener {
         if (npc == null) {
             npc = new TutorialNPC(npcLocation);
         } else npc.tutorialNPC.teleport(npcLocation);
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public World getCurrentWorld() {
+        return Bukkit.getWorld(worlds.get(currentWorldIndex).getWorldName());
     }
 
     public List<TutorialWorld> getWorlds() {

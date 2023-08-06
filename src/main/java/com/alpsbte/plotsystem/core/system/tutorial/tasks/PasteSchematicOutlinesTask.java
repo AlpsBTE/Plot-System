@@ -41,7 +41,8 @@ public class PasteSchematicOutlinesTask extends AbstractTask {
     @Override
     public void performTask() {
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            AbstractPlotTutorial.activeTutorials.forEach(tutorial -> ((PlotTutorialListener) tutorial).onPasteSchematicOutlines(player, schematicId));
+            for (int i = 0; i < AbstractPlotTutorial.activeTutorials.size(); i++)
+                ((PlotTutorialListener) AbstractPlotTutorial.activeTutorials.get(i)).onPasteSchematicOutlines(player, schematicId);
             setTaskDone();
         });
     }

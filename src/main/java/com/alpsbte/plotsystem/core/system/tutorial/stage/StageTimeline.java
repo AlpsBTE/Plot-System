@@ -85,8 +85,8 @@ public class StageTimeline implements TimeLineListener {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString()) && task != currentTask) return;
 
         if (currentTaskId >= tasks.size() - 1) {
-            activeTimelines.remove(StageTimeline.this);
-            AbstractTutorial.activeTutorials.forEach(t -> t.onStageComplete(player));
+            onStopTimeLine(player);
+            for (int i = 0; i < AbstractTutorial.activeTutorials.size(); i++) AbstractTutorial.activeTutorials.get(i).onStageComplete(player);
         } else nextTask();
     }
 

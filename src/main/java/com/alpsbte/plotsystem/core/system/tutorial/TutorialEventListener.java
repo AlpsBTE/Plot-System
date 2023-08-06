@@ -28,10 +28,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.EventTask;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,5 +58,20 @@ public class TutorialEventListener implements Listener {
     private void onPlayerChatEvent(AsyncPlayerChatEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
+    }
+
+    @EventHandler
+    private void onPlayerQuitEvent(PlayerQuitEvent event) {
+        AbstractTutorial.activeTutorials.stream().filter(t ->
+                t.getPlayer().getUniqueId().toString().equals(event.getPlayer().getUniqueId().toString())).findFirst()
+                .ifPresent(tutorial -> tutorial.onTutorialStop(event.getPlayer(), false));
+    }
+
+    @EventHandler
+    private void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
+        TutorialListener tutorial = AbstractTutorial.activeTutorials.stream().filter(t ->
+                        t.getPlayer().getUniqueId().toString().equals(event.getPlayer().getUniqueId().toString())).findFirst().orElse(null);
+        if (tutorial != null && (tutorial.getCurrentWorld() == null || !tutorial.getCurrentWorld().getName().equals(event.getPlayer().getWorld().getName())))
+            tutorial.onTutorialStop(event.getPlayer(), false);
     }
 }
