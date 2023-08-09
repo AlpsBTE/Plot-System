@@ -124,7 +124,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public static final String GOOGLE_EARTH = "Google Earth" + GRAY;
 
         protected Stage2(Player player, TutorialPlot plot) {
-            super(player, 0, plot, -1);
+            super(player, 1, plot, 0);
         }
 
         @Override
@@ -153,17 +153,18 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(1),
+                            getMessages().get(2),
                             StringUtils.EMPTY,
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(2), GRAY + GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(3), GRAY + GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(3),
+                            getMessages().get(4),
                             StringUtils.EMPTY,
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(4), GRAY + GOOGLE_EARTH, getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(5), GRAY + GOOGLE_EARTH, getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(5), Sound.ENTITY_VILLAGER_AMBIENT, true);
+                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT, true);
         }
     }
 
@@ -197,12 +198,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(2), GRAY + Stage2.GOOGLE_MAPS,
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_MAPS,
                                     getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL),
                             StringUtils.EMPTY,
-                            getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT
+                            getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT
                     }, Sound.ENTITY_VILLAGER_AMBIENT , true)
                     .delay(1)
                     .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
