@@ -49,8 +49,7 @@ public class ContinueCmdEventTask extends AbstractCmdEventTask {
     }
 
     @Override
-    protected boolean onCommand(String[] args) {
+    protected void onCommand(String[] args) {
         setTaskDone();
-        return true;
     }
 }

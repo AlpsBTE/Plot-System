@@ -57,21 +57,20 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     }
 
     @Override
-    protected boolean onCommand(String[] args) {
+    protected void onCommand(String[] args) {
         // Check if the player has selected valid points
-        if (minPoint == null || maxPoint == null) return false;
+        if (minPoint == null || maxPoint == null) return;
 
         // Check if the points are valid and draw line
         if (linePoints.containsKey(minPoint) && linePoints.get(minPoint).equals(maxPoint) && drawLine()) {
             lineCmdAction.performAction(minPoint, maxPoint);
         } else if (linePoints.containsKey(maxPoint) && linePoints.get(maxPoint).equals(minPoint) && drawLine()) {
             lineCmdAction.performAction(maxPoint, minPoint);
-        } else return false;
+        } else return;
 
         updateProgress();
         minPoint = null; maxPoint = null;
         if (linePoints.size() == 0) setTaskDone();
-        return true;
     }
 
     @Override

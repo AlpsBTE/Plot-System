@@ -55,23 +55,22 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
         TutorialEventListener.runningEventTasks.put(player.getUniqueId().toString(), this);
     }
 
-    protected abstract boolean onCommand(String[] args);
+    protected abstract void onCommand(String[] args);
 
     @Override
     public void performEvent(PlayerEvent event) {
         if (event instanceof PlayerCommandPreprocessEvent) {
             PlayerCommandPreprocessEvent cmdEvent = (PlayerCommandPreprocessEvent) event;
             if (cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
+                if (isCancelCmdEvent) cmdEvent.setCancelled(true);
 
                 // Check if the expected args are used
-                String[] args = cmdEvent.getMessage().replaceFirst(expectedCommand, "").trim().split(" ");
+                String[] args = cmdEvent.getMessage().toLowerCase().replaceFirst(expectedCommand.toLowerCase(), "").trim().split(" ");
                 if (args1 != null && args1.length > 0) {
                     if (args.length == 0) return;
                     if (Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0]))) return;
                 }
-
-                if (!onCommand(args)) return;
-                if (isCancelCmdEvent) cmdEvent.setCancelled(true);
+                onCommand(args);
             }
         }
     }
