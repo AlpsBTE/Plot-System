@@ -20,14 +20,18 @@ public class InteractNPCEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(PlayerEvent event) {
-        if (event instanceof PlayerInteractEntityEvent) {
-            Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(player);
-            if (tutorial == null) return;
-            PlayerInteractEntityEvent interactEvent = (PlayerInteractEntityEvent) event;
-            if (tutorial.getNPC().tutorialNPC != null && tutorial.getNPC().tutorialNPC.getUniqueId().equals(interactEvent.getRightClicked().getUniqueId())) {
-                interactEvent.setCancelled(true);
-                setTaskDone();
-            }
+        if (event instanceof PlayerInteractEntityEvent && checkForNPC((PlayerInteractEntityEvent) event)) {
+            setTaskDone();
         }
+    }
+
+    public static boolean checkForNPC(PlayerInteractEntityEvent event) {
+        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(event.getPlayer());
+        if (tutorial == null) return false;
+        if (tutorial.getNPC().tutorialNPC != null && tutorial.getNPC().tutorialNPC.getUniqueId().equals(event.getRightClicked().getUniqueId())) {
+            event.setCancelled(true);
+            return true;
+        }
+        return false;
     }
 }

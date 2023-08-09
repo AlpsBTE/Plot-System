@@ -24,7 +24,10 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
 
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.InteractNPCEventTask;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 /**
  * This command event task is used to wait till the player clicks on the "continue" button in
@@ -34,6 +37,15 @@ import org.bukkit.entity.Player;
 public class ContinueCmdEventTask extends AbstractCmdEventTask {
     public ContinueCmdEventTask(Player player) {
         super(player, "/tutorial", new String[] { "continue" }, null, 0, true);
+    }
+
+    @Override
+    public void performEvent(PlayerEvent event) {
+        if (event instanceof PlayerInteractEntityEvent && InteractNPCEventTask.checkForNPC((PlayerInteractEntityEvent) event)) {
+            setTaskDone();
+            return;
+        }
+        super.performEvent(event);
     }
 
     @Override
