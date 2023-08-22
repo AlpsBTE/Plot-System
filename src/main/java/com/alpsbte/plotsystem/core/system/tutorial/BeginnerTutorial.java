@@ -109,9 +109,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(1)
-                    .interactNPC(getTasks().get(0))
                     .delay(3)
+                    .interactNPC(getTasks().get(0))
+                    .delay(2)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
@@ -202,15 +202,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_MAPS,
                                     getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL),
                             StringUtils.EMPTY,
-                            getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT
-                    }, Sound.ENTITY_VILLAGER_AMBIENT , true)
-                    .delay(1)
+                            getMessages().get(2)
+                    }, Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .delay(2)
                     .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
                         Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
                         getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
                                 Sound.BLOCK_NOTE_PLING, 1f, 1f);
-                    })
-                    .delay(1);
+                    });
         }
     }
 
@@ -240,8 +239,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .delay(1)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .delay(2)
                     .addTask(new WandCmdEventTask(getPlayer(), getTasks().get(0)));
         }
     }
@@ -291,8 +290,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             getMessages().get(0),
                             StringUtils.EMPTY,
                             getMessages().get(1)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .delay(1)
+                    }, Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .delay(2)
                     .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         buildingLinePoints.remove(minPoint);
 
@@ -365,7 +364,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return null;
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_MESSAGES);
         }
 
         @Override
@@ -376,7 +375,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(5);
+                    .delay(3);
         }
     }
 
@@ -392,7 +391,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return null;
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_MESSAGES);
         }
 
         @Override
@@ -419,7 +418,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return null;
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_MESSAGES);
         }
 
         @Override
@@ -446,7 +445,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return null;
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_MESSAGES);
         }
 
         @Override
