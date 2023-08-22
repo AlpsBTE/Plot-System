@@ -39,7 +39,7 @@ import java.util.List;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class ChatMessageTask extends AbstractTask {
-    private static final String TASK_PREFIX = DARK_GRAY + "> " + GRAY;
+    public static final String TASK_PREFIX = DARK_GRAY + "> " + GRAY;
     private static final String CONTINUE_TASK_MESSAGE = DARK_GRAY + "[" + GREEN + "{0}" + DARK_GRAY + "]";
 
     private final Object[] messages;

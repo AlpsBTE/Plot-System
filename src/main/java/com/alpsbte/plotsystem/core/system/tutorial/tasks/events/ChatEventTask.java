@@ -70,7 +70,10 @@ public class ChatEventTask extends AbstractTask implements EventTask {
                 }
             }
 
-            if (attemptsLeft <= 0) setTaskDone();
+            if (attemptsLeft <= 0) {
+                updateProgress();
+                setTaskDone();
+            }
         }
     }
 }

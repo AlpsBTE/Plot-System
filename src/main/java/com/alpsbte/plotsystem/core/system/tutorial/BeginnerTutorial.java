@@ -318,14 +318,10 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return Arrays.asList(
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_1),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_2),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_3),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_4, "§a" + HEIGHT + "§r§7"),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_5, "§a" + HEIGHT_OFFSET + "§r§7"),
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_6)
-            );
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + Stage2.GOOGLE_EARTH,
+                    CHAT_HIGHLIGHT_COLOR + HEIGHT + GRAY,
+                    CHAT_HIGHLIGHT_COLOR + HEIGHT + GRAY);
         }
 
         @Override
@@ -334,16 +330,23 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        public StageTimeline getTimeline() {
-            StageTimeline stage = new StageTimeline(getPlayer());
-            stage.delay(5)
-            .sendChatMessage(getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true)
-            .addPlayerChatEvent(getTasks().get(0), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
+        public StageTimeline getTimeline() throws IOException {
+            StageTimeline stage = new StageTimeline(getPlayer())
+                    .delay(3)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true)
+                    .sendChatMessage(new Object[] {
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_EARTH,
+                                    getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL),
+                            StringUtils.EMPTY,
+                            getMessages().get(2)
+                    }, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false)
+                    .delay(2);
+
+            stage.addPlayerChatEvent(getTasks().get(0), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
-                   // AbstractTutorial.ChatHandler.printInfo(player, AbstractTutorial.ChatHandler.getTaskMessage(messages.get(7), GRAY));
+                    getPlayer().sendMessage(ChatMessageTask.TASK_PREFIX + getMessages().get(5));
                 } else {
-                    stage.delay(1);
-                    stage.sendChatMessage(isCorrect ? getMessages().get(5) : getMessages().get(6), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false);
+                    stage.sendChatMessage(isCorrect ? getMessages().get(3) : getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false);
                 }
             });
             return stage;

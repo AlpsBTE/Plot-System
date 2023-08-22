@@ -326,8 +326,8 @@ tutorials:
       stage-6-title: 'Building Heights'
       stage-6-messages:
         - 'Now that we have the building outlines, we need to measure the height of the building.'
-        - 'Open {0} and calculate the height of the facade by subtracting the height of the ground from the height of the roof.'
-        - 'Enter the height (in metres) of the building in the chat to continue.'
+        - 'Click here to open {0} and calculate the height of the facade by subtracting the height of the ground from the height of the roof.'
+        - 'Enter the height (in metres) of the building facade in the chat to continue.'
         - 'Well done! The height of the building is {1} blocks.'
         - 'You´ve almost made it! The height of the building is {2} blocks.'
         - 'You´ve almost made it! Try again.'
