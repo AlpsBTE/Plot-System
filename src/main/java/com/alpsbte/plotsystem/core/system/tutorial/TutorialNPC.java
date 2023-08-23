@@ -22,7 +22,6 @@
  *  SOFTWARE.
  */
 
-
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import org.bukkit.Location;
@@ -41,7 +40,7 @@ public class TutorialNPC {
         Villager v = (Villager) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.VILLAGER);
         v.setAI(false);
         v.setCustomName("§6§lBob");
-        v.setGlowing(true);
+        // v.setGlowing(true);
         v.setSilent(true);
         return v;
 

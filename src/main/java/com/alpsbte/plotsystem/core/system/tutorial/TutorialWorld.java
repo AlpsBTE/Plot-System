@@ -22,12 +22,12 @@
  *  SOFTWARE.
  */
 
-
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -36,8 +36,8 @@ import java.util.logging.Level;
 
 public class TutorialWorld {
     private String worldName;
-    private SpawnPoint playerSpawnLocation;
-    private SpawnPoint npcSpawnLocation;
+    private String playerSpawnConfigPath;
+    private String npcSpawnConfigPath;
 
     public TutorialWorld(int tutorialId, int tutorialWorldIndex) {
         this(tutorialId, tutorialWorldIndex, null);
@@ -61,68 +61,29 @@ public class TutorialWorld {
 
         ConfigurationSection spawnSection = tutorialSpawnsSection.getConfigurationSection(tutorialSpawn.toArray()[tutorialWorldIndex].toString());
         this.worldName = worldName == null ? spawnSection.getName() : worldName;
-        Bukkit.getLogger().log(Level.INFO, "World: " + this.worldName + " | " + spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_PLAYER));
-        this.playerSpawnLocation = SpawnPoint.by(this.worldName, spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_PLAYER));
-        Bukkit.getLogger().log(Level.INFO, "Player Spawn: " + this.playerSpawnLocation.toString());
-        this.npcSpawnLocation = SpawnPoint.by(this.worldName, spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_NPC));
-        Bukkit.getLogger().log(Level.INFO, "NPC Spawn: " + this.npcSpawnLocation.toString());
+        this.playerSpawnConfigPath = spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_PLAYER);
+        this.npcSpawnConfigPath = spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_NPC);
     }
 
-    public SpawnPoint getPlayerSpawnLocation() {
-        return playerSpawnLocation;
+    public Location getPlayerSpawnLocation() {
+        return getSpawnLocation(worldName, playerSpawnConfigPath);
     }
 
-    public SpawnPoint getNpcSpawnLocation() {
-        return npcSpawnLocation;
+    public Location getNpcSpawnLocation() {
+        return getSpawnLocation(worldName, npcSpawnConfigPath);
     }
 
     public String getWorldName() {
         return worldName;
     }
 
-    public static class SpawnPoint {
-        private final String worldName;
-        private final double x;
-        private final double z;
-        private final float yaw;
-        private final float pitch;
-
-        public SpawnPoint(String worldName, double x, double z, float yaw, float pitch) {
-            this.worldName = worldName;
-            this.x = x;
-            this.z = z;
-            this.yaw = yaw;
-            this.pitch = pitch;
-        }
-
-        public String getWorldName() {
-            return worldName;
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        public double getZ() {
-            return z;
-        }
-
-        public float getYaw() {
-            return yaw;
-        }
-
-        public float getPitch() {
-            return pitch;
-        }
-
-        public static SpawnPoint by(String worldName, String configPath) {
-            String[] spawnPointData = configPath.trim().split(",");
-            return new SpawnPoint(
-                    worldName,
-                    Double.parseDouble(spawnPointData[0]),
-                    Double.parseDouble(spawnPointData[1]),
-                    Float.parseFloat(spawnPointData[2]),
-                    Float.parseFloat(spawnPointData[3]));
-        }
+    public static Location getSpawnLocation(String worldName, String configPath) {
+        String[] spawnPointData = configPath.trim().split(",");
+        return new Location(Bukkit.getWorld(worldName),
+                Double.parseDouble(spawnPointData[0]),
+                Double.parseDouble(spawnPointData[1]),
+                Double.parseDouble(spawnPointData[2]),
+                Float.parseFloat(spawnPointData[3]),
+                Float.parseFloat(spawnPointData[4]));
     }
 }

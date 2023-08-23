@@ -13,15 +13,15 @@
 tutorial-category: 'beginner'
 tutorial-item-name: "BRICK"
 
-# Spawn points for the player and the NPC (x, z, yaw, pitch)
-# To define the plot spawn, use the key ´plot´
+# Spawn points for the player and the NPC (x, y, z, yaw, pitch)
+# To define the plot world spawn, use the key word ´plot´
 tutorial-spawns:
   hub:
-    spawn-player: '581.5, 505.5, 45, 0'
-    spawn-npc: '575.5, 517.5, -150, 0'
+    spawn-player: '581.5, 79.0, 505.5, 45, 0'
+    spawn-npc: '575.5, 79.0, 517.5, -150, 0'
   plot:
-    spawn-player: '3693357.5, -4531324.5, 150, 0'
-    spawn-npc: '3693348.5, -4531329.5, 0, 0'
+    spawn-player: '3693357.5, 11.0, -4531324.5, 150, 0'
+    spawn-npc: '3693348.5, 11.0, -4531329.5, -60, 0'
 
 plot-outlines: '3693351.0,-4531330.0|3693370.0,-4531324.0|3693375.0,-4531339.0|3693355.0,-4531346.0'
 

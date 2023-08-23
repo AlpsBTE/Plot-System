@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
@@ -140,31 +139,22 @@ public abstract class AbstractTutorial implements Tutorial {
     @Override
     public void onSwitchWorld(Player player, int tutorialWorldIndex) {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+        if (npc != null && npc.tutorialNPC != null) {
+            npc.tutorialNPC.remove(); // Temporary fix
+            npc = null;
+        }
         TutorialWorld world = worlds.get(tutorialWorldIndex);
-        setTutorialWorld(Bukkit.getWorld(world.getWorldName()), world);
+        setTutorialWorld(world);
     }
 
-    private void setTutorialWorld(World bukkitWorld, TutorialWorld world) {
-        TutorialWorld.SpawnPoint playerSpawnPoint = world.getPlayerSpawnLocation();
-
-        player.teleport(new Location(bukkitWorld,
-                playerSpawnPoint.getX(),
-                AlpsUtils.getHighestBlockYAt(bukkitWorld, (int) playerSpawnPoint.getX(), (int) playerSpawnPoint.getZ()) + 1,
-                playerSpawnPoint.getZ(),
-                playerSpawnPoint.getYaw(),
-                playerSpawnPoint.getPitch()));
-
-        TutorialWorld.SpawnPoint npcSpawnPoint = world.getNpcSpawnLocation();
-        Location npcLocation = new Location(bukkitWorld,
-                npcSpawnPoint.getX(),
-                AlpsUtils.getHighestBlockYAt(bukkitWorld, (int) npcSpawnPoint.getX(), (int) npcSpawnPoint.getZ()) + 1,
-                npcSpawnPoint.getZ(),
-                npcSpawnPoint.getYaw(),
-                npcSpawnPoint.getPitch());
+    private void setTutorialWorld(TutorialWorld world) {
+        player.teleport(world.getPlayerSpawnLocation());
 
         if (npc == null) {
-            npc = new TutorialNPC(npcLocation);
-        } else npc.tutorialNPC.teleport(npcLocation);
+            npc = new TutorialNPC(world.getNpcSpawnLocation());
+        } else {
+            npc.tutorialNPC.teleport(world.getNpcSpawnLocation());
+        }
     }
 
     @Override
