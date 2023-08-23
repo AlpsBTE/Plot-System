@@ -96,6 +96,7 @@ public class StageTimeline implements TutorialTimeLine {
     @Override
     public void onTaskDone(Player player, AbstractTask task) {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString()) && task != currentTask) return;
+        if (!activeTimelines.contains(this)) return;
 
         if (currentTaskId >= tasks.size() - 1) {
             onStopTimeLine(player);
@@ -113,9 +114,9 @@ public class StageTimeline implements TutorialTimeLine {
     public void onStopTimeLine(Player player) {
         if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
 
+        activeTimelines.remove(this);
         if (taskProgressTask != null) taskProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
-        activeTimelines.remove(StageTimeline.this);
     }
 
     private void updatePlayerActionBar() {
