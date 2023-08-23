@@ -21,6 +21,7 @@ public class InteractNPCEventTask extends AbstractTask implements EventTask {
     @Override
     public void performEvent(PlayerEvent event) {
         if (event instanceof PlayerInteractEntityEvent && checkForNPC((PlayerInteractEntityEvent) event)) {
+            updateProgress();
             setTaskDone();
         }
     }

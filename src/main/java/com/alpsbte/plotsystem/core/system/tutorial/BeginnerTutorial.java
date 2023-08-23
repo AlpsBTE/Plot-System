@@ -275,7 +275,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TASKS,
-                    CHAT_HIGHLIGHT_COLOR + "//line wool" + YELLOW);
+                    CHAT_HIGHLIGHT_COLOR + "//line " + BASE_BLOCK.toLowerCase() + YELLOW);
         }
 
         @Override
@@ -360,7 +360,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
     private static class Stage7 extends AbstractPlotStage {
         protected Stage7(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 2);
+            super(player, 1, plot, 1);
         }
 
         @Override
@@ -381,13 +381,20 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3);
+                    .delay(3)
+                    .pasteSchematicOutline(2)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .delay(2)
+                    .placeTipHologram(0, getMessages().get(1))
+                    .placeTipHologram(1, getMessages().get(2))
+                    .interactNPC(getTasks().get(0))
+                    .removeTipHolograms();
         }
     }
 
     private static class Stage8 extends AbstractPlotStage {
         protected Stage8(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 4);
+            super(player, 1, plot, 2);
         }
 
         @Override
@@ -408,13 +415,16 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(5);
+                    .delay(3)
+                    .pasteSchematicOutline(3)
+                    .delay(2)
+                    .pasteSchematicOutline(4);
         }
     }
 
     private static class Stage9 extends AbstractPlotStage {
         protected Stage9(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 5);
+            super(player, 1, plot, 4);
         }
 
         @Override
@@ -435,13 +445,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(5);
+                    .delay(3)
+                    .pasteSchematicOutline(5);
         }
     }
 
     private static class Stage10 extends AbstractPlotStage {
         protected Stage10(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 6);
+            super(player, 1, plot, 5);
         }
 
         @Override
@@ -462,7 +473,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(5);
+                    .delay(3)
+                    .pasteSchematicOutline(6);
         }
     }
 
@@ -484,8 +496,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         List<Vector> buildingPoints = new ArrayList<>();
 
         World world = plot.getWorld().getBukkitWorld();
-        buildingPointsAsString.forEach(c -> {
-            String[] pointsSplit = c.trim().split(",");
+        buildingPointsAsString.forEach(point -> {
+            String[] pointsSplit = point.trim().split(",");
             double x = Double.parseDouble(pointsSplit[0]);
             double z = Double.parseDouble(pointsSplit[1]);
             double y = AlpsUtils.getHighestBlockYAt(world, (int) x, (int) z);
