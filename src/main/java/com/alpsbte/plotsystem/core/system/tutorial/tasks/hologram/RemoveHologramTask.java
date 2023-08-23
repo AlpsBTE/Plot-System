@@ -22,36 +22,32 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram;
 
-import com.alpsbte.plotsystem.core.holograms.TutorialHologram;
+import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class HologramMessageTask extends AbstractTask {
-    private final TutorialHologram hologram;
-    private final Sound soundEffect;
-    private final List<String> content;
+public class RemoveHologramTask extends AbstractTask {
+    private final int tipId;
+    private final List<TutorialTipHologram> holograms;
 
-    public HologramMessageTask(Player player, TutorialHologram hologram, Sound soundEffect, List<String> content) {
+    public RemoveHologramTask(Player player, int tipId, List<TutorialTipHologram> holograms) {
         super(player);
-        this.soundEffect = soundEffect;
-        this.hologram = hologram;
-        this.content = content;
+        this.tipId = tipId;
+        this.holograms = holograms;
     }
 
     @Override
     public void performTask() {
-        hologram.updateContent(content);
-        if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
-        setTaskDone();
-    }
+        TutorialTipHologram hologram = holograms.stream().filter(holo -> holo.getId().equals(String.valueOf(tipId))).findFirst().orElse(null);
+        if (hologram != null && hologram.getHologram() != null) {
+            hologram.remove();
+            holograms.remove(hologram);
+        }
 
-    @Override
-    public String toString() {
-        return "HologramMessageTask";
+        setTaskDone();
     }
 }

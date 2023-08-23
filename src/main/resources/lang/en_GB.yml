@@ -179,6 +179,7 @@ review:
 # | Notes
 # -----------------------------------------------------
 note:
+  tip: "Tip"
   wont-be-able-continue-building: "You wont be able to continue building on this plot!"
   score-will-be-split: "Score will be split between all members when reviewed!"
   player-has-to-be-online: "The player has to be online!"

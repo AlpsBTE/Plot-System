@@ -39,21 +39,19 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
-    protected final int tutorialId;
     protected int currentSchematicId;
 
     protected final TutorialPlot plot;
     protected TutorialPlotGenerator plotGenerator;
 
-    protected AbstractPlotTutorial(Player player, int tutorialId) throws SQLException {
+    protected AbstractPlotTutorial(Player player) throws SQLException {
         super(player);
-        this.tutorialId = tutorialId;
 
         // Get tutorial plot
         Builder builder = Builder.byUUID(player.getUniqueId());
-        if (TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId) == null) {
-            plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), tutorialId);
-        } else plot = TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId);
+        if (TutorialPlot.getPlot(builder.getUUID().toString(), getId()) == null) {
+            plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), getId());
+        } else plot = TutorialPlot.getPlot(builder.getUUID().toString(), getId());
 
         // Check if tutorial plot is null
         if (plot == null) {

@@ -26,11 +26,14 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.ChatEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.InteractNPCEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.ContinueCmdEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram.PlaceHologramTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram.RemoveHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
 import com.sk89q.worldedit.Vector;
 import net.md_5.bungee.api.ChatMessageType;
@@ -56,6 +59,8 @@ public class StageTimeline implements TutorialTimeLine {
     private int currentTaskId = -1;
     private AbstractTask currentTask;
     private BukkitTask taskProgressTask;
+
+    private final List<TutorialTipHologram> tipHolograms = new ArrayList<>();
 
     public StageTimeline(Player player) {
         this.player = player;
@@ -169,6 +174,23 @@ public class StageTimeline implements TutorialTimeLine {
 
     public StageTimeline interactNPC(String assignmentMessage) {
         tasks.add(new InteractNPCEventTask(player, assignmentMessage));
+        return this;
+    }
+
+    public StageTimeline placeTipHologram(int tipId, String content) {
+        PlaceHologramTask task = new PlaceHologramTask(player, tipId, content);
+        tipHolograms.add(task.getHologram());
+        tasks.add(task);
+        return this;
+    }
+
+    public StageTimeline removeTipHologram(int tipId) {
+        tasks.add(new RemoveHologramTask(player, tipId, tipHolograms));
+        return this;
+    }
+
+    public StageTimeline removeTipHolograms() {
+        for (int i = 0; i < tipHolograms.size(); i++) tasks.add(new RemoveHologramTask(player, Integer.parseInt(tipHolograms.get(i).getId()), tipHolograms));
         return this;
     }
 

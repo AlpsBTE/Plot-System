@@ -31,6 +31,7 @@ public abstract class TutorialPaths {
     public static final String TUTORIAL_WORLDS_SPAWN_PLAYER = "spawn-player";
     public static final String TUTORIAL_WORLDS_SPAWN_NPC = "spawn-npc";
     public static final String PLOT_OUTLINES = "plot-outlines";
+    public static final String TIP_HOLOGRAM_POINTS = "tip-hologram-points";
 
 
     public static final class Beginner {

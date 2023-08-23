@@ -185,6 +185,7 @@ public abstract class LangPaths {
 
     public static final class Note {
         private static final String NOTES = "note.";
+        public static final String TIP = NOTES + "tip";
         public static final String WONT_BE_ABLE_CONTINUE_BUILDING = NOTES + "wont-be-able-continue-building";
         public static final String SCORE_WILL_BE_SPLIT = NOTES + "score-will-be-split";
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";

@@ -52,12 +52,17 @@ import java.util.logging.Level;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
+
+    public BeginnerTutorial(Player player) throws SQLException {
+        super(player);
+    }
+
     @Override
     protected List<TutorialWorld> setWorlds() {
         try {
             return Arrays.asList(
-                    new TutorialWorld(tutorialId, 0),
-                    new TutorialWorld(tutorialId, 1, plot.getWorld().getWorldName())
+                    new TutorialWorld(getId(), 0),
+                    new TutorialWorld(getId(), 1, plot.getWorld().getWorldName())
             );
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -81,8 +86,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         );
     }
 
-    public BeginnerTutorial(Player player) throws SQLException {
-        super(player, TutorialCategory.BEGINNER.getId());
+    @Override
+    public int getId() {
+        return TutorialCategory.BEGINNER.getId();
     }
 
     private static class Stage1 extends AbstractPlotStage {

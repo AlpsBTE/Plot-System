@@ -29,6 +29,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public interface Tutorial {
+    int getId();
     Player getPlayer();
     TutorialNPC getNPC();
     World getCurrentWorld();
