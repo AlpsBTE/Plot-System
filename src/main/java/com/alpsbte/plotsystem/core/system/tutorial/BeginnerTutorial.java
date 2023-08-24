@@ -382,15 +382,20 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .delay(2)
+                    .pasteSchematicOutline(3).delay(1)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms()
-                    .delay(2)
-                    .pasteSchematicOutline(4);
+                    .delay(4)
+                    .pasteSchematicOutline(4).delay(1)
+                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)
+                    .placeTipHologram(2, getMessages().get(4))
+                    .placeTipHologram(3, getMessages().get(5))
+                    .placeTipHologram(4, getMessages().get(6))
+                    .interactNPC(getTasks().get(0))
+                    .removeTipHolograms();
         }
     }
 
@@ -418,7 +423,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(5)
+                    .pasteSchematicOutline(5).delay(1)
                     .interactNPC(getTasks().get(0));
         }
     }
@@ -447,7 +452,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(6)
+                    .pasteSchematicOutline(6).delay(1)
                     .interactNPC(getTasks().get(0));
         }
     }
@@ -476,7 +481,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(7)
+                    .pasteSchematicOutline(7).delay(1)
                     .interactNPC(getTasks().get(0));
         }
     }

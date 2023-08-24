@@ -340,6 +340,10 @@ tutorials:
         - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
         - 'Teleport to at least one point of the roof to connect the point(s) with the facade.'
         - 'Use different types of blocks and colours for the shells to make it easier to separate the building into sections.'
+        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
+        - 'Use the WorldEdit command //stack to raise the walls quickly and easily.'
+        - 'Fill the roof by hand or use the command //line. Alternatively use the command //sel convex to switch the selection for larger and more complex roofs.'
+        - 'Always check the height of the windows and doors so that it matches with the facade.'
       stage-7-tasks:
         - 'Read all tips on the plot. Talk to Bob to continue.'
     stage-8:
