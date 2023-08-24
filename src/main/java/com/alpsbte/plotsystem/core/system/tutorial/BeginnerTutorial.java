@@ -221,7 +221,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
     private static class Stage4 extends AbstractPlotStage {
         protected Stage4(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 0);
+            super(player, 1, plot, 1);
         }
 
         @Override
@@ -256,7 +256,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         private final static int BASE_BLOCK_ID = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
 
         protected Stage5(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 0);
+            super(player, 1, plot, 1);
         }
 
         @Override
@@ -313,7 +313,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         private final static int HEIGHT_OFFSET = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
 
         protected Stage6(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 1);
+            super(player, 1, plot, 2);
         }
 
         @Override
@@ -360,7 +360,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
     private static class Stage7 extends AbstractPlotStage {
         protected Stage7(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 1);
+            super(player, 1, plot, 2);
         }
 
         @Override
@@ -382,19 +382,21 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(2)
+                    .pasteSchematicOutline(3)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false)
                     .delay(2)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
-                    .removeTipHolograms();
+                    .removeTipHolograms()
+                    .delay(2)
+                    .pasteSchematicOutline(4);
         }
     }
 
     private static class Stage8 extends AbstractPlotStage {
         protected Stage8(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 2);
+            super(player, 1, plot, 4);
         }
 
         @Override
@@ -416,15 +418,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(3)
-                    .delay(2)
-                    .pasteSchematicOutline(4);
+                    .pasteSchematicOutline(5)
+                    .interactNPC(getTasks().get(0));
         }
     }
 
     private static class Stage9 extends AbstractPlotStage {
         protected Stage9(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 4);
+            super(player, 1, plot, 5);
         }
 
         @Override
@@ -446,13 +447,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(5);
+                    .pasteSchematicOutline(6)
+                    .interactNPC(getTasks().get(0));
         }
     }
 
     private static class Stage10 extends AbstractPlotStage {
         protected Stage10(Player player, TutorialPlot plot) {
-            super(player, 1, plot, 5);
+            super(player, 1, plot, 6);
         }
 
         @Override
@@ -474,7 +476,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(6);
+                    .pasteSchematicOutline(7)
+                    .interactNPC(getTasks().get(0));
         }
     }
 
