@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.EventTask;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.*;
 
 import java.util.HashMap;
@@ -62,6 +63,12 @@ public class TutorialEventListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onPlayerChatEvent(AsyncPlayerChatEvent event) {
+        if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
+        runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
+    }
+
+    @EventHandler
+    private void onPlayerPlaceBlockEvent(BlockPlaceEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
     }

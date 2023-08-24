@@ -28,8 +28,8 @@ import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.EventTask;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import java.util.Arrays;
 
@@ -58,7 +58,7 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
     protected abstract void onCommand(String[] args);
 
     @Override
-    public void performEvent(PlayerEvent event) {
+    public void performEvent(Event event) {
         if (event instanceof PlayerCommandPreprocessEvent) {
             PlayerCommandPreprocessEvent cmdEvent = (PlayerCommandPreprocessEvent) event;
             if (cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {

@@ -35,8 +35,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -74,7 +74,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     }
 
     @Override
-    public void performEvent(PlayerEvent event) {
+    public void performEvent(Event event) {
         if (event instanceof PlayerInteractEvent) {
             onPlayerInteractEvent((PlayerInteractEvent) event);
         } else super.performEvent(event);

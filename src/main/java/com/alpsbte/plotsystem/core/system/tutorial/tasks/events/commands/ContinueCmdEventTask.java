@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
 
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.InteractNPCEventTask;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 /**
@@ -40,7 +40,7 @@ public class ContinueCmdEventTask extends AbstractCmdEventTask {
     }
 
     @Override
-    public void performEvent(PlayerEvent event) {
+    public void performEvent(Event event) {
         if (event instanceof PlayerInteractEntityEvent && InteractNPCEventTask.checkForNPC((PlayerInteractEntityEvent) event)) {
             setTaskDone();
             return;

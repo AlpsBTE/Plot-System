@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import com.sk89q.worldedit.Vector;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
     }
 
     @Override
-    public void performEvent(PlayerEvent event) {
+    public void performEvent(Event event) {
         if (event instanceof PlayerTeleportEvent) {
             PlayerTeleportEvent teleportEvent = (PlayerTeleportEvent) event;
 

@@ -352,6 +352,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     getPlayer().sendMessage(ChatMessageTask.TASK_PREFIX + getMessages().get(5));
                 } else {
                     stage.sendChatMessage(isCorrect ? getMessages().get(3) : getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false);
+                    stage.delay(3);
                 }
             });
             return stage;
@@ -383,14 +384,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .pasteSchematicOutline(3).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms()
                     .delay(4)
                     .pasteSchematicOutline(4).delay(1)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)
+                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
                     .placeTipHologram(2, getMessages().get(4))
                     .placeTipHologram(3, getMessages().get(5))
                     .placeTipHologram(4, getMessages().get(6))
@@ -424,7 +425,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .pasteSchematicOutline(5).delay(1)
-                    .interactNPC(getTasks().get(0));
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
+                    .placeTipHologram(5, getMessages().get(2))
+                    .placeTipHologram(6, getMessages().get(3))
+                    // TODO: Add build task (wait for 1.20)
+                    .interactNPC(getTasks().get(0) + GRAY + " (Work in Progress)")
+                    .sendChatMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .removeTipHolograms().delay(3);
         }
     }
 

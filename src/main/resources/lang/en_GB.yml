@@ -349,9 +349,13 @@ tutorials:
     stage-8:
       stage-8-title: 'Windows'
       stage-8-messages:
+        - 'The building shell is done! Let´s continue with the windows and doors.'
+        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
+        - 'Don´t forget to darken the windows and doors so you can´t see through them. We don´t build interiors!'
+        - 'There are many ways to build windows for BTE. Check out our documentation for more build ideas.'
+        - 'Thank you for helping! Now we can continue with the texturing.'
       stage-8-tasks:
-        - 'Complete the missing windows.'
-        - 'Read all tips on the plot. Talk to Bob to continue.'
+        - 'Place the missing windows.'
     stage-9:
       stage-9-title: 'Texturing'
       stage-9-messages:

@@ -5,7 +5,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public class InteractNPCEventTask extends AbstractTask implements EventTask {
@@ -19,7 +19,7 @@ public class InteractNPCEventTask extends AbstractTask implements EventTask {
     }
 
     @Override
-    public void performEvent(PlayerEvent event) {
+    public void performEvent(Event event) {
         if (event instanceof PlayerInteractEntityEvent && checkForNPC((PlayerInteractEntityEvent) event)) {
             updateProgress();
             setTaskDone();

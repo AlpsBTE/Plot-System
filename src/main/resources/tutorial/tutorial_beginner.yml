@@ -32,6 +32,8 @@ tip-hologram-points:
   - '3693363.5, 17, -4531325.5'
   - '3693358.5, 24, -4531334.5'
   - '3693355.5, 13, -4531329.5'
+  - '3693365.5, 13, -4531325.5'
+  - '3693351.5, 13, -4531331.5'
 
 # -----------------------------------------------------
 # | Beginner Tutorial
@@ -49,6 +51,9 @@ beginner:
   # Height of the plot building, which must be calculated
   height: 7
   height-offset: 1
+  # Blocks and positions for the windows that needs to be placed
+  window-blocks:
+    - '3693356.0, 16, -4531332.0, , '
 
 
 config-version: 1.1
