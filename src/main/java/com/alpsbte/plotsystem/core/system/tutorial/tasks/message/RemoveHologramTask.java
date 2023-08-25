@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
 
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;

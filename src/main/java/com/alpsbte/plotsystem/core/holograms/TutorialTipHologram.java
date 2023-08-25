@@ -26,33 +26,42 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
+import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static net.md_5.bungee.api.ChatColor.BOLD;
 import static net.md_5.bungee.api.ChatColor.GOLD;
 
 public class TutorialTipHologram extends HolographicDisplay {
+    @FunctionalInterface
+    public interface ClickAction {
+        void onClick();
+    }
+
     private final static int MAX_HOLOGRAM_LENGTH = 48;
     private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
 
-    private final List<String> content;
+    private final String content;
+    private final ClickAction clickAction;
     private final Player player;
 
-    public TutorialTipHologram(String id, String content, Player player) {
-        this(id, Collections.singletonList(content), player);
+    public TutorialTipHologram(Player player, String id, String content) {
+        this(player, id, content, null);
     }
 
-    public TutorialTipHologram(String id, List<String> content, Player player) {
+    public TutorialTipHologram(Player player, String id, String content, ClickAction clickAction) {
         super(id);
         this.content = content;
         this.player = player;
+        this.clickAction = clickAction;
     }
 
     @Override
@@ -73,15 +82,27 @@ public class TutorialTipHologram extends HolographicDisplay {
     @Override
     public List<DataLine<?>> getContent() {
         List<DataLine<?>> lines = new ArrayList<>();
-        content.forEach(line -> {
-            List<String> innerLines = AlpsUtils.createMultilineFromString(line, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
-            innerLines.forEach(innerLine -> lines.add(new TextLine(innerLine)));
-        });
+        List<String> innerLines = AlpsUtils.createMultilineFromString(content, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
+        innerLines.forEach(innerLine -> lines.add(new TextLine(innerLine)));
         return lines;
     }
 
     @Override
     public List<DataLine<?>> getFooter() {
-        return new ArrayList<>();
+        return clickAction == null ? new ArrayList<>() : Arrays.asList(
+                new TextLine("{empty}"),
+                new TextLine("§8[" + "§7" + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "§8]")
+        );
+    }
+
+    @Override
+    public void reload() {
+        if (clickAction != null) getHologram().setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
+        super.reload();
+        if (getHologram() == null || clickAction == null) return;
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 1);
+            line.setClickListener((clickEvent) -> clickAction.onClick());
+        });
     }
 }

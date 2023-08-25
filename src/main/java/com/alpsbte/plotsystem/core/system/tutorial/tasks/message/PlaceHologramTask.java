@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram;
+package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -30,10 +30,14 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.sk89q.worldedit.Vector;
 import me.filoghost.holographicdisplays.api.Position;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -41,13 +45,15 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.md_5.bungee.api.ChatColor.GRAY;
+
 public class PlaceHologramTask extends AbstractTask {
     private final int tipId;
     private final int tutorialId;
     private final World tutorialWorld;
     private final TutorialTipHologram hologram;
 
-    public PlaceHologramTask(Player player, int tipId, String content) {
+    public PlaceHologramTask(Player player, int tipId, String content, int readMoreLinkId) {
         super(player);
         this.tipId = tipId;
 
@@ -55,7 +61,14 @@ public class PlaceHologramTask extends AbstractTask {
         this.tutorialId = tutorial.getId();
         this.tutorialWorld = tutorial.getCurrentWorld();
 
-        hologram = new TutorialTipHologram(String.valueOf(tipId), content, player);
+        if (readMoreLinkId != -1) {
+            String readMoreLink = getDocumentationLinks(tutorialId).get(readMoreLinkId);
+            hologram = new TutorialTipHologram(player, String.valueOf(tipId), content, () -> {
+                player.spigot().sendMessage(new ChatMessageTask.ClickableTaskMessage(ChatMessageTask.TASK_PREFIX + readMoreLink,
+                        GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "...", readMoreLink, ClickEvent.Action.OPEN_URL).getComponent());
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 1, 1.2f);
+            });
+        } else hologram = new TutorialTipHologram(player, String.valueOf(tipId), content);
     }
 
     @Override
@@ -79,13 +92,24 @@ public class PlaceHologramTask extends AbstractTask {
     private static List<Vector> getTipPoints(int tutorialId) {
         // Read coordinates from config
         FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
-        List<String> tipPointsAsString = config.getStringList(TutorialPaths.TIP_HOLOGRAM_POINTS);
+        List<String> tipPointsAsString = config.getStringList(TutorialPaths.TIP_HOLOGRAM_COORDINATES);
 
-        List<com.sk89q.worldedit.Vector> tipPoints = new ArrayList<>();
+        List<Vector> tipPoints = new ArrayList<>();
         tipPointsAsString.forEach(point -> {
             String[] split = point.trim().split(",");
-            tipPoints.add(new com.sk89q.worldedit.Vector(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
+            tipPoints.add(new Vector(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
         });
         return tipPoints;
+    }
+
+    /**
+     * Get a list of documentation links which can be opened by clicking on the hologram
+     * @param tutorialId The id of the tutorial to get the config file
+     * @return A list of documentation links
+     */
+    private static List<String> getDocumentationLinks(int tutorialId) {
+        // Read coordinates from config
+        FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
+        return config.getStringList(TutorialPaths.DOCUMENTATION_LINKS);
     }
 }

@@ -184,6 +184,7 @@ note:
   score-will-be-split: "Score will be split between all members when reviewed!"
   player-has-to-be-online: "The player has to be online!"
   action:
+    read-more: "Read More"
     continue: "Continue"
     right-click: "Right Click"
     left-click: "Left Click"

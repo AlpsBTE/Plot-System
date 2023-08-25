@@ -33,8 +33,8 @@ import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.ChatEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.InteractNPCEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.ContinueCmdEventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram.PlaceHologramTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.hologram.RemoveHologramTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.PlaceHologramTask;
+import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.RemoveHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
 import com.sk89q.worldedit.Vector;
 import net.md_5.bungee.api.ChatMessageType;
@@ -182,7 +182,11 @@ public class StageTimeline implements TutorialTimeLine {
     }
 
     public StageTimeline placeTipHologram(int tipId, String content) {
-        PlaceHologramTask task = new PlaceHologramTask(player, tipId, content);
+        return placeTipHologram(tipId, content, -1);
+    }
+
+    public StageTimeline placeTipHologram(int tipId, String content, int readMoreLinkId) {
+        PlaceHologramTask task = new PlaceHologramTask(player, tipId, content, readMoreLinkId);
         tipHolograms.add(task.getHologram());
         tasks.add(task);
         return this;
@@ -201,5 +205,13 @@ public class StageTimeline implements TutorialTimeLine {
     public StageTimeline delay(long seconds) {
         tasks.add(new WaitTask(player, seconds));
         return this;
+    }
+
+    public List<AbstractTask> getTasks() {
+        return tasks;
+    }
+
+    public int getCurrentTaskId() {
+        return currentTaskId;
     }
 }

@@ -192,6 +192,7 @@ public abstract class LangPaths {
 
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
+            public static final String READ_MORE = ACTION + "read-more";
             public static final String CONTINUE = ACTION + "continue";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";

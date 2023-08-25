@@ -25,18 +25,26 @@ tutorial-spawns:
 
 plot-outlines: '3693351.0,-4531330.0|3693370.0,-4531324.0|3693375.0,-4531339.0|3693355.0,-4531346.0'
 
-# Tip hologram positions (x, y, z)
-tip-hologram-points:
+# Tip hologram coordinates (x, y, z)
+tip-hologram-coordinates:
   - '3693362.5, 21, -4531331.5'
-  - '3693363.5, 13, -4531330.5'
+  - '3693363.5, 14, -4531330.5'
   - '3693363.5, 17, -4531325.5'
   - '3693358.5, 24, -4531334.5'
-  - '3693355.5, 13, -4531329.5'
-  - '3693365.5, 13, -4531325.5'
-  - '3693351.5, 13, -4531331.5'
-  - '3693365.5, 13, -4531325.5'
+  - '3693355.5, 14, -4531329.5'
+  - '3693365.5, 14, -4531325.5'
+  - '3693351.5, 14, -4531331.5'
+  - '3693365.5, 14, -4531325.5'
   - '3693360.5, 22, -4531330.5'
-  - '3693356.5, 13, -4531329.5'
+  - '3693356.5, 14, -4531329.5'
+  - '3693365.5, 14, -4531325.5'
+  - '3693355.5, 14, -4531329.5'
+
+# Documentation links which can be opened by clicking on ´Read More´ on tip holograms.
+documentation-links:
+  - 'https://docs.alps-bte.com/'
+  - 'https://minecraft-worldedit.fandom.com/wiki///replace'
+  - 'https://minecraft-worldedit.fandom.com/wiki///stack'
 
 # -----------------------------------------------------
 # | Beginner Tutorial
