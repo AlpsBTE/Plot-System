@@ -292,11 +292,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(new String[] {
-                            getMessages().get(0),
-                            StringUtils.EMPTY,
-                            getMessages().get(1)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, false)
                     .delay(2)
                     .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         buildingLinePoints.remove(minPoint);
@@ -338,13 +334,13 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() throws IOException {
             StageTimeline stage = new StageTimeline(getPlayer())
                     .delay(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, true)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_EARTH,
                                     getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL),
                             StringUtils.EMPTY,
                             getMessages().get(2)
-                    }, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false)
+                    }, Sound.ENTITY_VILLAGER_AMBIENT, false)
                     .delay(2);
 
             stage.addPlayerChatEvent(getTasks().get(0), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
@@ -371,7 +367,10 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_MESSAGES);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + "//stack" + WHITE,
+                    CHAT_HIGHLIGHT_COLOR + "//line" + WHITE,
+                    CHAT_HIGHLIGHT_COLOR + "//sel convex" + WHITE);
         }
 
         @Override
@@ -384,14 +383,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .pasteSchematicOutline(3).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms()
                     .delay(4)
                     .pasteSchematicOutline(4).delay(1)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
+                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(2, getMessages().get(4))
                     .placeTipHologram(3, getMessages().get(5))
                     .placeTipHologram(4, getMessages().get(6))
@@ -448,7 +447,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_MESSAGES);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + "//replace" + WHITE);
         }
 
         @Override
@@ -461,7 +461,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .pasteSchematicOutline(6).delay(1)
-                    .interactNPC(getTasks().get(0));
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .placeTipHologram(7, getMessages().get(1))
+                    .placeTipHologram(8, getMessages().get(2))
+                    .placeTipHologram(9, getMessages().get(3))
+                    .interactNPC(getTasks().get(0))
+                    .removeTipHolograms();
         }
     }
 
@@ -490,7 +495,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .pasteSchematicOutline(7).delay(1)
-                    .interactNPC(getTasks().get(0));
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
+                    .interactNPC(getTasks().get(0))
+                    .removeTipHolograms();
         }
     }
 
