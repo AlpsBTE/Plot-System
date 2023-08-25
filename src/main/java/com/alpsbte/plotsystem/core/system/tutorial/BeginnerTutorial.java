@@ -483,7 +483,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_MESSAGES,
-                    CHAT_HIGHLIGHT_COLOR + "/hdb" + WHITE);
+                    CHAT_HIGHLIGHT_COLOR + "/hdb" + WHITE,
+                    CHAT_HIGHLIGHT_COLOR + "/discord" + GRAY);
         }
 
         @Override
@@ -500,7 +501,18 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .placeTipHologram(10, getMessages().get(1))
                     .placeTipHologram(11, getMessages().get(2), 0)
                     .interactNPC(getTasks().get(0))
-                    .removeTipHolograms();
+                    .removeTipHolograms().delay(3)
+                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(new Object[] {
+                        getMessages().get(4),
+                        StringUtils.EMPTY,
+                        new ChatMessageTask.ClickableTaskMessage(getMessages().get(5),
+                                GRAY + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE) + "...",
+                                Utils.TutorialUtils.getDocumentationLinks(TutorialCategory.BEGINNER.id).get(0), ClickEvent.Action.OPEN_URL),
+                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)
+                    .teleport(0);
         }
     }
 

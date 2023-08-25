@@ -132,8 +132,10 @@ public abstract class AbstractTutorial implements Tutorial {
     public void onTutorialStop(UUID playerUUID) {
         activeTutorials.remove(this);
         if (npc != null) npc.tutorialNPC.remove();
-        if (player.isOnline() && !hasNextStage() && stageTimeline != null && stageTimeline.getCurrentTaskId() + 1 >= stageTimeline.getTasks().size())
+        if (player.isOnline() && !hasNextStage() && stageTimeline != null && stageTimeline.getCurrentTaskId() + 1 >= stageTimeline.getTasks().size()) {
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+            sendTutorialCompletedInfo(player, "Beginner");
+        }
         if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
 
         Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
@@ -199,8 +201,15 @@ public abstract class AbstractTutorial implements Tutorial {
 
     public static void sendStageUnlockedInfo(Player player, String title) {
         player.sendMessage(StringUtils.EMPTY);
-        player.sendMessage("§b§l" + "NEW STAGE UNLOCKED");
+        player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED).toUpperCase());
         player.sendMessage("  §f§l◆ §6§l" + title);
+        player.sendMessage(StringUtils.EMPTY);
+    }
+
+    public static void sendTutorialCompletedInfo(Player player, String tutorial) {
+        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase());
+        player.sendMessage("  §f§l◆ §6§l" + tutorial);
         player.sendMessage(StringUtils.EMPTY);
     }
 }

@@ -28,6 +28,8 @@ import com.alpsbte.alpslib.utils.heads.CustomHead;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.sk89q.worldedit.BlockVector2D;
@@ -37,7 +39,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 
 public class Utils {
@@ -181,6 +185,35 @@ public class Utils {
             Location loc = new Location(world, vector.getX(), vector.getY(), vector.getZ());
             loc.getBlock().setType(material);
             loc.getBlock().setData((byte) data);
+        }
+
+        /**
+         * Get a list of 3D vectors of the tip holograms
+         * @param tutorialId The id of the tutorial to get the config file
+         * @return A list of vector points
+         */
+        public static List<com.sk89q.worldedit.Vector> getTipPoints(int tutorialId) {
+            // Read coordinates from config
+            FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
+            List<String> tipPointsAsString = config.getStringList(TutorialPaths.TIP_HOLOGRAM_COORDINATES);
+
+            List<com.sk89q.worldedit.Vector> tipPoints = new ArrayList<>();
+            tipPointsAsString.forEach(point -> {
+                String[] split = point.trim().split(",");
+                tipPoints.add(new com.sk89q.worldedit.Vector(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
+            });
+            return tipPoints;
+        }
+
+        /**
+         * Get a list of documentation links which can be opened by clicking on the hologram
+         * @param tutorialId The id of the tutorial to get the config file
+         * @return A list of documentation links
+         */
+        public static List<String> getDocumentationLinks(int tutorialId) {
+            // Read coordinates from config
+            FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
+            return config.getStringList(TutorialPaths.DOCUMENTATION_LINKS);
         }
     }
 

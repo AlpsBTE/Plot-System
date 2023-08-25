@@ -298,7 +298,13 @@ public abstract class LangPaths {
 
     public static final class Tutorials {
         private static final String TUTORIALS = "tutorials.";
+
+        public static final String TUTORIALS_NEW_STAGE_UNLOCKED = TUTORIALS + "new-stage-unlocked";
+        public static final String TUTORIALS_TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
+
         private static final String TUTORIALS_BEGINNER = TUTORIALS + "beginner.";
+        public static final String TUTORIALS_BEGINNER_NAME = TUTORIALS_BEGINNER + "name";
+        public static final String TUTORIALS_BEGINNER_DESCRIPTION = TUTORIALS_BEGINNER + "description";
 
         private static final String TUTORIALS_BEGINNER_STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
         public static final String TUTORIALS_BEGINNER_STAGE1_TITLE = TUTORIALS_BEGINNER_STAGE1 + "stage-1-title";

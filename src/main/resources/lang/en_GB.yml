@@ -280,7 +280,11 @@ leaderboards:
   not-on-leaderboard: "Not on Leaderboard"
 
 tutorials:
+  new-stage-unlocked: 'NEW STAGE UNLOCKED'
+  tutorial-completed: 'TUTORIAL COMPLETED'
   beginner:
+    name: "Beginner"
+    description: "Learn the basics of the BuildTheEarth project."
     stage-1:
       stage-1-title: 'Understanding the BuildTheEarth Project'
       stage-1-messages:
@@ -372,6 +376,11 @@ tutorials:
         - 'Detailing is one of the most important processes as it makes the building distinctive and be unique.'
         - 'Add custom banners and custom heads to your builds. Use the command {0} to get a variety of custom heads.'
         - 'There are many ways to decorate your buildings. Always pay attention to details on the facade and roofs such as chimneys, windows and gutters.'
+        - 'It looks like we have reached the end of the tutorial...'
+        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
+        - 'If you want to know more about the project, click here to open our documentation.'
+        - 'To apply as builder, create and submit two or more plots on our server. You can find more information about the application process on our website or {1}.'
+        - 'Happy building!'
       stage-10-tasks:
         - 'Read all tips on the plot. Talk to Bob to continue.'
 
