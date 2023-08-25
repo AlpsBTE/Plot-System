@@ -120,6 +120,7 @@ public class StageTimeline implements TutorialTimeLine {
         if (taskProgressTask != null) taskProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
         tipHolograms.forEach(HolographicDisplay::remove);
+        tasks.clear();
     }
 
     private void updatePlayerActionBar() {

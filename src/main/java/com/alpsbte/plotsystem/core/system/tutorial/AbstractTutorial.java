@@ -98,6 +98,12 @@ public abstract class AbstractTutorial implements Tutorial {
                 } catch (Exception ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing next stage!", ex);
                     player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+
+                    // Send player back to hub after 3 seconds if an error occurred
+                    Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
+                        onSwitchWorld(player.getUniqueId(), 0);
+                        onTutorialStop(player.getUniqueId());
+                    }, 20 * 3);
                 }
             });
         }
@@ -125,10 +131,11 @@ public abstract class AbstractTutorial implements Tutorial {
     @Override
     public void onTutorialStop(UUID playerUUID) {
         activeTutorials.remove(this);
-        if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
         if (npc != null) npc.tutorialNPC.remove();
+        if (player.isOnline() && !hasNextStage() && stageTimeline != null && stageTimeline.getCurrentTaskId() + 1 >= stageTimeline.getTasks().size())
+            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
 
-        if (player.isOnline() && !hasNextStage()) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
         Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
 
