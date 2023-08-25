@@ -482,7 +482,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_MESSAGES);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + "/hdb" + WHITE);
         }
 
         @Override
@@ -495,7 +496,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(3)
                     .pasteSchematicOutline(7).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(4)
+                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .placeTipHologram(10, getMessages().get(1))
+                    .placeTipHologram(11, getMessages().get(2), 0)
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms();
         }
