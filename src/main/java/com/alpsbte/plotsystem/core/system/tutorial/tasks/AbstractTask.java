@@ -85,7 +85,7 @@ public abstract class AbstractTask {
         if (isTaskDone()) return;
         this.isDone = true;
         TutorialEventListener.runningEventTasks.remove(player.getUniqueId().toString());
-        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onTaskDone(player, this);
+        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onTaskDone(player.getUniqueId(), this);
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class AbstractTask {
         if (progress + 1 <= totalProgress) {
             progress++;
         }
-        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onAssignmentUpdate(player, this);
+        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onAssignmentUpdate(player.getUniqueId(), this);
     }
 
     /**

@@ -49,7 +49,7 @@ public class TeleportTask extends AbstractTask {
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             if (location == null) {
                 for (int i = 0; i < AbstractTutorial.activeTutorials.size(); i++)
-                    AbstractTutorial.activeTutorials.get(i).onSwitchWorld(player, tutorialWorldIndex);
+                    AbstractTutorial.activeTutorials.get(i).onSwitchWorld(player.getUniqueId(), tutorialWorldIndex);
             } else {
                 player.teleport(location);
             }

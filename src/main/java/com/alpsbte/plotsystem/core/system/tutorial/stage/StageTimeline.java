@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
@@ -47,6 +48,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
@@ -94,29 +96,30 @@ public class StageTimeline implements TutorialTimeLine {
     }
 
     @Override
-    public void onTaskDone(Player player, AbstractTask task) {
-        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString()) && task != currentTask) return;
+    public void onTaskDone(UUID playerUUID, AbstractTask task) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString()) && task != currentTask) return;
         if (!activeTimelines.contains(this)) return;
 
         if (currentTaskId >= tasks.size() - 1) {
-            onStopTimeLine(player);
-            for (int i = 0; i < AbstractTutorial.activeTutorials.size(); i++) AbstractTutorial.activeTutorials.get(i).onStageComplete(player);
+            onStopTimeLine(playerUUID);
+            for (int i = 0; i < AbstractTutorial.activeTutorials.size(); i++) AbstractTutorial.activeTutorials.get(i).onStageComplete(player.getUniqueId());
         } else nextTask();
     }
 
     @Override
-    public void onAssignmentUpdate(Player player, AbstractTask task) {
-        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString()) && task != currentTask) return;
+    public void onAssignmentUpdate(UUID playerUUID, AbstractTask task) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString()) && task != currentTask) return;
         updatePlayerActionBar();
     }
 
     @Override
-    public void onStopTimeLine(Player player) {
-        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+    public void onStopTimeLine(UUID playerUUID) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
 
         activeTimelines.remove(this);
         if (taskProgressTask != null) taskProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
+        tipHolograms.forEach(HolographicDisplay::remove);
     }
 
     private void updatePlayerActionBar() {

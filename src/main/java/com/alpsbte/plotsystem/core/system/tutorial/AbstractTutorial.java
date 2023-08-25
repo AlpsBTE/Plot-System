@@ -39,6 +39,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static net.md_5.bungee.api.ChatColor.GOLD;
@@ -80,7 +81,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     protected void nextStage() {
         if (activeStageIndex + 1 >= stages.size()) {
-            onTutorialStop(player, true);
+            onTutorialStop(player.getUniqueId());
         } else {
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 try {
@@ -90,7 +91,7 @@ public abstract class AbstractTutorial implements Tutorial {
                     // Check if player has to switch world
                     if (currentStage.getInitWorldIndex() != currentWorldIndex) {
                         currentWorldIndex = currentStage.getInitWorldIndex();
-                        onSwitchWorld(player, currentStage.getInitWorldIndex());
+                        onSwitchWorld(player.getUniqueId(), currentStage.getInitWorldIndex());
                     }
 
                     prepareNextStage();
@@ -100,6 +101,10 @@ public abstract class AbstractTutorial implements Tutorial {
                 }
             });
         }
+    }
+
+    protected boolean hasNextStage() {
+        return activeStageIndex + 1 < stages.size();
     }
 
     protected void prepareNextStage() throws SQLException, IOException {
@@ -118,12 +123,12 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
-    public void onTutorialStop(Player player, boolean isComplete) {
+    public void onTutorialStop(UUID playerUUID) {
         activeTutorials.remove(this);
-        if (stageTimeline != null) stageTimeline.onStopTimeLine(player);
+        if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
         if (npc != null) npc.tutorialNPC.remove();
 
-        if (isComplete) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+        if (player.isOnline() && !hasNextStage()) player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
         Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
 
@@ -131,14 +136,14 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
-    public void onStageComplete(Player player) {
-        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+    public void onStageComplete(UUID playerUUID) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         nextStage();
     }
 
     @Override
-    public void onSwitchWorld(Player player, int tutorialWorldIndex) {
-        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+    public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         if (npc != null && npc.tutorialNPC != null) {
             npc.tutorialNPC.remove(); // Temporary fix
             npc = null;
@@ -180,9 +185,9 @@ public abstract class AbstractTutorial implements Tutorial {
         return stages;
     }
 
-    public static Tutorial getTutorialByPlayer(Player player) {
+    public static Tutorial getTutorialByPlayer(UUID playerUUID) {
         return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
-                tutorial.getPlayer().getUniqueId().toString().equals(player.getUniqueId().toString())).findAny().orElse(null);
+                tutorial.getPlayer().getUniqueId().toString().equals(playerUUID.toString())).findAny().orElse(null);
     }
 
     public static void sendStageUnlockedInfo(Player player, String title) {

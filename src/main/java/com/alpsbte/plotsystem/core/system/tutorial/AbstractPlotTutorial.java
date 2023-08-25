@@ -36,6 +36,7 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
@@ -78,14 +79,14 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onSwitchWorld(Player player, int tutorialWorldIndex) {
-        if (!player.getUniqueId().toString().equals(this.player.getUniqueId().toString())) return;
+    public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         try {
             if (tutorialWorldIndex == 1 && plotGenerator == null) {
                 plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(player.getUniqueId()));
                 onPasteSchematicOutlines(player, ((AbstractPlotStage) currentStage).getInitSchematicId());
             }
-            super.onSwitchWorld(player, tutorialWorldIndex);
+            super.onSwitchWorld(playerUUID, tutorialWorldIndex);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while switching tutorial world!", ex);
         }

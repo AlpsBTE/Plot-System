@@ -28,12 +28,14 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public interface Tutorial {
     int getId();
     Player getPlayer();
     TutorialNPC getNPC();
     World getCurrentWorld();
-    void onStageComplete(Player player);
-    void onSwitchWorld(Player player, int tutorialWorldIndex);
-    void onTutorialStop(Player player, boolean isComplete);
+    void onStageComplete(UUID playerUUID);
+    void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex);
+    void onTutorialStop(UUID playerUUID);
 }

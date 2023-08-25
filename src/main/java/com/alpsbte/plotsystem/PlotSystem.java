@@ -135,7 +135,7 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
             this.getServer().getPluginManager().registerEvents(new CustomHeadEventListener(), this);
             if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
-                this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
+                this.getServer().getPluginManager().registerEvents(new TutorialEventListener(false), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");

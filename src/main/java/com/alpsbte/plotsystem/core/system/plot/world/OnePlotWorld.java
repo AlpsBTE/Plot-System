@@ -33,6 +33,8 @@ import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -114,6 +116,11 @@ public class OnePlotWorld extends PlotWorld {
         if (super.unloadWorld(movePlayers)) {
             try {
                 if (getPlot() != null && (getPlot().getStatus() == Status.completed || getPlot().getPlotType() == PlotType.TUTORIAL)) {
+                    if (getPlot().getPlotType() == PlotType.TUTORIAL) {
+                        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(plotOwner.getUUID());
+                        if (tutorial != null) tutorial.onTutorialStop(plotOwner.getUUID());
+                    }
+
                     deleteWorld();
                     return true;
                 }

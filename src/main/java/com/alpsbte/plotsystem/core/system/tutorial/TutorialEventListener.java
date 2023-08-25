@@ -37,6 +37,11 @@ import java.util.Map;
 public class TutorialEventListener implements Listener {
     public static Map<String, EventTask> runningEventTasks = new HashMap<>();
 
+    private final boolean checkForTutorialStop;
+    public TutorialEventListener(boolean checkForTutorialStop) {
+        this.checkForTutorialStop = checkForTutorialStop;
+    }
+
     @EventHandler
     private void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
@@ -75,14 +80,16 @@ public class TutorialEventListener implements Listener {
 
     @EventHandler
     private void onPlayerQuitEvent(PlayerQuitEvent event) {
-        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(event.getPlayer());
-        if (tutorial != null) tutorial.onTutorialStop(event.getPlayer(), false);
+        if (!checkForTutorialStop) return;
+        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(event.getPlayer().getUniqueId());
+        if (tutorial != null) tutorial.onTutorialStop(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     private void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
-        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(event.getPlayer());
+        if (!checkForTutorialStop) return;
+        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(event.getPlayer().getUniqueId());
         if (tutorial != null && (tutorial.getCurrentWorld() == null || !tutorial.getCurrentWorld().getName().equals(event.getPlayer().getWorld().getName())))
-            tutorial.onTutorialStop(event.getPlayer(), false);
+            tutorial.onTutorialStop(event.getPlayer().getUniqueId());
     }
 }
