@@ -257,9 +257,9 @@ public class TutorialPlot extends AbstractPlot {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial").executeQuery());
     }
 
-    public static List<TutorialPlot> getPlots(Builder builder) throws SQLException {
+    public static List<TutorialPlot> getPlots(UUID builderUUID) throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE owner_uuid = ?")
-                .setValue(builder.getUUID().toString()).executeQuery());
+                .setValue(builderUUID.toString()).executeQuery());
     }
 
     private static List<TutorialPlot> listPlots(ResultSet rs) throws SQLException {

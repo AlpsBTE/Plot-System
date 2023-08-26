@@ -124,6 +124,8 @@ public abstract class LangPaths {
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
         public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
         public static final String INFORMATION = MENU_TITLES + "information";
+        public static final String TUTORIALS = MENU_TITLES + "tutorials";
+        public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
     }
 
     public static final class MenuDescription {
@@ -156,6 +158,8 @@ public abstract class LangPaths {
         public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
         public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
         public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
+        public static final String TUTORIALS = MENU_DESCRIPTIONS + "tutorials-desc";
+        public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
     }
 
     public static final class Review {
@@ -186,6 +190,7 @@ public abstract class LangPaths {
     public static final class Note {
         private static final String NOTES = "note.";
         public static final String TIP = NOTES + "tip";
+        public static final String UNDER_CONSTRUCTION = NOTES + "under-construction";
         public static final String WONT_BE_ABLE_CONTINUE_BUILDING = NOTES + "wont-be-able-continue-building";
         public static final String SCORE_WILL_BE_SPLIT = NOTES + "score-will-be-split";
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
@@ -206,6 +211,9 @@ public abstract class LangPaths {
             public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION + "click-to-show-open-reviews";
             public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
+            public static final String TUTORIAL_START = ACTION + "tutorial-start";
+            public static final String TUTORIAL_CONTINUE = ACTION + "tutorial-continue";
+            public static final String TUTORIAL_SHOW_STAGES = ACTION + "tutorial-show-stages";
         }
 
         public static final class Anvil {
@@ -303,8 +311,6 @@ public abstract class LangPaths {
         public static final String TUTORIALS_TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
 
         private static final String TUTORIALS_BEGINNER = TUTORIALS + "beginner.";
-        public static final String TUTORIALS_BEGINNER_NAME = TUTORIALS_BEGINNER + "name";
-        public static final String TUTORIALS_BEGINNER_DESCRIPTION = TUTORIALS_BEGINNER + "description";
 
         private static final String TUTORIALS_BEGINNER_STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
         public static final String TUTORIALS_BEGINNER_STAGE1_TITLE = TUTORIALS_BEGINNER_STAGE1 + "stage-1-title";

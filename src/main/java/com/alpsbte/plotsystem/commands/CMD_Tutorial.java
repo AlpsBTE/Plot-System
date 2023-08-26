@@ -25,7 +25,7 @@
 
 package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
+import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -34,9 +34,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-
 public class CMD_Tutorial extends BaseCommand {
 
     @Override
@@ -44,11 +41,7 @@ public class CMD_Tutorial extends BaseCommand {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
                 if (args.length == 0) {
-                    try {
-                        new BeginnerTutorial(getPlayer(sender));
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
+                    new TutorialsMenu(getPlayer(sender));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");

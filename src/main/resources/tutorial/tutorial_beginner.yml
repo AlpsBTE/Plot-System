@@ -10,7 +10,7 @@
 # | IMPORTANT: THIS CONFIG FILE SHOULD NOT BE EDITED IF YOU DON´T KNOW WHAT YOU ARE DOING!
 # | Any changes may lead to unexpected behaviours or issues.
 # -----------------------------------------------------
-tutorial-category: 'beginner'
+tutorial-id: '0'
 tutorial-item-name: "BRICK"
 
 # Spawn points for the player and the NPC (x, y, z, yaw, pitch)
