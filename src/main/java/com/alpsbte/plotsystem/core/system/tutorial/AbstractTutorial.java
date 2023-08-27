@@ -46,16 +46,18 @@ import static net.md_5.bungee.api.ChatColor.GOLD;
 
 public abstract class AbstractTutorial implements Tutorial {
     public static final String CHAT_HIGHLIGHT_COLOR = GOLD.toString();
-    public static List<Tutorial> activeTutorials = new ArrayList<>();
+    public static final List<Tutorial> activeTutorials = new ArrayList<>();
+    private static List<Class<? extends AbstractTutorial>> tutorials;
 
     protected final Player player;
+    private final int tutorialId;
     private List<Class<? extends AbstractStage>> stages;
     private List<TutorialWorld> worlds;
     protected AbstractStage currentStage;
 
 
     private StageTimeline stageTimeline;
-    protected int activeStageIndex = 0;
+    protected int activeStageIndex;
 
     protected TutorialNPC npc;
     protected int currentWorldIndex = -1;
@@ -64,8 +66,12 @@ public abstract class AbstractTutorial implements Tutorial {
     protected abstract List<TutorialWorld> setWorlds();
     protected abstract List<Class<? extends AbstractStage>> setStages();
 
-    protected AbstractTutorial(Player player) {
+    protected AbstractTutorial(Player player, int tutorialId, int stageId) {
         this.player = player;
+        this.tutorialId = tutorialId;
+
+        if (stageId < 0) stageId = 0;
+        activeStageIndex = stageId - 1;
     }
 
     protected void initTutorial() {
@@ -74,8 +80,16 @@ public abstract class AbstractTutorial implements Tutorial {
         stages = setStages();
     }
 
-    protected void setStage(int stageIndex) {
-        activeStageIndex = stageIndex - 1;
+    @Override
+    public int getCurrentStage() {
+        return activeStageIndex;
+    }
+
+    @Override
+    public void setStage(int stageId) {
+        if (stageId < 0 || stageId > stages.size()) return;
+        if (stageTimeline != null) stageTimeline.onStopTimeLine(player.getUniqueId());
+        activeStageIndex = stageId - 1;
         nextStage();
     }
 
@@ -172,6 +186,11 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
+    public int getId() {
+        return tutorialId;
+    }
+
+    @Override
     public Player getPlayer() {
         return player;
     }
@@ -194,22 +213,43 @@ public abstract class AbstractTutorial implements Tutorial {
         return stages;
     }
 
-    public static Tutorial getTutorialByPlayer(UUID playerUUID) {
+    public static Tutorial getActiveTutorial(UUID playerUUID) {
         return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
                 tutorial.getPlayer().getUniqueId().toString().equals(playerUUID.toString())).findAny().orElse(null);
     }
 
-    public static void sendStageUnlockedInfo(Player player, String title) {
+    private static void sendStageUnlockedInfo(Player player, String title) {
         player.sendMessage(StringUtils.EMPTY);
         player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED).toUpperCase());
         player.sendMessage("  §f§l◆ §6§l" + title);
         player.sendMessage(StringUtils.EMPTY);
     }
 
-    public static void sendTutorialCompletedInfo(Player player, String tutorial) {
+    private static void sendTutorialCompletedInfo(Player player, String tutorial) {
         player.sendMessage(StringUtils.EMPTY);
         player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase());
         player.sendMessage("  §f§l◆ §6§l" + tutorial);
         player.sendMessage(StringUtils.EMPTY);
+    }
+
+    public static void setTutorials(List<Class<? extends AbstractTutorial>> tutorials) {
+        AbstractTutorial.tutorials = tutorials;
+    }
+
+    public static boolean loadTutorial(Player player, int tutorialId) {
+        return loadTutorial(player, tutorialId, -1);
+    }
+
+    public static boolean loadTutorial(Player player, int tutorialId, int stageId) {
+        if (tutorials == null || tutorialId >= tutorials.size()) return false;
+        if (getActiveTutorial(player.getUniqueId()) != null) return false;
+
+        try {
+            tutorials.get(tutorialId).getDeclaredConstructor(Player.class, int.class).newInstance(player, stageId);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            Bukkit.getLogger().log(Level.INFO, "An error occurred while loading tutorial!", ex);
+            return false;
+        }
+        return true;
     }
 }

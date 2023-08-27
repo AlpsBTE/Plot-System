@@ -29,8 +29,9 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -53,16 +54,28 @@ import java.util.logging.Level;
 
 public class TutorialsMenu extends AbstractMenu {
     private List<TutorialPlot> plots;
+    private String beginnerTutorialItemName;
     // private boolean isBeginnerTutorialCompleted = false;
 
     public TutorialsMenu(Player menuPlayer) {
-        super(6, "Tutorials", menuPlayer);
+        super(6, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIALS), menuPlayer);
     }
 
     @Override
     protected void setPreviewItems() {
         // Set loading item for player head item
         getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+
+        // Set loading item for beginner tutorial
+        beginnerTutorialItemName = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getString(TutorialPaths.TUTORIAL_ITEM_NAME);
+        getMenu().getSlot(22).setItem(MenuItems.loadingItem(Material.valueOf(beginnerTutorialItemName), getMenuPlayer()));
+
+        // Set advanced tutorial items
+        getMenu().getSlot(28).setItem(getAdvancedTutorialItem(getMenuPlayer()));
+        getMenu().getSlot(29).setItem(getAdvancedTutorialItem(getMenuPlayer()));
+        getMenu().getSlot(31).setItem(getAdvancedTutorialItem(getMenuPlayer()));
+        getMenu().getSlot(33).setItem(getAdvancedTutorialItem(getMenuPlayer()));
+        getMenu().getSlot(34).setItem(getAdvancedTutorialItem(getMenuPlayer()));
 
         // Set back item
         getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -88,18 +101,10 @@ public class TutorialsMenu extends AbstractMenu {
             // isBeginnerTutorialCompleted = beginnerTutorial != null && beginnerTutorial.getStatus() == Status.completed;
 
             // Set beginner tutorial item
-            getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(),
-                    ConfigUtil.getTutorialInstance().getBeginnerTutorial().getString(TutorialPaths.TUTORIAL_ITEM_NAME),
+            getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
                     LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
                     LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
             );
-
-            // Set advanced tutorial items
-            getMenu().getSlot(28).setItem(getAdvancedTutorial(getMenuPlayer()));
-            getMenu().getSlot(29).setItem(getAdvancedTutorial(getMenuPlayer()));
-            getMenu().getSlot(31).setItem(getAdvancedTutorial(getMenuPlayer()));
-            getMenu().getSlot(33).setItem(getAdvancedTutorial(getMenuPlayer()));
-            getMenu().getSlot(34).setItem(getAdvancedTutorial(getMenuPlayer()));
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
@@ -107,27 +112,19 @@ public class TutorialsMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) ->
-                handleClickEvent(TutorialCategory.BEGINNER.getId(), clickInformation.getClickType()));
+        // Set click event for beginner tutorial item
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInfo) ->
+                setTutorialClickEvent(TutorialCategory.BEGINNER.getId(), clickInfo.getClickType()));
 
-        getMenu().getSlot(28).setClickHandler((clickPlayer, clickInformation) ->
-                handleClickEvent(-1, clickInformation.getClickType()));
-
-        getMenu().getSlot(29).setClickHandler((clickPlayer, clickInformation) ->
-                handleClickEvent(-1, clickInformation.getClickType()));
-
-        getMenu().getSlot(31).setClickHandler((clickPlayer, clickInformation) ->
-                handleClickEvent(-1, clickInformation.getClickType()));
-
-        getMenu().getSlot(33).setClickHandler((clickPlayer, clickInformation) ->
-                handleClickEvent(-1, clickInformation.getClickType()));
-
-        getMenu().getSlot(34).setClickHandler((clickPlayer, clickInformation) ->
-                handleClickEvent(-1, clickInformation.getClickType()));
+        // Set click events for advanced tutorial items
+        getMenu().getSlot(28).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
+        getMenu().getSlot(29).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
+        getMenu().getSlot(31).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
+        getMenu().getSlot(33).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
+        getMenu().getSlot(34).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
 
         // Set click event for back item
-        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
+        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInfo) -> {
             clickPlayer.performCommand("companion");
         });
     }
@@ -137,10 +134,10 @@ public class TutorialsMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
                 .pattern("111101111")
-                .pattern("111111111")
-                .pattern("111101111")
-                .pattern("100101001")
-                .pattern("111111111")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
                 .pattern("111101111")
                 .build();
     }
@@ -158,22 +155,32 @@ public class TutorialsMenu extends AbstractMenu {
         return null;
     }
 
-    private void handleClickEvent(int tutorialId, ClickType clickType) {
+    /**
+     * Sets the click event for a tutorial item and loads the tutorial stage
+     * @param tutorialId The tutorial id
+     * @param clickType The click type (left or right)
+     */
+    private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
             if (clickType == ClickType.LEFT) {
                 TutorialPlot plot = getPlotById(tutorialId);
                 try {
                     if (plot == null || plot.getStatus() != Status.completed) {
                         getMenuPlayer().closeInventory();
-                        new BeginnerTutorial(getMenuPlayer());
-                        return;
+                        if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId)) {
+                            if (AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId()) != null) {
+                                getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.TUTORIAL_ALREADY_RUNNING)));
+                            } else throw new Exception("Failed to load tutorial");
+                        }
                     }
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                } catch (Exception ex) {
+                    getMenuPlayer().closeInventory();
+                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while handling menu click event", ex);
+                    getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                    getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                 }
             } else if (clickType == ClickType.RIGHT) {
-                getMenuPlayer().closeInventory();
-                // TODO: Open tutorial stages menu
+                new TutorialStagesMenu(getMenuPlayer(), tutorialId);
             }
         }
 
@@ -181,7 +188,7 @@ public class TutorialsMenu extends AbstractMenu {
     }
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
-        return (tutorialId != TutorialCategory.BEGINNER.getId() /*&& !isBeginnerTutorialCompleted*/) ? getAdvancedTutorial(getMenuPlayer()) :
+        return (tutorialId != TutorialCategory.BEGINNER.getId() /*&& !isBeginnerTutorialCompleted*/) ? getAdvancedTutorialItem(getMenuPlayer()) :
                 constructTutorialItem(getMenuPlayer(), getPlotById(tutorialId), new ItemStack(Material.getMaterial(itemName)), title, desc);
     }
 
@@ -190,8 +197,7 @@ public class TutorialsMenu extends AbstractMenu {
         LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, StringUtils.EMPTY);
         if (plot == null || plot.getStatus() != Status.completed) {
             loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
-                    "§e" + (plot == null ? LangUtil.getInstance().get(player, LangPaths.Note.Action.TUTORIAL_START) :
-                    LangUtil.getInstance().get(player, LangPaths.Note.Action.TUTORIAL_CONTINUE)));
+                    "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.START));
         }
         loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + " §8» " +
                 "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.TUTORIAL_SHOW_STAGES));
@@ -203,7 +209,7 @@ public class TutorialsMenu extends AbstractMenu {
                 .build();
     }
 
-    private static ItemStack getAdvancedTutorial(Player player) {
+    private static ItemStack getAdvancedTutorialItem(Player player) {
         return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 15)
                 .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.Note.UNDER_CONSTRUCTION))
                 .build();

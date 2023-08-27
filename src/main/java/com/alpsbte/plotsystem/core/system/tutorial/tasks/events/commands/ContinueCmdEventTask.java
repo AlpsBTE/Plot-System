@@ -36,7 +36,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
  */
 public class ContinueCmdEventTask extends AbstractCmdEventTask {
     public ContinueCmdEventTask(Player player) {
-        super(player, "/tutorial", new String[] { "continue" }, null, 0, true);
+        super(player, "/tutorial", new String[] { "continue" }, null, 0, false);
     }
 
     @Override

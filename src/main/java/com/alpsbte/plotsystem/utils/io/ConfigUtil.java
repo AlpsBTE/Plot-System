@@ -66,7 +66,7 @@ public class ConfigUtil {
 
         @Override
         public void updateConfigFile(ConfigFile file) {
-            int tutorialId = Integer.parseInt(file.getString(TutorialPaths.TUTORIAL_ID));
+            int tutorialId = file.getInt(TutorialPaths.TUTORIAL_ID);
 
             File directory = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials").toFile();
             File[] files = directory.listFiles();

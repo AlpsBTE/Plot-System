@@ -35,6 +35,8 @@ public interface Tutorial {
     Player getPlayer();
     TutorialNPC getNPC();
     World getCurrentWorld();
+    int getCurrentStage();
+    void setStage(int stageId);
     void onStageComplete(UUID playerUUID);
     void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex);
     void onTutorialStop(UUID playerUUID);

@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.utils.io;
 public abstract class TutorialPaths {
     public static final String TUTORIAL_ID = "tutorial-id";
     public static final String TUTORIAL_ITEM_NAME = "tutorial-item-name";
+    public static final String TUTORIAL_STAGES = "tutorial-stages";
     public static final String TUTORIAL_SPAWNS = "tutorial-spawns";
     public static final String TUTORIAL_WORLDS_SPAWN_PLAYER = "spawn-player";
     public static final String TUTORIAL_WORLDS_SPAWN_NPC = "spawn-npc";

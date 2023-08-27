@@ -53,7 +53,7 @@ public class PlaceHologramTask extends AbstractTask {
         super(player);
         this.tipId = tipId;
 
-        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(player.getUniqueId());
+        Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
         this.tutorialId = tutorial.getId();
         this.tutorialWorld = tutorial.getCurrentWorld();
 

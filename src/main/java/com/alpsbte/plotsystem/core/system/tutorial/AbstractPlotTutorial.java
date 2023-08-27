@@ -42,17 +42,13 @@ import java.util.logging.Level;
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected int currentSchematicId;
 
-    protected final TutorialPlot plot;
+    protected TutorialPlot plot;
     protected TutorialPlotGenerator plotGenerator;
 
-    protected AbstractPlotTutorial(Player player) throws SQLException {
-        super(player);
+    protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) throws SQLException {
+        super(player, tutorialId, stageId == -1 ? getPlot(player, tutorialId).getStage() : stageId);
 
-        // Get tutorial plot
-        Builder builder = Builder.byUUID(player.getUniqueId());
-        if (TutorialPlot.getPlot(builder.getUUID().toString(), getId()) == null) {
-            plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), getId());
-        } else plot = TutorialPlot.getPlot(builder.getUUID().toString(), getId());
+        plot = getPlot(player, tutorialId);
 
         // Check if tutorial plot is null
         if (plot == null) {
@@ -64,7 +60,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         initTutorial();
 
         // Set the current stage from the player
-        setStage(plot.getStage());
+        nextStage();
     }
 
     @Override
@@ -103,5 +99,12 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         } catch (SQLException | IOException | WorldEditException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
         }
+    }
+
+    private static TutorialPlot getPlot(Player player, int tutorialId) throws SQLException {
+        Builder builder = Builder.byUUID(player.getUniqueId());
+        TutorialPlot plot = TutorialPlot.getPlot(builder.getUUID().toString(), tutorialId);
+        if (plot == null) plot = TutorialPlot.addTutorialPlot(builder.getUUID().toString(), tutorialId);
+        return plot;
     }
 }

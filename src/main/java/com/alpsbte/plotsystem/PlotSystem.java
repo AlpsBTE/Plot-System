@@ -32,6 +32,8 @@ import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -55,6 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -67,6 +70,11 @@ public class PlotSystem extends JavaPlugin {
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
+
+    static {
+        // Set tutorials
+        AbstractTutorial.setTutorials(Collections.singletonList(BeginnerTutorial.class));
+    }
 
     @Override
     public void onEnable() {

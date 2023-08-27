@@ -10,8 +10,9 @@
 # | IMPORTANT: THIS CONFIG FILE SHOULD NOT BE EDITED IF YOU DON´T KNOW WHAT YOU ARE DOING!
 # | Any changes may lead to unexpected behaviours or issues.
 # -----------------------------------------------------
-tutorial-id: '0'
+tutorial-id: 0
 tutorial-item-name: "BRICK"
+tutorial-stages: 10
 
 # Spawn points for the player and the NPC (x, y, z, yaw, pitch)
 # To define the plot world spawn, use the key word ´plot´

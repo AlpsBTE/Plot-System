@@ -27,7 +27,7 @@ public class InteractNPCEventTask extends AbstractTask implements EventTask {
     }
 
     public static boolean checkForNPC(PlayerInteractEntityEvent event) {
-        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(event.getPlayer().getUniqueId());
+        Tutorial tutorial = AbstractTutorial.getActiveTutorial(event.getPlayer().getUniqueId());
         if (tutorial == null) return false;
         if (tutorial.getNPC().tutorialNPC != null && tutorial.getNPC().tutorialNPC.getUniqueId().equals(event.getRightClicked().getUniqueId())) {
             event.setCancelled(true);

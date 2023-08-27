@@ -119,6 +119,7 @@ menu-title:
   filter-by-country: 'Filter By Country'
   information: 'Info'
   tutorials: 'Tutorials'
+  tutorial-stages: 'Tutorial Stages'
   tutorial-beginner: 'Get Started'
 
 # -----------------------------------------------------
@@ -190,6 +191,7 @@ note:
   player-has-to-be-online: "The player has to be online!"
   action:
     read-more: "Read More"
+    start: 'Start'
     continue: "Continue"
     right-click: "Right Click"
     left-click: "Left Click"
@@ -203,8 +205,6 @@ note:
     click-to-show-open-reviews: "§6Click Here §ato show open reviews..."
     click-to-show-plots: "§6Click Here §ato show your plots..."
     click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
-    tutorial-start: 'Start Tutorial'
-    tutorial-continue: 'Continue Tutorial'
     tutorial-show-stages: 'Show Stages'
   # NOTE: Try to keep it as short as possible
   anvil:
@@ -275,6 +275,7 @@ message:
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
     feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+    tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 
 leaderboards:
   pages:
@@ -288,6 +289,7 @@ leaderboards:
   not-on-leaderboard: "Not on Leaderboard"
 
 tutorials:
+  stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
   tutorial-completed: 'TUTORIAL COMPLETED'
   beginner:

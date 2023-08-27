@@ -125,6 +125,7 @@ public abstract class LangPaths {
         public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
         public static final String INFORMATION = MENU_TITLES + "information";
         public static final String TUTORIALS = MENU_TITLES + "tutorials";
+        public static final String TUTORIAL_STAGES = MENU_TITLES + "tutorial-stages";
         public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
     }
 
@@ -198,6 +199,7 @@ public abstract class LangPaths {
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
             public static final String READ_MORE = ACTION + "read-more";
+            public static final String START = ACTION + "start";
             public static final String CONTINUE = ACTION + "continue";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";
@@ -211,8 +213,6 @@ public abstract class LangPaths {
             public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION + "click-to-show-open-reviews";
             public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
-            public static final String TUTORIAL_START = ACTION + "tutorial-start";
-            public static final String TUTORIAL_CONTINUE = ACTION + "tutorial-continue";
             public static final String TUTORIAL_SHOW_STAGES = ACTION + "tutorial-show-stages";
         }
 
@@ -293,6 +293,7 @@ public abstract class LangPaths {
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
             public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
             public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
+            public static final String TUTORIAL_ALREADY_RUNNING = ERROR + "tutorial-already-running";
         }
     }
 
@@ -305,8 +306,9 @@ public abstract class LangPaths {
     }
 
     public static final class Tutorials {
-        private static final String TUTORIALS = "tutorials.";
+        public static final String TUTORIALS = "tutorials.";
 
+        public static final String TUTORIALS_STAGE = TUTORIALS + "stage";
         public static final String TUTORIALS_NEW_STAGE_UNLOCKED = TUTORIALS + "new-stage-unlocked";
         public static final String TUTORIALS_TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
 

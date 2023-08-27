@@ -117,7 +117,7 @@ public class OnePlotWorld extends PlotWorld {
             try {
                 if (getPlot() != null && (getPlot().getStatus() == Status.completed || getPlot().getPlotType() == PlotType.TUTORIAL)) {
                     if (getPlot().getPlotType() == PlotType.TUTORIAL) {
-                        Tutorial tutorial = AbstractTutorial.getTutorialByPlayer(plotOwner.getUUID());
+                        Tutorial tutorial = AbstractTutorial.getActiveTutorial(plotOwner.getUUID());
                         if (tutorial != null) tutorial.onTutorialStop(plotOwner.getUUID());
                     }
 

@@ -25,7 +25,10 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.plotsystem.core.menus.tutorial.TutorialStagesMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -41,7 +44,12 @@ public class CMD_Tutorial extends BaseCommand {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
                 if (args.length == 0) {
-                    new TutorialsMenu(getPlayer(sender));
+                    Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
+                    if (tutorial != null) {
+                        new TutorialStagesMenu(tutorial.getPlayer(), tutorial.getId());
+                    } else {
+                        new TutorialsMenu(getPlayer(sender));
+                    }
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
@@ -64,7 +72,7 @@ public class CMD_Tutorial extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "continue" };
+        return new String[0];
     }
 
     @Override

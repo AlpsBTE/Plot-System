@@ -52,9 +52,8 @@ import java.util.logging.Level;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
-
-    public BeginnerTutorial(Player player) throws SQLException {
-        super(player);
+    public BeginnerTutorial(Player player, int stageId) throws SQLException {
+        super(player, TutorialCategory.BEGINNER.getId(), stageId);
     }
 
     @Override
@@ -84,11 +83,6 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                 Stage9.class,
                 Stage10.class
         );
-    }
-
-    @Override
-    public int getId() {
-        return TutorialCategory.BEGINNER.getId();
     }
 
     private static class Stage1 extends AbstractPlotStage {
