@@ -24,8 +24,14 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
 public interface PlotTutorial extends Tutorial {
-    void onPasteSchematicOutlines(Player player, int schematicId);
+
+    /**
+     * This method is called when a schematic outline in the plot world is pasted.
+     * @param playerUUID uuid of the player
+     * @param schematicId The schematic id
+     */
+    void onPasteSchematicOutlines(UUID playerUUID, int schematicId);
 }

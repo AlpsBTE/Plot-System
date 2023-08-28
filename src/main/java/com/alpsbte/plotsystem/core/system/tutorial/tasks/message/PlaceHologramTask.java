@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -39,8 +40,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import static com.alpsbte.plotsystem.utils.Utils.TutorialUtils.getDocumentationLinks;
-import static com.alpsbte.plotsystem.utils.Utils.TutorialUtils.getTipPoints;
 import static net.md_5.bungee.api.ChatColor.GRAY;
 
 public class PlaceHologramTask extends AbstractTask {
@@ -58,7 +57,7 @@ public class PlaceHologramTask extends AbstractTask {
         this.tutorialWorld = tutorial.getCurrentWorld();
 
         if (readMoreLinkId != -1) {
-            String readMoreLink = getDocumentationLinks(tutorialId).get(readMoreLinkId);
+            String readMoreLink = TutorialUtils.getDocumentationLinks(tutorialId).get(readMoreLinkId);
             hologram = new TutorialTipHologram(player, String.valueOf(tipId), content, () -> {
                 player.spigot().sendMessage(new ChatMessageTask.ClickableTaskMessage(ChatMessageTask.TASK_PREFIX + readMoreLink,
                         GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "...", readMoreLink, ClickEvent.Action.OPEN_URL).getComponent());
@@ -69,7 +68,7 @@ public class PlaceHologramTask extends AbstractTask {
 
     @Override
     public void performTask() {
-        Vector tipVector = getTipPoints(tutorialId).get(tipId);
+        Vector tipVector = TutorialUtils.getTipPoints(tutorialId).get(tipId);
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
                 hologram.create(Position.of(tutorialWorld.getName(), tipVector.getX(), tipVector.getY(), tipVector.getZ())));
 

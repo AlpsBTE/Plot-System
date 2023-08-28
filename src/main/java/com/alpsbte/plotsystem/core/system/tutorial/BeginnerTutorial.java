@@ -32,7 +32,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.LineCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.WandCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -49,6 +48,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.CHAT_HIGHLIGHT_COLOR;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
@@ -83,6 +83,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                 Stage9.class,
                 Stage10.class
         );
+    }
+
+    @Override
+    public String getName() {
+        return LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER);
     }
 
     private static class Stage1 extends AbstractPlotStage {
@@ -206,7 +211,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     }, Sound.ENTITY_VILLAGER_AMBIENT, false)
                     .delay(2)
                     .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
-                        Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
                         getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
                                 Sound.BLOCK_NOTE_PLING, 1f, 1f);
                     });
@@ -291,8 +296,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         buildingLinePoints.remove(minPoint);
 
-                        Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.CONCRETE_POWDER, (byte) 5);
-                        Utils.TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.CONCRETE_POWDER, (byte) 5);
                         getPlayer().playSound(getPlayer().getLocation(), Sound.BLOCK_NOTE_PLING, 1f, 1f);
                     })));
         }
@@ -502,7 +507,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                         StringUtils.EMPTY,
                         new ChatMessageTask.ClickableTaskMessage(getMessages().get(5),
                                 GRAY + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE) + "...",
-                                Utils.TutorialUtils.getDocumentationLinks(TutorialCategory.BEGINNER.id).get(0), ClickEvent.Action.OPEN_URL),
+                                TutorialUtils.getDocumentationLinks(TutorialCategory.BEGINNER.id).get(0), ClickEvent.Action.OPEN_URL),
                     }, Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)

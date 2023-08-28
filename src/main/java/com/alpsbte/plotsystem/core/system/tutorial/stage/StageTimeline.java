@@ -102,7 +102,8 @@ public class StageTimeline implements TutorialTimeLine {
 
         if (currentTaskId >= tasks.size() - 1) {
             onStopTimeLine(playerUUID);
-            for (int i = 0; i < AbstractTutorial.activeTutorials.size(); i++) AbstractTutorial.activeTutorials.get(i).onStageComplete(player.getUniqueId());
+            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++)
+                AbstractTutorial.getActiveTutorials().get(i).onStageComplete(player.getUniqueId());
         } else nextTask();
     }
 
@@ -206,13 +207,5 @@ public class StageTimeline implements TutorialTimeLine {
     public StageTimeline delay(long seconds) {
         tasks.add(new WaitTask(player, seconds));
         return this;
-    }
-
-    public List<AbstractTask> getTasks() {
-        return tasks;
-    }
-
-    public int getCurrentTaskId() {
-        return currentTaskId;
     }
 }

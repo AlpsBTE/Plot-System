@@ -187,6 +187,11 @@ public class TutorialPlot extends AbstractPlot {
         }
     }
 
+    public void setStage(int stageId) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET stage = ? WHERE id = ?")
+                .setValue(stageId).setValue(this.ID).executeUpdate();
+    }
+
     @Override
     protected File getSchematicFile(String fileName) {
         File file = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials", fileName + ".schematic").toFile();
@@ -251,10 +256,6 @@ public class TutorialPlot extends AbstractPlot {
             DatabaseConnection.closeResultSet(rs);
         }
         return null;
-    }
-
-    public static List<TutorialPlot> getPlots() throws SQLException {
-        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial").executeQuery());
     }
 
     public static List<TutorialPlot> getPlots(UUID builderUUID) throws SQLException {
