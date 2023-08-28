@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 public abstract class AbstractPlotStage extends AbstractStage {
     private final TutorialPlot plot;
     private final int initSchematicId;
+
     protected AbstractPlotStage(Player player, int initWorldIndex, TutorialPlot plot, int initSchematicId) {
         super(player, initWorldIndex);
         this.plot = plot;

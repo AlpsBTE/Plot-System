@@ -22,29 +22,14 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
-import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
-public class PasteSchematicOutlinesTask extends AbstractTask {
-    private final int schematicId;
-
-    public PasteSchematicOutlinesTask(Player player, int schematicId) {
-        super(player);
-        this.schematicId = schematicId;
-    }
-
-    @Override
-    public void performTask() {
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            for (int i = 0; i < AbstractPlotTutorial.getActiveTutorials().size(); i++)
-                ((PlotTutorial) AbstractPlotTutorial.getActiveTutorials().get(i))
-                        .onPasteSchematicOutlines(player.getUniqueId(), schematicId);
-            setTaskDone();
-        });
-    }
+public interface EventTask {
+    /**
+     * Performs the event check in the given task
+     * @param event The event to check
+     */
+    void performEvent(Event event);
 }

@@ -40,6 +40,13 @@ import static net.md_5.bungee.api.ChatColor.GOLD;
 public class TutorialUtils {
     public static final String CHAT_HIGHLIGHT_COLOR = GOLD.toString();
 
+    /**
+     * Set a block at a specific location
+     * @param world The world to set the block in
+     * @param vector The vector of the location
+     * @param material The material of the block
+     * @param data The data of the block
+     */
     public static void setBlockAt(World world, com.sk89q.worldedit.Vector vector, Material material, int data) {
         Location loc = new Location(world, vector.getX(), vector.getY(), vector.getZ());
         loc.getBlock().setType(material);

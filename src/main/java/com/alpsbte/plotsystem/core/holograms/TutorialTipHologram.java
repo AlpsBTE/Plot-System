@@ -27,9 +27,9 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.PlaceHologramTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
 import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,16 +37,23 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-import static net.md_5.bungee.api.ChatColor.BOLD;
-import static net.md_5.bungee.api.ChatColor.GOLD;
+import static net.md_5.bungee.api.ChatColor.*;
 
+/**
+ * This hologram is used to display tutorial tips to the player.
+ * @see PlaceHologramTask
+ */
 public class TutorialTipHologram extends HolographicDisplay {
+
+    /**
+     * This action is executed when the player clicks on the 'read more' text on the hologram.
+     */
     @FunctionalInterface
     public interface ClickAction {
         void onClick();
     }
 
-    private final static int MAX_HOLOGRAM_LENGTH = 48;
+    private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
     private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
 
     private final String content;
@@ -90,15 +97,16 @@ public class TutorialTipHologram extends HolographicDisplay {
     @Override
     public List<DataLine<?>> getFooter() {
         return clickAction == null ? new ArrayList<>() : Arrays.asList(
-                new TextLine("{empty}"),
-                new TextLine("§8[" + "§7" + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "§8]")
+                new TextLine(EMPTY_TAG),
+                new TextLine(DARK_GRAY + "[" + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + DARK_GRAY + "]")
         );
     }
 
     @Override
     public void reload() {
-        if (clickAction != null) getHologram().setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
         super.reload();
+
+        // Set click listener
         if (getHologram() == null || clickAction == null) return;
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 1);

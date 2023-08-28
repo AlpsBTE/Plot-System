@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;

@@ -22,9 +22,8 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import org.apache.commons.lang.StringUtils;
@@ -85,7 +84,7 @@ public abstract class AbstractTask {
         if (isTaskDone()) return;
         this.isDone = true;
         TutorialEventListener.runningEventTasks.remove(player.getUniqueId().toString());
-        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onTaskDone(player.getUniqueId(), this);
+        for (int i = 0; i < StageTimeline.getActiveTimelines().size(); i++) StageTimeline.getActiveTimelines().get(i).onTaskDone(player.getUniqueId(), this);
     }
 
     /**
@@ -95,7 +94,7 @@ public abstract class AbstractTask {
         if (progress + 1 <= totalProgress) {
             progress++;
         }
-        for (int i = 0; i < StageTimeline.activeTimelines.size(); i++) StageTimeline.activeTimelines.get(i).onAssignmentUpdate(player.getUniqueId(), this);
+        for (int i = 0; i < StageTimeline.getActiveTimelines().size(); i++) StageTimeline.getActiveTimelines().get(i).onAssignmentUpdate(player.getUniqueId(), this);
     }
 
     /**
@@ -103,7 +102,7 @@ public abstract class AbstractTask {
      * @return assignmentMessage
      */
     public String getAssignmentMessage() {
-        return getAssignmentMessageFormat(assignmentMessage);
+        return YELLOW + assignmentMessage;
     }
 
     /**
@@ -138,10 +137,13 @@ public abstract class AbstractTask {
         return totalProgress > 0;
     }
 
-    public static String getAssignmentMessageFormat(String assignmentMessage) {
-        return YELLOW + assignmentMessage;
-    }
 
+
+    /**
+     * Sends the assignment message to the player via chat.
+     * @param player The player who is doing the task.
+     * @param assignmentMessage The message which is displayed in the action bar and chat.
+     */
     public static void sendAssignmentMessage(Player player, String assignmentMessage) {
         player.sendMessage(StringUtils.EMPTY);
         player.sendMessage("§8[§6PS§8] " + assignmentMessage);

@@ -22,31 +22,34 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
-import com.alpsbte.plotsystem.PlotSystem;
-import org.bukkit.Bukkit;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.InteractNPCEventTask;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-public class WaitTask extends AbstractTask {
-    private long delay;
-
-    public WaitTask(Player player) {
-        super(player);
-    }
-
-    public WaitTask(Player player, long delay) {
-        this(player);
-        this.delay = delay;
-    }
-
-    @Override
-    public void performTask() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), this::setTaskDone, 20 * delay);
+/**
+ * This command event task is used to wait till the player clicks on the "continue" button in
+ * the chat to proceed with the tutorial.
+ * @see com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask#sendTaskMessage(Player, Object[], boolean)
+ */
+public class ContinueCmdEventTask extends AbstractCmdEventTask {
+    public ContinueCmdEventTask(Player player) {
+        super(player, "/tutorial", new String[] { "continue" }, null, 0, false);
     }
 
     @Override
-    public String toString() {
-        return "WaitTask";
+    public void performEvent(Event event) {
+        if (event instanceof PlayerInteractEntityEvent && InteractNPCEventTask.checkForNPC((PlayerInteractEntityEvent) event)) {
+            setTaskDone();
+            return;
+        }
+        super.performEvent(event);
+    }
+
+    @Override
+    protected void onCommand(String[] args) {
+        setTaskDone();
     }
 }

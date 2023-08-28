@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;

@@ -22,10 +22,10 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.sk89q.worldedit.Vector;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

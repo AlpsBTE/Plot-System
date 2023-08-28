@@ -22,10 +22,10 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
 import java.util.List;

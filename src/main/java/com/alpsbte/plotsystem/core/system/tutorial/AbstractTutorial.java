@@ -27,6 +27,8 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;

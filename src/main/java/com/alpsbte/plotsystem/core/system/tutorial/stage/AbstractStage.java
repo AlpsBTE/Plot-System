@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -47,9 +48,29 @@ public abstract class AbstractStage {
         this.tasks = setTasks();
     }
 
+    /**
+     * Sets the title of the tutorial stage
+     * @return title
+     */
     protected abstract String setTitle();
+
+    /**
+     * Sets the messages of the tutorial stage
+     * @return messages
+     */
     protected abstract List<String> setMessages();
+
+    /**
+     * Sets the tasks of the tutorial stage
+     * @see AbstractTask#getAssignmentMessage()
+     * @return tasks
+     */
     protected abstract List<String> setTasks();
+
+    /**
+     * Gets the timeline of the tutorial stage
+     * @return timeline
+     */
     public abstract StageTimeline getTimeline() throws IOException, SQLException;
 
     public Player getPlayer() {

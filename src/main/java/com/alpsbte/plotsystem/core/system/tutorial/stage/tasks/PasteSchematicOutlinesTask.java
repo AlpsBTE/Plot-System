@@ -22,18 +22,29 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class WandCmdEventTask extends AbstractCmdEventTask {
-    public WandCmdEventTask(Player player, String assignmentMessage) {
-        super(player, "//wand", assignmentMessage, 1, false);
+public class PasteSchematicOutlinesTask extends AbstractTask {
+    private final int schematicId;
+
+    public PasteSchematicOutlinesTask(Player player, int schematicId) {
+        super(player);
+        this.schematicId = schematicId;
     }
 
     @Override
-    protected void onCommand(String[] args) {
-        updateProgress();
-        setTaskDone();
+    public void performTask() {
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            for (int i = 0; i < AbstractPlotTutorial.getActiveTutorials().size(); i++)
+                ((PlotTutorial) AbstractPlotTutorial.getActiveTutorials().get(i))
+                        .onPasteSchematicOutlines(player.getUniqueId(), schematicId);
+            setTaskDone();
+        });
     }
 }

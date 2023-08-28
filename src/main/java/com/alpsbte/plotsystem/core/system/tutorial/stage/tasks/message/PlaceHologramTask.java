@@ -22,14 +22,14 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.message;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.Vector;
@@ -70,7 +70,7 @@ public class PlaceHologramTask extends AbstractTask {
     public void performTask() {
         Vector tipVector = TutorialUtils.getTipPoints(tutorialId).get(tipId);
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
-                hologram.create(Position.of(tutorialWorld.getName(), tipVector.getX(), tipVector.getY(), tipVector.getZ())));
+                hologram.create(Position.of(tutorialWorld.getName(), tipVector.getX(), tipVector.getY(), tipVector.getZ()), true));
 
         setTaskDone();
     }

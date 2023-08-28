@@ -22,11 +22,11 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks.events;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.AbstractTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;

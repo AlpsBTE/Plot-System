@@ -22,26 +22,31 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.tasks;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
-import org.bukkit.Sound;
+import com.alpsbte.plotsystem.PlotSystem;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PlaySoundTask extends AbstractTask {
-    private final Sound sound;
-    private final float volume;
-    private final float pitch;
+public class WaitTask extends AbstractTask {
+    private long delay;
 
-    public PlaySoundTask(Player player, Sound sound, float volume, float pitch) {
+    public WaitTask(Player player) {
         super(player);
-        this.sound = sound;
-        this.volume = volume;
-        this.pitch = pitch;
+    }
+
+    public WaitTask(Player player, long delay) {
+        this(player);
+        this.delay = delay;
     }
 
     @Override
     public void performTask() {
-        player.playSound(player.getLocation(), sound, volume, pitch);
-        setTaskDone();
+        Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), this::setTaskDone, 20 * delay);
+    }
+
+    @Override
+    public String toString() {
+        return "WaitTask";
     }
 }

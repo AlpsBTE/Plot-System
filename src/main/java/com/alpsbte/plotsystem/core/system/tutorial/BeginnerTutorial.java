@@ -29,9 +29,11 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.LineCmdEventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.events.commands.WandCmdEventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.tasks.message.ChatMessageTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.PasteSchematicOutlinesTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.LineCmdEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -381,14 +383,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(3).delay(1)
+                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 3)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms()
                     .delay(4)
-                    .pasteSchematicOutline(4).delay(1)
+                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 4)).delay(1)
                     .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(2, getMessages().get(4), 2)
                     .placeTipHologram(3, getMessages().get(5), 0)
@@ -422,7 +424,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(5).delay(1)
+                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 5)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(5, getMessages().get(2))
@@ -459,7 +461,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(6).delay(1)
+                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 6)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(7, getMessages().get(1))
                     .placeTipHologram(8, getMessages().get(2), 1)
@@ -495,7 +497,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(3)
-                    .pasteSchematicOutline(7).delay(1)
+                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 7)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .placeTipHologram(10, getMessages().get(1))
                     .placeTipHologram(11, getMessages().get(2), 0)
