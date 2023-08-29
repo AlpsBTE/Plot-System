@@ -34,10 +34,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.PasteSchematicOut
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.LineCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import com.alpsbte.plotsystem.utils.io.*;
 import com.sk89q.worldedit.Vector;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.apache.commons.lang.StringUtils;
@@ -105,12 +102,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_MESSAGES,
-                    CHAT_HIGHLIGHT_COLOR + getPlayer().getName() + GRAY);
+                    CHAT_HIGHLIGHT_COLOR + getPlayer().getName() + GRAY,
+                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TASKS,
+                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override
@@ -376,7 +375,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS,
+                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override
@@ -454,7 +454,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS,
+                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override
@@ -490,7 +491,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS,
+                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override

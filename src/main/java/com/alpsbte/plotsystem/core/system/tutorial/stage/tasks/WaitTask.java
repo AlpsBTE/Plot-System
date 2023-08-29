@@ -42,7 +42,7 @@ public class WaitTask extends AbstractTask {
 
     @Override
     public void performTask() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), this::setTaskDone, 20 * delay);
+        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), this::setTaskDone, 20 * delay);
     }
 
     @Override

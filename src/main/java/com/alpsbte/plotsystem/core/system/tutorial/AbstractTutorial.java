@@ -35,9 +35,7 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -68,6 +66,17 @@ public abstract class AbstractTutorial implements Tutorial {
      * @see AbstractTutorial#getActiveTutorial(UUID)
      */
     private static final List<Tutorial> activeTutorials = new ArrayList<>();
+
+    /**
+     * A list of the last interaction of a player with a NPC or the chat.
+     */
+    private static final Map<UUID, Long> playerInteractionHistory = new HashMap<>();
+    private static final long PLAYER_INTERACTION_COOLDOWN = 1000; // The cooldown for player interactions in milliseconds
+
+    /**
+     * A list of all tutorial NPCs.
+     */
+    private static final List<UUID> tutorialNPCs = new ArrayList<>();
 
 
     private final Player player;
@@ -113,6 +122,11 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     protected abstract void prepareStage(PrepareStageAction action);
 
+    /**
+     * Call this method to instantiate the tutorial npc.
+     */
+    protected abstract TutorialNPC setNpc();
+
     protected AbstractTutorial(Player player, int tutorialId, int stageId) {
         this.player = player;
         this.tutorialId = tutorialId;
@@ -128,6 +142,7 @@ public abstract class AbstractTutorial implements Tutorial {
         activeTutorials.add(this);
         worlds = setWorlds();
         stages = setStages();
+        npc = setNpc();
     }
 
     @Override
@@ -174,32 +189,30 @@ public abstract class AbstractTutorial implements Tutorial {
             onTutorialComplete(player.getUniqueId());
             onTutorialStop(player.getUniqueId());
         } else {
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                try {
-                    // Switch to next stage
-                    currentStage = getStage();
+            try {
+                // Switch to the next stage
+                currentStage = getStage();
 
-                    // Check if player has to switch world
-                    onSwitchWorld(player.getUniqueId(), currentStage.getInitWorldIndex());
+                // Check if player has to switch world
+                onSwitchWorld(player.getUniqueId(), currentStage.getInitWorldIndex());
 
-                    // Ge the timeline of the current stage
-                    stageTimeline = currentStage.getTimeline();
+                // Ge the timeline of the current stage
+                stageTimeline = currentStage.getTimeline();
 
-                    prepareStage(() -> {
-                        // Start tasks timeline
-                        stageTimeline.StartTimeline();
-                    });
-                } catch (Exception ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing next stage!", ex);
-                    player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                prepareStage(() -> {
+                    // Start tasks timeline
+                    stageTimeline.StartTimeline();
+                });
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing next stage!", ex);
+                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
 
-                    // Send player back to hub after 3 seconds if an error occurred
-                    Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
-                        onSwitchWorld(player.getUniqueId(), 0);
-                        onTutorialStop(player.getUniqueId());
-                    }, 20 * 3);
-                }
-            });
+                // Send player back to hub after 3 seconds if an error occurred
+                Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
+                    onSwitchWorld(player.getUniqueId(), 0);
+                    onTutorialStop(player.getUniqueId());
+                }, 20 * 3);
+            }
         }
     }
 
@@ -207,7 +220,6 @@ public abstract class AbstractTutorial implements Tutorial {
     public void onStageComplete(UUID playerUUID) {
         if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         saveStage();
-        Bukkit.getLogger().log(Level.INFO, "Stage Complete: " + getCurrentStage());
         nextStage();
     }
 
@@ -217,21 +229,19 @@ public abstract class AbstractTutorial implements Tutorial {
         if (currentWorldIndex == tutorialWorldIndex) return;
         currentWorldIndex = tutorialWorldIndex;
 
-        if (npc != null && npc.tutorialNPC != null) {
-            npc.tutorialNPC.remove(); // Temporary fix
-            npc = null;
-        }
-        TutorialWorld world = worlds.get(tutorialWorldIndex);
+        // Remove npc as temporary fix for the npc not being removed when switching worlds
+        npc.remove();
 
+        TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
-        if (npc == null) npc = new TutorialNPC(world.getNpcSpawnLocation());
-        else npc.tutorialNPC.teleport(world.getNpcSpawnLocation());
+        npc.teleport(world.getNpcSpawnLocation());
     }
 
     @Override
     public void onTutorialStop(UUID playerUUID) {
         activeTutorials.remove(this);
-        if (npc != null) npc.tutorialNPC.remove();
+        npc.remove();
+        playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
 
         Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
@@ -272,6 +282,28 @@ public abstract class AbstractTutorial implements Tutorial {
     public static Tutorial getActiveTutorial(UUID playerUUID) {
         return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
                 tutorial.getPlayer().getUniqueId().toString().equals(playerUUID.toString())).findAny().orElse(null);
+    }
+
+    /**
+     * Gets a list of all active tutorial NPCs.
+     * @return tutorial NPCs
+     */
+    public static List<UUID> getTutorialNPCs() {
+        return tutorialNPCs;
+    }
+
+    /**
+     * Checks if a player can interact with the tutorial npc or chat input.
+     * @param playerUUID uuid of the player
+     * @return true if the player can interact, otherwise false
+     */
+    public static boolean canPlayerInteract(UUID playerUUID) {
+        if (playerInteractionHistory.containsKey(playerUUID)) {
+            long lastInteraction = playerInteractionHistory.get(playerUUID);
+            if (System.currentTimeMillis() - lastInteraction <= PLAYER_INTERACTION_COOLDOWN) return false;
+        }
+        playerInteractionHistory.put(playerUUID, System.currentTimeMillis());
+        return true;
     }
 
     /**

@@ -175,24 +175,22 @@ public class TutorialStagesMenu extends AbstractMenu {
      */
     private void setStageClickEvent(int slot, int stageId) {
         getMenu().getSlot(slot).setClickHandler(((player, clickInformation) -> {
-            if (playerHighestStage >= stageId && clickInformation.getClickType().isLeftClick()) {
+            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.8f, 0.8f);
+
+            if (playerCurrentStage != stageId && playerHighestStage >= stageId && clickInformation.getClickType().isLeftClick()) {
+                getMenuPlayer().closeInventory();
+
                 // Load the tutorial stage by id
                 if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId, stageId)) {
                     Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
                     if (tutorial != null) {
-                        if (tutorial.getId() == tutorialId && playerCurrentStage != stageId) {
-                            getMenuPlayer().closeInventory();
-                            tutorial.setStage(stageId);
-                        }
+                        if (tutorial.getId() == tutorialId) tutorial.setStage(stageId);
                     } else {
-                        getMenuPlayer().closeInventory();
                         getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                         getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                     }
-                } else getMenuPlayer().closeInventory();
+                }
             }
-
-            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.8f, 0.8f);
         }));
     }
 

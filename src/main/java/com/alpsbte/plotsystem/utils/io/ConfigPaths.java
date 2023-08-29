@@ -96,6 +96,7 @@ public abstract class ConfigPaths {
     private static final String TUTORIALS = "tutorials.";
     public static final String TUTORIAL_ENABLE = TUTORIALS + "enable";
     public static final String TUTORIAL_REQUIRE_BEGINNER_TUTORIAL = TUTORIALS + "require-beginner-tutorial";
+    public static final String TUTORIAL_NPC_NAME = TUTORIALS + "tutorial-npc-name";
     public static final String TUTORIAL_NPC_TEXTURE = TUTORIALS + "tutorial-npc-texture";
     public static final String TUTORIAL_NPC_SIGNATURE = TUTORIALS + "tutorial-npc-signature";
 }

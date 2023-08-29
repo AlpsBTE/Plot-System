@@ -62,9 +62,11 @@ public class StageTimeline implements TutorialTimeLine {
     private int currentTaskId = -1;
     private BukkitTask assignmentProgressTask;
     private final List<TutorialTipHologram> tipHolograms = new ArrayList<>();
+    private final TutorialNPC tutorialNPC;
 
     public StageTimeline(Player player) {
         this.player = player;
+        tutorialNPC = AbstractTutorial.getActiveTutorial(player.getUniqueId()).getNPC();
     }
 
     /**
@@ -85,7 +87,7 @@ public class StageTimeline implements TutorialTimeLine {
         Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (currentTaskId + 2) + " of " + tasks.size() + "] for player " + player.getName());
         currentTaskId = currentTaskId + 1;
 
-        // Check if task has progress and if yes, update action bar
+        // Check if a task has progress and if yes, update action bar
         if (currentTask.hasProgress()) {
             AbstractTask.sendAssignmentMessage(player, currentTask.getAssignmentMessage());
             if (assignmentProgressTask != null) assignmentProgressTask.cancel();
@@ -98,6 +100,12 @@ public class StageTimeline implements TutorialTimeLine {
                 }
             }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
         }
+
+        // If the task has npc interaction show the hologram click info, otherwise hide it
+        if (currentTask instanceof InteractNPCEventTask || currentTask instanceof ContinueCmdEventTask ||
+                (currentTask instanceof ChatMessageTask && ((ChatMessageTask) currentTask).isWaitToContinue())) {
+            tutorialNPC.setHologramFooterVisibility(true, currentTask instanceof InteractNPCEventTask);
+        } else if (tutorialNPC.getNpcHologram().isFooterVisible()) tutorialNPC.setHologramFooterVisibility(false, false);
 
         currentTask.performTask();
     }
@@ -128,6 +136,7 @@ public class StageTimeline implements TutorialTimeLine {
         if (assignmentProgressTask != null) assignmentProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
         tipHolograms.forEach(HolographicDisplay::remove);
+        tutorialNPC.setHologramFooterVisibility(false, false);
         tasks.clear();
     }
 
@@ -176,7 +185,7 @@ public class StageTimeline implements TutorialTimeLine {
      */
     public StageTimeline sendChatMessage(Object[] messages, Sound soundEffect, boolean waitToContinue) {
         tasks.add(new ChatMessageTask(player, messages, soundEffect, waitToContinue));
-        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player)); // Add a task to wait for player to continue
+        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorialNPC.getVillager().getUniqueId())); // Add a task to wait for player to continue
         return this;
     }
 
@@ -219,7 +228,7 @@ public class StageTimeline implements TutorialTimeLine {
      * @param assignmentMessage the task message to show in the action bar to the player
      */
     public StageTimeline interactNPC(String assignmentMessage) {
-        tasks.add(new InteractNPCEventTask(player, assignmentMessage));
+        tasks.add(new InteractNPCEventTask(player, tutorialNPC.getVillager().getUniqueId(), assignmentMessage));
         return this;
     }
 

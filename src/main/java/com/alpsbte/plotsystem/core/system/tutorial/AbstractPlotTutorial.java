@@ -30,7 +30,9 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
@@ -44,6 +46,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import static net.md_5.bungee.api.ChatColor.GRAY;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
 
@@ -91,12 +95,20 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
+    protected TutorialNPC setNpc() {
+        return new TutorialNPC("npc-" + plot.getID(),
+                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
+                GRAY + "(" + LangUtil.getInstance().get(getPlayer(),
+                        LangPaths.Note.Action.RIGHT_CLICK) + ")");
+    }
+
+    @Override
     protected void prepareStage(PrepareStageAction action) {
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
             // paste initial schematic outlines of stage
             onPasteSchematicOutlines(getPlayer().getUniqueId(), ((AbstractPlotStage) currentStage).getInitSchematicId());
 
-            // Send new stage unlocked message to player
+            // Send a new stage unlocked message to the player
             sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
             getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.7f);
 

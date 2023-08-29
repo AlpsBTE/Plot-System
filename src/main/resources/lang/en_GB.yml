@@ -296,12 +296,12 @@ tutorials:
     stage-1:
       stage-1-title: 'Understanding the BuildTheEarth Project'
       stage-1-messages:
-        - 'Hello {0}! Nice to meet you, my name is Bob. You´ve just stepped into the exciting world of the BuildTheEarth project!'
+        - 'Hello {0}! Nice to meet you, my name is {1}. You´ve just stepped into the exciting world of the BuildTheEarth project!'
         - 'Our mission is to recreate the entire planet Earth in Minecraft at a 1:1 scale. Yes, you heard right, at a 1:1 scale!'
         - 'However, we at Alps BTE are only responsible to recreate the beautiful alpine countries of Austria, Switzerland and Liechtenstein.'
         - 'Are you ready to learn how to build for BTE? I will guide you through the basics to participate in the project. Let´s continue!'
       stage-1-tasks:
-        - 'Talk to Bob at the gate.'
+        - 'Talk to {0} at the gate.'
     stage-2:
       stage-2-title: 'References'
       stage-2-messages:
@@ -358,7 +358,7 @@ tutorials:
         - 'Fill the roof by hand or use the WorldEdit command {1}. Alternatively use the command {2} to switch the selection for larger and more complex roofs.'
         - 'Always check the height of the windows and doors so that it matches with the facade.'
       stage-7-tasks:
-        - 'Read all tips on the plot. Talk to Bob to continue.'
+        - 'Read all tips on the plot. Talk to {0} to continue.'
     stage-8:
       stage-8-title: 'Windows'
       stage-8-messages:
@@ -377,7 +377,7 @@ tutorials:
         - 'Use the WorldEdit command {0} to simply replace the shell with your pattern.'
         - 'Try to use block mixes and gradients for the walls and roof so that the building looks more realistic and stand out.'
       stage-9-tasks:
-        - 'Read all tips on the plot. Talk to Bob to continue.'
+        - 'Read all tips on the plot. Talk to {0} to continue.'
     stage-10:
       stage-10-title: 'Detailing'
       stage-10-messages:
@@ -390,7 +390,7 @@ tutorials:
         - 'To apply as builder, create and submit two or more plots on our server. You can find more information about the application process on our website or {1}.'
         - 'Happy building!'
       stage-10-tasks:
-        - 'Read all tips on the plot. Talk to Bob to continue.'
+        - 'Read all tips on the plot. Talk to {0} to continue.'
 
 # NOTE: Do not change
 config-version: 1.3

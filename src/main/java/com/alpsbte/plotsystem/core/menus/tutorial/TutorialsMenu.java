@@ -161,6 +161,8 @@ public class TutorialsMenu extends AbstractMenu {
      * @param clickType The click type (left or right)
      */
     private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
+        getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.8f, 0.8f);
+
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
             if (clickType == ClickType.LEFT) {
                 TutorialPlot plot = getPlotById(tutorialId);
@@ -183,8 +185,6 @@ public class TutorialsMenu extends AbstractMenu {
                 new TutorialStagesMenu(getMenuPlayer(), tutorialId);
             }
         }
-
-        getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.8f, 0.8f);
     }
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {

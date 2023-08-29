@@ -108,9 +108,9 @@ public class TutorialTipHologram extends HolographicDisplay {
 
         // Set click listener
         if (getHologram() == null || clickAction == null) return;
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+        // Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 1);
             line.setClickListener((clickEvent) -> clickAction.onClick());
-        });
+        // });
     }
 }

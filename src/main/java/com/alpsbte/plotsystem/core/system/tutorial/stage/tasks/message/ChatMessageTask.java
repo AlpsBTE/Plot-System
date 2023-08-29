@@ -44,18 +44,18 @@ public class ChatMessageTask extends AbstractTask {
 
     private final Object[] messages;
     private final Sound soundEffect;
-    private final boolean waitToContinue;
+    private final boolean isWaitToContinue;
 
-    public ChatMessageTask(Player player, Object[] messages, Sound soundEffect, boolean waitToContinue) {
+    public ChatMessageTask(Player player, Object[] messages, Sound soundEffect, boolean isWaitToContinue) {
         super(player);
         this.messages = messages;
         this.soundEffect = soundEffect;
-        this.waitToContinue = waitToContinue;
+        this.isWaitToContinue = isWaitToContinue;
     }
 
     @Override
     public void performTask() {
-        sendTaskMessage(player, messages, waitToContinue);
+        sendTaskMessage(player, messages, isWaitToContinue);
         if (soundEffect != null) player.playSound(player.getLocation(), soundEffect, 1f, 1f);
         setTaskDone();
     }
@@ -65,9 +65,12 @@ public class ChatMessageTask extends AbstractTask {
         return "ChatMessageTask";
     }
 
+    public boolean isWaitToContinue() {
+        return isWaitToContinue;
+    }
 
     public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
-        // Send task message
+        // Send the task message
         player.sendMessage(StringUtils.EMPTY);
         for (Object message : messages) {
             if (message instanceof String) {
@@ -80,7 +83,7 @@ public class ChatMessageTask extends AbstractTask {
             }
         }
 
-        // Send continue task message
+        // Send the continue task message
         player.sendMessage(StringUtils.EMPTY);
         if (waitToContinue) player.spigot().sendMessage(getContinueTextComponent(player));
     }
