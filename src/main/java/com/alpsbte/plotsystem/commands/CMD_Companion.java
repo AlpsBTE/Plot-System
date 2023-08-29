@@ -25,6 +25,9 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.tutorial.TutorialStagesMenu;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.command.Command;
@@ -36,7 +39,9 @@ public class CMD_Companion extends BaseCommand {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
-                CompanionMenu.open((Player) sender);
+                Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
+                if (tutorial != null) new TutorialStagesMenu(getPlayer(sender), tutorial.getId());
+                else CompanionMenu.open((Player) sender);
             }
         } else {
             sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));

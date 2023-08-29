@@ -53,10 +53,7 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), player -> {
-            player.closeInventory();
-            new ContinentMenu(player);
-        }).entrySet()) {
+        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
@@ -73,16 +70,10 @@ public class ContinentMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         for(Map.Entry<Integer, Continent> continent : layout.entrySet()) {
-            getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> {
-                clickPlayer.closeInventory();
-                new CountryMenu(clickPlayer, continent.getValue());
-            });
+            getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));
         }
 
-        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), player -> {
-            player.closeInventory();
-            new ContinentMenu(player);
-        }).entrySet()) {
+        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
     }

@@ -79,12 +79,13 @@ public abstract class AbstractTutorial implements Tutorial {
     private static final List<UUID> tutorialNPCs = new ArrayList<>();
 
 
+    private final UUID playerUUID;
     private final Player player;
     private final int tutorialId;
 
 
     protected AbstractStage currentStage;
-    private List<Class<? extends AbstractStage>> stages;
+    protected List<Class<? extends AbstractStage>> stages;
     private int currentStageIndex;
     private List<TutorialWorld> worlds;
     protected int currentWorldIndex = -1;
@@ -128,6 +129,7 @@ public abstract class AbstractTutorial implements Tutorial {
     protected abstract TutorialNPC setNpc();
 
     protected AbstractTutorial(Player player, int tutorialId, int stageId) {
+        this.playerUUID = player.getUniqueId();
         this.player = player;
         this.tutorialId = tutorialId;
 
@@ -148,6 +150,11 @@ public abstract class AbstractTutorial implements Tutorial {
     @Override
     public int getId() {
         return tutorialId;
+    }
+
+    @Override
+    public UUID getPlayerUUID() {
+        return playerUUID;
     }
 
     @Override
@@ -186,8 +193,8 @@ public abstract class AbstractTutorial implements Tutorial {
         currentStageIndex++;
 
         if (currentStageIndex >= stages.size()) {
-            onTutorialComplete(player.getUniqueId());
             onTutorialStop(player.getUniqueId());
+            onTutorialComplete(player.getUniqueId());
         } else {
             try {
                 // Switch to the next stage
@@ -239,6 +246,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     @Override
     public void onTutorialStop(UUID playerUUID) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         activeTutorials.remove(this);
         npc.remove();
         playerInteractionHistory.remove(playerUUID);
@@ -281,7 +289,7 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     public static Tutorial getActiveTutorial(UUID playerUUID) {
         return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
-                tutorial.getPlayer().getUniqueId().toString().equals(playerUUID.toString())).findAny().orElse(null);
+                tutorial.getPlayerUUID().toString().equals(playerUUID.toString())).findAny().orElse(null);
     }
 
     /**

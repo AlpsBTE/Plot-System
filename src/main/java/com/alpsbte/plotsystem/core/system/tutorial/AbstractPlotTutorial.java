@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -79,7 +80,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onPasteSchematicOutlines(UUID playerUUID, int schematicId) {
-        if (!playerUUID.toString().equals(this.getPlayer().getUniqueId().toString())) return;
+        if (!getPlayerUUID().toString() .equals(playerUUID.toString())) return;
         try {
             if (currentWorldIndex == 1 && plotGenerator != null) {
                 plotGenerator.generateOutlines(schematicId);
@@ -106,7 +107,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     protected void prepareStage(PrepareStageAction action) {
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
             // paste initial schematic outlines of stage
-            onPasteSchematicOutlines(getPlayer().getUniqueId(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+            onPasteSchematicOutlines(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
 
             // Send a new stage unlocked message to the player
             sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
@@ -121,6 +122,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     public void saveStage() {
         try {
             int nextStage = getCurrentStage() + 1;
+            if (nextStage >= stages.size()) return;
             if (nextStage > topStageId) plot.setStage(nextStage);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -129,11 +131,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
-        if (!getPlayer().getUniqueId().toString().equals(playerUUID.toString())) return;
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         try {
             if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
                 plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(getPlayer().getUniqueId()));
-                onPasteSchematicOutlines(getPlayer().getUniqueId(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+                onPasteSchematicOutlines(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
             }
             super.onSwitchWorld(playerUUID, tutorialWorldIndex);
         } catch (SQLException ex) {
@@ -143,7 +145,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onTutorialComplete(UUID playerUUID) {
-        if (!getPlayer().getUniqueId().toString().equals(playerUUID.toString())) return;
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
 
         try {
             if (plot.getStatus() != Status.completed) {
@@ -155,6 +157,19 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
+    }
+
+    @Override
+    public void onTutorialStop(UUID playerUUID) {
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
+        super.onTutorialStop(playerUUID);
+        try {
+            if (plot != null && plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(true);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(
+                LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Info.PROGRESS_SAVED)));
     }
 
 

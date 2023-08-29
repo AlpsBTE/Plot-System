@@ -63,8 +63,14 @@ public class TutorialsMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        // Set loading item for player head item
-        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        // Load player head
+        ItemStack playerHead = AlpsUtils.getPlayerHead(getMenuPlayer().getUniqueId());
+
+        // Set player stats item
+        getMenu().getSlot(4)
+                .setItem(new ItemBuilder(playerHead)
+                        .setName("§6§l" + getMenuPlayer().getName())
+                        .build());
 
         // Set loading item for beginner tutorial
         beginnerTutorialItemName = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getString(TutorialPaths.TUTORIAL_ITEM_NAME);
@@ -73,7 +79,6 @@ public class TutorialsMenu extends AbstractMenu {
         // Set advanced tutorial items
         getMenu().getSlot(28).setItem(getAdvancedTutorialItem(getMenuPlayer()));
         getMenu().getSlot(29).setItem(getAdvancedTutorialItem(getMenuPlayer()));
-        getMenu().getSlot(31).setItem(getAdvancedTutorialItem(getMenuPlayer()));
         getMenu().getSlot(33).setItem(getAdvancedTutorialItem(getMenuPlayer()));
         getMenu().getSlot(34).setItem(getAdvancedTutorialItem(getMenuPlayer()));
 
@@ -85,15 +90,6 @@ public class TutorialsMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Load player head
-        ItemStack playerHead = AlpsUtils.getPlayerHead(getMenuPlayer().getUniqueId());
-
-        // Set player stats item
-        getMenu().getSlot(4)
-                .setItem(new ItemBuilder(playerHead)
-                        .setName("§6§l" + getMenuPlayer().getName())
-                        .build());
-
         // Set tutorial items
         try {
             plots = TutorialPlot.getPlots(getMenuPlayer().getUniqueId());
@@ -119,14 +115,11 @@ public class TutorialsMenu extends AbstractMenu {
         // Set click events for advanced tutorial items
         getMenu().getSlot(28).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
         getMenu().getSlot(29).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
-        getMenu().getSlot(31).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
         getMenu().getSlot(33).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
         getMenu().getSlot(34).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
 
         // Set click event for back item
-        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInfo) -> {
-            clickPlayer.performCommand("companion");
-        });
+        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInfo) -> clickPlayer.performCommand("companion"));
     }
 
     @Override
@@ -212,6 +205,13 @@ public class TutorialsMenu extends AbstractMenu {
     private static ItemStack getAdvancedTutorialItem(Player player) {
         return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 15)
                 .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.Note.UNDER_CONSTRUCTION))
+                .build();
+    }
+
+    public static ItemStack getTutorialItem(Player player) {
+        return new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.TUTORIAL_HEAD))
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.TUTORIALS))
+                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.TUTORIALS)).build())
                 .build();
     }
 }

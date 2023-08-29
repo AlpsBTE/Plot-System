@@ -120,6 +120,7 @@ menu-title:
   information: 'Info'
   tutorials: 'Tutorials'
   tutorial-stages: 'Tutorial Stages'
+  tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
 
 # -----------------------------------------------------
@@ -154,7 +155,7 @@ menu-description:
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
+  tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills with%newline%tutorials on various topics.'
   tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
 
 # -----------------------------------------------------
@@ -246,6 +247,7 @@ message:
     changed-language: "§aChanged your language to §6{0}§a!"
     enter-feedback: "Please enter a feedback for the player in the chat."
     input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    progress-saved: 'Your progress has been saved.'
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"

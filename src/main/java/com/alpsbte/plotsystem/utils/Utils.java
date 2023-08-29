@@ -143,6 +143,7 @@ public class Utils {
         public static CustomHead YELLOW_CONCRETE_HEAD;
         public static CustomHead RED_CONCRETE_HEAD;
         public static CustomHead WHITE_P_HEAD;
+        public static CustomHead TUTORIAL_HEAD;
 
         public static CustomHead ADD_BUTTON_HEAD;
         public static CustomHead REMOVE_BUTTON_HEAD;
@@ -163,6 +164,7 @@ public class Utils {
                 YELLOW_CONCRETE_HEAD = new CustomHead("8613");
                 RED_CONCRETE_HEAD = new CustomHead("8616");
                 WHITE_P_HEAD = new CustomHead("9282");
+                TUTORIAL_HEAD = new CustomHead("24180");
 
                 ADD_BUTTON_HEAD = new CustomHead("9237");
                 REMOVE_BUTTON_HEAD = new CustomHead("9243");

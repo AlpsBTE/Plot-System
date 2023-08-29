@@ -89,16 +89,10 @@ public class CompanionMenu {
     public static HashMap<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
         HashMap<Integer, FooterItem> items = new HashMap<>();
         // Set builder utilities menu item
-        items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            new BuilderUtilitiesMenu(clickPlayer);
-        }));
+        items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer)));
 
         // Set player plots menu item
-        items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand("plots " + clickPlayer.getName());
-        }));
+        items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, clickInformation) -> clickPlayer.performCommand("plots " + clickPlayer.getName())));
 
         // Set player settings menu item
         items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
@@ -116,7 +110,6 @@ public class CompanionMenu {
                 Plot plot = builder.getPlot(Slot.values()[i]);
                 items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
                     if (plot != null) {
-                        clickPlayer.closeInventory();
                         try {
                             new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
                         } catch (SQLException ex) {
@@ -136,7 +129,7 @@ public class CompanionMenu {
     }
 
     public static ItemStack getDifficultyItem(Player player, PlotDifficulty selectedPlotDifficulty) {
-        ItemStack item = AlpsUtils.getItemHead(Utils.HeadUtils.WHITE_CONCRETE_HEAD);
+        ItemStack item = null;
 
         if (selectedPlotDifficulty != null) {
             if (selectedPlotDifficulty == PlotDifficulty.EASY) {
@@ -146,7 +139,7 @@ public class CompanionMenu {
             } else if (selectedPlotDifficulty == PlotDifficulty.HARD) {
                 item = AlpsUtils.getItemHead(Utils.HeadUtils.RED_CONCRETE_HEAD);
             }
-        }
+        } else item = AlpsUtils.getItemHead(Utils.HeadUtils.WHITE_CONCRETE_HEAD);
 
         try {
             return new ItemBuilder(item)

@@ -126,6 +126,7 @@ public abstract class LangPaths {
         public static final String INFORMATION = MENU_TITLES + "information";
         public static final String TUTORIALS = MENU_TITLES + "tutorials";
         public static final String TUTORIAL_STAGES = MENU_TITLES + "tutorial-stages";
+        public static final String TUTORIAL_END = MENU_TITLES + "tutorial-end";
         public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
     }
 
@@ -258,6 +259,7 @@ public abstract class LangPaths {
             public static final String CHANGED_LANGUAGE = INFO + "changed-language";
             public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
             public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
+            public static final String PROGRESS_SAVED = INFO + "progress-saved";
         }
 
         public static final class Error {

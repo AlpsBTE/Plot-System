@@ -73,7 +73,7 @@ public class CMD_EditPlot extends BaseCommand {
                             return true;
                         }
 
-                        if (plot != null && plot.getStatus() != Status.completed) {
+                        if (plot.getStatus() != Status.completed) {
                             Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
                             int countryID = plot.getCity().getCountry().getID();
                             if (builder.isReviewer() && builder.getAsReviewer().getCountries().stream().anyMatch(c -> c.getID() == countryID) && plot.getPlotOwner().getUUID() != builder.getUUID() && plot.getPlotMembers().stream().noneMatch(b -> b.getUUID() == builder.getUUID())) {

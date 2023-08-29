@@ -584,7 +584,7 @@ public final class PlotUtils {
     }
 
     public static final class ChatFormatting {
-        public static void sendLinkMessages(Plot plot, Player player){
+        public static void sendLinkMessages(AbstractPlot plot, Player player){
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 TextComponent[] tc = new TextComponent[3];
                 tc[0] = new TextComponent();
@@ -644,7 +644,7 @@ public final class PlotUtils {
                 player.spigot().sendMessage(tc[2]);
                 player.sendMessage("§8--------------------------");
 
-                sendGroupTipMessage(plot, player);
+                if (plot instanceof Plot) sendGroupTipMessage((Plot) plot, player);
             });
         }
 

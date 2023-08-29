@@ -47,6 +47,12 @@ public interface Tutorial {
     String getName();
 
     /**
+     * Gets the UUID of the player who is currently doing the tutorial
+     * @return uuid of the player
+     */
+    UUID getPlayerUUID();
+
+    /**
      * Gets the player who is currently doing the tutorial
      * @return player
      */

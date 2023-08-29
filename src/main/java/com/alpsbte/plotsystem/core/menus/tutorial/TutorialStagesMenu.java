@@ -51,6 +51,9 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import static net.md_5.bungee.api.ChatColor.BOLD;
+import static net.md_5.bungee.api.ChatColor.RED;
+
 public class TutorialStagesMenu extends AbstractMenu {
     private static final int totalStagesRows = 2;
     private static final int totalStagesSlots = totalStagesRows * (9 - 2);
@@ -64,6 +67,7 @@ public class TutorialStagesMenu extends AbstractMenu {
     private final int startSlotFirstRow;
     private final int startSlotSecondRow;
 
+    private Tutorial tutorial;
     private TutorialPlot plot;
 
     private int playerHighestStage = -1;
@@ -122,7 +126,7 @@ public class TutorialStagesMenu extends AbstractMenu {
                 playerHighestStage = plot.getStage();
                 isTutorialCompleted = plot.getStatus() == Status.completed;
             }
-            Tutorial tutorial = AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId());
+            tutorial = AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId());
             if (tutorial != null) playerCurrentStage = tutorial.getCurrentStage();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
@@ -138,8 +142,10 @@ public class TutorialStagesMenu extends AbstractMenu {
             getMenu().getSlot(startSlotSecondRow + i).setItem(getStageItem(tutorialId, stagesInFirstRow + i));
         }
 
-        // Set click event for back item
-        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> new TutorialsMenu(clickPlayer));
+        // Set end tutorial item if the player is in a tutorial
+        if (playerCurrentStage != -1) getMenu().getSlot(49).setItem(new ItemBuilder(Material.BARRIER)
+                .setName(RED + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_END))
+                .build());
     }
 
     @Override
@@ -153,6 +159,12 @@ public class TutorialStagesMenu extends AbstractMenu {
         for (int i = 0; i < stagesInSecondRow; i++) {
             setStageClickEvent(startSlotSecondRow + i, stagesInFirstRow + i);
         }
+
+        // Set click event for back item
+        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
+            if (playerCurrentStage != -1) tutorial.onTutorialStop(clickPlayer.getUniqueId());
+            else new TutorialsMenu(clickPlayer);
+        });
     }
 
     @Override
@@ -204,7 +216,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         LoreBuilder lore = new LoreBuilder().addLine(getStageTitle(getMenuPlayer(), tutorialId, stageId + 1));
         boolean isInProgress = playerHighestStage == stageId && plot != null && !isTutorialCompleted;
 
-        ChatColor titleColor = isInProgress ? ChatColor.YELLOW : (stageId < playerHighestStage || isTutorialCompleted ? ChatColor.GREEN : ChatColor.RED);
+        ChatColor titleColor = isInProgress ? ChatColor.YELLOW : (stageId < playerHighestStage || isTutorialCompleted ? ChatColor.GREEN : RED);
         ItemStack stageItem = new ItemStack(Material.STAINED_GLASS_PANE, stageId + 1, (byte) (isInProgress ? 4 : (stageId < playerHighestStage || isTutorialCompleted ? 5 : 14)));
         boolean isClickable = stageId != playerCurrentStage && stageId <= playerHighestStage;
 
@@ -214,6 +226,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         return new ItemBuilder(stageItem)
                 .setName(titleColor + ChatColor.BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.TUTORIALS_STAGE) + " " + (stageId + 1))
                 .setLore(lore.build())
+                .setEnchanted(playerCurrentStage == stageId)
                 .build();
     }
 
