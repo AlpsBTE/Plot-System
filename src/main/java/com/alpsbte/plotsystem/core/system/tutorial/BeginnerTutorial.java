@@ -45,7 +45,6 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.CHAT_HIGHLIGHT_COLOR;
 import static net.md_5.bungee.api.ChatColor.*;
@@ -63,7 +62,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     new TutorialWorld(getId(), 1, plot.getWorld().getWorldName())
             );
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            onException(ex);
         }
         return null;
     }
@@ -348,7 +347,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     getPlayer().sendMessage(ChatMessageTask.TASK_PREFIX + getMessages().get(5));
                 } else {
                     stage.sendChatMessage(isCorrect ? getMessages().get(3) : getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false);
-                    stage.delay(3);
+                    stage.delay(2);
                 }
             });
             return stage;

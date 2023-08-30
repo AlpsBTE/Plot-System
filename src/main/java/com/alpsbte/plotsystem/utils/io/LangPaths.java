@@ -161,6 +161,7 @@ public abstract class LangPaths {
         public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
         public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
         public static final String TUTORIALS = MENU_DESCRIPTIONS + "tutorials-desc";
+        public static final String TUTORIAL_END = MENU_DESCRIPTIONS + "tutorial-end-desc";
         public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
     }
 
@@ -259,7 +260,6 @@ public abstract class LangPaths {
             public static final String CHANGED_LANGUAGE = INFO + "changed-language";
             public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
             public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
-            public static final String PROGRESS_SAVED = INFO + "progress-saved";
         }
 
         public static final class Error {

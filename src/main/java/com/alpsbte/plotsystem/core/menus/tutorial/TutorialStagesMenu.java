@@ -32,7 +32,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -123,8 +122,8 @@ public class TutorialStagesMenu extends AbstractMenu {
         try {
             plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), tutorialId);
             if (plot != null) {
-                playerHighestStage = plot.getStage();
-                isTutorialCompleted = plot.getStatus() == Status.completed;
+                playerHighestStage = plot.getStageID();
+                isTutorialCompleted = plot.isCompleted();
             }
             tutorial = AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId());
             if (tutorial != null) playerCurrentStage = tutorial.getCurrentStage();
@@ -145,6 +144,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         // Set end tutorial item if the player is in a tutorial
         if (playerCurrentStage != -1) getMenu().getSlot(49).setItem(new ItemBuilder(Material.BARRIER)
                 .setName(RED + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_END))
+                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_END)).build())
                 .build());
     }
 

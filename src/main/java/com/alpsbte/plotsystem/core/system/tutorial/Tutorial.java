@@ -85,9 +85,10 @@ public interface Tutorial {
     void setStage(int stageId);
 
     /**
-     * Saves the current stage of the tutorial.
+     * Saves the current stage of the tutorial the completion state.
+     * @param stageId stage id, cannot be negative
      */
-    void saveStage();
+    void saveTutorial(int stageId);
 
     /**
      * This method is called when the player completes a stage.
@@ -120,4 +121,10 @@ public interface Tutorial {
      * @param playerUUID uuid of the player
      */
     void onTutorialStop(UUID playerUUID);
+
+    /**
+     * This method is called when an error occurs.
+     * @param ex exception
+     */
+    void onException(Exception ex);
 }

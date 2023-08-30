@@ -32,7 +32,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -55,21 +54,18 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     protected TutorialPlot plot;
 
     private TutorialPlotGenerator plotGenerator;
-    private int topStageId;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) throws SQLException {
-        super(player, tutorialId, stageId == -1 ? getPlot(player, tutorialId).getStage() : stageId);
+        // TODO: Performance improvements base constructor
+        super(player, getPlot(player, tutorialId), tutorialId, stageId == -1 ? getPlot(player, tutorialId).getStageID() : stageId);
 
-        plot = getPlot(player, tutorialId);
+        plot = (TutorialPlot) tutorialDataModel;
 
         // Check if tutorial plot is null
         if (plot == null) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
             return;
         }
-
-        // Get top stage id
-        topStageId = plot.getStage();
 
         // Initialize tutorial worlds and stages
         initTutorial();
@@ -86,7 +82,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
                 plotGenerator.generateOutlines(schematicId);
             }
         } catch (SQLException | IOException | WorldEditException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
+            onException(ex);
         }
     }
 
@@ -119,14 +115,15 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void saveStage() {
-        try {
-            int nextStage = getCurrentStage() + 1;
-            if (nextStage >= stages.size()) return;
-            if (nextStage > topStageId) plot.setStage(nextStage);
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
+    public void saveTutorial(int stageId) {
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+            try {
+                if (stageId >= stages.size()) plot.setCompleted();
+                else if (stageId > plot.getStageID()) plot.setStageID(stageId);
+            } catch (SQLException ex) {
+                onException(ex);
+            }
+        });
     }
 
     @Override
@@ -139,7 +136,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             }
             super.onSwitchWorld(playerUUID, tutorialWorldIndex);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while switching tutorial world!", ex);
+            onException(ex);
         }
     }
 
@@ -147,16 +144,17 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     public void onTutorialComplete(UUID playerUUID) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
 
-        try {
-            if (plot.getStatus() != Status.completed) {
-                plot.setStatus(Status.completed);
-
-                getPlayer().playSound(getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
-                sendTutorialCompletedMessage(getPlayer(), getName());
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+            try {
+                if (!plot.isCompleted()) {
+                    saveTutorial(getCurrentStage() + 1);
+                    getPlayer().playSound(getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+                    sendTutorialCompletedMessage(getPlayer(), getName());
+                }
+            } catch (SQLException ex) {
+                onException(ex);
             }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
+        });
     }
 
     @Override
@@ -166,13 +164,15 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         try {
             if (plot != null && plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(true);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            onException(ex);
         }
-        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(
-                LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Info.PROGRESS_SAVED)));
     }
 
-
+    @Override
+    public void onException(Exception ex) {
+        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        super.onException(ex);
+    }
 
     /**
      * Gets the tutorial plot for a player with a specific tutorial id.

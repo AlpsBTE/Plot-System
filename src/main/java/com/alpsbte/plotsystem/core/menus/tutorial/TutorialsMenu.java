@@ -32,7 +32,6 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -138,7 +137,7 @@ public class TutorialsMenu extends AbstractMenu {
     private TutorialPlot getPlotById(int tutorialId) {
         try {
             for (TutorialPlot plot : plots) {
-                if (plot.getTutorialId() == tutorialId) {
+                if (plot.getTutorialID() == tutorialId) {
                     return plot;
                 }
             }
@@ -160,7 +159,7 @@ public class TutorialsMenu extends AbstractMenu {
             if (clickType == ClickType.LEFT) {
                 TutorialPlot plot = getPlotById(tutorialId);
                 try {
-                    if (plot == null || plot.getStatus() != Status.completed) {
+                    if (plot == null || !plot.isCompleted()) {
                         getMenuPlayer().closeInventory();
                         if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId)) {
                             if (AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId()) != null) {
@@ -188,7 +187,7 @@ public class TutorialsMenu extends AbstractMenu {
     private static ItemStack constructTutorialItem(Player player, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
         // Create tutorial item lore
         LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, StringUtils.EMPTY);
-        if (plot == null || plot.getStatus() != Status.completed) {
+        if (plot == null || !plot.isCompleted()) {
             loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
                     "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.START));
         }

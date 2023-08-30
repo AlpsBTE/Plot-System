@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialDataModel;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
@@ -44,22 +45,40 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 
-public class TutorialPlot extends AbstractPlot {
+public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
     private int tutorialId = -1;
     private final FileConfiguration tutorialConfig;
 
     public TutorialPlot(int id) throws SQLException {
         super(id);
-        tutorialConfig = ConfigUtil.getTutorialInstance().configs[getTutorialId()];
+        tutorialConfig = ConfigUtil.getTutorialInstance().configs[getTutorialID()];
     }
 
-    public int getTutorialId() throws SQLException {
-        if (tutorialId != -1) return tutorialId;
+    @Override
+    public UUID getPlayerUUID() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT player_uuid FROM plotsystem_plots_tutorial WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
+            if (rs.next()) {
+                String uuid = rs.getString(1);
+                DatabaseConnection.closeResultSet(rs);
+                return UUID.fromString(uuid);
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        }
+        return null;
+    }
+
+    @Override
+    public int getTutorialID() throws SQLException {
+        if (tutorialId != -1) return tutorialId;
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT tutorial_id FROM plotsystem_plots_tutorial WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
@@ -75,25 +94,128 @@ public class TutorialPlot extends AbstractPlot {
     }
 
     @Override
-    public Builder getPlotOwner() throws SQLException {
-        if(plotOwner != null)
-            return plotOwner;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots_tutorial WHERE id = ?")
+    public int getStageID() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT stage_id FROM plotsystem_plots_tutorial WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
-            if (rs.next()){
-                String s = rs.getString(1);
+            if (rs.next()) {
+                int stage = rs.getInt(1);
                 DatabaseConnection.closeResultSet(rs);
+                return stage;
+            }
 
-                plotOwner = Builder.byUUID(UUID.fromString(s));
+            DatabaseConnection.closeResultSet(rs);
+        }
+        return -1;
+    }
 
-                return plotOwner;
+    /**
+     * Sets the stage of the tutorial and updates the last stage completion date.
+     * Check if the stage is valid before setting it!
+     * @param stageID stage id, 0 is the first stage
+     */
+    public void setStageID(int stageID) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET stage_id = ? WHERE id = ?")
+                .setValue(stageID).setValue(this.ID).executeUpdate();
+        setLastStageCompletionDate(Timestamp.valueOf(LocalDateTime.now()));
+    }
+
+    @Override
+    public boolean isCompleted() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT is_completed FROM plotsystem_plots_tutorial WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                int isCompleted = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return isCompleted == 1;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        }
+        return false;
+    }
+
+    /**
+     * Sets the completed status of the tutorial and updates the completion date.
+     */
+    public void setCompleted() throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET is_completed = ? WHERE id = ?")
+                .setValue(1).setValue(this.ID).executeUpdate();
+        setCompletionDate(Timestamp.valueOf(LocalDateTime.now()));
+    }
+
+    @Override
+    public Date getCreationDate() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT create_date FROM plotsystem_plots_tutorial WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                Date d = rs.getDate(1);
+                DatabaseConnection.closeResultSet(rs);
+                return d;
             }
 
             DatabaseConnection.closeResultSet(rs);
         }
         return null;
+    }
+
+    @Override
+    public Date getLastStageCompletionDate() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT last_stage_complete_date FROM plotsystem_plots_tutorial WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                Date d = rs.getDate(1);
+                DatabaseConnection.closeResultSet(rs);
+                return d;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        }
+        return null;
+    }
+
+    /**
+     * Sets the date when the last stage was completed.
+     * @param date date of the last stage completion
+     */
+    private void setLastStageCompletionDate(Date date) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET last_stage_complete_date = ? WHERE id = ?")
+                .setValue(date).setValue(this.ID).executeUpdate();
+    }
+
+    @Override
+    public Date getCompletionDate() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT complete_date FROM plotsystem_plots_tutorial WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                Date d = rs.getDate(1);
+                DatabaseConnection.closeResultSet(rs);
+                return d;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        }
+        return null;
+    }
+
+    /**
+     * Sets the date when the tutorial was completed.
+     * @param date date of the completion
+     */
+    private void setCompletionDate(Date date) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET complete_date = ? WHERE id = ?")
+                .setValue(date).setValue(this.ID).executeUpdate();
+    }
+
+    @Override
+    public Builder getPlotOwner() throws SQLException {
+        if(plotOwner != null) return plotOwner;
+        plotOwner = Builder.byUUID(getPlayerUUID());
+        return plotOwner;
     }
 
     @Override
@@ -112,54 +234,36 @@ public class TutorialPlot extends AbstractPlot {
         return getOutlinePoints(plotOutlines);
     }
 
+    /**
+     * @deprecated Use {@link TutorialDataModel#getLastStageCompletionDate()} instead.
+     */
     @Override
     public Date getLastActivity() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT last_activity FROM plotsystem_plots_tutorial WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                Date d = rs.getDate(1);
-                DatabaseConnection.closeResultSet(rs);
-                return d;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
+        return getLastStageCompletionDate(); // Temporary to fix backwards compatibility
     }
 
+    /**
+     * @deprecated Use {@link TutorialPlot#setLastStageCompletionDate(Date)} instead.
+     */
     @Override
     public void setLastActivity(boolean setNull) throws SQLException {
-        if(setNull) {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET last_activity = DEFAULT(last_activity) WHERE id = ?")
-                    .setValue(this.ID).executeUpdate();
-        } else {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET last_activity = ? WHERE id = ?")
-                    .setValue(java.sql.Date.valueOf(LocalDate.now())).setValue(this.ID).executeUpdate();
-        }
+        setLastStageCompletionDate(java.sql.Date.valueOf(LocalDate.now())); // Temporary to fix backwards compatibility
     }
 
+    /**
+     * @deprecated Use {@link TutorialDataModel#isCompleted()} instead.
+     */
     @Override
     public Status getStatus() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT is_completed FROM plotsystem_plots_tutorial WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                int b = rs.getInt(1);
-                DatabaseConnection.closeResultSet(rs);
-                return b == 1 ? Status.completed : Status.unfinished;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
+        return isCompleted() ? Status.completed : Status.unfinished; // Temporary to fix backwards compatibility
     }
 
+    /**
+     * @deprecated Use {@link TutorialPlot#setCompleted()} instead.
+     */
     @Override
     public void setStatus(@NotNull Status status) throws SQLException {
-        if (status != Status.completed && status != Status.unfinished) return;
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET is_completed = ? WHERE id = ?")
-            .setValue(status == Status.completed ? 1 : 0).setValue(this.ID).executeUpdate();
+        if (status == Status.completed) setCompleted(); // Temporary to fix backwards compatibility
     }
 
     @Override
@@ -170,26 +274,6 @@ public class TutorialPlot extends AbstractPlot {
     @Override
     public double getVersion() {
         return 3;
-    }
-
-    public int getStage() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT stage FROM plotsystem_plots_tutorial WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                int stage = rs.getInt(1);
-                DatabaseConnection.closeResultSet(rs);
-                return stage;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return -1;
-        }
-    }
-
-    public void setStage(int stageId) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots_tutorial SET stage = ? WHERE id = ?")
-                .setValue(stageId).setValue(this.ID).executeUpdate();
     }
 
     @Override
@@ -207,7 +291,7 @@ public class TutorialPlot extends AbstractPlot {
 
     public File getOutlinesSchematic(int schematicId) {
         try {
-            return getSchematicFile(getTutorialId() + "-" + schematicId);
+            return getSchematicFile(getTutorialID() + "-" + schematicId);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;
@@ -222,28 +306,35 @@ public class TutorialPlot extends AbstractPlot {
     @Override
     public File getEnvironmentSchematic() {
         try {
-            return getSchematicFile(getTutorialId() + "-env");
+            return getSchematicFile(getTutorialID() + "-env");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return null;
         }
     }
 
-    public FileConfiguration getTutorialConfig() {
-        return tutorialConfig;
-    }
 
 
-
-
+    /**
+     * Adds a new tutorial plot to the database.
+     * @param UUID uuid of the player
+     * @param tutorialId id of the tutorial
+     * @return the new tutorial plot
+     */
     public static TutorialPlot addTutorialPlot(String UUID, int tutorialId) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_plots_tutorial (owner_uuid, tutorial_id) VALUES (?, ?)")
+        DatabaseConnection.createStatement("INSERT INTO plotsystem_plots_tutorial (player_uuid, tutorial_id) VALUES (?, ?)")
                 .setValue(UUID).setValue(tutorialId).executeUpdate();
         return getPlot(UUID, tutorialId);
     }
 
+    /**
+     * Gets a tutorial plot from the database.
+     * @param UUID uuid of the player
+     * @param tutorialId id of the tutorial
+     * @return the tutorial plot
+     */
     public static TutorialPlot getPlot(String UUID, int tutorialId) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE owner_uuid = ? AND tutorial_id = ?")
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE player_uuid = ? AND tutorial_id = ?")
                 .setValue(UUID).setValue(tutorialId).executeQuery()) {
 
             if (rs.next()){
@@ -258,8 +349,13 @@ public class TutorialPlot extends AbstractPlot {
         return null;
     }
 
+    /**
+     * Gets all tutorials from the player.
+     * @param builderUUID uuid of the player
+     * @return list of tutorials
+     */
     public static List<TutorialPlot> getPlots(UUID builderUUID) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE owner_uuid = ?")
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE player_uuid = ?")
                 .setValue(builderUUID.toString()).executeQuery());
     }
 

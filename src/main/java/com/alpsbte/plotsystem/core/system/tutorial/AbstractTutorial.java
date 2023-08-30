@@ -29,9 +29,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
@@ -40,8 +37,8 @@ import java.util.logging.Level;
 
 /**
  * Abstract class for all tutorials. Inherit this class to create a new tutorial.
- * There is no way to save the progress of a tutorial. This needs to be implemented manually at the moment.
- * @see AbstractTutorial#saveStage()
+ * There is no way to save the progress of a tutorial. This needs to be implemented manually.
+ * @see AbstractTutorial#saveTutorial(int)
  * @see AbstractTutorial#onTutorialComplete(UUID)
  */
 public abstract class AbstractTutorial implements Tutorial {
@@ -79,9 +76,10 @@ public abstract class AbstractTutorial implements Tutorial {
     private static final List<UUID> tutorialNPCs = new ArrayList<>();
 
 
+    protected final TutorialDataModel tutorialDataModel;
+    private final int tutorialId;
     private final UUID playerUUID;
     private final Player player;
-    private final int tutorialId;
 
 
     protected AbstractStage currentStage;
@@ -128,10 +126,11 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     protected abstract TutorialNPC setNpc();
 
-    protected AbstractTutorial(Player player, int tutorialId, int stageId) {
+    protected AbstractTutorial(Player player, TutorialDataModel tutorialDataModel, int tutorialId, int stageId) {
+        this.tutorialId = tutorialId;
         this.playerUUID = player.getUniqueId();
         this.player = player;
-        this.tutorialId = tutorialId;
+        this.tutorialDataModel = tutorialDataModel;
 
         if (stageId < 0) stageId = 0;
         currentStageIndex = stageId - 1;
@@ -211,14 +210,7 @@ public abstract class AbstractTutorial implements Tutorial {
                     stageTimeline.StartTimeline();
                 });
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing next stage!", ex);
-                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
-
-                // Send player back to hub after 3 seconds if an error occurred
-                Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
-                    onSwitchWorld(player.getUniqueId(), 0);
-                    onTutorialStop(player.getUniqueId());
-                }, 20 * 3);
+                onException(ex);
             }
         }
     }
@@ -226,7 +218,7 @@ public abstract class AbstractTutorial implements Tutorial {
     @Override
     public void onStageComplete(UUID playerUUID) {
         if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
-        saveStage();
+        saveTutorial(getCurrentStage() + 1);
         nextStage();
     }
 
@@ -254,6 +246,14 @@ public abstract class AbstractTutorial implements Tutorial {
 
         Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
         Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
+    }
+
+    @Override
+    public void onException(Exception ex) {
+        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial!", ex);
+
+        // Send player back to hub after 3 seconds if an error occurred
+        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20 * 3);
     }
 
     /**
