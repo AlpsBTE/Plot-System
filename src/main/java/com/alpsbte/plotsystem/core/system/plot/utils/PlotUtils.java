@@ -484,7 +484,7 @@ public final class PlotUtils {
     }
 
     public static final class Cache {
-        public static HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
+        private static final HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
         public static void clearCache(){
             cachedInProgressPlots.clear();
@@ -505,6 +505,10 @@ public final class PlotUtils {
             }
 
             return cachedInProgressPlots.get(builder.getUUID());
+        }
+
+        public static HashMap<UUID, List<Plot>> getCachedInProgressPlots() {
+            return cachedInProgressPlots;
         }
     }
 
