@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class TutorialsMenu extends AbstractMenu {
-    private List<TutorialPlot> plots;
+    private TutorialPlot plot;
     private String beginnerTutorialItemName;
     // private boolean isBeginnerTutorialCompleted = false;
 
@@ -91,7 +91,7 @@ public class TutorialsMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set tutorial items
         try {
-            plots = TutorialPlot.getPlots(getMenuPlayer().getUniqueId());
+            plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), TutorialCategory.BEGINNER.getId());
             // TutorialPlot beginnerTutorial = getPlotById(TutorialCategory.BEGINNER.getId());
             // isBeginnerTutorialCompleted = beginnerTutorial != null && beginnerTutorial.getStatus() == Status.completed;
 
@@ -134,7 +134,7 @@ public class TutorialsMenu extends AbstractMenu {
                 .build();
     }
 
-    private TutorialPlot getPlotById(int tutorialId) {
+    /*private TutorialPlot getPlotById(int tutorialId) {
         try {
             for (TutorialPlot plot : plots) {
                 if (plot.getTutorialID() == tutorialId) {
@@ -145,7 +145,7 @@ public class TutorialsMenu extends AbstractMenu {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return null;
-    }
+    }*/
 
     /**
      * Sets the click event for a tutorial item and loads the tutorial stage
@@ -157,7 +157,7 @@ public class TutorialsMenu extends AbstractMenu {
 
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
             if (clickType == ClickType.LEFT) {
-                TutorialPlot plot = getPlotById(tutorialId);
+                // TutorialPlot plot = getPlotById(tutorialId);
                 try {
                     if (plot == null || !plot.isCompleted()) {
                         getMenuPlayer().closeInventory();
@@ -181,7 +181,7 @@ public class TutorialsMenu extends AbstractMenu {
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
         return (tutorialId != TutorialCategory.BEGINNER.getId() /*&& !isBeginnerTutorialCompleted*/) ? getAdvancedTutorialItem(getMenuPlayer()) :
-                constructTutorialItem(getMenuPlayer(), getPlotById(tutorialId), new ItemStack(Material.getMaterial(itemName)), title, desc);
+                constructTutorialItem(getMenuPlayer(), plot, new ItemStack(Material.getMaterial(itemName)), title, desc);
     }
 
     private static ItemStack constructTutorialItem(Player player, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {

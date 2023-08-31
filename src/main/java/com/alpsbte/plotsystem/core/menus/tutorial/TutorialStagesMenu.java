@@ -50,8 +50,7 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import static net.md_5.bungee.api.ChatColor.BOLD;
-import static net.md_5.bungee.api.ChatColor.RED;
+import static net.md_5.bungee.api.ChatColor.*;
 
 public class TutorialStagesMenu extends AbstractMenu {
     private static final int totalStagesRows = 2;
@@ -131,6 +130,18 @@ public class TutorialStagesMenu extends AbstractMenu {
             Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
         }
 
+        // Set tutorial stats item
+        ItemBuilder tutorialItem = new ItemBuilder(Material.valueOf(tutorialItemName));
+        tutorialItem.setName(AQUA + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER));
+        if (plot != null) {
+            tutorialItem.setLore(
+                    new LoreBuilder().addLines(StringUtils.EMPTY,
+                            LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
+                            (playerHighestStage + (isTutorialCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialPaths.TUTORIAL_STAGES))
+                    .build());
+        }
+        getMenu().getSlot(4).setItem(tutorialItem.build());
+
         // Place stages in the first row
         for (int i = 0; i < stagesInFirstRow; i++) {
             getMenu().getSlot(startSlotFirstRow + i).setItem(getStageItem(tutorialId, i));
@@ -162,8 +173,10 @@ public class TutorialStagesMenu extends AbstractMenu {
 
         // Set click event for back item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
-            if (playerCurrentStage != -1) tutorial.onTutorialStop(clickPlayer.getUniqueId());
-            else new TutorialsMenu(clickPlayer);
+            if (playerCurrentStage != -1) {
+                tutorial.onTutorialStop(clickPlayer.getUniqueId());
+                clickPlayer.closeInventory();
+            } else new TutorialsMenu(clickPlayer);
         });
     }
 
