@@ -89,6 +89,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.logging.Level;
 
+import static net.md_5.bungee.api.ChatColor.*;
+
 public final class PlotUtils {
 
     /** Returns the plot that the player is currently standing on or next to.
@@ -612,9 +614,9 @@ public final class PlotUtils {
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
                     } else {
-                        tc[0].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Maps"));
-                        tc[1].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Google Earth Web"));
-                        tc[2].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, "Open Street Map"));
+                        tc[0].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Maps" + GRAY));
+                        tc[1].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Earth Web" + GRAY));
+                        tc[2].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Open Street Map" + GRAY));
                     }
 
                     tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
