@@ -66,7 +66,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
 
         getMenu().getSlot(13).setItem(
                 new ItemBuilder(Material.DARK_OAK_SAPLING, 1)
-                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_INSPIRATION_MODE))
+                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_INSPIRATION_MODE))
                         .setLore(new LoreBuilder()
                                 .addLines(AlpsUtils.createMultilineFromString(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE), LoreBuilder.MAX_LINE_LENGTH, LoreBuilder.LINE_BAKER))
                                 .build())

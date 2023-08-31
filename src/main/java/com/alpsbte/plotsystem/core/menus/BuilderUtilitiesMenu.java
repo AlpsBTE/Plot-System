@@ -28,11 +28,9 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -62,7 +60,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
         // Set custom-heads menu item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
-                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
+                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
                         .build());
@@ -70,7 +68,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
         // Set banner-maker menu item
         getMenu().getSlot(13)
                 .setItem(new ItemBuilder(Material.RED_BANNER, 1)
-                        .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
+                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
                         .build());
@@ -109,7 +107,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLDEN_AXE)
-                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
                 .build();

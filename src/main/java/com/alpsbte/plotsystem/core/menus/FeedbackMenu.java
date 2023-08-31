@@ -32,17 +32,9 @@ import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Category;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -108,7 +100,7 @@ public class FeedbackMenu extends AbstractMenu {
         // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
+                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
                     .setLore(new LoreBuilder()
                             .addLines(plot.getReview().getFeedback())
                             .build())

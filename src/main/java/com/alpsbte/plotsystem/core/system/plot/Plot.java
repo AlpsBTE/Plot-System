@@ -37,7 +37,6 @@ import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsE
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;

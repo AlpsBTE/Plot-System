@@ -33,9 +33,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -68,8 +65,8 @@ public class PlotActionsMenu extends AbstractMenu {
             if (plot.getStatus().equals(Status.unreviewed)) {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.FIRE_CHARGE, 1)
-                                .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT)).setLore(new LoreBuilder()
-                                        .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT)).build())
+                                .setName("§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT)).setLore(new LoreBuilder()
+                                        .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT)).build())
                                 .build());
             } else {
                 getMenu().getSlot(10)
@@ -107,8 +104,8 @@ public class PlotActionsMenu extends AbstractMenu {
         if (hasFeedback) {
             getMenu().getSlot(16)
                     .setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                            .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.FEEDBACK)).setLore(new LoreBuilder()
-                                    .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK)).build())
+                            .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK)).setLore(new LoreBuilder()
+                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK)).build())
                             .build());
         }
 

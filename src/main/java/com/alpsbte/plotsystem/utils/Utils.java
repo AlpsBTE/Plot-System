@@ -29,23 +29,15 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.*;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.sk89q.worldedit.BlockVector2D;
-import org.bukkit.*;
-import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
-import java.util.*;
 import java.util.logging.Level;
 
 public class Utils {
@@ -80,13 +72,13 @@ public class Utils {
 
 
     public static class SoundUtils {
-        public final static Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMEN_TELEPORT;
+        public final static Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
         public final static Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
         public final static Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
         public final static Sound FINISH_PLOT_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
-        public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
+        public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
         public final static Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
+        public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
     }
 
 

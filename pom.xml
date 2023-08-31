@@ -15,6 +15,12 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
+        <!-- AlpsBTE Repo (WorldEdit, WorldGuard, FAWE) -->
+        <repository>
+            <id>alpsbte-repo</id>
+            <url>https://mvn.alps-bte.com/repository/alps-bte/</url>
+        </repository>
+
         <!-- WorldGuard -->
         <repository>
             <id>sk89q-repo</id>

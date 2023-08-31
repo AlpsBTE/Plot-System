@@ -32,14 +32,9 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Invitation;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
-import com.alpsbte.plotsystem.utils.Utils;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -56,7 +51,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -198,7 +193,7 @@ public class PlotMemberMenu extends AbstractMenu {
                     .text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
                     .itemLeft(new ItemStack(Material.NAME_TAG))
                     .itemRight(new ItemStack(Material.PLAYER_HEAD))
-                    .title(LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
+                    .title(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
                     .plugin(PlotSystem.getPlugin())
                     .open(clickPlayer);
         });

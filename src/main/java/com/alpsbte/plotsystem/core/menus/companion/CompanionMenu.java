@@ -103,7 +103,7 @@ public class CompanionMenu {
 
         // Set player settings menu item
         items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
-                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.SETTINGS))
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())
                 .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
