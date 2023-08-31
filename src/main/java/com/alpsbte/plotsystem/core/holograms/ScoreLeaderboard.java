@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,15 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
+import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import me.filoghost.holographicdisplays.api.Position;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -43,6 +45,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -52,48 +55,24 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ScoreLeaderboard extends HolographicDisplay {
+public class ScoreLeaderboard extends HolographicPagedDisplay {
     private final DecimalFormat df = new DecimalFormat("#.##");
-    private LeaderboardTimeframe sortBy = LeaderboardTimeframe.DAILY;
-    private BukkitTask changeSortTask = null;
+    private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
     private BukkitTask actionbarTask = null;
-    int changeState = 0;
 
-    public ScoreLeaderboard() {
-        super("score-leaderboard");
-        init();
+    protected ScoreLeaderboard(@NotNull String id) {
+        super(id, PlotSystem.getPlugin());
     }
 
-    private void init() {
+    @Override
+    public void create(Position position) {
+        if (!PlotSystem.getPlugin().isEnabled()) return;
         if (getPages().size() < 1) {
             PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
             return;
         }
 
-        sortBy = getPages().get(0);
-
-        long interval = getInterval();
-        long changeDelay = interval / 15;
-
-        if (!PlotSystem.getPlugin().isEnabled()) return;
-
-        changeSortTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (changeState >= changeDelay) {
-                    LeaderboardTimeframe next = Utils.getNextListItem(getPages(), sortBy);
-                    if (next == null) {
-                        sortBy = getPages().get(0);
-                    } else {
-                        sortBy = next;
-                    }
-                    changeState = 0;
-                } else {
-                    changeState++;
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> updateHologram());
-                }
-            }
-        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), changeDelay, changeDelay);
+        super.create(position);
 
         actionbarTask = new BukkitRunnable() {
             @Override
@@ -106,78 +85,41 @@ public class ScoreLeaderboard extends HolographicDisplay {
     }
 
     @Override
-    protected String getTitle() {
-        return "§b§lTOP SCORE §6§l[" + (sortBy.toString().charAt(0) + sortBy.toString().toLowerCase().substring(1)) + "]";
+    public ItemStack getItem() {
+        return new ItemStack(Material.NETHER_STAR);
     }
 
     @Override
-    public String getFooter() {
-        long changeDelay = getInterval() / 15;
-        int highlightCount = (int) (((float) changeState / changeDelay) * 15);
-
-        StringBuilder highlighted = new StringBuilder();
-        for (int i = 0; i < highlightCount; i++) {
-            highlighted.append("-");
-        }
-        StringBuilder notH = new StringBuilder();
-        for (int i = 0; i < 15 - highlightCount; i++) {
-            notH.append("-");
-        }
-
-        return "§e" + highlighted + "§7" + notH;
+    public String getTitle() {
+        return "§b§lTOP SCORE §6§l[" + (sortByLeaderboard.toString().charAt(0) + sortByLeaderboard.toString().toLowerCase().substring(1)) + "]";
     }
 
     @Override
-    protected List<DataLine> getDataLines() {
+    public List<DataLine<?>> getHeader() {
+        sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
+        return super.getHeader();
+    }
+
+    @Override
+    public List<DataLine<?>> getContent() {
         try {
-            ArrayList<DataLine> lines = new ArrayList<>();
+            ArrayList<DataLine<?>> lines = new ArrayList<>();
 
             for (int index = 0; index < 10; index++) {
                 lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
             }
 
             int index = 0;
-            for (Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortBy)) {
+            for (Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortByLeaderboard)) {
                 lines.set(index, new LeaderboardPositionLineWithPayout(index + 1, entry.getKey(), entry.getValue()));
                 index++;
             }
 
             return lines;
         } catch (SQLException ex) {
-            PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "Could not read data lines.", ex);
+            PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();
-    }
-
-    @Override
-    protected ItemStack getItem() {
-        return new ItemStack(Material.NETHER_STAR);
-    }
-
-    @Override
-    public void onShutdown() {
-        if (changeSortTask != null) {
-            changeSortTask.cancel();
-            changeSortTask = null;
-        }
-
-        if (actionbarTask != null) {
-            actionbarTask.cancel();
-            actionbarTask = null;
-        }
-    }
-
-    @Override
-    public void reloadHologram() {
-        super.reloadHologram();
-        onShutdown();
-        init();
-    }
-
-    private List<LeaderboardTimeframe> getPages() {
-        if (PlotSystem.getPlugin().getConfigManager() == null) return new ArrayList<>();
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
-        return Arrays.stream(LeaderboardTimeframe.values()).filter(p -> config.getBoolean(p.configPath)).collect(Collectors.toList());
     }
 
     private BaseComponent[] rankingString(Player player) {
@@ -185,9 +127,9 @@ public class ScoreLeaderboard extends HolographicDisplay {
         int rows;
         int myScore;
         try {
-            position = Builder.getBuilderScorePosition(player.getUniqueId(), sortBy);
-            rows = Builder.getBuildersInSort(sortBy);
-            myScore = Builder.getBuilderScore(player.getUniqueId(), sortBy);
+            position = Builder.getBuilderScorePosition(player.getUniqueId(), sortByLeaderboard);
+            rows = Builder.getBuildersInSort(sortByLeaderboard);
+            myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
         } catch (SQLException e) {
             e.printStackTrace();
             return TextComponent.fromLegacyText("§cSQL Exception");
@@ -195,7 +137,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
         ComponentBuilder builder = new ComponentBuilder("");
         builder.append(
-                new ComponentBuilder("  " + LangUtil.get(player, sortBy.langPath))
+                new ComponentBuilder("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
                         .color(ChatColor.GOLD)
                         .bold(true)
                         .create()
@@ -210,7 +152,7 @@ public class ScoreLeaderboard extends HolographicDisplay {
 
         if (position == -1) {
             builder.append(
-                    new ComponentBuilder(LangUtil.get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                    new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
                             .color(ChatColor.RED)
                             .bold(false)
                             .create()
@@ -218,14 +160,14 @@ public class ScoreLeaderboard extends HolographicDisplay {
         } else if (position < 50) {
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
                     ).color(ChatColor.GREEN).bold(false).create()
             );
         } else {
             String topPercentage = df.format(position * 1.0 / rows);
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
                     ).bold(false).create()
             );
         }
@@ -238,16 +180,39 @@ public class ScoreLeaderboard extends HolographicDisplay {
     }
 
     private List<Player> showToPlayers() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLED, true);
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getWorld().getName().equals(getLocation().getWorld().getName()) && (!actionBarEnabled || getLocation().distance(player.getLocation()) <= actionBarRadius)) {
+            Position position = getHologram().getPosition();
+            if (player.getWorld().getName().equals(position.getWorldName()) && (!actionBarEnabled || position.distance(player.getLocation()) <= actionBarRadius)) {
                 players.add(player);
             }
         }
         return players;
+    }
+
+    @Override
+    public List<String> getPages() {
+        if (ConfigUtil.getInstance() == null) return new ArrayList<>();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
+        return Arrays.stream(LeaderboardTimeframe.values())
+                .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).collect(Collectors.toList());
+    }
+
+    @Override
+    public long getInterval() {
+        return PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
+    }
+
+    @Override
+    public void remove() {
+        if (actionbarTask != null) {
+            actionbarTask.cancel();
+            actionbarTask = null;
+        }
+        super.remove();
     }
 
     public enum LeaderboardTimeframe {
@@ -266,17 +231,19 @@ public class ScoreLeaderboard extends HolographicDisplay {
         }
     }
 
-    private class LeaderboardPositionLineWithPayout extends LeaderboardPositionLine {
+    private class LeaderboardPositionLineWithPayout extends LeaderboardManager.LeaderboardPositionLine {
+        private final int position;
 
         public LeaderboardPositionLineWithPayout(int position, String username, int score) {
             super(position, username, score);
+            this.position = position;
         }
 
         @Override
         public String getLine() {
             try {
                 String line = super.getLine();
-                Payout payout = sortBy != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortBy, position) : null;
+                Payout payout = sortByLeaderboard != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortByLeaderboard, position) : null;
                 if (payout == null) {
                     return line;
                 } else {

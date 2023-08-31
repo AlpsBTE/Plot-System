@@ -46,7 +46,7 @@ database:
 
 
 # -----------------------------------------------------
-# | Holograms: Show plot statistics / Are placed in the spawn world
+# | Leaderboards: Shows top plot and build scores / Are placed in the spawn world
 # | NOTE: Requires the HolographicDisplays plugin to work
 # -----------------------------------------------------
 holograms:
@@ -63,10 +63,10 @@ holograms:
     y: 0
     z: 0
 
-# Switch hologram statistics between different time stamps
-# [interval] -> default: 10 seconds
+# Switch score-leaderboard between different time stamps
+# [interval] -> default: 15 seconds
 display-options:
-  interval: 10
+  interval: 15
   show-daily: false
   show-weekly: true
   show-monthly: true
@@ -101,4 +101,4 @@ shortlink:
   host: https://your.shortlink.host
 
 # NOTE: Do not change
-config-version: 1.6
+config-version: 1.7

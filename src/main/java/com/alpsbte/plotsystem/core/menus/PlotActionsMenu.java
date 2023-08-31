@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,11 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -32,9 +36,9 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
 import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,7 +55,7 @@ public class PlotActionsMenu extends AbstractMenu {
     private final boolean hasFeedback;
 
     public PlotActionsMenu(Player menuPlayer, Plot plot) throws SQLException {
-        super(3, LangUtil.get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
+        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
 
         this.plot = plot;
         hasFeedback = plot.isReviewed() || plot.isRejected();
@@ -70,10 +74,10 @@ public class PlotActionsMenu extends AbstractMenu {
             } else {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
-                                .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT)).setLore(new LoreBuilder()
-                                        .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT),
+                                .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT)).setLore(new LoreBuilder()
+                                        .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT),
                                                 "",
-                                                Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
+                                                Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                         .build())
                                 .build());
             }
@@ -85,17 +89,17 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13)
                 .setItem(new ItemBuilder(Material.COMPASS, 1)
-                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT)).setLore(new LoreBuilder()
-                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).build())
+                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT)).setLore(new LoreBuilder()
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).build())
                         .build());
 
         // Set plot abandon item
         getMenu().getSlot(hasFeedback ? 14 : 16)
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
-                        .setName("§c§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON)).setLore(new LoreBuilder()
-                                .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON),
+                        .setName("§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON)).setLore(new LoreBuilder()
+                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON),
                                         "",
-                                        Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
+                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                 .build())
                         .build());
 
@@ -111,23 +115,23 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set plot members item
         try {
             if (!plot.isReviewed()) {
-                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                FileConfiguration config = PlotSystem.getPlugin().getConfig();
                 if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.ADD_BUTTON))
-                                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS)).setLore(new LoreBuilder()
-                                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS),
+                            .setItem(new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.ADD_BUTTON_HEAD))
+                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS)).setLore(new LoreBuilder()
+                                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS),
                                                     "",
-                                                    Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.SCORE_WILL_BE_SPLIT)))
+                                                    Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.SCORE_WILL_BE_SPLIT)))
                                             .build())
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.REMOVE_BUTTON))
-                                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT)).setLore(new LoreBuilder()
-                                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT),
+                            .setItem(new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.REMOVE_BUTTON_HEAD))
+                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT)).setLore(new LoreBuilder()
+                                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT),
                                                     "",
-                                                    Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
+                                                    Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                             .build())
                                     .build());
                 }
@@ -174,19 +178,19 @@ public class PlotActionsMenu extends AbstractMenu {
             try {
                 if (!plot.isReviewed()) {
                     if (plot.getStatus() == Status.unfinished) {
-                        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                        FileConfiguration config = PlotSystem.getPlugin().getConfig();
                         if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                             clickPlayer.closeInventory();
                             new PlotMemberMenu(plot,clickPlayer);
                         } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                             // Leave Plot
                             plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
-                            clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
+                            clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
                             clickPlayer.closeInventory();
                         }
                     } else {
                         clickPlayer.closeInventory();
-                        clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
                     }
                 }
             } catch (SQLException ex) {

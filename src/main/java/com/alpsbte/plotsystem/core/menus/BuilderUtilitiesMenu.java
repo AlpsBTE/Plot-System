@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.language.LangPaths;
@@ -40,11 +42,11 @@ import org.ipvp.canvas.mask.Mask;
 public class BuilderUtilitiesMenu extends AbstractMenu {
 
     public BuilderUtilitiesMenu(Player player) {
-        super(3, LangUtil.get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
+        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
 
         if(!PlotManager.isPlotWorld(player.getWorld())) {
             player.closeInventory();
-            player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
+            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
         }
     }
 
@@ -62,7 +64,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                 .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
                         .build());
 
         // Set banner-maker menu item
@@ -70,7 +72,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                 .setItem(new ItemBuilder(Material.RED_BANNER, 1)
                         .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
                         .build());
 
         // Set special-blocks menu item
@@ -109,7 +111,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
         return new ItemBuilder(Material.GOLDEN_AXE)
                 .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
                 .build();
     }
 }

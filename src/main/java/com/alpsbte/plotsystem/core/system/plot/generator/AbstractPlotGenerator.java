@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -230,7 +230,7 @@ public abstract class AbstractPlotGenerator {
             protectedRegion.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
             protectedRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
-            FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
+            FileConfiguration config = ConfigUtil.getInstance().configs[1];
             List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
             allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
             for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
@@ -284,8 +284,8 @@ public abstract class AbstractPlotGenerator {
      */
     protected void onException(Throwable ex) {
         Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
-        builder.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.ErrorSound,1,1);
+        builder.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND,1,1);
     }
 
 

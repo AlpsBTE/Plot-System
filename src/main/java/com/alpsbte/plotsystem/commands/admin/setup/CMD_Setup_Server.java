@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,18 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
 import com.alpsbte.plotsystem.core.system.Server;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -95,7 +93,7 @@ public class CMD_Setup_Server extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             List<Server> servers = Server.getServers();
             if (servers.size() != 0) {
-                sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + servers.size() + " Servers registered in the database:"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + servers.size() + " Servers registered in the database:"));
                 sender.sendMessage("§8--------------------------");
                 for (Server s : servers) {
                     try {
@@ -106,7 +104,7 @@ public class CMD_Setup_Server extends SubCommand {
                 }
                 sender.sendMessage("§8--------------------------");
             } else {
-                sender.sendMessage(Utils.getInfoMessageFormat("There are currently no Servers registered in the database!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently no Servers registered in the database!"));
             }
         }
 
@@ -145,13 +143,13 @@ public class CMD_Setup_Server extends SubCommand {
                         Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(server.getID()));
                         if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
                         if (!serverPath.toFile().mkdirs()) throw new IOException();
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully added server!"));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added server!"));
                     } catch (SQLException | IOException ex) {
-                        sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Server name cannot be longer than 45 characters!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Server name cannot be longer than 45 characters!"));
                 }
                 return;
             }
@@ -186,20 +184,20 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 1 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 1 && AlpsUtils.TryParseInt(args[1]) != null) {
                 // Check if server exists
                 try {
                     if (Server.getServers().stream().anyMatch(s -> s.getID() == Integer.parseInt(args[1]))) {
                         Server.removeServer(Integer.parseInt(args[1]));
                         Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), args[1]);
                         if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
-                        sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed server with ID " + args[1] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed server with ID " + args[1] + "!"));
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
                         sendInfo(sender);
                     }
                 } catch (SQLException | IOException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
                 return;
@@ -235,24 +233,24 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && Utils.TryParseInt(args[1]) != null) {
+            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null) {
                 // Check if server exists
                 try {
                     if (Server.getServers().stream().anyMatch(s -> s.getID() == Integer.parseInt(args[1]))) {
-                        if (args[2].equalsIgnoreCase("none") || Utils.TryParseInt(args[2]) != null && FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[2]))) {
-                            int ftpID = Utils.TryParseInt(args[2]) != null ? Integer.parseInt(args[2]) : -1;
+                        if (args[2].equalsIgnoreCase("none") || AlpsUtils.TryParseInt(args[2]) != null && FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[2]))) {
+                            int ftpID = AlpsUtils.TryParseInt(args[2]) != null ? Integer.parseInt(args[2]) : -1;
                             Server.setFTP(Integer.parseInt(args[1]), ftpID);
-                            sender.sendMessage(Utils.getInfoMessageFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
+                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
                         } else {
-                            sender.sendMessage(Utils.getErrorMessageFormat("Could not find any ftp configurations with ID " + args[2] + "!"));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any ftp configurations with ID " + args[2] + "!"));
                             sendInfo(sender);
                         }
                     } else {
-                        sender.sendMessage(Utils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
                         sendInfo(sender);
                     }
                 } catch (SQLException ex) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
                 return;

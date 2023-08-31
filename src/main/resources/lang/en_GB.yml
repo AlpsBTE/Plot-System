@@ -5,8 +5,8 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
-# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # |
 # | English translation by R3tuxn#7169 and Cinnazeyy#2440
 # -----------------------------------------------------
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: 'Click to teleport to the plot'
   abandon-desc: 'Click to reset your plot and give it to someone else'
   undo-submit-desc: 'Click to undo your submission'
-  manage-members-desc: 'Click to open the Plot Members menu, where you can add//and remove other players on your plot'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add%newline%and remove other players on your plot'
   feedback-desc: 'Click to view your plot review feedback'
   custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
   banner-maker-desc: 'Click to open the banner maker menu to create your own custom banners'
@@ -146,9 +146,9 @@ menu-description:
   select-language-desc: 'Choose your language'
   auto-detect-language-desc: 'Click to automatically detect your language'
   select-plot-type-desc: 'Choose your plot type'
-  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
-  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "Accuracy"
-    accuracy-desc: "How accurate is the building?////- Looks like in RL//- Correct outlines//- Correct height//- Is completed"
+    accuracy-desc: "How accurate is the building?%newline%%newline%- Looks like in RL%newline%- Correct outlines%newline%- Correct height%newline%- Is completed"
     block-palette: "Block Palette"
-    block-palette-desc: "How many different blocks are used and how creative are they?////- Choice of blocks colours/textures//- Random blocks"
+    block-palette-desc: "How many different blocks are used and how creative are they?%newline%%newline%- Choice of blocks colours/textures%newline%- Random blocks"
     detailing: "Detailing"
-    detailing-desc: "How much detail does the building have?////- Roof details//- Details on the facades//- Heads and Banners"
+    detailing-desc: "How much detail does the building have?%newline%%newline%- Roof details%newline%- Details on the facades%newline%- Heads and Banners"
     technique: "Technique"
-    technique-desc: "What building techniques have been used and how creative are they?////- World-Edit//- Special Blocks"
+    technique-desc: "What building techniques have been used and how creative are they?%newline%%newline%- World-Edit%newline%- Special Blocks"
 
 # -----------------------------------------------------
 # | Notes
@@ -275,4 +275,4 @@ leaderboards:
   not-on-leaderboard: "Not on Leaderboard"
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

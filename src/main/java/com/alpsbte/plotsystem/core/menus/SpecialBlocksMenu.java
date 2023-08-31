@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,12 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ import org.ipvp.canvas.mask.Mask;
 
 public class SpecialBlocksMenu extends AbstractMenu {
     public SpecialBlocksMenu(Player player) {
-        super(3, LangUtil.get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS), player);
+        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS), player);
     }
 
     @Override
@@ -148,9 +148,9 @@ public class SpecialBlocksMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLD_BLOCK ,1)
-                .setName("§b§l" + LangUtil.get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS).toUpperCase())
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS).toUpperCase())
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.get(player, LangPaths.MenuDescription.SPECIAL_BLOCKS)).build())
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_BLOCKS)).build())
                 .build();
     }
 }

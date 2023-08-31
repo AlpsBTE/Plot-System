@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.utils.io.config;
+package com.alpsbte.plotsystem.utils.io;
 
 public abstract class ConfigPaths {
 
@@ -47,12 +47,14 @@ public abstract class ConfigPaths {
     public static final String DATABASE_PASSWORD = DATABASE + "password";
 
 
-    // Holograms
+    // Leaderboards
     public static final String HOLOGRAMS = "holograms.";
-    public static final String HOLOGRAMS_ENABLED = ".enabled";
-    public static final String HOLOGRAMS_X = ".x";
-    public static final String HOLOGRAMS_Y = ".y";
-    public static final String HOLOGRAMS_Z = ".z";
+    public static final String SCORE_LEADERBOARD = "score-leaderboard";
+    public static final String PLOTS_LEADERBOARD = "plots-leaderboard";
+    public static final String LEADERBOARD_ENABLED = ".enabled";
+    public static final String LEADERBOARD_X = ".x";
+    public static final String LEADERBOARD_Y = ".y";
+    public static final String LEADERBOARD_Z = ".z";
 
     private static final String DISPLAY_OPTIONS = "display-options.";
     public static final String DISPLAY_OPTIONS_INTERVAL = DISPLAY_OPTIONS + "interval";
@@ -86,8 +88,4 @@ public abstract class ConfigPaths {
     public static final String SHORTLINK_ENABLE = SHORTLINK + "enable";
     public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
     public static final String SHORTLINK_HOST = SHORTLINK + "host";
-
-
-    // CONFIG VERSION
-    public static final String CONFIG_VERSION = "config-version";
 }

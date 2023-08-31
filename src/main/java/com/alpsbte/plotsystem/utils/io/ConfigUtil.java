@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,25 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.utils.io.config;
+package com.alpsbte.plotsystem.utils.io;
 
-public class ConfigNotImplementedException extends Exception {
+import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
+import com.alpsbte.alpslib.io.config.ConfigurationUtil;
 
-    public ConfigNotImplementedException(String message) {
-        super(message, null, false, false);
+import java.nio.file.Paths;
+
+public class ConfigUtil {
+    private static ConfigurationUtil configUtilInstance;
+
+    public static void init() throws ConfigNotImplementedException {
+        if (configUtilInstance != null) return;
+        configUtilInstance = new ConfigurationUtil(new ConfigurationUtil.ConfigFile[]{
+                new ConfigurationUtil.ConfigFile(Paths.get("config.yml"), 1.7, true),
+                new ConfigurationUtil.ConfigFile(Paths.get("commands.yml"), 1.0, false)
+        });
     }
 
-    @Override
-    public String toString() {
-        return getLocalizedMessage();
+    public static ConfigurationUtil getInstance() {
+        return configUtilInstance;
     }
 }

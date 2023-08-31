@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -36,8 +36,8 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -47,7 +47,6 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -102,9 +101,9 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
 
             // Inform player about update
-            if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
-                event.getPlayer().sendMessage(Utils.getInfoMessageFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.CreatePlotSound, 1f, 1f);
+            if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat("There is a new update for the Plot-System available. Check your console for more information!"));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1f, 1f);
             }
 
             // Check if player has changed his name
@@ -124,7 +123,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
-                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent() && plot.getPlotOwner().getPlayer().equals(event.getPlayer())) {
+                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
                         reviewedPlots.add(plot);
                         plot.getReview().setFeedbackSent(true);
                     }
@@ -300,18 +299,18 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Review review = Review.awaitReviewerFeedbackList.get(playerUUID).getReview();
                 review.setFeedback(feedback);
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.getInfoMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1f, 1f);
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
             } else {
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.ErrorSound, 1f, 1f);
+                event.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
             }
         }
     }
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent event) {
-        Utils.CustomHead.loadHeadsAsync(new HeadDatabaseAPI());
+        Utils.HeadUtils.loadHeadsAsync();
     }
 }

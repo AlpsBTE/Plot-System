@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.fastasyncworldedit.core.FaweAPI;
@@ -53,7 +53,7 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
@@ -399,7 +399,7 @@ public class PlotManager {
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
                 List<Plot> plots = getPlots(Status.unfinished);
-                FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+                FileConfiguration config = PlotSystem.getPlugin().getConfig();
                 long millisInDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL) * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last x days
 
                 for (Plot plot : plots) {
@@ -419,7 +419,7 @@ public class PlotManager {
     }
 
     public static void syncPlotSchematicFiles() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLED)) {
             long interval = config.getLong(ConfigPaths.SYNC_FTP_FILES_INTERVAL);
 
@@ -522,7 +522,7 @@ public class PlotManager {
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
         } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
-        } else if (!PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) { // If score requirement is disabled get plot from any available difficulty
+        } else if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) { // If score requirement is disabled get plot from any available difficulty
             if (easyHasPlots) {
                 return CompletableFuture.completedFuture(PlotDifficulty.EASY);
             } else if (mediumHasPlots) {

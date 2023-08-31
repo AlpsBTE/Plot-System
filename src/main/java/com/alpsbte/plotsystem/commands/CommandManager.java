@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
-import com.alpsbte.plotsystem.commands.admin.CMD_SetHologram;
+import com.alpsbte.plotsystem.commands.admin.CMD_SetLeaderboard;
 import com.alpsbte.plotsystem.commands.admin.setup.CMD_Setup;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
@@ -60,7 +60,7 @@ public class CommandManager {
         // Admin Commands
         add(new CMD_DeletePlot());
         add(new CMD_CleanPlot());
-        add(new CMD_SetHologram());
+        add(new CMD_SetLeaderboard());
         add(new CMD_PReload());
 
         // Admin Setup Commands

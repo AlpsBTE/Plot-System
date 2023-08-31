@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
-import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,7 +35,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CMD_SetHologram extends BaseCommand {
+public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
@@ -44,51 +44,51 @@ public class CMD_SetHologram extends BaseCommand {
                 if (getPlayer(sender) != null){
                     Player player = (Player)sender;
                     if (args.length == 1) {
-                        // Find hologram by name
-                        HolographicDisplay hologram = HologramManager.getHolograms().stream()
-                                .filter(holo -> holo.getHologramName().equalsIgnoreCase(args[0]))
+                        // Find leaderboard by name
+                        HolographicDisplay leaderboard = LeaderboardManager.getLeaderboards().stream()
+                                .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
                                 .findFirst()
                                 .orElse(null);
 
-                        // Update hologram location
-                        if(hologram != null) {
-                            hologram.setLocation(player.getLocation());
-                            player.sendMessage(Utils.getInfoMessageFormat("Successfully updated hologram location!"));
-                            player.playSound(player.getLocation(), Utils.Done,1,1);
+                        // Update leaderboard location
+                        if(leaderboard != null) {
+                            LeaderboardManager.savePosition(leaderboard.getId(), getPlayer(sender).getLocation());
+                            player.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully updated leaderboard location!"));
+                            player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
 
-                            HologramManager.reloadHolograms();
+                            LeaderboardManager.reloadLeaderboards();
                         } else {
-                            player.sendMessage(Utils.getErrorMessageFormat("Hologram could not be found!"));
+                            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Leaderboard could not be found!"));
                         }
                     } else {
                         sendInfo(sender);
-                        player.sendMessage("§8------- §6§lHolograms §8-------");
-                        for(HolographicDisplay holo : HologramManager.getHolograms()) {
-                            player.sendMessage(" §6> §f" + holo.getHologramName());
+                        player.sendMessage("§8------- §6§lLeaderboards §8-------");
+                        for(HolographicDisplay leaderboard : LeaderboardManager.getLeaderboards()) {
+                            player.sendMessage(" §6> §f" + leaderboard.getId());
                         }
-                        player.sendMessage("§8--------------------------");
+                        player.sendMessage("§8-----------------------------");
                     }
 
                 } else {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
                 }
             } else {
-                sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
         }
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "sethologram" };
+        return new String[] { "setleaderboard" };
     }
 
     @Override
     public String getDescription() {
-        return "Sets the position of a hologram.";
+        return "Sets the position of a leaderboard.";
     }
 
     @Override
@@ -98,6 +98,6 @@ public class CMD_SetHologram extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.sethologram";
+        return "plotsystem.admin.setleaderboard";
     }
 }

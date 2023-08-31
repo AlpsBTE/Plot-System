@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.database;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
@@ -54,7 +54,7 @@ public class DatabaseConnection {
     public static void InitializeDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver");
 
-        FileConfiguration configFile = PlotSystem.getPlugin().getConfigManager().getConfig();
+        FileConfiguration configFile = PlotSystem.getPlugin().getConfig();
         URL = configFile.getString(ConfigPaths.DATABASE_URL);
         name = configFile.getString(ConfigPaths.DATABASE_NAME);
         username = configFile.getString(ConfigPaths.DATABASE_USERNAME);
@@ -268,7 +268,6 @@ public class DatabaseConnection {
                             " `name`            varchar(16) NOT NULL ," +
                             " `score`           int DEFAULT 0 ," +
                             " `completed_plots` int DEFAULT 0 ," +
-                            " `third_slot`      int NULL ," +
                             " `first_slot`      int NULL ," +
                             " `second_slot`     int NULL ," +
                             " `third_slot`      int NULL ," +

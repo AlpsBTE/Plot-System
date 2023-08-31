@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,9 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
@@ -39,6 +42,16 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
 import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.sk89q.worldedit.WorldEditException;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.sk89q.worldedit.WorldEditException;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -66,7 +79,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     boolean sentWarning = false;
 
     public ReviewPlotMenu(Player player, Plot plot) {
-        super(6, LangUtil.get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
+        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
         this.plot = plot;
     }
 
@@ -86,17 +99,17 @@ public class ReviewPlotMenu extends AbstractMenu {
                     break;
                 case 10:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.ARROW, 1)
-                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY))
+                            .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY))
                             .setLore(new LoreBuilder()
-                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY_DESC))
+                                    .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY_DESC))
                                     .build())
                             .build());
                     break;
                 case 19:
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.PAINTING, 1)
-                            .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE))
+                            .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE))
                             .setLore(new LoreBuilder()
-                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE_DESC))
+                                    .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE_DESC))
                                     .build())
                             .build());
                     break;
@@ -104,7 +117,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.ENDER_EYE, 1)
                             .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING))
                             .setLore(new LoreBuilder()
-                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING_DESC))
+                                    .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING_DESC))
                                     .build())
                             .build());
                     break;
@@ -112,7 +125,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOODEN_AXE, 1)
                             .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE))
                             .setLore(new LoreBuilder()
-                                    .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE_DESC))
+                                    .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE_DESC))
                                     .build())
                             .build());
                     break;
@@ -120,7 +133,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     getMenu().getSlot(i).setItem(new ItemBuilder(Material.GREEN_CONCRETE, 1)
                             .setName("§a§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT))
                             .setLore(new LoreBuilder()
-                                    .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW)).build())
+                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW)).build())
                             .build());
                     break;
                 case 50:
@@ -137,7 +150,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             itemPointZero[position] = new ItemBuilder(Material.LIGHT_GRAY_WOOL, 1)
                                     .setName("§l§70 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
 
                             //Add Enchantment
@@ -149,7 +162,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             itemPointOne[position] = new ItemBuilder(Material.RED_WOOL, 1)
                                     .setName("§l§c1 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINT))
                                     .setLore(new LoreBuilder()
-                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
 
                             getMenu().getSlot(i).setItem(itemPointOne[(i - (i + 1) % 9) / 54]);
@@ -157,28 +170,28 @@ public class ReviewPlotMenu extends AbstractMenu {
                             itemPointTwo[position] = new ItemBuilder(Material.ORANGE_WOOL, 2)
                                     .setName("§l§62 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointTwo[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 6) {
                             itemPointThree[position] = new ItemBuilder(Material.YELLOW_WOOL, 3)
                                     .setName("§l§e3 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointThree[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 7) {
                             itemPointFour[position] = new ItemBuilder(Material.GREEN_WOOL, 4)
                                     .setName("§l§24 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFour[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 8) {
                             itemPointFive[position] = new ItemBuilder(Material.LIME_WOOL, 5)
                                     .setName("§l§a5 " + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS))
                                     .setLore(new LoreBuilder()
-                                            .addLine(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.REVIEW_POINTS)).build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFive[(i - (i + 1) % 9) / 54]);
                         }
@@ -198,16 +211,16 @@ public class ReviewPlotMenu extends AbstractMenu {
         // Set plot information item
         try {
             getMenu().getSlot(4).setItem(new ItemBuilder(Material.MAP, 1)
-                    .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REVIEW_PLOT))
+                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEW_PLOT))
                     .setLore(new LoreBuilder()
-                            .addLines(LangUtil.get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID(),
+                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID(),
                                     "",
-                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName(),
-                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
-                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(),
-                                    "§7" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName(),
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(),
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                             .emptyLine()
-                            .addLine("§7" + LangUtil.get(getMenuPlayer(), LangPaths.Review.PLAYER_LANGUAGE) + ": §f" + LangUtil.getLanguageFileByLocale(plot.getPlotOwner().getLanguageTag()).getLangName())
+                            .addLine("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.PLAYER_LANGUAGE) + ": §f" + LangUtil.getInstance().getLanguageFileByLocale(plot.getPlotOwner().getLanguageTag()).getLangName())
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -216,15 +229,15 @@ public class ReviewPlotMenu extends AbstractMenu {
         }
 
         // Set review information item
-        String points = LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS);
-        getMenu().getSlot(7).setItem(new ItemBuilder(Utils.getItemHead(Utils.CustomHead.INFO_BUTTON))
-                .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.INFORMATION))
+        String points = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS);
+        getMenu().getSlot(7).setItem(new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.INFO_BUTTON_HEAD))
+                .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.INFORMATION))
                 .setLore(new LoreBuilder()
-                        .addLines(Utils.createMultilineFromString( "§7" + LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), AbstractMenu.MAX_CHARS_PER_LINE, AbstractMenu.LINE_BAKER))
+                        .addLines(AlpsUtils.createMultilineFromString( "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), LoreBuilder.MAX_LINE_LENGTH, LoreBuilder.LINE_BAKER))
                         .emptyLine()
-                        .addLines("§f" + points + " <= 0: §c" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ABANDONED),
-                                  "§f" + points + " <= 8: §e" + LangUtil.get(getMenuPlayer(), LangPaths.Review.REJECTED),
-                                  "§f" + points + " <= 20: §a" + LangUtil.get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
+                        .addLines("§f" + points + " <= 0: §c" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED),
+                                  "§f" + points + " <= 8: §e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED),
+                                  "§f" + points + " <= 20: §a" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
                         .build())
                 .build());
     }
@@ -276,13 +289,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                     if (totalRating <= 8) isRejected = true;
 
                     if (totalRating == 0 && !sentWarning) {
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                         sentWarning = true;
                         return;
                     } else if (isRejected && !sentWarning) {
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                         sentWarning = true;
                         return;
                     } else if (totalRating == 0) {
@@ -306,10 +319,10 @@ public class ReviewPlotMenu extends AbstractMenu {
                     //clickPlayer.closeInventory(); crashes debugging process
 
                     if (!isRejected) {
-                        clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
                         try {
                             if (!PlotManager.savePlotAsSchematic(plot)) {
-                                clickPlayer.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                                clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                                 Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
                                 return;
                             }
@@ -327,7 +340,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                         if (plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
-                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
 
                             // Builder gets 100% of score
                             plot.getPlotOwner().addScore(totalRating);
@@ -339,7 +352,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                         plot.getPlotMembers().get(i).getName() :
                                         plot.getPlotMembers().get(i).getName() + ", ");
                             }
-                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
 
                             // Score gets split between all participants
                             plot.getPlotOwner().addScore(plot.getSharedScore());
@@ -356,7 +369,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     } else {
                         if (plot.getPlotMembers().size() != 0) {
                             // Plot was made alone
-                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
                         } else {
                             // Plot was made in a group
                             StringBuilder sb = new StringBuilder();
@@ -366,7 +379,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                         plot.getPlotMembers().get(i).getName() :
                                         plot.getPlotMembers().get(i).getName() + ", ");
                             }
-                            reviewerConfirmationMessage = Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
                         }
 
                         PlotHandler.undoSubmit(plot);
@@ -388,16 +401,16 @@ public class ReviewPlotMenu extends AbstractMenu {
 
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.FinishPlotSound, 1f, 1f);
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
 
                         try {
                             Review.awaitReviewerFeedbackList.remove(clickPlayer.getUniqueId());
                             Review.awaitReviewerFeedbackList.put(clickPlayer.getUniqueId(), new ChatFeedbackInput(plot.getReview()));
                             clickPlayer.sendMessage("");
-                            clickPlayer.sendMessage("§a" + LangUtil.get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
+                            clickPlayer.sendMessage("§a" + LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
                             TextComponent txtComponent = new TextComponent();
-                            txtComponent.setText(LangUtil.get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
-                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.get(clickPlayer, LangPaths.MenuTitle.CANCEL)).create()));
+                            txtComponent.setText(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
+                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL)).create()));
                             txtComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "cancel"));
                             clickPlayer.spigot().sendMessage(txtComponent);
                         } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
@@ -442,7 +455,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     }
 
                     meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.INVENTORY_CLICK, 1, 1);
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
 
                     ItemStack newItem = getMenu().getSlot(slot).getItem(clickPlayer);
                     newItem.setItemMeta(meta);

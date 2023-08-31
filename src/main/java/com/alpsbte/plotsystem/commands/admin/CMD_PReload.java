@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -41,20 +41,20 @@ public class CMD_PReload extends BaseCommand {
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (sender.hasPermission(getPermission())){
             try {
-                PlotSystem.getPlugin().getConfigManager().reloadFiles();
-                PlotSystem.getPlugin().getConfigManager().saveFiles();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded config!"));
+                ConfigUtil.getInstance().reloadFiles();
+                ConfigUtil.getInstance().saveFiles();
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded config!"));
 
-                HologramManager.reloadHolograms();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully reloaded holograms!"));
+                LeaderboardManager.reloadLeaderboards();
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded leaderboards!"));
 
                 DatabaseConnection.InitializeDatabase();
             } catch (Exception ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         } else {
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
         }
         return true;
     }
@@ -66,7 +66,7 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "Reloads configuration files and holograms.";
+        return "Reloads configuration files and leaderboards.";
     }
 
     @Override
