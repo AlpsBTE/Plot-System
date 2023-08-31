@@ -29,6 +29,10 @@ import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.RegionGroup;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,8 +56,14 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
-        pasteSchematic(null, plotSchematic, world, false);
+        pasteSchematic(null, plotSchematic, world, true);
         if (environmentSchematic != null) pasteSchematic(null, environmentSchematic, world, false);
+    }
+
+    @Override
+    protected void setBuildRegionPermissions(ProtectedRegion region) {
+        region.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
+        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
     }
 
     @Override

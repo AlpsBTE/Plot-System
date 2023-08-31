@@ -191,32 +191,11 @@ public abstract class AbstractPlotGenerator {
             protectedBuildRegion.setOwners(owner);
             protectedRegion.setOwners(owner);
 
+            // Set protected build region permissions
+            setBuildRegionPermissions(protectedBuildRegion);
 
-            // Set permissions
-            protectedBuildRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
-            protectedBuildRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
-            protectedRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
-            protectedRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
-            protectedRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
-            protectedRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-
-            FileConfiguration config = ConfigUtil.getInstance().configs[1];
-            List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
-            allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
-            for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
-                allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
-                for (String command : baseCommand.getNames()) {
-                    allowedCommandsNonBuilder.add("/" + command);
-                }
-            }
-            List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
-            blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
-
-            protectedRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
-            protectedRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-            protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
-            protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
-
+            // Set protected region permissions
+            setRegionPermissions(protectedRegion);
 
             // Add regions and save changes
             if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
@@ -227,6 +206,59 @@ public abstract class AbstractPlotGenerator {
         } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
 
+    /**
+     * Sets the permissions for the plot build region only
+     * @param region build region
+     */
+    protected void setBuildRegionPermissions(ProtectedRegion region) {
+        region.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
+        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+    }
+
+    /**
+     * Sets the permissions for the whole plot region
+     * @param region plot region
+     */
+    protected void setRegionPermissions(ProtectedRegion region) {
+        region.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
+        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+        region.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
+        region.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+        FileConfiguration config = ConfigUtil.getInstance().configs[1];
+        region.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(getBlockedCommands(config)));
+        region.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+        region.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(getAllowedCommands(config)));
+        region.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+    }
+
+    /**
+     * Reads the allowed commands for the plot region from the config
+     * @param config commands.yml config
+     * @return list of allowed commands
+     */
+    protected List<String> getAllowedCommands(FileConfiguration config) {
+        List<String> allowedCommands = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
+        allowedCommands.removeIf(c -> c.equals("/cmd1"));
+        for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
+            allowedCommands.addAll(Arrays.asList(baseCommand.getNames()));
+            for (String command : baseCommand.getNames()) {
+                allowedCommands.add("/" + command);
+            }
+        }
+        return allowedCommands;
+    }
+
+    /**
+     * Reads the blocked commands for the plot region from the config
+     * @param config commands.yml config
+     * @return list of blocked commands
+     */
+    protected List<String> getBlockedCommands(FileConfiguration config) {
+        List<String> blockedCommands = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
+        blockedCommands.removeIf(c -> c.equals("/cmd1"));
+        return blockedCommands;
+    }
 
     /**
      * Gets invoked when generation is completed
