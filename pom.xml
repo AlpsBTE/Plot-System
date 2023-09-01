@@ -63,30 +63,42 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19.3-R0.1-SNAPSHOT</version>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- World Guard -->
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-legacy</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <artifactId>worldguard-bukkit</artifactId>
+            <version>7.1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <!-- Fast Async World Edit -->
         <dependency>
             <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Multiverse Core -->
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
-            <version>4.3.0</version>
+            <version>4.3.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -94,7 +106,7 @@
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.9.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -140,7 +152,7 @@
         <dependency>
             <groupId>me.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.3</version>
             <scope>provided</scope>
         </dependency>
 
@@ -188,7 +200,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.7.0</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -198,8 +210,8 @@
         <dependencies>
             <dependency>
                 <groupId>com.intellectualsites.bom</groupId>
-                <artifactId>bom-1.18.x</artifactId>
-                <version>1.24</version>
+                <artifactId>bom-newest</artifactId>
+                <version>1.37</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
