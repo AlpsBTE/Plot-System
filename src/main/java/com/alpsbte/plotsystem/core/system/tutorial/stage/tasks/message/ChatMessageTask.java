@@ -30,7 +30,6 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.md_5.bungee.api.chat.*;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -71,11 +70,11 @@ public class ChatMessageTask extends AbstractTask {
 
     public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
         // Send the task message
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
         for (Object message : messages) {
             if (message instanceof String) {
                 List<String> messageLines = AlpsUtils.createMultilineFromString((String) message, -1, Utils.ChatUtils.LINE_BREAKER);
-                messageLines.forEach(msg -> player.sendMessage((!msg.equals(StringUtils.EMPTY) ? TASK_PREFIX : StringUtils.EMPTY) + msg));
+                messageLines.forEach(msg -> player.sendMessage((!msg.equals("") ? TASK_PREFIX : "") + msg));
             } else if (message instanceof ClickableTaskMessage) {
                 TextComponent component = ((ClickableTaskMessage) message).getComponent();
                 component.setText(TASK_PREFIX + component.getText());
@@ -84,7 +83,7 @@ public class ChatMessageTask extends AbstractTask {
         }
 
         // Send the continue task message
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
         if (waitToContinue) player.spigot().sendMessage(getContinueTextComponent(player));
     }
 

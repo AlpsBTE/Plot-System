@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -145,9 +144,9 @@ public abstract class AbstractTask {
      * @param assignmentMessage The message which is displayed in the action bar and chat.
      */
     public static void sendAssignmentMessage(Player player, String assignmentMessage) {
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
         player.sendMessage("§8[§6PS§8] " + assignmentMessage);
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
     }
 }

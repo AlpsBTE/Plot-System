@@ -35,7 +35,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.TutorialDataModel;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
-import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.math.BlockVector2;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -229,7 +229,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
     }
 
     @Override
-    public List<BlockVector2D> getOutline() throws SQLException, IOException {
+    public List<BlockVector2> getOutline() throws SQLException, IOException {
         String plotOutlines = tutorialConfig.getString(TutorialPaths.PLOT_OUTLINES);
         return getOutlinePoints(plotOutlines);
     }

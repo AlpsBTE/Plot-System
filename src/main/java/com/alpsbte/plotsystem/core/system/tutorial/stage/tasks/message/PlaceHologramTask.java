@@ -32,7 +32,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.Vector3;
 import me.filoghost.holographicdisplays.api.Position;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
@@ -61,14 +61,14 @@ public class PlaceHologramTask extends AbstractTask {
             hologram = new TutorialTipHologram(player, String.valueOf(tipId), content, () -> {
                 player.spigot().sendMessage(new ChatMessageTask.ClickableTaskMessage(ChatMessageTask.TASK_PREFIX + readMoreLink,
                         GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "...", readMoreLink, ClickEvent.Action.OPEN_URL).getComponent());
-                player.playSound(player.getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 1, 1.2f);
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1, 1.2f);
             });
         } else hologram = new TutorialTipHologram(player, String.valueOf(tipId), content);
     }
 
     @Override
     public void performTask() {
-        Vector tipVector = TutorialUtils.getTipPoints(tutorialId).get(tipId);
+        Vector3 tipVector = TutorialUtils.getTipPoints(tutorialId).get(tipId);
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
                 hologram.create(Position.of(tutorialWorld.getName(), tipVector.getX(), tipVector.getY(), tipVector.getZ()), true));
 

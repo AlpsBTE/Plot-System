@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -34,11 +34,11 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.List;
 
 public class TeleportPointEventTask extends AbstractTask implements EventTask {
-    private final TaskAction<Vector> onTeleportAction;
-    private final List<Vector> teleportPoints;
+    private final TaskAction<BlockVector3> onTeleportAction;
+    private final List<BlockVector3> teleportPoints;
     private final int offsetRange;
 
-    public TeleportPointEventTask(Player player, String assignmentMessage, List<Vector> teleportPoints, int offsetRange, TaskAction<Vector> onTeleportAction) {
+    public TeleportPointEventTask(Player player, String assignmentMessage, List<BlockVector3> teleportPoints, int offsetRange, TaskAction<BlockVector3> onTeleportAction) {
         super(player, assignmentMessage, teleportPoints.size());
         this.teleportPoints = teleportPoints;
         this.offsetRange = offsetRange;
@@ -60,7 +60,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
             int blockX = teleportEvent.getTo().getBlockX();
             int blockZ = teleportEvent.getTo().getBlockZ();
 
-            for (Vector teleportPoint : teleportPoints) {
+            for (BlockVector3 teleportPoint : teleportPoints) {
                 if (blockX < (teleportPoint.getBlockX() - offsetRange) || blockX > (teleportPoint.getBlockX() + offsetRange)) continue;
                 if (blockZ < (teleportPoint.getBlockZ() - offsetRange) || blockZ > (teleportPoint.getBlockZ() + offsetRange)) continue;
                 removePoint(teleportPoint);
@@ -69,7 +69,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
         }
     }
 
-    private void removePoint(Vector teleportPoint) {
+    private void removePoint(BlockVector3 teleportPoint) {
         teleportPoints.remove(teleportPoint);
 
         updateProgress();

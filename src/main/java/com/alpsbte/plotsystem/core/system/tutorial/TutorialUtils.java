@@ -26,7 +26,8 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -45,12 +46,10 @@ public class TutorialUtils {
      * @param world The world to set the block in
      * @param vector The vector of the location
      * @param material The material of the block
-     * @param data The data of the block
      */
-    public static void setBlockAt(World world, com.sk89q.worldedit.Vector vector, Material material, int data) {
-        Location loc = new Location(world, vector.getX(), vector.getY(), vector.getZ());
+    public static void setBlockAt(World world, BlockVector3 vector, Material material) {
+        Location loc = new Location(world, vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
         loc.getBlock().setType(material);
-        loc.getBlock().setData((byte) data);
     }
 
     /**
@@ -58,15 +57,15 @@ public class TutorialUtils {
      * @param tutorialId The id of the tutorial to get the config file
      * @return A list of vector points
      */
-    public static List<Vector> getTipPoints(int tutorialId) {
+    public static List<Vector3> getTipPoints(int tutorialId) {
         // Read coordinates from config
         FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
         List<String> tipPointsAsString = config.getStringList(TutorialPaths.TIP_HOLOGRAM_COORDINATES);
 
-        List<com.sk89q.worldedit.Vector> tipPoints = new ArrayList<>();
+        List<Vector3> tipPoints = new ArrayList<>();
         tipPointsAsString.forEach(point -> {
             String[] split = point.trim().split(",");
-            tipPoints.add(new com.sk89q.worldedit.Vector(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
+            tipPoints.add(Vector3.at(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
         });
         return tipPoints;
     }

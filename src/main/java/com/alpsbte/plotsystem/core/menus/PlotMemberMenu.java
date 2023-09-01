@@ -155,7 +155,7 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set click event for add plot member item
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            new AnvilGUI.Builder()
+            /*new AnvilGUI.Builder()
                     .onComplete((player, text) -> {
                         try {
                             if (Builder.getBuilderByName(text) != null) {
@@ -195,7 +195,7 @@ public class PlotMemberMenu extends AbstractMenu {
                     .itemRight(new ItemStack(Material.PLAYER_HEAD))
                     .title(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
                     .plugin(PlotSystem.getPlugin())
-                    .open(clickPlayer);
+                    .open(clickPlayer);*/
         });
 
         // Set click event for back item

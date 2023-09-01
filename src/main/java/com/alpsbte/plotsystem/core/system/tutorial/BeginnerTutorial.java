@@ -35,9 +35,9 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.L
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.utils.io.*;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import net.md_5.bungee.api.chat.ClickEvent;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -161,12 +161,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
                             getMessages().get(2),
-                            StringUtils.EMPTY,
+                            "",
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(3), GRAY + GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
                             getMessages().get(4),
-                            StringUtils.EMPTY,
+                            "",
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(5), GRAY + GOOGLE_EARTH, getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT, true);
@@ -206,14 +206,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .sendChatMessage(new Object[] {
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_MAPS,
                                     getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL),
-                            StringUtils.EMPTY,
+                            "",
                             getMessages().get(2)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, false)
                     .delay(2)
                     .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
-                        TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.CONCRETE_POWDER, (byte) 5);
+                        TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
                         getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
-                                Sound.BLOCK_NOTE_PLING, 1f, 1f);
+                                Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
                     });
         }
     }
@@ -279,10 +279,10 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public StageTimeline getTimeline() throws SQLException {
-            List<Vector> buildingPoints = getBuildingPoints(getPlot());
+            List<BlockVector3> buildingPoints = getBuildingPoints(getPlot());
 
             // Map building points to lines
-            Map<Vector, Vector> buildingLinePoints = new HashMap<>();
+            Map<BlockVector3, BlockVector3> buildingLinePoints = new HashMap<>();
             buildingLinePoints.put(buildingPoints.get(0), buildingPoints.get(1));
             buildingLinePoints.put(buildingPoints.get(1), buildingPoints.get(2));
             buildingLinePoints.put(buildingPoints.get(2), buildingPoints.get(3));
@@ -296,9 +296,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         buildingLinePoints.remove(minPoint);
 
-                        TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.CONCRETE_POWDER, (byte) 5);
-                        TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.CONCRETE_POWDER, (byte) 5);
-                        getPlayer().playSound(getPlayer().getLocation(), Sound.BLOCK_NOTE_PLING, 1f, 1f);
+                        TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.LIME_CONCRETE_POWDER);
+                        TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.LIME_CONCRETE_POWDER);
+                        getPlayer().playSound(getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
                     })));
         }
     }
@@ -337,7 +337,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .sendChatMessage(new Object[] {
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_EARTH,
                                     getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL),
-                            StringUtils.EMPTY,
+                            "",
                             getMessages().get(2)
                     }, Sound.ENTITY_VILLAGER_AMBIENT, false)
                     .delay(2);
@@ -507,7 +507,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
                     .sendChatMessage(new Object[] {
                         getMessages().get(4),
-                        StringUtils.EMPTY,
+                        "",
                         new ChatMessageTask.ClickableTaskMessage(getMessages().get(5),
                                 GRAY + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE) + "...",
                                 TutorialUtils.getDocumentationLinks(TutorialCategory.BEGINNER.id).get(0), ClickEvent.Action.OPEN_URL),
@@ -522,7 +522,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
      * Get the building points from the config and convert them to Vector
      * @return list of building points as Vector
      */
-    private static List<Vector> getBuildingPoints(TutorialPlot plot) throws SQLException {
+    private static List<BlockVector3> getBuildingPoints(TutorialPlot plot) throws SQLException {
         // Read coordinates from config
         FileConfiguration config = ConfigUtil.getTutorialInstance().getBeginnerTutorial();
         List<String> buildingPointsAsString = Arrays.asList(
@@ -533,7 +533,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         );
 
         // Convert coordinates to Vector
-        List<Vector> buildingPoints = new ArrayList<>();
+        List<BlockVector3> buildingPoints = new ArrayList<>();
 
         World world = plot.getWorld().getBukkitWorld();
         buildingPointsAsString.forEach(point -> {
@@ -541,7 +541,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             double x = Double.parseDouble(pointsSplit[0]);
             double z = Double.parseDouble(pointsSplit[1]);
             double y = AlpsUtils.getHighestBlockYAt(world, (int) x, (int) z);
-            buildingPoints.add(new Vector(x, y, z));
+            buildingPoints.add(BlockVector3.at(x, y, z));
         });
 
         return buildingPoints;

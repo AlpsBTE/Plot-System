@@ -29,9 +29,6 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
-import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import org.bukkit.*;
@@ -40,9 +37,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.logging.Level;
 
 public class Utils {

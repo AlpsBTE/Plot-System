@@ -36,7 +36,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.C
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.PlaceHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.RemoveHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -196,7 +196,7 @@ public class StageTimeline implements TutorialTimeLine {
      * @param offsetRange the range in which the player can teleport to the teleport point
      * @param onTeleportAction the action to be performed when the player teleports to a teleport point
      */
-    public StageTimeline addTeleportEvent(String assignmentMessage, List<Vector> teleportPoint, int offsetRange, AbstractTask.TaskAction<Vector> onTeleportAction) {
+    public StageTimeline addTeleportEvent(String assignmentMessage, List<BlockVector3> teleportPoint, int offsetRange, AbstractTask.TaskAction<BlockVector3> onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, assignmentMessage, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }

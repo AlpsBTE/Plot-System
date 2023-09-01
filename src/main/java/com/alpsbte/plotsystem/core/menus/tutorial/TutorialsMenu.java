@@ -37,7 +37,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -48,7 +47,6 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 
 public class TutorialsMenu extends AbstractMenu {
@@ -124,7 +122,7 @@ public class TutorialsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(" ").build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -153,7 +151,7 @@ public class TutorialsMenu extends AbstractMenu {
      * @param clickType The click type (left or right)
      */
     private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
-        getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.8f, 0.8f);
+        getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.8f, 0.8f);
 
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
             if (clickType == ClickType.LEFT) {
@@ -181,12 +179,12 @@ public class TutorialsMenu extends AbstractMenu {
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
         return (tutorialId != TutorialCategory.BEGINNER.getId() /*&& !isBeginnerTutorialCompleted*/) ? getAdvancedTutorialItem(getMenuPlayer()) :
-                constructTutorialItem(getMenuPlayer(), plot, new ItemStack(Material.getMaterial(itemName)), title, desc);
+                constructTutorialItem(getMenuPlayer(), plot, new ItemStack(Material.valueOf(itemName)), title, desc);
     }
 
     private static ItemStack constructTutorialItem(Player player, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
         // Create tutorial item lore
-        LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, StringUtils.EMPTY);
+        LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, "");
         if (plot == null || !plot.isCompleted()) {
             loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
                     "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.START));
@@ -202,7 +200,7 @@ public class TutorialsMenu extends AbstractMenu {
     }
 
     private static ItemStack getAdvancedTutorialItem(Player player) {
-        return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 15)
+        return new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
                 .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.Note.UNDER_CONSTRUCTION))
                 .build();
     }

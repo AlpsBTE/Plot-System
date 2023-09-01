@@ -35,25 +35,14 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.sk89q.worldedit.BlockVector2D;
-import com.sk89q.worldedit.Vector;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -115,62 +104,6 @@ public class Plot extends AbstractPlot {
             DatabaseConnection.closeResultSet(rs);
             return null;
         }
-    }
-
-    @Override
-    /* return the outline of the plot which contains all corner points of the polygon */
-    public List<BlockVector2> getOutline() throws SQLException, IOException {
-        if(this.outline != null)
-            return this.outline;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            List<BlockVector2> locations = new ArrayList<>();
-            if (rs.next()){
-                String listString = rs.getString(1);
-                if (rs.wasNull() || listString.isEmpty() || getVersion() <= 2) {
-                    CuboidRegion plotRegion = PlotManager.getPlotAsRegion(this);
-                    if (plotRegion != null) locations.addAll(plotRegion.polygonize(4));
-                } else {
-                    String[] list = listString.split("\\|");
-
-                    for (String s : list) {
-                        String[] locs = s.split(",");
-                        locations.add(BlockVector2.at(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
-                    }
-                }
-            }
-            this.outline = locations;
-
-            DatabaseConnection.closeResultSet(rs);
-            return locations;
-        }
-    }
-
-    /** return the outline of the polygon with one point per Block*/
-    public List<BlockVector2> getBlockOutline() throws SQLException, IOException {
-        if(this.blockOutline != null)
-            return this.blockOutline;
-
-        List<BlockVector2> points = new ArrayList<>();
-        List<BlockVector2> outline = getOutline();
-
-        for(int i = 0; i < outline.size() - 1; i++){
-            BlockVector2 b1 = outline.get(i);
-            BlockVector2 b2 = outline.get(i + 1);
-            int distance = (int) b1.distance(b2);
-
-            points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
-        }
-
-        BlockVector2 first = outline.get(0);
-        BlockVector2 last = outline.get(outline.size() - 1);
-        points.addAll(Utils.getLineBetweenPoints(last, first, (int) first.distance(last)));
-
-        blockOutline = points;
-
-        return points;
     }
 
     @Override
@@ -260,14 +193,14 @@ public class Plot extends AbstractPlot {
     }
 
     @Override
-    public List<BlockVector2D> getOutline() throws SQLException, IOException {
+    public List<BlockVector2> getOutline() throws SQLException, IOException {
         if(outline != null)
             return this.outline;
 
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
-            List<BlockVector2D> pointVectors = new ArrayList<>();
+            List<BlockVector2> pointVectors = new ArrayList<>();
             if (rs.next()) {
                 String points = rs.getString(1);
                 pointVectors = getOutlinePoints(rs.wasNull() ? null : points);
@@ -429,10 +362,10 @@ public class Plot extends AbstractPlot {
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schem").toFile();
+                    File file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), fileName + ".schem").toFile();
                     if (!file.exists()) {
-                        // if .schem doesn't exist it looks for old .schematic format for backwards compatibility
-                        file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), filename + ".schematic").toFile();
+                        // if .schem doesn't exist, it looks for old .schematic format for backwards compatibility
+                        file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), fileName + ".schematic").toFile();
                     }
 
                     if (!file.exists()) {
@@ -453,27 +386,14 @@ public class Plot extends AbstractPlot {
 
     public File getCompletedSchematic() {
         try {
-            return Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schem").toFile();
+            return Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schem").toFile();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return null;
     }
 
-    @Override
-    public String getGeoCoordinates() throws IOException {
-        // Convert MC coordinates to geo coordinates
-        BlockVector3 mcCoordinates = getCoordinates();
-        try {
-            return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
-        } catch (OutOfProjectionBoundsException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not convert MC coordinates to geo coordinates!", ex);
-        }
-        return null;
-    }
-
     @Deprecated
-    @Override
     public BlockVector3 getMinecraftCoordinates() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
@@ -490,45 +410,11 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    @Override
-    public BlockVector3 getCoordinates() throws IOException {
-        Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
-        if (clipboard != null) return clipboard.getOrigin();
-        return null;
-    }
-
-    @Override
-    public PlotType getPlotType() throws SQLException {
-        if (plotType != null) return plotType;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT type FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                int typeId = rs.getInt(1);
-                DatabaseConnection.closeResultSet(rs);
-
-                plotType = PlotType.byId(typeId);
-                return plotType;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
-    }
-
-    @Override
-    public void setPlotType(PlotType type) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET type = ? WHERE id = ?")
-                .setValue(type.ordinal()).setValue(this.ID).executeUpdate();
-        plotType = type;
-    }
-
     public BlockVector3 getCenter() {
         try {
             if (getVersion() >= 3) {
                 return super.getCenter();
-            } else return new Vector(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
+            } else return BlockVector3.at(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
         }

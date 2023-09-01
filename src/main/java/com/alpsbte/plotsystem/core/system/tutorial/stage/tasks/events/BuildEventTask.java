@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -36,9 +36,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.util.HashMap;
 
 public class BuildEventTask extends AbstractTask implements EventTask {
-    private final TaskAction<Vector> onPlacedBlockAction;
-    private final HashMap<Vector, Material> blocksToBuild;
-    public BuildEventTask(Player player, String assignmentMessage, HashMap<Vector, Material> blocksToBuild, TaskAction<Vector> onPlacedBlockAction) {
+    private final TaskAction<BlockVector3> onPlacedBlockAction;
+    private final HashMap<BlockVector3, Material> blocksToBuild;
+    public BuildEventTask(Player player, String assignmentMessage, HashMap<BlockVector3, Material> blocksToBuild, TaskAction<BlockVector3> onPlacedBlockAction) {
         super(player, assignmentMessage, blocksToBuild.size());
         this.blocksToBuild = blocksToBuild;
         this.onPlacedBlockAction = onPlacedBlockAction;
@@ -56,9 +56,9 @@ public class BuildEventTask extends AbstractTask implements EventTask {
             BlockPlaceEvent buildEvent = (BlockPlaceEvent) event;
             if (!buildEvent.canBuild()) return;
             Block placedBlock = buildEvent.getBlockPlaced();
-            Vector placedBlockVector = new Vector(placedBlock.getX(), placedBlock.getY(), placedBlock.getZ());
+            BlockVector3 placedBlockVector = BlockVector3.at(placedBlock.getX(), placedBlock.getY(), placedBlock.getZ());
 
-            for (Vector blockVector : blocksToBuild.keySet()) {
+            for (BlockVector3 blockVector : blocksToBuild.keySet()) {
                 if (blockVector.equals(placedBlockVector)) {
                     if (placedBlock.getType().equals(blocksToBuild.get(blockVector))) {
                         removeBlockToBuild(blockVector);
@@ -71,7 +71,7 @@ public class BuildEventTask extends AbstractTask implements EventTask {
         }
     }
 
-    private void removeBlockToBuild(Vector blockVector) {
+    private void removeBlockToBuild(BlockVector3 blockVector) {
         blocksToBuild.remove(blockVector);
 
         updateProgress();

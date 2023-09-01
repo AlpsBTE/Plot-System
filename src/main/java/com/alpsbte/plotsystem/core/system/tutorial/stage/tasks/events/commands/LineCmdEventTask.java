@@ -24,13 +24,14 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
+import com.fastasyncworldedit.core.function.pattern.LinearBlockPattern;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.patterns.SingleBlockPattern;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BaseBlock;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -41,16 +42,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class LineCmdEventTask extends AbstractCmdEventTask {
-    private final Map<Vector, Vector> linePoints;
-    private final BiTaskAction<Vector, Vector> lineCmdAction;
+    private final Map<BlockVector3, BlockVector3> linePoints;
+    private final BiTaskAction<BlockVector3, BlockVector3> lineCmdAction;
 
-    private Vector minPoint;
-    private Vector maxPoint;
+    private BlockVector3 minPoint;
+    private BlockVector3 maxPoint;
 
-    public LineCmdEventTask(Player player, String assignmentMessage, String blockName, int blockId, Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
+    public LineCmdEventTask(Player player, String assignmentMessage, String blockName, int blockId, Map<BlockVector3, BlockVector3> linePoints, BiTaskAction<BlockVector3, BlockVector3> lineCmdAction) {
         super(player, "//line", new String[] { blockName, String.valueOf(blockId) },  assignmentMessage, linePoints.size(),true);
         this.linePoints = linePoints;
         this.lineCmdAction = lineCmdAction;
@@ -82,28 +84,28 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
 
     private void onPlayerInteractEvent(PlayerInteractEvent event) {
         // Check if player has a wooden axe in his hand
-        if (event.getClickedBlock() == null || event.getItem() == null || !event.getItem().equals(new ItemStack(Material.WOOD_AXE))) return;
+        if (event.getClickedBlock() == null || event.getItem() == null || !event.getItem().equals(new ItemStack(Material.WOODEN_AXE))) return;
 
         // Get clicked block and update min/max point
-        Vector point = new Vector(event.getClickedBlock().getX(), event.getClickedBlock().getY(), event.getClickedBlock().getZ());
+        BlockVector3 point = BlockVector3.at(event.getClickedBlock().getX(), event.getClickedBlock().getY(), event.getClickedBlock().getZ());
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && isPointInLine(point)) {
             minPoint = point;
         } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && isPointInLine(point)) {
             maxPoint = point;
         } else return;
 
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.5f, 1f);
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.5f, 1f);
     }
 
-    private boolean isPointInLine(Vector point) {
+    private boolean isPointInLine(BlockVector3 point) {
         return linePoints.containsKey(point) || linePoints.containsValue(point);
     }
 
     private boolean drawLine() {
         try {
-            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(new BukkitWorld(player.getWorld()), -1);
-            editSession.drawLine(new SingleBlockPattern(new BaseBlock(Integer.parseInt(args1[1]))), minPoint, maxPoint, 0, false);
-            editSession.flushQueue();
+            EditSession editSession = WorldEdit.getInstance().newEditSession((new BukkitWorld(player.getWorld())));
+            editSession.drawLine(Objects.requireNonNull(BlockTypes.WHITE_WOOL).getDefaultState(), minPoint, maxPoint, 0, false);
+            editSession.close();
         } catch (MaxChangedBlocksException ex) {
            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while drawing line!", ex);
            return false;

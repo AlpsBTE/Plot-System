@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -195,10 +194,10 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param title The title of the stage.
      */
     protected static void sendStageUnlockedMessage(Player player, String title) {
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
         player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED).toUpperCase());
         player.sendMessage("  §f§l◆ §6§l" + title);
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
     }
 
     /**
@@ -208,9 +207,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @see TutorialCategory
      */
     protected static void sendTutorialCompletedMessage(Player player, String tutorial) {
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
         player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase());
         player.sendMessage("  §f§l◆ §6§l" + tutorial);
-        player.sendMessage(StringUtils.EMPTY);
+        player.sendMessage("");
     }
 }

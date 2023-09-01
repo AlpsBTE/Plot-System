@@ -252,7 +252,7 @@ public class Review {
                         plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
                     }
 
-                     Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schem"));
+                     Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schem"));
                      Server plotServer = plot.getCity().getCountry().getServer();
                      if (plotServer.getFTPConfiguration() != null) {
                          FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schem");

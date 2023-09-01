@@ -38,7 +38,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -102,12 +101,12 @@ public class TutorialStagesMenu extends AbstractMenu {
 
         // Place stages in the first row
         for (int i = 0; i < stagesInFirstRow; i++) {
-            getMenu().getSlot(startSlotFirstRow + i).setItem(MenuItems.loadingItem(Material.STAINED_GLASS_PANE, (byte) 7, getMenuPlayer()));
+            getMenu().getSlot(startSlotFirstRow + i).setItem(MenuItems.loadingItem(Material.GRAY_STAINED_GLASS_PANE, getMenuPlayer()));
         }
 
         // Place stages in the second row
         for (int i = 0; i < stagesInSecondRow; i++) {
-            getMenu().getSlot(startSlotSecondRow + i).setItem(MenuItems.loadingItem(Material.STAINED_GLASS_PANE, (byte) 7, getMenuPlayer()));
+            getMenu().getSlot(startSlotSecondRow + i).setItem(MenuItems.loadingItem(Material.GRAY_STAINED_GLASS_PANE, getMenuPlayer()));
         }
 
         // Set back item
@@ -135,7 +134,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         tutorialItem.setName(AQUA + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER));
         if (plot != null) {
             tutorialItem.setLore(
-                    new LoreBuilder().addLines(StringUtils.EMPTY,
+                    new LoreBuilder().addLines("",
                             LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
                             (playerHighestStage + (isTutorialCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialPaths.TUTORIAL_STAGES))
                     .build());
@@ -183,7 +182,7 @@ public class TutorialStagesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(" ").build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -200,7 +199,7 @@ public class TutorialStagesMenu extends AbstractMenu {
      */
     private void setStageClickEvent(int slot, int stageId) {
         getMenu().getSlot(slot).setClickHandler(((player, clickInformation) -> {
-            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEMFRAME_ADD_ITEM, 0.8f, 0.8f);
+            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.8f, 0.8f);
 
             if (playerCurrentStage != stageId && playerHighestStage >= stageId && clickInformation.getClickType().isLeftClick()) {
                 getMenuPlayer().closeInventory();
@@ -230,10 +229,11 @@ public class TutorialStagesMenu extends AbstractMenu {
         boolean isInProgress = playerHighestStage == stageId && plot != null && !isTutorialCompleted;
 
         ChatColor titleColor = isInProgress ? ChatColor.YELLOW : (stageId < playerHighestStage || isTutorialCompleted ? ChatColor.GREEN : RED);
-        ItemStack stageItem = new ItemStack(Material.STAINED_GLASS_PANE, stageId + 1, (byte) (isInProgress ? 4 : (stageId < playerHighestStage || isTutorialCompleted ? 5 : 14)));
+        ItemStack stageItem = new ItemStack(isInProgress ? Material.YELLOW_STAINED_GLASS_PANE : (stageId < playerHighestStage || isTutorialCompleted ?
+                Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE), stageId + 1);
         boolean isClickable = stageId != playerCurrentStage && stageId <= playerHighestStage;
 
-        if (isClickable) lore.addLines(StringUtils.EMPTY, LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
+        if (isClickable) lore.addLines("", LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
                 "§e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.START));
 
         return new ItemBuilder(stageItem)

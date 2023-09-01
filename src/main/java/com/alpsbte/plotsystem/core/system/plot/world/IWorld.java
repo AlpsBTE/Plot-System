@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;

@@ -29,7 +29,7 @@ import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -62,8 +62,8 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected void setBuildRegionPermissions(ProtectedRegion region) {
-        region.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
-        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
+        region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
     }
 
     @Override
