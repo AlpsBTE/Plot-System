@@ -65,7 +65,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
                         .build());
 
         getMenu().getSlot(13).setItem(
-                new ItemBuilder(Material.SAPLING, 1, (byte) 5)
+                new ItemBuilder(Material.DARK_OAK_SAPLING, 1)
                         .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_INSPIRATION_MODE))
                         .setLore(new LoreBuilder()
                                 .addLines(AlpsUtils.createMultilineFromString(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE), LoreBuilder.MAX_LINE_LENGTH, LoreBuilder.LINE_BAKER))
@@ -88,7 +88,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
             selectedPlotTypeSlot = 11;
         if(builder.getPlotTypeSetting() == PlotType.CITY_INSPIRATION_MODE)
             selectedPlotTypeSlot = 15;
-        getMenu().getSlot(selectedPlotTypeSlot - 9).setItem(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 5).setName(" ").build());
+        getMenu().getSlot(selectedPlotTypeSlot - 9).setItem(new ItemBuilder(Material.LIME_STAINED_GLASS_PANE, 1).setName(" ").build());
 
 
         // Set back item
@@ -123,7 +123,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111101111")

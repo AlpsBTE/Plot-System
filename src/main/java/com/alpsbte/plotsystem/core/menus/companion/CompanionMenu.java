@@ -102,7 +102,7 @@ public class CompanionMenu {
         }));
 
         // Set player settings menu item
-        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
+        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
                 .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())

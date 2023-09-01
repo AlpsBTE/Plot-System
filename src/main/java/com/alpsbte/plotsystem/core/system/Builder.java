@@ -28,11 +28,11 @@ import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -160,7 +160,7 @@ public class Builder {
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
         if (plot == null) {
-            return new ItemBuilder(Material.EMPTY_MAP, 1 + slotIndex)
+            return new ItemBuilder(Material.MAP, 1 + slotIndex)
                     .setName("§b§l" + LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
                     .setLore(new LoreBuilder()
                             .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT),
@@ -170,7 +170,7 @@ public class Builder {
                     .build();
         }
 
-        return new ItemBuilder(Material.MAP, 1 + slotIndex)
+        return new ItemBuilder(Material.FILLED_MAP, 1 + slotIndex)
                 .setName("§b§l" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
                 .setLore(new LoreBuilder()
                         .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),

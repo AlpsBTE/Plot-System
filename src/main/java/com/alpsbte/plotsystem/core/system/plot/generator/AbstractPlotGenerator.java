@@ -26,41 +26,50 @@ package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.system.plot.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.boydti.fawe.FaweAPI;
-import com.boydti.fawe.util.EditSessionBuilder;
-import com.sk89q.worldedit.*;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.blocks.BaseBlock;
+import com.fastasyncworldedit.core.FaweAPI;
+import com.fastasyncworldedit.core.world.block.BlanketBaseBlock;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.Extent;
-import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.function.mask.BlockTypeMask;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector2;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldedit.world.block.BlockTypes;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.*;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +77,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotGenerator {
@@ -149,22 +160,13 @@ public abstract class AbstractPlotGenerator {
      * @param environmentSchematic - environment schematic file
      */
     protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
-        final class OnlyAirMask extends ExistingBlockMask {
-            public OnlyAirMask(Extent extent) {
-                super(extent);
-            }
-
-            @Override
-            public boolean test(Vector vector) {
-                return this.getExtent().getLazyBlock(vector).getType() == 0;
-            }
-        }
 
         World weWorld = new BukkitWorld(world.getBukkitWorld());
-        EditSession editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
+        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(world.getBukkitWorld()), -1);
+        editSession.setFastMode(true);
 
         if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
-            editSession.setMask(new OnlyAirMask(weWorld));
+            editSession.setMask(new BlockTypeMask(weWorld, BlockTypes.AIR));
             pasteSchematic(editSession, environmentSchematic, world, false);
         }
 
@@ -200,8 +202,8 @@ public abstract class AbstractPlotGenerator {
      * Creates plot protection
      */
     protected void createPlotProtection() throws StorageException, SQLException, IOException {
-        RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = regionContainer.get(world.getBukkitWorld());
+        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
 
         if (regionManager != null) {
             // Create build region for plot from the outline of the plot
@@ -210,7 +212,7 @@ public abstract class AbstractPlotGenerator {
 
             // Create protected plot region for plot
             World weWorld = new BukkitWorld(world.getBukkitWorld());
-            CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), new Vector2D(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
+            CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(world.getRegionName() + "-1", cylinderRegion.polygonize(-1), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedRegion.setPriority(50);
 
@@ -222,12 +224,12 @@ public abstract class AbstractPlotGenerator {
 
 
             // Set permissions
-            protectedBuildRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
-            protectedBuildRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
-            protectedRegion.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
-            protectedRegion.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
-            protectedRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
-            protectedRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+            protectedBuildRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
+            protectedBuildRegion.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+            protectedRegion.setFlag(Flags.BUILD, StateFlag.State.DENY);
+            protectedRegion.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+            protectedRegion.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
+            protectedRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
             FileConfiguration config = ConfigUtil.getInstance().configs[1];
             List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
@@ -241,10 +243,10 @@ public abstract class AbstractPlotGenerator {
             List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
             blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
 
-            protectedRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
-            protectedRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-            protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
-            protectedRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+            protectedRegion.setFlag(Flags.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
+            protectedRegion.setFlag(Flags.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+            protectedRegion.setFlag(Flags.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
+            protectedRegion.setFlag(Flags.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
 
 
             // Add regions and save changes
@@ -313,15 +315,27 @@ public abstract class AbstractPlotGenerator {
     public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, PlotWorld world, boolean clearArea) throws IOException, MaxChangedBlocksException, SQLException {
         if (world.loadWorld()) {
             World weWorld = new BukkitWorld(world.getBukkitWorld());
-            if (editSession == null) editSession = new EditSessionBuilder(weWorld).fastmode(true).build();
+            if (editSession == null) {
+                editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(world.getBukkitWorld()), -1);
+                editSession.setFastMode(true);
+            }
             if (clearArea) {
                 Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-                editSession.replaceBlocks(polyRegion, null, new BaseBlock(0));
-                editSession.flushQueue();
-            }
 
-            FaweAPI.load(schematicFile).paste(editSession, world.getPlot().getCenter().setY(world.getPlotHeight()), false);
-            editSession.flushQueue();
+                editSession.replaceBlocks(polyRegion, null, new BlanketBaseBlock(BlockTypes.AIR.getDefaultState()));
+                editSession.flushSession();
+            }
+            Clipboard clipboard = FaweAPI.load(schematicFile);
+            Operation clipboardHolder = new ClipboardHolder(clipboard)
+                    .createPaste(editSession)
+                    .to(BlockVector3.at(world.getPlot().getCenter().getX(), world.getPlotHeight(), world.getPlot().getCenter().getZ()))
+                    .build();
+            try {
+                Operations.complete(clipboardHolder);
+            } catch (WorldEditException e) {
+                Bukkit.getLogger().log(Level.SEVERE, "Could not paste Plot Schematic " + world.getWorldName() + "!", e);
+            }
+            editSession.close();
         }
     }
 }

@@ -26,13 +26,13 @@ package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.alpslib.utils.heads.CustomHead;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.sk89q.worldedit.BlockVector2D;
-import org.bukkit.*;
+import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.sk89q.worldedit.math.BlockVector2;
+import org.bukkit.*;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -72,13 +72,13 @@ public class Utils {
 
 
     public static class SoundUtils {
-        public final static Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMEN_TELEPORT;
+        public final static Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
         public final static Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
         public final static Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
         public final static Sound FINISH_PLOT_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
-        public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
+        public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
         public final static Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
+        public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
     }
 
 
@@ -196,7 +196,7 @@ public class Utils {
         return line;
     }
 
-    public static HashSet<BlockVector2D> getLineBetweenPoints(BlockVector2D point1, BlockVector2D point2, int pointsInLine){
+    public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine){
         double p1X = point1.getX();
         double p1Z = point1.getZ();
         double p2X = point2.getX();
@@ -205,9 +205,9 @@ public class Utils {
         double lineAveX = (p2X-p1X)/pointsInLine;
         double lineAveZ = (p2Z-p1Z)/pointsInLine;
 
-        HashSet<BlockVector2D> line = new HashSet<>();
+        HashSet<BlockVector2> line = new HashSet<>();
         for(int i = 0; i <= pointsInLine; i++){
-            BlockVector2D vector = new BlockVector2D(p1X + lineAveX * i, p1Z + lineAveZ * i);
+            BlockVector2 vector = BlockVector2.at(p1X + lineAveX * i, p1Z + lineAveZ * i);
             line.add(vector);
         }
         return line;

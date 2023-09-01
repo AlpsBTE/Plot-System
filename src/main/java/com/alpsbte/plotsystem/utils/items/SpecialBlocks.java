@@ -63,7 +63,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack RedMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
+    public static ItemStack RedMushroom = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_2, 1)
             .setName("§6§lRed Mushroom").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fRed Mushroom§7 block",
@@ -74,7 +74,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BrownMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_1, 1)
+    public static ItemStack BrownMushroom = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_1, 1)
             .setName("§6§lBrown Mushroom Block").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fBrown Mushroom§7 block",
@@ -85,7 +85,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack SeamlessMushroomStem = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
+    public static ItemStack SeamlessMushroomStem = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_2, 1)
             .setName("§6§lSeamless Mushroom Stem Block").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fSeamless Mushroom Stem§7 block",
@@ -96,7 +96,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack LightBrownMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_1, 1)
+    public static ItemStack LightBrownMushroom = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_1, 1)
             .setName("§6§lLight Brown Mushroom Block").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fLight Brown Mushroom§7 block",
@@ -129,7 +129,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BarkOakLog = new ItemBuilder(Material.LOG, 1, (byte) 0)
+    public static ItemStack BarkOakLog = new ItemBuilder(Material.OAK_WOOD)
             .setName("§6§lBark Oak Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Oak Log§7 block",
@@ -140,7 +140,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BarkBirchLog = new ItemBuilder(Material.LOG, 1, (byte) 2)
+    public static ItemStack BarkBirchLog = new ItemBuilder(Material.BIRCH_WOOD)
             .setName("§6§lBark Birch Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Birch Log§7 block",
@@ -151,7 +151,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BarkSpruceLog = new ItemBuilder(Material.LOG, 1, (byte) 1)
+    public static ItemStack BarkSpruceLog = new ItemBuilder(Material.SPRUCE_WOOD)
             .setName("§6§lBark Spruce Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Spruce Log§7 block",
@@ -162,7 +162,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BarkJungleLog = new ItemBuilder(Material.LOG, 1, (byte) 3)
+    public static ItemStack BarkJungleLog = new ItemBuilder(Material.JUNGLE_WOOD)
             .setName("§6§lBark Jungle Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Jungle Log§7 block",
@@ -173,7 +173,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BarkAcaciaLog = new ItemBuilder(Material.LOG_2, 1, (byte) 0)
+    public static ItemStack BarkAcaciaLog = new ItemBuilder(Material.ACACIA_WOOD)
             .setName("§6§lBark Acacia Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Acacia Log§7 block.",
@@ -184,7 +184,7 @@ public class SpecialBlocks {
             .setEnchanted(true)
             .build();
 
-    public static ItemStack BarkDarkOakLog = new ItemBuilder(Material.LOG_2, 1, (byte) 1)
+    public static ItemStack BarkDarkOakLog = new ItemBuilder(Material.DARK_OAK_WOOD)
             .setName("§6§lBark Dark Oak Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Dark Oak Log§7 block.",

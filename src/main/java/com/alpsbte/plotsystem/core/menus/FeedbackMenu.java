@@ -28,13 +28,13 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -57,7 +57,7 @@ public class FeedbackMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         super.setPreviewItems();
     }
@@ -99,7 +99,7 @@ public class FeedbackMenu extends AbstractMenu {
 
         // Set feedback text item
         try {
-            getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+            getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
                     .setLore(new LoreBuilder()
                             .addLines(plot.getReview().getFeedback())
@@ -129,7 +129,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

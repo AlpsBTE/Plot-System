@@ -24,18 +24,18 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for player head item
-        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         // Set back item
         getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -98,8 +98,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
             for (int i = 0; i < plotDisplayCount; i++) {
                 Plot plot = plots.get(i);
                 try {
-                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.WOOL, 1, (byte) 1) :
-                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.MAP) : new ItemStack(Material.WOOL, 1, (byte) 13);
+                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.ORANGE_WOOL, 1) :
+                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.FILLED_MAP) : new ItemStack(Material.GREEN_WOOL, 1);
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(item)
@@ -140,7 +140,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")
