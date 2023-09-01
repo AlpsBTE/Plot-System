@@ -25,8 +25,9 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
@@ -56,7 +57,7 @@ public class CMD_Tpll extends BaseCommand {
                 Player player = (Player) sender;
                 World playerWorld = player.getWorld();
 
-                if (PlotManager.isPlotWorld(playerWorld)) {
+                if (PlotUtils.isPlotWorld(playerWorld)) {
                     try {
                         // TODO: Support for NSEW geographic coordinates
                         String[] splitCoords = args[0].split(",");
@@ -90,10 +91,10 @@ public class CMD_Tpll extends BaseCommand {
                             double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
 
                             // Get plot, that the player is in
-                            Plot plot = PlotManager.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
+                            AbstractPlot plot = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
 
                             // Convert terra coordinates to plot relative coordinates
-                            CompletableFuture<double[]> plotCoords = plot != null ? PlotManager.convertTerraToPlotXZ(plot, terraCoords) : null;
+                            CompletableFuture<double[]> plotCoords = plot != null ? PlotUtils.convertTerraToPlotXZ(plot, terraCoords) : null;
 
                             if(plotCoords == null) {
                                 player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));

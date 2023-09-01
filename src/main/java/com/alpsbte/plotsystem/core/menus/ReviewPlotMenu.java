@@ -28,12 +28,18 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.sk89q.worldedit.WorldEditException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -299,7 +305,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                         new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
                     }
 
-                    double totalRatingWithMultiplier = totalRating * PlotManager.getMultiplierByDifficulty(plot.getDifficulty());
+                    double totalRatingWithMultiplier = totalRating * Plot.getMultiplierByDifficulty(plot.getDifficulty());
                     totalRating = (int) Math.floor(totalRatingWithMultiplier);
                     plot.setTotalScore(totalRating);
 
@@ -309,7 +315,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     if (!isRejected) {
                         clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
                         try {
-                            if (!PlotManager.savePlotAsSchematic(plot)) {
+                            if (!PlotUtils.savePlotAsSchematic(plot)) {
                                 clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                                 Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
                                 return;
@@ -370,7 +376,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
                         }
 
-                        PlotHandler.undoSubmit(plot);
+                        PlotUtils.Actions.undoSubmit(plot);
                     }
 
                     boolean finalIsRejected = isRejected;
@@ -406,12 +412,12 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                     for (Builder member : plot.getPlotMembers()) {
                         if (member.isOnline()) {
-                            PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
+                            PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
                         }
                     }
 
                     if(plot.getPlotOwner().isOnline()) {
-                        PlotHandler.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
+                        PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
                         plot.getReview().setFeedbackSent(true);
                     }
                 } catch (SQLException ex) {

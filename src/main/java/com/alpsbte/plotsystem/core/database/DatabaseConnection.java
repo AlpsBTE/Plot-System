@@ -392,7 +392,20 @@ public class DatabaseConnection {
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +
-                            ";"
+                            ";",
+
+                    // Tutorial Plots
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_plots_tutorial` (" +
+                            " `id`            int(11) NOT NULL AUTO_INCREMENT," +
+                            " `owner_uuid`    varchar(36) NOT NULL," +
+                            " `tutorial_id`   int(11) NOT NULL," +
+                            " `stage`         int(11) NOT NULL DEFAULT 1," +
+                            " `is_completed`  tinyint NOT NULL," +
+                            " `last_activity` datetime NOT NULL," +
+                            "PRIMARY KEY (`id`)," +
+                            "KEY `FK_142` (`owner_uuid`)," +
+                            "CONSTRAINT `FK_12` FOREIGN KEY `FK_142` (`owner_uuid`) REFERENCES `plotsystem_builders` (`uuid`)" +
+                            ");"
             );
         }
     }

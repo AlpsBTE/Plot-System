@@ -41,7 +41,7 @@ public abstract class AbstractMenu {
 
     public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.menuPlayer = menuPlayer;
-        this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
+        this.menu = ChestMenu.builder(rows).title(title).redraw(false).build();
 
         if (reload) reloadMenuAsync();
     }

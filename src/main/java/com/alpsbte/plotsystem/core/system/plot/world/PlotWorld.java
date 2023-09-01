@@ -25,10 +25,14 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.fastasyncworldedit.core.FaweAPI;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import com.boydti.fawe.FaweAPI;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -41,6 +45,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,20 +63,20 @@ public class PlotWorld implements IWorld {
 
     private final MultiverseCore mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     private final String worldName;
-    private final Plot plot;
+    private final AbstractPlot plot;
 
-    public PlotWorld(@NotNull String worldName, @Nullable Plot plot) {
+    public PlotWorld(@NotNull String worldName, @Nullable AbstractPlot plot) {
         this.worldName = worldName;
         this.plot = plot;
     }
 
     @Override
-    public <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         throw new UnsupportedOperationException("No world generator set for world " + getWorldName());
     }
 
     @Override
-    public <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
         return deleteWorld() && generateWorld(generator);
     }
 
@@ -124,12 +129,8 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
-        if (loadWorld()) {
-            Location spawnLocation = plot != null ? getSpawnPoint(plot.getCenter()) : getBukkitWorld().getSpawnLocation();
-            // Set spawn point 1 block above the highest block at the spawn location
-            spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
-
-            player.teleport(spawnLocation);
+        if (loadWorld() && plot != null) {
+            player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()));
             return true;
         } else Bukkit.getLogger().log(Level.WARNING, "Could not teleport player " + player.getName() + " to world " + worldName + "!");
         return false;
@@ -138,8 +139,16 @@ public class PlotWorld implements IWorld {
     @Override
     public Location getSpawnPoint(BlockVector3 plotVector) {
         if (isWorldGenerated() && loadWorld()) {
-            return plotVector == null ? getBukkitWorld().getSpawnLocation() :
-                    new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
+            Location spawnLocation;
+            if (plotVector == null) {
+                spawnLocation = getBukkitWorld().getSpawnLocation();
+            } else {
+                spawnLocation = new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
+            }
+
+            // Set spawn point 1 block above the highest block at the spawn location
+            spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1);
+            return spawnLocation;
         }
         return null;
     }
@@ -206,7 +215,7 @@ public class PlotWorld implements IWorld {
         return null;
     }
 
-    public Plot getPlot() {
+    public AbstractPlot getPlot() {
         return plot;
     }
 
@@ -216,7 +225,7 @@ public class PlotWorld implements IWorld {
      * @return - true if the world is a plot world
      */
     public static boolean isOnePlotWorld(String worldName) {
-        return worldName.toLowerCase(Locale.ROOT).startsWith("p-");
+        return worldName.toLowerCase(Locale.ROOT).startsWith("p-") || worldName.toLowerCase(Locale.ROOT).startsWith("t-");
     }
 
     /**
@@ -237,7 +246,8 @@ public class PlotWorld implements IWorld {
     @SuppressWarnings("unchecked")
     public static <T extends PlotWorld> T getPlotWorldByName(String worldName) throws SQLException {
         if (isOnePlotWorld(worldName)) {
-            return new Plot(Integer.parseInt(worldName.substring(2))).getWorld();
+            int id = Integer.parseInt(worldName.substring(2));
+            return worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id).getWorld() : new TutorialPlot(id).getWorld();
         } else return (T) new PlotWorld(worldName, null);
     }
 }

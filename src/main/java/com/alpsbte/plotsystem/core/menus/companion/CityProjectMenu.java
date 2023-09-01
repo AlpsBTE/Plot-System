@@ -28,10 +28,11 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
+import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -68,10 +69,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected void setPreviewItems() {
         getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
-            player.closeInventory();
-            new CountryMenu(player, country.getContinent());
-        }).entrySet()) {
+        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
@@ -82,13 +80,11 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                         .build());
 
         // Set loading item for plots difficulty item
-        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
+        getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
-        super.setPreviewItems();
-    }
+        // Set tutorial item
+        getMenu().getSlot(7).setItem(TutorialsMenu.getTutorialItem(getMenuPlayer()));
 
-    @Override
-    protected void setMenuItemsAsync() {
         // Set previous page item
         if (hasPreviousPage()) {
             getMenu().getSlot(45).setItem(MenuItems.previousPageItem(getMenuPlayer()));
@@ -99,22 +95,18 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             getMenu().getSlot(53).setItem(MenuItems.nextPageItem(getMenuPlayer()));
         }
 
-        // difficulty selector
-        getMenu().getSlot(7).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
+        super.setPreviewItems();
     }
 
     @Override
+    protected void setMenuItemsAsync() {}
+
+    @Override
     protected void setItemClickEventsAsync() {
-        getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty);
-        });
+        getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
 
         // Set click event for navigator item
-        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
-        });
+        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND)));
 
         // Set click event for previous page item
         getMenu().getSlot(45).setClickHandler((clickPlayer, clickInformation) -> {
@@ -132,32 +124,32 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             }
         });
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
-            player.closeInventory();
-            new CountryMenu(player, country.getContinent());
-        }).entrySet()) {
+        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
 
         // Set click event for plots difficulty item
-        getMenu().getSlot(7).setClickHandler(((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
                     PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
                     PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
 
-            getMenu().getSlot(7).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
+            getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
 
             // reload displayed cities
             reloadMenuAsync();
         }));
+
+        // Set click event for tutorial item
+        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> new TutorialsMenu(clickPlayer));
     }
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
-                .pattern("101101101")
+                .pattern("101101001")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -202,9 +194,9 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                         Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
                         int cityID = city.getID();
 
-                        PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : PlotManager.getPlotDifficultyForBuilder(cityID, builder).get();
-                        if (plotDifficultyForCity != null && PlotManager.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
-                            if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !PlotManager.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
+                        PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(cityID, builder).get();
+                        if (plotDifficultyForCity != null && Plot.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).size() != 0) {
+                            if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !Plot.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
                                 clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
                                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                                 return;

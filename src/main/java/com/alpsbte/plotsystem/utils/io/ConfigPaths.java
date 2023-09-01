@@ -78,14 +78,25 @@ public abstract class ConfigPaths {
     public static final String MESSAGE_INFO_COLOUR = "info-colour";
     public static final String MESSAGE_ERROR_COLOUR = "error-colour";
 
+
     // COMMANDS
     public static final String EDITPLOT_ENABLED = "editplot-enabled";
     public static final String BLOCKED_COMMANDS_BUILDERS = "blocked-commands-builders";
     public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
+
 
     // SHORTLINKS
     private static final String SHORTLINK = "shortlink.";
     public static final String SHORTLINK_ENABLE = SHORTLINK + "enable";
     public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
     public static final String SHORTLINK_HOST = SHORTLINK + "host";
+
+
+    // TUTORIALS
+    private static final String TUTORIALS = "tutorials.";
+    public static final String TUTORIAL_ENABLE = TUTORIALS + "enable";
+    public static final String TUTORIAL_REQUIRE_BEGINNER_TUTORIAL = TUTORIALS + "require-beginner-tutorial";
+    public static final String TUTORIAL_NPC_NAME = TUTORIALS + "tutorial-npc-name";
+    public static final String TUTORIAL_NPC_TEXTURE = TUTORIALS + "tutorial-npc-texture";
+    public static final String TUTORIAL_NPC_SIGNATURE = TUTORIALS + "tutorial-npc-signature";
 }

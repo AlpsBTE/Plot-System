@@ -83,18 +83,17 @@ import java.util.List;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotGenerator {
-    private final Plot plot;
+    protected final AbstractPlot plot;
     private final Builder builder;
-    private final PlotWorld world;
-    private final double plotVersion;
-    private final PlotType plotType;
+    protected final PlotWorld world;
+    protected final PlotType plotType;
 
     /**
      * Generates a new plot in the plot world
      * @param plot - plot which should be generated
      * @param builder - builder of the plot
      */
-    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
+    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
         this(plot, builder, builder.getPlotTypeSetting());
     }
 
@@ -104,8 +103,8 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      * @param plotType - type of the plot
      */
-    public AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotType plotType) throws SQLException {
-        this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld(plot));
+    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) throws SQLException {
+        this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld((Plot) plot));
     }
 
     /**
@@ -114,11 +113,10 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      * @param world - world of the plot
      */
-    private AbstractPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, @NotNull PlotType plotType, @NotNull PlotWorld world) {
+    private AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType, @NotNull PlotWorld world) {
         this.plot = plot;
         this.builder = builder;
         this.world = world;
-        this.plotVersion = plot.getVersion();
         this.plotType = plotType;
 
         if (init()) {
@@ -127,7 +125,7 @@ public abstract class AbstractPlotGenerator {
                 if (plotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
                     new PlotWorldGenerator(world.getWorldName());
                 } else if (!world.isWorldLoaded() && !world.loadWorld()) throw new Exception("Could not load world");
-                generateOutlines(plot.getOutlinesSchematic(), plotVersion >= 3 ? plot.getEnvironmentSchematic() : null);
+                generateOutlines(plot.getOutlinesSchematic(), plot.getVersion() >= 3 ? plot.getEnvironmentSchematic() : null);
                 createPlotProtection();
             } catch (Exception ex) {
                 exception = ex;
@@ -140,7 +138,7 @@ public abstract class AbstractPlotGenerator {
             }
 
             if (exception != null) {
-                PlotHandler.abandonPlot(plot);
+                PlotUtils.Actions.abandonPlot(plot);
                 onException(exception);
             }
         }
@@ -169,32 +167,7 @@ public abstract class AbstractPlotGenerator {
             editSession.setMask(new BlockTypeMask(weWorld, BlockTypes.AIR));
             pasteSchematic(editSession, environmentSchematic, world, false);
         }
-
         pasteSchematic(editSession, plotSchematic, world, true);
-
-        // If the player is playing in his own world, then additionally generate the plot in the city world
-        if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
-            // Generate city plot world if it doesn't exist
-            new AbstractPlotGenerator(plot, builder, PlotType.CITY_INSPIRATION_MODE) {
-                @Override
-                protected boolean init() {
-                    return true;
-                }
-
-                @Override
-                protected void createPlotProtection() {}
-
-                @Override
-                protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
-                    super.onComplete(true, true);
-                }
-
-                @Override
-                protected void onException(Throwable ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
-                }
-            };
-        }
     }
 
 
@@ -222,32 +195,11 @@ public abstract class AbstractPlotGenerator {
             protectedBuildRegion.setOwners(owner);
             protectedRegion.setOwners(owner);
 
+            // Set protected build region permissions
+            setBuildRegionPermissions(protectedBuildRegion);
 
-            // Set permissions
-            protectedBuildRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
-            protectedBuildRegion.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
-            protectedRegion.setFlag(Flags.BUILD, StateFlag.State.DENY);
-            protectedRegion.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
-            protectedRegion.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
-            protectedRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
-
-            FileConfiguration config = ConfigUtil.getInstance().configs[1];
-            List<String> allowedCommandsNonBuilder = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
-            allowedCommandsNonBuilder.removeIf(c -> c.equals("/cmd1"));
-            for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
-                allowedCommandsNonBuilder.addAll(Arrays.asList(baseCommand.getNames()));
-                for (String command : baseCommand.getNames()) {
-                    allowedCommandsNonBuilder.add("/" + command);
-                }
-            }
-            List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
-            blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
-
-            protectedRegion.setFlag(Flags.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
-            protectedRegion.setFlag(Flags.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-            protectedRegion.setFlag(Flags.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
-            protectedRegion.setFlag(Flags.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
-
+            // Set protected region permissions
+            setRegionPermissions(protectedRegion);
 
             // Add regions and save changes
             if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
@@ -258,6 +210,59 @@ public abstract class AbstractPlotGenerator {
         } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
 
+    /**
+     * Sets the permissions for the plot build region only
+     * @param region build region
+     */
+    protected void setBuildRegionPermissions(ProtectedRegion region) {
+        region.setFlag(DefaultFlag.BUILD, StateFlag.State.ALLOW);
+        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+    }
+
+    /**
+     * Sets the permissions for the whole plot region
+     * @param region plot region
+     */
+    protected void setRegionPermissions(ProtectedRegion region) {
+        region.setFlag(DefaultFlag.BUILD, StateFlag.State.DENY);
+        region.setFlag(DefaultFlag.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+        region.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
+        region.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+        FileConfiguration config = ConfigUtil.getInstance().configs[1];
+        region.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(getBlockedCommands(config)));
+        region.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+        region.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(getAllowedCommands(config)));
+        region.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+    }
+
+    /**
+     * Reads the allowed commands for the plot region from the config
+     * @param config commands.yml config
+     * @return list of allowed commands
+     */
+    protected List<String> getAllowedCommands(FileConfiguration config) {
+        List<String> allowedCommands = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
+        allowedCommands.removeIf(c -> c.equals("/cmd1"));
+        for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
+            allowedCommands.addAll(Arrays.asList(baseCommand.getNames()));
+            for (String command : baseCommand.getNames()) {
+                allowedCommands.add("/" + command);
+            }
+        }
+        return allowedCommands;
+    }
+
+    /**
+     * Reads the blocked commands for the plot region from the config
+     * @param config commands.yml config
+     * @return list of blocked commands
+     */
+    protected List<String> getBlockedCommands(FileConfiguration config) {
+        List<String> blockedCommands = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
+        blockedCommands.removeIf(c -> c.equals("/cmd1"));
+        return blockedCommands;
+    }
 
     /**
      * Gets invoked when generation is completed
@@ -266,14 +271,6 @@ public abstract class AbstractPlotGenerator {
      * @throws SQLException - caused by a database exception
      */
     protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
-        if (!failed) {
-            builder.setPlot(plot.getID(), builder.getFreeSlot());
-            plot.setPlotType(plotType);
-            plot.setStatus(Status.unfinished);
-            plot.setPlotOwner(builder.getPlayer().getUniqueId().toString());
-            PlotManager.clearCache(builder.getUUID());
-        }
-
         // Unload plot world if it is not needed anymore
         if (unloadWorld) world.unloadWorld(false);
     }
@@ -293,7 +290,7 @@ public abstract class AbstractPlotGenerator {
     /**
      * @return - plot object
      */
-    public Plot getPlot() {
+    public AbstractPlot getPlot() {
         return plot;
     }
 

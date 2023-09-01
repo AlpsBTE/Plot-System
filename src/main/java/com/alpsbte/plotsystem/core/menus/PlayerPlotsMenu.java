@@ -32,6 +32,8 @@ import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -92,7 +94,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         // Set player plot items
         try {
-            plots = PlotManager.getPlots(builder);
+            plots = Plot.getPlots(builder);
 
             plotDisplayCount = Math.min(plots.size(), 36);
             for (int i = 0; i < plotDisplayCount; i++) {

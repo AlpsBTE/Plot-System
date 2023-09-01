@@ -26,11 +26,12 @@ package com.alpsbte.plotsystem.commands.review;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -53,20 +54,26 @@ public class CMD_EditPlot extends BaseCommand {
                         Plot plot;
                         if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
                             int plotID = Integer.parseInt(args[0]);
-                            if (PlotManager.plotExists(plotID)) {
+                            if (PlotUtils.plotExists(plotID)) {
                                 plot = new Plot(plotID);
                             } else {
                                 sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                                 return true;
                             }
-                        } else if (getPlayer(sender) != null && PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                            plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
+                        } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
+                            AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
+                            if (p instanceof Plot) {
+                                plot = (Plot) p;
+                            } else {
+                                sendInfo(sender);
+                                return true;
+                            }
                         } else {
                             sendInfo(sender);
                             return true;
                         }
 
-                        if (plot != null && plot.getStatus() != Status.completed) {
+                        if (plot.getStatus() != Status.completed) {
                             Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
                             int countryID = plot.getCity().getCountry().getID();
                             if (builder.isReviewer() && builder.getAsReviewer().getCountries().stream().anyMatch(c -> c.getID() == countryID) && plot.getPlotOwner().getUUID() != builder.getUUID() && plot.getPlotMembers().stream().noneMatch(b -> b.getUUID() == builder.getUUID())) {

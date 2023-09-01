@@ -51,6 +51,9 @@ commands:
   pss:
     description: Command for setting up the database.
     usage: /pss help
+  tutorial:
+    description: Start the Beginner Tutorial process. Only for test usages.
+    usage: /tutorial
 permissions:
   plotsystem.plot:
     description: Builder permissions

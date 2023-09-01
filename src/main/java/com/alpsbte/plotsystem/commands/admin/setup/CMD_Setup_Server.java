@@ -29,7 +29,7 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
 import com.alpsbte.plotsystem.core.system.Server;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -140,7 +140,7 @@ public class CMD_Setup_Server extends SubCommand {
                 if (args[1].length() <= 45) {
                     try {
                         Server server = Server.addServer(args[1]);
-                        Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(server.getID()));
+                        Path serverPath = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(server.getID()));
                         if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
                         if (!serverPath.toFile().mkdirs()) throw new IOException();
                         sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added server!"));
@@ -189,7 +189,7 @@ public class CMD_Setup_Server extends SubCommand {
                 try {
                     if (Server.getServers().stream().anyMatch(s -> s.getID() == Integer.parseInt(args[1]))) {
                         Server.removeServer(Integer.parseInt(args[1]));
-                        Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), args[1]);
+                        Path serverPath = Paths.get(PlotUtils.getDefaultSchematicPath(), args[1]);
                         if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
                         sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed server with ID " + args[1] + "!"));
                     } else {

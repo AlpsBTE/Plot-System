@@ -29,9 +29,11 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
+import com.alpsbte.plotsystem.core.menus.*;
+import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -39,7 +41,6 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -76,13 +77,13 @@ public class CountryMenu extends AbstractMenu {
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
                         .build());
 
-        // Set loading item for plots difficulty item
-        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
+        // Set plots difficulty item head
+        getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
-            player.closeInventory();
-            new CountryMenu(player, selectedContinent);
-        }).entrySet()) {
+        // Set tutorial item
+        getMenu().getSlot(7).setItem(TutorialsMenu.getTutorialItem(getMenuPlayer()));
+
+        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
@@ -91,9 +92,6 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Set plots difficulty item head
-        getMenu().getSlot(7).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
-
         // Set city project items
         try {
             countryProjects = Country.getCountries(selectedContinent);
@@ -106,18 +104,15 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for navigator item
-        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND));
-        });
+        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND)));
 
         // Set click event for plots difficulty item
-        getMenu().getSlot(7).setClickHandler(((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
                     PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
                     PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
 
-            getMenu().getSlot(7).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
+            getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
 
             try {
@@ -127,26 +122,20 @@ public class CountryMenu extends AbstractMenu {
             }
         }));
 
+        // Set click event for tutorial item
+        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> new TutorialsMenu(clickPlayer));
+
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
-            getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> {
-                clickPlayer.closeInventory();
-                new ContinentMenu(clickPlayer);
-            });
+            getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> new ContinentMenu(clickPlayer));
         }
 
         for (Country country : countryProjects) {
             int i = countryProjects.indexOf(country);
-            getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, clickInformation) -> {
-                clickPlayer.closeInventory();
-                new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty);
-            });
+            getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, clickInformation) -> new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty));
         }
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> {
-            player.closeInventory();
-            new CountryMenu(player, selectedContinent);
-        }).entrySet()) {
+        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
     }
@@ -155,7 +144,7 @@ public class CountryMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
-                .pattern("011101111")
+                .pattern("011101001")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -178,10 +167,10 @@ public class CountryMenu extends AbstractMenu {
             ItemStack item = country.getHead();
 
             List<CityProject> cities = country.getCityProjects();
-            int plotsOpen = PlotManager.getPlots(cities, Status.unclaimed).size();
-            int plotsInProgress = PlotManager.getPlots(cities, Status.unfinished, Status.unreviewed).size();
-            int plotsCompleted = PlotManager.getPlots(cities, Status.completed).size();
-            int plotsUnclaimed = PlotManager.getPlots(cities, Status.unclaimed).size();
+            int plotsOpen = Plot.getPlots(cities, Status.unclaimed).size();
+            int plotsInProgress = Plot.getPlots(cities, Status.unfinished, Status.unreviewed).size();
+            int plotsCompleted = Plot.getPlots(cities, Status.completed).size();
+            int plotsUnclaimed = Plot.getPlots(cities, Status.unclaimed).size();
 
             getMenu().getSlot(startingSlot + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
                     .setName("§b§l" + country.getName())

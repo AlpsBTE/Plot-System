@@ -30,9 +30,16 @@ import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.utils.heads.CustomHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.utils.PacketListener;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -52,9 +59,7 @@ import org.ipvp.canvas.MenuFunctionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -65,6 +70,11 @@ public class PlotSystem extends JavaPlugin {
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
+
+    static {
+        // Set tutorials
+        AbstractTutorial.setTutorials(Collections.singletonList(BeginnerTutorial.class));
+    }
 
     @Override
     public void onEnable() {
@@ -132,6 +142,8 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
             this.getServer().getPluginManager().registerEvents(new CustomHeadEventListener(), this);
+            if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
+                this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
@@ -181,10 +193,10 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
-        PlotManager.checkPlotsForLastActivity();
-        PlotManager.syncPlotSchematicFiles();
+        PlotUtils.checkPlotsForLastActivity();
+        PlotUtils.syncPlotSchematicFiles();
         Review.checkReviewerFeedbackList();
-        PlotManager.startTimer();
+        PlotUtils.Effects.startTimer();
 
         try {
             new PacketListener();
@@ -213,6 +225,19 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
             LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::remove);
+        } else {
+            // Unload plots
+            for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
+                for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(Builder.byUUID(player))) {
+                    if (plot != null) plot.getWorld().unloadWorld(true);
+                }
+            }
+
+            // Unload tutorials
+            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++) {
+                Tutorial tutorial = AbstractTutorial.getActiveTutorials().get(i);
+                tutorial.onTutorialStop(tutorial.getPlayerUUID());
+            }
         }
     }
 

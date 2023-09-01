@@ -26,14 +26,24 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.Vector;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -47,8 +57,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
@@ -63,31 +72,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Plot implements IPlot {
-    public static final double PLOT_VERSION = 3;
-    private final int ID;
-
-    private List<BlockVector2> outline;
-    private List<BlockVector2> blockOutline;
+public class Plot extends AbstractPlot {
     private CityProject city;
-    private Builder plotOwner;
-    private PlotType plotType;
-    private double plotVersion = -1;
-
-    private OnePlotWorld onePlotWorld;
     private CityPlotWorld cityPlotWorld;
-    private PlotPermissions plotPermissions;
 
-    public Plot(int ID) throws SQLException {
-        this.ID = ID;
+    public Plot(int id) {
+        super(id);
     }
 
-    @Override
-    public int getID() {
-        return ID;
-    }
-
-    @Override
     public CityProject getCity() throws SQLException {
         if(this.city != null)
             return this.city;
@@ -110,7 +102,6 @@ public class Plot implements IPlot {
         }
     }
 
-    @Override
     public PlotDifficulty getDifficulty() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT difficulty_id FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
@@ -206,7 +197,6 @@ public class Plot implements IPlot {
         return null;
     }
 
-    @Override
     public void setPlotOwner(String UUID) throws SQLException {
         if (UUID == null) {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET owner_uuid = DEFAULT(owner_uuid) WHERE id = ?")
@@ -219,7 +209,6 @@ public class Plot implements IPlot {
         plotOwner = null;
     }
 
-    @Override
     public List<Builder> getPlotMembers() throws SQLException {
         List<Builder> builders = new ArrayList<>();
 
@@ -242,7 +231,6 @@ public class Plot implements IPlot {
         return builders;
     }
 
-    @Override
     public void setPlotMembers(@NotNull List<Builder> plotMembers) throws SQLException {
         // Convert plot member list to string
         String plotMemberAsString = plotMembers.stream().map(member -> member.getUUID().toString()).collect(Collectors.joining(","));
@@ -254,24 +242,6 @@ public class Plot implements IPlot {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET member_uuids = DEFAULT(member_uuids) WHERE id = ?")
                     .setValue(this.ID).executeUpdate();
         }
-    }
-
-    @Override
-    public Review getReview() throws SQLException {
-        if(getStatus() == Status.completed || isRejected()) {
-            try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                    .setValue(this.ID).executeQuery()) {
-
-                if (rs.next()) {
-                    int i = rs.getInt(1);
-                    DatabaseConnection.closeResultSet(rs);
-                    return new Review(i);
-                }
-
-                DatabaseConnection.closeResultSet(rs);
-            }
-        }
-        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -290,70 +260,22 @@ public class Plot implements IPlot {
     }
 
     @Override
-    public PlotPermissions getPermissions() {
-        if (plotPermissions == null) plotPermissions = new PlotPermissions(getWorld());
-        return plotPermissions;
-    }
+    public List<BlockVector2D> getOutline() throws SQLException, IOException {
+        if(outline != null)
+            return this.outline;
 
-    @Override
-    public int getTotalScore() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT outline FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
-            if(rs.next()) {
-                int score = rs.getInt(1);
-                if(!rs.wasNull()) {
-                    DatabaseConnection.closeResultSet(rs);
-                    return score;
-                }
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-
-            return -1;
-        }
-    }
-
-    @Override
-    public int getSharedScore() throws SQLException {
-        int score = getTotalScore();
-        if (score != -1 && !getPlotMembers().isEmpty()) {
-            return (int) Math.floor(score / (getPlotMembers().size() + 1d));
-        }
-        return score;
-    }
-
-    @Override
-    public void setTotalScore(int score) throws SQLException {
-        if (score == -1) {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?")
-                    .setValue(this.ID).executeUpdate();
-        } else {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?")
-                    .setValue(score).setValue(this.ID).executeUpdate();
-        }
-    }
-
-    @Override
-    public Status getStatus() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT status FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
+            List<BlockVector2D> pointVectors = new ArrayList<>();
             if (rs.next()) {
-                String s = rs.getString(1);
-                DatabaseConnection.closeResultSet(rs);
-                return Status.valueOf(s);
+                String points = rs.getString(1);
+                pointVectors = getOutlinePoints(rs.wasNull() ? null : points);
             }
 
             DatabaseConnection.closeResultSet(rs);
-            return null;
+            return pointVectors;
         }
-    }
-
-    @Override
-    public void setStatus(@NotNull Status status) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET status = ? WHERE id = ?")
-                .setValue(status.name()).setValue(this.ID).executeUpdate();
     }
 
     @Override
@@ -385,70 +307,125 @@ public class Plot implements IPlot {
     }
 
     @Override
-    public Date getCreateDate() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT create_date FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                Date d = rs.getDate(1);
-                DatabaseConnection.closeResultSet(rs);
-                return d;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
-    }
-
-    @Override
-    public Builder getPlotCreator() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT create_player FROM plotsystem_plots WHERE id = ?")
+    public Status getStatus() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT status FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()) {
                 String s = rs.getString(1);
                 DatabaseConnection.closeResultSet(rs);
-                return Builder.byUUID(UUID.fromString(s));
+                return Status.valueOf(s);
             }
 
             DatabaseConnection.closeResultSet(rs);
-
             return null;
         }
     }
 
     @Override
-    public Slot getSlot() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(this.getPlotOwner().getUUID().toString()).executeQuery()) {
+    public void setStatus(@NotNull Status status) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET status = ? WHERE id = ?")
+                .setValue(status.name()).setValue(this.ID).executeUpdate();
+    }
+
+    public int getTotalScore() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
 
             if(rs.next()) {
-                for(int i = 1; i <= 3; i++) {
-                    int slot = rs.getInt(i);
-                    if(!rs.wasNull() && slot == getID()) {
-                        DatabaseConnection.closeResultSet(rs);
-                        return Slot.values()[i - 1];
-                    }
+                int score = rs.getInt(1);
+                if(!rs.wasNull()) {
+                    DatabaseConnection.closeResultSet(rs);
+                    return score;
                 }
             }
 
             DatabaseConnection.closeResultSet(rs);
 
+            return -1;
+        }
+    }
+
+    public void setTotalScore(int score) throws SQLException {
+        if (score == -1) {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?")
+                    .setValue(this.ID).executeUpdate();
+        } else {
+            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?")
+                    .setValue(score).setValue(this.ID).executeUpdate();
+        }
+    }
+
+    public int getSharedScore() throws SQLException {
+        int score = getTotalScore();
+        if (score != -1 && !getPlotMembers().isEmpty()) {
+            return (int) Math.floor(score / (getPlotMembers().size() + 1d));
+        }
+        return score;
+    }
+
+    @Override
+    public PlotType getPlotType() throws SQLException {
+        if (plotType != null) return plotType;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT type FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                int typeId = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+
+                plotType = PlotType.byId(typeId);
+                return plotType;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
             return null;
         }
     }
 
+    public void setPlotType(PlotType type) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET type = ? WHERE id = ?")
+                .setValue(type.ordinal()).setValue(this.ID).executeUpdate();
+        plotType = type;
+    }
+
+    @Override
+    public double getVersion() {
+        if (plotVersion != -1) return plotVersion;
+
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT version FROM plotsystem_plots WHERE id = ?")
+                .setValue(this.ID).executeQuery()) {
+
+            if (rs.next()) {
+                double version = rs.getDouble(1);
+                if (!rs.wasNull()) {
+                    plotVersion = version;
+                } else {
+                    plotVersion = 2; // Plot version was implemented since v3, so we assume that the plot is v2.
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+                return plotVersion;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        return PLOT_VERSION;
+    }
+
     @Override
     public File getOutlinesSchematic() {
-        return getSchematic(getID() + "");
+        return getSchematicFile(String.valueOf(getID()));
     }
 
     @Override
     public File getEnvironmentSchematic() {
-        return getSchematic(getID() + "-env");
+        return getSchematicFile(getID() + "-env");
     }
 
-    private File getSchematic(String filename){
+    @Override
+    protected File getSchematicFile(String fileName){
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
@@ -474,8 +451,7 @@ public class Plot implements IPlot {
         }
     }
 
-    @Override
-    public File getFinishedSchematic() {
+    public File getCompletedSchematic() {
         try {
             return Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schem").toFile();
         } catch (SQLException ex) {
@@ -551,58 +527,54 @@ public class Plot implements IPlot {
     public BlockVector3 getCenter() {
         try {
             if (getVersion() >= 3) {
-                Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
-                if (clipboard != null) {
-                    Vector3 clipboardCenter = clipboard.getRegion().getCenter();
-                    return BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
-                }
-            } else return BlockVector3.at(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
+                return super.getCenter();
+            } else return new Vector(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
         }
         return null;
     }
 
-    public String getOSMMapsLink() throws IOException {
-        return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinates().replace(",", "/");
-    }
+    public Slot getSlot() throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
+                .setValue(this.getPlotOwner().getUUID().toString()).executeQuery()) {
 
-    public String getGoogleMapsLink() throws IOException {
-        return "https://www.google.com/maps/place/"+ getGeoCoordinates();
-    }
-
-    public String getGoogleEarthLink() throws IOException {
-        return "https://earth.google.com/web/@" + getGeoCoordinates() + ",0a,1000d,20y,-0h,0t,0r";
-    }
-
-    @Override
-    public void setPasted(boolean pasted) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET pasted = ? WHERE id = ?")
-                .setValue(pasted).setValue(this.ID).executeUpdate();
-    }
-
-    @Override
-    public double getVersion() {
-        if (plotVersion != -1) return plotVersion;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT version FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                double version = rs.getDouble(1);
-                if (!rs.wasNull()) {
-                    plotVersion = version;
-                } else {
-                    plotVersion = 2; // Plot version was implemented since v3, so we assume that the plot is v2.
+            if(rs.next()) {
+                for(int i = 1; i <= 3; i++) {
+                    int slot = rs.getInt(i);
+                    if(!rs.wasNull() && slot == getID()) {
+                        DatabaseConnection.closeResultSet(rs);
+                        return Slot.values()[i - 1];
+                    }
                 }
-
-                DatabaseConnection.closeResultSet(rs);
-                return plotVersion;
             }
 
             DatabaseConnection.closeResultSet(rs);
-        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
-        return PLOT_VERSION;
+
+            return null;
+        }
+    }
+
+    public Review getReview() throws SQLException {
+        if(getStatus() == Status.completed || isRejected()) {
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
+                    .setValue(this.ID).executeQuery()) {
+
+                if (rs.next()) {
+                    int i = rs.getInt(1);
+                    DatabaseConnection.closeResultSet(rs);
+                    return new Review(i);
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+            }
+        }
+        return null;
+    }
+
+    public void setPasted(boolean pasted) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET pasted = ? WHERE id = ?")
+                .setValue(pasted).setValue(this.ID).executeUpdate();
     }
 
     public void addPlotMember(Builder member) throws SQLException {
@@ -633,12 +605,158 @@ public class Plot implements IPlot {
         }
     }
 
-    @Override
     public boolean isReviewed() throws SQLException {
         return getReview() != null;
     }
 
     public boolean isRejected() throws SQLException {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
+    }
+
+
+
+
+    public static List<Plot> getPlots() throws SQLException {
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
+    }
+
+    public static List<Plot> getPlots(Status... statuses) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery();
+        return listPlots(rs);
+    }
+
+    public static List<Plot> getPlots(Builder builder) throws SQLException {
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE owner_uuid = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)").executeQuery());
+        plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
+        return plots;
+    }
+
+    public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
+        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND owner_uuid = '" + builder.getUUID().toString() + "'", statuses)).executeQuery());
+        plots.addAll(getPlotsAsMember(builder, statuses));
+        return plots;
+    }
+
+    public static List<Plot> getPlots(List<Country> countries, Status status) throws SQLException {
+        List<CityProject> cities = new ArrayList<>();
+        countries.forEach(c -> cities.addAll(c.getCityProjects()));
+        return getPlots(cities, status);
+    }
+
+    // Temporary fix to receive plots of builder as member
+    private static List<Plot> getPlotsAsMember(Builder builder, Status... status) throws SQLException {
+        List<Plot> plots = new ArrayList<>();
+        for (Status stat : status) {
+            plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE status = '" + stat.name() + "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
+        }
+        return plots;
+    }
+
+    public static List<Plot> getPlots(int cityID, Status... statuses) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND city_project_id = '" + cityID + "'", statuses)).executeQuery());
+    }
+
+    public static List<Plot> getPlots(List<CityProject> cities, Status... statuses) throws SQLException {
+        if(cities.size() == 0) {
+            return new ArrayList<>();
+        }
+        StringBuilder query = new StringBuilder(" AND (city_project_id = ");
+
+        for (int i = 0; i < cities.size(); i++) {
+            query.append(cities.get(i).getID());
+            query.append((i != cities.size() - 1) ? " OR city_project_id = " : ")");
+        }
+
+        return listPlots(DatabaseConnection.createStatement(getStatusQuery(query.toString(), statuses)).executeQuery());
+    }
+
+    public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
+        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE city_project_id = ? AND difficulty_id = ? AND status = ?")
+                .setValue(cityID)
+                .setValue(plotDifficulty.ordinal() + 1)
+                .setValue(status.name())
+                .executeQuery());
+    }
+
+    private static String getStatusQuery(String additionalQuery, Status... statuses) {
+        StringBuilder query = new StringBuilder("SELECT id FROM plotsystem_plots WHERE status = ");
+
+        for (int i = 0; i < statuses.length; i++) {
+            query.append("'").append(statuses[i].name()).append("'").append(additionalQuery);
+            query.append((i != statuses.length - 1) ? " OR status = " : "");
+        }
+        return query.toString();
+    }
+
+    private static List<Plot> listPlots(ResultSet rs) throws SQLException {
+        List<Plot> plots = new ArrayList<>();
+
+        while (rs.next()) {
+            plots.add(new Plot(rs.getInt(1)));
+        }
+
+        DatabaseConnection.closeResultSet(rs);
+        return plots;
+    }
+
+    public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        ResultSet rs = DatabaseConnection.createStatement("SELECT multiplier FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
+
+        if (rs.next()) {
+            double d = rs.getDouble(1);
+            DatabaseConnection.closeResultSet(rs);
+            return d;
+        }
+
+        DatabaseConnection.closeResultSet(rs);
+        return 1;
+    }
+
+    public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
+                .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
+
+            if (rs.next()) {
+                int i = rs.getInt(1);
+                DatabaseConnection.closeResultSet(rs);
+                return i;
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return 0;
+        }
+    }
+
+    public static boolean hasPlotDifficultyScoreRequirement(Builder builder, PlotDifficulty plotDifficulty) throws SQLException {
+        int playerScore = builder.getScore(), scoreRequirement = Plot.getScoreRequirementByDifficulty(plotDifficulty);
+        return playerScore >= scoreRequirement;
+    }
+
+    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+        // Check if plot difficulties are available
+        boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
+        if (getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) easyHasPlots = true;
+        if (getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
+        if (getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
+
+        if (hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
+            return CompletableFuture.completedFuture(PlotDifficulty.HARD);
+        } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
+            return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return easy
+            return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+        } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
+            return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
+            return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+        } else if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) { // If score requirement is disabled get plot from any available difficulty
+            if (easyHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+            } else if (mediumHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+            }
+        }
+        return CompletableFuture.completedFuture(null); // If nothing is available return null
     }
 }

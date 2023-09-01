@@ -25,8 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -60,7 +59,7 @@ public class CityPlotWorld extends PlotWorld {
                     player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
                     Utils.updatePlayerInventorySlots(player);
-                    PlotHandler.sendLinkMessages(getPlot(), player);
+                    PlotUtils.ChatFormatting.sendLinkMessages((Plot) getPlot(), player);
 
                     if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
                         getPlot().setLastActivity(false);
@@ -117,11 +116,11 @@ public class CityPlotWorld extends PlotWorld {
      * Gets all players located on the plot in the city plot world
      * @return a list of players located on the plot
      */
-    public List<Player> getPlayersOnPlot() {
+    public List<Player> getPlayersOnPlot() throws SQLException {
         List<Player> players = new ArrayList<>();
         if (getPlot() != null && getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {
             for (Player player : getPlot().getWorld().getBukkitWorld().getPlayers()) {
-                if (PlotManager.isPlayerOnPlot(getPlot(), player)) players.add(player);
+                if (PlotUtils.isPlayerOnPlot(getPlot(), player)) players.add(player);
             }
             return players;
         }

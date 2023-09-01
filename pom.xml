@@ -56,6 +56,12 @@
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
+
+        <!-- Citizens -->
+        <repository>
+            <id>citizens-repo</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -130,7 +136,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-io</artifactId>
-            <version>1.0.17</version>
+            <version>1.0.34</version>
             <scope>compile</scope>
         </dependency>
 
@@ -145,7 +151,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-hologram</artifactId>
-            <version>1.0.19</version>
+            <version>1.0.47</version>
             <scope>compile</scope>
         </dependency>
 
@@ -203,6 +209,21 @@
             <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Citizens -->
+        <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizens-main</artifactId>
+            <version>2.0.30-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <!-- Fast Async World Edit -->
@@ -224,18 +245,22 @@
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                </includes>
+                <filtering>false</filtering>
             </resource>
             <resource>
                 <targetPath>./lang</targetPath>
                 <directory>${basedir}/src/main/resources/lang</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>./tutorial</targetPath>
+                <directory>${basedir}/src/main/resources/tutorial</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <targetPath>./tutorial/schematics</targetPath>
+                <directory>${basedir}/src/main/resources/tutorial/schematics</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <!-- IMPORTANT: Plugin Building Path -->

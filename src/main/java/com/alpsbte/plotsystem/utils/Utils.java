@@ -29,6 +29,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import org.bukkit.*;
@@ -37,7 +40,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 
 public class Utils {
@@ -83,6 +88,7 @@ public class Utils {
 
 
     public static class ChatUtils {
+        public static final String LINE_BREAKER = "%newline%";
         private static final String messagePrefix =  PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
 
         public static String getInfoMessageFormat(String info) {
@@ -138,6 +144,7 @@ public class Utils {
         public static CustomHead YELLOW_CONCRETE_HEAD;
         public static CustomHead RED_CONCRETE_HEAD;
         public static CustomHead WHITE_P_HEAD;
+        public static CustomHead TUTORIAL_HEAD;
 
         public static CustomHead ADD_BUTTON_HEAD;
         public static CustomHead REMOVE_BUTTON_HEAD;
@@ -158,6 +165,7 @@ public class Utils {
                 YELLOW_CONCRETE_HEAD = new CustomHead("8613");
                 RED_CONCRETE_HEAD = new CustomHead("8616");
                 WHITE_P_HEAD = new CustomHead("9282");
+                TUTORIAL_HEAD = new CustomHead("24180");
 
                 ADD_BUTTON_HEAD = new CustomHead("9237");
                 REMOVE_BUTTON_HEAD = new CustomHead("9243");
@@ -173,7 +181,6 @@ public class Utils {
             });
         }
     }
-
 
 
     public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){

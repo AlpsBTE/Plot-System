@@ -29,8 +29,7 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -53,13 +52,13 @@ public class CMD_Plot_Links extends SubCommand {
             if (getPlayer(sender) != null) {
                 if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
-                    if (PlotManager.plotExists(plotID)) {
-                        PlotHandler.sendLinkMessages(new Plot(plotID), getPlayer(sender));
+                    if (PlotUtils.plotExists(plotID)) {
+                        PlotUtils.ChatFormatting.sendLinkMessages(new Plot(plotID), getPlayer(sender));
                     } else {
                         sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     }
-                } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
-                    PlotHandler.sendLinkMessages(PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed), getPlayer(sender));
+                } else if (PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
+                    PlotUtils.ChatFormatting.sendLinkMessages(PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed), getPlayer(sender));
                 } else {
                     sendInfo(sender);
                 }
