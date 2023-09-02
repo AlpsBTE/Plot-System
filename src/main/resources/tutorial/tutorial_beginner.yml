@@ -1,0 +1,71 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# |
+# | [Tutorial Config - Beginner]
+# |
+# | IMPORTANT: THIS CONFIG FILE SHOULD NOT BE EDITED IF YOU DON´T KNOW WHAT YOU ARE DOING!
+# | Any changes may lead to unexpected behaviours or issues.
+# -----------------------------------------------------
+tutorial-id: 0
+tutorial-item-name: "BRICKS"
+tutorial-stages: 10
+
+# Spawn points for the player and the NPC (x, y, z, yaw, pitch)
+# To define the plot world spawn, use the key word ´plot´
+tutorial-spawns:
+  hub:
+    spawn-player: '581.5, 79.0, 505.5, 45, 0'
+    spawn-npc: '575.5, 79.0, 517.5, -150, 0'
+  plot:
+    spawn-player: '3693357.5, 11.0, -4531324.5, 150, 0'
+    spawn-npc: '3693348.5, 11.0, -4531329.5, -60, 0'
+
+plot-outlines: '3693351.0,-4531330.0|3693370.0,-4531324.0|3693375.0,-4531339.0|3693355.0,-4531346.0'
+
+# Tip hologram coordinates (x, y, z)
+tip-hologram-coordinates:
+  - '3693362.5, 21, -4531331.5'
+  - '3693363.5, 14, -4531330.5'
+  - '3693363.5, 17, -4531325.5'
+  - '3693358.5, 24, -4531334.5'
+  - '3693355.5, 14, -4531329.5'
+  - '3693365.5, 14, -4531325.5'
+  - '3693351.5, 14, -4531331.5'
+  - '3693365.5, 14, -4531325.5'
+  - '3693360.5, 22, -4531330.5'
+  - '3693356.5, 14, -4531329.5'
+  - '3693365.5, 14, -4531325.5'
+  - '3693355.5, 14, -4531329.5'
+
+# Documentation links which can be opened by clicking on ´Read More´ on tip holograms.
+documentation-links:
+  - 'https://docs.alps-bte.com/'
+  - 'https://minecraft-worldedit.fandom.com/wiki///replace'
+  - 'https://minecraft-worldedit.fandom.com/wiki///stack'
+
+# -----------------------------------------------------
+# | Beginner Tutorial
+# -----------------------------------------------------
+beginner:
+  # Coordinates for the building outlines
+  building-coordinates:
+    point-1: '3693354.0,-4531333.0'
+    point-2: '3693367.0,-4531328.0'
+    point-3: '3693370.0,-4531337.0'
+    point-4: '3693357.0,-4531342.0'
+  # BaseBlock for the building outline
+  base-block: 'WOOL'
+  base-block-id: 35
+  # Height of the plot building, which must be calculated
+  height: 7
+  height-offset: 1
+  # Blocks and positions for the windows that needs to be placed
+  window-blocks:
+    - '3693356.0, 16, -4531332.0, , '
+
+
+config-version: 1.1

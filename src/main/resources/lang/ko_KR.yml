@@ -5,8 +5,8 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
-# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # |
 # | Korean translation by m4ndeokyi#4063
 # -----------------------------------------------------
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "클릭하여 플롯으로 이동하기"
   abandon-desc: "클릭하여 초기화 및 다른 사람이 건축하도록 하기"
   undo-submit-desc: "클릭하여 제출 취소하기"
-  manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 // 제외할 수 있는 플롯 멤버 메뉴를 여세요"
+  manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 %newline% 제외할 수 있는 플롯 멤버 메뉴를 여세요"
   feedback-desc: "클릭하여 플롯 리뷰 피드백 보기"
   custom-heads-desc: "클릭하여 다양한 커스텀 헤드를 얻으세요"
   banner-maker-desc: "클릭하여 커스텀 현수막을 제작하세요"
@@ -146,9 +146,9 @@ menu-description:
   select-language-desc: "언어를 선택하세요"
   auto-detect-language-desc: "클릭하여 자동으로 언어 감지"
   select-plot-type-desc: 'Choose your plot type'
-  select-focus-mode-desc: "Build your plot on a floating island in the void.\n\n- No Environment\n- No neighboring plots"
-  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.\n\n+ Environment\n- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.\n\n+ Environment\n+ Neighboring plots"
+  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
 
@@ -167,13 +167,13 @@ review:
   player-language: "Player Language"
   criteria:
     accuracy: "정확도"
-    accuracy-desc: "얼마나 정확하게 건축되었나요?////- 현실과의 유사성//- 올바른 외곽선//- 올바른 높이//- 완성도"
+    accuracy-desc: "얼마나 정확하게 건축되었나요?%newline%%newline%- 현실과의 유사성%newline%- 올바른 외곽선%newline%- 올바른 높이%newline%- 완성도"
     block-palette: "블록 선정"
-    block-palette-desc: "사용된 블록이 얼마나 다양하고 창의적인가요?////- 사용된 블록의 색깔/질감//- 블록의 무작위성"
+    block-palette-desc: "사용된 블록이 얼마나 다양하고 창의적인가요?%newline%%newline%- 사용된 블록의 색깔/질감%newline%- 블록의 무작위성"
     detailing: "디테일"
-    detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?////- 지붕 디테일//- 건물 정면 디테일//- 머리와 현수막의 사용"
+    detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?%newline%%newline%- 지붕 디테일%newline%- 건물 정면 디테일%newline%- 머리와 현수막의 사용"
     technique: "기법"
-    technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?////- 월드에딧//- 특수 블록"
+    technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?%newline%%newline%- 월드에딧%newline%- 특수 블록"
 
 # -----------------------------------------------------
 # | Notes
@@ -275,4 +275,4 @@ leaderboards:
   not-on-leaderboard: "Not on leaderboard"
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

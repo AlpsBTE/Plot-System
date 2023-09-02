@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,6 @@ import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
 
 public abstract class AbstractMenu {
-
-    public static final int MAX_CHARS_PER_LINE = 30;
-    public static final char LINE_BAKER = '\n';
-
     private final Menu menu;
     private final Player menuPlayer;
 
@@ -45,7 +41,7 @@ public abstract class AbstractMenu {
 
     public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.menuPlayer = menuPlayer;
-        this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
+        this.menu = ChestMenu.builder(rows).title(title).redraw(false).build();
 
         if (reload) reloadMenuAsync();
     }
@@ -68,7 +64,7 @@ public abstract class AbstractMenu {
     protected abstract Mask getMask();
 
     /**
-     * Places items synchronously in the menu and opens it afterwards
+     * Places items synchronously in the menu and opens it afterward
      * NOTE: This method gets called before class is loaded!
      */
     protected void setPreviewItems() {

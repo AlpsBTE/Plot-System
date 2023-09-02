@@ -1,5 +1,30 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.commands.admin.setup;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Difficulty;
@@ -59,7 +84,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             List<Difficulty> difficulties = Difficulty.getDifficulties();
-            sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + difficulties.size() + " Difficulties registered in the database:"));
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + difficulties.size() + " Difficulties registered in the database:"));
             sender.sendMessage("§8--------------------------");
             for (Difficulty d : difficulties) {
                 sender.sendMessage(" §6> §b" + d.getID() + " (" + d.getDifficulty().name() + ") §f- Multiplier: " + d.getMultiplier() + " - Score Requirement: " + d.getScoreRequirement());

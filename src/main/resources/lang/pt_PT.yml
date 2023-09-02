@@ -1,0 +1,278 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# |
+# | Portuguese translation by Cau#5722
+# -----------------------------------------------------
+
+lang:
+  name: "Portuguese (PT)"
+  head-id: "22022"
+
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
+plot:
+  plot-name: "Terreno"
+  id: "ID"
+  owner: "Dono do Terreno"
+  members: "Membros do Terreno"
+  member: "Membro do Terreno"
+  city: "Cidade"
+  country: "Country"
+  difficulty: "Dificuldade"
+  status: "Status"
+  score: "Pontuação"
+  total-score: "Pontuação Total"
+  effective-score: "Pontuação Efetiva"
+  completed-plots: "Terrenos concluídos"
+  group-system:
+    empty-member-slot: "Espaço de Membro Vazio"
+    shared-by-members: "(Compartilhado por {0} membros)"
+
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
+city-project:
+  cities: "Cities"
+  open: "Terrenos Abertos"
+  in-progress: "Terrenos em Progresso"
+  completed: "Terrenos Concluído"
+  plots-available: "Plots Available"
+  no-plots-available: "Nenhum Terreno Disponível"
+  for-your-difficulty: "({0} for your difficulty)"
+
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
+country:
+  countries: "Countries"
+
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
+continent:
+  europe: "Europe"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "South America"
+  north-america: "North America"
+
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
+difficulty:
+  automatic: "Automático"
+  score-multiplier: "Multiplicador de Pontuação"
+
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
+menu-title:
+  close: "Fechar"
+  back: "Voltar"
+  next-page: "Próxima Página"
+  previous-page: "Página Anterior"
+  error: "Erro"
+  loading: "Carregando..."
+  navigator: "Navegador"
+  plot-difficulty: "Dificuldade do Terreno"
+  slot: "Slot"
+  builder-utilities: "Utilidades do Construtor"
+  show-plots: "Mostrar Terreno"
+  settings: "Configurações"
+  submit: "Enviar"
+  teleport: "Teletransportar"
+  abandon: "Abandonar"
+  undo-submit: "Desfazer Envio"
+  manage-members: "Gerenciar Membros"
+  feedback: "Feedback | Revisão #{0}"
+  custom-heads: "Cabeças Customizadas"
+  banner-maker: "Criador de Estandartes"
+  special-blocks: "Blocos Especiais"
+  review-point: "Ponto"
+  review-points: "Pontos"
+  cancel: "Cancelar"
+  add-member-to-plot: "Adicionar Membro ao Terreno"
+  companion: "Companheiro"
+  companion-select-continent: "Select A Continent"
+  companion-select-country: "Select A Country"
+  companion-select-city: "Select A City"
+  player-plots: "{0} Terreno/s"
+  leave-plot: "Deixar Terreno"
+  review-plots: "Avaliar Terrenos"
+  review-plot: "Avaliar Terreno #{0}"
+  enter-player-name: "Insira o Nome do Jogador"
+  select-language: "Selecionar Idioma"
+  auto-detect-language: "Detectar Automaticamente Idioma"
+  select-plot-type: "Select Plot Type"
+  select-focus-mode: "Select Focus Mode"
+  select-local-inspiration-mode: "Select Inspiration Mode"
+  select-city-inspiration-mode: "Select City Inspiration Mode"
+  filter-by-country: "Filter By Country"
+  information: "Info"
+
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
+menu-description:
+  error-desc: "Um erro ocorreu..."
+  navigator-desc: "Abrir o Menu do Navegador"
+  plot-difficulty-desc: "Clique para Mudar..."
+  slot-desc: "Clique Em um Projeto de Cidade para Criar um Novo Terreno"
+  builder-utilities-desc: "Tenha Acesso a Cabeças Personalizadas, Banners e Blocos Especiais"
+  show-plots-desc: "Mostrar Todos seus Terrenos"
+  settings-desc: "Modificar suas Configurações de Usuário"
+  submit-plot-desc: "Clique Para Concluir este Terreno e Enviá-lo para Análise"
+  teleport-desc: "Clique para Teletransportar para o Terreno"
+  abandon-desc: "Clique para Resetar seu Terreno e Entregá-lo a Outra Pessoa"
+  undo-submit-desc: "Clique para desfazer seu envio"
+  manage-members-desc: "Clique para Abrir o Menu de Membros do Terreno, Onde Você Pode adicionar%newline%e Remover Outros Jogadores do Seu Terreno"
+  feedback-desc: "Clique para ver seu Feedback de Revisão do Terreno"
+  custom-heads-desc: "Clique para Abrir o Menu de Cabeças para obter uma Variedade de Cabeças Personalizadas"
+  banner-maker-desc: "Clique para Abrir o Menu do Criador de Estandartes para Criar seus Próprios Estandartes Personalizados"
+  special-blocks-desc: "Clique para Abrir o Menu de Blocos Especiais para Obter uma Variedade de Blocos Inacessíveis"
+  add-member-to-plot-desc: "Convide seus amigos para seu Terreno e Comece a Construir Juntos"
+  review-points-desc: "Clique para Selecionar"
+  submit-review-desc: "Enviar os Pontos Selecionados e Marcar o Terreno como Avaliado"
+  leave-plot-desc: "Clique para Sair deste Terreno"
+  select-language-desc: "Escolha seu Idioma"
+  auto-detect-language-desc: "Clique para Detectar Automaticamente seu Idioma"
+  select-plot-type-desc: "Choose your plot type"
+  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
+  filter-desc: "Show All"
+  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
+
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
+review:
+  review-plot: "Avaliar Terreno"
+  manage-plot: "Gerenciar Terreno"
+  manage-and-review-plots: "Gerenciar e Avaliar Terrenos"
+  accepted: "Aceito"
+  rejected: "Rejeitado"
+  abandoned: "Abandoned"
+  feedback: "Feedback"
+  reviewer: "Avaliador"
+  player-language: "Player Language"
+  criteria:
+    accuracy: "Precisão"
+    accuracy-desc: "Quão precisa é a construção?%newline%%newline%- Pare como na vida real%newline%- MArcação correta%newline%- Altura correta%newline%- Completa"
+    block-palette: "Paleta de Blocos"
+    block-palette-desc: "Quantos blocos diferentes são usados e quão criativos eles são?%newline%%newline%- Escolha de cores/texturas de blocos%newline%- Blocos aleatórios"
+    detailing: "Detalhamento"
+    detailing-desc: "Quão detalhada é a construção?%newline%%newline%- Detalhes do telhado%newline%- Detalhes na Fachada%newline%- Cabeças e estandartes"
+    technique: "Técnica"
+    technique-desc: "Quais técnicas de construção foram utilizadas e quão criativas elas são?%newline%%newline%- World-Edit%newline%- Blocos especiais"
+
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
+note:
+  wont-be-able-continue-building: "Você não poderá continuar construindo neste terreno!"
+  score-will-be-split: "A pontuação será dividida entre todos os membros quando revisada!"
+  player-has-to-be-online: "O jogador tem que estar online!"
+  action:
+    right-click: "Clique com o botão direito"
+    click-to-enable: "Clique para permitir..."
+    click-to-disable: "Clique para inabilitar..."
+    click-to-remove-plot-member: "Clique para remover o membro do terreno..."
+    click-to-open-link: "§6Clique aqui §7para abrir o §a{0}§7 link..."
+    click-to-open-link-with-shortlink: "§6Clique aqui §7para abrir o §a{0}§7 link ou use este link: §a{1}"
+    click-to-show-feedback: "§6Clique aqui §apara mostrar seu feedback do seu terreno..."
+    click-to-show-open-reviews: "§6Clique aqui §apara mostrar avaliações abertas..."
+    click-to-show-plots: "§6Clique aqui §apara mostrar seus terrenos..."
+    click-to-play-with-friends: "§7Quer jogar com seus amigos? §6Clique aqui..."
+  # NOTE: Try to keep it as short as possible
+  anvil:
+    player-is-owner: "O jogador já é o proprietário!"
+    player-already-added: "Jogador já adicionado!"
+    player-not-online: "O jogador não está online!"
+    invalid-input: "Entrada inválida!"
+    enter-player-name: "Nome do jogador..."
+
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
+message:
+  info:
+    teleporting-plot: "§aTelestransportando para o terreno §6#{0}§a..."
+    teleporting-spawn: "§aTeletransportando para o spawn..."
+    teleporting-tpll: "§aTeleportando para §6{0}§a, §6{1}§a..."
+    abandoned-plot: "§aLote abandonado de ID §6#{0}§a!"
+    finished-plot: "§aTerreno §6#{0}§a por §6{1}§a foi finalizado!"
+    plot-marked-as-reviewed: "§aTerreno §6#{0}§a por §6{1}§a foi marcado como avaliado!"
+    plot-rejected: "§aTerreno §6#{0}§a por §6{1}§a foi rejeitado!Envie feedback usando §6/sendFeedback <ID> <TEXT>§a!"
+    undid-submission: "§aEnvio do Terreno Desfeito §6#{0}§a!"
+    undid-review: "§aAvaliação do Terreno Desfeita §6#{0}§a por §6#{1}§a!"
+    reviewed-plot: "§aSeu terreno §6#{0}§a foi avaliado!"
+    unreviewed-plot: "§aExiste um §6{0}§a terreno não avaliado!"
+    unreviewed-plots: "§aExistem §6{0}§a terrenos não avaliados!"
+    unfinished-plot: "§aVocê tem §6{0}§a terreno incompleto!"
+    unfinished-plots: "§aVocê tem §6{0}§a terrenos incompletos!"
+    enabled-build-permissions: "§aPermissões de construção habilitadas para avaliadores no terreno §6#{0}§a!"
+    disabled-build-permissions: "§aPermissões de construção desativadas para avaliadores no terreno §6#{0}§a!"
+    updated-plot-feedback: "§aAvaliação do terreno §6#{0}§a foi atualizada!"
+    removed-plot-member: "§aRemovido §6{0}§a do terreno §6#{1}§a!"
+    left-plot: "§aDeixou o terreno §6#{0}§a!"
+    plot-will-get-abandoned-warning: "§c§lAVISO: §cEsse terreno vai ser abandonado automaticamente!"
+    plot-will-get-rejected-warning: "§c§lAVISO: §cEsse terreno vai ser rejeitado!"
+    saving-plot: "§aSalvando terreno..."
+    creating-plot: "§aCriando um novo terreno..."
+    created-new-plot: "§aCriou novo terreno para §6{0}§a!"
+    changed-language: "§aMudou seu idioma para §6{0}§a!"
+    enter-feedback: "Please enter a feedback for the player in the chat."
+    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+  error:
+    plot-does-not-exist: "Esse terreno não existe!"
+    plot-either-unclaimed-or-unreviewed: "Este terreno não foi reivindicado ou ainda não foi revisado!"
+    plot-has-not-yet-reviewed: "Este terreno ainda não foi revisado!"
+    can-only-abandon-unfinished-plots: "Você só pode abandonar terrenos inacabados!"
+    can-only-submit-unfinished-plots: "Você só pode enviar terrenos inacabados!"
+    can-only-undo-submissions-unreviewed-plots: "Você só pode desfazer envios de terrenos não avaliados!"
+    can-only-manage-members-unfinished-plots: "Você só pode gerenciar membros de terrenos incompleto!"
+    can-only-tpll-to-plot: "Você só pode usar /tpll em um terreno!"
+    cannot-undo-review: "Você não pode desfazer uma avaliação que você mesmo não avaliou!"
+    cannot-send-feedback: "Você não pode enviar feedback para um lote que você mesmo não avaliou!"
+    cannot-review-own-plot: "Você não pode revisar seu próprio terreno!"
+    player-has-no-permissions: "Você não tem permissão para fazer isso!"
+    player-has-no-invitations: "Você não tem convites!"
+    player-is-not-allowed: "Você não tem permissão para fazer isso!"
+    player-is-plot-owner: "Este jogador já é o dono do Terreno!"
+    player-is-plot-member: "Este jogador já é um membro deste terreno!"
+    player-is-not-online: "Este jogador não está online!"
+    player-not-found: "Não foi possível encontrar esse jogador!"
+    player-needs-to-be-on-plot: "Você precisa estar em um terreno para usar isso!"
+    player-needs-higher-score: "Você precisa de uma pontuação mais alta para construir neste nível de dificuldade."
+    invalid-input: "Invalid input!"
+    error-occurred: "Um erro ocorreu! Por favor, tente novamente!"
+    command-disabled: "Este comando está desabilitado!"
+    no-plots-left: "Este projeto da cidade não tem mais terrenos. Por favor, Selecione outro projeto."
+    please-wait: "Aguarde alguns segundos antes de criar um novo terreno!"
+    all-slots-occupied: "Todos os seus slots estão ocupados! Por favor, termine seus terrenos atuais antes de criar um novo."
+    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
+    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+
+leaderboards:
+  pages:
+    DAILY: "Daily"
+    WEEKLY: "Weekly"
+    MONTHLY: "Monthly"
+    YEARLY: "Yearly"
+    LIFETIME: "Lifetime"
+  actionbar-position: "Position #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Not on Leaderboard"
+
+# NOTE: Do not change
+config-version: 1.2

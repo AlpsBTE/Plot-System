@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,7 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -50,7 +49,7 @@ public class CMD_Spawn extends BaseCommand {
         Player player = (Player) sender;
 
         player.teleport(Utils.getSpawnLocation());
-        player.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
+        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
         player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
         return true;
     }

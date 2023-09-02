@@ -24,8 +24,8 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.core.system.plot.generator.PlotWorldGenerator;
-import com.sk89q.worldedit.Vector;
+import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public interface IWorld {
     /**
@@ -40,14 +41,14 @@ public interface IWorld {
      * @param generator generator type as class
      * @return true if world was generated successfully
      */
-    <T extends PlotWorldGenerator> boolean generateWorld(@NotNull Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator);
 
     /**
      * Regenerates the current plot with an optional new generator type
      * @param generator generator type as class
      * @return true if world was regenerated successfully
      */
-    <T extends PlotWorldGenerator> boolean regenWorld(@NotNull Class<T> generator);
+    <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator);
 
     /**
      * Deletes the world file and entry in the config file
@@ -80,14 +81,14 @@ public interface IWorld {
      * @return center coordinates of the plot
      * @param plotVector plot vector
      */
-    Location getSpawnPoint(Vector plotVector);
+    Location getSpawnPoint(BlockVector3 plotVector);
 
     /**
      * Calculates the origin Y value in the plot world used for schematic pasting
      * @return the origin Y value
      * @throws IOException if the outline schematic fails to load
      */
-    int getPlotHeight() throws IOException;
+    int getPlotHeight() throws IOException, SQLException;
 
     /**
      * Calculates the centered Y value in the plot world

@@ -83,7 +83,8 @@ The city inspiration mode will give you the full building experience by combinin
 <!-- INSTALLATION -->
 # Installation
 💻 To use this system, you currently need at least two servers.</br>
-One is running Terra++ with the **[Plot-System-Terra Plugin](https://github.com/AlpsBTE/Plot-System-Terra)** and the other one is a Spigot Vanilla server for the Plot-System itself.</br>
+One is running Terra+- with the **[Plot-System-Terra Plugin](https://github.com/AlpsBTE/Plot-System-Terra)** and the
+other one is a Spigot Vanilla server for the Plot-System itself.</br>
 
 **For more information check out the [Wiki](https://github.com/AlpsBTE/Plot-System/wiki/Installation)**!
 

@@ -5,8 +5,8 @@
 # | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
 # | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
 # |
-# | [Formatting] Use // for a newline
-# | [Formatting] Words that are wrapped in the {number} tag are replaced afterwards
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # |
 # | German translation by BlackStarHD#1333 and R3tuxn#7169
 # -----------------------------------------------------
@@ -134,7 +134,7 @@ menu-description:
   teleport-desc: "Klicke hier, um dich zum Plot zu teleportieren"
   abandon-desc: "Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben"
   undo-submit-desc: "Klicke hier, um deine Eingabe rückgängig zu machen"
-  manage-members-desc: "Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du//andere Spieler zu deinem Plot hinzufügen oder entfernen kannst"
+  manage-members-desc: "Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du%newline%andere Spieler zu deinem Plot hinzufügen oder entfernen kannst"
   feedback-desc: "Klicke hier, um das Feedback zu deinem Plot anzuzeigen"
   custom-heads-desc: "Klicke hier, um eine Auswahl an benutzerdefinierten Köpfen zu erhalten"
   banner-maker-desc: "Klicke hier, um den Banner-Ersteller zu öffnen und selbstständig Banner zu erstellen"
@@ -146,9 +146,9 @@ menu-description:
   select-language-desc: "Wähle deine Sprache"
   auto-detect-language-desc: "Klicke hier, um deine Sprache automatisch zu erkennen"
   select-plot-type-desc: 'Wähle dein Plot Typ aus'
-  select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.\n\n- Keine Umgebung\n- Keine Nachbarsgrundstücke"
-  select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.\n\n+ Umgebung\n- Keine Nachbarsgrundstücke"
-  select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.\n\n+ Umgebung\n+ Nachbarsgrundstücke"
+  select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.%newline%%newline%- Keine Umgebung%newline%- Keine Nachbarsgrundstücke"
+  select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.%newline%%newline%+ Umgebung%newline%- Keine Nachbarsgrundstücke"
+  select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.%newline%%newline%+ Umgebung%newline%+ Nachbarsgrundstücke"
   filter-desc: "Alle Anzeigen"
   information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte oder eine Kategorie 0 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
 
@@ -167,13 +167,13 @@ review:
   player-language: "Spielersprache"
   criteria:
     accuracy: "Genauigkeit"
-    accuracy-desc: "Wie akkurat ist das Gebäude?////- Sieht aus wie in RL//- Korrekte Umrisse//- Korrekte Höhen//- Ist vollständig"
+    accuracy-desc: "Wie akkurat ist das Gebäude?%newline%%newline%- Sieht aus wie in RL%newline%- Korrekte Umrisse%newline%- Korrekte Höhen%newline%- Ist vollständig"
     block-palette: "Block-Palette"
-    block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?////- Wahl der Blockfarben/Texturen//- Randomisierte Blöcke"
+    block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?%newline%%newline%- Wahl der Blockfarben/Texturen%newline%- Randomisierte Blöcke"
     detailing: "Detaillierung"
-    detailing-desc: "Wie viele Details hat das Gebäude?////- Dachdetails//- Details an den Fassaden//- Köpfe und Banner"
+    detailing-desc: "Wie viele Details hat das Gebäude?%newline%%newline%- Dachdetails%newline%- Details an den Fassaden%newline%- Köpfe und Banner"
     technique: "Technik"
-    technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?////- World-Edit//- Spezialblöcke"
+    technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?%newline%%newline%- World-Edit%newline%- Spezialblöcke"
 
 # -----------------------------------------------------
 # | Notes
@@ -275,4 +275,4 @@ leaderboards:
   not-on-leaderboard: "Nicht auf Leaderboard"
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

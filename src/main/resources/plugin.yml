@@ -1,6 +1,6 @@
 main: com.alpsbte.plotsystem.PlotSystem
 version: 3.0.3
-api-version: 1.12.2
+api-version: 1.19
 name: Plot-System
 author: R3tuxn & Cinnazeyy
 softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase, ProtocolLib, ParticleNativeAPI]
@@ -42,15 +42,18 @@ commands:
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
-  sethologram:
-    description: Sets the position of a hologram
-    usage: /sethologram <name>
+  setleaderboard:
+    description: Sets the position of a leaderboard.
+    usage: /setleaderboard <name>
   preload:
-    description: Reload config and holograms
+    description: Reload configs and leaderboards
     usage: /preload
   pss:
     description: Command for setting up the database.
     usage: /pss help
+  tutorial:
+    description: Start the Beginner Tutorial process. Only for test usages.
+    usage: /tutorial
 permissions:
   plotsystem.plot:
     description: Builder permissions

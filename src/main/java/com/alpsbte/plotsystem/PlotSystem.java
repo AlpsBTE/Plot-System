@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,24 @@
 
 package com.alpsbte.plotsystem;
 
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.io.YamlFileFactory;
+import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
+import com.alpsbte.alpslib.utils.heads.CustomHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
-import com.alpsbte.plotsystem.core.holograms.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.utils.PacketListener;
-import com.alpsbte.plotsystem.utils.io.config.ConfigUtil;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
@@ -39,7 +49,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
-import com.alpsbte.plotsystem.utils.io.config.ConfigNotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -50,9 +59,7 @@ import org.ipvp.canvas.MenuFunctionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
@@ -60,15 +67,19 @@ public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "3.0.3";
 
     private static PlotSystem plugin;
-    private ConfigUtil configManager;
-    private LangUtil langUtil;
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
 
+    static {
+        // Set tutorials
+        AbstractTutorial.setTutorials(Collections.singletonList(BeginnerTutorial.class));
+    }
+
     @Override
     public void onEnable() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog"); // Disable Logging
+        YamlFileFactory.registerPlugin(this);
         plugin = this;
 
         String successPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "✔" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
@@ -91,7 +102,7 @@ public class PlotSystem extends JavaPlugin {
 
         // Load config, if it throws an exception disable plugin
         try {
-            configManager = new ConfigUtil();
+            ConfigUtil.init();
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded configuration files.");
         } catch (ConfigNotImplementedException ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load configuration file.");
@@ -100,11 +111,11 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        this.configManager.reloadFiles();
+        ConfigUtil.getInstance().reloadFiles();
 
         // Load language files
         try {
-            langUtil = new LangUtil();
+            LangUtil.init();
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded language files.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load language file.");
@@ -130,6 +141,9 @@ public class PlotSystem extends JavaPlugin {
         try {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
+            this.getServer().getPluginManager().registerEvents(new CustomHeadEventListener(), this);
+            if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
+                this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
@@ -157,7 +171,8 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Extensions:");
 
         if (DependencyManager.isHolographicDisplaysEnabled()) {
-            HologramManager.reloadHolograms();
+            HolographicDisplay.registerPlugin(this);
+            LeaderboardManager.reloadLeaderboards();
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
@@ -178,10 +193,10 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
-        PlotManager.checkPlotsForLastActivity();
-        PlotManager.syncPlotSchematicFiles();
+        PlotUtils.checkPlotsForLastActivity();
+        PlotUtils.syncPlotSchematicFiles();
         Review.checkReviewerFeedbackList();
-        PlotManager.startTimer();
+        PlotUtils.Effects.startTimer();
 
         try {
             new PacketListener();
@@ -209,31 +224,36 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
-            HologramManager.getHolograms().forEach(HolographicDisplay::onShutdown);
+            LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::remove);
+        } else {
+            // Unload plots
+            for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
+                for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(Builder.byUUID(player))) {
+                    if (plot != null) plot.getWorld().unloadWorld(true);
+                }
+            }
+
+            // Unload tutorials
+            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++) {
+                Tutorial tutorial = AbstractTutorial.getActiveTutorials().get(i);
+                tutorial.onTutorialStop(tutorial.getPlayerUUID());
+            }
         }
     }
 
-    public ConfigUtil getConfigManager() {
-        return configManager;
-    }
-
-    public LangUtil getLangUtil() {
-        return langUtil;
-    }
-
-    @Override @Deprecated
+    @Override
     public FileConfiguration getConfig() {
-        return this.configManager.getConfig();
+        return ConfigUtil.getInstance().configs[0];
     }
 
-    @Override @Deprecated
+    @Override
     public void reloadConfig() {
-        this.configManager.saveFiles();
+        ConfigUtil.getInstance().reloadFiles();
     }
 
-    @Override @Deprecated
+    @Override
     public void saveConfig() {
-        this.configManager.saveFiles();
+        ConfigUtil.getInstance().saveFiles();
     }
 
     public static PlotSystem getPlugin() {

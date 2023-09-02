@@ -1,0 +1,117 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# -----------------------------------------------------
+
+# Keep updated about newer versions
+check-for-updates: true
+
+# Enables special dev tools and features for development
+# NOTE: Do not change if you do not know what you are doing
+dev-mode: false
+
+# The lobby world, where all players are teleported to, whenever they join or leave a plot
+# [default] -> Uses the default multiverse spawn world
+spawn-world: default
+
+# Enable score requirement to restrict players to certain plot difficulties
+# Prevents beginners from generating difficult plots
+enable-score-requirement: true
+
+# Automatic synchronisation of schematic files from SFTP/FTP servers
+# [interval] -> default: 3600 seconds (1 hour)
+sync-ftp-files:
+  enabled: false
+  sync-interval: 3600
+
+# How many days of inactivity it will take before a claimed plot is automatically abandoned
+inactivity-interval: 14
+
+# Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
+# allowing them to build together.
+# NOTE: Score will be split by all participating members
+enable-group-support: true
+
+# -----------------------------------------------------
+# | Supported databases: MariaDB & MySQL
+# -----------------------------------------------------
+database:
+  url: jdbc:mariadb://adress:3306/
+  dbname: plotsystem
+  username: plotsystem
+  password: minecraft
+
+
+# -----------------------------------------------------
+# | Leaderboards: Shows top plot and build scores / Are placed in the spawn world
+# | NOTE: Requires the HolographicDisplays plugin to work
+# -----------------------------------------------------
+holograms:
+  # Displays the top 10 builders with the highest score
+  score-leaderboard:
+    enabled: false
+    x: 0
+    y: 0
+    z: 0
+  # Displays the top 10 players with the most completed plots
+  plots-leaderboard:
+    enabled: false
+    x: 0
+    y: 0
+    z: 0
+
+# Switch score-leaderboard between different time stamps
+# [interval] -> default: 15 seconds
+display-options:
+  interval: 15
+  show-daily: false
+  show-weekly: true
+  show-monthly: true
+  show-yearly: false
+  show-lifetime: false
+  action-bar-enabled: true
+  action-bar-radius: 30
+
+
+# -----------------------------------------------------
+# | Navigation: The command that the player will automatically execute when pressing the navigator item in the companion
+# | NOTE: Remove the "/" from whatever command you want to use
+# -----------------------------------------------------
+navigator:
+  item: NETHER_STAR
+  command: navigator
+
+
+# -----------------------------------------------------
+# | Formatting: Info/Error message outputs
+# -----------------------------------------------------
+message-prefix: §8[§6Plot-System§8] §7
+info-colour: §a
+error-colour: §c
+
+
+# -----------------------------------------------------
+# | Shortlink: https://shlink.io/
+# -----------------------------------------------------
+shortlink:
+  enable: false
+  apikey: yourapi-key
+  host: https://your.shortlink.host
+
+
+# -----------------------------------------------------
+# | Tutorials
+# -----------------------------------------------------
+tutorials:
+  enable: true
+  require-beginner-tutorial: true
+  tutorial-npc-name: 'Bob'
+  tutorial-npc-texture: 'ewogICJ0aW1lc3RhbXAiIDogMTY0OTA0MzYzODU3MywKICAicHJvZmlsZUlkIiA6ICI5MWYwNGZlOTBmMzY0M2I1OGYyMGUzMzc1Zjg2ZDM5ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdG9ybVN0b3JteSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yNzgxYjg4ZTllZGNhOGNlNWRlMzk4OTkyYzVjM2Q0NTU0ZmVkYjZmZTFiMTIzMmJkNzIwZWUyMTgyZTY4YTcyIgogICAgfQogIH0KfQ=='
+  tutorial-npc-signature: 'OpazPbpK6Z+N4ehJdDORPAc+llPyczl23AEZ0aerldJUzUr15L/1yNLOmyGjo81vgjkGq5LYW43yRImtbQAg0vGHqO3u8M5PhcjKrkuezp2DTS+2nZLoN3r+mRxoUXVWWfwkOKmAzPn7TzLHGprMS6nDwJyXt0y+GQG2TYX1Wt2EsMAHSUwiLu/ykraU+JIbKEKOEaEFTRQJYZE1+I8MjA0s8cZEKokbu8LmIZRJcFvipm+pGLVioCH0z20wo7rPBNKAwDInZIsituKb/2etmaioXHadC31rkJk6PeXu3o6MFEnW20bnY5Dh9cOJQWNEM3jU4d7/DtYEBPzUaZdYoaL44jBAHC0S4pHmrIzHbGXeiSCKvhfVDtQClHtZXHVJFrjLhtW2mhVs/H5fWCah8tr9He4ogIzQ6KRME6SFOFWWmWj2A3emDlAH1lxQwPJhlig+ssuZGHPtib+4Xnq+42qwKRJKb/zmrgRzHR4LH600falI3mFpjDhKCs1hxfULrln//bMRkvb1vnNm7+Z1Zg7y5D6/3A7KNQTFASwldqQYm5dq5NC7/UBICH8Emi3qL4eqvWdFrcuH/B2lnD0rxaqVq18U3T65cGOevxl/p525p/UJSuGSP0fTOoddp/7IjCphZKL8IYVqqQjsu4tBqEQwrnaUk8hJKzGIstVUMSA='
+
+
+# NOTE: Do not change
+config-version: 2.1

@@ -1,0 +1,43 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# |
+# | [Tutorial Config - XYZ]
+# |
+# | IMPORTANT: THIS CONFIG FILE SHOULD NOT BE EDITED IF YOU DON´T KNOW WHAT YOU ARE DOING!
+# | Any changes may lead to unexpected behaviours or issues.
+# -----------------------------------------------------
+tutorial-id: 'id'
+tutorial-item-name: "material_name"
+tutorial-stages: 1
+
+# Spawn points for the player and the NPC (x, y, z, yaw, pitch)
+# To define the plot world spawn, use the key word ´plot´
+tutorial-spawns:
+  hub:
+    spawn-player: ''
+    spawn-npc: ''
+  plot:
+    spawn-player: ''
+    spawn-npc: ''
+
+plot-outlines: ''
+
+# Tip hologram coordinates (x, y, z)
+tip-hologram-coordinates:
+  - ''
+
+# Documentation links which can be opened by clicking on ´Read More´ on tip holograms.
+documentation-links:
+  - ''
+
+# -----------------------------------------------------
+# | XYZ Tutorial
+# -----------------------------------------------------
+tutorial:
+
+
+config-version: 1.0

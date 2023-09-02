@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,12 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
 import com.alpsbte.plotsystem.core.system.Server;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -92,7 +93,7 @@ public class CMD_Setup_Server extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             List<Server> servers = Server.getServers();
             if (servers.size() == 0) {
-                sender.sendMessage(Utils.getInfoMessageFormat("There are currently no Servers registered in the database!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently no Servers registered in the database!"));
                 return;
             }
 
@@ -230,7 +231,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || Utils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if server exists
             try {

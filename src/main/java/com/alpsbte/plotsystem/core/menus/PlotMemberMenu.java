@@ -1,15 +1,40 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Invitation;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.items.builder.ItemBuilder;
-import com.alpsbte.plotsystem.utils.items.builder.LoreBuilder;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,18 +51,18 @@ import java.util.logging.Level;
 public class PlotMemberMenu extends AbstractMenu {
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
-        super(3,  LangUtil.get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
+        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
         this.plot = plot;
     }
 
     @Override
     protected void setPreviewItems() {
         // Set loading item for plot owner item
-        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -45,7 +70,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 List<Builder> plotMembers = plot.getPlotMembers();
                 for (int i = 1; i <= 3; i++) {
                     getMenu().getSlot(11 + i).setItem(plotMembers.size() >= i
-                            ? MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer())
+                            ? MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer())
                             : emptyMemberSlotItem);
                 }
             } catch (SQLException ex) {
@@ -61,8 +86,8 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set plot owner item
         try {
             getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(Utils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
+                    .setItem(new ItemBuilder(AlpsUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                            .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
@@ -77,12 +102,12 @@ public class PlotMemberMenu extends AbstractMenu {
 
                 Builder builder = builders.get(i - 12);
                 getMenu().getSlot(i)
-                        .setItem(new ItemBuilder(Utils.getPlayerHead(builder.getUUID()))
-                                .setName("§b§l" + LangUtil.get(getMenuPlayer(), LangPaths.Plot.MEMBER))
+                        .setItem(new ItemBuilder(AlpsUtils.getPlayerHead(builder.getUUID()))
+                                .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER))
                                 .setLore(new LoreBuilder()
                                         .addLines(builder.getName(),
                                                 "",
-                                                Utils.getActionFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
+                                                Utils.ChatUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
                                         .build())
                                 .build());
             }
@@ -91,13 +116,13 @@ public class PlotMemberMenu extends AbstractMenu {
         }
 
         // Set add plot member item
-        ItemStack whitePlus = Utils.getItemHead(Utils.CustomHead.ADD_BUTTON);
+        ItemStack whitePlus = AlpsUtils.getItemHead(Utils.HeadUtils.ADD_BUTTON_HEAD);
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§l" + LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
-                                .addLines(LangUtil.get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
+                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
+                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
                                         "",
-                                        Utils.getNoteFormat(LangUtil.get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
+                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
                         .build());
 
         // Set back item
@@ -113,12 +138,12 @@ public class PlotMemberMenu extends AbstractMenu {
                 if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
                 Builder builder = builders.get(itemSlot-12);
 
-                try {
-                    plot.removePlotMember(builder);
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                }
+                    try {
+                        plot.removePlotMember(builder);
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    }
 
                 reloadMenuAsync();
             });
@@ -127,7 +152,7 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set click event for add plot member item
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            new AnvilGUI.Builder()
+            /*new AnvilGUI.Builder()
                     .onComplete((player, text) -> {
                         try {
                             if (Builder.getBuilderByName(text) == null) {
@@ -162,12 +187,12 @@ public class PlotMemberMenu extends AbstractMenu {
                         }
                         return AnvilGUI.Response.close();
                     })
-                    .text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
+                    .text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
                     .itemLeft(new ItemStack(Material.NAME_TAG))
-                    .itemRight(new ItemStack(Material.SKULL))
-                    .title(LangUtil.get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
+                    .itemRight(new ItemStack(Material.PLAYER_HEAD))
+                    .title(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
                     .plugin(PlotSystem.getPlugin())
-                    .open(clickPlayer);
+                    .open(clickPlayer);*/
         });
 
         // Set click event for back item
@@ -183,7 +208,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

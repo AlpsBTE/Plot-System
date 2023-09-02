@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,27 +25,27 @@
 package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
-import com.alpsbte.plotsystem.utils.io.config.ConfigPaths;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.utils.io.language.LangPaths;
-import com.alpsbte.plotsystem.utils.io.language.LangUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -100,9 +100,9 @@ public class EventListener extends SpecialBlocks implements Listener {
             }
 
             // Inform player about update
-            if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
-                event.getPlayer().sendMessage(Utils.getInfoMessageFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.CreatePlotSound, 1f, 1f);
+            if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat("There is a new update for the Plot-System available. Check your console for more information!"));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1f, 1f);
             }
 
             // Check if player has changed his name
@@ -118,18 +118,18 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about new feedback
             try {
-                List<Plot> plots = PlotManager.getPlots(builder, Status.completed, Status.unfinished);
+                List<Plot> plots = Plot.getPlots(builder, Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for(Plot plot : plots) {
-                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent() && plot.getPlotOwner().getPlayer().equals(event.getPlayer())) {
+                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
                         reviewedPlots.add(plot);
                         plot.getReview().setFeedbackSent(true);
                     }
                 }
 
                 if(reviewedPlots.size() >= 1) {
-                    PlotHandler.sendFeedbackMessage(reviewedPlots, event.getPlayer());
+                    PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, event.getPlayer());
                     event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
                 }
             } catch (Exception ex) {
@@ -138,9 +138,9 @@ public class EventListener extends SpecialBlocks implements Listener {
 
             // Informing player about unfinished plots
             try {
-                List<Plot> plots = PlotManager.getPlots(builder, Status.unfinished);
+                List<Plot> plots = Plot.getPlots(builder, Status.unfinished);
                 if(plots.size() >= 1) {
-                    PlotHandler.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
+                    PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
                 }
             } catch (Exception ex){
@@ -150,10 +150,10 @@ public class EventListener extends SpecialBlocks implements Listener {
             // Informing reviewer about new reviews
             try {
                 if(event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
-                    List<Plot> unreviewedPlots = PlotManager.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
+                    List<Plot> unreviewedPlots = Plot.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
 
                     if(unreviewedPlots.size() != 0) {
-                        PlotHandler.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
+                        PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
                     }
                 }
             } catch (Exception ex) {
@@ -177,10 +177,10 @@ public class EventListener extends SpecialBlocks implements Listener {
             if (event.getHand() != EquipmentSlot.OFF_HAND) {
                 if (!event.getPlayer().isSneaking()){
                     if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
-                        RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+                        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
                         RegionQuery query = regionContainer.createQuery();
 
-                        if (query.testBuild(event.getPlayer().getLocation(), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), DefaultFlag.INTERACT)) {
+                        if (query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) {
                             BlockState state = event.getClickedBlock().getState();
                             TrapDoor tp = (TrapDoor) state.getData();
 
@@ -211,23 +211,23 @@ public class EventListener extends SpecialBlocks implements Listener {
         final World w = event.getPlayer().getWorld();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-            if(PlotManager.isPlotWorld(w)) {
+            if(PlotUtils.isPlotWorld(w)) {
                 try { PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
                 } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
             Review.awaitReviewerFeedbackList.remove(event.getPlayer().getUniqueId());
-            PlotManager.clearCache(event.getPlayer().getUniqueId());
+            PlotUtils.Cache.clearCache(event.getPlayer().getUniqueId());
         }, 60L);
     }
 
     @EventHandler
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
-        if (PlotManager.isPlotWorld(event.getFrom())) {
+        if (PlotUtils.isPlotWorld(event.getFrom())) {
             PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
         }
 
-        if (PlotManager.isPlotWorld(event.getPlayer().getWorld())) {
+        if (PlotUtils.isPlotWorld(event.getPlayer().getWorld())) {
             event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
 
             if (event.getPlayer().hasPermission("plotsystem.review")) {
@@ -262,27 +262,27 @@ public class EventListener extends SpecialBlocks implements Listener {
             ItemStack item = event.getItemInHand();
 
             if(item.isSimilar(SeamlessSandstone)) {
-                event.getBlockPlaced().setTypeIdAndData(43, (byte) 9, true);
+                event.getBlockPlaced().setType(Material.SMOOTH_SANDSTONE, true);
             } else if(item.isSimilar(SeamlessRedSandstone)) {
-                event.getBlockPlaced().setTypeIdAndData(181, (byte) 12, true);
+                event.getBlockPlaced().setType(Material.SMOOTH_RED_SANDSTONE, true);
             } else if(item.isSimilar(SeamlessStone)) {
-                event.getBlockPlaced().setTypeIdAndData(43, (byte) 8, true);
+                event.getBlockPlaced().setType(Material.SMOOTH_STONE, true);
             } else if(item.isSimilar(SeamlessMushroomStem)) {
-                event.getBlockPlaced().setTypeIdAndData(99, (byte) 15, true);
+                event.getBlockPlaced().setType(Material.MUSHROOM_STEM, true);
             } else if(item.isSimilar(LightBrownMushroom)) {
-                event.getBlockPlaced().setTypeIdAndData(99, (byte) 0, true);
+                event.getBlockPlaced().setType(Material.LEGACY_HUGE_MUSHROOM_1, true);
             } else if(item.isSimilar(BarkOakLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 12, true);
+                event.getBlockPlaced().setType(Material.LEGACY_HUGE_MUSHROOM_1, true);
             } else if(item.isSimilar(BarkSpruceLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 13, true);
+                event.getBlockPlaced().setType(Material.SPRUCE_WOOD, true);
             } else if(item.isSimilar(BarkBirchLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 14, true);
+                event.getBlockPlaced().setType(Material.BIRCH_WOOD, true);
             } else if(item.isSimilar(BarkJungleLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 15, true);
+                event.getBlockPlaced().setType(Material.JUNGLE_WOOD, true);
             } else if(item.isSimilar(BarkAcaciaLog)) {
-                event.getBlockPlaced().setTypeIdAndData(162, (byte) 12, true);
+                event.getBlockPlaced().setType(Material.ACACIA_WOOD, true);
             } else if(item.isSimilar(BarkDarkOakLog)) {
-                event.getBlockPlaced().setTypeIdAndData(162, (byte) 13, true);
+                event.getBlockPlaced().setType(Material.DARK_OAK_WOOD, true);
             }
         }
     }
@@ -298,18 +298,18 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Review review = Review.awaitReviewerFeedbackList.get(playerUUID).getReview();
                 review.setFeedback(feedback);
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.getInfoMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.FinishPlotSound, 1f, 1f);
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
             } else {
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.ErrorSound, 1f, 1f);
+                event.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
             }
         }
     }
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent event) {
-        Utils.CustomHead.loadHeadsAsync(new HeadDatabaseAPI());
+        Utils.HeadUtils.loadHeadsAsync();
     }
 }
