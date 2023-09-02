@@ -122,7 +122,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     }
 
                     if (plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                        getMenuPlayer().sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+                        getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                         return;
                     }
 
@@ -155,7 +155,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         // Set click event for filter item
         getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-            if (countries.size() == 0) return;
+            if (countries.isEmpty()) return;
 
             if (filteredCountry == null) {
                 filteredCountry = countries.get(0);

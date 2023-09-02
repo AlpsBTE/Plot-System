@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.W
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.utils.io.*;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;

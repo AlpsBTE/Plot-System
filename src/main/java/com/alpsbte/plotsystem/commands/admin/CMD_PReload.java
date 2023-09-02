@@ -40,7 +40,7 @@ public class CMD_PReload extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (!sender.hasPermission(getPermission())){
-            sender.sendMessage(Utils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
             return true;
         }
 

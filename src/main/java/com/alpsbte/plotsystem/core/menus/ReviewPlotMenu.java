@@ -274,13 +274,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                 if (totalRating <= 8) isRejected = true;
 
                 if (totalRating == 0 && !sentWarning) {
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                     sentWarning = true;
                     return;
                 } else if (isRejected && !sentWarning) {
-                    clickPlayer.sendMessage(Utils.getInfoMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.CreatePlotSound, 1, 1);
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                     sentWarning = true;
                     return;
                 } else if (totalRating == 0) {
@@ -352,7 +352,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             }
                         }
                     } else {
-                        if (plot.getPlotMembers().size() != 0) {
+                        if (!plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
                             reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
                         } else {
@@ -430,11 +430,13 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                         ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
                         ItemMeta metaPrevious = itemPrevious.getItemMeta();
+                        assert metaPrevious != null;
                         metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
                         itemPrevious.setItemMeta(metaPrevious);
                         getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
                     }
 
+                    assert meta != null;
                     meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
 

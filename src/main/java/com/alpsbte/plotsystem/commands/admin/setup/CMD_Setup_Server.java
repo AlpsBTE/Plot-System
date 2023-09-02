@@ -92,12 +92,12 @@ public class CMD_Setup_Server extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             List<Server> servers = Server.getServers();
-            if (servers.size() == 0) {
+            if (servers.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently no Servers registered in the database!"));
                 return;
             }
 
-            sender.sendMessage(Utils.getInfoMessageFormat("There are currently " + servers.size() + " Servers registered in the database:"));
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + servers.size() + " Servers registered in the database:"));
             sender.sendMessage("§8--------------------------");
             for (Server s : servers) {
                 try {
@@ -139,19 +139,19 @@ public class CMD_Setup_Server extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 1) { sendInfo(sender); return; }
             if (args[1].length() > 45) {
-                sender.sendMessage(Utils.getErrorMessageFormat("Server name cannot be longer than 45 characters!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Server name cannot be longer than 45 characters!"));
                 sendInfo(sender);
                 return;
             }
 
             try {
                 Server server = Server.addServer(args[1]);
-                Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(server.getID()));
+                Path serverPath = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(server.getID()));
                 if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
                 if (!serverPath.toFile().mkdirs()) throw new IOException();
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully added server!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added server!"));
             } catch (SQLException | IOException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }
@@ -184,21 +184,21 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || Utils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if server exists
             try {
                 if (Server.getServers().stream().noneMatch(s -> s.getID() == Integer.parseInt(args[1]))) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
                     sendInfo(sender);
                     return;
                 }
                 Server.removeServer(Integer.parseInt(args[1]));
-                Path serverPath = Paths.get(PlotManager.getDefaultSchematicPath(), args[1]);
+                Path serverPath = Paths.get(PlotUtils.getDefaultSchematicPath(), args[1]);
                 if (serverPath.toFile().exists()) FileUtils.deleteDirectory(serverPath.toFile());
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully removed server with ID " + args[1] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed server with ID " + args[1] + "!"));
             } catch (SQLException | IOException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }
@@ -236,20 +236,20 @@ public class CMD_Setup_Server extends SubCommand {
             // Check if server exists
             try {
                 if (Server.getServers().stream().noneMatch(s -> s.getID() == Integer.parseInt(args[1]))) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any server with ID " + args[1] + "!"));
                     sendInfo(sender);
                     return;
                 }
-                if (!args[2].equalsIgnoreCase("none") && (Utils.TryParseInt(args[2]) == null || FTPConfiguration.getFTPConfigurations().stream().noneMatch(f -> f.getID() == Integer.parseInt(args[2])))) {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find any ftp configurations with ID " + args[2] + "!"));
+                if (!args[2].equalsIgnoreCase("none") && (AlpsUtils.TryParseInt(args[2]) == null || FTPConfiguration.getFTPConfigurations().stream().noneMatch(f -> f.getID() == Integer.parseInt(args[2])))) {
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any ftp configurations with ID " + args[2] + "!"));
                     sendInfo(sender);
                     return;
                 }
-                int ftpID = Utils.TryParseInt(args[2]) != null ? Integer.parseInt(args[2]) : -1;
+                int ftpID = AlpsUtils.TryParseInt(args[2]) != null ? Integer.parseInt(args[2]) : -1;
                 Server.setFTP(Integer.parseInt(args[1]), ftpID);
-                sender.sendMessage(Utils.getInfoMessageFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
             } catch (SQLException ex) {
-                sender.sendMessage(Utils.getErrorMessageFormat("An error occurred while executing command!"));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }

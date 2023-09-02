@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.EventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.InteractNPCEventTask;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

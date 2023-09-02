@@ -113,7 +113,7 @@ public final class PlotUtils {
                 int cityID = Integer.parseInt(worldName.substring(2));
                 List<Plot> plots = Plot.getPlots(cityID, statuses);
 
-                if(plots.size() == 0)
+                if(plots.isEmpty())
                     return Plot.getPlots(builder).get(0);
                 if(plots.size() == 1)
                     return plots.get(0);
@@ -358,7 +358,7 @@ public final class PlotUtils {
             }
 
             plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (plot.getPlotMembers().size() != 0) {
+            if (!plot.getPlotMembers().isEmpty()) {
                 for (Builder builder : plot.getPlotMembers()) {
                     plot.getPermissions().removeBuilderPerms(builder.getUUID());
                 }
@@ -369,7 +369,7 @@ public final class PlotUtils {
             plot.setStatus(Status.unfinished);
 
             plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (plot.getPlotMembers().size() != 0) {
+            if (!plot.getPlotMembers().isEmpty()) {
                 for (Builder builder : plot.getPlotMembers()) {
                     plot.getPermissions().addBuilderPerms(builder.getUUID());
                 }
@@ -557,8 +557,7 @@ public final class PlotUtils {
                     List<Plot> plots = Cache.getCachedInProgressPlots(builder);
                     BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
 
-                    if(plots.size() == 0)
-                        continue;
+                    if(plots.isEmpty()) continue;
 
                     for(Plot plot : plots){
                         if(!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
@@ -655,7 +654,7 @@ public final class PlotUtils {
 
         public static void sendGroupTipMessage(Plot plot, Player player) {
             try {
-                if (plot.getPlotMembers().size() == 0) {
+                if (plot.getPlotMembers().isEmpty()) {
                     TextComponent tc = new TextComponent();
                     tc.setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
                     tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));

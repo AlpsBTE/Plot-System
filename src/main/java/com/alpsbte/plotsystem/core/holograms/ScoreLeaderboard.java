@@ -67,7 +67,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     @Override
     public void create(Position position) {
         if (!PlotSystem.getPlugin().isEnabled()) return;
-        if (getPages().size() < 1) {
+        if (getPages().isEmpty()) {
             PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
             return;
         }
@@ -131,7 +131,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
             return TextComponent.fromLegacyText("§cSQL Exception");
         }
 

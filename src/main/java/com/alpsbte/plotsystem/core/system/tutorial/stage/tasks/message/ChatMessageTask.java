@@ -74,7 +74,7 @@ public class ChatMessageTask extends AbstractTask {
         for (Object message : messages) {
             if (message instanceof String) {
                 List<String> messageLines = AlpsUtils.createMultilineFromString((String) message, -1, Utils.ChatUtils.LINE_BREAKER);
-                messageLines.forEach(msg -> player.sendMessage((!msg.equals("") ? TASK_PREFIX : "") + msg));
+                messageLines.forEach(msg -> player.sendMessage((!msg.isEmpty() ? TASK_PREFIX : "") + msg));
             } else if (message instanceof ClickableTaskMessage) {
                 TextComponent component = ((ClickableTaskMessage) message).getComponent();
                 component.setText(TASK_PREFIX + component.getText());

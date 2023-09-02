@@ -129,7 +129,7 @@ public class PlotWorldGenerator {
         } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
     }
 
-    public class EmptyChunkGenerator extends ChunkGenerator {
+    public static class EmptyChunkGenerator extends ChunkGenerator {
         @Override
         @Nonnull
         public ChunkData generateChunkData(@Nonnull World world, @Nonnull Random random, int x, int z, @Nonnull BiomeGrid biome) {

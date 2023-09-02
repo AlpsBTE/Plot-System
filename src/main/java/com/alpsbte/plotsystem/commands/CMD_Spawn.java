@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -37,7 +38,7 @@ public class CMD_Spawn extends BaseCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
@@ -49,8 +50,8 @@ public class CMD_Spawn extends BaseCommand {
         Player player = (Player) sender;
 
         player.teleport(Utils.getSpawnLocation());
-        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
-        player.playSound(player.getLocation(), Utils.TeleportSound,1,1);
+        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
+        player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND,1,1);
         return true;
     }
 

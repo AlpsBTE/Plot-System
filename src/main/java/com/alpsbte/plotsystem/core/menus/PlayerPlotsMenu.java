@@ -156,7 +156,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
      */
     private List<String> getDescription(Plot plot, Player p) throws SQLException {
         List<String> lines = new ArrayList<>();
-        if (plot.getPlotMembers().size() == 0) {
+        if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
         } else {

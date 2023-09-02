@@ -59,13 +59,13 @@ public class CMD_CleanPlot extends BaseCommand {
             }
 
             if (args[0].equalsIgnoreCase("all")) {
-                plots.addAll(PlotManager.getPlots(Status.unfinished, Status.unreviewed));
-            } else if (Utils.TryParseInt(args[0]) != null) {
+                plots.addAll(Plot.getPlots(Status.unfinished, Status.unreviewed));
+            } else if (AlpsUtils.TryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
-                if (PlotManager.plotExists(plotID)) {
+                if (PlotUtils.plotExists(plotID)) {
                     plots.add(new Plot(plotID));
                 } else {
-                    sender.sendMessage(Utils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find plot with ID #" + plotID + "!"));
                     return true;
                 }
             } else {
@@ -92,8 +92,8 @@ public class CMD_CleanPlot extends BaseCommand {
                 }
 
                 if (index == plots.size() - 1) {
-                    sender.sendMessage(Utils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §aplot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §afailed!"));
-                    if (sender instanceof Player) ((Player) sender).playSound(((Player) sender).getLocation(), Utils.Done, 1, 1);
+                    sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("§aCleaned §f" + (plots.size() - failed) + " §aplot" + (plots.size() > 1 ? "s" : "") + ", §f" + failed + " §afailed!"));
+                    if (sender instanceof Player) ((Player) sender).playSound(((Player) sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
                     cancel();
                 } else {
                     index++;

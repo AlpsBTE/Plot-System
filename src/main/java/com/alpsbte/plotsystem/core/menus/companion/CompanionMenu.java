@@ -66,7 +66,7 @@ public class CompanionMenu {
         if (hasContinentView()) {
             new ContinentMenu(player);
         } else {
-            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> Country.getCountries(c).size() > 0).findFirst();
+            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !Country.getCountries(c).isEmpty()).findFirst();
 
             if (!continent.isPresent()) {
                 player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
