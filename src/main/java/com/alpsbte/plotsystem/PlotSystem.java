@@ -55,10 +55,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -242,7 +244,7 @@ public class PlotSystem extends JavaPlugin {
     }
 
     @Override
-    public FileConfiguration getConfig() {
+    public @NotNull FileConfiguration getConfig() {
         return ConfigUtil.getInstance().configs[0];
     }
 
@@ -374,11 +376,11 @@ public class PlotSystem extends JavaPlugin {
          * @param version Returns latest stable version
          */
         public static void getVersion(final Consumer<String> version) {
-            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
+            try (InputStream inputStream = new URI("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).toURL().openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
                     version.accept(scanner.next());
                 }
-            } catch (IOException ex) {
+            } catch (IOException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
             }
         }

@@ -45,7 +45,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -60,8 +59,8 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
     private BukkitTask actionbarTask = null;
 
-    protected ScoreLeaderboard(@NotNull String id) {
-        super(id, PlotSystem.getPlugin());
+    protected ScoreLeaderboard() {
+        super(ConfigPaths.SCORE_LEADERBOARD, PlotSystem.getPlugin());
     }
 
     @Override

@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -111,7 +112,7 @@ public class ChatMessageTask extends AbstractTask {
 
         public TextComponent getComponent() {
             TextComponent clickableMessage = new TextComponent(message);
-            clickableMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+            clickableMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverText)));
             clickableMessage.setClickEvent(new ClickEvent(clickAction, clickExecute));
             return clickableMessage;
         }

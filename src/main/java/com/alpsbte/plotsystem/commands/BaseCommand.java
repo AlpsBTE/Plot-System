@@ -37,7 +37,7 @@ import java.util.List;
 
 public abstract class BaseCommand implements CommandExecutor, ICommand {
     private final List<SubCommand> subCommands = new ArrayList<>();
-    protected LangUtil langUtil = LangUtil.getInstance();
+    protected final LangUtil langUtil = LangUtil.getInstance();
 
     /**
      * Executes base command and checks for sub commands

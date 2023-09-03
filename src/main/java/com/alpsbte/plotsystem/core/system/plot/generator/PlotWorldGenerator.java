@@ -85,16 +85,17 @@ public class PlotWorldGenerator {
         MultiverseWorld mvWorld = worldManager.getMVWorld(bukkitWorld);
 
         // Set world time to midday
+        assert bukkitWorld != null;
         bukkitWorld.setTime(6000);
 
         // Set Bukkit world game rules
-        bukkitWorld.setGameRuleValue("randomTickSpeed", "0");
-        bukkitWorld.setGameRuleValue("doDaylightCycle", "false");
-        bukkitWorld.setGameRuleValue("doFireTick", "false");
-        bukkitWorld.setGameRuleValue("doWeatherCycle", "false");
-        bukkitWorld.setGameRuleValue("keepInventory", "true");
-        bukkitWorld.setGameRuleValue("doMobSpawning", "false");
-        bukkitWorld.setGameRuleValue("announceAdvancements", "false");
+        bukkitWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        bukkitWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
+        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE,false);
+        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY,true);
+        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING,false);
+        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS,false);
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);

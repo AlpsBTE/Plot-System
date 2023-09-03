@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,8 +37,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class PlotsLeaderboard extends HolographicDisplay {
-    protected PlotsLeaderboard(String id) {
-        super(id);
+    protected PlotsLeaderboard() {
+        super(ConfigPaths.PLOTS_LEADERBOARD);
     }
 
     @Override

@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TutorialEventListener implements Listener {
-    public static Map<String, EventTask> runningEventTasks = new HashMap<>();
+    public static final Map<String, EventTask> runningEventTasks = new HashMap<>();
 
     @EventHandler
     private void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {

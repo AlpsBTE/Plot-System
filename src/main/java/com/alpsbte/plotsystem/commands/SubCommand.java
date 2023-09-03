@@ -37,7 +37,7 @@ public abstract class SubCommand implements ICommand {
     private final BaseCommand baseCommand;
     private final SubCommand subCommand;
     private final List<SubCommand> subCommands = new ArrayList<>();
-    protected LangUtil langUtil = LangUtil.getInstance();
+    protected final LangUtil langUtil = LangUtil.getInstance();
 
     public SubCommand(BaseCommand baseCommand) {
         this.baseCommand = baseCommand;

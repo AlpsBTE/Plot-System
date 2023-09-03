@@ -40,9 +40,9 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -394,7 +394,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             clickPlayer.sendMessage("§a" + LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
                             TextComponent txtComponent = new TextComponent();
                             txtComponent.setText(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
-                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL)).create()));
+                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL))));
                             txtComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "cancel"));
                             clickPlayer.spigot().sendMessage(txtComponent);
                         } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }

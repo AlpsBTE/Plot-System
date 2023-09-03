@@ -61,7 +61,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.TrapDoor;
+import org.bukkit.material.Openable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -182,7 +182,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
                         if (query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) {
                             BlockState state = event.getClickedBlock().getState();
-                            TrapDoor tp = (TrapDoor) state.getData();
+                            Openable tp = (Openable) state.getData();
 
                             if (!tp.isOpen()) {
                                 tp.setOpen(true);
