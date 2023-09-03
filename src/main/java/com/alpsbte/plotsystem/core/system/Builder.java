@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 
 public class Builder {
 
-    public static HashMap<UUID, Builder> builders = new HashMap<>();
+    public static final HashMap<UUID, Builder> builders = new HashMap<>();
 
     private final UUID uuid;
     public PlotType plotType;
@@ -165,7 +165,7 @@ public class Builder {
                     .setLore(new LoreBuilder()
                             .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT),
                                     "",
-                                    "§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
+                                    "§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Can't translate because name is stored in the database
                             .build())
                     .build();
         }

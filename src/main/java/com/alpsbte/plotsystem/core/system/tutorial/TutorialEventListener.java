@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.EventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.InteractNPCEventTask;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -36,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TutorialEventListener implements Listener {
-    public static Map<String, EventTask> runningEventTasks = new HashMap<>();
+    public static final Map<String, EventTask> runningEventTasks = new HashMap<>();
 
     @EventHandler
     private void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {

@@ -36,11 +36,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 public class CMD_Tutorial extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
                 if (args.length == 0) {

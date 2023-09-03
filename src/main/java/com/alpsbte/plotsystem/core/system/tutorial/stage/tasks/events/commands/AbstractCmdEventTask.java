@@ -34,8 +34,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import java.util.Arrays;
 
 public abstract class AbstractCmdEventTask extends AbstractTask implements EventTask {
-    protected String expectedCommand;
-    protected String[] args1;
+    protected final String expectedCommand;
+    protected final String[] args1;
 
     private final boolean isCancelCmdEvent;
 

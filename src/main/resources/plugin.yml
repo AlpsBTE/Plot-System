@@ -36,9 +36,6 @@ commands:
   editplot:
     description: Enable/disable build permissions for reviewers on a plot.
     usage: /editplot
-  cleanplot:
-    description: Cleans and refreshes plots due to bugs or permission changes.
-    usage: /cleanplot <All/ID>
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>

@@ -92,7 +92,7 @@ public class FTPManager {
         return CompletableFuture.completedFuture(null);
     }
 
-    public static CompletableFuture<Void> downloadSchematic(String ftpURL, File schematic) {
+    public static void downloadSchematic(String ftpURL, File schematic) {
         try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
             fileManager.init();
 
@@ -111,10 +111,9 @@ public class FTPManager {
         } catch (FileSystemException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
         }
-        return CompletableFuture.completedFuture(null);
     }
 
-    public static CompletableFuture<Void> deleteSchematic(String ftpURL, String schematicName) throws FileSystemException {
+    public static void deleteSchematic(String ftpURL, String schematicName) throws FileSystemException {
         try (StandardFileSystemManager fileManager = new StandardFileSystemManager()) {
             fileManager.init();
             FileObject remote, remoteSchematic;
@@ -128,6 +127,5 @@ public class FTPManager {
                 }
             }
         }
-        return CompletableFuture.completedFuture(null);
     }
 }

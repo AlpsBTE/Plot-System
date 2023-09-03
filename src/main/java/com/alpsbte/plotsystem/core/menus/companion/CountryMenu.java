@@ -29,7 +29,6 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
-import com.alpsbte.plotsystem.core.menus.*;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;

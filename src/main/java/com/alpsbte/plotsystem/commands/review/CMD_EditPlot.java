@@ -35,10 +35,12 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -46,60 +48,67 @@ import java.util.logging.Level;
 public class CMD_EditPlot extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (getPlayer(sender) != null) {
-            if (ConfigUtil.getInstance().configs[1].getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
-                if (sender.hasPermission(getPermission())) {
-                    try {
-                        Plot plot;
-                        if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
-                            int plotID = Integer.parseInt(args[0]);
-                            if (PlotUtils.plotExists(plotID)) {
-                                plot = new Plot(plotID);
-                            } else {
-                                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                                return true;
-                            }
-                        } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
-                            AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
-                            if (p instanceof Plot) {
-                                plot = (Plot) p;
-                            } else {
-                                sendInfo(sender);
-                                return true;
-                            }
-                        } else {
-                            sendInfo(sender);
-                            return true;
-                        }
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        if (getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
 
-                        if (plot.getStatus() != Status.completed) {
-                            Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
-                            int countryID = plot.getCity().getCountry().getID();
-                            if (builder.isReviewer() && builder.getAsReviewer().getCountries().stream().anyMatch(c -> c.getID() == countryID) && plot.getPlotOwner().getUUID() != builder.getUUID() && plot.getPlotMembers().stream().noneMatch(b -> b.getUUID() == builder.getUUID())) {
-                                if (plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
-                                    plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
-                                    sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
-                                } else {
-                                    plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
-                                    sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
-                                }
-                                return true;
-                            }
-                        }
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
-                    } catch (SQLException ex) {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
+        if (!ConfigUtil.getInstance().configs[1].getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
+            return true;
+        }
+
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
+
+        try {
+            Plot plot;
+            if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                int plotID = Integer.parseInt(args[0]);
+                if (!PlotUtils.plotExists(plotID)) {
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    return true;
+                }
+                plot = new Plot(plotID);
+            } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
+                AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
+                if (p instanceof Plot) {
+                    plot = (Plot) p;
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                    sendInfo(sender);
+                    return true;
                 }
             } else {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
+                sendInfo(sender);
+                return true;
             }
-        } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+
+            if (plot.getStatus() == Status.completed) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                return true;
+            }
+
+            Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
+            int countryID = plot.getCity().getCountry().getID();
+
+            if (!builder.isReviewer() || builder.getAsReviewer().getCountries().stream().noneMatch(c -> c.getID() == countryID) || plot.getPlotOwner().getUUID() == builder.getUUID() || plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == builder.getUUID())) {
+                return true;
+            }
+
+            if (!plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
+                plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                return true;
+            }
+
+            plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

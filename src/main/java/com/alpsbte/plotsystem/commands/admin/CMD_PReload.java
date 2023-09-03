@@ -32,29 +32,31 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
 public class CMD_PReload extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())){
-            try {
-                ConfigUtil.getInstance().reloadFiles();
-                ConfigUtil.getInstance().saveFiles();
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded config!"));
-
-                LeaderboardManager.reloadLeaderboards();
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded leaderboards!"));
-
-                DatabaseConnection.InitializeDatabase();
-            } catch (Exception ex) {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        if (!sender.hasPermission(getPermission())){
             sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
+            return true;
+        }
+
+        try {
+            ConfigUtil.getInstance().reloadFiles();
+            ConfigUtil.getInstance().saveFiles();
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded config!"));
+
+            LeaderboardManager.reloadLeaderboards();
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded leaderboards!"));
+
+            DatabaseConnection.InitializeDatabase();
+        } catch (Exception ex) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

@@ -48,7 +48,7 @@ public class InteractNPCEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (!AbstractTutorial.canPlayerInteract(player.getUniqueId())) return;
+        if (AbstractTutorial.playerIsOnInteractCoolDown(player.getUniqueId())) return;
         if (event instanceof PlayerInteractEntityEvent && npcUUID.toString()
                 .equals(((PlayerInteractEntityEvent) event).getRightClicked().getUniqueId().toString())) {
             ((PlayerInteractEntityEvent) event).setCancelled(true);

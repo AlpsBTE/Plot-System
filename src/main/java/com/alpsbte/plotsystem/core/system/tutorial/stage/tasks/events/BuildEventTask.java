@@ -76,6 +76,6 @@ public class BuildEventTask extends AbstractTask implements EventTask {
 
         updateProgress();
         onPlacedBlockAction.performAction(blockVector);
-        if (blocksToBuild.size() == 0) setTaskDone();
+        if (blocksToBuild.isEmpty()) setTaskDone();
     }
 }

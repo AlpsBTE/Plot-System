@@ -39,6 +39,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class CMD_Plot_Members extends SubCommand {
@@ -76,7 +77,7 @@ public class CMD_Plot_Members extends SubCommand {
                     return;
                 }
 
-                if(plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
+                if(Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
                     new PlotMemberMenu(plot,getPlayer(sender));
                 } else {
                     sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to manage this plot's members!"));

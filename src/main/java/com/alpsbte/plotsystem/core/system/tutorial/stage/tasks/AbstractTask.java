@@ -42,7 +42,7 @@ public abstract class AbstractTask {
         void performAction(T t, R r);
     }
 
-    protected Player player;
+    protected final Player player;
 
     private final String assignmentMessage;
     private int progress;

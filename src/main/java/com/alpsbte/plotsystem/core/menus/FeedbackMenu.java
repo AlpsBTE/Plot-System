@@ -40,7 +40,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -58,7 +57,6 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
-
         super.setPreviewItems();
     }
 
@@ -68,10 +66,7 @@ public class FeedbackMenu extends AbstractMenu {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
                 .setValue(plot.getID()).executeQuery()) {
 
-            if (rs.next()) {
-                this.review = new Review(rs.getInt(1));
-            }
-
+            if (rs.next()) this.review = new Review(rs.getInt(1));
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

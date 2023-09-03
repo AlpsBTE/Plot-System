@@ -53,7 +53,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Review {
-    public static HashMap<UUID, ChatFeedbackInput> awaitReviewerFeedbackList = new HashMap<>();
+    public static final HashMap<UUID, ChatFeedbackInput> awaitReviewerFeedbackList = new HashMap<>();
 
     private final int reviewID;
 
@@ -227,7 +227,7 @@ public class Review {
         }
     }
 
-    public static void undoReview(Review review) throws SQLException {
+    public static void undoReview(Review review) {
         CompletableFuture.runAsync(() -> {
             try {
                 Plot plot = new Plot(review.getPlotID());

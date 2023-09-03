@@ -40,9 +40,9 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -51,16 +51,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class ReviewPlotMenu extends AbstractMenu {
-
     private final Plot plot;
 
     boolean sentWarning = false;
@@ -142,7 +141,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                             //Add Enchantment
                             ItemMeta itemMeta = itemPointZero[position].getItemMeta();
-                            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                            Objects.requireNonNull(itemMeta).addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
                             itemPointZero[position].setItemMeta(itemMeta);
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
@@ -250,53 +249,53 @@ public class ReviewPlotMenu extends AbstractMenu {
         });
 
         // Set click event for submit item
-        getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
-            CompletableFuture.runAsync(() -> {
-                try {
-                    StringBuilder score = new StringBuilder();
+        getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> CompletableFuture.runAsync(() -> {
+            try {
+                StringBuilder score = new StringBuilder();
 
-                    int totalRating = 0;
-                    boolean isRejected = false;
+                int totalRating = 0;
+                boolean isRejected = false;
 
-                    for (int i = 0; i < 4; i++) {
-                        for (int j = 0; j < 6; j++) {
-                            if (getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
-                                if (i == 3) {
-                                    score.append(j);
-                                } else {
-                                    score.append(j).append(",");
-                                }
-                                totalRating += j;
-                                if (j <= 0) {
-                                    isRejected = true;
-                                }
-                            }
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 6; j++) {
+                        if (Objects.requireNonNull(getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE))
+                            continue;
+
+                        if (i == 3) {
+                            score.append(j);
+                        } else {
+                            score.append(j).append(",");
+                        }
+                        totalRating += j;
+                        if (j <= 0) {
+                            isRejected = true;
                         }
                     }
-                    if (totalRating <= 8) isRejected = true;
+                }
+                if (totalRating <= 8) isRejected = true;
 
-                    if (totalRating == 0 && !sentWarning) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
-                        sentWarning = true;
-                        return;
-                    } else if (isRejected && !sentWarning) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
-                        sentWarning = true;
-                        return;
-                    } else if (totalRating == 0) {
-                        plot.setStatus(Status.unfinished);
-                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> clickPlayer.performCommand("plot abandon " + plot.getID()));
-                        return;
-                    }
+                if (totalRating == 0 && !sentWarning) {
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
+                    sentWarning = true;
+                    return;
+                } else if (isRejected && !sentWarning) {
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
+                    sentWarning = true;
+                    return;
+                } else if (totalRating == 0) {
+                    plot.setStatus(Status.unfinished);
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> clickPlayer.performCommand("plot abandon " + plot.getID()));
+                    return;
+                }
 
-                    if (plot.isReviewed()) {
-                        plot.getReview().setRating(score.toString());
-                        plot.getReview().setReviewer(clickPlayer.getUniqueId());
-                    } else {
-                        new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
-                    }
+                if (plot.isReviewed()) {
+                    plot.getReview().setRating(score.toString());
+                    plot.getReview().setReviewer(clickPlayer.getUniqueId());
+                } else {
+                    new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
+                }
 
                     double totalRatingWithMultiplier = totalRating * Plot.getMultiplierByDifficulty(plot.getDifficulty());
                     totalRating = (int) Math.floor(totalRatingWithMultiplier);
@@ -317,13 +316,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                             Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!", ex);
                         }
 
-                        plot.setStatus(Status.completed);
-                        plot.getReview().setFeedbackSent(false);
-                        plot.getReview().setFeedback("No Feedback");
-                        plot.getPlotOwner().addCompletedBuild(1);
+                    plot.setStatus(Status.completed);
+                    plot.getReview().setFeedbackSent(false);
+                    plot.getReview().setFeedback("No Feedback");
+                    plot.getPlotOwner().addCompletedBuild(1);
 
-                        // Remove Plot from Owner
-                        plot.getPlotOwner().removePlot(plot.getSlot());
+                    // Remove Plot from Owner
+                    plot.getPlotOwner().removePlot(plot.getSlot());
 
                         if (plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
@@ -341,20 +340,20 @@ public class ReviewPlotMenu extends AbstractMenu {
                             }
                             reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
 
-                            // Score gets split between all participants
-                            plot.getPlotOwner().addScore(plot.getSharedScore());
+                        // Score gets split between all participants
+                        plot.getPlotOwner().addScore(plot.getSharedScore());
 
-                            for (Builder builder : plot.getPlotMembers()) {
-                                // Score gets split between all participants
-                                builder.addScore(plot.getSharedScore());
-                                builder.addCompletedBuild(1);
+                        for (Builder builder : plot.getPlotMembers()) {
+                            // Score gets split between all participants
+                            builder.addScore(plot.getSharedScore());
+                            builder.addCompletedBuild(1);
 
                                 // Remove Slot from Member
                                 builder.removePlot(builder.getSlot(plot));
                             }
                         }
                     } else {
-                        if (plot.getPlotMembers().size() != 0) {
+                        if (!plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
                             reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
                         } else {
@@ -372,20 +371,19 @@ public class ReviewPlotMenu extends AbstractMenu {
                         PlotUtils.Actions.undoSubmit(plot);
                     }
 
-                    boolean finalIsRejected = isRejected;
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                        for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                            player.teleport(Utils.getSpawnLocation());
-                        }
+                boolean finalIsRejected = isRejected;
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                    for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                        player.teleport(Utils.getSpawnLocation());
+                    }
 
-                        // Delete plot world after reviewing
-                        try {
-                            if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
-                                plot.getWorld().deleteWorld();
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        }
-
+                    // Delete plot world after reviewing
+                    try {
+                        if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
+                            plot.getWorld().deleteWorld();
+                    } catch (SQLException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    }
 
                         clickPlayer.sendMessage(reviewerConfirmationMessage);
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
@@ -397,16 +395,14 @@ public class ReviewPlotMenu extends AbstractMenu {
                             clickPlayer.sendMessage("§a" + LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
                             TextComponent txtComponent = new TextComponent();
                             txtComponent.setText(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
-                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL)).create()));
+                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL))));
                             txtComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "cancel"));
                             clickPlayer.spigot().sendMessage(txtComponent);
                         } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
                     });
 
                     for (Builder member : plot.getPlotMembers()) {
-                        if (member.isOnline()) {
-                            PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
-                        }
+                        if (member.isOnline()) PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
                     }
 
                     if(plot.getPlotOwner().isOnline()) {
@@ -416,8 +412,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                 }
-            });
-        });
+            }));
 
         // Set click event for point selection items
         for (int i = 0; i < 54; i++) {
@@ -432,15 +427,17 @@ public class ReviewPlotMenu extends AbstractMenu {
                 //Go through the whole points row
                 getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                     for (int j = 0; j < 6; j++) {
-                        if (getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) {
-                            ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
-                            ItemMeta metaPrevious = itemPrevious.getItemMeta();
-                            metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
-                            itemPrevious.setItemMeta(metaPrevious);
-                            getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
-                        }
+                        if (!Objects.requireNonNull(getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE)) continue;
+
+                        ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
+                        ItemMeta metaPrevious = itemPrevious.getItemMeta();
+                        assert metaPrevious != null;
+                        metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
+                        itemPrevious.setItemMeta(metaPrevious);
+                        getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
                     }
 
+                    assert meta != null;
                     meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
 

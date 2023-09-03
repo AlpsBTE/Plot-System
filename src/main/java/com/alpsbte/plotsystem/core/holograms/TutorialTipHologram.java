@@ -26,12 +26,10 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.PlaceHologramTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

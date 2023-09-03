@@ -5,6 +5,7 @@ import com.alpsbte.plotsystem.utils.conversion.projection.InvertableVectorField;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -26,7 +27,7 @@ public class ConformalEstimate extends Airocean {
         double[][] xs = new double[sideLength + 1][];
         double[][] ys = new double[xs.length][];
 
-        try(InputStream is = this.getClass().getClassLoader().getResourceAsStream("conformal.txt") ; Scanner sc = new Scanner(is)) {
+        try(InputStream is = this.getClass().getClassLoader().getResourceAsStream("conformal.txt") ; Scanner sc = new Scanner(Objects.requireNonNull(is))) {
 
             for (int u = 0; u < xs.length; u++) {
                 double[] px = new double[xs.length - u];
@@ -44,8 +45,6 @@ public class ConformalEstimate extends Airocean {
                     ys[u][v] = Double.parseDouble(split[1]) * this.VECTOR_SCALE_FACTOR;
                 }
             }
-
-            sc.close();
         } catch (IOException e) {
             System.err.println("Can't load conformal: " + e);
         }
@@ -66,8 +65,8 @@ public class ConformalEstimate extends Airocean {
         c[0] += 0.5;
         c[1] += MathUtils.ROOT3 / 6;
 
-        //use another interpolated vector to have a really good guess before using Newton's method
-        //Note: foward was removed for now, will need to be added back if this improvement is ever re-implemented
+        //use another interpolated vector to have a good guess before using Newton's method
+        //Note: forward was removed for now, will need to be added back if this improvement is ever re-implemented
         //c = forward.getInterpolatedVector(c[0], c[1]);
         //c = inverse.applyNewtonsMethod(x, y, c[0]/ARC + 0.5, c[1]/ARC + ROOT3/6, 1);
 

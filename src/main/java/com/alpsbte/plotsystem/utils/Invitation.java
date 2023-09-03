@@ -28,9 +28,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -41,10 +41,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class Invitation {
-    public static List<Invitation> invitationsList = new ArrayList<>();
+    public static final List<Invitation> invitationsList = new ArrayList<>();
 
-    public Player invitee;
-    public Plot plot;
+    public final Player invitee;
+    public final Plot plot;
 
     private final BukkitScheduler scheduler = PlotSystem.getPlugin().getServer().getScheduler();
     private int taskID;
@@ -65,7 +65,7 @@ public class Invitation {
         TextComponent tc = new TextComponent();
         tc.setText(Utils.ChatUtils.getInfoMessageFormat("[CLICK TO ACCEPT]"));
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot invite accept"));
-        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("Accept Invite").create()));
+        tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new Text("Accept Invite")));
 
         invitee.sendMessage("§7--------------------");
         invitee.sendMessage(Utils.ChatUtils.getInfoMessageFormat(plot.getPlotOwner().getName() + " has invited you to help building Plot #" + plot.getID()));

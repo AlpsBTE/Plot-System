@@ -38,6 +38,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class CMD_Plot_UndoSubmit extends SubCommand {
@@ -71,7 +72,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
                 return;
             }
 
-            if(plot.getStatus() == Status.unreviewed) {
+            if(Objects.requireNonNull(plot).getStatus() == Status.unreviewed) {
                 PlotUtils.Actions.undoSubmit(plot);
 
                 sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));

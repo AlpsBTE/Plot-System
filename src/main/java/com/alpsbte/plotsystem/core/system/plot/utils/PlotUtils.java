@@ -67,9 +67,9 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -113,7 +113,7 @@ public final class PlotUtils {
                 int cityID = Integer.parseInt(worldName.substring(2));
                 List<Plot> plots = Plot.getPlots(cityID, statuses);
 
-                if(plots.size() == 0)
+                if(plots.isEmpty())
                     return Plot.getPlots(builder).get(0);
                 if(plots.size() == 1)
                     return plots.get(0);
@@ -216,13 +216,13 @@ public final class PlotUtils {
 
                     Clipboard cb = new BlockArrayClipboard(region);
                     if (plot.getVersion() >= 3) {
-                        cb.setOrigin(BlockVector3.at(Math.floor(plotCenter.getX()), cuboidRegion.getMinimumY(), Math.floor(plotCenter.getZ())));
+                        cb.setOrigin(BlockVector3.at(plotCenter.getX(), cuboidRegion.getMinimumY(), (double) plotCenter.getZ()));
                     } else {
                         BlockVector3 terraCenter = plot.getMinecraftCoordinates();
                         plotCenter = BlockVector3.at(
-                                Math.floor(terraCenter.getX()) - Math.floor(clipboard.getMinimumPoint().getX()) + cuboidRegion.getMinimumPoint().getX(),
-                                Math.floor(terraCenter.getY()) - Math.floor(clipboard.getMinimumPoint().getY()) + cuboidRegion.getMinimumPoint().getY(),
-                                Math.floor(terraCenter.getZ()) - Math.floor(clipboard.getMinimumPoint().getZ()) + cuboidRegion.getMinimumPoint().getZ()
+                                (double) terraCenter.getX() - (double) clipboard.getMinimumPoint().getX() + cuboidRegion.getMinimumPoint().getX(),
+                                (double) terraCenter.getY() - (double) clipboard.getMinimumPoint().getY() + cuboidRegion.getMinimumPoint().getY(),
+                                (double) terraCenter.getZ() - (double) clipboard.getMinimumPoint().getZ() + cuboidRegion.getMinimumPoint().getZ()
                         );
                         cb.setOrigin(plotCenter);
                     }
@@ -231,7 +231,7 @@ public final class PlotUtils {
                     ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
                     Operations.complete(forwardExtentCopy);
 
-                    try(ClipboardWriter writer = ClipboardFormats.findByFile(finishedSchematicFile).getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+                    try(ClipboardWriter writer = Objects.requireNonNull(ClipboardFormats.findByFile(finishedSchematicFile)).getWriter(new FileOutputStream(finishedSchematicFile, false))) {
                         writer.write(cb);
                     }
 
@@ -358,7 +358,7 @@ public final class PlotUtils {
             }
 
             plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (plot.getPlotMembers().size() != 0) {
+            if (!plot.getPlotMembers().isEmpty()) {
                 for (Builder builder : plot.getPlotMembers()) {
                     plot.getPermissions().removeBuilderPerms(builder.getUUID());
                 }
@@ -369,7 +369,7 @@ public final class PlotUtils {
             plot.setStatus(Status.unfinished);
 
             plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (plot.getPlotMembers().size() != 0) {
+            if (!plot.getPlotMembers().isEmpty()) {
                 for (Builder builder : plot.getPlotMembers()) {
                     plot.getPermissions().addBuilderPerms(builder.getUUID());
                 }
@@ -514,7 +514,7 @@ public final class PlotUtils {
     }
 
     public static final class Effects {
-        public static int CACHE_UPDATE_TICKS = 20*60;
+        public static final int CACHE_UPDATE_TICKS = 20*60;
         private static int time;
 
         private static boolean ParticleAPIEnabled = false;
@@ -557,8 +557,7 @@ public final class PlotUtils {
                     List<Plot> plots = Cache.getCachedInProgressPlots(builder);
                     BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
 
-                    if(plots.size() == 0)
-                        continue;
+                    if(plots.isEmpty()) continue;
 
                     for(Plot plot : plots){
                         if(!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
@@ -621,13 +620,13 @@ public final class PlotUtils {
                     tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
                     tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
                     tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
-                } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating shortlink!", ex);
+                } catch (IOException | URISyntaxException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating short link!", ex);
                 }
 
-                tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Maps").create()));
-                tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Google Earth Web").create()));
-                tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Open Street Map").create()));
+                tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Google Maps")));
+                tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Google Earth Web")));
+                tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Open Street Map")));
 
                 // Temporary fix for bedrock players
                 String coords = null;
@@ -655,11 +654,11 @@ public final class PlotUtils {
 
         public static void sendGroupTipMessage(Plot plot, Player player) {
             try {
-                if (plot.getPlotMembers().size() == 0) {
+                if (plot.getPlotMembers().isEmpty()) {
                     TextComponent tc = new TextComponent();
                     tc.setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
                     tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)).create()));
+                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS))));
 
                     player.spigot().sendMessage(tc);
                     player.sendMessage("§8--------------------------");
@@ -676,8 +675,8 @@ public final class PlotUtils {
                 TextComponent tc = new TextComponent();
                 tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
                 tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
-                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                        LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)).create()));
+                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(
+                        LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK))));
                 player.spigot().sendMessage(tc);
 
                 if(plots.size() != plots.indexOf(plot) + 1) {
@@ -693,7 +692,7 @@ public final class PlotUtils {
             TextComponent tc = new TextComponent();
             tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)).create()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
             player.spigot().sendMessage(tc);
         }
 
@@ -705,7 +704,7 @@ public final class PlotUtils {
             TextComponent tc = new TextComponent();
             tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)).create()));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
             player.spigot().sendMessage(tc);
         }
     }

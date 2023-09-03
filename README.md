@@ -1,31 +1,31 @@
 <!-- PROJECT DESCRIPTION -->
 <br />
 
-<p align="Center">
+<p style="text-align: center">
   <a href="https://github.com/AlpsBTE/PlotSystem">
     <img src="https://cdn.discordapp.com/attachments/406907194228080652/881142301831888936/PlotSystemLogo.gif" alt="Logo" width="250" height="250">
   </a>
 </p>
 
-<h1 align="Center">Plot System</h1>
+<h1 style="text-align: center">Plot System</h1>
 
-<p align="center">
+<p style="text-align: center">
   <b>An easy to use building system for the BuildTheEarth project.</b>
   <br/>
   <a href="https://github.com/AlpsBTE/Plot-System/wiki"><strong>Explore the docs »</strong></a>
   <br/><br/>
 </p>
 
-<p align="center">
-    <a href="https://github.com/BuildTheEarth"><img src="https://img.shields.io/badge/project-community-orange.svg?colorA=3c3c3c&label=BuildTheEarth"></a>
-    <a href="https://discord.com/invite/vgkspay"><img src="https://img.shields.io/discord/696795397376442440?label=discord"></a>
+<p style="text-align: center">
+    <a href="https://github.com/BuildTheEarth"><img src="https://img.shields.io/badge/project-community-orange.svg?colorA=3c3c3c&label=BuildTheEarth" alt="BuildTheEarth"></a>
+    <a href="https://discord.com/invite/vgkspay"><img src="https://img.shields.io/discord/696795397376442440?label=discord" alt="discord"></a>
 </p>
-<p align="center">
-  <a href="https://jenkins.alps-bte.com/job/PlotSystem/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.alps-bte.com%2Fjob%2FPlotSystem%2F"></a>
-    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/codacy/grade/d5fad560dea64722887044e492b05ea9"></a>
-    <a href="https://github.com/AlpsBTE/Plot-System/releases"><img src="https://img.shields.io/github/v/release/AlpsBTE/Plot-System"></a>
-    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System"></a>
-    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/github/repo-size/AlpsBTE/Plot-System"></a>
+<p style="text-align: center">
+  <a href="https://jenkins.alps-bte.com/job/PlotSystem/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.alps-bte.com%2Fjob%2FPlotSystem%2F" alt="build status"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/codacy/grade/d5fad560dea64722887044e492b05ea9" alt="code quality"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System/releases"><img src="https://img.shields.io/github/v/release/AlpsBTE/Plot-System" alt="releases"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/tokei/lines/github/AlpsBTE/Plot-System" alt="total lines"></a>
+    <a href="https://github.com/AlpsBTE/Plot-System"><img src="https://img.shields.io/github/repo-size/AlpsBTE/Plot-System" alt="repo size"></a>
 </p>  
 
 
@@ -33,9 +33,9 @@
 # About The Project
 The Plot System is an essential part of any BuildTheEarth server system, meant to run alongside the classic Terra servers to make participating a lot easier and appeal to both the casual and power users. The plot system gives every player the opportunity to participate in the project with ease using Minecraft version 1.12 or higher, if ViaVersion is supported.
 
-After clicking on the Companion item in the hotbar, a selection window appears where you can choose a city from the list. If you now click on one of these cities, you will get to a random plot of this city and you can immediately start building. Links to Google Maps, Google Earth Web & OpenStreetMap appear when you enter the plot and allow you to quickly find your way around. 
+After clicking on the Companion item in the hotbar, a selection window appears where you can choose a city from the list. If you now click on one of these cities, you will get to a random plot of this city, and you can immediately start building. Links to Google Maps, Google Earth Web & OpenStreetMap appear when you enter the plot and allow you to quickly find your way around. 
 
-The system is designed to make it easier for unexperienced people, casual players and applicants to start building in BTE and to massively shorten application times. 
+The system is designed to make it easier for inexperienced people, casual players and applicants to start building in BTE and to massively shorten application times. 
 
 The plugin was programmed by the Alps BTE Team and is meant for everyone to use and help contribute. For any questions regarding setup or contribution feel free to contact us. 
 

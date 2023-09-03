@@ -50,10 +50,9 @@ public class PlotPermissions {
         return this;
     }
 
-    public PlotPermissions clearAllPerms() {
+    public void clearAllPerms() {
         if (world.getProtectedRegion() != null) world.getProtectedRegion().getOwners().removeAll();
         world.getProtectedBuildRegion().getOwners().removeAll();
-        return this;
     }
 
     public boolean hasBuildingPerms(UUID builder) {
