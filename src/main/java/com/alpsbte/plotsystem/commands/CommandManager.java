@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CommandManager {
 
@@ -69,7 +70,7 @@ public class CommandManager {
     public void init() {
         for (BaseCommand baseCmd : baseCommands) {
             for (String baseName : baseCmd.getNames()) {
-                PlotSystem.getPlugin().getCommand(baseName).setExecutor(baseCmd);
+                Objects.requireNonNull(PlotSystem.getPlugin().getCommand(baseName)).setExecutor(baseCmd);
             }
         }
     }

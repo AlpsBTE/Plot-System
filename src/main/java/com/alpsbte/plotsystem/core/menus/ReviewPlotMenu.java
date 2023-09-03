@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -140,7 +141,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                             //Add Enchantment
                             ItemMeta itemMeta = itemPointZero[position].getItemMeta();
-                            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                            Objects.requireNonNull(itemMeta).addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
                             itemPointZero[position].setItemMeta(itemMeta);
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
@@ -257,7 +258,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 6; j++) {
-                        if (getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE))
+                        if (Objects.requireNonNull(getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE))
                             continue;
 
                         if (i == 3) {
@@ -426,7 +427,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 //Go through the whole points row
                 getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                     for (int j = 0; j < 6; j++) {
-                        if (!getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta().hasEnchant(Enchantment.ARROW_DAMAGE)) continue;
+                        if (!Objects.requireNonNull(getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE)) continue;
 
                         ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
                         ItemMeta metaPrevious = itemPrevious.getItemMeta();
