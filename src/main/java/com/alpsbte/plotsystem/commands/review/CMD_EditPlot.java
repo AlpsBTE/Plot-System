@@ -40,6 +40,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -47,7 +48,7 @@ import java.util.logging.Level;
 public class CMD_EditPlot extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (getPlayer(sender) == null) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             return true;

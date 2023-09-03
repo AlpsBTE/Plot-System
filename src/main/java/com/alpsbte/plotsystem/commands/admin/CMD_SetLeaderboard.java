@@ -34,11 +34,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (!PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
             sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
             return true;
