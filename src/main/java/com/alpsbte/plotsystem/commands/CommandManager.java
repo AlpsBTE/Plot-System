@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
 import com.alpsbte.plotsystem.commands.admin.CMD_SetLeaderboard;
@@ -59,7 +58,6 @@ public class CommandManager {
 
         // Admin Commands
         add(new CMD_DeletePlot());
-        add(new CMD_CleanPlot());
         add(new CMD_SetLeaderboard());
         add(new CMD_PReload());
 
