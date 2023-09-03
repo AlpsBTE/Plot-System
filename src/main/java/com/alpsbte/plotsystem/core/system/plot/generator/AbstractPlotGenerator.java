@@ -40,17 +40,14 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.fastasyncworldedit.core.FaweAPI;
-import com.fastasyncworldedit.core.function.mask.AirMask;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.mask.BlockTypeMask;
-import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.RegionMask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -163,15 +160,11 @@ public abstract class AbstractPlotGenerator {
      * @param environmentSchematic - environment schematic file
      */
     protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
-        World weWorld = new BukkitWorld(world.getBukkitWorld());
-        EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()));
-        // editSession.setFastMode(true);
-
+        Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
         if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
-            editSession.setMask(new BlockTypeMask(weWorld, BlockTypes.AIR));
-            pasteSchematic(editSession, environmentSchematic, world, false);
+            pasteSchematic(airMask, environmentSchematic, world, false);
         }
-        pasteSchematic(editSession, plotSchematic, world, true);
+        pasteSchematic(airMask, plotSchematic, world, true);
     }
 
 
@@ -310,32 +303,29 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Pastes the schematic to the plot center in the given world
+     * @param pasteMask - sets a mask for the paste operation, can be null
      * @param schematicFile - plot/environment schematic file
      * @param world - world to paste in
+     * @param clearArea - clears the plot area with air before pasting
      */
-    public static void pasteSchematic(@Nullable EditSession editSession, File schematicFile, PlotWorld world, boolean clearArea) throws IOException, MaxChangedBlocksException, SQLException {
+    public static void pasteSchematic(@Nullable Mask pasteMask, File schematicFile, PlotWorld world, boolean clearArea) throws IOException, WorldEditException, SQLException {
         if (world.loadWorld()) {
             World weWorld = new BukkitWorld(world.getBukkitWorld());
-            if (editSession == null) {
-                editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()));
-                // editSession.setFastMode(true);
-            }
-            if (clearArea) {
-                Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-                editSession.setMask(new RegionMask(polyRegion));
-                editSession.setBlocks(polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
-            }
-            Clipboard clipboard = FaweAPI.load(schematicFile);
-            Operation clipboardHolder = new ClipboardHolder(clipboard)
-                    .createPaste(editSession)
-                    .to(BlockVector3.at(world.getPlot().getCenter().getBlockX(), world.getPlotHeight(), world.getPlot().getCenter().getBlockZ()))
-                    .build();
-            try {
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
+                if (clearArea) {
+                    Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+                    editSession.setMask(new RegionMask(polyRegion));
+                    editSession.setBlocks(polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
+                }
+                editSession.setMask(null);
+                if(pasteMask != null) editSession.setMask(pasteMask);
+                Clipboard clipboard = FaweAPI.load(schematicFile);
+                Operation clipboardHolder = new ClipboardHolder(clipboard)
+                        .createPaste(editSession)
+                        .to(BlockVector3.at(world.getPlot().getCenter().getBlockX(), world.getPlotHeight(), world.getPlot().getCenter().getBlockZ()))
+                        .build();
                 Operations.complete(clipboardHolder);
-            } catch (WorldEditException e) {
-                Bukkit.getLogger().log(Level.SEVERE, "Could not paste Plot Schematic " + world.getWorldName() + "!", e);
             }
-            editSession.close();
         }
     }
 }

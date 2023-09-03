@@ -34,7 +34,6 @@ import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,12 +51,6 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
 
     public void generateOutlines(int schematicId) throws SQLException, IOException, WorldEditException {
         generateOutlines(((TutorialPlot)plot).getOutlinesSchematic(schematicId), null);
-    }
-
-    @Override
-    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
-        pasteSchematic(null, plotSchematic, world, true);
-        if (environmentSchematic != null) pasteSchematic(null, environmentSchematic, world, false);
     }
 
     @Override
