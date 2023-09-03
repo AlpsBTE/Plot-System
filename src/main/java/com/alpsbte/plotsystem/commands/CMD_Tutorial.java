@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 public class CMD_Tutorial extends BaseCommand {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
                 if (args.length == 0) {
