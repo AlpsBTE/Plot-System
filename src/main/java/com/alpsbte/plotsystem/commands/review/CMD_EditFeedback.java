@@ -30,10 +30,12 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -41,40 +43,41 @@ import java.util.logging.Level;
 public class CMD_EditFeedback extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            try {
-                if (args.length > 1 && AlpsUtils.TryParseInt(args[0]) != null){
-                    int plotID = Integer.parseInt(args[0]);
-                    if(PlotUtils.plotExists(plotID)) {
-                        Plot plot = new Plot(Integer.parseInt(args[0]));
-                        if (plot.isReviewed() || plot.isRejected()) {
-                            if (getPlayer(sender) == null || sender.hasPermission("plotsystem.admin") || plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
-                                StringBuilder feedback = new StringBuilder();
-                                for(int i = 2; i <= args.length; i++) {
-                                    feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
-                                }
-                                plot.getReview().setFeedback(feedback.toString());
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
 
-                                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
-                            } else {
-                                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
-                            }
-                        } else {
-                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
-                        }
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    }
-                } else {
-                    sendInfo(sender);
-                }
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        if (args.length <= 1 || AlpsUtils.TryParseInt(args[0]) == null) { sendInfo(sender); return true; }
+        int plotID = Integer.parseInt(args[0]);
+
+        if(!PlotUtils.plotExists(plotID)) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+            return true;
+        }
+
+        Plot plot = new Plot(plotID);
+        try {
+            if (!plot.isReviewed() && !plot.isRejected()) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
+                return true;
             }
-        } else {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
+                return true;
+            }
+
+            StringBuilder feedback = new StringBuilder();
+            for(int i = 2; i <= args.length; i++) {
+                feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
+            }
+            plot.getReview().setFeedback(feedback.toString());
+
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
+        } catch (SQLException ex) {
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

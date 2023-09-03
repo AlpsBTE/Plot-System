@@ -42,7 +42,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -543,7 +542,7 @@ public class Plot extends AbstractPlot {
     }
 
     public static List<Plot> getPlots(List<CityProject> cities, Status... statuses) throws SQLException {
-        if(cities.size() == 0) {
+        if(cities.isEmpty()) {
             return new ArrayList<>();
         }
         StringBuilder query = new StringBuilder(" AND (city_project_id = ");
@@ -622,9 +621,9 @@ public class Plot extends AbstractPlot {
     public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
         // Check if plot difficulties are available
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
-        if (getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).size() != 0) easyHasPlots = true;
-        if (getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).size() != 0) mediumHasPlots = true;
-        if (getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).size() != 0) hardHasPlots = true;
+        if (!getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).isEmpty()) easyHasPlots = true;
+        if (!getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).isEmpty()) mediumHasPlots = true;
+        if (!getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).isEmpty()) hardHasPlots = true;
 
         if (hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);

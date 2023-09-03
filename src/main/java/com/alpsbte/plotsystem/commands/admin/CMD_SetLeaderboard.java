@@ -34,50 +34,54 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            if (sender.hasPermission(getPermission())){
-                if (getPlayer(sender) != null){
-                    Player player = (Player)sender;
-                    if (args.length == 1) {
-                        // Find leaderboard by name
-                        HolographicDisplay leaderboard = LeaderboardManager.getLeaderboards().stream()
-                                .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
-                                .findFirst()
-                                .orElse(null);
-
-                        // Update leaderboard location
-                        if(leaderboard != null) {
-                            LeaderboardManager.savePosition(leaderboard.getId(), getPlayer(sender).getLocation());
-                            player.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully updated leaderboard location!"));
-                            player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
-
-                            LeaderboardManager.reloadLeaderboards();
-                        } else {
-                            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Leaderboard could not be found!"));
-                        }
-                    } else {
-                        sendInfo(sender);
-                        player.sendMessage("§8------- §6§lLeaderboards §8-------");
-                        for(HolographicDisplay leaderboard : LeaderboardManager.getLeaderboards()) {
-                            player.sendMessage(" §6> §f" + leaderboard.getId());
-                        }
-                        player.sendMessage("§8-----------------------------");
-                    }
-
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
-                }
-            } else {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
-            }
-        } else {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        if (!PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
             sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
+            return true;
         }
+
+        if (!sender.hasPermission(getPermission())){
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
+            return true;
+        }
+
+        if (getPlayer(sender) == null){
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            return true;
+        }
+
+        Player player = (Player)sender;
+        if (args.length != 1) {
+            sendInfo(sender);
+            player.sendMessage("§8------- §6§lHolograms §8-------");
+            for(HolographicDisplay holo : LeaderboardManager.getLeaderboards()) {
+                player.sendMessage(" §6> §f" + holo.getId());
+            }
+            player.sendMessage("§8--------------------------");
+            return true;
+        }
+
+        // Find hologram by name
+        HolographicDisplay hologram = LeaderboardManager.getLeaderboards().stream()
+                .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
+                .findFirst()
+                .orElse(null);
+
+        // Update hologram location
+        if(hologram == null) {
+            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Hologram could not be found!"));
+            return true;
+        }
+        LeaderboardManager.savePosition(hologram.getId(), getPlayer(sender).getLocation());
+        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully updated hologram location!"));
+        player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
+
+        LeaderboardManager.reloadLeaderboards();
         return true;
     }
 

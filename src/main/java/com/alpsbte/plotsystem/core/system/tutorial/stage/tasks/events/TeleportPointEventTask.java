@@ -55,7 +55,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
         if (event instanceof PlayerTeleportEvent) {
             PlayerTeleportEvent teleportEvent = (PlayerTeleportEvent) event;
 
-            if (teleportPoints.size() == 0) return;
+            if (teleportPoints.isEmpty()) return;
 
             int blockX = teleportEvent.getTo().getBlockX();
             int blockZ = teleportEvent.getTo().getBlockZ();
@@ -74,7 +74,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
 
         updateProgress();
         onTeleportAction.performAction(teleportPoint);
-        if (teleportPoints.size() == 0) setTaskDone();
+        if (teleportPoints.isEmpty()) setTaskDone();
     }
 
     @Override

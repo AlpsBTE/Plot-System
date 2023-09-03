@@ -45,7 +45,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class CompanionMenu {
         if (hasContinentView()) {
             new ContinentMenu(player);
         } else {
-            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> Country.getCountries(c).size() > 0).findFirst();
+            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !Country.getCountries(c).isEmpty()).findFirst();
 
             if (!continent.isPresent()) {
                 player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
@@ -109,14 +108,13 @@ public class CompanionMenu {
 
                 Plot plot = builder.getPlot(Slot.values()[i]);
                 items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
-                    if (plot != null) {
-                        try {
-                            new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
-                        } catch (SQLException ex) {
-                            clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-                            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
-                        }
+                    if (plot == null) return;
+                    try {
+                        new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
+                    } catch (SQLException ex) {
+                        clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
                     }
                 }));
             } catch (NullPointerException | SQLException ex) {
@@ -132,12 +130,11 @@ public class CompanionMenu {
         ItemStack item = null;
 
         if (selectedPlotDifficulty != null) {
-            if (selectedPlotDifficulty == PlotDifficulty.EASY) {
-                item = AlpsUtils.getItemHead(Utils.HeadUtils.GREEN_CONCRETE_HEAD);
-            } else if (selectedPlotDifficulty == PlotDifficulty.MEDIUM) {
-                item = AlpsUtils.getItemHead(Utils.HeadUtils.YELLOW_CONCRETE_HEAD);
-            } else if (selectedPlotDifficulty == PlotDifficulty.HARD) {
-                item = AlpsUtils.getItemHead(Utils.HeadUtils.RED_CONCRETE_HEAD);
+            switch (selectedPlotDifficulty) {
+                case EASY: item = AlpsUtils.getItemHead(Utils.HeadUtils.GREEN_CONCRETE_HEAD); break;
+                case MEDIUM: item = AlpsUtils.getItemHead(Utils.HeadUtils.YELLOW_CONCRETE_HEAD); break;
+                case HARD: item = AlpsUtils.getItemHead(Utils.HeadUtils.RED_CONCRETE_HEAD); break;
+                default: break;
             }
         } else item = AlpsUtils.getItemHead(Utils.HeadUtils.WHITE_CONCRETE_HEAD);
 
@@ -169,7 +166,7 @@ public class CompanionMenu {
     }
 
     static class FooterItem {
-        public ItemStack item;
+        public final ItemStack item;
         public org.ipvp.canvas.slot.Slot.ClickHandler clickHandler = null;
 
         FooterItem(ItemStack item, org.ipvp.canvas.slot.Slot.ClickHandler clickHandler) {

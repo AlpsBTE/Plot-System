@@ -41,14 +41,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 public class PlayerPlotsMenu extends AbstractMenu {
-
     private final Builder builder;
     private List<Plot> plots;
 
@@ -158,7 +156,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
      */
     private List<String> getDescription(Plot plot, Player p) throws SQLException {
         List<String> lines = new ArrayList<>();
-        if (plot.getPlotMembers().size() == 0) {
+        if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
         } else {

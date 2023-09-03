@@ -171,8 +171,8 @@ public class Airocean extends GeographicProjection {
             double centroidLambda = centroidSpherical[0];
             double centroidPhi = centroidSpherical[1];
 
-            double vertex[] = VERTICES[ISO[i][0]];
-            double v[] = new double[] {vertex[0] - centroidLambda, vertex[1]};
+            double[] vertex = VERTICES[ISO[i][0]];
+            double[] v = new double[] {vertex[0] - centroidLambda, vertex[1]};
             v = yRot(v, -centroidPhi);
 
             ROTATION_MATRICES[i] = MathUtils.produceZYZRotationMatrix(-centroidLambda, -centroidPhi, (Math.PI/2) - v[0]);
@@ -243,7 +243,7 @@ public class Airocean extends GeographicProjection {
         double xr = xp - yp;
         double yr = xp + yp;
 
-        //assign a order to what grid along the y=x line it is
+        //assign an order to what grid along the y=x line it is
         int gx = (int) Math.floor(xr);
         int gy = (int) Math.floor(yr);
 
@@ -305,8 +305,6 @@ public class Airocean extends GeographicProjection {
 
         double adenom = 1;
         double bdenom = 1;
-
-        //double fp = anumer + bnumer + 1; //derivative relative to tanc
 
         //int i = newton;
         for (int i = 0; i < NEWTON; i++) {

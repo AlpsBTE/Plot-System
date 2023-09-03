@@ -305,13 +305,13 @@ public abstract class AbstractTutorial implements Tutorial {
      * @param playerUUID uuid of the player
      * @return true if the player can interact, otherwise false
      */
-    public static boolean canPlayerInteract(UUID playerUUID) {
+    public static boolean playerIsOnInteractCoolDown(UUID playerUUID) {
         if (playerInteractionHistory.containsKey(playerUUID)) {
             long lastInteraction = playerInteractionHistory.get(playerUUID);
-            if (System.currentTimeMillis() - lastInteraction <= PLAYER_INTERACTION_COOLDOWN) return false;
+            if (System.currentTimeMillis() - lastInteraction <= PLAYER_INTERACTION_COOLDOWN) return true;
         }
         playerInteractionHistory.put(playerUUID, System.currentTimeMillis());
-        return true;
+        return false;
     }
 
     /**

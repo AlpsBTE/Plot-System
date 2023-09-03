@@ -24,13 +24,11 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
-import com.fastasyncworldedit.core.function.pattern.LinearBlockPattern;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -72,7 +70,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
 
         updateProgress();
         minPoint = null; maxPoint = null;
-        if (linePoints.size() == 0) setTaskDone();
+        if (linePoints.isEmpty()) setTaskDone();
     }
 
     @Override

@@ -87,20 +87,21 @@ public class CMD_Setup_Country extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             List<Country> countries = Country.getCountries();
-            if (countries.size() != 0) {
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + countries.size() + " Countries registered in the database:"));
-                sender.sendMessage("§8--------------------------");
-                for (Country c : countries) {
-                    try {
-                        sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Server: " + c.getServer().getID() + " (" + c.getServer().getName() + ")");
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
-                }
-                sender.sendMessage("§8--------------------------");
-            } else {
+            if (countries.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently no countries registered in the database!"));
+                return;
             }
+
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + countries.size() + " Countries registered in the database:"));
+            sender.sendMessage("§8--------------------------");
+            for (Country c : countries) {
+                try {
+                    sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Server: " + c.getServer().getID() + " (" + c.getServer().getName() + ")");
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
+            }
+            sender.sendMessage("§8--------------------------");
         }
 
         @Override
@@ -131,28 +132,27 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 3 && AlpsUtils.TryParseInt(args[1]) != null) {
-                if (args[2].length() <= 45) {
-                    Continent continent;
-                    try {
-                        continent = Continent.valueOf(args[3].toUpperCase());
-                    }catch(IllegalArgumentException e) {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Unknown continent! " + Arrays.toString(Continent.values())));
-                        return;
-                    }
-                    try {
-                        Country.addCountry(Integer.parseInt(args[1]), args[2], continent);
-                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added country!"));
-                    } catch (SQLException ex) {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
-                } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Country name cannot be longer than 45 characters!"));
-                }
+            if (args.length <= 3 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+
+            if (args[2].length() > 45) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Country name cannot be longer than 45 characters!"));
                 return;
             }
-            sendInfo(sender);
+
+            Continent continent;
+            try {
+                continent = Continent.valueOf(args[3].toUpperCase());
+            } catch(IllegalArgumentException e) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Unknown continent! " + Arrays.toString(Continent.values())));
+                return;
+            }
+            try {
+                Country.addCountry(Integer.parseInt(args[1]), args[2], continent);
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added country!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
 
         @Override
@@ -183,23 +183,21 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 1 && AlpsUtils.TryParseInt(args[1]) != null) {
-                // Check if country exists
-                try {
-                    if (Country.getCountries().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                        Country.removeCountry(Integer.parseInt(args[1]));
-                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed country!"));
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any country with ID " + args[1] + "!"));
-                        sendInfo(sender);
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            if (args.length <= 1 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+
+            // Check if country exists
+            try {
+                if (Country.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any country with ID " + args[1] + "!"));
+                    sendInfo(sender);
+                    return;
                 }
-                return;
+                Country.removeCountry(Integer.parseInt(args[1]));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed country!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-            sendInfo(sender);
         }
 
         @Override
@@ -230,23 +228,24 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null && AlpsUtils.TryParseInt(args[2]) != null) {
-                // Check if country exists
-                try {
-                    if (Country.getCountries().stream().anyMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                        Country.setHeadID(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set head id of country " + args[1] + " to " + args[2] + "!"));
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any country with name " + args[1] + "!"));
-                        sendInfo(sender);
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                }
+            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null || AlpsUtils.TryParseInt(args[2]) == null) {
+                sendInfo(sender);
                 return;
             }
-            sendInfo(sender);
+
+            // Check if country exists
+            try {
+                if (Country.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any country with name " + args[1] + "!"));
+                    sendInfo(sender);
+                    return;
+                }
+                Country.setHeadID(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set head id of country " + args[1] + " to " + args[2] + "!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
 
         @Override

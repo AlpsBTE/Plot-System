@@ -34,7 +34,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.util.function.Consumer;
 
 public class SettingsMenu extends AbstractMenu {

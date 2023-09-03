@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.InteractNPCEventTask;
 import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;

@@ -28,15 +28,16 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class ShortLink {
-    public static String generateShortLink(String linkToShorten, String apikey, String host) throws IOException {
+    public static String generateShortLink(String linkToShorten, String apikey, String host) throws IOException, URISyntaxException {
         String fullURL = URLEncoder.encode(linkToShorten, StandardCharsets.UTF_8.toString());
-        URL url = new URL(host + "/rest/v2/short-urls/shorten?apiKey=" + apikey + "&format=txt&longUrl=" + fullURL);
-        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+        URI uri = new URI(host + "/rest/v2/short-urls/shorten?apiKey=" + apikey + "&format=txt&longUrl=" + fullURL);
+        HttpsURLConnection con = (HttpsURLConnection) uri.toURL().openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
         con.addRequestProperty("Accept", "*/*");

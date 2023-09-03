@@ -61,7 +61,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.TrapDoor;
+import org.bukkit.material.Openable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -128,7 +128,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                     }
                 }
 
-                if(reviewedPlots.size() >= 1) {
+                if(!reviewedPlots.isEmpty()) {
                     PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, event.getPlayer());
                     event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
                 }
@@ -139,7 +139,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             // Informing player about unfinished plots
             try {
                 List<Plot> plots = Plot.getPlots(builder, Status.unfinished);
-                if(plots.size() >= 1) {
+                if(!plots.isEmpty()) {
                     PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
                 }
@@ -152,7 +152,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                 if(event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
                     List<Plot> unreviewedPlots = Plot.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
 
-                    if(unreviewedPlots.size() != 0) {
+                    if(!unreviewedPlots.isEmpty()) {
                         PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
                     }
                 }
@@ -182,7 +182,7 @@ public class EventListener extends SpecialBlocks implements Listener {
 
                         if (query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) {
                             BlockState state = event.getClickedBlock().getState();
-                            TrapDoor tp = (TrapDoor) state.getData();
+                            Openable tp = (Openable) state.getData();
 
                             if (!tp.isOpen()) {
                                 tp.setOpen(true);

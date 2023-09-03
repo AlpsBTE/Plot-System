@@ -35,12 +35,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public final class LeaderboardManager {
     private LeaderboardManager() {}
     private static final List<HolographicDisplay> leaderboards = Arrays.asList(
-            new ScoreLeaderboard(ConfigPaths.SCORE_LEADERBOARD),
-            new PlotsLeaderboard(ConfigPaths.PLOTS_LEADERBOARD)
+            new ScoreLeaderboard(),
+            new PlotsLeaderboard()
     );
 
     public static void reloadLeaderboards() {
@@ -57,7 +58,7 @@ public final class LeaderboardManager {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
         String path = ConfigPaths.HOLOGRAMS + id;
 
-        return Position.of(Utils.getSpawnLocation().getWorld().getName(),
+        return Position.of(Objects.requireNonNull(Utils.getSpawnLocation().getWorld()).getName(),
                 config.getDouble(path + ConfigPaths.LEADERBOARD_X),
                 config.getDouble(path + ConfigPaths.LEADERBOARD_Y),
                 config.getDouble(path + ConfigPaths.LEADERBOARD_Z)

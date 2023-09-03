@@ -45,7 +45,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -60,14 +59,14 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
     private BukkitTask actionbarTask = null;
 
-    protected ScoreLeaderboard(@NotNull String id) {
-        super(id, PlotSystem.getPlugin());
+    protected ScoreLeaderboard() {
+        super(ConfigPaths.SCORE_LEADERBOARD, PlotSystem.getPlugin());
     }
 
     @Override
     public void create(Position position) {
         if (!PlotSystem.getPlugin().isEnabled()) return;
-        if (getPages().size() < 1) {
+        if (getPages().isEmpty()) {
             PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
             return;
         }
@@ -131,7 +130,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
             return TextComponent.fromLegacyText("§cSQL Exception");
         }
 
@@ -244,18 +243,15 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
             try {
                 String line = super.getLine();
                 Payout payout = sortByLeaderboard != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortByLeaderboard, position) : null;
-                if (payout == null) {
-                    return line;
-                } else {
-                    String payoutAmount = payout.getPayoutAmount();
-                    try {
-                        // if payout amount can be number, prefix with dollar sign
-                        Integer.valueOf(payoutAmount);
-                        payoutAmount = "$" + payoutAmount;
-                    } catch (NumberFormatException ignored) {}
+                if (payout == null) return line;
+                String payoutAmount = payout.getPayoutAmount();
+                try {
+                    // if payout amount can be number, prefix with dollar sign
+                    Integer.valueOf(payoutAmount);
+                    payoutAmount = "$" + payoutAmount;
+                } catch (NumberFormatException ignored) {}
 
-                    return line + " §7- §e§l" + payoutAmount;
-                }
+                return line + " §7- §e§l" + payoutAmount;
             } catch (SQLException e) {
                 return super.getLine() + " §7- §cSQL ERR";
             }

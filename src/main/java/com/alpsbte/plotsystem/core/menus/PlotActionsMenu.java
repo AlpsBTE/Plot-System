@@ -42,12 +42,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.SQLException;
 import java.util.logging.Level;
 
 public class PlotActionsMenu extends AbstractMenu {
-
     private final Plot plot;
     private final boolean hasFeedback;
 
@@ -173,22 +171,22 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for plot members item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
             try {
-                if (!plot.isReviewed()) {
-                    if (plot.getStatus() == Status.unfinished) {
-                        FileConfiguration config = PlotSystem.getPlugin().getConfig();
-                        if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
-                            clickPlayer.closeInventory();
-                            new PlotMemberMenu(plot,clickPlayer);
-                        } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
-                            // Leave Plot
-                            plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
-                            clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
-                            clickPlayer.closeInventory();
-                        }
-                    } else {
-                        clickPlayer.closeInventory();
-                        clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
-                    }
+                if (plot.isReviewed()) return;
+                if (plot.getStatus() != Status.unfinished) {
+                    clickPlayer.closeInventory();
+                    clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
+                    return;
+                }
+
+                FileConfiguration config = PlotSystem.getPlugin().getConfig();
+                if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
+                    clickPlayer.closeInventory();
+                    new PlotMemberMenu(plot,clickPlayer);
+                } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                    // Leave Plot
+                    plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
+                    clickPlayer.closeInventory();
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
