@@ -74,16 +74,10 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for language item
-        getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
-            getMenuPlayer().closeInventory();
-            new SelectLanguageMenu(clickPlayer);
-        }));
+        getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> new SelectLanguageMenu(clickPlayer)));
 
         // Set click event for plot type item
-        getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
-            getMenuPlayer().closeInventory();
-            new SelectPlotTypeMenu(clickPlayer);
-        }));
+        getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> new SelectPlotTypeMenu(clickPlayer)));
 
         // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> onBack.accept(clickPlayer));

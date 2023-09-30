@@ -50,7 +50,6 @@ public class CMD_Companion extends BaseCommand {
         if (tutorial != null) new TutorialStagesMenu(getPlayer(sender), tutorial.getId());
         else CompanionMenu.open((Player) sender);
 
-        CompanionMenu.open((Player) sender);
         return true;
     }
 

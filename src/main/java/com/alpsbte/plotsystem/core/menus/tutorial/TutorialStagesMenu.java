@@ -109,8 +109,17 @@ public class TutorialStagesMenu extends AbstractMenu {
             getMenu().getSlot(startSlotSecondRow + i).setItem(MenuItems.loadingItem(Material.GRAY_STAINED_GLASS_PANE, getMenuPlayer()));
         }
 
-        // Set back item
-        getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+        // Get tutorial
+        tutorial = AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId());
+        if (tutorial != null) playerCurrentStage = tutorial.getCurrentStage();
+
+        // Set end tutorial item if the player is in a tutorial, otherwise set back item
+        if (playerCurrentStage != -1) {
+            getMenu().getSlot(49).setItem(new ItemBuilder(Material.BARRIER)
+                    .setName(RED + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_END))
+                    .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_END)).build())
+                    .build());
+        } else getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         super.setPreviewItems();
     }
@@ -123,8 +132,6 @@ public class TutorialStagesMenu extends AbstractMenu {
                 playerHighestStage = plot.getStageID();
                 isTutorialCompleted = plot.isCompleted();
             }
-            tutorial = AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId());
-            if (tutorial != null) playerCurrentStage = tutorial.getCurrentStage();
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
         }
@@ -150,12 +157,6 @@ public class TutorialStagesMenu extends AbstractMenu {
         for (int i = 0; i < stagesInSecondRow; i++) {
             getMenu().getSlot(startSlotSecondRow + i).setItem(getStageItem(tutorialId, stagesInFirstRow + i));
         }
-
-        // Set end tutorial item if the player is in a tutorial
-        if (playerCurrentStage != -1) getMenu().getSlot(49).setItem(new ItemBuilder(Material.BARRIER)
-                .setName(RED + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_END))
-                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_END)).build())
-                .build());
     }
 
     @Override
@@ -173,8 +174,8 @@ public class TutorialStagesMenu extends AbstractMenu {
         // Set click event for back item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
             if (playerCurrentStage != -1) {
-                tutorial.onTutorialStop(clickPlayer.getUniqueId());
                 clickPlayer.closeInventory();
+                tutorial.onTutorialStop(clickPlayer.getUniqueId());
             } else new TutorialsMenu(clickPlayer);
         });
     }
