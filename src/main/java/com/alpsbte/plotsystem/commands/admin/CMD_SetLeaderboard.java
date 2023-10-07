@@ -80,8 +80,6 @@ public class CMD_SetLeaderboard extends BaseCommand {
         LeaderboardManager.savePosition(hologram.getId(), getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully updated hologram location!"));
         player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
-
-        LeaderboardManager.reloadLeaderboards();
         return true;
     }
 

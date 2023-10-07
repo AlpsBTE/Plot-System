@@ -34,14 +34,16 @@ import org.ipvp.canvas.type.ChestMenu;
 public abstract class AbstractMenu {
     private final Menu menu;
     private final Player menuPlayer;
+    private final String title;
 
     public AbstractMenu(int rows, String title, Player menuPlayer) {
         this(rows, title, menuPlayer, true);
     }
 
     public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
+        this.title = title;
         this.menuPlayer = menuPlayer;
-        this.menu = ChestMenu.builder(rows).title(title).redraw(false).build();
+        this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
 
         if (reload) reloadMenuAsync();
     }
@@ -70,6 +72,7 @@ public abstract class AbstractMenu {
     protected void setPreviewItems() {
         if(getMask() != null) getMask().apply(getMenu());
         getMenu().open(getMenuPlayer());
+        getMenuPlayer().getOpenInventory().setTitle(title);
     }
 
     /**

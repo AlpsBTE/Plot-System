@@ -180,13 +180,12 @@ public class PlotActionsMenu extends AbstractMenu {
 
                 FileConfiguration config = PlotSystem.getPlugin().getConfig();
                 if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
-                    clickPlayer.closeInventory();
-                    new PlotMemberMenu(plot,clickPlayer);
+                    new PlotMemberMenu(plot, clickPlayer);
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     // Leave Plot
+                    clickPlayer.closeInventory();
                     plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
                     clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
-                    clickPlayer.closeInventory();
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

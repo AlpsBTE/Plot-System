@@ -123,15 +123,13 @@ public class PlayerPlotsMenu extends AbstractMenu {
                     new PlotActionsMenu(clickPlayer, plots.get(itemSlot));
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    clickPlayer.closeInventory();
                 }
             });
         }
 
         // Set click event for back item
-        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand("companion");
-        });
+        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
     }
 
     @Override

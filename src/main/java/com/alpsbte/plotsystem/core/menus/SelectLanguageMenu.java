@@ -89,6 +89,7 @@ public class SelectLanguageMenu extends AbstractMenu {
             LangUtil.LanguageFile langFile = LangUtil.getInstance().languageFiles[i - 1];
             getMenu().getSlot(i + ((i >= 8) ? 2 : 0)).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
+                    getMenuPlayer().closeInventory();
                     Builder builder = Builder.byUUID(getMenuPlayer().getUniqueId());
                     builder.setLanguageTag(langFile.getTag());
                     Utils.updatePlayerInventorySlots(clickPlayer);
@@ -99,8 +100,6 @@ public class SelectLanguageMenu extends AbstractMenu {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
                 }
-
-                getMenuPlayer().closeInventory();
             });
         }
 

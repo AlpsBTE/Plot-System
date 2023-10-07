@@ -187,7 +187,8 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::reload));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream()
+                .filter(leaderboard -> leaderboard instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::reloadAll));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -195,7 +196,8 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::reload));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream()
+                .filter(leaderboard -> leaderboard instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::reloadAll));
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {

@@ -240,9 +240,8 @@ public class ReviewPlotMenu extends AbstractMenu {
 
         // Set click event for plot info item
         getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
             try {
-                new PlotActionsMenu(clickPlayer,plot);
+                new PlotActionsMenu(clickPlayer, plot);
             } catch (SQLException ex) {
                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }

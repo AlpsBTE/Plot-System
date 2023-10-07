@@ -32,7 +32,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import me.filoghost.holographicdisplays.api.Position;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -44,36 +44,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ScoreLeaderboard extends HolographicPagedDisplay {
     private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
-    private BukkitTask actionbarTask = null;
 
     protected ScoreLeaderboard() {
-        super(ConfigPaths.SCORE_LEADERBOARD, PlotSystem.getPlugin());
-    }
+        super(ConfigPaths.SCORE_LEADERBOARD, LeaderboardManager.getPosition(ConfigPaths.SCORE_LEADERBOARD),
+                false, PlotSystem.getPlugin());
 
-    @Override
-    public void create(Position position) {
-        if (!PlotSystem.getPlugin().isEnabled()) return;
-        if (getPages().isEmpty()) {
-            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
-            return;
-        }
-
-        super.create(position);
-
-        actionbarTask = new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 for (Player player : showToPlayers()) {
@@ -84,23 +73,39 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     }
 
     @Override
+    public void create(Player player) {
+        if (!PlotSystem.getPlugin().isEnabled()) return;
+        if (getPages().isEmpty()) {
+            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
+            return;
+        }
+
+        super.create(player);
+    }
+
+    @Override
+    public boolean hasViewPermission(UUID uuid) {
+        return true;
+    }
+
+    @Override
     public ItemStack getItem() {
         return new ItemStack(Material.NETHER_STAR);
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle(UUID playerUUID) {
         return "§b§lTOP SCORE §6§l[" + (sortByLeaderboard.toString().charAt(0) + sortByLeaderboard.toString().toLowerCase().substring(1)) + "]";
     }
 
     @Override
-    public List<DataLine<?>> getHeader() {
+    public List<DataLine<?>> getHeader(UUID playerUUID) {
         sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
-        return super.getHeader();
+        return super.getHeader(playerUUID);
     }
 
     @Override
-    public List<DataLine<?>> getContent() {
+    public List<DataLine<?>> getContent(UUID playerUUID) {
         try {
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
@@ -184,8 +189,10 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Position position = getHologram().getPosition();
-            if (player.getWorld().getName().equals(position.getWorldName()) && (!actionBarEnabled || position.distance(player.getLocation()) <= actionBarRadius)) {
+            Hologram holo = getHologram(player.getUniqueId());
+            if (holo == null) continue;
+            if (player.getWorld().getName().equals(holo.getPosition().getWorldName()) &&
+                    (!actionBarEnabled || holo.getPosition().distance(player.getLocation()) <= actionBarRadius)) {
                 players.add(player);
             }
         }
@@ -203,15 +210,6 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     @Override
     public long getInterval() {
         return PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
-    }
-
-    @Override
-    public void remove() {
-        if (actionbarTask != null) {
-            actionbarTask.cancel();
-            actionbarTask = null;
-        }
-        super.remove();
     }
 
     public enum LeaderboardTimeframe {
