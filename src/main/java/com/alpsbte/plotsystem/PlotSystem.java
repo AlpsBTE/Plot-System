@@ -66,7 +66,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
-    private static final String VERSION = "3.0.3";
+    private static final String VERSION = "4.0";
 
     private static PlotSystem plugin;
     private CommandManager commandManager;
@@ -226,7 +226,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
-            LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::remove);
+            LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::delete);
         } else {
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {

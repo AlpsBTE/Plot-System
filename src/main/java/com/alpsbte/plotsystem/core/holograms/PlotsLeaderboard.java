@@ -34,11 +34,12 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class PlotsLeaderboard extends HolographicDisplay {
     protected PlotsLeaderboard() {
-        super(ConfigPaths.PLOTS_LEADERBOARD);
+        super(ConfigPaths.PLOTS_LEADERBOARD, LeaderboardManager.getPosition(ConfigPaths.PLOTS_LEADERBOARD), false);
     }
 
     @Override
@@ -47,12 +48,12 @@ public class PlotsLeaderboard extends HolographicDisplay {
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle(UUID playerUUID) {
         return "§b§lCOMPLETED PLOTS §6§l[Lifetime]";
     }
 
     @Override
-    public List<DataLine<?>> getContent() {
+    public List<DataLine<?>> getContent(UUID playerUUID) {
         try {
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
@@ -67,5 +68,10 @@ public class PlotsLeaderboard extends HolographicDisplay {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean hasViewPermission(UUID uuid) {
+        return true;
     }
 }

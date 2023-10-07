@@ -30,8 +30,10 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import me.filoghost.holographicdisplays.api.Position;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +51,8 @@ public final class LeaderboardManager {
             for (HolographicDisplay leaderboard : leaderboards) {
                 String path = ConfigPaths.HOLOGRAMS + leaderboard.getId();
                 if (PlotSystem.getPlugin().getConfig().getBoolean(path + ConfigPaths.LEADERBOARD_ENABLED))
-                    leaderboard.create(getPosition(leaderboard.getId()));
+                    for (Player player : Objects.requireNonNull(Bukkit.getWorld(leaderboard.getPosition().getWorldName())).getPlayers()) leaderboard.create(player);
+                else leaderboard.removeAll();
             }
         }
     }
@@ -71,11 +74,12 @@ public final class LeaderboardManager {
 
         config.set(path + ConfigPaths.LEADERBOARD_ENABLED, true);
         config.set(path + ConfigPaths.LEADERBOARD_X, newLocation.getX());
-        config.set(path + ConfigPaths.LEADERBOARD_Y, newLocation.getY() + 4);
+        config.set(path + ConfigPaths.LEADERBOARD_Y, newLocation.getY());
         config.set(path + ConfigPaths.LEADERBOARD_Z, newLocation.getZ());
         ConfigUtil.getInstance().saveFiles();
 
-        reloadLeaderboards();
+        LeaderboardManager.getLeaderboards().stream().filter(leaderboard -> leaderboard.getId().equals(id)).findFirst()
+                .ifPresent(holo -> holo.setPosition(Position.of(newLocation)));
     }
 
     public static class LeaderboardPositionLine extends HolographicDisplay.TextLine {

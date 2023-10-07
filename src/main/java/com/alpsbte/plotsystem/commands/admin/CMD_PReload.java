@@ -50,6 +50,7 @@ public class CMD_PReload extends BaseCommand {
             ConfigUtil.getInstance().saveFiles();
             sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded config!"));
 
+            LeaderboardManager.getLeaderboards().forEach(leaderboard -> leaderboard.setPosition(LeaderboardManager.getPosition(leaderboard.getId())));
             LeaderboardManager.reloadLeaderboards();
             sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded leaderboards!"));
 
