@@ -25,11 +25,9 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-
-import java.util.UUID;
 
 /**
  * This command event task is used to wait till the player clicks on the "continue" button in
@@ -37,19 +35,18 @@ import java.util.UUID;
  * @see com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask#sendTaskMessage(Player, Object[], boolean)
  */
 public class ContinueCmdEventTask extends AbstractCmdEventTask {
-    private final UUID npcUUID;
+    private final String npcId;
 
-    public ContinueCmdEventTask(Player player, UUID npcUUID) {
+    public ContinueCmdEventTask(Player player, String npcId) {
         super(player, "/tutorial", new String[] { "continue" }, null, 0, false);
-        this.npcUUID = npcUUID;
+        this.npcId = npcId;
     }
 
     @Override
     public void performEvent(Event event) {
         if (AbstractTutorial.playerIsOnInteractCoolDown(player.getUniqueId())) return;
-        if (event instanceof PlayerInteractEntityEvent && npcUUID.toString()
-                .equals(((PlayerInteractEntityEvent) event).getRightClicked().getUniqueId().toString())) {
-            ((PlayerInteractEntityEvent) event).setCancelled(true);
+        if (event instanceof NpcInteractEvent && npcId.equals(((NpcInteractEvent) event).getNpc().getData().getName())) {
+            ((NpcInteractEvent) event).setCancelled(true);
             setTaskDone();
             return;
         }

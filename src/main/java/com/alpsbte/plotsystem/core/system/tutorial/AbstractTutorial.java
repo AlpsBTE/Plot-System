@@ -24,7 +24,10 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
@@ -34,6 +37,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class for all tutorials. Inherit this class to create a new tutorial.
@@ -70,10 +74,6 @@ public abstract class AbstractTutorial implements Tutorial {
     private static final Map<UUID, Long> playerInteractionHistory = new HashMap<>();
     private static final long PLAYER_INTERACTION_COOLDOWN = 1000; // The cooldown for player interactions in milliseconds
 
-    /**
-     * A list of all tutorial NPCs.
-     */
-    private static final List<UUID> tutorialNPCs = new ArrayList<>();
 
 
     protected final TutorialDataModel tutorialDataModel;
@@ -90,7 +90,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
 
     private StageTimeline stageTimeline;
-    private TutorialNPC npc;
+    private AbstractNpc npc;
 
     /**
      * Creates a new instance of the tutorial current stage.
@@ -103,16 +103,22 @@ public abstract class AbstractTutorial implements Tutorial {
     protected abstract AbstractStage getStage() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     /**
-     * Sets all worlds which can be used in the tutorial.
+     * Initializes all worlds that can be used in the tutorial.
      * @return list of all worlds
      */
-    protected abstract List<TutorialWorld> setWorlds();
+    protected abstract List<TutorialWorld> initWorlds();
 
     /**
-     * Sets all stages of the tutorial as classes.
+     * Initializes all stages of the tutorial as classes.
      * @return list of all stages
      */
-    protected abstract List<Class<? extends AbstractStage>> setStages();
+    protected abstract List<Class<? extends AbstractStage>> initStages();
+
+    /**
+     * Initializes the individual npc for the tutorial player.
+     * @return tutorial npc
+     */
+    protected abstract TutorialNPC initNpc();
 
     /**
      * This method is called before the next stage timeline is started.
@@ -120,11 +126,6 @@ public abstract class AbstractTutorial implements Tutorial {
      * @param action action to set the stage preparation as done
      */
     protected abstract void prepareStage(PrepareStageAction action);
-
-    /**
-     * Call this method to instantiate the tutorial npc.
-     */
-    protected abstract TutorialNPC setNpc();
 
     protected AbstractTutorial(Player player, TutorialDataModel tutorialDataModel, int tutorialId, int stageId) {
         this.tutorialId = tutorialId;
@@ -141,9 +142,10 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     protected void initTutorial() {
         activeTutorials.add(this);
-        worlds = setWorlds();
-        stages = setStages();
-        npc = setNpc();
+        worlds = initWorlds();
+        stages = initStages();
+        npc = initNpc();
+        if (worlds == null || stages == null || npc == null) onException(new InstantiationException("Tutorial could not be initialised."));
     }
 
     @Override
@@ -162,7 +164,7 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
-    public TutorialNPC getNPC() {
+    public AbstractNpc getNPC() {
         return npc;
     }
 
@@ -228,19 +230,20 @@ public abstract class AbstractTutorial implements Tutorial {
         if (currentWorldIndex == tutorialWorldIndex) return;
         currentWorldIndex = tutorialWorldIndex;
 
-        // Remove npc as temporary fix for the npc not being removed when switching worlds
-        npc.remove();
-
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
-        npc.teleport(world.getNpcSpawnLocation());
+        npc.create(world.getNpcSpawnLocation(), false, true);
+        npc.show(player);
     }
 
     @Override
     public void onTutorialStop(UUID playerUUID) {
         if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         activeTutorials.remove(this);
-        npc.remove();
+        npc.delete();
+        List<HolographicDisplay> displays = HolographicDisplay.activeDisplays.stream().filter(holo -> holo instanceof TutorialTipHologram &&
+                holo.getPosition().getWorldName().equals(player.getWorld().getName())).collect(Collectors.toList());
+        for (HolographicDisplay holo : displays) holo.delete();
         playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
 
@@ -290,14 +293,6 @@ public abstract class AbstractTutorial implements Tutorial {
     public static Tutorial getActiveTutorial(UUID playerUUID) {
         return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
                 tutorial.getPlayerUUID().toString().equals(playerUUID.toString())).findAny().orElse(null);
-    }
-
-    /**
-     * Gets a list of all active tutorial NPCs.
-     * @return tutorial NPCs
-     */
-    public static List<UUID> getTutorialNPCs() {
-        return tutorialNPCs;
     }
 
     /**

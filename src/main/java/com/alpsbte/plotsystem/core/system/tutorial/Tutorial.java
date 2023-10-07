@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
@@ -62,7 +63,7 @@ public interface Tutorial {
      * Gets the NPC of the current tutorial world. Can be null if npc has not yet been created.
      * @return NPC
      */
-    TutorialNPC getNPC();
+    AbstractNpc getNPC();
 
     /**
      * Gets the current tutorial world the player is in
@@ -102,7 +103,7 @@ public interface Tutorial {
      * This method is NOT called when the player switches out of the tutorial.
      * @param playerUUID uuid of the player
      * @param tutorialWorldIndex index of the tutorial world
-     * @see AbstractTutorial#setWorlds()
+     * @see AbstractTutorial#initWorlds()
      */
     void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex);
 

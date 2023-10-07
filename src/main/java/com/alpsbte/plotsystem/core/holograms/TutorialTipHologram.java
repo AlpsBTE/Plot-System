@@ -29,8 +29,10 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.PlaceHologramTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import me.filoghost.holographicdisplays.api.Position;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -56,16 +58,14 @@ public class TutorialTipHologram extends HolographicDisplay {
 
     private final String content;
     private final ClickAction clickAction;
-    private final Player player;
 
-    public TutorialTipHologram(Player player, String id, String content) {
-        this(player, id, content, null);
+    public TutorialTipHologram(String id, Position position, String content) {
+        this(id, position, content, null);
     }
 
-    public TutorialTipHologram(Player player, String id, String content, ClickAction clickAction) {
-        super(id);
+    public TutorialTipHologram(String id, Position position, String content, ClickAction clickAction) {
+        super(id, position, true);
         this.content = content;
-        this.player = player;
         this.clickAction = clickAction;
     }
 
@@ -75,17 +75,22 @@ public class TutorialTipHologram extends HolographicDisplay {
     }
 
     @Override
-    public String getTitle() {
-        return GOLD + BOLD.toString() + LangUtil.getInstance().get(player, LangPaths.Note.TIP).toUpperCase();
+    public String getTitle(UUID playerUUID) {
+        return GOLD + BOLD.toString() + LangUtil.getInstance().get(Bukkit.getPlayer(playerUUID), LangPaths.Note.TIP).toUpperCase();
     }
 
     @Override
-    public List<DataLine<?>> getHeader() {
-        return Collections.singletonList(new TextLine(this.getTitle()));
+    public boolean hasViewPermission(UUID uuid) {
+        return true;
     }
 
     @Override
-    public List<DataLine<?>> getContent() {
+    public List<DataLine<?>> getHeader(UUID playerUUID) {
+        return Collections.singletonList(new TextLine(this.getTitle(playerUUID)));
+    }
+
+    @Override
+    public List<DataLine<?>> getContent(UUID playerUUID) {
         List<DataLine<?>> lines = new ArrayList<>();
         List<String> innerLines = AlpsUtils.createMultilineFromString(content, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
         innerLines.forEach(innerLine -> lines.add(new TextLine(innerLine)));
@@ -93,22 +98,21 @@ public class TutorialTipHologram extends HolographicDisplay {
     }
 
     @Override
-    public List<DataLine<?>> getFooter() {
+    public List<DataLine<?>> getFooter(UUID playerUUID) {
         return clickAction == null ? new ArrayList<>() : Arrays.asList(
                 new TextLine(EMPTY_TAG),
-                new TextLine(DARK_GRAY + "[" + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + DARK_GRAY + "]")
+                new TextLine(DARK_GRAY + "[" + GRAY + LangUtil.getInstance().get(Bukkit.getPlayer(playerUUID), LangPaths.Note.Action.READ_MORE) + DARK_GRAY + "]")
         );
     }
 
     @Override
-    public void reload() {
-        super.reload();
+    public void reload(UUID playerUUID) {
+        super.reload(playerUUID);
 
         // Set click listener
-        if (getHologram() == null || clickAction == null) return;
-        // Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            TextHologramLine line = (TextHologramLine) getHologram().getLines().get(getHologram().getLines().size() - 1);
-            line.setClickListener((clickEvent) -> clickAction.onClick());
-        // });
+        Hologram holo = getHologram(playerUUID);
+        if (holo == null || clickAction == null) return;
+        TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - 1);
+        line.setClickListener((clickEvent) -> clickAction.onClick());
     }
 }

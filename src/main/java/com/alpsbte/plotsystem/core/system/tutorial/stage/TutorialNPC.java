@@ -24,140 +24,31 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import me.filoghost.holographicdisplays.api.Position;
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import com.alpsbte.alpslib.npc.AbstractNpc;
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.UUID;
 
-import static net.md_5.bungee.api.ChatColor.BOLD;
-import static net.md_5.bungee.api.ChatColor.GOLD;
+import static net.md_5.bungee.api.ChatColor.*;
 
-public class TutorialNPC {
-    private Villager npcVillager;
-    private final NPCHologram npcHologram;
-
-    public TutorialNPC(String npcId, String npcName, String holoFooter) {
-        npcHologram = new NPCHologram(npcId, npcName, holoFooter);
+public class TutorialNPC extends AbstractNpc {
+    public TutorialNPC(String id) {
+        super(id, PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
+                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_SIGNATURE));
     }
 
-    public void teleport(Location loc) {
-        if (npcVillager != null && npcVillager.getLocation().getWorld().getName().equals(loc.getWorld().getName())) {
-            npcVillager.teleport(loc);
-        } else {
-            remove();
-            npcVillager = (Villager) loc.getWorld().spawnEntity(loc, EntityType.VILLAGER);
-            npcVillager.setAI(false);
-            npcVillager.setSilent(true);
-            npcVillager.setCustomNameVisible(false);
-
-            AbstractTutorial.getTutorialNPCs().add(npcVillager.getUniqueId());
-        }
-
-        npcHologram.create(Position.of(loc));
-
-         /*
-            // Create NPC
-            NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "§6§lTutorial");
-
-            // Set NPC Skin
-            String texture = PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE);
-            String signature = PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_SIGNATURE);
-            npc.getOrAddTrait(SkinTrait.class).setSkinPersistent("TutorialNPCSkin", signature, texture);
-
-            // Set NPC Location
-            npc.spawn(location);
-
-            // Set NPC to look at player
-            npc.faceLocation(player.getLocation());
-        */
+    @Override
+    public String getDisplayName(UUID playerUUID) {
+        return GOLD + BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME);
     }
 
-    public void remove() {
-        if (npcVillager != null) {
-            AbstractTutorial.getTutorialNPCs().remove(npcVillager.getUniqueId());
-            npcVillager.remove();
-        }
-        npcHologram.remove();
-    }
-
-    public void setHologramFooterVisibility(boolean isVisible, boolean enableGlow) {
-        if (npcHologram.getHologram() != null && !npcHologram.getHologram().isDeleted()) npcHologram.setFooterVisibility(isVisible);
-        if (npcVillager != null) npcVillager.setGlowing(enableGlow);
-    }
-
-    public Villager getVillager() {
-        return npcVillager;
-    }
-
-    public NPCHologram getNpcHologram() {
-        return npcHologram;
-    }
-
-
-
-    public static class NPCHologram extends HolographicDisplay {
-        private static final double NPC_HOLOGRAM_Y = 2.4;
-        private static final double NPC_HOLOGRAM_Y_WITH_FOOTER = 2.7;
-
-        private final String npcName;
-        private final String holoFooter;
-        private boolean isFooterVisible = false;
-
-        private Position position;
-
-        public NPCHologram(@NotNull String id, String npcName, String holoFooter) {
-            super(id);
-            this.npcName = npcName;
-            this.holoFooter = holoFooter;
-        }
-
-        @Override
-        public void create(Position position) {
-            this.position = position;
-            super.create(position.add(0, NPC_HOLOGRAM_Y, 0));
-        }
-
-        @Override
-        public ItemStack getItem() {
-            return null;
-        }
-
-        @Override
-        public String getTitle() {
-            return GOLD + BOLD.toString() + npcName;
-        }
-
-        @Override
-        public List<DataLine<?>> getHeader() {
-            return Collections.singletonList(new TextLine(this.getTitle()));
-        }
-
-        @Override
-        public List<DataLine<?>> getContent() {
-            return new ArrayList<>();
-        }
-
-        @Override
-        public List<DataLine<?>> getFooter() {
-            return isFooterVisible ? Collections.singletonList(new TextLine(holoFooter)) : new ArrayList<>();
-        }
-
-        public void setFooterVisibility(boolean isVisible) {
-            isFooterVisible = isVisible;
-            getHologram().setPosition(position.add(0, isFooterVisible ? NPC_HOLOGRAM_Y_WITH_FOOTER : NPC_HOLOGRAM_Y, 0));
-            reload();
-        }
-
-        public boolean isFooterVisible() {
-            return isFooterVisible;
-        }
+    @Override
+    public String getActionTitle(UUID playerUUID) {
+        return GRAY + "(" + LangUtil.getInstance().get(Bukkit.getPlayer(playerUUID),
+                LangPaths.Note.Action.RIGHT_CLICK) + ")";
     }
 }

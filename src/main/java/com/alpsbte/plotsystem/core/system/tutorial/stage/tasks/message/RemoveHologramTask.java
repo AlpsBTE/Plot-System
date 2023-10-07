@@ -43,8 +43,8 @@ public class RemoveHologramTask extends AbstractTask {
     @Override
     public void performTask() {
         TutorialTipHologram hologram = holograms.stream().filter(holo -> holo.getId().equals(String.valueOf(tipId))).findFirst().orElse(null);
-        if (hologram != null && hologram.getHologram() != null) {
-            hologram.remove();
+        if (hologram != null && hologram.getHologram(player.getUniqueId()) != null) {
+            hologram.remove(player.getUniqueId());
             holograms.remove(hologram);
         }
 

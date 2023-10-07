@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.EventTask;
+import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -56,8 +57,7 @@ public class TutorialEventListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-        if (AbstractTutorial.getTutorialNPCs().contains(event.getRightClicked().getUniqueId())) event.setCancelled(true);
+    private void onNpcInteractEvent(NpcInteractEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
     }

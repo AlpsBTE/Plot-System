@@ -33,7 +33,7 @@ public class WandCmdEventTask extends AbstractCmdEventTask {
 
     @Override
     protected void onCommand(String[] args) {
-        updateProgress();
+        updateAssignments();
         setTaskDone();
     }
 }

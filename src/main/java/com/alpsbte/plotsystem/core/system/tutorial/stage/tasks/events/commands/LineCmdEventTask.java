@@ -68,7 +68,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
             lineCmdAction.performAction(maxPoint, minPoint);
         } else return;
 
-        updateProgress();
+        updateAssignments();
         minPoint = null; maxPoint = null;
         if (linePoints.isEmpty()) setTaskDone();
     }

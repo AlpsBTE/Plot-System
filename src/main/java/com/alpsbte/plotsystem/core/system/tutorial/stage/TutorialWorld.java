@@ -47,7 +47,7 @@ public class TutorialWorld {
         FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
 
         // Read tutorial spawn section
-        ConfigurationSection tutorialSpawnsSection = config.getConfigurationSection(TutorialPaths.TUTORIAL_SPAWNS);
+        ConfigurationSection tutorialSpawnsSection = config.getConfigurationSection(TutorialPaths.TUTORIAL_WORLDS);
         if (tutorialSpawnsSection == null) {
             Bukkit.getLogger().log(Level.WARNING, "Could not find tutorial spawns section in tutorial config!");
             return;

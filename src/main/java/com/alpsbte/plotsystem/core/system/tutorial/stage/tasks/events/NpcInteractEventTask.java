@@ -27,18 +27,16 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import java.util.UUID;
+public class NpcInteractEventTask extends AbstractTask implements EventTask {
+    private final String npcId;
 
-public class InteractNPCEventTask extends AbstractTask implements EventTask {
-    private final UUID npcUUID;
-
-    public InteractNPCEventTask(Player player, UUID npcUUID, String assignmentMessage) {
+    public NpcInteractEventTask(Player player, String npcId, String assignmentMessage) {
         super(player, assignmentMessage, 1);
-        this.npcUUID = npcUUID;
+        this.npcId = npcId;
     }
 
     @Override
@@ -49,10 +47,9 @@ public class InteractNPCEventTask extends AbstractTask implements EventTask {
     @Override
     public void performEvent(Event event) {
         if (AbstractTutorial.playerIsOnInteractCoolDown(player.getUniqueId())) return;
-        if (event instanceof PlayerInteractEntityEvent && npcUUID.toString()
-                .equals(((PlayerInteractEntityEvent) event).getRightClicked().getUniqueId().toString())) {
-            ((PlayerInteractEntityEvent) event).setCancelled(true);
-            updateProgress();
+        if (event instanceof NpcInteractEvent && npcId.equals(((NpcInteractEvent) event).getNpc().getData().getName())) {
+            ((NpcInteractEvent) event).setCancelled(true);
+            updateAssignments();
             setTaskDone();
         }
     }

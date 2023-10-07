@@ -129,7 +129,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-npc</artifactId>
-            <version>1.0.31</version>
+            <version>1.0.34</version>
             <scope>compile</scope>
         </dependency>
         <!-- MariaDB Connector -->

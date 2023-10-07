@@ -32,7 +32,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
@@ -46,12 +45,8 @@ import java.sql.SQLException;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import static net.md_5.bungee.api.ChatColor.GRAY;
-
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
-
     protected TutorialPlot plot;
-
     private TutorialPlotGenerator plotGenerator;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) throws SQLException {
@@ -74,6 +69,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
+    protected TutorialNPC initNpc() {
+        return new TutorialNPC("tutorial-" + plot.getID());
+    }
+
+    @Override
     public void onPasteSchematicOutlines(UUID playerUUID, int schematicId) {
         if (!getPlayerUUID().toString() .equals(playerUUID.toString())) return;
         try {
@@ -88,14 +88,6 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     protected AbstractStage getStage() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         return getStages().get(getCurrentStage()).getDeclaredConstructor(Player.class, TutorialPlot.class).newInstance(getPlayer(), plot);
-    }
-
-    @Override
-    protected TutorialNPC setNpc() {
-        return new TutorialNPC("npc-" + plot.getID(),
-                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
-                GRAY + "(" + LangUtil.getInstance().get(getPlayer(),
-                        LangPaths.Note.Action.RIGHT_CLICK) + ")");
     }
 
     @Override

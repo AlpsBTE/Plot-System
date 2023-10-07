@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
@@ -35,7 +34,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.math.Vector3;
 import me.filoghost.holographicdisplays.api.Position;
 import net.md_5.bungee.api.chat.ClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -43,35 +41,30 @@ import org.bukkit.entity.Player;
 import static net.md_5.bungee.api.ChatColor.GRAY;
 
 public class PlaceHologramTask extends AbstractTask {
-    private final int tipId;
-    private final int tutorialId;
-    private final World tutorialWorld;
     private final TutorialTipHologram hologram;
 
     public PlaceHologramTask(Player player, int tipId, String content, int readMoreLinkId) {
         super(player);
-        this.tipId = tipId;
 
         Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
-        this.tutorialId = tutorial.getId();
-        this.tutorialWorld = tutorial.getCurrentWorld();
+        int tutorialId = tutorial.getId();
+        World tutorialWorld = tutorial.getCurrentWorld();
 
+        Vector3 tipVector = TutorialUtils.getTipPoints(tutorialId).get(tipId);
+        Position position = Position.of(tutorialWorld.getName(), tipVector.getX(), tipVector.getY(), tipVector.getZ());
         if (readMoreLinkId != -1) {
             String readMoreLink = TutorialUtils.getDocumentationLinks(tutorialId).get(readMoreLinkId);
-            hologram = new TutorialTipHologram(player, String.valueOf(tipId), content, () -> {
+            hologram = new TutorialTipHologram(String.valueOf(tipId), position, content, () -> {
                 player.spigot().sendMessage(new ChatMessageTask.ClickableTaskMessage(ChatMessageTask.TASK_PREFIX + readMoreLink,
                         GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "...", readMoreLink, ClickEvent.Action.OPEN_URL).getComponent());
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1, 1.2f);
             });
-        } else hologram = new TutorialTipHologram(player, String.valueOf(tipId), content);
+        } else hologram = new TutorialTipHologram(String.valueOf(tipId), position, content);
     }
 
     @Override
     public void performTask() {
-        Vector3 tipVector = TutorialUtils.getTipPoints(tutorialId).get(tipId);
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
-                hologram.create(Position.of(tutorialWorld.getName(), tipVector.getX(), tipVector.getY(), tipVector.getZ()), true));
-
+        hologram.create(player);
         setTaskDone();
     }
 

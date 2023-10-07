@@ -25,12 +25,13 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.ChatEventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.InteractNPCEventTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.NpcInteractEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.ContinueCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.PlaceHologramTask;
@@ -62,7 +63,7 @@ public class StageTimeline implements TutorialTimeLine {
     private int currentTaskId = -1;
     private BukkitTask assignmentProgressTask;
     private final List<TutorialTipHologram> tipHolograms = new ArrayList<>();
-    private final TutorialNPC tutorialNPC;
+    private final AbstractNpc tutorialNPC;
 
     public StageTimeline(Player player) {
         this.player = player;
@@ -88,13 +89,13 @@ public class StageTimeline implements TutorialTimeLine {
         currentTaskId = currentTaskId + 1;
 
         // Check if a task has progress and if yes, update action bar
-        if (currentTask.hasProgress()) {
+        if (currentTask.hasAssignments()) {
             AbstractTask.sendAssignmentMessage(player, currentTask.getAssignmentMessage());
             if (assignmentProgressTask != null) assignmentProgressTask.cancel();
             assignmentProgressTask = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (currentTask.getProgress() == currentTask.getTotalProgress()) {
+                    if (currentTask.getCompletedAssignments() == currentTask.getTotalAssignments()) {
                         this.cancel();
                     } else updatePlayerActionBar();
                 }
@@ -102,10 +103,10 @@ public class StageTimeline implements TutorialTimeLine {
         }
 
         // If the task has npc interaction show the hologram click info, otherwise hide it
-        if (currentTask instanceof InteractNPCEventTask || currentTask instanceof ContinueCmdEventTask ||
+        if (currentTask instanceof NpcInteractEventTask || currentTask instanceof ContinueCmdEventTask ||
                 (currentTask instanceof ChatMessageTask && ((ChatMessageTask) currentTask).isWaitToContinue())) {
-            tutorialNPC.setHologramFooterVisibility(true, currentTask instanceof InteractNPCEventTask);
-        } else if (tutorialNPC.getNpcHologram().isFooterVisible()) tutorialNPC.setHologramFooterVisibility(false, false);
+            tutorialNPC.setActionTitleVisibility(player.getUniqueId(), true, currentTask instanceof NpcInteractEventTask);
+        } else if (tutorialNPC.getHologram().isActionTitleVisible(player.getUniqueId())) tutorialNPC.setActionTitleVisibility(player.getUniqueId(), false, false);
 
         currentTask.performTask();
     }
@@ -135,8 +136,8 @@ public class StageTimeline implements TutorialTimeLine {
         activeTimelines.remove(this);
         if (assignmentProgressTask != null) assignmentProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
-        tipHolograms.forEach(HolographicDisplay::remove);
-        tutorialNPC.setHologramFooterVisibility(false, false);
+        tipHolograms.forEach(HolographicDisplay::removeAll);
+        tutorialNPC.setActionTitleVisibility(playerUUID, false, false);
         tasks.clear();
     }
 
@@ -145,7 +146,7 @@ public class StageTimeline implements TutorialTimeLine {
      */
     private void updatePlayerActionBar() {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                TextComponent.fromLegacyText(GRAY + " [" + currentTask.getProgress() + "/" + currentTask.getTotalProgress() + "] " + currentTask.getAssignmentMessage()));
+                TextComponent.fromLegacyText(GRAY + " [" + currentTask.getCompletedAssignments() + "/" + currentTask.getTotalAssignments() + "] " + currentTask.getAssignmentMessage()));
     }
 
     /**
@@ -185,7 +186,8 @@ public class StageTimeline implements TutorialTimeLine {
      */
     public StageTimeline sendChatMessage(Object[] messages, Sound soundEffect, boolean waitToContinue) {
         tasks.add(new ChatMessageTask(player, messages, soundEffect, waitToContinue));
-        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorialNPC.getVillager().getUniqueId())); // Add a task to wait for player to continue
+        // Add a task to wait for player to continue
+        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorialNPC.getNpc().getData().getName()));
         return this;
     }
 
@@ -228,7 +230,7 @@ public class StageTimeline implements TutorialTimeLine {
      * @param assignmentMessage the task message to show in the action bar to the player
      */
     public StageTimeline interactNPC(String assignmentMessage) {
-        tasks.add(new InteractNPCEventTask(player, tutorialNPC.getVillager().getUniqueId(), assignmentMessage));
+        tasks.add(new NpcInteractEventTask(player, tutorialNPC.getNpc().getData().getName(), assignmentMessage));
         return this;
     }
 

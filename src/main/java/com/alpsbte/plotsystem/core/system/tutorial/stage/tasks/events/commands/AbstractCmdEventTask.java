@@ -39,12 +39,12 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
 
     private final boolean isCancelCmdEvent;
 
-    public AbstractCmdEventTask(Player player, String expectedCommand, String assignmentMessage, int totalProgress, boolean cancelCmdEvent) {
-        this(player, expectedCommand, null, assignmentMessage, totalProgress, cancelCmdEvent);
+    public AbstractCmdEventTask(Player player, String expectedCommand, String assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
+        this(player, expectedCommand, null, assignmentMessage, totalAssignments, cancelCmdEvent);
     }
 
-    public AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, String assignmentMessage, int totalProgress, boolean cancelCmdEvent) {
-        super(player, assignmentMessage, totalProgress);
+    public AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, String assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
+        super(player, assignmentMessage, totalAssignments);
         this.expectedCommand = expectedCommand;
         this.args1 = args1;
         this.isCancelCmdEvent = cancelCmdEvent;

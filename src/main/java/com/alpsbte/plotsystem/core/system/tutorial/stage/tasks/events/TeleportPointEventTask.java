@@ -72,7 +72,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
     private void removePoint(BlockVector3 teleportPoint) {
         teleportPoints.remove(teleportPoint);
 
-        updateProgress();
+        updateAssignments();
         onTeleportAction.performAction(teleportPoint);
         if (teleportPoints.isEmpty()) setTaskDone();
     }

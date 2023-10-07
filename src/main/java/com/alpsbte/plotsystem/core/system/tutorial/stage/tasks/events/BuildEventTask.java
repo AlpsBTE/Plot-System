@@ -74,7 +74,7 @@ public class BuildEventTask extends AbstractTask implements EventTask {
     private void removeBlockToBuild(BlockVector3 blockVector) {
         blocksToBuild.remove(blockVector);
 
-        updateProgress();
+        updateAssignments();
         onPlacedBlockAction.performAction(blockVector);
         if (blocksToBuild.isEmpty()) setTaskDone();
     }

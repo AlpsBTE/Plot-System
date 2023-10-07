@@ -45,8 +45,8 @@ public abstract class AbstractTask {
     protected final Player player;
 
     private final String assignmentMessage;
-    private int progress;
-    private final int totalProgress;
+    private int completedAssignments;
+    private final int totalAssignments;
     private boolean isDone;
 
     /**
@@ -61,12 +61,12 @@ public abstract class AbstractTask {
      * This constructor is used if the task has progress.
      * @param player The player who is doing the task.
      * @param assignmentMessage The message which is displayed in the action bar and chat.
-     * @param totalProgress The total progress which is needed to complete the task.
+     * @param totalAssignments The total assignment progress which is needed to complete the task.
      */
-    public AbstractTask(Player player, String assignmentMessage, int totalProgress) {
+    public AbstractTask(Player player, String assignmentMessage, int totalAssignments) {
         this.player = player;
         this.assignmentMessage = assignmentMessage;
-        this.totalProgress = totalProgress;
+        this.totalAssignments = totalAssignments;
     }
 
     /**
@@ -87,17 +87,17 @@ public abstract class AbstractTask {
     }
 
     /**
-     * If the task has a progress, call this method to increase the progress by one.
+     * If the task has assignments, call this method to mark one assigment as completed.
      */
-    protected void updateProgress() {
-        if (progress + 1 <= totalProgress) {
-            progress++;
+    protected void updateAssignments() {
+        if (completedAssignments + 1 <= totalAssignments) {
+            completedAssignments++;
         }
         for (int i = 0; i < StageTimeline.getActiveTimelines().size(); i++) StageTimeline.getActiveTimelines().get(i).onAssignmentUpdate(player.getUniqueId(), this);
     }
 
     /**
-     * Get the message which is displayed in the action bar and chat.
+     * Gets the message which is displayed in the action bar and chat.
      * @return assignmentMessage
      */
     public String getAssignmentMessage() {
@@ -105,23 +105,23 @@ public abstract class AbstractTask {
     }
 
     /**
-     * Get the progress of the task. If no progress is required, it will return -1.
-     * @return currentProgress
+     * Gets the current number of completed assignments. If there are no assignments, it will return 0.
+     * @return completedAssignments
      */
-    public int getProgress() {
-        return progress;
+    public int getCompletedAssignments() {
+        return completedAssignments;
     }
 
     /**
-     * Get the total progress of the task. If no progress is required, it will return 0.
-     * @return totalProgress
+     * Gets the total number of assignments for the task. If there are no assignments, it will return 0.
+     * @return totalAssignments
      */
-    public int getTotalProgress() {
-        return totalProgress;
+    public int getTotalAssignments() {
+        return totalAssignments;
     }
 
     /**
-     * Check if the task is done.
+     * Checks if the task is done.
      * @return isDone
      */
     public boolean isTaskDone() {
@@ -129,11 +129,11 @@ public abstract class AbstractTask {
     }
 
     /**
-     * Check if the task has progress.
-     * @return hasProgress
+     * Check if the task has assignments.
+     * @return true if there are assignments, otherwise false.
      */
-    public boolean hasProgress() {
-        return totalProgress > 0;
+    public boolean hasAssignments() {
+        return totalAssignments > 0;
     }
 
 

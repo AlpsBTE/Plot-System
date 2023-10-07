@@ -54,7 +54,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     @Override
-    protected List<TutorialWorld> setWorlds() {
+    protected List<TutorialWorld> initWorlds() {
         try {
             return Arrays.asList(
                     new TutorialWorld(getId(), 0),
@@ -67,7 +67,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     @Override
-    protected List<Class<? extends AbstractStage>> setStages() {
+    protected List<Class<? extends AbstractStage>> initStages() {
         return Arrays.asList(
                 Stage1.class,
                 Stage2.class,

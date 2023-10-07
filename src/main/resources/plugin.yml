@@ -3,7 +3,7 @@ version: 4.0
 api-version: 1.20
 name: Plot-System
 author: R3tuxn & Cinnazeyy
-softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase, ProtocolLib, ParticleNativeAPI]
+softdepend: [FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase, ProtocolLib, ParticleNativeAPI]
 
 commands:
   spawn:

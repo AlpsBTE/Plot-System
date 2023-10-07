@@ -16,7 +16,7 @@ tutorial-stages: 10
 
 # Spawn points for the player and the NPC (x, y, z, yaw, pitch)
 # To define the plot world spawn, use the key word ´plot´
-tutorial-spawns:
+tutorial-worlds:
   hub:
     spawn-player: '581.5, 79.0, 505.5, 45, 0'
     spawn-npc: '575.5, 79.0, 517.5, -150, 0'
