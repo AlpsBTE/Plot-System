@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -39,7 +41,7 @@ import java.util.List;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class ChatMessageTask extends AbstractTask {
-    public static final String TASK_PREFIX = DARK_GRAY + "> " + GRAY;
+    public static final String TASK_PREFIX = DARK_GRAY + "» " + GRAY;
     private static final String CONTINUE_TASK_MESSAGE = DARK_GRAY + "[" + GREEN + "{0}" + DARK_GRAY + "]";
 
     private final Object[] messages;
@@ -70,15 +72,19 @@ public class ChatMessageTask extends AbstractTask {
     }
 
     public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
+        Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
+        if (tutorial == null || tutorial.getNPC() == null) return;
+
         // Send the task message
         player.sendMessage("");
+        player.sendMessage(tutorial.getNPC().getDisplayName(player.getUniqueId()) + " " + TASK_PREFIX);
         for (Object message : messages) {
             if (message instanceof String) {
                 List<String> messageLines = AlpsUtils.createMultilineFromString((String) message, -1, Utils.ChatUtils.LINE_BREAKER);
-                messageLines.forEach(msg -> player.sendMessage((!msg.isEmpty() ? TASK_PREFIX : "") + msg));
+                messageLines.forEach(msg -> player.sendMessage((!msg.isEmpty() ? GRAY + msg : "")));
             } else if (message instanceof ClickableTaskMessage) {
                 TextComponent component = ((ClickableTaskMessage) message).getComponent();
-                component.setText(TASK_PREFIX + component.getText());
+                component.setText(GRAY + component.getText());
                 player.spigot().sendMessage(component);
             }
         }

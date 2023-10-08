@@ -282,7 +282,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
         if (file.exists()) return file;
 
         try {
-            FileUtils.copyInputStreamToFile(PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".schematic.gz"), file);
+            FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".schematic.gz")), file);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while copying the schematic file!", ex);
         }

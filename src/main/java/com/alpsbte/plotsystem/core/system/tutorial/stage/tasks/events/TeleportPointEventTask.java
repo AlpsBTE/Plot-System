@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.sk89q.worldedit.math.BlockVector3;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -34,11 +35,11 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.List;
 
 public class TeleportPointEventTask extends AbstractTask implements EventTask {
-    private final TaskAction<BlockVector3> onTeleportAction;
+    private final BiTaskAction<BlockVector3, Boolean> onTeleportAction;
     private final List<BlockVector3> teleportPoints;
     private final int offsetRange;
 
-    public TeleportPointEventTask(Player player, String assignmentMessage, List<BlockVector3> teleportPoints, int offsetRange, TaskAction<BlockVector3> onTeleportAction) {
+    public TeleportPointEventTask(Player player, String assignmentMessage, List<BlockVector3> teleportPoints, int offsetRange, BiTaskAction<BlockVector3, Boolean> onTeleportAction) {
         super(player, assignmentMessage, teleportPoints.size());
         this.teleportPoints = teleportPoints;
         this.offsetRange = offsetRange;
@@ -57,15 +58,19 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
 
             if (teleportPoints.isEmpty()) return;
 
-            int blockX = teleportEvent.getTo().getBlockX();
-            int blockZ = teleportEvent.getTo().getBlockZ();
+            Location teleportLoc = teleportEvent.getTo();
+            if (teleportLoc == null) return;
+            int blockX = teleportLoc.getBlockX();
+            int blockZ = teleportLoc.getBlockZ();
 
             for (BlockVector3 teleportPoint : teleportPoints) {
                 if (blockX < (teleportPoint.getBlockX() - offsetRange) || blockX > (teleportPoint.getBlockX() + offsetRange)) continue;
                 if (blockZ < (teleportPoint.getBlockZ() - offsetRange) || blockZ > (teleportPoint.getBlockZ() + offsetRange)) continue;
                 removePoint(teleportPoint);
-                break;
+                return;
             }
+
+            onTeleportAction.performAction(BlockVector3.at(teleportLoc.getBlockX(), teleportLoc.getBlockY(), teleportLoc.getBlockZ()), false);
         }
     }
 
@@ -73,7 +78,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
         teleportPoints.remove(teleportPoint);
 
         updateAssignments();
-        onTeleportAction.performAction(teleportPoint);
+        onTeleportAction.performAction(teleportPoint, true);
         if (teleportPoints.isEmpty()) setTaskDone();
     }
 

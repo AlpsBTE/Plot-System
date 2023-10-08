@@ -45,7 +45,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.CHAT_HIGHLIGHT_COLOR;
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.*;
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Delay;
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
@@ -113,18 +115,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3)
+                    .delay(Delay.TIMELINE_START)
                     .interactNPC(getTasks().get(0))
-                    .delay(2)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(2), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true);
+                    .delay(Delay.TASK_END)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(2), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true);
         }
     }
 
     private static class Stage2 extends AbstractPlotStage {
         public static final String GOOGLE_MAPS = "Google Maps" + GRAY;
+        public static final String GOOGLE_MAPS_STREET_VIEW = "Street View" + GRAY;
         public static final String GOOGLE_EARTH = "Google Earth" + GRAY;
 
         protected Stage2(Player player, TutorialPlot plot) {
@@ -140,10 +143,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_MESSAGES,
                     CHAT_HIGHLIGHT_COLOR + GOOGLE_MAPS, CHAT_HIGHLIGHT_COLOR + GOOGLE_EARTH,
-                    GOOGLE_MAPS,
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, CHAT_HIGHLIGHT_COLOR + GOOGLE_MAPS),
-                    GOOGLE_EARTH,
-                    LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, CHAT_HIGHLIGHT_COLOR + GOOGLE_EARTH),
+                    CHAT_HIGHLIGHT_COLOR + GOOGLE_MAPS,
+                    CHAT_HIGHLIGHT_COLOR + GOOGLE_MAPS_STREET_VIEW,
+                    CHAT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GOOGLE_MAPS + CHAT_CLICK_HIGHLIGHT),
+                    CHAT_HIGHLIGHT_COLOR + GOOGLE_EARTH,
+                    CHAT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GOOGLE_EARTH + CHAT_CLICK_HIGHLIGHT),
                     CHAT_HIGHLIGHT_COLOR + "/plot links" + GRAY);
         }
 
@@ -155,20 +159,20 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() throws IOException {
             return new StageTimeline(getPlayer())
-                    .delay(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .delay(Delay.TIMELINE_START)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
                             getMessages().get(2),
                             "",
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(3), GRAY + GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    }, Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
                             getMessages().get(4),
                             "",
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(5), GRAY + GOOGLE_EARTH, getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT, true);
+                    }, Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(6), Sound.NPC_TALK, true);
         }
     }
 
@@ -185,8 +189,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_MESSAGES,
-                    CHAT_HIGHLIGHT_COLOR + Stage2.GOOGLE_MAPS,
                     CHAT_HIGHLIGHT_COLOR + "/tpll <lat> <lon>" + GRAY,
+                    CHAT_HIGHLIGHT_COLOR + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + GRAY,
+                    CHAT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_MAPS + CHAT_CLICK_HIGHLIGHT),
                     CHAT_HIGHLIGHT_COLOR + "4" + GRAY);
         }
 
@@ -200,19 +205,24 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() throws SQLException, IOException {
             return new StageTimeline(getPlayer())
-                    .delay(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .delay(Delay.TIMELINE_START)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_MAPS,
-                                    getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL),
+                            getMessages().get(1),
                             "",
-                            getMessages().get(2)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .delay(2)
-                    .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint) -> {
-                        TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
-                        getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
-                                Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(2), GRAY + Stage2.GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
+                    }, Sound.NPC_TALK, false)
+                    .delay(Delay.TASK_START)
+                    .addTeleportEvent(getTasks().get(0), getBuildingPoints(getPlot()), 1, (teleportPoint, isCorrect) -> {
+                        if (isCorrect) {
+                            TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
+                            getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
+                                    Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
+                        } else {
+                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(3) }, false);
+                            getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
+                                    Sound.ASSIGNMENT_WRONG, 1f, 1f);
+                        }
                     });
         }
     }
@@ -229,7 +239,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_MESSAGES);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_MESSAGES,
+                    CHAT_HIGHLIGHT_COLOR + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + GRAY,
+                    CHAT_HIGHLIGHT_COLOR + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + GRAY);
         }
 
         @Override
@@ -241,11 +253,13 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .delay(2)
-                    .addTask(new WandCmdEventTask(getPlayer(), getTasks().get(0)));
+                    .delay(Delay.TIMELINE_START)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, false)
+                    .delay(Delay.TASK_START)
+                    .addTask(new WandCmdEventTask(getPlayer(), getTasks().get(0)))
+                    .delay(Delay.TASK_END)
+                    .sendChatMessage(getMessages().get(2), Sound.NPC_TALK, true);
         }
     }
 
@@ -288,16 +302,25 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             buildingLinePoints.put(buildingPoints.get(3), buildingPoints.get(0));
 
             return new StageTimeline(getPlayer())
-                    .delay(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .delay(2)
+                    .delay(Delay.TIMELINE_START)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(new Object[] {
+                            getMessages().get(1),
+                            "",
+                            getMessages().get(2)
+                    }, Sound.NPC_TALK, false)
+                    .delay(Delay.TASK_START)
                     .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
-                        buildingLinePoints.remove(minPoint);
+                        if (minPoint != null && maxPoint != null) {
+                            buildingLinePoints.remove(minPoint);
 
-                        TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.LIME_CONCRETE_POWDER);
-                        TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.LIME_CONCRETE_POWDER);
-                        getPlayer().playSound(getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
+                            TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.LIME_CONCRETE_POWDER);
+                            TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.LIME_CONCRETE_POWDER);
+                            getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
+                        } else {
+                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(3) }, false);
+                            getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
+                        }
                     })));
         }
     }
@@ -318,8 +341,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_MESSAGES,
-                    CHAT_HIGHLIGHT_COLOR + Stage2.GOOGLE_EARTH,
-                    CHAT_HIGHLIGHT_COLOR + HEIGHT + GRAY,
+                    CHAT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_EARTH + CHAT_CLICK_HIGHLIGHT),
                     CHAT_HIGHLIGHT_COLOR + HEIGHT + GRAY);
         }
 
@@ -331,22 +353,24 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() throws IOException {
             StageTimeline stage = new StageTimeline(getPlayer())
-                    .delay(3)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .delay(Delay.TIMELINE_START)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(1), GRAY + Stage2.GOOGLE_EARTH,
-                                    getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL),
+                            getMessages().get(2),
                             "",
-                            getMessages().get(2)
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, false)
-                    .delay(2);
-
+                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(3), GRAY + Stage2.GOOGLE_EARTH,
+                                    getPlot().getGoogleEarthLink(), ClickEvent.Action.OPEN_URL)
+                    }, Sound.NPC_TALK, false)
+                    .delay(Delay.TASK_START);
             stage.addPlayerChatEvent(getTasks().get(0), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
-                    getPlayer().sendMessage(ChatMessageTask.TASK_PREFIX + getMessages().get(5));
+                    ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(6) }, false);
+                    getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
                 } else {
-                    stage.sendChatMessage(isCorrect ? getMessages().get(3) : getMessages().get(4), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, false);
-                    stage.delay(2);
+                    ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { isCorrect ? getMessages().get(4) : getMessages().get(5) }, false);
+                    getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
+                    stage.delay(Delay.TASK_END);
                 }
             });
             return stage;
@@ -380,16 +404,16 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3)
+                    .delay(Delay.TIMELINE_START)
                     .addTask(new PasteSchematicOutlinesTask(getPlayer(), 3)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms()
-                    .delay(4)
+                    .delay(Delay.TASK_END)
                     .addTask(new PasteSchematicOutlinesTask(getPlayer(), 4)).delay(1)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true)
                     .placeTipHologram(2, getMessages().get(4), 2)
                     .placeTipHologram(3, getMessages().get(5), 0)
                     .placeTipHologram(4, getMessages().get(6))
@@ -421,15 +445,15 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3)
+                    .delay(Delay.TIMELINE_START)
                     .addTask(new PasteSchematicOutlinesTask(getPlayer(), 5)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(1), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
                     .placeTipHologram(5, getMessages().get(2))
                     .placeTipHologram(6, getMessages().get(3), 0)
                     // TODO: Add build task (wait for 1.20)
                     .interactNPC(getTasks().get(0) + GRAY + " (Work in Progress)")
-                    .sendChatMessage(getMessages().get(4), Sound.ENTITY_VILLAGER_AMBIENT, false)
+                    .sendChatMessage(getMessages().get(4), Sound.NPC_TALK, false)
                     .removeTipHolograms().delay(3);
         }
     }
@@ -459,9 +483,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3)
+                    .delay(Delay.TIMELINE_START)
                     .addTask(new PasteSchematicOutlinesTask(getPlayer(), 6)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .placeTipHologram(7, getMessages().get(1))
                     .placeTipHologram(8, getMessages().get(2), 1)
                     .placeTipHologram(9, getMessages().get(3))
@@ -496,23 +520,23 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
-                    .delay(3)
+                    .delay(Delay.TIMELINE_START)
                     .addTask(new PasteSchematicOutlinesTask(getPlayer(), 7)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .placeTipHologram(10, getMessages().get(1))
                     .placeTipHologram(11, getMessages().get(2), 0)
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms().delay(3)
-                    .sendChatMessage(getMessages().get(3), Sound.ENTITY_VILLAGER_AMBIENT, true)
+                    .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
                         getMessages().get(4),
                         "",
-                        new ChatMessageTask.ClickableTaskMessage(getMessages().get(5),
+                        new ChatMessageTask.ClickableTaskMessage(CHAT_CLICK_HIGHLIGHT + getMessages().get(5),
                                 GRAY + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE) + "...",
                                 TutorialUtils.getDocumentationLinks(TutorialCategory.BEGINNER.id).get(0), ClickEvent.Action.OPEN_URL),
-                    }, Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(6), Sound.ENTITY_VILLAGER_AMBIENT, true)
-                    .sendChatMessage(getMessages().get(7), Sound.ENTITY_VILLAGER_AMBIENT, false).delay(3)
+                    }, Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(6), Sound.NPC_TALK, true)
+                    .sendChatMessage(getMessages().get(7), Sound.NPC_TALK, false).delay(3)
                     .teleport(0);
         }
     }

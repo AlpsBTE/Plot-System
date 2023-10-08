@@ -198,7 +198,7 @@ public class StageTimeline implements TutorialTimeLine {
      * @param offsetRange the range in which the player can teleport to the teleport point
      * @param onTeleportAction the action to be performed when the player teleports to a teleport point
      */
-    public StageTimeline addTeleportEvent(String assignmentMessage, List<BlockVector3> teleportPoint, int offsetRange, AbstractTask.TaskAction<BlockVector3> onTeleportAction) {
+    public StageTimeline addTeleportEvent(String assignmentMessage, List<BlockVector3> teleportPoint, int offsetRange, AbstractTask.BiTaskAction<BlockVector3, Boolean> onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, assignmentMessage, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }

@@ -59,17 +59,22 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     @Override
     protected void onCommand(String[] args) {
         // Check if the player has selected valid points
-        if (minPoint == null || maxPoint == null) return;
+        if (minPoint == null || maxPoint == null) {
+            lineCmdAction.performAction(null, null);
+            return;
+        }
 
         // Check if the points are valid and draw line
         if (linePoints.containsKey(minPoint) && linePoints.get(minPoint).equals(maxPoint) && drawLine()) {
             lineCmdAction.performAction(minPoint, maxPoint);
         } else if (linePoints.containsKey(maxPoint) && linePoints.get(maxPoint).equals(minPoint) && drawLine()) {
             lineCmdAction.performAction(maxPoint, minPoint);
-        } else return;
+        } else {
+            lineCmdAction.performAction(null, null);
+            return;
+        }
 
         updateAssignments();
-        minPoint = null; maxPoint = null;
         if (linePoints.isEmpty()) setTaskDone();
     }
 
@@ -81,7 +86,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     }
 
     private void onPlayerInteractEvent(PlayerInteractEvent event) {
-        // Check if player has a wooden axe in his hand
+        // Check if the player has a wooden axe in his hand
         if (event.getClickedBlock() == null || event.getItem() == null || !event.getItem().equals(new ItemStack(Material.WOODEN_AXE))) return;
 
         // Get clicked block and update min/max point
@@ -92,7 +97,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
             maxPoint = point;
         } else return;
 
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.5f, 1f);
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1f, 1f);
     }
 
     private boolean isPointInLine(BlockVector3 point) {

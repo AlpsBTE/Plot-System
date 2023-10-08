@@ -44,6 +44,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -66,17 +70,6 @@
             <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FastAsyncWorldEdit-Core</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fastasyncworldedit</groupId>
-            <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
-                    <groupId>*</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Multiverse Core -->
         <dependency>
@@ -188,7 +181,7 @@
             <dependency>
                 <groupId>com.intellectualsites.bom</groupId>
                 <artifactId>bom-newest</artifactId>
-                <version>1.37</version>
+                <version>1.38</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -44,6 +43,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot plot;
@@ -75,7 +76,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onPasteSchematicOutlines(UUID playerUUID, int schematicId) {
-        if (!getPlayerUUID().toString() .equals(playerUUID.toString())) return;
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         try {
             if (currentWorldIndex == 1 && plotGenerator != null) {
                 plotGenerator.generateOutlines(schematicId);
@@ -98,11 +99,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
             // Send a new stage unlocked message to the player
             sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
-            getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 0.7f);
+            getPlayer().playSound(getPlayer().getLocation(), Sound.STAGE_COMPLETED, 1f, 0.7f);
 
             // Mark stage preparation as done
             action.setDone();
-        }, 20 * 2);
+        }, 20);
     }
 
     @Override
@@ -139,7 +140,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             try {
                 if (!plot.isCompleted()) {
                     saveTutorial(getCurrentStage() + 1);
-                    getPlayer().playSound(getPlayer().getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
+                    getPlayer().playSound(getPlayer().getLocation(), Sound.TUTORIAL_COMPLETED, 1f, 1f);
                     sendTutorialCompletedMessage(getPlayer(), getName());
                 }
             } catch (SQLException ex) {

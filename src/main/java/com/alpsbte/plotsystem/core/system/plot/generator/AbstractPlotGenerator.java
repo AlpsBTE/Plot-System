@@ -317,7 +317,8 @@ public abstract class AbstractPlotGenerator {
                     editSession.setMask(new RegionMask(polyRegion));
                     editSession.setBlocks(polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
                 }
-                editSession.setMask(null);
+            }
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
                 if(pasteMask != null) editSession.setMask(pasteMask);
                 Clipboard clipboard = FaweAPI.load(schematicFile);
                 Operation clipboardHolder = new ClipboardHolder(clipboard)

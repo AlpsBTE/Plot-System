@@ -37,9 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.md_5.bungee.api.ChatColor.GOLD;
+import static net.md_5.bungee.api.ChatColor.UNDERLINE;
 
 public class TutorialUtils {
     public static final String CHAT_HIGHLIGHT_COLOR = GOLD.toString();
+    public static final String CHAT_CLICK_HIGHLIGHT = UNDERLINE.toString();
 
     /**
      * Set a block at a specific location
@@ -79,5 +81,19 @@ public class TutorialUtils {
         // Read coordinates from config
         FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
         return config.getStringList(TutorialPaths.DOCUMENTATION_LINKS);
+    }
+
+    public static class Sound {
+        public static final org.bukkit.Sound STAGE_COMPLETED = org.bukkit.Sound.ENTITY_PLAYER_LEVELUP;
+        public static final org.bukkit.Sound TUTORIAL_COMPLETED = org.bukkit.Sound.UI_TOAST_CHALLENGE_COMPLETE;
+        public static final org.bukkit.Sound NPC_TALK = org.bukkit.Sound.ENTITY_VILLAGER_AMBIENT;
+        public static final org.bukkit.Sound ASSIGNMENT_WRONG = org.bukkit.Sound.ENTITY_VILLAGER_NO;
+        public static final org.bukkit.Sound ASSIGNMENT_COMPLETED = org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING;
+    }
+
+    public static class Delay {
+        public static final int TIMELINE_START = 3;
+        public static final int TASK_START = 2;
+        public static final int TASK_END = 2;
     }
 }
