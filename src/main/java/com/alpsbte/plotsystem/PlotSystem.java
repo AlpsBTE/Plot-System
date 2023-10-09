@@ -79,6 +79,7 @@ public class PlotSystem extends JavaPlugin {
     public void onEnable() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog"); // Disable Logging
         YamlFileFactory.registerPlugin(this);
+        li.cinnazeyy.langlibs.core.file.YamlFileFactory.registerPlugin(this);
         plugin = this;
 
         String successPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "✔" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;

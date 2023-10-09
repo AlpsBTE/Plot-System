@@ -9,11 +9,6 @@
     <version>4.0</version>
 
     <repositories>
-        <!-- AlpsBTE Repo (WorldEdit, WorldGuard, FAWE) -->
-        <repository>
-            <id>alpsbte-repo</id>
-            <url>https://mvn.alps-bte.com/repository/alps-bte/</url>
-        </repository>
         <!-- WorldGuard -->
         <repository>
             <id>sk89q-repo</id>
@@ -48,9 +43,20 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <!-- AlpsBTE Repo (WorldEdit, WorldGuard, FAWE) -->
+        <repository>
+            <id>alpsbte-repo</id>
+            <url>https://mvn.alps-bte.com/repository/alps-bte/</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>li.cinnazeyy</groupId>
+            <artifactId>LangLibs</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Spigot -->
         <dependency>
             <groupId>org.spigotmc</groupId>

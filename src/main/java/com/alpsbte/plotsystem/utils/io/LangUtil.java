@@ -24,9 +24,11 @@
 
 package com.alpsbte.plotsystem.utils.io;
 
-import com.alpsbte.alpslib.io.lang.LanguageUtil;
-import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.Utils.ChatUtils;
+import li.cinnazeyy.langlibs.core.file.LanguageFile;
+import li.cinnazeyy.langlibs.core.language.LangLibAPI;
+import li.cinnazeyy.langlibs.core.language.LanguageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -35,7 +37,7 @@ public class LangUtil extends LanguageUtil {
 
     public static void init() {
         if (langUtilInstance != null) return;
-        langUtilInstance = new LangUtil(new LanguageFile[]{
+        LangLibAPI.register(PlotSystem.getPlugin(),new LanguageFile[]{
                 new LanguageFile("en_GB", 1.3),
                 new LanguageFile("de_DE", 1.3, "de_AT", "de_CH"),
                 new LanguageFile("fr_FR", 1.3, "fr_CA"),
@@ -45,19 +47,11 @@ public class LangUtil extends LanguageUtil {
                 new LanguageFile("zh_CN", 1.3),
                 new LanguageFile("zh_TW", 1.3, "zh_HK"),
         });
+        langUtilInstance = new LangUtil();
     }
 
-
-    public LangUtil(LanguageFile[] langFiles) {
-        super(langFiles);
-    }
-
-    @Override
-    public String getLocaleTagByPlayer(Player player) {
-        Builder builder = Builder.byUUID(player.getUniqueId());
-        if (builder.getLanguageTag() != null) {
-            return builder.getLanguageTag();
-        } else return player.getPlayer().getLocale();
+    public LangUtil() {
+        super(PlotSystem.getPlugin());
     }
 
     public void broadcast(String key, String... args) {
