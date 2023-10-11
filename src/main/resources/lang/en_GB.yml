@@ -372,6 +372,7 @@ tutorials:
         - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
         - 'Don´t forget to darken the windows and doors so you can´t see through them. We don´t build interiors!'
         - 'There are many ways to build windows for BTE by using for example banners, trapdoors or carpets.'
+        - 'Use the same blocks as for the windows on the right. Try again!'
         - 'Thank you for your help! Now we can continue with the texturing.'
       stage-8-tasks:
         - 'Place the missing windows.'
@@ -390,7 +391,6 @@ tutorials:
         - 'Detailing is one of the most important processes as it makes the building distinctive and be unique.'
         - 'Add custom banners and custom heads to your builds. Use the command {0} to get a variety of custom heads.'
         - 'There are many ways to decorate your buildings. Always pay attention to details on the facade and roofs such as chimneys, windows and gutters.'
-        - 'It looks like we have reached the end of the tutorial...'
         - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
         - 'To learn more about the project, click here to open the documentation.'
         - 'To apply as builder, create and submit two or more plots on our server. You can find more information about the application process on our website or {1}.'

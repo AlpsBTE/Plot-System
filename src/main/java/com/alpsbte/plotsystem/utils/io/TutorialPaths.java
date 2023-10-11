@@ -31,13 +31,13 @@ public abstract class TutorialPaths {
     public static final String TUTORIAL_WORLDS = "tutorial-worlds";
     public static final String TUTORIAL_WORLDS_SPAWN_PLAYER = "spawn-player";
     public static final String TUTORIAL_WORLDS_SPAWN_NPC = "spawn-npc";
-    public static final String PLOT_OUTLINES = "plot-outlines";
     public static final String TIP_HOLOGRAM_COORDINATES = "tip-hologram-coordinates";
     public static final String DOCUMENTATION_LINKS = "documentation-links";
 
 
     public static final class Beginner {
         private static final String BEGINNER = "beginner.";
+        public static final String PLOT_OUTLINES = BEGINNER + "plot-outlines";
         private static final String TELEPORT_COORDINATES = BEGINNER + "building-coordinates.";
         public static final String POINT_1 = TELEPORT_COORDINATES + "point-1";
         public static final String POINT_2 = TELEPORT_COORDINATES + "point-2";
@@ -47,5 +47,6 @@ public abstract class TutorialPaths {
         public static final String BASE_BLOCK_ID = BEGINNER + "base-block-id";
         public static final String HEIGHT = BEGINNER + "height";
         public static final String HEIGHT_OFFSET = BEGINNER + "height-offset";
+        public static final String WINDOW_POINTS = BEGINNER + "window-points";
     }
 }
