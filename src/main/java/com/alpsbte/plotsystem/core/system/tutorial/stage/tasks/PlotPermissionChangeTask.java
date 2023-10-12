@@ -22,24 +22,26 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
-import java.util.UUID;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
+import org.bukkit.entity.Player;
 
-public interface PlotTutorial extends Tutorial {
+public class PlotPermissionChangeTask extends AbstractTask {
+    private final boolean isBuildingAllowed;
+    private final boolean isWorldEditAllowed;
 
-    /**
-     * This method is called when a schematic outline in the plot world is pasted.
-     * @param playerUUID uuid of the player
-     * @param schematicId The schematic id
-     */
-    void onPlotSchematicPaste(UUID playerUUID, int schematicId);
+    public PlotPermissionChangeTask(Player player, boolean allowBuilding, boolean allowWorldEdit) {
+        super(player);
+        isBuildingAllowed = allowBuilding;
+        isWorldEditAllowed = allowWorldEdit;
+    }
 
-    /**
-     * This method is called when the building and WorldEdit permissions on the plot need to be changed.
-     * @param playerUUID uuid of the player
-     * @param isBuildingAllowed true if building is enabled, otherwise false
-     * @param isWorldEditAllowed true if WorldEdit is enabled, otherwise false
-     */
-    void onPlotPermissionChange(UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed);
+    @Override
+    public void performTask() {
+        PlotTutorial tutorial = (PlotTutorial) AbstractTutorial.getActiveTutorial(player.getUniqueId());
+        if (tutorial != null) tutorial.onPlotPermissionChange(player.getUniqueId(), isBuildingAllowed, isWorldEditAllowed);
+        setTaskDone();
+    }
 }

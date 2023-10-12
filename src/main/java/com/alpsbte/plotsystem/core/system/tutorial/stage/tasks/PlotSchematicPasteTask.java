@@ -24,27 +24,22 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PasteSchematicOutlinesTask extends AbstractTask {
+public class PlotSchematicPasteTask extends AbstractTask {
     private final int schematicId;
 
-    public PasteSchematicOutlinesTask(Player player, int schematicId) {
+    public PlotSchematicPasteTask(Player player, int schematicId) {
         super(player);
         this.schematicId = schematicId;
     }
 
     @Override
     public void performTask() {
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            for (int i = 0; i < AbstractPlotTutorial.getActiveTutorials().size(); i++)
-                ((PlotTutorial) AbstractPlotTutorial.getActiveTutorials().get(i))
-                        .onPasteSchematicOutlines(player.getUniqueId(), schematicId);
-            setTaskDone();
-        });
+        PlotTutorial tutorial = (PlotTutorial) AbstractTutorial.getActiveTutorial(player.getUniqueId());
+        if (tutorial != null) tutorial.onPlotSchematicPaste(player.getUniqueId(), schematicId);
+        setTaskDone();
     }
 }

@@ -177,6 +177,8 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
         }
 
+        if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) Bukkit.getLogger().log(Level.WARNING, "WorldGuardExtraFlags is not enabled!");
+
         // Check for updates
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
@@ -319,6 +321,10 @@ public class PlotSystem extends JavaPlugin {
 
         public static boolean isMultiverseInventoriesEnabled() {
             return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
+        }
+
+        public static boolean isWorldGuardExtraFlagsEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("WorldGuardExtraFlags");
         }
 
         /**

@@ -30,7 +30,8 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.PasteSchematicOutlinesTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.PlotPermissionChangeTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.PlotSchematicPasteTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.BuildEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.LineCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
@@ -312,6 +313,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             getMessages().get(2)
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
+                    .addTask(new PlotPermissionChangeTask(getPlayer(), false, true))
                     .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         if (minPoint != null && maxPoint != null) {
                             buildingLinePoints.remove(minPoint);
@@ -323,7 +325,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(3) }, false);
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
                         }
-                    })));
+                    })))
+                    .addTask(new PlotPermissionChangeTask(getPlayer(), false, false));
         }
     }
 
@@ -407,13 +410,13 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 3)).delay(1)
+                    .addTask(new PlotSchematicPasteTask(getPlayer(), 3)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .placeTipHologram(0, getMessages().get(1))
                     .placeTipHologram(1, getMessages().get(2))
                     .interactNPC(getTasks().get(0))
                     .removeTipHolograms()
-                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 4)).delay(1)
+                    .addTask(new PlotSchematicPasteTask(getPlayer(), 4)).delay(1)
                     .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true)
                     .placeTipHologram(2, getMessages().get(4), 2)
                     .placeTipHologram(3, getMessages().get(5), 0)
@@ -447,11 +450,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 5)).delay(1)
+                    .addTask(new PlotSchematicPasteTask(getPlayer(), 5)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
                     .placeTipHologram(5, getMessages().get(2))
                     .placeTipHologram(6, getMessages().get(3), 0)
+                    .addTask(new PlotPermissionChangeTask(getPlayer(), true, false))
                     .addTask(new BuildEventTask(getPlayer(), getTasks().get(0), getWindowBuildPoints(), (blockPos, isCorrect) -> {
                         if (isCorrect) {
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
@@ -460,6 +464,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
                         }
                     }))
+                    .addTask(new PlotPermissionChangeTask(getPlayer(), false, false))
                     .delay(Delay.TASK_END)
                     .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, false)
                     .removeTipHolograms();
@@ -492,7 +497,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 6)).delay(1)
+                    .addTask(new PlotSchematicPasteTask(getPlayer(), 6)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .placeTipHologram(7, getMessages().get(1))
                     .placeTipHologram(8, getMessages().get(2), 1)
@@ -529,7 +534,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .addTask(new PasteSchematicOutlinesTask(getPlayer(), 7)).delay(1)
+                    .addTask(new PlotSchematicPasteTask(getPlayer(), 7)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .placeTipHologram(10, getMessages().get(1))
                     .placeTipHologram(11, getMessages().get(2), 0)

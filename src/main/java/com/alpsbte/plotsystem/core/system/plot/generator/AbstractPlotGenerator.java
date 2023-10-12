@@ -214,6 +214,8 @@ public abstract class AbstractPlotGenerator {
     protected void setBuildRegionPermissions(ProtectedRegion region) {
         region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+        if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+            region.setFlag(new StateFlag("worldedit", true, RegionGroup.OWNERS), StateFlag.State.ALLOW);
     }
 
     /**
@@ -228,26 +230,7 @@ public abstract class AbstractPlotGenerator {
 
         FileConfiguration config = ConfigUtil.getInstance().configs[1];
         region.setFlag(Flags.BLOCKED_CMDS, new HashSet<>(getBlockedCommands(config)));
-        region.setFlag(Flags.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
-        region.setFlag(Flags.ALLOWED_CMDS, new HashSet<>(getAllowedCommands(config)));
-        region.setFlag(Flags.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
-    }
-
-    /**
-     * Reads the allowed commands for the plot region from the config
-     * @param config commands.yml config
-     * @return list of allowed commands
-     */
-    protected List<String> getAllowedCommands(FileConfiguration config) {
-        List<String> allowedCommands = config.getStringList(ConfigPaths.ALLOWED_COMMANDS_NON_BUILDERS);
-        allowedCommands.removeIf(c -> c.equals("/cmd1"));
-        for (BaseCommand baseCommand : PlotSystem.getPlugin().getCommandManager().getBaseCommands()) {
-            allowedCommands.addAll(Arrays.asList(baseCommand.getNames()));
-            for (String command : baseCommand.getNames()) {
-                allowedCommands.add("/" + command);
-            }
-        }
-        return allowedCommands;
+        region.setFlag(Flags.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.ALL);
     }
 
     /**
