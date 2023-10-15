@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.core.holograms.PlotTutorialHologram;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
@@ -117,6 +118,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return null;
+        }
+
+        @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
@@ -157,6 +163,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TASKS);
+        }
+
+        @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return null;
         }
 
         @Override
@@ -203,6 +214,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TASKS,
                     CHAT_HIGHLIGHT_COLOR + "4" + YELLOW,
                     CHAT_HIGHLIGHT_COLOR + "/tpll" + YELLOW);
+        }
+
+        @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return null;
         }
 
         @Override
@@ -254,6 +270,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return null;
+        }
+
+        @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
@@ -291,6 +312,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TASKS,
                     CHAT_HIGHLIGHT_COLOR + "//line " + BASE_BLOCK.toLowerCase() + YELLOW);
+        }
+
+        @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return null;
         }
 
         @Override
@@ -356,6 +382,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return null;
+        }
+
+        @Override
         public StageTimeline getTimeline() throws IOException {
             StageTimeline stage = new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
@@ -402,8 +433,18 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS,
-                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS);
+        }
+
+        @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return Arrays.asList(
+                    new PlotTutorialHologram(getPlayer(), 0, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), 1, getMessages().get(2)),
+                    new PlotTutorialHologram(getPlayer(), 2, getMessages().get(4), 2),
+                    new PlotTutorialHologram(getPlayer(), 3, getMessages().get(5), 0),
+                    new PlotTutorialHologram(getPlayer(), 4, getMessages().get(6))
+            );
         }
 
         @Override
@@ -412,17 +453,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 3)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .placeTipHologram(0, getMessages().get(1))
-                    .placeTipHologram(1, getMessages().get(2))
-                    .interactNPC(getTasks().get(0))
-                    .removeTipHolograms()
+                    .createHolograms(getTasks().get(0), getHolograms().get(0), getHolograms().get(1))
+                    .delay(Delay.TASK_END)
+                    .deleteHolograms()
+                    .delay(2)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 4)).delay(1)
                     .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true)
-                    .placeTipHologram(2, getMessages().get(4), 2)
-                    .placeTipHologram(3, getMessages().get(5), 0)
-                    .placeTipHologram(4, getMessages().get(6))
-                    .interactNPC(getTasks().get(0))
-                    .removeTipHolograms();
+                    .createHolograms(getTasks().get(0), getHolograms().get(2), getHolograms().get(3), getHolograms().get(4))
+                    .delay(Delay.TASK_END);
         }
     }
 
@@ -447,14 +485,21 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return Arrays.asList(
+                    new PlotTutorialHologram(getPlayer(), 5, getMessages().get(2)),
+                    new PlotTutorialHologram(getPlayer(), 6, getMessages().get(3), 0)
+            );
+        }
+
+        @Override
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 5)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
                     .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
-                    .placeTipHologram(5, getMessages().get(2))
-                    .placeTipHologram(6, getMessages().get(3), 0)
+                    .createHolograms(getHolograms().get(0), getHolograms().get(1))
                     .addTask(new PlotPermissionChangeTask(getPlayer(), true, false))
                     .addTask(new BuildEventTask(getPlayer(), getTasks().get(0), getWindowBuildPoints(), (blockPos, isCorrect) -> {
                         if (isCorrect) {
@@ -466,8 +511,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     }))
                     .addTask(new PlotPermissionChangeTask(getPlayer(), false, false))
                     .delay(Delay.TASK_END)
-                    .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, false)
-                    .removeTipHolograms();
+                    .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, false);
         }
     }
 
@@ -489,8 +533,16 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS,
-                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS);
+        }
+
+        @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return Arrays.asList(
+                    new PlotTutorialHologram(getPlayer(), 7, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), 8, getMessages().get(2), 1),
+                    new PlotTutorialHologram(getPlayer(), 9, getMessages().get(3))
+            );
         }
 
         @Override
@@ -499,11 +551,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 6)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .placeTipHologram(7, getMessages().get(1))
-                    .placeTipHologram(8, getMessages().get(2), 1)
-                    .placeTipHologram(9, getMessages().get(3))
-                    .interactNPC(getTasks().get(0))
-                    .removeTipHolograms();
+                    .createHolograms(getTasks().get(0), getHolograms().get(0), getHolograms().get(1), getHolograms().get(2))
+                    .delay(Delay.TASK_END);
         }
     }
 
@@ -526,8 +575,15 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS,
-                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS);
+        }
+
+        @Override
+        protected List<AbstractTutorialHologram> setHolograms() {
+            return Arrays.asList(
+                    new PlotTutorialHologram(getPlayer(), 10, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), 11, getMessages().get(2), 0)
+            );
         }
 
         @Override
@@ -536,10 +592,10 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 7)).delay(1)
                     .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .placeTipHologram(10, getMessages().get(1))
-                    .placeTipHologram(11, getMessages().get(2), 0)
-                    .interactNPC(getTasks().get(0))
-                    .removeTipHolograms().delay(Delay.TASK_END)
+                    .createHolograms(getTasks().get(0), getHolograms().get(0), getHolograms().get(1))
+                    .delay(Delay.TASK_END)
+                    .deleteHolograms()
+                    .delay(2)
                     .sendChatMessage(new Object[] {
                         getMessages().get(3),
                         "",

@@ -200,11 +200,13 @@ public abstract class LangPaths {
 
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
+            public static final String READ = ACTION + "read";
             public static final String READ_MORE = ACTION + "read-more";
             public static final String START = ACTION + "start";
             public static final String CONTINUE = ACTION + "continue";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";
+            public static final String MARK_AS_READ = ACTION + "mark-as-read";
             public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
             public static final String CLICK_TO_ENABLE = ACTION + "click-to-enable";
             public static final String CLICK_TO_DISABLE = ACTION + "click-to-disable";

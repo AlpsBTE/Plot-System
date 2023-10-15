@@ -192,7 +192,9 @@ note:
   score-will-be-split: "Score will be split between all members when reviewed!"
   player-has-to-be-online: "The player has to be online!"
   action:
-    read-more: "Read More"
+    read: 'Read'
+    read-more: 'Read More'
+    mark-as-read: 'Mark as read'
     start: 'Start'
     continue: "Continue"
     right-click: "Right Click"
@@ -303,7 +305,7 @@ tutorials:
         - 'However, we at Alps BTE are only responsible to recreate the beautiful alpine countries of Austria, Switzerland and Liechtenstein.'
         - 'Are you ready to learn how to build for BTE? I will guide you through the basics to participate in the project. Let´s continue!'
       stage-1-tasks:
-        - 'Talk to {0} at the gate.'
+        - 'Talk to {0} to start the tutorial.'
     stage-2:
       stage-2-title: 'References'
       stage-2-messages:
@@ -364,7 +366,7 @@ tutorials:
         - 'Fill the roof by hand or use the WorldEdit command {1}. Alternatively use the command {2} to switch the selection for larger and more complex roofs.'
         - 'Always check the height of the windows and doors so that it matches with the facade.'
       stage-7-tasks:
-        - 'Read all tips on the plot. Talk to {0} to continue.'
+        - 'Read all tips on the plot and mark them as read.'
     stage-8:
       stage-8-title: 'Windows'
       stage-8-messages:
@@ -375,7 +377,7 @@ tutorials:
         - 'Use the same blocks as for the windows on the right. Try again!'
         - 'Thank you for your help! Now we can continue with the texturing.'
       stage-8-tasks:
-        - 'Place the missing windows.'
+        - 'Place the missing window details.'
     stage-9:
       stage-9-title: 'Texturing'
       stage-9-messages:
@@ -384,7 +386,7 @@ tutorials:
         - 'Use the WorldEdit command {0} to simply replace the shell with your pattern.'
         - 'Try to use block mixes and gradients for the walls and roof so that the building looks more realistic and stand out.'
       stage-9-tasks:
-        - 'Read all tips on the plot. Talk to {0} to continue.'
+        - 'Read all tips on the plot and mark them as read.'
     stage-10:
       stage-10-title: 'Detailing'
       stage-10-messages:
@@ -396,7 +398,7 @@ tutorials:
         - 'To apply as builder, create and submit two or more plots on our server. You can find more information about the application process on our website or {1}.'
         - 'Happy building!'
       stage-10-tasks:
-        - 'Read all tips on the plot. Talk to {0} to continue.'
+        - 'Read all tips on the plot and mark them as read.'
 
 # NOTE: Do not change
 config-version: 1.3

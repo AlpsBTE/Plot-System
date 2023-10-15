@@ -28,14 +28,14 @@ import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.*;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.ChatEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.NpcInteractEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.TeleportPointEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.ContinueCmdEventTask;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.PlaceHologramTask;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.RemoveHologramTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.CreateHologramTask;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.DeleteHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.md_5.bungee.api.ChatMessageType;
@@ -235,44 +235,45 @@ public class StageTimeline implements TutorialTimeLine {
     }
 
     /**
-     * Adds a PlaceHologramTask to the timeline.
-     * @param tipId the id of the tip, read from the tutorial config
-     * @param content the content of the hologram
+     * Adds a CreateHologramTask to the timeline.
+     * This function adds the task with no mark as read functionality.
+     * @see AbstractStage#getHolograms()
+     * @param holograms holograms to show to the player, only the tutorial player can see them
      */
-    public StageTimeline placeTipHologram(int tipId, String content) {
-        return placeTipHologram(tipId, content, -1);
-    }
-
-    /**
-     * Adds a PlaceHologramTask to the timeline.
-     * The read more link is a clickable message that shows link to a documentation page.
-     * @param tipId the id of the tip, read from the tutorial config
-     * @param content the content of the hologram
-     * @param readMoreLinkId the id of the read more link, read from the tutorial config
-     */
-    public StageTimeline placeTipHologram(int tipId, String content, int readMoreLinkId) {
-        PlaceHologramTask task = new PlaceHologramTask(player, tipId, content, readMoreLinkId);
-        tipHolograms.add(task.getHologram());
-        tasks.add(task);
+    public StageTimeline createHolograms(AbstractTutorialHologram... holograms) {
+        tasks.add(new CreateHologramTask(player, new LinkedList<>(Arrays.asList(holograms))));
         return this;
     }
 
     /**
-     * Adds a RemoveHologramTask to the timeline.
-     * Removes a specific tip hologram from the tutorial world.
-     * @param tipId the id of the tip, read from the tutorial config
+     * Adds a CreateHologramTask to the timeline.
+     * @see AbstractStage#getHolograms()
+     * @param assignmentMessage the task message to show in the action bar to the player
+     * @param holograms holograms to show to the player, only the tutorial player can see them
      */
-    public StageTimeline removeTipHologram(int tipId) {
-        tasks.add(new RemoveHologramTask(player, tipId, tipHolograms));
+    public StageTimeline createHolograms(String assignmentMessage, AbstractTutorialHologram... holograms) {
+        tasks.add(new CreateHologramTask(player, assignmentMessage, new LinkedList<>(Arrays.asList(holograms)), true));
         return this;
     }
 
     /**
-     * Adds a RemoveHologramTask to the timeline.
-     * Removes all tip holograms from the tutorial world.
+     * Adds a DeleteHologramTask to the timeline.
+     * Deletes a specific tutorial hologram from the stage.
+     * @see AbstractStage#getHolograms()
+     * @param hologram hologram to delete from the current stage
      */
-    public StageTimeline removeTipHolograms() {
-        for (int i = 0; i < tipHolograms.size(); i++) tasks.add(new RemoveHologramTask(player, Integer.parseInt(tipHolograms.get(i).getId()), tipHolograms));
+    public StageTimeline deleteHologram(AbstractTutorialHologram hologram) {
+        tasks.add(new DeleteHologramTask(player, Collections.singletonList(hologram)));
+        return this;
+    }
+
+    /**
+     * Adds a DeleteHologramTask to the timeline.
+     * Deletes all tutorial holograms from the current stage.
+     * @see AbstractStage#getHolograms()
+     */
+    public StageTimeline deleteHolograms() {
+        tasks.add(new DeleteHologramTask(player));
         return this;
     }
 

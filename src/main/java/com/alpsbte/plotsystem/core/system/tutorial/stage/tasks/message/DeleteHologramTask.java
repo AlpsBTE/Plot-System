@@ -24,30 +24,29 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
-import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class RemoveHologramTask extends AbstractTask {
-    private final int tipId;
-    private final List<TutorialTipHologram> holograms;
+public class DeleteHologramTask extends AbstractTask {
+    private List<AbstractTutorialHologram> hologramsToRemove;
 
-    public RemoveHologramTask(Player player, int tipId, List<TutorialTipHologram> holograms) {
+    public DeleteHologramTask(Player player) {
+        this(player, null);
+    }
+
+    public DeleteHologramTask(Player player, List<AbstractTutorialHologram> hologramsToRemove) {
         super(player);
-        this.tipId = tipId;
-        this.holograms = holograms;
+        this.hologramsToRemove = hologramsToRemove;
     }
 
     @Override
     public void performTask() {
-        TutorialTipHologram hologram = holograms.stream().filter(holo -> holo.getId().equals(String.valueOf(tipId))).findFirst().orElse(null);
-        if (hologram != null && hologram.getHologram(player.getUniqueId()) != null) {
-            holograms.remove(hologram);
-            hologram.delete();
-        }
-
+        if (hologramsToRemove == null) hologramsToRemove = AbstractTutorial.getActiveTutorial(player.getUniqueId()).getActiveHolograms();
+        for (AbstractTutorialHologram hologram : hologramsToRemove) if (hologram.isVisible(player.getUniqueId())) hologram.delete();
         setTaskDone();
     }
 }

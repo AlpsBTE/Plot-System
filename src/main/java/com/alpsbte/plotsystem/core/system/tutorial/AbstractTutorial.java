@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
@@ -66,7 +65,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * A list of all active tutorials.
      * @see AbstractTutorial#getActiveTutorial(UUID)
      */
-    private static final List<Tutorial> activeTutorials = new ArrayList<>();
+    private static final List<AbstractTutorial> activeTutorials = new ArrayList<>();
 
     /**
      * A list of the last interaction of a player with a NPC or the chat.
@@ -169,6 +168,15 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
+    public List<AbstractTutorialHologram> getActiveHolograms() {
+        return HolographicDisplay.activeDisplays.stream()
+                .filter(AbstractTutorialHologram.class::isInstance)
+                .filter(holo -> holo.isVisible(playerUUID))
+                .map(h -> (AbstractTutorialHologram) h)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public World getCurrentWorld() {
         return Bukkit.getWorld(worlds.get(currentWorldIndex).getWorldName());
     }
@@ -241,9 +249,7 @@ public abstract class AbstractTutorial implements Tutorial {
         if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
         activeTutorials.remove(this);
         npc.delete();
-        List<HolographicDisplay> displays = HolographicDisplay.activeDisplays.stream().filter(holo -> holo instanceof TutorialTipHologram &&
-                holo.getPosition().getWorldName().equals(player.getWorld().getName())).collect(Collectors.toList());
-        for (HolographicDisplay holo : displays) holo.delete();
+        for (AbstractTutorialHologram holo : getActiveHolograms()) holo.delete();
         playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
 
