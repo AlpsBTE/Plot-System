@@ -24,8 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
-import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
@@ -40,21 +38,17 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessa
 import com.sk89q.worldedit.math.BlockVector3;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
+import java.util.*;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
 
-public class StageTimeline implements TutorialTimeLine {
-    private static final List<TutorialTimeLine> activeTimelines = new ArrayList<>();
+public class StageTimeline implements TutorialTimeline {
+    private static final List<TutorialTimeline> activeTimelines = new ArrayList<>();
 
     protected final Player player;
 
@@ -62,12 +56,11 @@ public class StageTimeline implements TutorialTimeLine {
     private AbstractTask currentTask;
     private int currentTaskId = -1;
     private BukkitTask assignmentProgressTask;
-    private final List<TutorialTipHologram> tipHolograms = new ArrayList<>();
-    private final AbstractNpc tutorialNPC;
+    private final AbstractTutorial tutorial;
 
     public StageTimeline(Player player) {
         this.player = player;
-        tutorialNPC = AbstractTutorial.getActiveTutorial(player.getUniqueId()).getNPC();
+        tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
     }
 
     /**
@@ -84,31 +77,35 @@ public class StageTimeline implements TutorialTimeLine {
      * In addition, it keeps track of the task's assignment and updates the action bar if the task has progress.
      */
     private void nextTask() {
-        currentTask = tasks.get(currentTaskId + 1);
-        Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (currentTaskId + 2) + " of " + tasks.size() + "] for player " + player.getName());
-        currentTaskId = currentTaskId + 1;
+        try {
+            currentTask = tasks.get(currentTaskId + 1);
+            // Bukkit.getLogger().log(Level.INFO, "Starting task " + currentTask.toString() + " [" + (currentTaskId + 2) + " of " + tasks.size() + "] for player " + player.getName());
+            currentTaskId = currentTaskId + 1;
 
-        // Check if a task has progress and if yes, update action bar
-        if (currentTask.hasAssignments()) {
-            AbstractTask.sendAssignmentMessage(player, currentTask.getAssignmentMessage());
-            if (assignmentProgressTask != null) assignmentProgressTask.cancel();
-            assignmentProgressTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (currentTask.getCompletedAssignments() == currentTask.getTotalAssignments()) {
-                        this.cancel();
-                    } else updatePlayerActionBar();
-                }
-            }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
+            // Check if a task has progress and if yes, update action bar
+            if (currentTask.hasAssignments()) {
+                AbstractTask.sendAssignmentMessage(player, currentTask.getAssignmentMessage());
+                if (assignmentProgressTask != null) assignmentProgressTask.cancel();
+                assignmentProgressTask = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (currentTask.getCompletedAssignments() == currentTask.getTotalAssignments()) {
+                            this.cancel();
+                        } else updatePlayerActionBar();
+                    }
+                }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
+            }
+
+            // If the task has npc interaction show the hologram click info, otherwise hide it
+            if (currentTask instanceof NpcInteractEventTask || currentTask instanceof ContinueCmdEventTask ||
+                    (currentTask instanceof ChatMessageTask && ((ChatMessageTask) currentTask).isWaitToContinue())) {
+                tutorial.getNPC().setActionTitleVisibility(player.getUniqueId(), true, currentTask instanceof NpcInteractEventTask);
+            } else if (tutorial.getNPC().getHologram().isActionTitleVisible(player.getUniqueId())) tutorial.getNPC().setActionTitleVisibility(player.getUniqueId(), false, false);
+
+            currentTask.performTask();
+        } catch (Exception ex) {
+            tutorial.onException(ex);
         }
-
-        // If the task has npc interaction show the hologram click info, otherwise hide it
-        if (currentTask instanceof NpcInteractEventTask || currentTask instanceof ContinueCmdEventTask ||
-                (currentTask instanceof ChatMessageTask && ((ChatMessageTask) currentTask).isWaitToContinue())) {
-            tutorialNPC.setActionTitleVisibility(player.getUniqueId(), true, currentTask instanceof NpcInteractEventTask);
-        } else if (tutorialNPC.getHologram().isActionTitleVisible(player.getUniqueId())) tutorialNPC.setActionTitleVisibility(player.getUniqueId(), false, false);
-
-        currentTask.performTask();
     }
 
     @Override
@@ -118,8 +115,7 @@ public class StageTimeline implements TutorialTimeLine {
 
         if (currentTaskId >= tasks.size() - 1) {
             onStopTimeLine(playerUUID);
-            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++)
-                AbstractTutorial.getActiveTutorials().get(i).onStageComplete(player.getUniqueId());
+            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++) tutorial.onStageComplete(player.getUniqueId());
         } else nextTask();
     }
 
@@ -136,8 +132,8 @@ public class StageTimeline implements TutorialTimeLine {
         activeTimelines.remove(this);
         if (assignmentProgressTask != null) assignmentProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
-        tipHolograms.forEach(HolographicDisplay::removeAll);
-        tutorialNPC.setActionTitleVisibility(playerUUID, false, false);
+        tutorial.getActiveHolograms().forEach(AbstractTutorialHologram::delete);
+        tutorial.getNPC().setActionTitleVisibility(playerUUID, false, false);
         tasks.clear();
     }
 
@@ -187,7 +183,7 @@ public class StageTimeline implements TutorialTimeLine {
     public StageTimeline sendChatMessage(Object[] messages, Sound soundEffect, boolean waitToContinue) {
         tasks.add(new ChatMessageTask(player, messages, soundEffect, waitToContinue));
         // Add a task to wait for player to continue
-        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorialNPC.getNpc().getData().getName()));
+        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorial.getNPC().getNpc().getData().getName()));
         return this;
     }
 
@@ -230,7 +226,7 @@ public class StageTimeline implements TutorialTimeLine {
      * @param assignmentMessage the task message to show in the action bar to the player
      */
     public StageTimeline interactNPC(String assignmentMessage) {
-        tasks.add(new NpcInteractEventTask(player, tutorialNPC.getNpc().getData().getName(), assignmentMessage));
+        tasks.add(new NpcInteractEventTask(player, tutorial.getNPC().getNpc().getData().getName(), assignmentMessage));
         return this;
     }
 
@@ -282,7 +278,7 @@ public class StageTimeline implements TutorialTimeLine {
      * @param seconds the number of seconds to wait
      */
     public StageTimeline delay(long seconds) {
-        tasks.add(new WaitTask(player, seconds));
+        tasks.add(new DelayTask(player, seconds));
         return this;
     }
 
@@ -291,7 +287,7 @@ public class StageTimeline implements TutorialTimeLine {
      * Gets the active tutorial timelines.
      * @return timelines
      */
-    public static List<TutorialTimeLine> getActiveTimelines() {
+    public static List<TutorialTimeline> getActiveTimelines() {
         return activeTimelines;
     }
 }

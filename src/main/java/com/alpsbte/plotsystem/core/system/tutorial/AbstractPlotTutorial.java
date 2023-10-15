@@ -49,6 +49,7 @@ import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot plot;
     private TutorialPlotGenerator plotGenerator;
+    private boolean isPasteSchematic;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) throws SQLException {
         // TODO: Performance improvements base constructor
@@ -72,6 +73,12 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     protected TutorialNPC initNpc() {
         return new TutorialNPC("tutorial-" + plot.getID());
+    }
+
+    @Override
+    public void setStage(int stageId) {
+        isPasteSchematic = true;
+        super.setStage(stageId);
     }
 
     @Override
@@ -104,7 +111,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     protected void prepareStage(PrepareStageAction action) {
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
             // paste initial schematic outlines of stage
-            onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+            if (isPasteSchematic) onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
 
             // Send a new stage unlocked message to the player
             sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());

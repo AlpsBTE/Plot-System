@@ -253,8 +253,8 @@ public abstract class AbstractTutorial implements Tutorial {
         playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
 
-        Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
-        Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
+        // Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
+        // Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
     }
 
     @Override
@@ -287,7 +287,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * Gets all active tutorials currently being run by a player.
      * @return list of all active tutorials
      */
-    public static List<Tutorial> getActiveTutorials() {
+    public static List<AbstractTutorial> getActiveTutorials() {
         return activeTutorials;
     }
 
@@ -296,7 +296,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @param playerUUID uuid of the player
      * @return tutorial of the player, can be null
      */
-    public static Tutorial getActiveTutorial(UUID playerUUID) {
+    public static AbstractTutorial getActiveTutorial(UUID playerUUID) {
         return AbstractTutorial.activeTutorials.stream().filter(tutorial ->
                 tutorial.getPlayerUUID().toString().equals(playerUUID.toString())).findAny().orElse(null);
     }
