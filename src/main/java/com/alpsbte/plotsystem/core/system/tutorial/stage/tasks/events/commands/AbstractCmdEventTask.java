@@ -55,7 +55,7 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
         TutorialEventListener.runningEventTasks.put(player.getUniqueId().toString(), this);
     }
 
-    protected abstract void onCommand(String[] args);
+    protected abstract void onCommand(boolean isValid, String[] args);
 
     @Override
     public void performEvent(Event event) {
@@ -67,10 +67,12 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
                 // Check if the expected args are used
                 String[] args = cmdEvent.getMessage().toLowerCase().replaceFirst(expectedCommand.toLowerCase(), "").trim().split(" ");
                 if (args1 != null && args1.length > 0) {
-                    if (args.length == 0) return;
-                    if (Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0]))) return;
+                    if (args.length == 0 || Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0]))) {
+                        onCommand(false, args);
+                        return;
+                    }
                 }
-                onCommand(args);
+                onCommand(true, args);
             }
         }
     }
