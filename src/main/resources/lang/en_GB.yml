@@ -157,7 +157,7 @@ menu-description:
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
   tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
 
 # -----------------------------------------------------
 # | Review
@@ -315,7 +315,7 @@ tutorials:
         - '{4}'
         - 'We use {5} to measure the height of the building. This is important to know, so the building has the correct height.'
         - '{6}'
-        - 'If you need the links later, use the {7} command when using the Plot-System.'
+        - 'Use the command {7} if you need the links later.'
       stage-2-tasks:
     stage-3:
       stage-3-title: 'Teleporting'
@@ -324,6 +324,7 @@ tutorials:
         - 'Use the command {0} to teleport to the location in-game. {1} on one of the edges of the building to copy the coordinates.'
         - '{2}'
         - 'To continue teleport to the marked points. Try again!'
+        - 'Switch to §6Satellite§f view in Google Maps to show the building in 3D.%newline%%newline%Click on §6Layers§f at the bottom left of the map. If no 3D buildings appear, enable the §6Globe View§f under "More".'
       stage-3-tasks:
         - 'Teleport to all {0} edges of the building by using {1}.'
     stage-4:
@@ -347,7 +348,7 @@ tutorials:
       stage-6-title: 'Building Heights'
       stage-6-messages:
         - 'Now that we have the building outlines, we need to measure the height of the building.'
-        - 'Calculate the height of the facade by subtracting the height of the ground from the height of the roof.'
+        - 'Calculate the height of the §6facade§7 by subtracting the height of the §6ground§7 from the height of the §6roof§7.'
         - 'Enter the height (in metres) of the building facade in the chat to continue.'
         - '{0}'
         - 'Well done! The height of the building is {1} blocks.'
@@ -394,7 +395,7 @@ tutorials:
         - 'Add custom banners and custom heads to your builds. Use the command {0} to get a variety of custom heads.'
         - 'There are many ways to decorate your buildings. Always pay attention to details on the facade and roofs such as chimneys, windows and gutters.'
         - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
-        - 'To learn more about the project, click here to open the documentation.'
+        - 'Click here to learn more about the project.'
         - 'To apply as builder, create and submit two or more plots on our server. You can find more information about the application process on our website or {1}.'
         - 'Happy building!'
       stage-10-tasks:

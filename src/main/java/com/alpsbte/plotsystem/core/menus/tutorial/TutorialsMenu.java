@@ -49,6 +49,8 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import static net.md_5.bungee.api.ChatColor.WHITE;
+
 public class TutorialsMenu extends AbstractMenu {
     private TutorialPlot plot;
     private String beginnerTutorialItemName;
@@ -179,13 +181,16 @@ public class TutorialsMenu extends AbstractMenu {
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
         return (tutorialId != TutorialCategory.BEGINNER.getId() /*&& !isBeginnerTutorialCompleted*/) ? getAdvancedTutorialItem(getMenuPlayer()) :
-                constructTutorialItem(getMenuPlayer(), plot, new ItemStack(Material.valueOf(itemName)), title, desc);
+                constructTutorialItem(getMenuPlayer(), tutorialId, plot, new ItemStack(Material.valueOf(itemName)), title, desc);
     }
 
-    private static ItemStack constructTutorialItem(Player player, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
+    private static ItemStack constructTutorialItem(Player player, int tutorialId, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
         // Create tutorial item lore
-        LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, "");
-        if (plot == null || !plot.isCompleted()) {
+        int highestPlotStage = plot != null ? plot.getStageID() : 0;
+        boolean isPlotCompleted = plot != null && plot.isCompleted();
+        LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, "", LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
+                (highestPlotStage + (isPlotCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialPaths.TUTORIAL_STAGES), "");
+        if (plot == null || !isPlotCompleted) {
             loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
                     "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.START));
         }

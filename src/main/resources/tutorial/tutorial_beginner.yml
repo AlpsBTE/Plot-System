@@ -26,6 +26,7 @@ tutorial-worlds:
 
 # Tip hologram coordinates (x, y, z)
 tip-hologram-coordinates:
+  - '3693351.5, 14, -4531334.5'
   - '3693362.5, 21, -4531331.5'
   - '3693363.5, 14, -4531330.5'
   - '3693363.5, 17, -4531325.5'

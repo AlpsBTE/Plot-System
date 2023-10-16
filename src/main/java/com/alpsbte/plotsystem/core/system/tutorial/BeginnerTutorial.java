@@ -218,7 +218,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
-            return null;
+            return Collections.singletonList(
+                    new PlotTutorialHologram(getPlayer(), 0, getMessages().get(4), 0)
+            );
         }
 
         @Override
@@ -232,6 +234,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             new ChatMessageTask.ClickableTaskMessage(getMessages().get(2), GRAY + Stage2.GOOGLE_MAPS, getPlot().getGoogleMapsLink(), ClickEvent.Action.OPEN_URL)
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
+                    .createHolograms(getHolograms().get(0))
                     .addTeleportEvent(getTasks().get(0), getPlotPoints(getPlot()), 1, (teleportPoint, isCorrect) -> {
                         if (isCorrect) {
                             TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
@@ -439,11 +442,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 0, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 1, getMessages().get(2)),
-                    new PlotTutorialHologram(getPlayer(), 2, getMessages().get(4), 2),
-                    new PlotTutorialHologram(getPlayer(), 3, getMessages().get(5), 0),
-                    new PlotTutorialHologram(getPlayer(), 4, getMessages().get(6))
+                    new PlotTutorialHologram(getPlayer(), 1, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), 2, getMessages().get(2)),
+                    new PlotTutorialHologram(getPlayer(), 3, getMessages().get(4), 2),
+                    new PlotTutorialHologram(getPlayer(), 4, getMessages().get(5), 0),
+                    new PlotTutorialHologram(getPlayer(), 5, getMessages().get(6))
             );
         }
 
@@ -487,8 +490,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 5, getMessages().get(2)),
-                    new PlotTutorialHologram(getPlayer(), 6, getMessages().get(3), 0)
+                    new PlotTutorialHologram(getPlayer(), 6, getMessages().get(2)),
+                    new PlotTutorialHologram(getPlayer(), 7, getMessages().get(3), 0)
             );
         }
 
@@ -511,7 +514,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     }))
                     .addTask(new PlotPermissionChangeTask(getPlayer(), false, false))
                     .delay(Delay.TASK_END)
-                    .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, false);
+                    .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, false).delay(1);
         }
     }
 
@@ -539,9 +542,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 7, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 8, getMessages().get(2), 1),
-                    new PlotTutorialHologram(getPlayer(), 9, getMessages().get(3))
+                    new PlotTutorialHologram(getPlayer(), 8, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), 9, getMessages().get(2), 1),
+                    new PlotTutorialHologram(getPlayer(), 10, getMessages().get(3))
             );
         }
 
@@ -581,8 +584,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 10, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 11, getMessages().get(2), 0)
+                    new PlotTutorialHologram(getPlayer(), 11, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), 12, getMessages().get(2), 0)
             );
         }
 
