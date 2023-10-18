@@ -52,7 +52,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
     public void onCommand(CommandSender sender, String[] args) {
         try {
             if (getPlayer(sender) != null) {
-                if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     Plot plot;
                     if (PlotUtils.plotExists(plotID) && (plot = new Plot(plotID)).getStatus() != Status.unclaimed) {

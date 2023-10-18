@@ -54,7 +54,7 @@ public class CMD_Plot_Feedback extends SubCommand {
         try {
             if (getPlayer(sender) != null) {
                 Plot plot;
-                if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotUtils.plotExists(plotID)) {
                         plot = new Plot(plotID);

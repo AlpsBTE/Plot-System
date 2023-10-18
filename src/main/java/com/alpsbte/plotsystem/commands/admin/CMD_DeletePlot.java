@@ -45,7 +45,7 @@ public class CMD_DeletePlot extends BaseCommand {
             return true;
         }
 
-        if(!(args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null)) {
+        if(!(args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null)) {
             sendInfo(sender);
             return true;
         }

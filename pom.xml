@@ -110,7 +110,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-io</artifactId>
-            <version>1.0.34</version>
+            <version>1.0.37</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -123,6 +123,12 @@
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-npc</artifactId>
             <version>1.0.35</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alpsbte.alpslib</groupId>
+            <artifactId>alpslib-utils</artifactId>
+            <version>1.0.15</version>
             <scope>compile</scope>
         </dependency>
         <!-- MariaDB Connector -->
