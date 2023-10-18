@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.menus.BuilderUtilitiesMenu;
@@ -40,6 +41,7 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -131,12 +133,12 @@ public class CompanionMenu {
 
         if (selectedPlotDifficulty != null) {
             switch (selectedPlotDifficulty) {
-                case EASY: item = AlpsUtils.getItemHead(Utils.HeadUtils.GREEN_CONCRETE_HEAD); break;
-                case MEDIUM: item = AlpsUtils.getItemHead(Utils.HeadUtils.YELLOW_CONCRETE_HEAD); break;
-                case HARD: item = AlpsUtils.getItemHead(Utils.HeadUtils.RED_CONCRETE_HEAD); break;
+                case EASY: item = AlpsHeadUtils.getCustomHead(CustomHeads.GREEN_CONCRETE.getId()); break;
+                case MEDIUM: item = AlpsHeadUtils.getCustomHead(CustomHeads.YELLOW_CONCRETE.getId()); break;
+                case HARD: item = AlpsHeadUtils.getCustomHead(CustomHeads.RED_CONCRETE.getId()); break;
                 default: break;
             }
-        } else item = AlpsUtils.getItemHead(Utils.HeadUtils.WHITE_CONCRETE_HEAD);
+        } else item = AlpsHeadUtils.getCustomHead(CustomHeads.WHITE_CONCRETE.getId());
 
         try {
             return new ItemBuilder(item)

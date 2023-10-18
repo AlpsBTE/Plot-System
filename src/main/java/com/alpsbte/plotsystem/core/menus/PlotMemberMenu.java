@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -75,6 +76,19 @@ public class PlotMemberMenu extends AbstractMenu {
             }
         });
 
+        // Set add plot member item
+        ItemStack whitePlus = AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId());
+        getMenu().getSlot(16)
+                .setItem(new ItemBuilder(whitePlus)
+                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
+                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
+                                        "",
+                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
+                        .build());
+
+        // Set back item
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+
         super.setPreviewItems();
     }
 
@@ -83,7 +97,7 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set plot owner item
         try {
             getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(AlpsUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
                             .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
@@ -99,7 +113,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
                 Builder builder = builders.get(i - 12);
                 getMenu().getSlot(i)
-                        .setItem(new ItemBuilder(AlpsUtils.getPlayerHead(builder.getUUID()))
+                        .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
                                 .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER))
                                 .setLore(new LoreBuilder()
                                         .addLines(builder.getName(),
@@ -111,19 +125,6 @@ public class PlotMemberMenu extends AbstractMenu {
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        // Set add plot member item
-        ItemStack whitePlus = AlpsUtils.getItemHead(Utils.HeadUtils.ADD_BUTTON_HEAD);
-        getMenu().getSlot(16)
-                .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
-                                        "",
-                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
-                        .build());
-
-        // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override
@@ -206,7 +207,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
-                .pattern("111111111")
+                .pattern("111101111")
                 .build();
     }
 }

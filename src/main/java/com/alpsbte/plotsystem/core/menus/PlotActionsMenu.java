@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -35,6 +36,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -113,7 +115,7 @@ public class PlotActionsMenu extends AbstractMenu {
                 FileConfiguration config = PlotSystem.getPlugin().getConfig();
                 if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.ADD_BUTTON_HEAD))
+                            .setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId()))
                                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS)).setLore(new LoreBuilder()
                                             .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS),
                                                     "",
@@ -122,7 +124,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
-                            .setItem(new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.REMOVE_BUTTON_HEAD))
+                            .setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.REMOVE_BUTTON.getId()))
                                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT)).setLore(new LoreBuilder()
                                             .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT),
                                                     "",

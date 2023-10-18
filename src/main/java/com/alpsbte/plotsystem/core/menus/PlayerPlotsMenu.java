@@ -24,9 +24,9 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -70,13 +70,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Load player head
-        ItemStack playerHead = AlpsUtils.getPlayerHead(builder.getUUID());
-
         // Set player stats item
         try {
             getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(playerHead)
+                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
                             .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": §f" + builder.getScore(),
                                             "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": §f" + builder.getCompletedBuilds())
@@ -191,7 +188,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player p) {
-        return new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.WHITE_P_HEAD))
+        return new ItemBuilder(AlpsHeadUtils.getPlayerHead(p.getUniqueId()))
                 .setName("§b§l" + LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS))
                 .setLore(new LoreBuilder()
                     .addLine(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS)).build())

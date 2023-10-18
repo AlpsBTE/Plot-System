@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -32,6 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,7 +58,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set plot type items
         getMenu().getSlot(11).setItem(
-                new ItemBuilder(Utils.HeadUtils.FOCUS_MODE_HEAD.getAsItemStack())
+                new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.FOCUS_MODE_BUTTON.getId()))
                         .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_FOCUS_MODE))
                         .setLore(new LoreBuilder()
                                 .addLines(AlpsUtils.createMultilineFromString(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE), LoreBuilder.MAX_LINE_LENGTH, LoreBuilder.LINE_BAKER))
@@ -74,7 +76,7 @@ public class SelectPlotTypeMenu extends AbstractMenu {
                         .build());
 
         getMenu().getSlot(15).setItem(
-                new ItemBuilder(Utils.HeadUtils.CITY_INSPIRATION_MODE_HEAD.getAsItemStack())
+                new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.CITY_INSPIRATION_MODE_BUTTON.getId()))
                         .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE) + " §7§l[§c§lBETA§7§l]") // temporary BETA tag
                         .setLore(new LoreBuilder()
                                 .addLines(AlpsUtils.createMultilineFromString(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), LoreBuilder.MAX_LINE_LENGTH, LoreBuilder.LINE_BAKER))

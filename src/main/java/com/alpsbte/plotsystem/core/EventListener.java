@@ -45,7 +45,6 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
-import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -306,10 +305,5 @@ public class EventListener extends SpecialBlocks implements Listener {
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
             }
         }
-    }
-
-    @EventHandler
-    public void onDatabaseLoad(DatabaseLoadEvent event) {
-        Utils.HeadUtils.loadHeadsAsync();
     }
 }

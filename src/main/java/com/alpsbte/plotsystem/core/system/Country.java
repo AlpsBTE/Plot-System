@@ -24,8 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.heads.CustomHead;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import org.bukkit.Bukkit;
@@ -77,7 +76,7 @@ public class Country {
     }
 
     public ItemStack getHead() {
-        return AlpsUtils.getItemHead(new CustomHead(headID));
+        return AlpsHeadUtils.getCustomHead(headID);
     }
 
     /**

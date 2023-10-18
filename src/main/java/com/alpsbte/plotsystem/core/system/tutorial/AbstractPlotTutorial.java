@@ -85,7 +85,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     public void onPlotSchematicPaste(UUID playerUUID, int schematicId) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         try {
-            if (currentWorldIndex == 1 && plotGenerator != null) {
+            if (plotGenerator != null && plot.getWorld().isWorldGenerated() && plot.getWorld().isWorldLoaded()) {
                 plotGenerator.generateOutlines(schematicId);
             }
         } catch (SQLException | IOException | WorldEditException ex) {
@@ -112,6 +112,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
             // paste initial schematic outlines of stage
             if (isPasteSchematic) onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+            isPasteSchematic = false;
 
             // Send a new stage unlocked message to the player
             sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
@@ -139,8 +140,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         try {
             if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
-                plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(getPlayer().getUniqueId()));
-                onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+                plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(playerUUID));
+                onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
             }
             super.onSwitchWorld(playerUUID, tutorialWorldIndex);
         } catch (SQLException ex) {
