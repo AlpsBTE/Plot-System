@@ -279,6 +279,7 @@ message:
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
     feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+    tutorial-disabled: 'Could not execute task because tutorials are disabled.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 
 leaderboards:

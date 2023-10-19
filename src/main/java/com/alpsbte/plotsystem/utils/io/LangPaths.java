@@ -297,6 +297,7 @@ public abstract class LangPaths {
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
             public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
             public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
+            public static final String TUTORIAL_DISABLED = ERROR + "tutorial-disabled";
             public static final String TUTORIAL_ALREADY_RUNNING = ERROR + "tutorial-already-running";
         }
     }

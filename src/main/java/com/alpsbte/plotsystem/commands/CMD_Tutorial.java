@@ -25,11 +25,13 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialStagesMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
@@ -44,13 +46,17 @@ public class CMD_Tutorial extends BaseCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (sender.hasPermission(getPermission())) {
             if (getPlayer(sender) != null) {
-                if (args.length == 0) {
-                    Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
-                    if (tutorial != null) {
-                        new TutorialStagesMenu(tutorial.getPlayer(), tutorial.getId());
-                    } else {
-                        new TutorialsMenu(getPlayer(sender));
+                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
+                    if (args.length == 0) {
+                        Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
+                        if (tutorial != null) {
+                            new TutorialStagesMenu(tutorial.getPlayer(), tutorial.getId());
+                        } else {
+                            new TutorialsMenu(getPlayer(sender));
+                        }
                     }
+                } else {
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.TUTORIAL_DISABLED)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
@@ -68,7 +74,7 @@ public class CMD_Tutorial extends BaseCommand {
 
     @Override
     public String getDescription() {
-        return "Start the Beginner Tutorial process. Only for test usages.";
+        return "Start and manage your tutorials.";
     }
 
     @Override
