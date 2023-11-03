@@ -107,7 +107,6 @@ public class SelectLanguageMenu extends AbstractMenu {
         getMenu().getSlot(25).setClickHandler((clickPlayer, clickInformation) -> {
             try {
                 LangLibAPI.setPlayerLang(Objects.requireNonNull(getMenuPlayer().getPlayer()),getMenuPlayer().getLocale());
-                Utils.updatePlayerInventorySlots(clickPlayer);
                 reloadMenuAsync();
                 getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
                 getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(

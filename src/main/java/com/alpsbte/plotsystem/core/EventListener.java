@@ -45,6 +45,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import li.cinnazeyy.langlibs.core.event.LanguageChangeEvent;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -311,5 +312,10 @@ public class EventListener extends SpecialBlocks implements Listener {
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent event) {
         Utils.HeadUtils.loadHeadsAsync();
+    }
+
+    @EventHandler
+    public void onLanguageChange(LanguageChangeEvent event) {
+        Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 }
