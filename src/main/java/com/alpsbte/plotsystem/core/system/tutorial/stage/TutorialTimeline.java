@@ -22,32 +22,35 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
+package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
-import com.alpsbte.plotsystem.core.holograms.TutorialTipHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
-import org.bukkit.entity.Player;
 
-import java.util.List;
+import java.util.UUID;
 
-public class RemoveHologramTask extends AbstractTask {
-    private final int tipId;
-    private final List<TutorialTipHologram> holograms;
+public interface TutorialTimeline {
 
-    public RemoveHologramTask(Player player, int tipId, List<TutorialTipHologram> holograms) {
-        super(player);
-        this.tipId = tipId;
-        this.holograms = holograms;
-    }
+    /**
+     * This method is called when a stage task is completed.
+     * If there is no next task, the timeline will be stopped.
+     * @param playerUUID uuid of the player
+     * @param task completed task
+     */
+    void onTaskDone(UUID playerUUID, AbstractTask task);
 
-    @Override
-    public void performTask() {
-        TutorialTipHologram hologram = holograms.stream().filter(holo -> holo.getId().equals(String.valueOf(tipId))).findFirst().orElse(null);
-        if (hologram != null && hologram.getHologram(player.getUniqueId()) != null) {
-            holograms.remove(hologram);
-            hologram.delete();
-        }
+    /**
+     * This method is called when a player assignment is updated.
+     * Assignments are not tasks and do not inherit from AbstractTask.
+     * They are in a task and are used to track the player's progress.
+     * @param playerUUID uuid of the player
+     * @param task task of updated assignment
+     */
+    void onAssignmentUpdate(UUID playerUUID, AbstractTask task);
 
-        setTaskDone();
-    }
+    /**
+     * This method is called when the task timeline is stopped.
+     * Every ongoing task will end and the tip holograms will be removed.
+     * @param playerUUID uuid of the player
+     */
+    void onStopTimeLine(UUID playerUUID);
 }

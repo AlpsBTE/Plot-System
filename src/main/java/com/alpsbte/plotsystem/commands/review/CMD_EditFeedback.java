@@ -49,7 +49,7 @@ public class CMD_EditFeedback extends BaseCommand {
             return true;
         }
 
-        if (args.length <= 1 || AlpsUtils.TryParseInt(args[0]) == null) { sendInfo(sender); return true; }
+        if (args.length <= 1 || AlpsUtils.tryParseInt(args[0]) == null) { sendInfo(sender); return true; }
         int plotID = Integer.parseInt(args[0]);
 
         if(!PlotUtils.plotExists(plotID)) {

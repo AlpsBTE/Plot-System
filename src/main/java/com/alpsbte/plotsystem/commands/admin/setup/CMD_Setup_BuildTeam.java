@@ -185,7 +185,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if build team exists
             try {
@@ -230,7 +230,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if build team exits
             try {
@@ -277,7 +277,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null || AlpsUtils.TryParseInt(args[2]) == null) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null || AlpsUtils.tryParseInt(args[2]) == null) {
                 sendInfo(sender);
                 return;
             }
@@ -326,7 +326,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null || AlpsUtils.TryParseInt(args[2]) == null) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null || AlpsUtils.tryParseInt(args[2]) == null) {
                 sendInfo(sender);
                 return;
             }
@@ -375,7 +375,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {
                 sendInfo(sender);
                 return;
             }
@@ -424,7 +424,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if build team exits
             try {

@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
@@ -38,6 +39,7 @@ public abstract class AbstractStage {
     private final String title;
     private final List<String> messages;
     private final List<String> tasks;
+    private final List<AbstractTutorialHologram> holograms;
 
     protected AbstractStage(Player player, int initWorldIndex) {
         this.player = player;
@@ -46,6 +48,7 @@ public abstract class AbstractStage {
         this.title = setTitle();
         this.messages = setMessages();
         this.tasks = setTasks();
+        this.holograms = setHolograms();
     }
 
     /**
@@ -66,6 +69,12 @@ public abstract class AbstractStage {
      * @return tasks
      */
     protected abstract List<String> setTasks();
+
+    /**
+     * Sets the tutorial holograms for the tutorial stage
+     * @return holograms
+     */
+    protected abstract List<AbstractTutorialHologram> setHolograms();
 
     /**
      * Gets the timeline of the tutorial stage
@@ -91,5 +100,9 @@ public abstract class AbstractStage {
 
     public List<String> getTasks() {
         return tasks;
+    }
+
+    public List<AbstractTutorialHologram> getHolograms() {
+        return holograms;
     }
 }

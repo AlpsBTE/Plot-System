@@ -184,7 +184,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if server exists
             try {
@@ -231,7 +231,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if server exists
             try {
@@ -240,12 +240,12 @@ public class CMD_Setup_Server extends SubCommand {
                     sendInfo(sender);
                     return;
                 }
-                if (!args[2].equalsIgnoreCase("none") && (AlpsUtils.TryParseInt(args[2]) == null || FTPConfiguration.getFTPConfigurations().stream().noneMatch(f -> f.getID() == Integer.parseInt(args[2])))) {
+                if (!args[2].equalsIgnoreCase("none") && (AlpsUtils.tryParseInt(args[2]) == null || FTPConfiguration.getFTPConfigurations().stream().noneMatch(f -> f.getID() == Integer.parseInt(args[2])))) {
                     sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any ftp configurations with ID " + args[2] + "!"));
                     sendInfo(sender);
                     return;
                 }
-                int ftpID = AlpsUtils.TryParseInt(args[2]) != null ? Integer.parseInt(args[2]) : -1;
+                int ftpID = AlpsUtils.tryParseInt(args[2]) != null ? Integer.parseInt(args[2]) : -1;
                 Server.setFTP(Integer.parseInt(args[1]), ftpID);
                 sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
             } catch (SQLException ex) {

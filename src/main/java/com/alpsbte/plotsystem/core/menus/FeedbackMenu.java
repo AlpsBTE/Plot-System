@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -107,7 +107,7 @@ public class FeedbackMenu extends AbstractMenu {
 
         // Set reviewer item
         try {
-            getMenu().getSlot(16).setItem(new ItemBuilder(AlpsUtils.getPlayerHead(review.getReviewer().getUUID()))
+            getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER))
                     .setLore(new LoreBuilder()
                             .addLine(review.getReviewer().getName()).build())

@@ -47,7 +47,7 @@ public class CMD_UndoReview extends BaseCommand {
             sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
         }
 
-        if(args.length == 0 || AlpsUtils.TryParseInt(args[0]) == null) {
+        if(args.length == 0 || AlpsUtils.tryParseInt(args[0]) == null) {
             sendInfo(sender);
             return true;
         }

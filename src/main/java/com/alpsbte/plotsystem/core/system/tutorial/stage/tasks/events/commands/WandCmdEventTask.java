@@ -32,7 +32,8 @@ public class WandCmdEventTask extends AbstractCmdEventTask {
     }
 
     @Override
-    protected void onCommand(String[] args) {
+    protected void onCommand(boolean isValid, String[] args) {
+        if (!isValid) return;
         updateAssignments();
         setTaskDone();
     }

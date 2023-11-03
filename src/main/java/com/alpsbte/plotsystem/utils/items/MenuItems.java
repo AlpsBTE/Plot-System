@@ -24,10 +24,9 @@
 
 package com.alpsbte.plotsystem.utils.items;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Material;
@@ -43,19 +42,19 @@ public class MenuItems {
     }
 
     public static ItemStack backMenuItem(Player player) {
-        return new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.BACK_BUTTON_HEAD))
+        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.BACK_BUTTON.getId()))
                 .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.BACK))
                 .build();
     }
 
     public static ItemStack nextPageItem(Player player) {
-        return new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.NEXT_BUTTON_HEAD))
+        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.NEXT_BUTTON.getId()))
                 .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.NEXT_PAGE))
                 .build();
     }
 
     public static ItemStack previousPageItem(Player player) {
-        return new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.PREVIOUS_BUTTON_HEAD))
+        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PREVIOUS_BUTTON.getId()))
                 .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PREVIOUS_PAGE))
                 .build();
     }
@@ -74,9 +73,8 @@ public class MenuItems {
                 .build();
     }
 
-    public static ItemStack loadingItem(Material material, byte subId, Player player) {
-        return new ItemBuilder(material, 1, subId)
-                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING))
+    public static ItemStack loadingItem(ItemStack itemStack, Player player) {
+        return new ItemBuilder(itemStack).setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING))
                 .build();
     }
 

@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
-import com.alpsbte.alpslib.utils.heads.CustomHeadEventListener;
+import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -36,6 +36,7 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.*;
 import com.alpsbte.plotsystem.utils.PacketListener;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -141,7 +142,7 @@ public class PlotSystem extends JavaPlugin {
         try {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
-            this.getServer().getPluginManager().registerEvents(new CustomHeadEventListener(), this);
+            this.getServer().getPluginManager().registerEvents(new AlpsHeadEventListener(), this);
             if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
                 this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
@@ -178,6 +179,8 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
         }
 
+        if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) Bukkit.getLogger().log(Level.WARNING, "WorldGuardExtraFlags is not enabled!");
+
         // Check for updates
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
@@ -204,6 +207,9 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("");
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not find Protocol-Lib! Consider installing it to avoid issues.");
         }
+
+        // Cache and register custom heads
+        Bukkit.getScheduler().runTaskAsynchronously(this, Utils::registerCustomHeads);
 
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");
@@ -320,6 +326,10 @@ public class PlotSystem extends JavaPlugin {
 
         public static boolean isMultiverseInventoriesEnabled() {
             return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
+        }
+
+        public static boolean isWorldGuardExtraFlagsEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("WorldGuardExtraFlags");
         }
 
         /**

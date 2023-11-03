@@ -57,9 +57,9 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     }
 
     @Override
-    protected void onCommand(String[] args) {
-        // Check if the player has selected valid points
-        if (minPoint == null || maxPoint == null) {
+    protected void onCommand(boolean isValid, String[] args) {
+        // Check if the player has used the correct command and selected valid points
+        if (!isValid || minPoint == null || maxPoint == null) {
             lineCmdAction.performAction(null, null);
             return;
         }

@@ -66,7 +66,7 @@ public class CMD_EditPlot extends BaseCommand {
 
         try {
             Plot plot;
-            if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+            if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
                 if (!PlotUtils.plotExists(plotID)) {
                     sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));

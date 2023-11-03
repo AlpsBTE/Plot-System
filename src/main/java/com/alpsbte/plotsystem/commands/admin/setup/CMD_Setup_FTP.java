@@ -134,7 +134,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 5 || AlpsUtils.TryParseInt(args[2]) == null) { sendInfo(sender); return; }
+            if (args.length <= 5 || AlpsUtils.tryParseInt(args[2]) == null) { sendInfo(sender); return; }
             if (!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("false")) return;
             if (args[1].toLowerCase().startsWith("sftp:") || args[1].toLowerCase().startsWith("ftp:")) {
                 sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Please remove the protocol URL from the host address!"));
@@ -177,7 +177,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if ftp config exists
             try {
@@ -222,7 +222,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if ftp config exists
             try {

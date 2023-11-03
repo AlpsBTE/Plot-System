@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -32,6 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.sk89q.worldedit.WorldEditException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
@@ -216,7 +218,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
         // Set review information item
         String points = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.REVIEW_POINTS);
-        getMenu().getSlot(7).setItem(new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.INFO_BUTTON_HEAD))
+        getMenu().getSlot(7).setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.INFO_BUTTON.getId()))
                 .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.INFORMATION))
                 .setLore(new LoreBuilder()
                         .addLines(AlpsUtils.createMultilineFromString( "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), LoreBuilder.MAX_LINE_LENGTH, LoreBuilder.LINE_BAKER))

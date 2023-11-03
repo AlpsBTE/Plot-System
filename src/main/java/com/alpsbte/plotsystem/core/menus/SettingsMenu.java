@@ -24,11 +24,12 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,7 +52,7 @@ public class SettingsMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set language item
         getMenu().getSlot(11).setItem(
-                new ItemBuilder(Utils.HeadUtils.GLOBE_HEAD.getAsItemStack())
+                new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.GLOBE_HEAD.getId()))
                         .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE))
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_LANGUAGE))
@@ -60,7 +61,7 @@ public class SettingsMenu extends AbstractMenu {
 
         // Set Plot type item
         getMenu().getSlot(15).setItem(
-                new ItemBuilder(Utils.HeadUtils.PLOT_TYPE_HEAD.getAsItemStack())
+                new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PLOT_TYPE_BUTTON.getId()))
                         .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_PLOT_TYPE))

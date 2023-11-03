@@ -49,6 +49,7 @@ import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot plot;
     private TutorialPlotGenerator plotGenerator;
+    private boolean isPasteSchematic;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) throws SQLException {
         // TODO: Performance improvements base constructor
@@ -75,14 +76,29 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPasteSchematicOutlines(UUID playerUUID, int schematicId) {
+    public void setStage(int stageId) {
+        isPasteSchematic = true;
+        super.setStage(stageId);
+    }
+
+    @Override
+    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         try {
-            if (currentWorldIndex == 1 && plotGenerator != null) {
+            if (plotGenerator != null && plot.getWorld().isWorldGenerated() && plot.getWorld().isWorldLoaded()) {
                 plotGenerator.generateOutlines(schematicId);
             }
         } catch (SQLException | IOException | WorldEditException ex) {
             onException(ex);
+        }
+    }
+
+    @Override
+    public void onPlotPermissionChange(UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
+        if (plotGenerator != null) {
+            plotGenerator.setBuildingEnabled(isBuildingAllowed);
+            plotGenerator.setWorldEditEnabled(isWorldEditAllowed);
         }
     }
 
@@ -95,7 +111,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     protected void prepareStage(PrepareStageAction action) {
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
             // paste initial schematic outlines of stage
-            onPasteSchematicOutlines(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+            if (isPasteSchematic) onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+            isPasteSchematic = false;
 
             // Send a new stage unlocked message to the player
             sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
@@ -123,8 +140,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         try {
             if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
-                plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(getPlayer().getUniqueId()));
-                onPasteSchematicOutlines(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+                plotGenerator = new TutorialPlotGenerator(plot, Builder.byUUID(playerUUID));
+                onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
             }
             super.onSwitchWorld(playerUUID, tutorialWorldIndex);
         } catch (SQLException ex) {

@@ -132,7 +132,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 3 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 3 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             if (args[2].length() > 45) {
                 sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Country name cannot be longer than 45 characters!"));
@@ -183,7 +183,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.TryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
 
             // Check if country exists
             try {
@@ -228,7 +228,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.TryParseInt(args[1]) == null || AlpsUtils.TryParseInt(args[2]) == null) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null || AlpsUtils.tryParseInt(args[2]) == null) {
                 sendInfo(sender);
                 return;
             }

@@ -26,11 +26,11 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface Tutorial {
@@ -64,6 +64,12 @@ public interface Tutorial {
      * @return NPC
      */
     AbstractNpc getNPC();
+
+    /**
+     * Gets a list of all active holograms from the current tutorial stage.
+     * @return list of active tutorial holograms
+     */
+    List<AbstractTutorialHologram> getActiveHolograms();
 
     /**
      * Gets the current tutorial world the player is in

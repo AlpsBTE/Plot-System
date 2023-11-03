@@ -230,7 +230,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     @Override
     public List<BlockVector2> getOutline() throws SQLException, IOException {
-        String plotOutlines = tutorialConfig.getString(TutorialPaths.PLOT_OUTLINES);
+        String plotOutlines = tutorialConfig.getString(TutorialPaths.Beginner.PLOT_OUTLINES);
         return getOutlinePoints(plotOutlines);
     }
 

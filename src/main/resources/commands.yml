@@ -14,11 +14,6 @@ editplot-enabled: false
 blocked-commands-builders:
   - /cmd1
 
-# Allowed commands for plot visitors on plots (non plot owner and plot members)
-# NOTE: All Plot-System commands are always allowed to use
-allowed-commands-non-builders:
-  - /cmd1
-
 
 # NOTE: Do not change
-config-version: 1.0
+config-version: 1.1

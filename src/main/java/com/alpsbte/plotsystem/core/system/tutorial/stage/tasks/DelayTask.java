@@ -28,14 +28,14 @@ import com.alpsbte.plotsystem.PlotSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class WaitTask extends AbstractTask {
+public class DelayTask extends AbstractTask {
     private long delay;
 
-    public WaitTask(Player player) {
+    public DelayTask(Player player) {
         super(player);
     }
 
-    public WaitTask(Player player, long delay) {
+    public DelayTask(Player player, long delay) {
         this(player);
         this.delay = delay;
     }
@@ -47,6 +47,6 @@ public class WaitTask extends AbstractTask {
 
     @Override
     public String toString() {
-        return "WaitTask";
+        return "DelayTask";
     }
 }

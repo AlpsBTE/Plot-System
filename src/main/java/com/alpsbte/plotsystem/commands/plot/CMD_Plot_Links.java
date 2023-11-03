@@ -50,7 +50,7 @@ public class CMD_Plot_Links extends SubCommand {
     public void onCommand(CommandSender sender, String[] args) {
         try {
             if (getPlayer(sender) != null) {
-                if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotUtils.plotExists(plotID)) {
                         PlotUtils.ChatFormatting.sendLinkMessages(new Plot(plotID), getPlayer(sender));

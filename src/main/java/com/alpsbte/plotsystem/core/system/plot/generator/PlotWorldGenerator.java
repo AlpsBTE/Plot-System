@@ -40,6 +40,7 @@ import org.bukkit.*;
 import org.bukkit.generator.ChunkGenerator;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -111,10 +112,10 @@ public class PlotWorldGenerator {
 
     protected void createGlobalProtection() throws StorageException {
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(Bukkit.getWorld(worldName)));
+        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(Objects.requireNonNull(Bukkit.getWorld(worldName))));
 
         if (regionManager != null) {
-            // Create protected region for world
+            // Create a protected region for the plot world
             String regionName = "__global__";
             GlobalProtectedRegion globalRegion = new GlobalProtectedRegion(regionName);
             globalRegion.setFlag(Flags.ENTRY, StateFlag.State.DENY);
@@ -123,6 +124,8 @@ public class PlotWorldGenerator {
             globalRegion.setFlag(Flags.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.ALL);
             globalRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
             globalRegion.setFlag(Flags.TNT.getRegionGroupFlag(), RegionGroup.ALL);
+            if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+                globalRegion.setFlag(new StateFlag("worldedit", true, RegionGroup.ALL), StateFlag.State.DENY);
 
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
             regionManager.addRegion(globalRegion);

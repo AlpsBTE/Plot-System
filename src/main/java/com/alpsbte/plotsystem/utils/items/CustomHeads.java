@@ -22,24 +22,32 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.utils.items;
 
-import java.util.UUID;
+public enum CustomHeads {
+    WHITE_CONCRETE("8614"),
+    GREEN_CONCRETE("8621"),
+    YELLOW_CONCRETE("8613"),
+    RED_CONCRETE("8616"),
+    WORKBENCH("24180"),
+    ADD_BUTTON("9237"),
+    REMOVE_BUTTON("9243"),
+    BACK_BUTTON("9226"),
+    NEXT_BUTTON("9223"),
+    PREVIOUS_BUTTON("9226"),
+    INFO_BUTTON("46488"),
+    GLOBE_HEAD("49973"),
+    PLOT_TYPE_BUTTON("4159"),
+    FOCUS_MODE_BUTTON("38199"),
+    CITY_INSPIRATION_MODE_BUTTON("38094");
 
-public interface PlotTutorial extends Tutorial {
+    final String id;
 
-    /**
-     * This method is called when a schematic outline in the plot world is pasted.
-     * @param playerUUID uuid of the player
-     * @param schematicId The schematic id
-     */
-    void onPlotSchematicPaste(UUID playerUUID, int schematicId);
+    CustomHeads(String id){
+        this.id = id;
+    }
 
-    /**
-     * This method is called when the building and WorldEdit permissions on the plot need to be changed.
-     * @param playerUUID uuid of the player
-     * @param isBuildingAllowed true if building is enabled, otherwise false
-     * @param isWorldEditAllowed true if WorldEdit is enabled, otherwise false
-     */
-    void onPlotPermissionChange(UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed);
+    public String getId() {
+        return id;
+    }
 }

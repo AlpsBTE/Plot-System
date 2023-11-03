@@ -24,13 +24,17 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 
@@ -38,6 +42,8 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
     private final BiTaskAction<BlockVector3, Boolean> onTeleportAction;
     private final List<BlockVector3> teleportPoints;
     private final int offsetRange;
+
+    private BukkitTask particleTask;
 
     public TeleportPointEventTask(Player player, String assignmentMessage, List<BlockVector3> teleportPoints, int offsetRange, BiTaskAction<BlockVector3, Boolean> onTeleportAction) {
         super(player, assignmentMessage, teleportPoints.size());
@@ -49,6 +55,15 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
     @Override
     public void performTask() {
         TutorialEventListener.runningEventTasks.put(player.getUniqueId().toString(), this);
+
+        particleTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (BlockVector3 blockVector : teleportPoints)
+                    player.getWorld().spawnParticle(Particle.FLAME, blockVector.getBlockX() + 0.5, blockVector.getBlockY() + 1.5,
+                            blockVector.getBlockZ() + 0.5, 1, 0, 0, 0, 0);
+            }
+        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 10);
     }
 
     @Override
@@ -80,6 +95,12 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
         updateAssignments();
         onTeleportAction.performAction(teleportPoint, true);
         if (teleportPoints.isEmpty()) setTaskDone();
+    }
+
+    @Override
+    public void setTaskDone() {
+        particleTask.cancel();
+        super.setTaskDone();
     }
 
     @Override

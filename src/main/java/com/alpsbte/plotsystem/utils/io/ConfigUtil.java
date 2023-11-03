@@ -41,7 +41,7 @@ public class ConfigUtil {
         if (configUtilInstance == null) {
             configUtilInstance = new ConfigurationUtil(new ConfigurationUtil.ConfigFile[]{
                     new ConfigurationUtil.ConfigFile(Paths.get("config.yml"), 2.1, true),
-                    new ConfigurationUtil.ConfigFile(Paths.get("commands.yml"), 1.0, false),
+                    new ConfigurationUtil.ConfigFile(Paths.get("commands.yml"), 1.1, false),
             });
         }
 

@@ -24,11 +24,12 @@
 
 package com.alpsbte.plotsystem.utils;
 
-import com.alpsbte.alpslib.utils.heads.CustomHead;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import org.bukkit.*;
@@ -133,50 +134,10 @@ public class Utils {
     }
 
 
-    public static class HeadUtils {
-        public static CustomHead WHITE_CONCRETE_HEAD;
-        public static CustomHead GREEN_CONCRETE_HEAD;
-        public static CustomHead YELLOW_CONCRETE_HEAD;
-        public static CustomHead RED_CONCRETE_HEAD;
-        public static CustomHead WHITE_P_HEAD;
-        public static CustomHead TUTORIAL_HEAD;
 
-        public static CustomHead ADD_BUTTON_HEAD;
-        public static CustomHead REMOVE_BUTTON_HEAD;
-        public static CustomHead BACK_BUTTON_HEAD;
-        public static CustomHead NEXT_BUTTON_HEAD;
-        public static CustomHead PREVIOUS_BUTTON_HEAD;
-        public static CustomHead INFO_BUTTON_HEAD;
-
-        public static CustomHead GLOBE_HEAD;
-        public static CustomHead PLOT_TYPE_HEAD;
-        public static CustomHead FOCUS_MODE_HEAD;
-        public static CustomHead CITY_INSPIRATION_MODE_HEAD;
-
-        public static void loadHeadsAsync() {
-            Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-                WHITE_CONCRETE_HEAD = new CustomHead("8614");
-                GREEN_CONCRETE_HEAD = new CustomHead("8621");
-                YELLOW_CONCRETE_HEAD = new CustomHead("8613");
-                RED_CONCRETE_HEAD = new CustomHead("8616");
-                WHITE_P_HEAD = new CustomHead("9282");
-                TUTORIAL_HEAD = new CustomHead("24180");
-
-                ADD_BUTTON_HEAD = new CustomHead("9237");
-                REMOVE_BUTTON_HEAD = new CustomHead("9243");
-                BACK_BUTTON_HEAD = new CustomHead("9226");
-                NEXT_BUTTON_HEAD = new CustomHead("9223");
-                PREVIOUS_BUTTON_HEAD = new CustomHead("9226");
-                INFO_BUTTON_HEAD = new CustomHead("46488");
-
-                GLOBE_HEAD = new CustomHead("49973");
-                PLOT_TYPE_HEAD = new CustomHead("4159");
-                FOCUS_MODE_HEAD = new CustomHead("38199");
-                CITY_INSPIRATION_MODE_HEAD = new CustomHead("38094");
-            });
-        }
+    public static void registerCustomHeads() {
+        for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
-
 
     public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){
         double p1X = point1.getX();

@@ -54,7 +54,7 @@ public class CMD_Plot_Members extends SubCommand {
             if (getPlayer(sender) != null) {
                 Plot plot;
                 // Get Plot
-                if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                     //plot members <id>
                     int plotID = Integer.parseInt(args[0]);
                     if (PlotUtils.plotExists(plotID)) {

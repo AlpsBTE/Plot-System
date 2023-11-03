@@ -59,7 +59,7 @@ public class ChatEventTask extends AbstractTask implements EventTask {
             chatEvent.setCancelled(true);
 
             String message = chatEvent.getMessage();
-            if (AlpsUtils.TryParseInt(message) != null) {
+            if (AlpsUtils.tryParseInt(message) != null) {
                 int value = Integer.parseInt(message);
                 if (value >= expectedValue - offset && value <= expectedValue + offset) {
                     onChatAction.performAction(true, attemptsLeft);

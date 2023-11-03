@@ -24,22 +24,29 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class TutorialPlotGenerator extends AbstractPlotGenerator {
+    private boolean buildingEnabled = false;
+    private boolean worldEditEnabled = false;
+
     public TutorialPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
         super(plot, builder, PlotType.TUTORIAL);
     }
@@ -55,12 +62,39 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected void setBuildRegionPermissions(ProtectedRegion region) {
-        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
+        region.setFlag(Flags.BUILD, isBuildingEnabled() ? StateFlag.State.ALLOW : StateFlag.State.DENY);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+
+        if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+            region.setFlag(new StateFlag("worldedit", false, RegionGroup.OWNERS), isWorldEditEnabled() ? StateFlag.State.ALLOW : StateFlag.State.DENY);
+
+        try {
+            Objects.requireNonNull(WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world.getBukkitWorld()))).save();
+        } catch (StorageException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
         super.onComplete(failed, false);
+    }
+
+    public boolean isBuildingEnabled() {
+        return buildingEnabled;
+    }
+
+    public void setBuildingEnabled(boolean buildingEnabled) {
+        this.buildingEnabled = buildingEnabled;
+        setBuildRegionPermissions(world.getProtectedBuildRegion());
+    }
+
+    public boolean isWorldEditEnabled() {
+        return worldEditEnabled;
+    }
+
+    public void setWorldEditEnabled(boolean worldEditEnabled) {
+        this.worldEditEnabled = worldEditEnabled;
+        setBuildRegionPermissions(world.getProtectedBuildRegion());
     }
 }
