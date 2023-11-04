@@ -325,7 +325,7 @@ tutorials:
         - 'Use the command <gold>{0}</gold> to teleport to the location in-game. <gold>{1}</gold> on one of the edges of the building to copy the coordinates.'
         - '{2}'
         - 'To continue teleport to the marked points. Try again!'
-        - 'Switch to <gold>Satellite</gold> view in Google Maps to show the building in 3D.<newline><newline>Click on <gold>Layers</gold> at the bottom left of the map. If no 3D buildings appear, enable the <gold>Globe View</gold> under "More".'
+        - 'Switch to Satellite view in Google Maps to show the building in 3D.%newline%%newline%Click on Layers at the bottom left of the map. If no 3D buildings appear, enable the Globe View under "More".'
       stage-3-tasks:
         - 'Teleport to all <gold>{0}</gold> edges of the building by using <gold>{1}</gold>.'
     stage-4:
@@ -364,8 +364,8 @@ tutorials:
         - 'Teleport to at least one point of the roof ridge to connect the point(s) with the facade.'
         - 'Use different types of blocks and colours for the shells to make it easier to separate the building into sections.'
         - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
-        - 'Use the WorldEdit command <gold>{0}</gold> to raise the walls quickly and easily.'
-        - 'Fill the roof by hand or use the WorldEdit command <gold>{1}</gold>. Alternatively use the command <gold>{2}</gold> to switch the selection for larger and more complex roofs.'
+        - 'Use the WorldEdit command {0} to raise the walls quickly and easily.'
+        - 'Fill the roof by hand or use the WorldEdit command {1}. Alternatively use the command {2} to switch the selection for larger and more complex roofs.'
         - 'Always check the height of the windows and doors so that it matches with the facade.'
       stage-7-tasks:
         - 'Read all tips on the plot and mark them as read.'
@@ -385,7 +385,7 @@ tutorials:
       stage-9-messages:
         - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
         - 'Use Google Street View or images to make the right block choice, as aerial images are sometimes not very accurate.'
-        - 'Use the WorldEdit command <gold>{0}</gold> to simply replace the shell with your pattern.'
+        - 'Use the WorldEdit command {0} to simply replace the shell with your pattern.'
         - 'Try to use block mixes and gradients for the walls and roof so that the building looks more realistic and stand out.'
       stage-9-tasks:
         - 'Read all tips on the plot and mark them as read.'
@@ -393,7 +393,7 @@ tutorials:
       stage-10-title: 'Detailing'
       stage-10-messages:
         - 'Detailing is one of the most important processes as it makes the building distinctive and be unique.'
-        - 'Add custom banners and custom heads to your builds. Use the command <gold>{0}</gold> to get a variety of custom heads.'
+        - 'Add custom banners and custom heads to your builds. Use the command {0} to get a variety of custom heads.'
         - 'There are many ways to decorate your buildings. Always pay attention to details on the facade and roofs such as chimneys, windows and gutters.'
         - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
         - 'Click here to learn more about the project.'

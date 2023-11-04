@@ -195,6 +195,7 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
+        LeaderboardManager.initLeaderboards();
         PlotUtils.checkPlotsForLastActivity();
         PlotUtils.syncPlotSchematicFiles();
         Review.checkReviewerFeedbackList();

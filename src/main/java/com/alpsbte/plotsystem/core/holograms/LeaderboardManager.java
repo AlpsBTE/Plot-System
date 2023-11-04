@@ -35,16 +35,18 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public final class LeaderboardManager {
     private LeaderboardManager() {}
-    private static final List<HolographicDisplay> leaderboards = Arrays.asList(
-            new ScoreLeaderboard(),
-            new PlotsLeaderboard()
-    );
+    private static final List<HolographicDisplay> leaderboards = new ArrayList<>();
+
+    public static void initLeaderboards() {
+        leaderboards.add(new ScoreLeaderboard());
+        leaderboards.add(new PlotsLeaderboard());
+    }
 
     public static void reloadLeaderboards() {
         if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
