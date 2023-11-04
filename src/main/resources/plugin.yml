@@ -8,9 +8,6 @@ depend: [LangLibs]
 
 
 commands:
-  spawn:
-    description: Teleport to the spawn point.
-    usage: /spawn
   companion:
     description: Opens the Companion menu.
     usage: /companion
