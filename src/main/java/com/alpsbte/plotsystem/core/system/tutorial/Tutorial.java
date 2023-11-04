@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -96,6 +97,12 @@ public interface Tutorial {
      * @param stageId stage id, cannot be negative
      */
     void saveTutorial(int stageId);
+
+    /**
+     * Gets the individual tutorial config
+     * @return tutorial config
+     */
+    FileConfiguration getConfig();
 
     /**
      * This method is called when the player completes a stage.

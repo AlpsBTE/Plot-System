@@ -135,7 +135,7 @@ public class OnePlotWorld extends PlotWorld {
 
                 if (getPlot() != null) {
                     if (getPlot().getPlotType() != PlotType.TUTORIAL) {
-                        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+                        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
                         PlotUtils.ChatFormatting.sendLinkMessages((Plot) getPlot(), player);
                     }
                     Utils.updatePlayerInventorySlots(player);

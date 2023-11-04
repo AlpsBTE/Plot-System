@@ -50,7 +50,7 @@ public class FeedbackMenu extends AbstractMenu {
     private final Plot plot;
 
     public FeedbackMenu(Player player, int plotID) throws SQLException {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.FEEDBACK, String.valueOf(plotID)), player);
+        super(3, LangUtil.getInstance().getString(player, LangPaths.MenuTitle.FEEDBACK, String.valueOf(plotID)), player);
         this.plot = new Plot(plotID);
     }
 
@@ -75,16 +75,16 @@ public class FeedbackMenu extends AbstractMenu {
         // Set score item
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE))
+                    .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.SCORE))
                     .setLore(new LoreBuilder()
-                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
+                            .addLines(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
                                     "",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
                                     "",
-                                    plot.isRejected() ? "§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED) : "§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
+                                    plot.isRejected() ? "§c§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.REJECTED) : "§a§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.ACCEPTED))
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -95,7 +95,7 @@ public class FeedbackMenu extends AbstractMenu {
         // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
+                    .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.FEEDBACK))
                     .setLore(new LoreBuilder()
                             .addLines(plot.getReview().getFeedback())
                             .build())
@@ -108,7 +108,7 @@ public class FeedbackMenu extends AbstractMenu {
         // Set reviewer item
         try {
             getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER))
+                    .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Review.REVIEWER))
                     .setLore(new LoreBuilder()
                             .addLine(review.getReviewer().getName()).build())
                     .build());

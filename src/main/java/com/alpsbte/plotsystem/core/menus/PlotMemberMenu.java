@@ -49,11 +49,11 @@ import java.util.logging.Level;
 public class PlotMemberMenu extends AbstractMenu {
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
+        super(3, LangUtil.getInstance().getString(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().getString(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
         this.plot = plot;
     }
 
@@ -80,10 +80,10 @@ public class PlotMemberMenu extends AbstractMenu {
         ItemStack whitePlus = AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId());
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
+                        .setName("§6§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
+                                .addLines(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
                                         "",
-                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
+                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
                         .build());
 
         // Set back item
@@ -98,7 +98,7 @@ public class PlotMemberMenu extends AbstractMenu {
         try {
             getMenu().getSlot(10)
                     .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
+                            .setName("§6§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
@@ -114,11 +114,11 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(i - 12);
                 getMenu().getSlot(i)
                         .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
-                                .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER))
+                                .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.MEMBER))
                                 .setLore(new LoreBuilder()
                                         .addLines(builder.getName(),
                                                 "",
-                                                Utils.ChatUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
+                                                Utils.ChatUtils.getActionFormat(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
                                         .build())
                                 .build());
             }
@@ -137,7 +137,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(itemSlot-12);
                     try {
                         plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }

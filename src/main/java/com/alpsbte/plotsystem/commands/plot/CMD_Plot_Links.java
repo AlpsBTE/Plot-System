@@ -55,7 +55,7 @@ public class CMD_Plot_Links extends SubCommand {
                     if (PlotUtils.plotExists(plotID)) {
                         PlotUtils.ChatFormatting.sendLinkMessages(new Plot(plotID), getPlayer(sender));
                     } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     }
                 } else if (PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
                     PlotUtils.ChatFormatting.sendLinkMessages(PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed), getPlayer(sender));

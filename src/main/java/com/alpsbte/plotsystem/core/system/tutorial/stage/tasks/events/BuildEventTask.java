@@ -27,7 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
-import com.sk89q.worldedit.math.BlockVector3;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -36,16 +36,16 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
-import java.util.logging.Level;
 
 public class BuildEventTask extends AbstractTask implements EventTask {
-    private final BiTaskAction<BlockVector3, Boolean> onPlacedBlockAction;
-    private final Map<BlockVector3, BlockData> blocksToBuild;
+    private final BiTaskAction<Vector, Boolean> onPlacedBlockAction;
+    private final Map<Vector, BlockData> blocksToBuild;
     private BukkitTask particleTask;
 
-    public BuildEventTask(Player player, String assignmentMessage, Map<BlockVector3, BlockData> blocksToBuild, BiTaskAction<BlockVector3, Boolean> onPlacedBlockAction) {
+    public BuildEventTask(Player player, Component assignmentMessage, Map<Vector, BlockData> blocksToBuild, BiTaskAction<Vector, Boolean> onPlacedBlockAction) {
         super(player, assignmentMessage, blocksToBuild.size());
         this.blocksToBuild = blocksToBuild;
         this.onPlacedBlockAction = onPlacedBlockAction;
@@ -58,7 +58,7 @@ public class BuildEventTask extends AbstractTask implements EventTask {
         particleTask = new BukkitRunnable() {
             @Override
             public void run() {
-                for (BlockVector3 blockVector : blocksToBuild.keySet())
+                for (Vector blockVector : blocksToBuild.keySet())
                     player.getWorld().spawnParticle(Particle.FLAME, blockVector.getBlockX() + 0.5, blockVector.getBlockY() + 0.5,
                             blockVector.getBlockZ() + 0.5, 1, 0, 0, 0, 0);
             }
@@ -71,9 +71,9 @@ public class BuildEventTask extends AbstractTask implements EventTask {
             BlockPlaceEvent buildEvent = (BlockPlaceEvent) event;
             if (!buildEvent.canBuild()) return;
             Block placedBlock = buildEvent.getBlockPlaced();
-            BlockVector3 placedBlockVector = BlockVector3.at(placedBlock.getX(), placedBlock.getY(), placedBlock.getZ());
+            Vector placedBlockVector = new Vector(placedBlock.getX(), placedBlock.getY(), placedBlock.getZ());
 
-            for (BlockVector3 blockVector : blocksToBuild.keySet()) {
+            for (Vector blockVector : blocksToBuild.keySet()) {
                 if (blockVector.equals(placedBlockVector)) {
                     if (placedBlock.getBlockData().matches(blocksToBuild.get(blockVector))) {
                         removeBlockToBuild(blockVector);
@@ -87,7 +87,7 @@ public class BuildEventTask extends AbstractTask implements EventTask {
         }
     }
 
-    private void removeBlockToBuild(BlockVector3 blockVector) {
+    private void removeBlockToBuild(Vector blockVector) {
         blocksToBuild.remove(blockVector);
 
         updateAssignments();

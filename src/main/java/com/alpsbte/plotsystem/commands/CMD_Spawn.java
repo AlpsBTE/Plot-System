@@ -39,7 +39,7 @@ public class CMD_Spawn extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
@@ -51,7 +51,7 @@ public class CMD_Spawn extends BaseCommand {
         Player player = (Player) sender;
 
         player.teleport(Utils.getSpawnLocation());
-        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
+        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Info.TELEPORTING_SPAWN)));
         player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND,1,1);
         return true;
     }

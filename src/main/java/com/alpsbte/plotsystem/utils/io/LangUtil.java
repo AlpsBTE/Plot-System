@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.utils.io;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.Utils.ChatUtils;
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 import li.cinnazeyy.langlibs.core.Language;
 import li.cinnazeyy.langlibs.core.file.LanguageFile;
 import li.cinnazeyy.langlibs.core.language.LangLibAPI;
@@ -57,7 +58,7 @@ public class LangUtil extends LanguageUtil {
 
     public void broadcast(String key, String... args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(ChatUtils.getInfoMessageFormat(get(player, key, args)));
+            player.sendMessage(ChatUtils.getInfoMessageFormat(getString(player, key, args)));
         }
     }
 

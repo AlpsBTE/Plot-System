@@ -41,7 +41,7 @@ public class SettingsMenu extends AbstractMenu {
     private Consumer<Player> onBack = (player) -> player.performCommand("companion");
 
     public SettingsMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), player);
+        super(3, LangUtil.getInstance().getString(player, LangPaths.MenuTitle.SETTINGS), player);
     }
     public SettingsMenu(Player player, Consumer<Player> onBack) {
         this(player);
@@ -53,18 +53,18 @@ public class SettingsMenu extends AbstractMenu {
         // Set language item
         getMenu().getSlot(11).setItem(
                 new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.GLOBE_HEAD.getId()))
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE))
+                        .setName("§6§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE))
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_LANGUAGE))
+                                .addLine(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.SELECT_LANGUAGE))
                                 .build())
                         .build());
 
         // Set Plot type item
         getMenu().getSlot(15).setItem(
                 new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PLOT_TYPE_BUTTON.getId()))
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
+                        .setName("§6§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_PLOT_TYPE))
+                                .addLine(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.SELECT_PLOT_TYPE))
                                 .build())
                         .build());
 

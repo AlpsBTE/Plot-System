@@ -47,6 +47,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -63,6 +64,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+
 public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "4.0";
 
@@ -70,11 +74,6 @@ public class PlotSystem extends JavaPlugin {
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
-
-    static {
-        // Set tutorials
-        AbstractTutorial.setTutorials(Collections.singletonList(BeginnerTutorial.class));
-    }
 
     @Override
     public void onEnable() {
@@ -210,6 +209,13 @@ public class PlotSystem extends JavaPlugin {
 
         // Cache and register custom heads
         Bukkit.getScheduler().runTaskAsynchronously(this, Utils::registerCustomHeads);
+
+        // Register tutorials
+        if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
+            TutorialUtils.CHAT_TASK_PREFIX_COMPONENT = text("[", DARK_GRAY)
+                    .append(text("PS", NamedTextColor.GOLD).append(text("] ", DARK_GRAY)));
+            AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));
+        }
 
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage("");

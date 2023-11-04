@@ -54,7 +54,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     private Country filteredCountry = null;
 
     public ReviewMenu(Player player) throws SQLException {
-        super(6, 4, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
+        super(6, 4, LangUtil.getInstance().getString(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
     @Override
@@ -85,20 +85,20 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             try {
                 Plot plot = plots.get(i);
                 List<String> lines = new ArrayList<>();
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
+                lines.add("§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
                 lines.add("");
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
-                if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
+                lines.add("§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
+                if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
                             try { return m.getName(); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex); }
                             return "";
                         }).collect(Collectors.joining(", "))
                 );
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
+                lines.add("§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
+                lines.add("§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
+                lines.add("§7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
                 getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
-                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
+                        .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {
@@ -122,7 +122,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     }
 
                     if (plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                        getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+                        getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                         return;
                     }
 
@@ -212,7 +212,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     private ItemStack getFilterItem(Player langPlayer) {
         LoreBuilder loreBuilder = new LoreBuilder();
-        loreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.FILTER));
+        loreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().getString(langPlayer, LangPaths.MenuDescription.FILTER));
         loreBuilder.emptyLine();
 
         countries.forEach(c -> {
@@ -232,7 +232,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.BOOK, 1)
-                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
+                .setName("§b§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.getInstance().getString(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
                 .setEnchanted(true)
                 .build();
     }

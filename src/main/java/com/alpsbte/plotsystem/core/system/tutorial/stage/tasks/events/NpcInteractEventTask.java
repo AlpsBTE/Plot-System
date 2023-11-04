@@ -28,13 +28,14 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public class NpcInteractEventTask extends AbstractTask implements EventTask {
     private final String npcId;
 
-    public NpcInteractEventTask(Player player, String npcId, String assignmentMessage) {
+    public NpcInteractEventTask(Player player, String npcId, Component assignmentMessage) {
         super(player, assignmentMessage, 1);
         this.npcId = npcId;
     }

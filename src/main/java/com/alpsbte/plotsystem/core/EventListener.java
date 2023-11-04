@@ -299,19 +299,14 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Review review = Review.awaitReviewerFeedbackList.get(playerUUID).getReview();
                 review.setFeedback(feedback);
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
             } else {
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
+                event.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
             }
         }
-    }
-
-    @EventHandler
-    public void onDatabaseLoad(DatabaseLoadEvent event) {
-        Utils.HeadUtils.loadHeadsAsync();
     }
 
     @EventHandler

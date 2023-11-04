@@ -67,8 +67,8 @@ public enum Continent {
         List<Country> countries = Country.getCountries(this);
 
         return new ItemBuilder(Material.COMPASS)
-                .setName("§e§l" + LangUtil.getInstance().get(player, langPath))
-                .setLore(new LoreBuilder().addLines("§6" + countries.size() + " §7" + LangUtil.getInstance().get(player, LangPaths.Country.COUNTRIES)).build())
+                .setName("§e§l" + LangUtil.getInstance().getString(player, langPath))
+                .setLore(new LoreBuilder().addLines("§6" + countries.size() + " §7" + LangUtil.getInstance().getString(player, LangPaths.Country.COUNTRIES)).build())
                 .build();
     }
 }

@@ -25,16 +25,6 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class TutorialPaths {
-    public static final String TUTORIAL_ID = "tutorial-id";
-    public static final String TUTORIAL_ITEM_NAME = "tutorial-item-name";
-    public static final String TUTORIAL_STAGES = "tutorial-stages";
-    public static final String TUTORIAL_WORLDS = "tutorial-worlds";
-    public static final String TUTORIAL_WORLDS_SPAWN_PLAYER = "spawn-player";
-    public static final String TUTORIAL_WORLDS_SPAWN_NPC = "spawn-npc";
-    public static final String TIP_HOLOGRAM_COORDINATES = "tip-hologram-coordinates";
-    public static final String DOCUMENTATION_LINKS = "documentation-links";
-
-
     public static final class Beginner {
         private static final String BEGINNER = "beginner.";
         public static final String PLOT_OUTLINES = BEGINNER + "plot-outlines";

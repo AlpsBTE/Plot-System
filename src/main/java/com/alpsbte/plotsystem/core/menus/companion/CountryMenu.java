@@ -60,7 +60,7 @@ public class CountryMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CountryMenu(Player player, Continent continent) {
-        super(6, LangUtil.getInstance().get(player, continent.langPath) + " -> " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY) , player);
+        super(6, LangUtil.getInstance().getString(player, continent.langPath) + " -> " + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY) , player);
         selectedContinent = continent;
     }
 
@@ -74,8 +74,8 @@ public class CountryMenu extends AbstractMenu {
         // Set navigator item
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.NAVIGATOR)).setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
+                        .setName("§6§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.NAVIGATOR)).setLore(new LoreBuilder()
+                                .addLine(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
                         .build());
 
         // Set plots difficulty item head
@@ -179,14 +179,14 @@ public class CountryMenu extends AbstractMenu {
                     .setName("§b§l" + country.getName())
                     .setLore(new LoreBuilder()
                             .addLines(
-                                    "§6" + cities.size() + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.CITIES),
+                                    "§6" + cities.size() + " §7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.CityProject.CITIES),
                                     "",
-                                    "§6" + plotsOpen + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_OPEN),
+                                    "§6" + plotsOpen + " §7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.CityProject.PROJECT_OPEN),
                                     "§8---------------------",
-                                    "§6" + plotsInProgress + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS),
-                                    "§6" + plotsCompleted + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED),
+                                    "§6" + plotsInProgress + " §7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS),
+                                    "§6" + plotsCompleted + " §7" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED),
                                     "",
-                                    (plotsUnclaimed > 0 ? "§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_PLOTS_AVAILABLE) : "§f§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE))
+                                    (plotsUnclaimed > 0 ? "§a§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.CityProject.PROJECT_PLOTS_AVAILABLE) : "§f§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE))
                             )
                             .build())
                     .build());

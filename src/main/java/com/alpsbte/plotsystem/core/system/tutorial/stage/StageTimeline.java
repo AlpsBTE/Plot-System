@@ -36,12 +36,15 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.CreateHol
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.DeleteHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.sk89q.worldedit.math.BlockVector3;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -141,8 +144,8 @@ public class StageTimeline implements TutorialTimeline {
      * This method updates the player's action bar with the current task's assignment message.
      */
     private void updatePlayerActionBar() {
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                TextComponent.fromLegacyText(GRAY + " [" + currentTask.getCompletedAssignments() + "/" + currentTask.getTotalAssignments() + "] " + currentTask.getAssignmentMessage()));
+        player.sendActionBar(Component.text("[" + currentTask.getCompletedAssignments() + "/"
+                + currentTask.getTotalAssignments() + "] ", NamedTextColor.GRAY).append(currentTask.getAssignmentMessage()));
     }
 
     /**
@@ -160,7 +163,7 @@ public class StageTimeline implements TutorialTimeline {
      * @param soundEffect the sound effect to be played, can be null
      * @param waitToContinue whether the timeline should wait for the player to continue
      */
-    public StageTimeline sendChatMessage(String message, Sound soundEffect, boolean waitToContinue) {
+    public StageTimeline sendChatMessage(Component message, Sound soundEffect, boolean waitToContinue) {
         return sendChatMessage(new Object[] {message} , soundEffect, waitToContinue);
     }
 
@@ -194,7 +197,7 @@ public class StageTimeline implements TutorialTimeline {
      * @param offsetRange the range in which the player can teleport to the teleport point
      * @param onTeleportAction the action to be performed when the player teleports to a teleport point
      */
-    public StageTimeline addTeleportEvent(String assignmentMessage, List<BlockVector3> teleportPoint, int offsetRange, AbstractTask.BiTaskAction<BlockVector3, Boolean> onTeleportAction) {
+    public StageTimeline addTeleportEvent(Component assignmentMessage, List<Vector> teleportPoint, int offsetRange, AbstractTask.BiTaskAction<Vector, Boolean> onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, assignmentMessage, teleportPoint, offsetRange, onTeleportAction));
         return this;
     }
@@ -207,7 +210,7 @@ public class StageTimeline implements TutorialTimeline {
      * @param maxAttempts the maximum amount of attempts the player has to chat the expected value
      * @param onChatAction the action to be performed when the player chats the expected value
      */
-    public StageTimeline addPlayerChatEvent(String assignmentMessage, int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
+    public StageTimeline addPlayerChatEvent(Component assignmentMessage, int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
         tasks.add(new ChatEventTask(player, assignmentMessage, expectedValue, offset, maxAttempts, onChatAction));
         return this;
     }
@@ -225,7 +228,7 @@ public class StageTimeline implements TutorialTimeline {
      * Adds a InteractNPCEventTask to the timeline.
      * @param assignmentMessage the task message to show in the action bar to the player
      */
-    public StageTimeline interactNPC(String assignmentMessage) {
+    public StageTimeline interactNPC(Component assignmentMessage) {
         tasks.add(new NpcInteractEventTask(player, tutorial.getNPC().getNpc().getData().getName(), assignmentMessage));
         return this;
     }
@@ -247,7 +250,7 @@ public class StageTimeline implements TutorialTimeline {
      * @param assignmentMessage the task message to show in the action bar to the player
      * @param holograms holograms to show to the player, only the tutorial player can see them
      */
-    public StageTimeline createHolograms(String assignmentMessage, AbstractTutorialHologram... holograms) {
+    public StageTimeline createHolograms(Component assignmentMessage, AbstractTutorialHologram... holograms) {
         tasks.add(new CreateHologramTask(player, assignmentMessage, new LinkedList<>(Arrays.asList(holograms)), true));
         return this;
     }

@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class CreateHologramTask extends AbstractTask {
         this.isMarkAsRead = false;
     }
 
-    public CreateHologramTask(Player player, String assignmentMessage, List<AbstractTutorialHologram> hologramsToCreate, boolean isMarkAsRead) {
+    public CreateHologramTask(Player player, Component assignmentMessage, List<AbstractTutorialHologram> hologramsToCreate, boolean isMarkAsRead) {
         super(player, assignmentMessage, hologramsToCreate.size());
         this.hologramsToCreate = hologramsToCreate;
         this.isMarkAsRead = isMarkAsRead;

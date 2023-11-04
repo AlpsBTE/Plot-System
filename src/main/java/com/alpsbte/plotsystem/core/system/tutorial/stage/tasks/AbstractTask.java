@@ -24,12 +24,12 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
-import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
-import org.bukkit.Sound;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-
-import static net.md_5.bungee.api.ChatColor.*;
 
 public abstract class AbstractTask {
     @FunctionalInterface
@@ -44,7 +44,7 @@ public abstract class AbstractTask {
 
     protected final Player player;
 
-    private final String assignmentMessage;
+    private final Component assignmentMessage;
     private int completedAssignments;
     private final int totalAssignments;
     private boolean isDone;
@@ -63,7 +63,7 @@ public abstract class AbstractTask {
      * @param assignmentMessage The message which is displayed in the action bar and chat.
      * @param totalAssignments The total assignment progress which is needed to complete the task.
      */
-    public AbstractTask(Player player, String assignmentMessage, int totalAssignments) {
+    public AbstractTask(Player player, Component assignmentMessage, int totalAssignments) {
         this.player = player;
         this.assignmentMessage = assignmentMessage;
         this.totalAssignments = totalAssignments;
@@ -77,7 +77,7 @@ public abstract class AbstractTask {
 
     /**
      * Call this method when the task is done.
-     * If the task is not set to done, the stage timeline won't continue.
+     * If the task is not set to be done, the stage timeline won't continue.
      */
     public void setTaskDone() {
         if (isTaskDone()) return;
@@ -100,8 +100,8 @@ public abstract class AbstractTask {
      * Gets the message which is displayed in the action bar and chat.
      * @return assignmentMessage
      */
-    public String getAssignmentMessage() {
-        return YELLOW + assignmentMessage;
+    public Component getAssignmentMessage() {
+        return assignmentMessage.color(NamedTextColor.YELLOW);
     }
 
     /**
@@ -143,10 +143,10 @@ public abstract class AbstractTask {
      * @param player The player who is doing the task.
      * @param assignmentMessage The message which is displayed in the action bar and chat.
      */
-    public static void sendAssignmentMessage(Player player, String assignmentMessage) {
-        player.sendMessage("");
-        player.sendMessage("§8[§6PS§8] " + assignmentMessage);
-        player.sendMessage("");
-        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+    public static void sendAssignmentMessage(Player player, Component assignmentMessage) {
+        player.sendMessage(Component.text());
+        player.sendMessage(TutorialUtils.CHAT_TASK_PREFIX_COMPONENT.append(assignmentMessage));
+        player.sendMessage(Component.text());
+        player.playSound(player.getLocation(), TutorialUtils.Sound.ASSIGNMENT_START, 1, 1);
     }
 }

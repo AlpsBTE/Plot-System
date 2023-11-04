@@ -35,6 +35,8 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -45,6 +47,9 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot plot;
@@ -179,7 +184,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onException(Exception ex) {
-        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         super.onException(ex);
     }
 
@@ -203,11 +208,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param player The player to send the message to.
      * @param title The title of the stage.
      */
-    protected static void sendStageUnlockedMessage(Player player, String title) {
-        player.sendMessage("");
-        player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED).toUpperCase());
-        player.sendMessage("  §f§l◆ §6§l" + title);
-        player.sendMessage("");
+    protected static void sendStageUnlockedMessage(Player player, Component title) {
+        player.sendMessage(text());
+        player.sendMessage(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED).color(AQUA).decorate(BOLD));
+        player.sendMessage(text("  ◆ ", WHITE, BOLD).append(title.color(GOLD).decorate(BOLD)));
+        player.sendMessage(text());
     }
 
     /**
@@ -218,7 +223,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      */
     protected static void sendTutorialCompletedMessage(Player player, String tutorial) {
         player.sendMessage("");
-        player.sendMessage("§b§l" + LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase());
+        player.sendMessage("§b§l" + LangUtil.getInstance().getString(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase());
         player.sendMessage("  §f§l◆ §6§l" + tutorial);
         player.sendMessage("");
     }

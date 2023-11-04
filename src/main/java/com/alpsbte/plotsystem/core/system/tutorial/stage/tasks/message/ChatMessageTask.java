@@ -26,24 +26,23 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-import static net.md_5.bungee.api.ChatColor.*;
+import static net.kyori.adventure.text.Component.*;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class ChatMessageTask extends AbstractTask {
-    public static final String TASK_PREFIX = DARK_GRAY + "» " + GRAY;
-    private static final String CONTINUE_TASK_MESSAGE = DARK_GRAY + "[" + GREEN + "{0}" + DARK_GRAY + "]";
-
     private final Object[] messages;
     private final Sound soundEffect;
     private final boolean isWaitToContinue;
@@ -72,55 +71,54 @@ public class ChatMessageTask extends AbstractTask {
     }
 
     public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
-        Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
+        AbstractTutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
         if (tutorial == null || tutorial.getNPC() == null) return;
 
         // Send the task message
-        player.sendMessage("");
-        player.sendMessage(tutorial.getNPC().getDisplayName(player.getUniqueId()) + " " + TASK_PREFIX);
+        player.sendMessage(text());
+        player.sendMessage(text(tutorial.getNPC().getDisplayName(player.getUniqueId()) + " ")
+                .append(TutorialUtils.CHAT_PREFIX_COMPONENT));
         for (Object message : messages) {
-            if (message instanceof String) {
-                List<String> messageLines = AlpsUtils.createMultilineFromString((String) message, -1, Utils.ChatUtils.LINE_BREAKER);
-                messageLines.forEach(msg -> player.sendMessage((!msg.isEmpty() ? GRAY + msg : "")));
-            } else if (message instanceof ClickableTaskMessage) {
-                TextComponent component = ((ClickableTaskMessage) message).getComponent();
-                component.setText(GRAY + component.getText());
-                player.spigot().sendMessage(component);
+            if (message instanceof ClickableTaskMessage) {
+                player.sendMessage(((ClickableTaskMessage) message).getComponent());
+            } else if (message instanceof Component) {
+                player.sendMessage(((Component) message).color(GRAY));
+            } else if (message instanceof String) {
+                player.sendMessage(text((String) message).color(GRAY));
             }
         }
 
         // Send the continue task message
-        player.sendMessage("");
-        if (waitToContinue) player.spigot().sendMessage(getContinueTextComponent(player));
+        player.sendMessage(text());
+        if (waitToContinue) player.sendMessage(getContinueButtonComponent(LangUtil.getInstance().getString(player, LangPaths.Note.Action.CONTINUE),
+                LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_PROCEED)));
     }
 
-    private static TextComponent getContinueTextComponent(Player player) {
-        return new ClickableTaskMessage(CONTINUE_TASK_MESSAGE.replace("{0}",
-                LangUtil.getInstance().get(player, LangPaths.Note.Action.CONTINUE)),
-                GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED),
-                "/tutorial continue",
-                ClickEvent.Action.RUN_COMMAND).getComponent();
+    public static Component getContinueButtonComponent(String text, String hoverText) {
+        return text("[", DARK_GRAY).append(text(text, GREEN).append(text("]", DARK_GRAY)))
+                .hoverEvent(HoverEvent.showText(text(hoverText, GRAY))).clickEvent(ClickEvent.runCommand("/tutorial continue"));
     }
 
 
     public static class ClickableTaskMessage {
-        private final String message;
-        private final String hoverText;
-        private final String clickExecute;
-        private final ClickEvent.Action clickAction;
+        private final Component messageComponent;
+        private final Component hoverTextComponent;
+        private final ClickEvent clickEvent;
 
-        public ClickableTaskMessage(String message, String hoverText, String clickExecute, ClickEvent.Action clickAction) {
-            this.message = message;
-            this.hoverText = hoverText;
-            this.clickExecute = clickExecute;
-            this.clickAction = clickAction;
+        public ClickableTaskMessage(String message, String hoverText, ClickEvent clickEvent) {
+            this.messageComponent = Component.text(message);
+            this.hoverTextComponent = Component.text(hoverText);
+            this.clickEvent = clickEvent;
         }
 
-        public TextComponent getComponent() {
-            TextComponent clickableMessage = new TextComponent(message);
-            clickableMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverText)));
-            clickableMessage.setClickEvent(new ClickEvent(clickAction, clickExecute));
-            return clickableMessage;
+        public ClickableTaskMessage(Component messageComponent, Component hoverTextComponent, ClickEvent clickEvent) {
+            this.messageComponent = messageComponent;
+            this.hoverTextComponent = hoverTextComponent;
+            this.clickEvent = clickEvent;
+        }
+
+        public Component getComponent() {
+            return messageComponent.hoverEvent(HoverEvent.showText(hoverTextComponent)).clickEvent(clickEvent);
         }
     }
 }

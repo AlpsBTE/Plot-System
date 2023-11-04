@@ -39,7 +39,7 @@ import org.ipvp.canvas.mask.Mask;
 
 public class SpecialBlocksMenu extends AbstractMenu {
     public SpecialBlocksMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS), player);
+        super(3, LangUtil.getInstance().getString(player, LangPaths.MenuTitle.SPECIAL_BLOCKS), player);
     }
 
     @Override
@@ -129,9 +129,9 @@ public class SpecialBlocksMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLD_BLOCK ,1)
-                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_BLOCKS).toUpperCase())
+                .setName("§b§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.SPECIAL_BLOCKS).toUpperCase())
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_BLOCKS)).build())
+                        .addLine(LangUtil.getInstance().getString(player, LangPaths.MenuDescription.SPECIAL_BLOCKS)).build())
                 .build();
     }
 }

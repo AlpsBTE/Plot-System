@@ -278,7 +278,7 @@ public class Review {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (awaitReviewerFeedbackList.containsKey(player.getUniqueId()) && awaitReviewerFeedbackList.get(player.getUniqueId()).getDateTime().isBefore(LocalDateTime.now().minusMinutes(5))) {
                         awaitReviewerFeedbackList.remove(player.getUniqueId());
-                        player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
+                        player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(player, LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
                         player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
                     }
                 }

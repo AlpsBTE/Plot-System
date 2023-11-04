@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.EventTask;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -63,7 +64,7 @@ public class TutorialEventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    private void onPlayerChatEvent(AsyncPlayerChatEvent event) {
+    private void onPlayerChatEvent(AsyncChatEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
     }

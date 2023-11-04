@@ -262,7 +262,7 @@ public abstract class AbstractPlotGenerator {
      */
     protected void onException(Throwable ex) {
         Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
-        builder.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        builder.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND,1,1);
     }
 

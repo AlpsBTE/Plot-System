@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.utils.io;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.io.config.ConfigurationUtil;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -66,7 +67,7 @@ public class ConfigUtil {
 
         @Override
         public void updateConfigFile(ConfigFile file) {
-            int tutorialId = file.getInt(TutorialPaths.TUTORIAL_ID);
+            int tutorialId = file.getInt(TutorialUtils.Path.TUTORIAL_ID);
 
             File directory = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials").toFile();
             File[] files = directory.listFiles();

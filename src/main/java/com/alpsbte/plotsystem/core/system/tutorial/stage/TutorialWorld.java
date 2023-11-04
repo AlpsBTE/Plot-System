@@ -24,8 +24,8 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
-import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -47,7 +47,7 @@ public class TutorialWorld {
         FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
 
         // Read tutorial spawn section
-        ConfigurationSection tutorialSpawnsSection = config.getConfigurationSection(TutorialPaths.TUTORIAL_WORLDS);
+        ConfigurationSection tutorialSpawnsSection = config.getConfigurationSection(TutorialUtils.Path.TUTORIAL_WORLDS);
         if (tutorialSpawnsSection == null) {
             Bukkit.getLogger().log(Level.WARNING, "Could not find tutorial spawns section in tutorial config!");
             return;
@@ -60,9 +60,10 @@ public class TutorialWorld {
         }
 
         ConfigurationSection spawnSection = tutorialSpawnsSection.getConfigurationSection(tutorialSpawn.toArray()[tutorialWorldIndex].toString());
+        if (spawnSection == null) return;
         this.worldName = worldName == null ? spawnSection.getName() : worldName;
-        this.playerSpawnConfigPath = spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_PLAYER);
-        this.npcSpawnConfigPath = spawnSection.getString(TutorialPaths.TUTORIAL_WORLDS_SPAWN_NPC);
+        this.playerSpawnConfigPath = spawnSection.getString(TutorialUtils.Path.TUTORIAL_WORLDS_SPAWN_PLAYER);
+        this.npcSpawnConfigPath = spawnSection.getString(TutorialUtils.Path.TUTORIAL_WORLDS_SPAWN_NPC);
     }
 
     public Location getPlayerSpawnLocation() {

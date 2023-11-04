@@ -48,7 +48,7 @@ public class TutorialNPC extends AbstractNpc {
 
     @Override
     public String getActionTitle(UUID playerUUID) {
-        return GRAY + "(" + LangUtil.getInstance().get(Bukkit.getPlayer(playerUUID),
+        return GRAY + "(" + LangUtil.getInstance().getString(Bukkit.getPlayer(playerUUID),
                 LangPaths.Note.Action.RIGHT_CLICK) + ")";
     }
 }

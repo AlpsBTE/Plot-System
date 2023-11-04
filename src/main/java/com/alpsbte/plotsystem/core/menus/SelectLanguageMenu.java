@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.heads.CustomHead;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
@@ -46,7 +47,7 @@ import java.util.logging.Level;
 public class SelectLanguageMenu extends AbstractMenu {
 
     public SelectLanguageMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SELECT_LANGUAGE), player);
+        super(3, LangUtil.getInstance().getString(player, LangPaths.MenuTitle.SELECT_LANGUAGE), player);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class SelectLanguageMenu extends AbstractMenu {
         for (int i = 1; i <= LangUtil.getInstance().languageFiles.length; i++) {
             LanguageFile langFile = LangUtil.getInstance().languageFiles[i - 1];
             getMenu().getSlot(i + ((i >= 8) ? 2 : 0)).setItem(
-                    new ItemBuilder(AlpsUtils.getItemHead(new CustomHead(langFile.getLanguage().HeadId)))
+                    new ItemBuilder(AlpsHeadUtils.getCustomHead(langFile.getLanguage().HeadId))
                             .setName("§6§l" + langFile.getLanguage().Name + "(" + langFile.getLanguage().Region + ")")
                             .build());
         }
@@ -69,11 +70,11 @@ public class SelectLanguageMenu extends AbstractMenu {
         // Set auto-detect language item
         getMenu().getSlot(25).setItem(
                 new ItemBuilder(new ItemStack(Material.SLIME_BALL))
-                        .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.AUTO_DETECT_LANGUAGE))
+                        .setName("§a§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.AUTO_DETECT_LANGUAGE))
                         .setLore(new LoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.AUTO_DETECT_LANGUAGE),
+                                .addLines(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.AUTO_DETECT_LANGUAGE),
                                         "",
-                                        "§6" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_ENABLE))
+                                        "§6" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_ENABLE))
                                 .build())
                         .build());
     }
@@ -91,7 +92,7 @@ public class SelectLanguageMenu extends AbstractMenu {
 
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(
-                            LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE,
+                            LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE,
                                     langFile.getLanguage().Name)));
                 } catch (Exception ex) {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
@@ -110,7 +111,7 @@ public class SelectLanguageMenu extends AbstractMenu {
                 reloadMenuAsync();
                 getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
                 getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(
-                        LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE,
+                        LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE,
                                 LangUtil.getInstance().getLanguageFileByPlayer(getMenuPlayer()).getLanguage().toString())));
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);

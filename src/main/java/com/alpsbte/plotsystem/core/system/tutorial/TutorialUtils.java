@@ -24,24 +24,30 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
-import com.alpsbte.plotsystem.utils.io.TutorialPaths;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.md_5.bungee.api.ChatColor.GOLD;
-import static net.md_5.bungee.api.ChatColor.UNDERLINE;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 
 public class TutorialUtils {
-    public static final String CHAT_HIGHLIGHT_COLOR = GOLD.toString();
-    public static final String CHAT_CLICK_HIGHLIGHT = UNDERLINE.toString();
+    public static NamedTextColor CHAT_HIGHLIGHT_COLOR = GOLD;
+    public static TextDecoration CHAT_CLICK_HIGHLIGHT = TextDecoration.UNDERLINED;
+
+    public static Component CHAT_PREFIX_COMPONENT = text("»", DARK_GRAY)
+            .append(Component.text(" ", GRAY));
+    public static Component CHAT_TASK_PREFIX_COMPONENT = text("[", DARK_GRAY)
+            .append(text("Tutorial", NamedTextColor.GOLD).append(text("] ", DARK_GRAY)));
 
     /**
      * Set a block at a specific location
@@ -49,44 +55,41 @@ public class TutorialUtils {
      * @param vector The vector of the location
      * @param material The material of the block
      */
-    public static void setBlockAt(World world, BlockVector3 vector, Material material) {
+    public static void setBlockAt(World world, Vector vector, Material material) {
         Location loc = new Location(world, vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
         loc.getBlock().setType(material);
     }
 
     /**
-     * Get a list of 3D vectors of the tip holograms
-     * @param tutorialId The id of the tutorial to get the config file
+     * Get a list of 3D vectors for the tip holograms
+     * @param tutorialConfig the tutorial config file
      * @return A list of vector points
      */
-    public static List<Vector3> getTipPoints(int tutorialId) {
-        // Read coordinates from config
-        FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
-        List<String> tipPointsAsString = config.getStringList(TutorialPaths.TIP_HOLOGRAM_COORDINATES);
+    public static List<Vector> getTipPoints(FileConfiguration tutorialConfig) {
+        List<String> tipPointsAsString = tutorialConfig.getStringList(Path.TIP_HOLOGRAM_COORDINATES);
 
-        List<Vector3> tipPoints = new ArrayList<>();
+        List<Vector> tipPoints = new ArrayList<>();
         tipPointsAsString.forEach(point -> {
             String[] split = point.trim().split(",");
-            tipPoints.add(Vector3.at(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
+            tipPoints.add(new Vector(Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2])));
         });
         return tipPoints;
     }
 
     /**
      * Get a list of documentation links which can be opened by clicking on the hologram
-     * @param tutorialId The id of the tutorial to get the config file
+     * @param tutorialConfig the tutorial config file
      * @return A list of documentation links
      */
-    public static List<String> getDocumentationLinks(int tutorialId) {
-        // Read coordinates from config
-        FileConfiguration config = ConfigUtil.getTutorialInstance().configs[tutorialId];
-        return config.getStringList(TutorialPaths.DOCUMENTATION_LINKS);
+    public static List<String> getDocumentationLinks(FileConfiguration tutorialConfig) {
+        return tutorialConfig.getStringList(Path.DOCUMENTATION_LINKS);
     }
 
     public static class Sound {
         public static final org.bukkit.Sound STAGE_COMPLETED = org.bukkit.Sound.ENTITY_PLAYER_LEVELUP;
         public static final org.bukkit.Sound TUTORIAL_COMPLETED = org.bukkit.Sound.UI_TOAST_CHALLENGE_COMPLETE;
         public static final org.bukkit.Sound NPC_TALK = org.bukkit.Sound.ENTITY_VILLAGER_AMBIENT;
+        public static final org.bukkit.Sound ASSIGNMENT_START = org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
         public static final org.bukkit.Sound ASSIGNMENT_WRONG = org.bukkit.Sound.ENTITY_VILLAGER_NO;
         public static final org.bukkit.Sound ASSIGNMENT_COMPLETED = org.bukkit.Sound.BLOCK_NOTE_BLOCK_PLING;
     }
@@ -95,5 +98,16 @@ public class TutorialUtils {
         public static final int TIMELINE_START = 3;
         public static final int TASK_START = 2;
         public static final int TASK_END = 2;
+    }
+
+    public static class Path {
+        public static final String TUTORIAL_ID = "tutorial-id";
+        public static final String TUTORIAL_ITEM_NAME = "tutorial-item-name";
+        public static final String TUTORIAL_STAGES = "tutorial-stages";
+        public static final String TUTORIAL_WORLDS = "tutorial-worlds";
+        public static final String TUTORIAL_WORLDS_SPAWN_PLAYER = "spawn-player";
+        public static final String TUTORIAL_WORLDS_SPAWN_NPC = "spawn-npc";
+        public static final String TIP_HOLOGRAM_COORDINATES = "tip-hologram-coordinates";
+        public static final String DOCUMENTATION_LINKS = "documentation-links";
     }
 }

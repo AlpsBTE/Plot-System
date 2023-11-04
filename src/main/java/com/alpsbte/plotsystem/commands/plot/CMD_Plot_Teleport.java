@@ -61,7 +61,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                         if (sender.hasPermission("plotsystem.admin") && PlotUtils.plotExists(plotID)) {
                             new DefaultPlotGenerator(new Plot(plotID), Builder.byUUID(getPlayer(sender).getUniqueId()));
                         } else {
-                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                         }
                     }
                 } else {
@@ -71,7 +71,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.EventTask;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -39,11 +40,11 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
 
     private final boolean isCancelCmdEvent;
 
-    public AbstractCmdEventTask(Player player, String expectedCommand, String assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
+    public AbstractCmdEventTask(Player player, String expectedCommand, Component assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
         this(player, expectedCommand, null, assignmentMessage, totalAssignments, cancelCmdEvent);
     }
 
-    public AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, String assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
+    public AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, Component assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
         super(player, assignmentMessage, totalAssignments);
         this.expectedCommand = expectedCommand;
         this.args1 = args1;

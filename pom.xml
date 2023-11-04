@@ -34,13 +34,9 @@
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
-        <!-- Spigot & Bukkit -->
+        <!-- Paper -->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>papermc</id>
+            <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <!-- AlpsBTE Repo (WorldEdit, WorldGuard, FAWE) -->
@@ -51,17 +47,11 @@
     </repositories>
 
     <dependencies>
+        <!-- Paper -->
         <dependency>
-            <groupId>li.cinnazeyy</groupId>
-            <artifactId>LangLibs</artifactId>
-            <version>1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Spigot -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.20.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- World Guard -->
@@ -184,6 +174,12 @@
             <groupId>de.oliver</groupId>
             <artifactId>FancyNpcs</artifactId>
             <version>2.0.4.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>li.cinnazeyy</groupId>
+            <artifactId>LangLibs</artifactId>
+            <version>1.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

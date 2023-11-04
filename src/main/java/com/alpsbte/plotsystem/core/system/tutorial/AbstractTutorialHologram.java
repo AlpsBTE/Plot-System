@@ -26,13 +26,14 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.CreateHologramTask;
-import com.sk89q.worldedit.math.Vector3;
 import me.filoghost.holographicdisplays.api.Position;
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -52,15 +53,15 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
 
     protected final Player player;
     protected final int holoId;
-    protected final String content;
+    protected final Component content;
     protected final int readMoreId;
 
     protected final Tutorial tutorial;
 
-    private final Vector3 vectorPos;
+    private final Vector vectorPos;
     private ClickAction markAsReadClickAction;
 
-    public AbstractTutorialHologram(Player player, int holoId, String content, int readMoreId) {
+    public AbstractTutorialHologram(Player player, int holoId, Component content, int readMoreId) {
         super(String.valueOf(holoId), null, true);
         this.holoId = holoId;
         this.player = player;
@@ -68,7 +69,7 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
         this.readMoreId = readMoreId;
 
         tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
-        vectorPos = TutorialUtils.getTipPoints(tutorial.getId()).get(holoId);
+        vectorPos = TutorialUtils.getTipPoints(tutorial.getConfig()).get(holoId);
     }
 
     /**
@@ -129,7 +130,7 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
     @Override
     public List<DataLine<?>> getContent(UUID playerUUID) {
         List<DataLine<?>> lines = new ArrayList<>();
-        List<String> innerLines = AlpsUtils.createMultilineFromString(content, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
+        List<String> innerLines = AlpsUtils.createMultilineFromString(((TextComponent) content).content(), MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
         innerLines.forEach(innerLine -> lines.add(new TextLine(innerLine)));
         return lines;
     }
@@ -171,6 +172,6 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
     }
 
     protected String getReadMoreLink() {
-        return TutorialUtils.getDocumentationLinks(tutorial.getId()).get(readMoreId);
+        return TutorialUtils.getDocumentationLinks(tutorial.getConfig()).get(readMoreId);
     }
 }

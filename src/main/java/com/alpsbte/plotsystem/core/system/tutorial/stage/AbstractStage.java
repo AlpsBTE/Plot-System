@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -36,9 +37,9 @@ public abstract class AbstractStage {
     private final Player player;
     private final int initWorldIndex;
 
-    private final String title;
-    private final List<String> messages;
-    private final List<String> tasks;
+    private final Component title;
+    private final List<Component> messages;
+    private final List<Component> tasks;
     private final List<AbstractTutorialHologram> holograms;
 
     protected AbstractStage(Player player, int initWorldIndex) {
@@ -55,20 +56,20 @@ public abstract class AbstractStage {
      * Sets the title of the tutorial stage
      * @return title
      */
-    protected abstract String setTitle();
+    protected abstract Component setTitle();
 
     /**
      * Sets the messages of the tutorial stage
      * @return messages
      */
-    protected abstract List<String> setMessages();
+    protected abstract List<Component> setMessages();
 
     /**
      * Sets the tasks of the tutorial stage
      * @see AbstractTask#getAssignmentMessage()
      * @return tasks
      */
-    protected abstract List<String> setTasks();
+    protected abstract List<Component> setTasks();
 
     /**
      * Sets the tutorial holograms for the tutorial stage
@@ -90,15 +91,15 @@ public abstract class AbstractStage {
         return initWorldIndex;
     }
 
-    public String getTitle() {
+    public Component getTitle() {
         return title;
     }
 
-    public List<String> getMessages() {
+    public List<Component> getMessages() {
         return messages;
     }
 
-    public List<String> getTasks() {
+    public List<Component> getTasks() {
         return tasks;
     }
 

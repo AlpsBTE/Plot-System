@@ -55,12 +55,12 @@ public class CMD_EditPlot extends BaseCommand {
         }
 
         if (!ConfigUtil.getInstance().configs[1].getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
             return true;
         }
 
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
@@ -69,7 +69,7 @@ public class CMD_EditPlot extends BaseCommand {
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                 int plotID = Integer.parseInt(args[0]);
                 if (!PlotUtils.plotExists(plotID)) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return true;
                 }
                 plot = new Plot(plotID);
@@ -87,7 +87,7 @@ public class CMD_EditPlot extends BaseCommand {
             }
 
             if (plot.getStatus() == Status.completed) {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                 return true;
             }
 
@@ -100,14 +100,14 @@ public class CMD_EditPlot extends BaseCommand {
 
             if (!plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
                 plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
                 return true;
             }
 
             plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
-            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;

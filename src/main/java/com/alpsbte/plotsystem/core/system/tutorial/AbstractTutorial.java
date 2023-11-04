@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
@@ -57,9 +58,9 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * A list of all registered tutorials.
-     * @see AbstractTutorial#setTutorials(List)
+     * @see AbstractTutorial#registerTutorials(List)
      */
-    private static List<Class<? extends AbstractTutorial>> tutorials;
+    private static final List<Class<? extends AbstractTutorial>> tutorials = new ArrayList<>();
 
     /**
      * A list of all active tutorials.
@@ -316,14 +317,6 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     /**
-     * This method needs to be called before any tutorial can be loaded.
-     * @param tutorials list of all tutorials available
-     */
-    public static void setTutorials(List<Class<? extends AbstractTutorial>> tutorials) {
-        AbstractTutorial.tutorials = tutorials;
-    }
-
-    /**
      * This method loads a tutorial for a player. It will start with the first stage.
      * @param player player to load the tutorial for
      * @param tutorialId id of the tutorial to load
@@ -351,5 +344,13 @@ public abstract class AbstractTutorial implements Tutorial {
             return false;
         }
         return true;
+    }
+
+    /**
+     * This method needs to be called before any tutorial can be loaded.
+     * @param tutorials list of all tutorials to register
+     */
+    public static void registerTutorials(List<Class<? extends AbstractTutorial>> tutorials) {
+        AbstractTutorial.tutorials.addAll(tutorials);
     }
 }

@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatEventTask extends AbstractTask implements EventTask {
     private final int expectedValue;
@@ -38,7 +40,7 @@ public class ChatEventTask extends AbstractTask implements EventTask {
 
     private int attemptsLeft;
 
-    public ChatEventTask(Player player, String assignmentMessage, int expectedValue, int offset, int maxAttempts, BiTaskAction<Boolean, Integer> onChatAction) {
+    public ChatEventTask(Player player, Component assignmentMessage, int expectedValue, int offset, int maxAttempts, BiTaskAction<Boolean, Integer> onChatAction) {
         super(player, assignmentMessage, 1);
         this.expectedValue = expectedValue;
         this.offset = offset;
@@ -54,13 +56,13 @@ public class ChatEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof AsyncPlayerChatEvent) {
-            AsyncPlayerChatEvent chatEvent = (AsyncPlayerChatEvent) event;
+        if (event instanceof AsyncChatEvent) {
+            AsyncChatEvent chatEvent = (AsyncChatEvent) event;
             chatEvent.setCancelled(true);
 
-            String message = chatEvent.getMessage();
-            if (AlpsUtils.tryParseInt(message) != null) {
-                int value = Integer.parseInt(message);
+            TextComponent message = (TextComponent) chatEvent.message();
+            if (AlpsUtils.tryParseInt(message.content()) != null) {
+                int value = Integer.parseInt(message.content());
                 if (value >= expectedValue - offset && value <= expectedValue + offset) {
                     onChatAction.performAction(true, attemptsLeft);
                     attemptsLeft = 0;
