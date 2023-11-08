@@ -334,7 +334,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @return true if the tutorial was loaded successfully, otherwise false
      */
     public static boolean loadTutorial(Player player, int tutorialId, int stageId) {
-        if (tutorials == null || tutorialId >= tutorials.size()) return false;
+        if (tutorialId >= tutorials.size()) return false;
         if (getActiveTutorial(player.getUniqueId()) != null) return false;
 
         try {

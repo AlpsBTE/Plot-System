@@ -141,7 +141,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
         ComponentBuilder builder = new ComponentBuilder("");
         builder.append(
-                new ComponentBuilder("  " + LangUtil.getInstance().getString(player, sortByLeaderboard.langPath))
+                new ComponentBuilder("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
                         .color(ChatColor.GOLD)
                         .bold(true)
                         .create()
@@ -156,7 +156,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
         if (position == -1) {
             builder.append(
-                    new ComponentBuilder(LangUtil.getInstance().getString(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                    new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
                             .color(ChatColor.RED)
                             .bold(false)
                             .create()
@@ -164,14 +164,14 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
         } else if (position < 50) {
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.getInstance().getString(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
                     ).color(ChatColor.GREEN).bold(false).create()
             );
         } else {
             String topPercentage = df.format(position * 1.0 / rows);
             builder.append(
                     new ComponentBuilder(
-                            LangUtil.getInstance().getString(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
                     ).bold(false).create()
             );
         }

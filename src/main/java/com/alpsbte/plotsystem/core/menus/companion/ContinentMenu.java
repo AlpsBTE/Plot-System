@@ -41,7 +41,7 @@ public class ContinentMenu extends AbstractMenu {
     private final HashMap<Integer, Continent> layout = new HashMap<>();
 
     ContinentMenu(Player menuPlayer) {
-        super(5, LangUtil.getInstance().getString(menuPlayer, LangPaths.MenuTitle.COMPANION_SELECT_CONTINENT), menuPlayer);
+        super(5, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.COMPANION_SELECT_CONTINENT), menuPlayer);
 
         layout.put(9, Continent.NORTH_AMERICA);
         layout.put(11, Continent.SOUTH_AMERICA);

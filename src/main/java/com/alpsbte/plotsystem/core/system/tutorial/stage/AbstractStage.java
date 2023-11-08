@@ -37,9 +37,9 @@ public abstract class AbstractStage {
     private final Player player;
     private final int initWorldIndex;
 
-    private final Component title;
-    private final List<Component> messages;
-    private final List<Component> tasks;
+    private final String title;
+    private final List<String> messages;
+    private final List<String> tasks;
     private final List<AbstractTutorialHologram> holograms;
 
     protected AbstractStage(Player player, int initWorldIndex) {
@@ -56,20 +56,20 @@ public abstract class AbstractStage {
      * Sets the title of the tutorial stage
      * @return title
      */
-    protected abstract Component setTitle();
+    protected abstract String setTitle();
 
     /**
      * Sets the messages of the tutorial stage
      * @return messages
      */
-    protected abstract List<Component> setMessages();
+    protected abstract List<String> setMessages();
 
     /**
      * Sets the tasks of the tutorial stage
      * @see AbstractTask#getAssignmentMessage()
      * @return tasks
      */
-    protected abstract List<Component> setTasks();
+    protected abstract List<String> setTasks();
 
     /**
      * Sets the tutorial holograms for the tutorial stage
@@ -91,15 +91,15 @@ public abstract class AbstractStage {
         return initWorldIndex;
     }
 
-    public Component getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public List<Component> getMessages() {
+    public List<String> getMessages() {
         return messages;
     }
 
-    public List<Component> getTasks() {
+    public List<String> getTasks() {
         return tasks;
     }
 

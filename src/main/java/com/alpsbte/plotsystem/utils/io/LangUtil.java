@@ -58,7 +58,7 @@ public class LangUtil extends LanguageUtil {
 
     public void broadcast(String key, String... args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(ChatUtils.getInfoMessageFormat(getString(player, key, args)));
+            player.sendMessage(ChatUtils.getInfoMessageFormat(get(player, key, args)));
         }
     }
 

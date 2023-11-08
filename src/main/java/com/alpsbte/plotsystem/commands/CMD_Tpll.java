@@ -55,7 +55,7 @@ public class CMD_Tpll extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if(!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
@@ -68,7 +68,7 @@ public class CMD_Tpll extends BaseCommand {
         World playerWorld = player.getWorld();
 
         if (!PlotUtils.isPlotWorld(playerWorld)) {
-            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
+            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
             return true;
         }
 
@@ -111,7 +111,7 @@ public class CMD_Tpll extends BaseCommand {
             CompletableFuture<double[]> plotCoords = plot != null ? PlotUtils.convertTerraToPlotXZ(plot, terraCoords) : null;
 
             if(plotCoords == null) {
-                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
+                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                 return true;
             }
 
@@ -132,14 +132,14 @@ public class CMD_Tpll extends BaseCommand {
 
             DecimalFormat df = new DecimalFormat("##.#####");
             df.setRoundingMode(RoundingMode.FLOOR);
-            player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.getString(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
+            player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
 
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
         } catch (IOException | OutOfProjectionBoundsException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
-            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
         } catch (InterruptedException | ExecutionException ex) {
             sendInfo(sender);
         }

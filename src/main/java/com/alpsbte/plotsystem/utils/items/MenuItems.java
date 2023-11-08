@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.utils.items;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Material;
@@ -37,50 +37,50 @@ public class MenuItems {
 
     public static ItemStack closeMenuItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
-                .setName("§c§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.CLOSE))
+                .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.CLOSE))
                 .build();
     }
 
     public static ItemStack backMenuItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.BACK_BUTTON.getId()))
-                .setName("§6§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.BACK))
+                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.BACK))
                 .build();
     }
 
     public static ItemStack nextPageItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.NEXT_BUTTON.getId()))
-                .setName("§6§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.NEXT_PAGE))
+                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.NEXT_PAGE))
                 .build();
     }
 
     public static ItemStack previousPageItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PREVIOUS_BUTTON.getId()))
-                .setName("§6§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.PREVIOUS_PAGE))
+                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PREVIOUS_PAGE))
                 .build();
     }
 
     public static ItemStack errorItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
-                .setName("§c§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.ERROR))
-                .setLore(new LoreBuilder()
-                    .addLine(LangUtil.getInstance().getString(player, LangPaths.MenuDescription.ERROR)).build())
+                .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.ERROR))
+                .setLore(new LegacyLoreBuilder()
+                    .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.ERROR)).build())
                 .build();
     }
 
     public static ItemStack loadingItem(Material material, Player player) {
         return new ItemBuilder(material)
-                .setName("§6§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.LOADING))
+                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING))
                 .build();
     }
 
     public static ItemStack loadingItem(ItemStack itemStack, Player player) {
-        return new ItemBuilder(itemStack).setName("§6§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.LOADING))
+        return new ItemBuilder(itemStack).setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING))
                 .build();
     }
 
     public static ItemStack filterItem(Player langPlayer) {
         return new ItemBuilder(Material.HOPPER, 1)
-                .setName("§6§l" + LangUtil.getInstance().getString(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY))
+                .setName("§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY))
                 .build();
     }
 }

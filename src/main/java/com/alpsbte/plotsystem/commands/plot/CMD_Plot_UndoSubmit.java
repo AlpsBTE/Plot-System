@@ -56,7 +56,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
                 if (PlotUtils.plotExists(plotID)) {
                     plot = new Plot(plotID);
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
                 }
             } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -75,13 +75,13 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
             if(Objects.requireNonNull(plot).getStatus() == Status.unreviewed) {
                 PlotUtils.Actions.undoSubmit(plot);
 
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.getString(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
+                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
                 if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
             } else {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS)));
+                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS)));
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

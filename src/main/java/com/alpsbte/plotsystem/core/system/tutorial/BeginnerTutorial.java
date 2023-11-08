@@ -38,7 +38,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.L
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.utils.io.*;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
@@ -56,6 +55,7 @@ import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Delay;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static com.alpsbte.alpslib.utils.AlpsUtils.deserialize;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
     public BeginnerTutorial(Player player, int stageId) throws SQLException {
@@ -93,7 +93,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
     @Override
     public String getName() {
-        return LangUtil.getInstance().getString(getPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER);
+        return LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER);
     }
 
     @Override
@@ -107,21 +107,22 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        public Component setTitle() {
+        public String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_MESSAGES,
-                    getPlayer().getName(),
+                    TEXT_HIGHLIGHT_START + getPlayer().getName() + TEXT_HIGHLIGHT_END,
                     ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TASKS,
-                    ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
+                    TEXT_HIGHLIGHT_START + ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME) +
+                    TEXT_HIGHLIGHT_END);
         }
 
         @Override
@@ -133,11 +134,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .interactNPC(getTasks().get(0))
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(2), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true);
+                    .interactNPC(deserialize(getTasks().get(0)))
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(1)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(2)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(3)), Sound.NPC_TALK, true);
         }
     }
 
@@ -151,25 +152,25 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_MESSAGES,
-                    GOOGLE_MAPS,
-                    GOOGLE_EARTH,
-                    GOOGLE_MAPS,
-                    STREET_VIEW,
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GOOGLE_MAPS),
-                    GOOGLE_EARTH,
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GOOGLE_EARTH),
-                    "/plot links");
+                    TEXT_HIGHLIGHT_START + GOOGLE_MAPS + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + GOOGLE_EARTH + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + GOOGLE_MAPS + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + STREET_VIEW + TEXT_HIGHLIGHT_END,
+                    TEXT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GOOGLE_MAPS),
+                    TEXT_HIGHLIGHT_START + GOOGLE_EARTH + TEXT_HIGHLIGHT_END,
+                    TEXT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GOOGLE_EARTH),
+                    TEXT_HIGHLIGHT_START + "/plot links" + TEXT_HIGHLIGHT_END);
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TASKS);
         }
 
@@ -182,21 +183,21 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() throws IOException {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(1)), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(2),
+                            deserialize(getMessages().get(2)),
                             "",
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(3).color(GRAY).decorate(CHAT_CLICK_HIGHLIGHT),
+                            new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(3)).color(GRAY),
                                     text(GOOGLE_MAPS, GRAY), ClickEvent.openUrl(getPlot().getGoogleMapsLink()))
                     }, Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(4),
+                            deserialize(getMessages().get(4)),
                             "",
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(5).color(GRAY).decorate(CHAT_CLICK_HIGHLIGHT),
+                            new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(5)).color(GRAY),
                                     text(GOOGLE_EARTH, GRAY), ClickEvent.openUrl(getPlot().getGoogleEarthLink()))
                     }, Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(6), Sound.NPC_TALK, true);
+                    .sendChatMessage(deserialize(getMessages().get(6)), Sound.NPC_TALK, true);
         }
     }
 
@@ -206,24 +207,24 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_MESSAGES,
-                    "/tpll <lat> <lon>",
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK),
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_MAPS)
+                    TEXT_HIGHLIGHT_START + "/tpll <lat> <lon>" + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + TEXT_HIGHLIGHT_END,
+                    TEXT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_MAPS)
             );
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TASKS,
-                     "4",
-                     "/tpll");
+                     TEXT_HIGHLIGHT_START + "4" + TEXT_HIGHLIGHT_END,
+                     TEXT_HIGHLIGHT_START + "/tpll" + TEXT_HIGHLIGHT_END);
         }
 
         @Override
@@ -237,22 +238,22 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() throws SQLException, IOException {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(1),
+                            deserialize(getMessages().get(1)),
                             "",
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(2).color(GRAY).decorate(CHAT_CLICK_HIGHLIGHT),
+                            new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(2)).color(GRAY),
                                     text(Stage2.GOOGLE_MAPS, GRAY), ClickEvent.openUrl(getPlot().getGoogleMapsLink()))
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
                     .createHolograms(getHolograms().get(0))
-                    .addTeleportEvent(getTasks().get(0), getPlotPoints(getPlot()), 1, (teleportPoint, isCorrect) -> {
+                    .addTeleportEvent(deserialize(getTasks().get(0)), getPlotPoints(getPlot()), 1, (teleportPoint, isCorrect) -> {
                         if (isCorrect) {
                             TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
                             getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
                                     Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
                         } else {
-                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(3) }, false);
+                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { deserialize(getMessages().get(3)) }, false);
                             getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
                                     Sound.ASSIGNMENT_WRONG, 1f, 1f);
                         }
@@ -266,21 +267,22 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_MESSAGES,
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK),
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.LEFT_CLICK));
+                    TEXT_HIGHLIGHT_START + "WorldEdit" + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + TEXT_HIGHLIGHT_END);
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TASKS,
-                    "//wand");
+                    TEXT_HIGHLIGHT_START + "//wand" + TEXT_HIGHLIGHT_END);
         }
 
         @Override
@@ -292,12 +294,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, false)
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(1)), Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
-                    .addTask(new WandCmdEventTask(getPlayer(), getTasks().get(0)))
+                    .addTask(new WandCmdEventTask(getPlayer(), deserialize(getTasks().get(0))))
                     .delay(Delay.TASK_END)
-                    .sendChatMessage(getMessages().get(2), Sound.NPC_TALK, true);
+                    .sendChatMessage(deserialize(getMessages().get(2)), Sound.NPC_TALK, true);
         }
     }
 
@@ -310,22 +312,22 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_MESSAGES,
-                    "//line <pattern>",
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK),
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.LEFT_CLICK));
+                    TEXT_HIGHLIGHT_START + "//line <pattern>" + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + TEXT_HIGHLIGHT_END,
+                    TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + TEXT_HIGHLIGHT_END);
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TASKS,
-                    "//line " + BASE_BLOCK.toLowerCase());
+                    TEXT_HIGHLIGHT_START + "//line " + BASE_BLOCK.toLowerCase() + TEXT_HIGHLIGHT_END);
         }
 
         @Override
@@ -346,15 +348,15 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(1),
+                            deserialize(getMessages().get(1)),
                             "",
-                            getMessages().get(2)
+                            deserialize(getMessages().get(2))
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
                     .addTask(new PlotPermissionChangeTask(getPlayer(), false, true))
-                    .addTask(new LineCmdEventTask(getPlayer(), getTasks().get(0), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
+                    .addTask(new LineCmdEventTask(getPlayer(), deserialize(getTasks().get(0)), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
                         if (minPoint != null && maxPoint != null) {
                             buildingLinePoints.remove(minPoint);
 
@@ -362,7 +364,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.LIME_CONCRETE_POWDER);
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
                         } else {
-                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(3) }, false);
+                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { deserialize(getMessages().get(3)) }, false);
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
                         }
                     })))
@@ -379,19 +381,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_MESSAGES,
-                    LangUtil.getInstance().getString(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_EARTH),
-                    String.valueOf(HEIGHT));
+                    TEXT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_EARTH),
+                    TEXT_HIGHLIGHT_START + HEIGHT + TEXT_HIGHLIGHT_END);
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TASKS);
         }
 
@@ -404,21 +406,22 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public StageTimeline getTimeline() throws IOException {
             StageTimeline stage = new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(1)), Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[] {
-                            getMessages().get(2),
+                            deserialize(getMessages().get(2)),
                             "",
-                            new ChatMessageTask.ClickableTaskMessage(getMessages().get(3).color(GRAY).decorate(CHAT_CLICK_HIGHLIGHT),
+                            new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(3)).color(GRAY),
                                     text(Stage2.GOOGLE_EARTH, GRAY), ClickEvent.openUrl(getPlot().getGoogleEarthLink()))
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START);
-            stage.addPlayerChatEvent(getTasks().get(0), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
+            stage.addPlayerChatEvent(deserialize(getTasks().get(0)), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
-                    ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(6) }, false);
+                    ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { deserialize(getMessages().get(6)) }, false);
                     getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
                 } else {
-                    ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { isCorrect ? getMessages().get(4) : getMessages().get(5) }, false);
+                    ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { isCorrect ? deserialize(getMessages().get(4)) :
+                            deserialize(getMessages().get(5)) }, false);
                     getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
                     stage.delay(Delay.TASK_END);
                 }
@@ -433,12 +436,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_MESSAGES,
                     "//stack",
                      "//line",
@@ -446,7 +449,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS);
         }
 
@@ -466,14 +469,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 3)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .createHolograms(getTasks().get(0), getHolograms().get(0), getHolograms().get(1))
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .createHolograms(deserialize(getTasks().get(0)), getHolograms().get(0), getHolograms().get(1))
                     .delay(Delay.TASK_END)
                     .deleteHolograms()
                     .delay(2)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 4)).delay(1)
-                    .sendChatMessage(getMessages().get(3), Sound.NPC_TALK, true)
-                    .createHolograms(getTasks().get(0), getHolograms().get(2), getHolograms().get(3), getHolograms().get(4))
+                    .sendChatMessage(deserialize(getMessages().get(3)), Sound.NPC_TALK, true)
+                    .createHolograms(deserialize(getTasks().get(0)), getHolograms().get(2), getHolograms().get(3), getHolograms().get(4))
                     .delay(Delay.TASK_END);
         }
     }
@@ -484,17 +487,17 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_MESSAGES);
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TASKS);
         }
 
@@ -511,21 +514,21 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 5)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(1), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(1)), Sound.NPC_TALK, true)
                     .createHolograms(getHolograms().get(0), getHolograms().get(1))
                     .addTask(new PlotPermissionChangeTask(getPlayer(), true, false))
-                    .addTask(new BuildEventTask(getPlayer(), getTasks().get(0), getWindowBuildPoints(), (blockPos, isCorrect) -> {
+                    .addTask(new BuildEventTask(getPlayer(), deserialize(getTasks().get(0)), getWindowBuildPoints(), (blockPos, isCorrect) -> {
                         if (isCorrect) {
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
                         } else {
-                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { getMessages().get(4) }, false);
+                            ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { deserialize(getMessages().get(4)) }, false);
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_WRONG, 1f, 1f);
                         }
                     }))
                     .addTask(new PlotPermissionChangeTask(getPlayer(), false, false))
                     .delay(Delay.TASK_END)
-                    .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, false).delay(1);
+                    .sendChatMessage(deserialize(getMessages().get(5)), Sound.NPC_TALK, false).delay(1);
         }
     }
 
@@ -535,18 +538,18 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_MESSAGES,
                     "//replace");
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS);
         }
 
@@ -564,8 +567,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 6)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .createHolograms(getTasks().get(0), getHolograms().get(0), getHolograms().get(1), getHolograms().get(2))
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .createHolograms(deserialize(getTasks().get(0)), getHolograms().get(0), getHolograms().get(1), getHolograms().get(2))
                     .delay(Delay.TASK_END);
         }
     }
@@ -576,19 +579,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        protected Component setTitle() {
+        protected String setTitle() {
             return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TITLE);
         }
 
         @Override
-        public List<Component> setMessages() {
+        public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_MESSAGES,
                     "/hdb",
                     "/discord");
         }
 
         @Override
-        protected List<Component> setTasks() {
+        protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS);
         }
 
@@ -605,20 +608,20 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .addTask(new PlotSchematicPasteTask(getPlayer(), 7)).delay(1)
-                    .sendChatMessage(getMessages().get(0), Sound.NPC_TALK, true)
-                    .createHolograms(getTasks().get(0), getHolograms().get(0), getHolograms().get(1))
+                    .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
+                    .createHolograms(deserialize(getTasks().get(0)), getHolograms().get(0), getHolograms().get(1))
                     .delay(Delay.TASK_END)
                     .deleteHolograms()
                     .delay(2)
                     .sendChatMessage(new Object[] {
                         getMessages().get(3),
                         "",
-                        new ChatMessageTask.ClickableTaskMessage(getMessages().get(4).color(GRAY).decorate(CHAT_CLICK_HIGHLIGHT),
-                                LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE).append(text("...")),
+                        new ChatMessageTask.ClickableTaskMessage(deserialize(TEXT_CLICK_HIGHLIGHT + getMessages().get(4)).color(GRAY),
+                                deserialize(LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE)).append(text("...")),
                                 ClickEvent.openUrl(TutorialUtils.getDocumentationLinks(ConfigUtil.getTutorialInstance().getBeginnerTutorial()).get(0))),
                     }, Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(5), Sound.NPC_TALK, true)
-                    .sendChatMessage(getMessages().get(6), Sound.NPC_TALK, false).delay(3)
+                    .sendChatMessage(deserialize(getMessages().get(5)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(6)), Sound.NPC_TALK, false).delay(3)
                     .teleport(0);
         }
     }

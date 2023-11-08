@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.utils.enums;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -67,8 +67,8 @@ public enum Continent {
         List<Country> countries = Country.getCountries(this);
 
         return new ItemBuilder(Material.COMPASS)
-                .setName("§e§l" + LangUtil.getInstance().getString(player, langPath))
-                .setLore(new LoreBuilder().addLines("§6" + countries.size() + " §7" + LangUtil.getInstance().getString(player, LangPaths.Country.COUNTRIES)).build())
+                .setName("§e§l" + LangUtil.getInstance().get(player, langPath))
+                .setLore(new LegacyLoreBuilder().addLines("§6" + countries.size() + " §7" + LangUtil.getInstance().get(player, LangPaths.Country.COUNTRIES)).build())
                 .build();
     }
 }

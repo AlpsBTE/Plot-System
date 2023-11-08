@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.menus.tutorial;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -58,7 +58,7 @@ public class TutorialsMenu extends AbstractMenu {
     // private boolean isBeginnerTutorialCompleted = false;
 
     public TutorialsMenu(Player menuPlayer) {
-        super(6, LangUtil.getInstance().getString(menuPlayer, LangPaths.MenuTitle.TUTORIALS), menuPlayer);
+        super(6, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIALS), menuPlayer);
     }
 
     @Override
@@ -98,8 +98,8 @@ public class TutorialsMenu extends AbstractMenu {
 
             // Set beginner tutorial item
             getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
-                    LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
-                    LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
+                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
+                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
             );
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -154,8 +154,6 @@ public class TutorialsMenu extends AbstractMenu {
      * @param clickType The click type (left or right)
      */
     private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
-        getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.8f, 0.8f);
-
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
             if (clickType == ClickType.LEFT) {
                 // TutorialPlot plot = getPlotById(tutorialId);
@@ -164,20 +162,25 @@ public class TutorialsMenu extends AbstractMenu {
                         getMenuPlayer().closeInventory();
                         if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId)) {
                             if (AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId()) != null) {
-                                getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Message.Error.TUTORIAL_ALREADY_RUNNING)));
+                                getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.TUTORIAL_ALREADY_RUNNING)));
                             } else throw new Exception("Failed to load tutorial");
                         }
+                        return;
                     }
                 } catch (Exception ex) {
                     getMenuPlayer().closeInventory();
                     Bukkit.getLogger().log(Level.SEVERE, "An error occurred while handling menu click event", ex);
-                    getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                    getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+                    return;
                 }
-            } else if (clickType == ClickType.RIGHT) {
-                new TutorialStagesMenu(getMenuPlayer(), tutorialId);
             }
+
+            new TutorialStagesMenu(getMenuPlayer(), tutorialId);
+            return;
         }
+
+        getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.8f, 0.8f);
     }
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
@@ -189,14 +192,14 @@ public class TutorialsMenu extends AbstractMenu {
         // Create tutorial item lore
         int highestPlotStage = plot != null ? plot.getStageID() : 0;
         boolean isPlotCompleted = plot != null && plot.isCompleted();
-        LoreBuilder loreBuilder = new LoreBuilder().addLines("§7" + desc, "", LangUtil.getInstance().getString(player, LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
+        LegacyLoreBuilder loreBuilder = new LegacyLoreBuilder().addLines("§7" + desc, "", LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
                 (highestPlotStage + (isPlotCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES), "");
         if (plot == null || !isPlotCompleted) {
-            loreBuilder.addLine(LangUtil.getInstance().getString(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
-                    "§e" + LangUtil.getInstance().getString(player, LangPaths.Note.Action.START));
+            loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
+                    "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.START));
         }
-        loreBuilder.addLine(LangUtil.getInstance().getString(player, LangPaths.Note.Action.RIGHT_CLICK) + " §8» " +
-                "§e" + LangUtil.getInstance().getString(player, LangPaths.Note.Action.TUTORIAL_SHOW_STAGES));
+        loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + " §8» " +
+                "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.TUTORIAL_SHOW_STAGES));
 
         // Create tutorial item
         return new ItemBuilder(itemStack)
@@ -207,14 +210,14 @@ public class TutorialsMenu extends AbstractMenu {
 
     private static ItemStack getAdvancedTutorialItem(Player player) {
         return new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
-                .setName("§c§l" + LangUtil.getInstance().getString(player, LangPaths.Note.UNDER_CONSTRUCTION))
+                .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.Note.UNDER_CONSTRUCTION))
                 .build();
     }
 
     public static ItemStack getTutorialItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.WORKBENCH.getId()))
-                .setName("§b§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.TUTORIALS))
-                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().getString(player, LangPaths.MenuDescription.TUTORIALS)).build())
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.TUTORIALS))
+                .setLore(new LegacyLoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.TUTORIALS)).build())
                 .build();
     }
 }

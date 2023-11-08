@@ -90,8 +90,8 @@ public class ChatMessageTask extends AbstractTask {
 
         // Send the continue task message
         player.sendMessage(text());
-        if (waitToContinue) player.sendMessage(getContinueButtonComponent(LangUtil.getInstance().getString(player, LangPaths.Note.Action.CONTINUE),
-                LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_PROCEED)));
+        if (waitToContinue) player.sendMessage(getContinueButtonComponent(LangUtil.getInstance().get(player, LangPaths.Note.Action.CONTINUE),
+                LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED)));
     }
 
     public static Component getContinueButtonComponent(String text, String hoverText) {

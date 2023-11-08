@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -40,11 +40,11 @@ import org.ipvp.canvas.mask.Mask;
 public class BuilderUtilitiesMenu extends AbstractMenu {
 
     public BuilderUtilitiesMenu(Player player) {
-        super(3, LangUtil.getInstance().getString(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
+        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
 
         if(!PlotUtils.isPlotWorld(player.getWorld())) {
             player.closeInventory();
-            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
+            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
         }
     }
 
@@ -60,17 +60,17 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
         // Set custom-heads menu item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
-                        .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
-                        .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
+                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS).toUpperCase())
+                        .setLore(new LegacyLoreBuilder()
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
                         .build());
 
         // Set banner-maker menu item
         getMenu().getSlot(13)
                 .setItem(new ItemBuilder(Material.RED_BANNER, 1)
-                        .setName("§b§l" + LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
-                        .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().getString(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
+                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER).toUpperCase())
+                        .setLore(new LegacyLoreBuilder()
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
                         .build());
 
         // Set special-blocks menu item
@@ -107,9 +107,9 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.GOLDEN_AXE)
-                .setName("§b§l" + LangUtil.getInstance().getString(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
-                .setLore(new LoreBuilder()
-                        .addLine(LangUtil.getInstance().getString(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
+                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES))
+                .setLore(new LegacyLoreBuilder()
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
                 .build();
     }
 }

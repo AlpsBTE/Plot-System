@@ -73,18 +73,18 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                     if (DefaultPlotGenerator.playerPlotGenerationHistory.get(getBuilder().getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
                         DefaultPlotGenerator.playerPlotGenerationHistory.remove(getBuilder().getUUID());
                     } else {
-                        getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
+                        getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
                         getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         return false;
                     }
                 }
 
                 DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
-                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
+                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                 return true;
             } else {
-                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
+                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
             }
         } catch (SQLException ex) {

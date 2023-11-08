@@ -59,7 +59,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                     if (PlotUtils.plotExists(plotID)) {
                         plot = new Plot(plotID);
                     } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                         return;
                     }
                 } else if (PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -79,16 +79,16 @@ public class CMD_Plot_Feedback extends SubCommand {
                     if (plot.isReviewed()) {
                         new FeedbackMenu(getPlayer(sender), plot.getID());
                     } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.PLOT_HAS_NOT_YET_REVIEWED)));
+                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_HAS_NOT_YET_REVIEWED)));
                     }
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.getString(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

@@ -29,7 +29,6 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -48,7 +47,6 @@ public class TutorialNPC extends AbstractNpc {
 
     @Override
     public String getActionTitle(UUID playerUUID) {
-        return GRAY + "(" + LangUtil.getInstance().getString(Bukkit.getPlayer(playerUUID),
-                LangPaths.Note.Action.RIGHT_CLICK) + ")";
+        return GRAY + "(" + LangUtil.getInstance().get(playerUUID, LangPaths.Note.Action.RIGHT_CLICK) + ")";
     }
 }

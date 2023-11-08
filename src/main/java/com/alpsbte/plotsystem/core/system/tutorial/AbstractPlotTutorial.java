@@ -184,7 +184,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onException(Exception ex) {
-        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().getString(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         super.onException(ex);
     }
 
@@ -208,10 +208,10 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param player The player to send the message to.
      * @param title The title of the stage.
      */
-    protected static void sendStageUnlockedMessage(Player player, Component title) {
+    protected static void sendStageUnlockedMessage(Player player, String title) {
         player.sendMessage(text());
-        player.sendMessage(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED).color(AQUA).decorate(BOLD));
-        player.sendMessage(text("  ◆ ", WHITE, BOLD).append(title.color(GOLD).decorate(BOLD)));
+        player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_NEW_STAGE_UNLOCKED)).color(AQUA).decorate(BOLD));
+        player.sendMessage(text("  ◆ ", WHITE, BOLD).append(text(title).color(GOLD).decorate(BOLD)));
         player.sendMessage(text());
     }
 
@@ -222,9 +222,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @see TutorialCategory
      */
     protected static void sendTutorialCompletedMessage(Player player, String tutorial) {
-        player.sendMessage("");
-        player.sendMessage("§b§l" + LangUtil.getInstance().getString(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase());
-        player.sendMessage("  §f§l◆ §6§l" + tutorial);
-        player.sendMessage("");
+        player.sendMessage(text());
+        player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase()).color(AQUA).decorate(BOLD));
+        player.sendMessage(text("  ◆ ").color(WHITE).decorate(BOLD).append(text(tutorial).color(GOLD)));
+        player.sendMessage(text());
     }
 }

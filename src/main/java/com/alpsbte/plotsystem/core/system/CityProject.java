@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -104,15 +104,15 @@ public class CityProject {
 
             return new ItemBuilder(cpItem)
                     .setName("§b§l" + getName())
-                    .setLore(new LoreBuilder()
+                    .setLore(new LegacyLoreBuilder()
                             .addLines(getDescription(),
                                     "",
-                                    "§6" + plotsOpen + " §7" + LangUtil.getInstance().getString(player, LangPaths.CityProject.PROJECT_OPEN) + " §8" + LangUtil.getInstance().getString(player, LangPaths.CityProject.FOR_YOUR_DIFFICULTY, (plotsOpenForPlayer == 0 ? "§c" : "§a") + plotsOpenForPlayer + "§8"),
+                                    "§6" + plotsOpen + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_OPEN) + " §8" + LangUtil.getInstance().get(player, LangPaths.CityProject.FOR_YOUR_DIFFICULTY, (plotsOpenForPlayer == 0 ? "§c" : "§a") + plotsOpenForPlayer + "§8"),
                                     "§8---------------------",
-                                    "§6" + plotsInProgress + " §7" + LangUtil.getInstance().getString(player, LangPaths.CityProject.PROJECT_IN_PROGRESS),
-                                    "§6" + plotsCompleted + " §7" + LangUtil.getInstance().getString(player, LangPaths.CityProject.PROJECT_COMPLETED),
+                                    "§6" + plotsInProgress + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_IN_PROGRESS),
+                                    "§6" + plotsCompleted + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_COMPLETED),
                                     "",
-                                    plotsUnclaimed != 0 ? Utils.ChatUtils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.getInstance().getString(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
+                                    plotsUnclaimed != 0 ? Utils.ChatUtils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
                             ).build())
                     .build();
 

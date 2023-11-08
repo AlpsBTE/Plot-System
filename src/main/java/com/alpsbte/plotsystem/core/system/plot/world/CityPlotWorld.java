@@ -56,7 +56,7 @@ public class CityPlotWorld extends PlotWorld {
                 player.setFlying(true);
 
                 if (getPlot() != null) {
-                    player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().getString(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+                    player.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
                     Utils.updatePlayerInventorySlots(player);
                     PlotUtils.ChatFormatting.sendLinkMessages((Plot) getPlot(), player);

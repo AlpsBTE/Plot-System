@@ -597,24 +597,24 @@ public final class PlotUtils {
 
                 try {
                     if(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                        tc[0].setText("§7§l> " + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Maps", ShortLink.generateShortLink(
+                        tc[0].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Maps", ShortLink.generateShortLink(
                                 plot.getGoogleMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
 
-                        tc[1].setText("§7§l> " + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Earth Web", ShortLink.generateShortLink(
+                        tc[1].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Earth Web", ShortLink.generateShortLink(
                                 plot.getGoogleEarthLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
 
-                        tc[2].setText("§7§l> " + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Open Street Map", ShortLink.generateShortLink(
+                        tc[2].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Open Street Map", ShortLink.generateShortLink(
                                 plot.getOSMMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
                     } else {
-                        tc[0].setText("§8§l> " + GRAY + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Maps" + GRAY));
-                        tc[1].setText("§8§l> " + GRAY + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Earth Web" + GRAY));
-                        tc[2].setText("§8§l> " + GRAY + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Open Street Map" + GRAY));
+                        tc[0].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Maps" + GRAY));
+                        tc[1].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Earth Web" + GRAY));
+                        tc[2].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Open Street Map" + GRAY));
                     }
 
                     tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
@@ -656,9 +656,9 @@ public final class PlotUtils {
             try {
                 if (plot.getPlotMembers().isEmpty()) {
                     TextComponent tc = new TextComponent();
-                    tc.setText("§7§l> " + LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
+                    tc.setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
                     tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().getString(player, LangPaths.Plot.MEMBERS))));
+                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS))));
 
                     player.spigot().sendMessage(tc);
                     player.sendMessage("§8--------------------------");
@@ -671,12 +671,12 @@ public final class PlotUtils {
         public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
             player.sendMessage("§8--------------------------");
             for(Plot plot : plots) {
-                player.sendMessage("§7§l> " + LangUtil.getInstance().getString(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
+                player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
                 TextComponent tc = new TextComponent();
-                tc.setText(LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
+                tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
                 tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
                 tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(
-                        LangUtil.getInstance().getString(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().getString(player, LangPaths.Review.FEEDBACK))));
+                        LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK))));
                 player.spigot().sendMessage(tc);
 
                 if(plots.size() != plots.indexOf(plot) + 1) {
@@ -688,23 +688,23 @@ public final class PlotUtils {
         }
 
         public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-            player.sendMessage("§7§l> " + LangUtil.getInstance().getString(player, plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS, String.valueOf(plots.size())));
+            player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS, String.valueOf(plots.size())));
             TextComponent tc = new TextComponent();
-            tc.setText(LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS));
+            tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().getString(player, LangPaths.MenuTitle.SHOW_PLOTS))));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
             player.spigot().sendMessage(tc);
         }
 
         public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
-            player.sendMessage("§7§l> " + LangUtil.getInstance().getString(player, plots.size() <= 1 ?
+            player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, plots.size() <= 1 ?
                     LangPaths.Message.Info.UNREVIEWED_PLOT :
                     LangPaths.Message.Info.UNREVIEWED_PLOTS, String.valueOf(plots.size())));
 
             TextComponent tc = new TextComponent();
-            tc.setText(LangUtil.getInstance().getString(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS));
+            tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS));
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().getString(player, LangPaths.MenuTitle.SHOW_PLOTS))));
+            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
             player.spigot().sendMessage(tc);
         }
     }

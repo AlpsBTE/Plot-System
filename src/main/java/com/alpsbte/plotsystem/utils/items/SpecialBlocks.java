@@ -25,13 +25,13 @@
 package com.alpsbte.plotsystem.utils.items;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class SpecialBlocks {
     public static final ItemStack SeamlessSandstone = new ItemBuilder(Material.SANDSTONE, 1, (byte) 2)
-            .setName("§6§lSeamless Sandstone").setLore(new LoreBuilder()
+            .setName("§6§lSeamless Sandstone").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fSeamless Sandstone§7 block",
                           "",
@@ -42,7 +42,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack SeamlessRedSandstone = new ItemBuilder(Material.RED_SANDSTONE, 1, (byte) 2)
-            .setName("§6§lSeamless Red Sandstone").setLore(new LoreBuilder()
+            .setName("§6§lSeamless Red Sandstone").setLore(new LegacyLoreBuilder()
                     .emptyLine()
                     .addLines("Use this tool to place a §fSeamless Red Sandstone§7 block",
                             "",
@@ -53,7 +53,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack SeamlessStone = new ItemBuilder(Material.STONE, 1)
-            .setName("§6§lSeamless Stone").setLore(new LoreBuilder()
+            .setName("§6§lSeamless Stone").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fSeamless Stone§7 block",
                           "",
@@ -64,7 +64,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack RedMushroom = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_2, 1)
-            .setName("§6§lRed Mushroom").setLore(new LoreBuilder()
+            .setName("§6§lRed Mushroom").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fRed Mushroom§7 block",
                         "",
@@ -75,7 +75,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BrownMushroom = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_1, 1)
-            .setName("§6§lBrown Mushroom Block").setLore(new LoreBuilder()
+            .setName("§6§lBrown Mushroom Block").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fBrown Mushroom§7 block",
                         "",
@@ -86,7 +86,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack SeamlessMushroomStem = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_2, 1)
-            .setName("§6§lSeamless Mushroom Stem Block").setLore(new LoreBuilder()
+            .setName("§6§lSeamless Mushroom Stem Block").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fSeamless Mushroom Stem§7 block",
                           "",
@@ -97,7 +97,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack LightBrownMushroom = new ItemBuilder(Material.LEGACY_HUGE_MUSHROOM_1, 1)
-            .setName("§6§lLight Brown Mushroom Block").setLore(new LoreBuilder()
+            .setName("§6§lLight Brown Mushroom Block").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fLight Brown Mushroom§7 block",
                           "",
@@ -108,7 +108,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack Barrier = new ItemBuilder(Material.BARRIER, 1)
-            .setName("§6§lBarrier").setLore(new LoreBuilder()
+            .setName("§6§lBarrier").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place an §fInvisible§7 block",
                         "",
@@ -119,7 +119,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack StructureVoid = new ItemBuilder(Material.STRUCTURE_VOID, 1)
-            .setName("§6§lStructure Void").setLore(new LoreBuilder()
+            .setName("§6§lStructure Void").setLore(new LegacyLoreBuilder()
                     .emptyLine()
                     .addLines("Use this tool to place an §fInvisible§7 block.",
                             "",
@@ -130,7 +130,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BarkOakLog = new ItemBuilder(Material.OAK_WOOD)
-            .setName("§6§lBark Oak Log").setLore(new LoreBuilder()
+            .setName("§6§lBark Oak Log").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Oak Log§7 block",
                           "",
@@ -141,7 +141,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BarkBirchLog = new ItemBuilder(Material.BIRCH_WOOD)
-            .setName("§6§lBark Birch Log").setLore(new LoreBuilder()
+            .setName("§6§lBark Birch Log").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Birch Log§7 block",
                           "",
@@ -152,7 +152,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BarkSpruceLog = new ItemBuilder(Material.SPRUCE_WOOD)
-            .setName("§6§lBark Spruce Log").setLore(new LoreBuilder()
+            .setName("§6§lBark Spruce Log").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Spruce Log§7 block",
                           "",
@@ -163,7 +163,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BarkJungleLog = new ItemBuilder(Material.JUNGLE_WOOD)
-            .setName("§6§lBark Jungle Log").setLore(new LoreBuilder()
+            .setName("§6§lBark Jungle Log").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Jungle Log§7 block",
                           "",
@@ -174,7 +174,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BarkAcaciaLog = new ItemBuilder(Material.ACACIA_WOOD)
-            .setName("§6§lBark Acacia Log").setLore(new LoreBuilder()
+            .setName("§6§lBark Acacia Log").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Acacia Log§7 block.",
                           "",
@@ -185,7 +185,7 @@ public class SpecialBlocks {
             .build();
 
     public static final ItemStack BarkDarkOakLog = new ItemBuilder(Material.DARK_OAK_WOOD)
-            .setName("§6§lBark Dark Oak Log").setLore(new LoreBuilder()
+            .setName("§6§lBark Dark Oak Log").setLore(new LegacyLoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Dark Oak Log§7 block.",
                           "",

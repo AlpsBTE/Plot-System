@@ -41,8 +41,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 
 public class TutorialUtils {
-    public static NamedTextColor CHAT_HIGHLIGHT_COLOR = GOLD;
-    public static TextDecoration CHAT_CLICK_HIGHLIGHT = TextDecoration.UNDERLINED;
+    public static String TEXT_HIGHLIGHT_START = "<gold>", TEXT_HIGHLIGHT_END = "</gold>";
+    public static String TEXT_CLICK_HIGHLIGHT = "<underlined>";
 
     public static Component CHAT_PREFIX_COMPONENT = text("»", DARK_GRAY)
             .append(Component.text(" ", GRAY));

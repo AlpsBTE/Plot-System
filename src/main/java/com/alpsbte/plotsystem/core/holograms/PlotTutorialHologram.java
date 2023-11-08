@@ -38,38 +38,38 @@ import org.bukkit.entity.Player;
 import static org.bukkit.ChatColor.*;
 
 public class PlotTutorialHologram extends AbstractTutorialHologram {
-    public PlotTutorialHologram(Player player, int holoId, Component content) {
+    public PlotTutorialHologram(Player player, int holoId, String content) {
         this(player, holoId, content, -1);
     }
 
-    public PlotTutorialHologram(Player player, int holoId, Component content, int readMoreId) {
+    public PlotTutorialHologram(Player player, int holoId, String content, int readMoreId) {
         super(player, holoId, content, readMoreId);
     }
 
     @Override
     protected String getTitle() {
-        return GOLD + BOLD.toString() + LangUtil.getInstance().getString(player, LangPaths.Note.TIP).toUpperCase();
+        return GOLD + BOLD.toString() + LangUtil.getInstance().get(player, LangPaths.Note.TIP).toUpperCase();
     }
 
     @Override
     protected String getReadMoreActionText() {
-        return DARK_GRAY + "[" + GRAY + LangUtil.getInstance().getString(player, LangPaths.Note.Action.READ_MORE) + DARK_GRAY + "]";
+        return DARK_GRAY + "[" + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + DARK_GRAY + "]";
     }
 
     @Override
     protected void handleReadMoreClickAction() {
         player.sendMessage(new ChatMessageTask.ClickableTaskMessage(TutorialUtils.CHAT_PREFIX_COMPONENT.append(Component.text(getReadMoreLink(), NamedTextColor.GRAY)),
-                Component.text(LangUtil.getInstance().getString(player, LangPaths.Note.Action.READ_MORE) + "...", NamedTextColor.GRAY), ClickEvent.openUrl(getReadMoreLink())).getComponent());
+                Component.text(LangUtil.getInstance().get(player, LangPaths.Note.Action.READ_MORE) + "...", NamedTextColor.GRAY), ClickEvent.openUrl(getReadMoreLink())).getComponent());
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1, 1.2f);
     }
 
     @Override
     protected String getMarkAsReadActionText() {
-        return DARK_GRAY + "[" + YELLOW + LangUtil.getInstance().getString(player, LangPaths.Note.Action.MARK_AS_READ) + " " + READ_EMOJI + DARK_GRAY + "]";
+        return DARK_GRAY + "[" + YELLOW + LangUtil.getInstance().get(player, LangPaths.Note.Action.MARK_AS_READ) + " " + READ_EMOJI + DARK_GRAY + "]";
     }
 
     @Override
     protected String getMarkAsReadActionDoneText() {
-        return GREEN + LangUtil.getInstance().getString(player, LangPaths.Note.Action.READ) + " " + READ_EMOJI;
+        return GREEN + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ) + " " + READ_EMOJI;
     }
 }
