@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -66,6 +67,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
             @Override
             public void run() {
                 for (Player player : showToPlayers()) {
+                    if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) return;
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, rankingString(player));
                 }
             }
