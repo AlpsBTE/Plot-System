@@ -35,11 +35,8 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.C
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.CreateHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.DeleteHologramTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
-import com.sk89q.worldedit.math.BlockVector3;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,10 +45,8 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-import static net.md_5.bungee.api.ChatColor.GRAY;
-
 public class StageTimeline implements TutorialTimeline {
-    private static final List<TutorialTimeline> activeTimelines = new ArrayList<>();
+    private static final Map<UUID, TutorialTimeline> activeTimelines = new HashMap<>();
 
     protected final Player player;
 
@@ -71,7 +66,7 @@ public class StageTimeline implements TutorialTimeline {
      * It will start with the first task and add the timeline to the list of active timelines.
      */
     public void StartTimeline() {
-        activeTimelines.add(this);
+        activeTimelines.put(player.getUniqueId(), this);
         nextTask();
     }
 
@@ -112,31 +107,28 @@ public class StageTimeline implements TutorialTimeline {
     }
 
     @Override
-    public void onTaskDone(UUID playerUUID, AbstractTask task) {
-        if (!player.getUniqueId().toString().equals(playerUUID.toString()) && task != currentTask) return;
-        if (!activeTimelines.contains(this)) return;
+    public void onTaskDone(AbstractTask task) {
+        if (task != currentTask || !activeTimelines.containsKey(player.getUniqueId())) return;
 
         if (currentTaskId >= tasks.size() - 1) {
-            onStopTimeLine(playerUUID);
-            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++) tutorial.onStageComplete(player.getUniqueId());
+            onStopTimeLine();
+            tutorial.onStageComplete(player.getUniqueId());
         } else nextTask();
     }
 
     @Override
-    public void onAssignmentUpdate(UUID playerUUID, AbstractTask task) {
-        if (!player.getUniqueId().toString().equals(playerUUID.toString()) && task != currentTask) return;
+    public void onAssignmentUpdate(AbstractTask task) {
+        if (task != currentTask) return;
         updatePlayerActionBar();
     }
 
     @Override
-    public void onStopTimeLine(UUID playerUUID) {
-        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
-
-        activeTimelines.remove(this);
+    public void onStopTimeLine() {
+        activeTimelines.remove(player.getUniqueId());
         if (assignmentProgressTask != null) assignmentProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
         tutorial.getActiveHolograms().forEach(AbstractTutorialHologram::delete);
-        tutorial.getNPC().setActionTitleVisibility(playerUUID, false, false);
+        tutorial.getNPC().setActionTitleVisibility(player.getUniqueId(), false, false);
         tasks.clear();
     }
 
@@ -290,7 +282,7 @@ public class StageTimeline implements TutorialTimeline {
      * Gets the active tutorial timelines.
      * @return timelines
      */
-    public static List<TutorialTimeline> getActiveTimelines() {
+    public static Map<UUID, TutorialTimeline> getActiveTimelines() {
         return activeTimelines;
     }
 }

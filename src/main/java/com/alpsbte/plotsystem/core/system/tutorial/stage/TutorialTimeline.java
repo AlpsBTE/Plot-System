@@ -26,31 +26,26 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 
-import java.util.UUID;
-
 public interface TutorialTimeline {
 
     /**
      * This method is called when a stage task is completed.
      * If there is no next task, the timeline will be stopped.
-     * @param playerUUID uuid of the player
      * @param task completed task
      */
-    void onTaskDone(UUID playerUUID, AbstractTask task);
+    void onTaskDone(AbstractTask task);
 
     /**
      * This method is called when a player assignment is updated.
      * Assignments are not tasks and do not inherit from AbstractTask.
      * They are in a task and are used to track the player's progress.
-     * @param playerUUID uuid of the player
      * @param task task of updated assignment
      */
-    void onAssignmentUpdate(UUID playerUUID, AbstractTask task);
+    void onAssignmentUpdate(AbstractTask task);
 
     /**
      * This method is called when the task timeline is stopped.
      * Every ongoing task will end and the tip holograms will be removed.
-     * @param playerUUID uuid of the player
      */
-    void onStopTimeLine(UUID playerUUID);
+    void onStopTimeLine();
 }

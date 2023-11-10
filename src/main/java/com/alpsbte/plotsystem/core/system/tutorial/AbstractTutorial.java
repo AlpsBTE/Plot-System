@@ -31,7 +31,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
@@ -190,7 +189,7 @@ public abstract class AbstractTutorial implements Tutorial {
     @Override
     public void setStage(int stageId) {
         if (stageId < 0 || stageId > stages.size()) return;
-        if (stageTimeline != null) stageTimeline.onStopTimeLine(player.getUniqueId());
+        if (stageTimeline != null) stageTimeline.onStopTimeLine();
         currentStageIndex = stageId - 1;
         nextStage();
     }
@@ -252,7 +251,7 @@ public abstract class AbstractTutorial implements Tutorial {
         npc.delete();
         for (AbstractTutorialHologram holo : getActiveHolograms()) holo.delete();
         playerInteractionHistory.remove(playerUUID);
-        if (stageTimeline != null) stageTimeline.onStopTimeLine(playerUUID);
+        if (stageTimeline != null) stageTimeline.onStopTimeLine();
 
         // Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
         // Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
