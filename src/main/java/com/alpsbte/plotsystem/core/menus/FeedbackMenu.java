@@ -79,10 +79,10 @@ public class FeedbackMenu extends AbstractMenu {
                     .setLore(new LegacyLoreBuilder()
                             .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
                                     "",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
                                     "",
                                     plot.isRejected() ? "§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED) : "§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
                             .build())

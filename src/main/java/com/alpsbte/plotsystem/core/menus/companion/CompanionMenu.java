@@ -70,7 +70,7 @@ public class CompanionMenu {
             Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !Country.getCountries(c).isEmpty()).findFirst();
 
             if (!continent.isPresent()) {
-                player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
                 return;
             }
 
@@ -113,7 +113,7 @@ public class CompanionMenu {
                     try {
                         new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
                     } catch (SQLException ex) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
                     }
@@ -144,7 +144,7 @@ public class CompanionMenu {
                     .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY).toUpperCase())
                     .setLore(new LegacyLoreBuilder()
                             .addLines("",
-                                    selectedPlotDifficulty != null ? Utils.ChatUtils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC),
+                                    selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC),
                                     selectedPlotDifficulty != null ? "§7" + LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": §fx" + Plot.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
                                     "",
                                     "§7" + LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY))

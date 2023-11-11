@@ -42,6 +42,7 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -277,12 +278,12 @@ public class ReviewPlotMenu extends AbstractMenu {
                 if (totalRating <= 8) isRejected = true;
 
                 if (totalRating == 0 && !sentWarning) {
-                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                     sentWarning = true;
                     return;
                 } else if (isRejected && !sentWarning) {
-                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                     sentWarning = true;
                     return;
@@ -303,14 +304,14 @@ public class ReviewPlotMenu extends AbstractMenu {
                     totalRating = (int) Math.floor(totalRatingWithMultiplier);
                     plot.setTotalScore(totalRating);
 
-                    String reviewerConfirmationMessage;
+                    Component reviewerConfirmationMessage;
                     //clickPlayer.closeInventory(); crashes debugging process
 
                     if (!isRejected) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
                         try {
                             if (!PlotUtils.savePlotAsSchematic(plot)) {
-                                clickPlayer.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                                clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                                 Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
                                 return;
                             }
@@ -328,7 +329,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                         if (plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
 
                             // Builder gets 100% of score
                             plot.getPlotOwner().addScore(totalRating);
@@ -340,7 +341,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                         plot.getPlotMembers().get(i).getName() :
                                         plot.getPlotMembers().get(i).getName() + ", ");
                             }
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
 
                         // Score gets split between all participants
                         plot.getPlotOwner().addScore(plot.getSharedScore());
@@ -357,7 +358,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     } else {
                         if (!plot.getPlotMembers().isEmpty()) {
                             // Plot was made alone
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
                         } else {
                             // Plot was made in a group
                             StringBuilder sb = new StringBuilder();
@@ -367,7 +368,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                         plot.getPlotMembers().get(i).getName() :
                                         plot.getPlotMembers().get(i).getName() + ", ");
                             }
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
+                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
                         }
 
                         PlotUtils.Actions.undoSubmit(plot);

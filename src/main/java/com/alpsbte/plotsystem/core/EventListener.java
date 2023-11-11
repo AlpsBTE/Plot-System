@@ -99,27 +99,10 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
 
-            // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
-            try {
-                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                        !TutorialPlot.isPlotCompleted(event.getPlayer(), TutorialCategory.BEGINNER.getId())) {
-                    if (!event.getPlayer().hasPlayedBefore()) {
-                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
-                                () -> event.getPlayer().performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
-                    } else {
-                        AbstractPlotTutorial.sendTutorialRequiredMessage(event.getPlayer(), LangUtil.getInstance().get(event.getPlayer(),
-                                LangPaths.MenuTitle.TUTORIAL_BEGINNER), TutorialCategory.BEGINNER.getId());
-                        event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
-                    }
-                }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-
             // Inform player about update
             if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
-                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1f, 1f);
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
+                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
             }
 
             // Check if player has changed his name
@@ -175,6 +158,23 @@ public class EventListener extends SpecialBlocks implements Listener {
                 }
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
+            }
+
+            // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
+            try {
+                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
+                        !TutorialPlot.isPlotCompleted(event.getPlayer(), TutorialCategory.BEGINNER.getId())) {
+                    if (!event.getPlayer().hasPlayedBefore()) {
+                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                                () -> event.getPlayer().performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
+                    } else {
+                        AbstractPlotTutorial.sendTutorialRequiredMessage(event.getPlayer(), LangUtil.getInstance().get(event.getPlayer(),
+                                LangPaths.MenuTitle.TUTORIAL_BEGINNER), TutorialCategory.BEGINNER.getId());
+                        event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
+                    }
+                }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
     }
@@ -315,11 +315,11 @@ public class EventListener extends SpecialBlocks implements Listener {
                 Review review = Review.awaitReviewerFeedbackList.get(playerUUID).getReview();
                 review.setFeedback(feedback);
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
             } else {
                 Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
+                event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
             }
         }

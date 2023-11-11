@@ -84,7 +84,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             List<Difficulty> difficulties = Difficulty.getDifficulties();
-            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + difficulties.size() + " Difficulties registered in the database:"));
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + difficulties.size() + " Difficulties registered in the database:"));
             sender.sendMessage("§8--------------------------");
             for (Difficulty d : difficulties) {
                 sender.sendMessage(" §6> §b" + d.getID() + " (" + d.getDifficulty().name() + ") §f- Multiplier: " + d.getMultiplier() + " - Score Requirement: " + d.getScoreRequirement());
@@ -129,9 +129,9 @@ public class CMD_Setup_Difficulty extends SubCommand {
             try {
                 if (Difficulty.getDifficulties().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
                 Difficulty.setMultiplier(Integer.parseInt(args[1]), Double.parseDouble(args[2]));
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
             } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }
@@ -173,9 +173,9 @@ public class CMD_Setup_Difficulty extends SubCommand {
             try {
                 if (Difficulty.getDifficulties().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
                 Difficulty.setScoreRequirement(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
             } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         }

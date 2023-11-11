@@ -111,7 +111,8 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        ConfigUtil.getInstance().reloadFiles();
+        reloadConfig();
+
 
         // Load language files
         try {
@@ -262,6 +263,9 @@ public class PlotSystem extends JavaPlugin {
     @Override
     public void reloadConfig() {
         ConfigUtil.getInstance().reloadFiles();
+        ConfigUtil.getInstance().saveFiles();
+        Utils.ChatUtils.setChatFormat(getConfig().getString(ConfigPaths.CHAT_FORMAT_INFO_PREFIX),
+                getConfig().getString(ConfigPaths.CHAT_FORMAT_ALERT_PREFIX));
     }
 
     @Override

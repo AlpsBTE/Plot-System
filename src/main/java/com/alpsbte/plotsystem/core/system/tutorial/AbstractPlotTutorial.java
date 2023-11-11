@@ -186,7 +186,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     public void onException(Exception ex) {
-        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+        if (getPlayer().isOnline()) getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         super.onException(ex);
     }
 
@@ -237,14 +237,14 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param tutorialId the id of the tutorial
      */
     public static void sendTutorialRequiredMessage(Player player, String tutorialName, int tutorialId) {
-        Component clickComponent = text("[", GRAY, BOLD)
+        Component clickComponent = text("[", DARK_GRAY, BOLD)
                 .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.START), YELLOW))
-                .append(text("]", GRAY))
+                .append(text("]", DARK_GRAY))
                 .clickEvent(ClickEvent.runCommand("/tutorial " + tutorialId))
                 .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED), GRAY)));
 
         player.sendMessage(text());
-        player.sendMessage(text().color(GREEN).append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.BEGINNER_TUTORIAL_REQUIRED,
+        player.sendMessage(TutorialUtils.CHAT_TASK_PREFIX_COMPONENT.append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.BEGINNER_TUTORIAL_REQUIRED,
                 TutorialUtils.TEXT_HIGHLIGHT_START + tutorialName + TutorialUtils.TEXT_HIGHLIGHT_END)))
                 .append(text(" ")).append(clickComponent));
         player.sendMessage(text());

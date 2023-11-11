@@ -166,7 +166,7 @@ public class TutorialsMenu extends AbstractMenu {
                         getMenuPlayer().closeInventory();
                         if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId)) {
                             if (AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId()) != null) {
-                                getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.TUTORIAL_ALREADY_RUNNING)));
+                                getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.TUTORIAL_ALREADY_RUNNING)));
                             } else throw new Exception("Failed to load tutorial");
                         }
                         return;
@@ -174,7 +174,7 @@ public class TutorialsMenu extends AbstractMenu {
                 } catch (Exception ex) {
                     getMenuPlayer().closeInventory();
                     Bukkit.getLogger().log(Level.SEVERE, "An error occurred while handling menu click event", ex);
-                    getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                    getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                     return;
                 }

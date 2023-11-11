@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.utils;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
@@ -32,6 +33,8 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,6 +43,9 @@ import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.logging.Level;
+
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class Utils {
 
@@ -85,18 +91,25 @@ public class Utils {
 
 
     public static class ChatUtils {
-        public static final String LINE_BREAKER = "%newline%";
-        private static final String messagePrefix =  PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_PREFIX) + " ";
-
-        public static String getInfoMessageFormat(String info) {
-            return messagePrefix + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_INFO_COLOUR) + info;
+        public static void setChatFormat(String infoPrefix, String alertPrefix) {
+            ChatUtils.infoPrefix = AlpsUtils.deserialize(infoPrefix);
+            ChatUtils.alertPrefix = AlpsUtils.deserialize(alertPrefix);
         }
 
-        public static String getErrorMessageFormat(String error) {
-            return messagePrefix + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.MESSAGE_ERROR_COLOUR) + error;
+        private static Component infoPrefix;
+        private static Component alertPrefix;
+
+        public static Component getInfoFormat(String info) {
+            return infoPrefix.append(LegacyComponentSerializer.legacySection().deserialize(info).color(GREEN));
         }
 
-        // Item Formatting
+        public static Component getAlertFormat(String alert) {
+            return alertPrefix.append(LegacyComponentSerializer.legacySection().deserialize(alert).color(RED));
+        }
+    }
+
+
+    public static class ItemUtils {
         public static String getNoteFormat(String note) {
             return "§c§lNote: §8" + note;
         }

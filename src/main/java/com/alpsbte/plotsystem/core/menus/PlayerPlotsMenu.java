@@ -166,10 +166,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         if (plot.isReviewed() || plot.isRejected()) {
             lines.add("");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
             lines.add("");
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":");
 

@@ -83,7 +83,7 @@ public class PlotMemberMenu extends AbstractMenu {
                         .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LegacyLoreBuilder()
                                 .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
                                         "",
-                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
+                                        Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
                         .build());
 
         // Set back item
@@ -118,7 +118,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 .setLore(new LegacyLoreBuilder()
                                         .addLines(builder.getName(),
                                                 "",
-                                                Utils.ChatUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
+                                                Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
                                         .build())
                                 .build());
             }
@@ -137,7 +137,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(itemSlot-12);
                     try {
                         plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
@@ -153,26 +153,26 @@ public class PlotMemberMenu extends AbstractMenu {
                         try {
                             if (Builder.getBuilderByName(text) == null) {
                                 // Input was invalid or Player hasn't joined the server yet
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                                player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
                                 return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.INVALID_INPUT));
                             }
                             Builder builder = Builder.getBuilderByName(text);
                             if (!Objects.requireNonNull(builder).isOnline()) {
                                 // Builder isn't online, thus can't be asked if he/she wants to be added
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
+                                player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
                                 return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_NOT_ONLINE));
                             }
 
                             // Check if player is owner of plot
                             if (builder.getPlayer() == plot.getPlotOwner().getPlayer()) {
-                                player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
+                                player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
                                 return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_IS_OWNER));
                             }
 
                             // Check if player is already a member of the plot
                             for (Builder item : plot.getPlotMembers()) {
                                 if (builder.getPlayer() == item.getPlayer()) {
-                                    player.sendMessage(Utils.getErrorMessageFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_MEMBER)));
+                                    player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_MEMBER)));
                                     return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_ALREADY_ADDED));
                                 }
                             }

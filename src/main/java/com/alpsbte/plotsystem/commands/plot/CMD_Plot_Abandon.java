@@ -56,7 +56,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                 if (PlotUtils.plotExists(plotID)) {
                     plot = new Plot(plotID);
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
                 }
             } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
@@ -75,17 +75,17 @@ public class CMD_Plot_Abandon extends SubCommand {
             if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
                 if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
                     if (PlotUtils.Actions.abandonPlot(plot)) {
-                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));
+                        sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));
                         if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
                     }
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender,LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender,LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                 }
             } else {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

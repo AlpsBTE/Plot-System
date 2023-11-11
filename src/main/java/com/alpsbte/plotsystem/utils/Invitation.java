@@ -56,23 +56,23 @@ public class Invitation {
         // Check if player has already been invited
         for (Invitation item : invitationsList) {
             if (item.invitee == invitee) {
-                plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(invitee.getName() + " has already gotten an Invite from a plot!"));
+                plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(invitee.getName() + " has already gotten an Invite from a plot!"));
                 return;
             }
         }
 
         // Construct and send messages
         TextComponent tc = new TextComponent();
-        tc.setText(Utils.ChatUtils.getInfoMessageFormat("[CLICK TO ACCEPT]"));
+        tc.setText("§a[CLICK TO ACCEPT]");
         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot invite accept"));
         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new Text("Accept Invite")));
 
         invitee.sendMessage("§7--------------------");
-        invitee.sendMessage(Utils.ChatUtils.getInfoMessageFormat(plot.getPlotOwner().getName() + " has invited you to help building Plot #" + plot.getID()));
+        invitee.sendMessage(Utils.ChatUtils.getInfoFormat(plot.getPlotOwner().getName() + " has invited you to help building Plot #" + plot.getID()));
         invitee.spigot().sendMessage(tc);
         invitee.sendMessage("§7--------------------");
 
-        plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat("Sent an invitation to §6" + invitee.getName() + "§a, to join your plot!"));
+        plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat("Sent an invitation to §6" + invitee.getName() + "§a, to join your plot!"));
 
         // Add invitation to static list
         invitationsList.add(this);
@@ -82,8 +82,8 @@ public class Invitation {
         taskID = scheduler.scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             invitationsList.remove(invitation);
             try {
-                invitee.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Invitation from " + plot.getPlotOwner().getName() + " expired!"));
-                plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat("The invitation you sent to " + invitee.getName() + " expired!"));
+                invitee.sendMessage(Utils.ChatUtils.getAlertFormat("Invitation from " + plot.getPlotOwner().getName() + " expired!"));
+                plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat("The invitation you sent to " + invitee.getName() + " expired!"));
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
@@ -96,21 +96,21 @@ public class Invitation {
             plot.addPlotMember(Builder.byUUID(invitee.getUniqueId()));
 
             // Messages Receiver
-            invitee.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been accepted!"));
-            invitee.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Happy building! :)"));
+            invitee.sendMessage(Utils.ChatUtils.getInfoFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been accepted!"));
+            invitee.sendMessage(Utils.ChatUtils.getInfoFormat("Happy building! :)"));
 
             // Messages Sender
-            plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
-            plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat("Happy building! :)"));
+            plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(invitee.getName() + " has accepted your Invite and has been added to your plot!"));
+            plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat("Happy building! :)"));
             scheduler.cancelTask(taskID);
         } else {
-            invitee.sendMessage(Utils.ChatUtils.getErrorMessageFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
+            invitee.sendMessage(Utils.ChatUtils.getAlertFormat("All your slots are occupied! Please finish your current plots before creating a new one."));
         }
     }
 
     public void RejectInvite() throws SQLException {
-        plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(invitee.getName() + " has rejected your Invite!"));
-        invitee.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been rejected!"));
+        plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(invitee.getName() + " has rejected your Invite!"));
+        invitee.sendMessage(Utils.ChatUtils.getInfoFormat("Invitation to " + plot.getPlotOwner().getName() + "'s plot has been rejected!"));
         scheduler.cancelTask(taskID);
     }
 }

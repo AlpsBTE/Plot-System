@@ -51,7 +51,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.*;
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Delay;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;

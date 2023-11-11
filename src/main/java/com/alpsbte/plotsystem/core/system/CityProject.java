@@ -112,7 +112,7 @@ public class CityProject {
                                     "§6" + plotsInProgress + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_IN_PROGRESS),
                                     "§6" + plotsCompleted + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_COMPLETED),
                                     "",
-                                    plotsUnclaimed != 0 ? Utils.ChatUtils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
+                                    plotsUnclaimed != 0 ? Utils.ItemUtils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
                             ).build())
                     .build();
 

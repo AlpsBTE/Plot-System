@@ -74,9 +74,9 @@ public abstract class ConfigPaths {
 
 
     // FORMATTING
-    public static final String MESSAGE_PREFIX = "message-prefix";
-    public static final String MESSAGE_INFO_COLOUR = "info-colour";
-    public static final String MESSAGE_ERROR_COLOUR = "error-colour";
+    public static final String CHAT_FORMAT = "chat-format.";
+    public static final String CHAT_FORMAT_INFO_PREFIX = CHAT_FORMAT + "info-prefix";
+    public static final String CHAT_FORMAT_ALERT_PREFIX = CHAT_FORMAT + "alert-prefix";
 
 
     // COMMANDS

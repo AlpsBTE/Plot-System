@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class WandCmdEventTask extends AbstractCmdEventTask {

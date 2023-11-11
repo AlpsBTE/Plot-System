@@ -77,20 +77,11 @@ display-options:
 
 
 # -----------------------------------------------------
-# | Navigation: The command that the player will automatically execute when pressing the navigator item in the companion
-# | NOTE: Remove the "/" from whatever command you want to use
+# | Formatting: Info / Alert message prefix format
 # -----------------------------------------------------
-navigator:
-  item: NETHER_STAR
-  command: navigator
-
-
-# -----------------------------------------------------
-# | Formatting: Info/Error message outputs
-# -----------------------------------------------------
-message-prefix: §8[§6Plot-System§8] §7
-info-colour: §a
-error-colour: §c
+chat-format:
+  info-prefix: '<dark_gray>[<gold>PS</gold>] » </dark_gray>'
+  alert-prefix: '<dark_gray>[<gold>PS</gold>] » </dark_gray>'
 
 
 # -----------------------------------------------------
@@ -114,4 +105,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 2.1
+config-version: 3.0

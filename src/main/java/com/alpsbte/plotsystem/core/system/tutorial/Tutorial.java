@@ -107,7 +107,7 @@ public interface Tutorial {
     /**
      * This method is called when the player completes a stage.
      * @param playerUUID uuid of the player
-     * @see StageTimeline#onTaskDone(UUID, AbstractTask)
+     * @see StageTimeline#onTaskDone(AbstractTask)
      */
     void onStageComplete(UUID playerUUID);
 

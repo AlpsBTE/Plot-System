@@ -41,12 +41,12 @@ public class CMD_SetLeaderboard extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (!PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Holograms (Holographic Displays) extension is not loaded!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Holograms (Holographic Displays) extension is not loaded!"));
             return true;
         }
 
         if (!sender.hasPermission(getPermission())){
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
 
@@ -74,11 +74,11 @@ public class CMD_SetLeaderboard extends BaseCommand {
 
         // Update hologram location
         if(hologram == null) {
-            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Hologram could not be found!"));
+            player.sendMessage(Utils.ChatUtils.getAlertFormat("Hologram could not be found!"));
             return true;
         }
         LeaderboardManager.savePosition(hologram.getId(), getPlayer(sender).getLocation());
-        player.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully updated hologram location!"));
+        player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
         player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
         return true;
     }

@@ -89,7 +89,7 @@ public class SelectLanguageMenu extends AbstractMenu {
                     Utils.updatePlayerInventorySlots(clickPlayer);
 
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
-                    getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(
+                    getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(
                             LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE,
                                     langFile.getLanguage().getName())));
                 } catch (Exception ex) {
@@ -108,7 +108,7 @@ public class SelectLanguageMenu extends AbstractMenu {
                 LangLibAPI.setPlayerLang(Objects.requireNonNull(getMenuPlayer().getPlayer()),getMenuPlayer().getLocale());
                 reloadMenuAsync();
                 getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
-                getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(
+                getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(
                         LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.CHANGED_LANGUAGE,
                                 LangUtil.getInstance().getLanguageFileByPlayer(getMenuPlayer().getUniqueId()).getLanguage().toString())));
             } catch (Exception ex) {

@@ -75,7 +75,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
                 sendInfo(sender);
             } else {
                 if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to execute this command!"));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to execute this command!"));
                     return true;
                 }
                 subCommand.onCommand(sender, Arrays.copyOfRange(args, 1, args.length));
@@ -112,7 +112,6 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
     public void sendInfo(CommandSender sender) {
         List<String> lines = new ArrayList<>();
         if (!subCommands.isEmpty()) {
-            lines.add(Utils.ChatUtils.getInfoMessageFormat(getNames()[0].substring(0, 1).toUpperCase() + getNames()[0].substring(1) + " Commands:"));
             lines.add("§8--------------------------");
             getSubCommands().forEach(sub -> {
                 StringBuilder subCommand = new StringBuilder("§7§l> §b/" + getNames()[0] + " §6" + sub.getNames()[0] + "§7");

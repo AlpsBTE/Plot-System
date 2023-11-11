@@ -44,7 +44,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
 
         if(!PlotUtils.isPlotWorld(player.getWorld())) {
             player.closeInventory();
-            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
+            player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
         }
     }
 
