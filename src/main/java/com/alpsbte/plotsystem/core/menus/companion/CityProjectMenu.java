@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
@@ -50,7 +49,6 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -61,7 +59,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     private PlotDifficulty selectedPlotDifficulty;
 
     CityProjectMenu(Player player, Country country, PlotDifficulty selectedPlotDifficulty) {
-        super(6, 4, country.getName() + " -> " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
+        super(6, 4, country.getName() + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
         this.country = country;
         this.selectedPlotDifficulty = selectedPlotDifficulty;
     }
@@ -73,12 +71,6 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
-
-        getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.NAVIGATOR)).setLore(new LegacyLoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
-                        .build());
 
         // Set loading item for plots difficulty item
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
@@ -104,9 +96,6 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     @Override
     protected void setItemClickEventsAsync() {
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
-
-        // Set click event for navigator item
-        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand(Objects.requireNonNull(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND))));
 
         // Set click event for previous page item
         getMenu().getSlot(45).setClickHandler((clickPlayer, clickInformation) -> {
@@ -149,7 +138,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
-                .pattern("101101001")
+                .pattern("101111001")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")

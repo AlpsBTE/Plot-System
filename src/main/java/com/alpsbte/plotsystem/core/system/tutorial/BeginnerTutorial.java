@@ -107,19 +107,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         public String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE1_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE1_MESSAGES,
                     TEXT_HIGHLIGHT_START + getPlayer().getName() + TEXT_HIGHLIGHT_END,
                     ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME));
         }
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE1_TASKS,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE1_TASKS,
                     TEXT_HIGHLIGHT_START + ConfigUtil.getInstance().configs[0].getString(ConfigPaths.TUTORIAL_NPC_NAME) +
                     TEXT_HIGHLIGHT_END);
         }
@@ -152,12 +152,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE2_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE2_MESSAGES,
                     TEXT_HIGHLIGHT_START + GOOGLE_MAPS + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + GOOGLE_EARTH + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + GOOGLE_MAPS + TEXT_HIGHLIGHT_END,
@@ -170,7 +170,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE2_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE2_TASKS);
         }
 
         @Override
@@ -207,12 +207,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE3_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE3_MESSAGES,
                     TEXT_HIGHLIGHT_START + "/tpll <lat> <lon>" + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + TEXT_HIGHLIGHT_END,
                     TEXT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_MAPS)
@@ -221,7 +221,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE3_TASKS,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE3_TASKS,
                      TEXT_HIGHLIGHT_START + "4" + TEXT_HIGHLIGHT_END,
                      TEXT_HIGHLIGHT_START + "/tpll" + TEXT_HIGHLIGHT_END);
         }
@@ -267,12 +267,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE4_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE4_MESSAGES,
                     TEXT_HIGHLIGHT_START + "WorldEdit" + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + TEXT_HIGHLIGHT_END);
@@ -280,7 +280,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE4_TASKS,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE4_TASKS,
                     TEXT_HIGHLIGHT_START + "//wand" + TEXT_HIGHLIGHT_END);
         }
 
@@ -312,12 +312,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE5_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE5_MESSAGES,
                     TEXT_HIGHLIGHT_START + "//line <pattern>" + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + TEXT_HIGHLIGHT_END,
                     TEXT_HIGHLIGHT_START + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.LEFT_CLICK) + TEXT_HIGHLIGHT_END);
@@ -325,7 +325,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE5_TASKS,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE5_TASKS,
                     TEXT_HIGHLIGHT_START + "//line " + BASE_BLOCK.toLowerCase() + TEXT_HIGHLIGHT_END);
         }
 
@@ -381,19 +381,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE6_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE6_MESSAGES,
                     TEXT_CLICK_HIGHLIGHT + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, Stage2.GOOGLE_EARTH),
                     TEXT_HIGHLIGHT_START + HEIGHT + TEXT_HIGHLIGHT_END);
         }
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE6_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE6_TASKS);
         }
 
         @Override
@@ -436,12 +436,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE7_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE7_MESSAGES,
                     "//stack",
                      "//line",
                      "//sel convex");
@@ -449,7 +449,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE7_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE7_TASKS);
         }
 
         @Override
@@ -487,17 +487,17 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE8_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_MESSAGES);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE8_MESSAGES);
         }
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE8_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE8_TASKS);
         }
 
         @Override
@@ -538,18 +538,18 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE9_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE9_MESSAGES,
                     "//replace");
         }
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE9_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE9_TASKS);
         }
 
         @Override
@@ -579,19 +579,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected String setTitle() {
-            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TITLE);
+            return LangUtil.getInstance().get(getPlayer(), LangPaths.Tutorials.Beginner.STAGE10_TITLE);
         }
 
         @Override
         public List<String> setMessages() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_MESSAGES,
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE10_MESSAGES,
                     "/hdb",
                     "/discord");
         }
 
         @Override
         protected List<String> setTasks() {
-            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.TUTORIALS_BEGINNER_STAGE10_TASKS);
+            return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE10_TASKS);
         }
 
         @Override

@@ -67,14 +67,8 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_ACTION_BAR_RADIUS = DISPLAY_OPTIONS + "action-bar-radius";
 
 
-    // Navigator
-    private static final String NAVIGATOR = "navigator.";
-    public static final String NAVIGATOR_ITEM = NAVIGATOR + "item";
-    public static final String NAVIGATOR_COMMAND = NAVIGATOR + "command";
-
-
     // FORMATTING
-    public static final String CHAT_FORMAT = "chat-format.";
+    private static final String CHAT_FORMAT = "chat-format.";
     public static final String CHAT_FORMAT_INFO_PREFIX = CHAT_FORMAT + "info-prefix";
     public static final String CHAT_FORMAT_ALERT_PREFIX = CHAT_FORMAT + "alert-prefix";
 
@@ -94,9 +88,10 @@ public abstract class ConfigPaths {
 
     // TUTORIALS
     private static final String TUTORIALS = "tutorials.";
-    public static final String TUTORIAL_ENABLE = TUTORIALS + "enable";
+    public static final String TUTORIAL_ENABLE = TUTORIALS + "tutorial-enable";
     public static final String TUTORIAL_REQUIRE_BEGINNER_TUTORIAL = TUTORIALS + "require-beginner-tutorial";
     public static final String TUTORIAL_NPC_NAME = TUTORIALS + "tutorial-npc-name";
     public static final String TUTORIAL_NPC_TEXTURE = TUTORIALS + "tutorial-npc-texture";
     public static final String TUTORIAL_NPC_SIGNATURE = TUTORIALS + "tutorial-npc-signature";
+    public static final String TUTORIAL_CHAT_PREFIX = TUTORIALS + "tutorial-chat-prefix";
 }

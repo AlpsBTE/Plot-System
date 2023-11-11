@@ -142,7 +142,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         if (plot != null) {
             tutorialItem.setLore(
                     new LegacyLoreBuilder().addLines("",
-                            LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
+                            LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + ": " + WHITE +
                             (playerHighestStage + (isTutorialCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES))
                     .build());
         }
@@ -240,7 +240,7 @@ public class TutorialStagesMenu extends AbstractMenu {
                 "§e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.START));
 
         return new ItemBuilder(stageItem)
-                .setName(titleColor + ChatColor.BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.TUTORIALS_STAGE) + " " + (stageId + 1))
+                .setName(titleColor + ChatColor.BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + " " + (stageId + 1))
                 .setLore(lore.build())
                 .setEnchanted(playerCurrentStage == stageId)
                 .build();

@@ -24,8 +24,6 @@
 
 package com.alpsbte.plotsystem.core.menus.companion;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -41,7 +39,7 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,7 +58,7 @@ public class CountryMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CountryMenu(Player player, Continent continent) {
-        super(6, LangUtil.getInstance().get(player, continent.langPath) + " -> " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY) , player);
+        super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY) , player);
         selectedContinent = continent;
     }
 
@@ -71,13 +69,6 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        // Set navigator item
-        getMenu().getSlot(4)
-                .setItem(new ItemBuilder(Material.valueOf(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_ITEM)), 1)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.NAVIGATOR)).setLore(new LegacyLoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.NAVIGATOR)).build())
-                        .build());
-
         // Set plots difficulty item head
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
@@ -105,9 +96,6 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        // Set click event for navigator item
-        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.NAVIGATOR_COMMAND)));
-
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
@@ -147,7 +135,7 @@ public class CountryMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
-                .pattern("011101001")
+                .pattern("101111001")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -159,11 +147,9 @@ public class CountryMenu extends AbstractMenu {
     private void setCountryItems() throws SQLException {
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
-            getMenu().getSlot(0).setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.BACK_BUTTON.getId()))
-                    .setName("§b§lBack")
-                    .build());
+            getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } else {
-            getMenu().getSlot(0).setItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build());
+            getMenu().getSlot(1).setItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build());
         }
 
         for (Country country : countryProjects) {

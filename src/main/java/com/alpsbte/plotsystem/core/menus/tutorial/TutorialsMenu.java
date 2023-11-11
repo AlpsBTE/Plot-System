@@ -196,7 +196,7 @@ public class TutorialsMenu extends AbstractMenu {
         // Create tutorial item lore
         int highestPlotStage = plot != null ? plot.getStageID() : 0;
         boolean isPlotCompleted = plot != null && plot.isCompleted();
-        LegacyLoreBuilder loreBuilder = new LegacyLoreBuilder().addLines("§7" + desc, "", LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_STAGE) + ": " + WHITE +
+        LegacyLoreBuilder loreBuilder = new LegacyLoreBuilder().addLines("§7" + desc, "", LangUtil.getInstance().get(player, LangPaths.Tutorials.STAGE) + ": " + WHITE +
                 (highestPlotStage + (isPlotCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES), "");
         if (plot == null || !isPlotCompleted) {
             loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +

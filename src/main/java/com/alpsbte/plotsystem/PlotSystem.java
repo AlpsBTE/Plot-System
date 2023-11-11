@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
@@ -66,6 +67,7 @@ import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "4.0";
@@ -214,8 +216,6 @@ public class PlotSystem extends JavaPlugin {
 
         // Register tutorials
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
-            TutorialUtils.CHAT_TASK_PREFIX_COMPONENT = text("[", DARK_GRAY)
-                    .append(text("PS", NamedTextColor.GOLD).append(text("] ", DARK_GRAY)));
             AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));
         }
 
@@ -266,6 +266,8 @@ public class PlotSystem extends JavaPlugin {
         ConfigUtil.getInstance().saveFiles();
         Utils.ChatUtils.setChatFormat(getConfig().getString(ConfigPaths.CHAT_FORMAT_INFO_PREFIX),
                 getConfig().getString(ConfigPaths.CHAT_FORMAT_ALERT_PREFIX));
+        String chatPrefix = getConfig().getString(ConfigPaths.TUTORIAL_CHAT_PREFIX);
+        if (chatPrefix != null) TutorialUtils.CHAT_TASK_PREFIX_COMPONENT = AlpsUtils.deserialize(chatPrefix);
     }
 
     @Override

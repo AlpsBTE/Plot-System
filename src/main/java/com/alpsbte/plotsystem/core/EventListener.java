@@ -168,8 +168,7 @@ public class EventListener extends SpecialBlocks implements Listener {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
                                 () -> event.getPlayer().performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
                     } else {
-                        AbstractPlotTutorial.sendTutorialRequiredMessage(event.getPlayer(), LangUtil.getInstance().get(event.getPlayer(),
-                                LangPaths.MenuTitle.TUTORIAL_BEGINNER), TutorialCategory.BEGINNER.getId());
+                        AbstractPlotTutorial.sendTutorialRequiredMessage(event.getPlayer(), TutorialCategory.BEGINNER.getId());
                         event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
                     }
                 }
