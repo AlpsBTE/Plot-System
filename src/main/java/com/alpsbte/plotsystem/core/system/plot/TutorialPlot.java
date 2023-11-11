@@ -39,6 +39,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -357,6 +358,12 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
     public static List<TutorialPlot> getPlots(UUID builderUUID) throws SQLException {
         return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE player_uuid = ?")
                 .setValue(builderUUID.toString()).executeQuery());
+    }
+
+    public static boolean isPlotCompleted(Player player, int tutorialId) throws SQLException {
+        TutorialPlot plot = TutorialPlot.getPlot(player.getUniqueId().toString(), tutorialId);
+        if (plot == null) return false;
+        return plot.isCompleted();
     }
 
     private static List<TutorialPlot> listPlots(ResultSet rs) throws SQLException {

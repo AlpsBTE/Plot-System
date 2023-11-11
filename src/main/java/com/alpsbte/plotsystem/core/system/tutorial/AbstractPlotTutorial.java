@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
@@ -36,7 +37,8 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -218,13 +220,33 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     /**
      * Sends a message to the player when a tutorial is completed.
      * @param player The player to send the message to.
-     * @param tutorial The name of the tutorial.
+     * @param tutorialName The name of the tutorial.
      * @see TutorialCategory
      */
-    protected static void sendTutorialCompletedMessage(Player player, String tutorial) {
+    protected static void sendTutorialCompletedMessage(Player player, String tutorialName) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIALS_TUTORIAL_COMPLETED).toUpperCase()).color(AQUA).decorate(BOLD));
-        player.sendMessage(text("  ◆ ").color(WHITE).decorate(BOLD).append(text(tutorial).color(GOLD)));
+        player.sendMessage(text("  ◆ ").color(WHITE).decorate(BOLD).append(text(tutorialName).color(GOLD)));
+        player.sendMessage(text());
+    }
+
+    /**
+     * Sends a message to the player if they have not completed a tutorial, if required.
+     * @param player the player to send the message to
+     * @param tutorialName the name of the tutorial
+     * @param tutorialId the id of the tutorial
+     */
+    public static void sendTutorialRequiredMessage(Player player, String tutorialName, int tutorialId) {
+        Component clickComponent = text("[", GRAY, BOLD)
+                .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.START), YELLOW))
+                .append(text("]", GRAY))
+                .clickEvent(ClickEvent.runCommand("/tutorial " + tutorialId))
+                .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED), GRAY)));
+
+        player.sendMessage(text());
+        player.sendMessage(text().color(GREEN).append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.BEGINNER_TUTORIAL_REQUIRED,
+                TutorialUtils.TEXT_HIGHLIGHT_START + tutorialName + TutorialUtils.TEXT_HIGHLIGHT_END)))
+                .append(text(" ")).append(clickComponent));
         player.sendMessage(text());
     }
 }

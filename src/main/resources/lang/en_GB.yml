@@ -250,6 +250,7 @@ message:
     changed-language: "§aChanged your language to §6{0}§a!"
     enter-feedback: "Please enter a feedback for the player in the chat."
     input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    tutorial-required: 'To learn how to participate in the BuildTheEarth project, you need to complete the {0} tutorial.'
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
@@ -295,6 +296,7 @@ leaderboards:
 
 tutorials:
   stage: 'Stage'
+  tutorial-started: 'TUTORIAL STARTED'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
   tutorial-completed: 'TUTORIAL COMPLETED'
   beginner:

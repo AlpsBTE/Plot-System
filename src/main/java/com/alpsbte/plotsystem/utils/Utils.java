@@ -80,6 +80,7 @@ public class Utils {
         public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
         public final static Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
         public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
+        public final static Sound NOTIFICATION_SOUND = Sound.BLOCK_NOTE_BLOCK_PLING;
     }
 
 

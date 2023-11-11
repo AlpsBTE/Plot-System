@@ -27,12 +27,14 @@ package com.alpsbte.plotsystem.core.menus.tutorial;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -55,7 +57,7 @@ import static net.md_5.bungee.api.ChatColor.WHITE;
 public class TutorialsMenu extends AbstractMenu {
     private TutorialPlot plot;
     private String beginnerTutorialItemName;
-    // private boolean isBeginnerTutorialCompleted = false;
+    private boolean isBeginnerTutorialCompleted = false;
 
     public TutorialsMenu(Player menuPlayer) {
         super(6, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIALS), menuPlayer);
@@ -82,9 +84,6 @@ public class TutorialsMenu extends AbstractMenu {
         getMenu().getSlot(33).setItem(getAdvancedTutorialItem(getMenuPlayer()));
         getMenu().getSlot(34).setItem(getAdvancedTutorialItem(getMenuPlayer()));
 
-        // Set back item
-        getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
-
         super.setPreviewItems();
     }
 
@@ -94,13 +93,17 @@ public class TutorialsMenu extends AbstractMenu {
         try {
             plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), TutorialCategory.BEGINNER.getId());
             // TutorialPlot beginnerTutorial = getPlotById(TutorialCategory.BEGINNER.getId());
-            // isBeginnerTutorialCompleted = beginnerTutorial != null && beginnerTutorial.getStatus() == Status.completed;
+            if (plot != null) isBeginnerTutorialCompleted = plot.isCompleted();
 
             // Set beginner tutorial item
             getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
                     LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
                     LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
             );
+
+            // Set back item
+            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
+                getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
@@ -119,7 +122,8 @@ public class TutorialsMenu extends AbstractMenu {
         getMenu().getSlot(34).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
 
         // Set click event for back item
-        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInfo) -> clickPlayer.performCommand("companion"));
+        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
+            getMenu().getSlot(49).setClickHandler((clickPlayer, clickInfo) -> clickPlayer.performCommand("companion"));
     }
 
     @Override
@@ -131,7 +135,7 @@ public class TutorialsMenu extends AbstractMenu {
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
-                .pattern("111101111")
+                .pattern("111111111")
                 .build();
     }
 

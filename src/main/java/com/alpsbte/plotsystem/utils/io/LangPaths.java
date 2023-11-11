@@ -262,6 +262,7 @@ public abstract class LangPaths {
             public static final String CHANGED_LANGUAGE = INFO + "changed-language";
             public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
             public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
+            public static final String BEGINNER_TUTORIAL_REQUIRED = INFO + "tutorial-required";
         }
 
         public static final class Error {
@@ -314,6 +315,7 @@ public abstract class LangPaths {
         public static final String TUTORIALS = "tutorials.";
 
         public static final String TUTORIALS_STAGE = TUTORIALS + "stage";
+        public static final String TUTORIALS_TUTORIAL_STARTED = TUTORIALS + "tutorial-started";
         public static final String TUTORIALS_NEW_STAGE_UNLOCKED = TUTORIALS + "new-stage-unlocked";
         public static final String TUTORIALS_TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
 

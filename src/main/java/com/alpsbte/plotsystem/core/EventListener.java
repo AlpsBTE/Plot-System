@@ -27,8 +27,11 @@ package com.alpsbte.plotsystem.core;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -46,7 +49,6 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import li.cinnazeyy.langlibs.core.event.LanguageChangeEvent;
-import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -93,6 +95,23 @@ public class EventListener extends SpecialBlocks implements Listener {
                 }
 
                 DatabaseConnection.closeResultSet(rs);
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+
+            // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
+            try {
+                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
+                        !TutorialPlot.isPlotCompleted(event.getPlayer(), TutorialCategory.BEGINNER.getId())) {
+                    if (!event.getPlayer().hasPlayedBefore()) {
+                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                                () -> event.getPlayer().performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
+                    } else {
+                        AbstractPlotTutorial.sendTutorialRequiredMessage(event.getPlayer(), LangUtil.getInstance().get(event.getPlayer(),
+                                LangPaths.MenuTitle.TUTORIAL_BEGINNER), TutorialCategory.BEGINNER.getId());
+                        event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
+                    }
+                }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }

@@ -25,11 +25,13 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialStagesMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -54,6 +56,10 @@ public class CMD_Tutorial extends BaseCommand {
                         } else {
                             new TutorialsMenu(getPlayer(sender));
                         }
+                    } else if (args.length == 1 && AlpsUtils.tryParseInt(args[0]) != null) {
+                        int tutorialId = Integer.parseInt(args[0]);
+                        if (TutorialCategory.byId(tutorialId) == null) return true;
+                        AbstractTutorial.loadTutorial(getPlayer(sender), tutorialId);
                     }
                 } else {
                     sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.TUTORIAL_DISABLED)));
