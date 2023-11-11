@@ -315,7 +315,7 @@ public final class PlotUtils {
 
     public static void syncPlotSchematicFiles() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLED)) {
+        if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLE)) {
             long interval = config.getLong(ConfigPaths.SYNC_FTP_FILES_INTERVAL);
 
             Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> CityProject.getCityProjects(false).forEach(c -> {

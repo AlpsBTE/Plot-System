@@ -39,7 +39,7 @@ import java.util.logging.Level;
 
 public class PlotsLeaderboard extends HolographicDisplay {
     protected PlotsLeaderboard() {
-        super(ConfigPaths.PLOTS_LEADERBOARD, LeaderboardManager.getPosition(ConfigPaths.PLOTS_LEADERBOARD), false);
+        super("plots-leaderboard", LeaderboardManager.getPosition(ConfigPaths.PLOTS_LEADERBOARD), false);
     }
 
     @Override

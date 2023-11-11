@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -77,7 +78,8 @@ public class CMD_SetLeaderboard extends BaseCommand {
             player.sendMessage(Utils.ChatUtils.getAlertFormat("Hologram could not be found!"));
             return true;
         }
-        LeaderboardManager.savePosition(hologram.getId(), getPlayer(sender).getLocation());
+        LeaderboardManager.savePosition(hologram.getId(), hologram.getId().startsWith("score") ? ConfigPaths.SCORE_LEADERBOARD :
+                ConfigPaths.PLOTS_LEADERBOARD, getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
         player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
         return true;

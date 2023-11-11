@@ -24,7 +24,7 @@ enable-score-requirement: true
 # Automatic synchronisation of schematic files from SFTP/FTP servers
 # [interval] -> default: 3600 seconds (1 hour)
 sync-ftp-files:
-  enabled: false
+  sff-enable: false
   sync-interval: 3600
 
 # How many days of inactivity it will take before a claimed plot is automatically abandoned
@@ -52,16 +52,16 @@ database:
 holograms:
   # Displays the top 10 builders with the highest score
   score-leaderboard:
-    enabled: false
-    x: 0
-    y: 0
-    z: 0
+    sl-enable: false
+    sl-x: 0
+    sl-y: 0
+    sl-z: 0
   # Displays the top 10 players with the most completed plots
   plots-leaderboard:
-    enabled: false
-    x: 0
-    y: 0
-    z: 0
+    pl-enable: false
+    pl-x: 0
+    pl-y: 0
+    pl-z: 0
 
 # Switch score-leaderboard between different time stamps
 # [interval] -> default: 15 seconds
@@ -72,7 +72,7 @@ display-options:
   show-monthly: true
   show-yearly: false
   show-lifetime: false
-  action-bar-enabled: true
+  action-bar-enable: true
   action-bar-radius: 30
 
 

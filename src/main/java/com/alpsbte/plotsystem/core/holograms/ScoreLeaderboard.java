@@ -60,7 +60,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
 
     protected ScoreLeaderboard() {
-        super(ConfigPaths.SCORE_LEADERBOARD, LeaderboardManager.getPosition(ConfigPaths.SCORE_LEADERBOARD),
+        super("score-leaderboard", LeaderboardManager.getPosition(ConfigPaths.SCORE_LEADERBOARD),
                 false, PlotSystem.getPlugin());
 
         new BukkitRunnable() {
@@ -187,7 +187,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
     private List<Player> showToPlayers() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLED, true);
+        boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLE, true);
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {

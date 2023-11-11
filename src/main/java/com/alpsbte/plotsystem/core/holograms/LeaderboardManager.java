@@ -51,33 +51,29 @@ public final class LeaderboardManager {
     public static void reloadLeaderboards() {
         if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
             for (HolographicDisplay leaderboard : leaderboards) {
-                String path = ConfigPaths.HOLOGRAMS + leaderboard.getId();
-                if (PlotSystem.getPlugin().getConfig().getBoolean(path + ConfigPaths.LEADERBOARD_ENABLED))
+                String path = leaderboard.getId();
+                if (PlotSystem.getPlugin().getConfig().getBoolean(path + ConfigPaths.LEADERBOARD_ENABLE))
                     for (Player player : Objects.requireNonNull(Bukkit.getWorld(leaderboard.getPosition().getWorldName())).getPlayers()) leaderboard.create(player);
                 else leaderboard.removeAll();
             }
         }
     }
 
-    public static Position getPosition(String id) {
+    public static Position getPosition(String configPath) {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        String path = ConfigPaths.HOLOGRAMS + id;
-
         return Position.of(Objects.requireNonNull(Utils.getSpawnLocation().getWorld()).getName(),
-                config.getDouble(path + ConfigPaths.LEADERBOARD_X),
-                config.getDouble(path + ConfigPaths.LEADERBOARD_Y),
-                config.getDouble(path + ConfigPaths.LEADERBOARD_Z)
+                config.getDouble(configPath + ConfigPaths.LEADERBOARD_X),
+                config.getDouble(configPath + ConfigPaths.LEADERBOARD_Y),
+                config.getDouble(configPath + ConfigPaths.LEADERBOARD_Z)
         );
     }
 
-    public static void savePosition(String id, Location newLocation) {
+    public static void savePosition(String id, String configPath, Location newLocation) {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        String path = ConfigPaths.HOLOGRAMS + id;
-
-        config.set(path + ConfigPaths.LEADERBOARD_ENABLED, true);
-        config.set(path + ConfigPaths.LEADERBOARD_X, newLocation.getX());
-        config.set(path + ConfigPaths.LEADERBOARD_Y, newLocation.getY());
-        config.set(path + ConfigPaths.LEADERBOARD_Z, newLocation.getZ());
+        config.set(configPath + ConfigPaths.LEADERBOARD_ENABLE, true);
+        config.set(configPath + ConfigPaths.LEADERBOARD_X, newLocation.getX());
+        config.set(configPath + ConfigPaths.LEADERBOARD_Y, newLocation.getY());
+        config.set(configPath + ConfigPaths.LEADERBOARD_Z, newLocation.getZ());
         ConfigUtil.getInstance().saveFiles();
 
         LeaderboardManager.getLeaderboards().stream().filter(leaderboard -> leaderboard.getId().equals(id)).findFirst()

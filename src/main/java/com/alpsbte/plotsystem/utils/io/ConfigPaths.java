@@ -35,7 +35,7 @@ public abstract class ConfigPaths {
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
 
     private static final String SYNC_FTP_FILES = "sync-ftp-files.";
-    public static final String SYNC_FTP_FILES_ENABLED = SYNC_FTP_FILES + "enabled";
+    public static final String SYNC_FTP_FILES_ENABLE = SYNC_FTP_FILES + "sff-enable";
     public static final String SYNC_FTP_FILES_INTERVAL = SYNC_FTP_FILES + "sync-interval";
 
 
@@ -49,12 +49,12 @@ public abstract class ConfigPaths {
 
     // Leaderboards
     public static final String HOLOGRAMS = "holograms.";
-    public static final String SCORE_LEADERBOARD = "score-leaderboard";
-    public static final String PLOTS_LEADERBOARD = "plots-leaderboard";
-    public static final String LEADERBOARD_ENABLED = ".enabled";
-    public static final String LEADERBOARD_X = ".x";
-    public static final String LEADERBOARD_Y = ".y";
-    public static final String LEADERBOARD_Z = ".z";
+    public static final String SCORE_LEADERBOARD = HOLOGRAMS + "score-leaderboard.sl-";
+    public static final String PLOTS_LEADERBOARD = HOLOGRAMS + "plots-leaderboard.pl-";
+    public static final String LEADERBOARD_ENABLE = "enable";
+    public static final String LEADERBOARD_X = "x";
+    public static final String LEADERBOARD_Y = "y";
+    public static final String LEADERBOARD_Z = "z";
 
     private static final String DISPLAY_OPTIONS = "display-options.";
     public static final String DISPLAY_OPTIONS_INTERVAL = DISPLAY_OPTIONS + "interval";
@@ -63,7 +63,7 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_SHOW_MONTHLY = DISPLAY_OPTIONS + "show-monthly";
     public static final String DISPLAY_OPTIONS_SHOW_YEARLY = DISPLAY_OPTIONS + "show-yearly";
     public static final String DISPLAY_OPTIONS_SHOW_LIFETIME = DISPLAY_OPTIONS + "show-lifetime";
-    public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLED = DISPLAY_OPTIONS + "action-bar-enabled";
+    public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLE = DISPLAY_OPTIONS + "action-bar-enable";
     public static final String DISPLAY_OPTIONS_ACTION_BAR_RADIUS = DISPLAY_OPTIONS + "action-bar-radius";
 
 
