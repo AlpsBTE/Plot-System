@@ -141,7 +141,7 @@ public class CompanionMenu {
 
         try {
             return new ItemBuilder(item)
-                    .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY).toUpperCase())
+                    .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY))
                     .setLore(new LegacyLoreBuilder()
                             .addLines("",
                                     selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC),

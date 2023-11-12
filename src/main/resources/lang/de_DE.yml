@@ -82,7 +82,6 @@ menu-title:
   previous-page: "Vorherige Seite"
   error: "Fehler"
   loading: "Lade..."
-  navigator: "Navigator"
   plot-difficulty: "Plot Schwierigkeitsgrad"
   slot: "Slot"
   builder-utilities: "Hilfsmittel für Builder"
@@ -111,20 +110,22 @@ menu-title:
   review-plot: "Plot #{0} Bewerten"
   enter-player-name: "Spielername Eingeben"
   select-language: "Sprache Auswählen"
-  auto-detect-language: "Sprache Automatisch Erkennen"
   select-plot-type: "Plot Typ Auswählen"
   select-focus-mode: "Focus-Mode Auswählen"
   select-local-inspiration-mode: "Inspiration-Mode Auswählen"
   select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
   filter-by-country: "Nach Land Filtern"
   information: "Info"
+  tutorials: 'Tutorials'
+  tutorial-stages: 'Tutorial Stages'
+  tutorial-end: 'Tutorial Beenden'
+  tutorial-beginner: 'Erste Schritte'
 
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
   error-desc: "Ein Fehler ist aufgetreten..."
-  navigator-desc: "Öffne das Navigator-Menü"
   plot-difficulty-desc: "Zum Umschalten klicken..."
   slot-desc: "Klicke auf eine Stadt, um einen neuen Plot zu erstellen"
   builder-utilities-desc: "Erhalte Zugang zu benutzerdefinierten Köpfen, Bannern und speziellen Blöcken"
@@ -144,13 +145,15 @@ menu-description:
   submit-review-desc: "Sende deine Bewertung ein und markiere den Plot als geprüft"
   leave-plot-desc: "Klicke hier, um den Plot zu verlassen"
   select-language-desc: "Wähle deine Sprache"
-  auto-detect-language-desc: "Klicke hier, um deine Sprache automatisch zu erkennen"
   select-plot-type-desc: 'Wähle dein Plot Typ aus'
   select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.%newline%%newline%- Keine Umgebung%newline%- Keine Nachbarsgrundstücke"
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.%newline%%newline%+ Umgebung%newline%- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.%newline%%newline%+ Umgebung%newline%+ Nachbarsgrundstücke"
   filter-desc: "Alle Anzeigen"
   information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte oder eine Kategorie 0 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
+  tutorials-desc: 'Lerne die Grundlagen des BuildTheEarth%newline%Projekts und erweitere deine Baukenntnisse%newline%mit Tutorials zu verschiedenen Themen.'
+  tutorial-end-desc: 'Dein Fortschritt wird gespeichert.'
+  tutorial-beginner-desc: 'Lerne die Baugrundlagen für%newline%das BuildTheEarth Projekt.'
 
 # -----------------------------------------------------
 # | Review
@@ -179,20 +182,31 @@ review:
 # | Notes
 # -----------------------------------------------------
 note:
+  tip: "Tipp"
+  under-construction: 'In Arbeit'
   wont-be-able-continue-building: "Du wirst auf diesem Plot nicht weiterbauen können!"
   score-will-be-split: "Die Punkte werden bei der Bewertung auf alle Mitglieder aufgeteilt!"
   player-has-to-be-online: "Spieler muss online sein!"
   action:
+    read: 'Lesen'
+    read-more: 'Mehr lesen'
+    mark-as-read: 'Als gelesen markieren'
+    start: 'Start'
+    continue: "Weiter"
+    continue-tutorial: 'Tutorial Fortsetzen'
+    create-plot: 'Plot Erstellen'
     right-click: "Rechtsklick"
-    click-to-enable: "Zum Aktivieren klicken..."
-    click-to-disable: "Zum Deaktivieren klicken..."
+    left-click: "Linksklick"
+    click-to-create-plot: 'Klicke um ein neues Plot zu erstellen...'
+    click-to-proceed: "Klicke um fortzusetzen..."
     click-to-remove-plot-member: "Klicke, um ein Mitglied vom Plot zu entfernen..."
-    click-to-open-link: "§6Klicke hier, §7um den §a{0}§7 Link zu öffnen..."
+    click-to-open-link: "Klicke hier um den {0} Link zu öffnen..."
     click-to-open-link-with-shortlink: "§6Klicke hier, §7 um den §a{0}§7 Link zu öffnen oder benutze diesen Link: §a{1}"
     click-to-show-feedback: "§6Klicke hier, §aum dein Plot Feedback anzuzeigen..."
     click-to-show-open-reviews: "§6Klicke hier, §aum offene Bewertungen anzuzeigen..."
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
+    tutorial-show-stages: 'Stages Anzeigen'
   # NOTE: Try to keep it as short as possible
   anvil:
     player-is-owner: "Spieler ist bereits Besitzer!"
@@ -207,7 +221,6 @@ note:
 message:
   info:
     teleporting-plot: "§aTeleportiere zum Plot §6#{0}§a..."
-    teleporting-spawn: "§aTeleportiere zum Spawn..."
     teleporting-tpll: "§aTeleportiere nach §6{0}§a, §6{1}§a..."
     abandoned-plot: "§aPlot mit ID §6#{0}§a gelöscht!"
     finished-plot: "§a§6{1}§a hat den Plot §6#{0}§a fertiggestellt!"
@@ -230,9 +243,10 @@ message:
     saving-plot: "§aSpeichere Plot..."
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
-    changed-language: "§aAlle Systemnachrichten sind nun auf §6{0}§a!"
     enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
     input-expires-after: "§9Die Chat-Eingabe läuft nach §6{0} §9Minuten ab."
+    beginner-tutorial-required: 'Schließe das Tutorial ab, um an dem Projekt teilzunehmen.'
+    beginner-tutorial-completed: 'Bist du bereit, dein eigenes Plot zu bauen? Nun bist du an der Reihe!'
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
     plot-either-unclaimed-or-unreviewed: "Dieser Plot ist entweder unbeansprucht oder wurde noch nicht bewertet!"
@@ -262,6 +276,8 @@ message:
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
     no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
     feedback-input-expired: "Die Chat-Eingabe ist abgelaufen! Nutze §7/editfeedback <ID> <Text> §cum das Feedback zu bearbeiten."
+    tutorial-disabled: 'Tutorials sind auf diesem Server deaktiviert.'
+    tutorial-already-running: "Du hast bereits ein Tutorial am Laufen! Schließe dieses ab, bevor du ein neues beginnst."
 
 leaderboards:
   pages:
@@ -274,5 +290,116 @@ leaderboards:
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Nicht auf Leaderboard"
 
+tutorials:
+  stage: 'Stage'
+  new-stage-unlocked: 'NEW STAGE UNLOCKED'
+  tutorial-completed: 'TUTORIAL COMPLETED'
+  beginner:
+    stage-1:
+      stage-1-title: 'Die ersten Schritte im BuildTheEarth Projekt'
+      stage-1-messages:
+        - 'Hallo {0}! Schön dich kennenzulernen, mein Name ist {1}. Willkommen in der spannenden Welt des BuildTheEarth Projekts!'
+        - 'Unser Ziel ist es, den gesamten Planeten Erde in Minecraft im Maßstab 1:1 nachzubauen. Ja, du hast richtig gehört, im Maßstab 1:1!'
+        - 'Wir von Alps BTE sind jedoch nur für die Nachbildung der Alpenländer Österreich, Schweiz und Liechtenstein zuständig.'
+        - 'Bist du bereit zu lernen, wie man für BTE baut? Ich werde dir die Grundlagen zur Teilnahme des Projektes zeigen. Los geht´s!'
+      stage-1-tasks:
+        - 'Sprich mit {0} auf der Baustelle.'
+    stage-2:
+      stage-2-title: 'Referenzen'
+      stage-2-messages:
+        - 'Willkommen auf deiner kleinen Insel. Hier werden wir unser erstes Gebäude errichten!'
+        - 'Bevor wir mit dem Bauen beginnen, müssen wir wissen, wie das reale Gebäude aussieht. Dafür verwenden wir Tools wie {0} und {1}.'
+        - 'Wir benutzen {2}, um Koordinaten zu kopieren, damit wir uns an einen bestimmten Punkt teleportieren können. Außerdem können wir auf {3} zugreifen, um uns das Gebäude genauer anzusehen.'
+        - '{4}'
+        - 'Wir verwenden {5}, um die Höhe des Gebäudes zu messen. Dies ist wichtig zu wissen, damit das Gebäude die richtige Höhe hat.'
+        - '{6}'
+        - 'Verwenden Sie den Befehl {7}, wenn du die Links später benötigst.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleporting'
+      stage-3-messages:
+        - 'The building outlines are generated by default, but since they are mostly not accurate, we have to correct them. To correct the outlines we firstly need to teleport to the edges of the building.'
+        - 'Use the command {0} to teleport to the location in-game. {1} on one of the edges of the building to copy the coordinates.'
+        - '{2}'
+        - 'To continue teleport to the marked points. Try again!'
+        - 'Switch to §6Satellite§f view in Google Maps to show the building in 3D.%newline%%newline%Click on §6Layers§f at the bottom left of the map. If no 3D buildings appear, enable the §6Globe View§f under "More".'
+      stage-3-tasks:
+        - 'Teleport to all {0} edges of the building by using {1}.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Before we continue with the outlines, we need to know an important tool called {0}. WorldEdit allows us to build faster and more efficiently.'
+        - 'In order to use WorldEdit, you need to get a <gold>wooden axe</gold>.'
+        - 'Now that you have your wooden axe, you can {1} and {2} on blocks to make your selection.'
+      stage-4-tasks:
+        - 'Use the command {0} to get your wooden axe.'
+    stage-5:
+      stage-5-title: 'Draw the Outlines'
+      stage-5-messages:
+        - 'Now that we know about WorldEdit, we can draw the outlines of the building.'
+        - 'To draw the outlines, we use the command {0}.'
+        - '{1} to select the first point and {2} to select the second point.'
+        - 'To continue connect the points using {0}. Try again!'
+      stage-5-tasks:
+        - 'Connect the points by using {0}.'
+    stage-6:
+      stage-6-title: 'Building Heights'
+      stage-6-messages:
+        - 'Now that we have the building outlines, we need to <gold>measure</gold> the height of the building.'
+        - 'Calculate the height of the <gold>facade</gold> by subtracting the height of the <gold>ground</gold> from the height of the <gold>roof</gold>.'
+        - 'Enter the height (in metres) of the building facade in the chat to continue.'
+        - '{0}'
+        - 'Well done! The height of the building is {1} blocks.'
+        - 'You´ve almost made it. The height of the building is {1} blocks.'
+        - 'You´ve almost made it. Try again!'
+        - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
+      stage-6-tasks:
+        - 'Calculate the height of the building.'
+    stage-7:
+      stage-7-title: 'Building Shells'
+      stage-7-messages:
+        - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
+        - 'Teleport to at least §6one point§f of the roof ridge to §6connect§f the point(s) with the facade.'
+        - 'Use §6different types§f of blocks and colours for the shells to make it easier to §6separate§f the building into sections.'
+        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
+        - 'Use the WorldEdit command §6{0}§f to raise the walls quickly and easily.'
+        - 'Fill the roof by hand or use the WorldEdit command §6{1}§f. Alternatively use the command §6{2}§f to switch the selection for larger and more complex roofs.'
+        - 'Always check the §6height§f of the windows and doors so that it §6matches§f with the facade.'
+      stage-7-tasks:
+        - 'Read all tips on the plot and mark them as read.'
+    stage-8:
+      stage-8-title: 'Windows'
+      stage-8-messages:
+        - 'The building shell is done! Let´s continue with the windows and doors.'
+        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
+        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
+        - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
+        - 'Use the same blocks as for the windows on the right. Try again!'
+        - 'Thank you for your help! Now we can continue with the texturing.'
+      stage-8-tasks:
+        - 'Place the missing window details.'
+    stage-9:
+      stage-9-title: 'Texturing'
+      stage-9-messages:
+        - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
+        - 'Use §6Google Street View§f or §6images§f to make the right block choice, as aerial images are sometimes not very accurate.'
+        - 'Use the WorldEdit command §6{0}§f to simply replace the shell with your pattern.'
+        - 'Try to use §6block mixes§f and §6gradients§f for the walls and roof so that the building looks more realistic and stand out.'
+      stage-9-tasks:
+        - 'Read all tips on the plot and mark them as read.'
+    stage-10:
+      stage-10-title: 'Detailing & Further Steps'
+      stage-10-messages:
+        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
+        - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
+        - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
+        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
+        - 'Click here to learn more about the project.'
+        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
+        - 'If you want to explore the current progress of the map, check out the <gold>Terra</gold> server!'
+        - 'Happy building! ☺'
+      stage-10-tasks:
+        - 'Read all tips on the plot and mark them as read.'
+
 # NOTE: Do not change
-config-version: 1.3
+config-version: 2.0
