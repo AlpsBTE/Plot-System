@@ -88,7 +88,6 @@ public abstract class LangPaths {
         public static final String PREVIOUS_PAGE = MENU_TITLES + "previous-page";
         public static final String ERROR = MENU_TITLES + "error";
         public static final String LOADING = MENU_TITLES + "loading";
-        public static final String NAVIGATOR = MENU_TITLES + "navigator";
         public static final String PLOT_DIFFICULTY = MENU_TITLES + "plot-difficulty";
         public static final String SLOT = MENU_TITLES + "slot";
         public static final String BUILDER_UTILITIES = MENU_TITLES + "builder-utilities";
@@ -117,7 +116,6 @@ public abstract class LangPaths {
         public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
-        public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
         public static final String SELECT_PLOT_TYPE = MENU_TITLES + "select-plot-type";
         public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
         public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
@@ -133,7 +131,6 @@ public abstract class LangPaths {
     public static final class MenuDescription {
         private static final String MENU_DESCRIPTIONS = "menu-description.";
         public static final String ERROR = MENU_DESCRIPTIONS + "error-desc";
-        public static final String NAVIGATOR = MENU_DESCRIPTIONS + "navigator-desc";
         public static final String PLOT_DIFFICULTY = MENU_DESCRIPTIONS + "plot-difficulty-desc";
         public static final String SLOT = MENU_DESCRIPTIONS + "slot-desc";
         public static final String BUILDER_UTILITIES = MENU_DESCRIPTIONS + "builder-utilities-desc";
@@ -157,7 +154,6 @@ public abstract class LangPaths {
         public static final String SELECT_FOCUS_MODE = MENU_DESCRIPTIONS + "select-focus-mode-desc";
         public static final String SELECT_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-local-inspiration-mode-desc";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
-        public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
         public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
         public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
         public static final String TUTORIALS = MENU_DESCRIPTIONS + "tutorials-desc";
@@ -202,15 +198,15 @@ public abstract class LangPaths {
             private static final String ACTION = NOTES + "action.";
             public static final String READ = ACTION + "read";
             public static final String READ_MORE = ACTION + "read-more";
+            public static final String MARK_AS_READ = ACTION + "mark-as-read";
             public static final String START = ACTION + "start";
             public static final String CONTINUE = ACTION + "continue";
             public static final String CONTINUE_TUTORIAL = ACTION + "continue-tutorial";
+            public static final String CREATE_PLOT = ACTION + "create-plot";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";
-            public static final String MARK_AS_READ = ACTION + "mark-as-read";
+            public static final String CLICK_TO_CREATE = ACTION + "click-to-create-plot";
             public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
-            public static final String CLICK_TO_ENABLE = ACTION + "click-to-enable";
-            public static final String CLICK_TO_DISABLE = ACTION + "click-to-disable";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";
@@ -237,7 +233,6 @@ public abstract class LangPaths {
         public static final class Info {
             private static final String INFO = MESSAGE + "info.";
             public static final String TELEPORTING_PLOT = INFO + "teleporting-plot";
-            public static final String TELEPORTING_SPAWN = INFO + "teleporting-spawn";
             public static final String TELEPORTING_TPLL = INFO + "teleporting-tpll";
             public static final String ABANDONED_PLOT = INFO + "abandoned-plot";
             public static final String FINISHED_PLOT = INFO + "finished-plot";
@@ -260,10 +255,10 @@ public abstract class LangPaths {
             public static final String SAVING_PLOT = INFO + "saving-plot";
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
-            public static final String CHANGED_LANGUAGE = INFO + "changed-language";
             public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
             public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
-            public static final String BEGINNER_TUTORIAL_REQUIRED = INFO + "tutorial-required";
+            public static final String BEGINNER_TUTORIAL_REQUIRED = INFO + "beginner-tutorial-required";
+            public static final String BEGINNER_TUTORIAL_COMPLETED = INFO + "beginner-tutorial-completed";
         }
 
         public static final class Error {
@@ -315,7 +310,6 @@ public abstract class LangPaths {
     public static final class Tutorials {
         public static final String TUTORIALS = "tutorials.";
         public static final String STAGE = TUTORIALS + "stage";
-        public static final String TUTORIAL_STARTED = TUTORIALS + "tutorial-started";
         public static final String NEW_STAGE_UNLOCKED = TUTORIALS + "new-stage-unlocked";
         public static final String TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
 

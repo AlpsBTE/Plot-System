@@ -82,7 +82,6 @@ menu-title:
   previous-page: 'Previous Page'
   error: 'Error'
   loading: 'Loading...'
-  navigator: 'Navigator'
   plot-difficulty: 'Plot Difficulty'
   slot: 'Slot'
   builder-utilities: 'Builder Utilities'
@@ -111,7 +110,6 @@ menu-title:
   review-plot: 'Review Plot #{0}'
   enter-player-name: 'Enter player name'
   select-language: 'Select Language'
-  auto-detect-language: 'Auto-Detect Language'
   select-plot-type: 'Select Plot Type'
   select-focus-mode: 'Select Focus Mode'
   select-local-inspiration-mode: 'Select Inspiration Mode'
@@ -128,7 +126,6 @@ menu-title:
 # -----------------------------------------------------
 menu-description:
   error-desc: 'An error occurred...'
-  navigator-desc: 'Open the navigator menu'
   plot-difficulty-desc: 'Click to Switch...'
   slot-desc: 'Click on a city project to create a new plot'
   builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
@@ -148,7 +145,6 @@ menu-description:
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
   leave-plot-desc: 'Click to leave this plot'
   select-language-desc: 'Choose your language'
-  auto-detect-language-desc: 'Click to automatically detect your language'
   select-plot-type-desc: 'Choose your plot type'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
@@ -198,11 +194,11 @@ note:
     start: 'Start'
     continue: "Continue"
     continue-tutorial: 'Continue Tutorial'
+    create-plot: 'Create Plot'
     right-click: "Right Click"
     left-click: "Left Click"
+    click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
-    click-to-enable: "Click to enable..."
-    click-to-disable: "Click to disable..."
     click-to-remove-plot-member: "Click to remove member from plot..."
     click-to-open-link: "Click here to open the {0} link..."
     click-to-open-link-with-shortlink: "§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}"
@@ -225,7 +221,6 @@ note:
 message:
   info:
     teleporting-plot: "§aTeleporting to plot §6#{0}§a..."
-    teleporting-spawn: "§aTeleporting to spawn..."
     teleporting-tpll: "§aTeleporting to §6{0}§a, §6{1}§a..."
     abandoned-plot: "§aAbandoned plot with ID §6#{0}§a!"
     finished-plot: "§aPlot §6#{0}§a by §6{1}§a has been finished!"
@@ -248,10 +243,10 @@ message:
     saving-plot: "§aSaving plot..."
     creating-plot: "§aCreating new plot..."
     created-new-plot: "§aCreated new plot§a for §6{0}§a!"
-    changed-language: "§aChanged your language to §6{0}§a!"
     enter-feedback: "Please enter a feedback for the player in the chat."
     input-expires-after: "§9Chat input expires after §6{0} §9minutes."
-    tutorial-required: 'Complete the tutorial to take part in the project.'
+    beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
+    beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
@@ -297,7 +292,6 @@ leaderboards:
 
 tutorials:
   stage: 'Stage'
-  tutorial-started: 'TUTORIAL STARTED'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
   tutorial-completed: 'TUTORIAL COMPLETED'
   beginner:
@@ -358,6 +352,7 @@ tutorials:
         - 'Well done! The height of the building is {1} blocks.'
         - 'You´ve almost made it. The height of the building is {1} blocks.'
         - 'You´ve almost made it. Try again!'
+        - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
       stage-6-tasks:
         - 'Calculate the height of the building.'
     stage-7:
@@ -377,7 +372,7 @@ tutorials:
       stage-8-messages:
         - 'The building shell is done! Let´s continue with the windows and doors.'
         - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
-        - 'Don´t forget to §6darken the windows and doors§f so you can´t see through them. We don´t build interiors!'
+        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
         - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
         - 'Use the same blocks as for the windows on the right. Try again!'
         - 'Thank you for your help! Now we can continue with the texturing.'
@@ -393,15 +388,16 @@ tutorials:
       stage-9-tasks:
         - 'Read all tips on the plot and mark them as read.'
     stage-10:
-      stage-10-title: 'Detailing'
+      stage-10-title: 'Detailing & Further Steps'
       stage-10-messages:
-        - 'Detailing is one of the most important processes as it makes the building distinctive and be unique.'
+        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
         - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
         - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
         - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
         - 'Click here to learn more about the project.'
-        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or <gold>{1}</gold>.'
-        - 'Happy building!'
+        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
+        - 'If you want to explore the current progress of the map, check out the <gold>Terra</gold> server!'
+        - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 

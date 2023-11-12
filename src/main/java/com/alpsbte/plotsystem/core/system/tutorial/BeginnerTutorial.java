@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.PlotTutorialHologram;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
@@ -37,8 +38,11 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.BuildEvent
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.LineCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.*;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,8 +57,10 @@ import java.util.logging.Level;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.*;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static com.alpsbte.alpslib.utils.AlpsUtils.deserialize;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
     public BeginnerTutorial(Player player, int stageId) throws SQLException {
@@ -65,8 +71,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     protected List<TutorialWorld> initWorlds() {
         try {
             return Arrays.asList(
-                    new TutorialWorld(getId(), 0),
-                    new TutorialWorld(getId(), 1, plot.getWorld().getWorldName())
+                    new TutorialWorld(getId(), 0, Utils.getSpawnLocation().getWorld().getName()),
+                    new TutorialWorld(getId(), 1, plot.getWorld().getWorldName()),
+                    new TutorialWorld(getId(), 2, Utils.getSpawnLocation().getWorld().getName())
             );
         } catch (SQLException ex) {
             onException(ex);
@@ -98,6 +105,15 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     @Override
     public FileConfiguration getConfig() {
         return ConfigUtil.getTutorialInstance().getBeginnerTutorial();
+    }
+
+    @Override
+    public void onTutorialComplete(UUID playerUUID) {
+        super.onTutorialComplete(playerUUID);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), () -> {
+            sendTutorialCompletedTipMessage(getPlayer());
+            getPlayer().playSound(getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
+        }, 20 * 7);
     }
 
     private static class Stage1 extends AbstractPlotStage {
@@ -229,7 +245,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Collections.singletonList(
-                    new PlotTutorialHologram(getPlayer(), 0, getMessages().get(4), 0)
+                    new PlotTutorialHologram(getPlayer(), 0, getMessages().get(4), 3)
             );
         }
 
@@ -398,7 +414,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
-            return null;
+            return Collections.singletonList(new PlotTutorialHologram(getPlayer(), 13, getMessages().get(7), 4));
         }
 
         @Override
@@ -413,7 +429,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(3)).color(GRAY),
                                     text(Stage2.GOOGLE_EARTH, GRAY), ClickEvent.openUrl(getPlot().getGoogleEarthLink()))
                     }, Sound.NPC_TALK, false)
-                    .delay(Delay.TASK_START);
+                    .delay(Delay.TASK_START)
+                    .createHolograms(getHolograms().get(0));
             stage.addPlayerChatEvent(deserialize(getTasks().get(0)), HEIGHT, HEIGHT_OFFSET, 3, (isCorrect, attemptsLeft) -> {
                 if (!isCorrect && attemptsLeft > 0) {
                     ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { deserialize(getMessages().get(6)) }, false);
@@ -458,7 +475,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     new PlotTutorialHologram(getPlayer(), 1, getMessages().get(1)),
                     new PlotTutorialHologram(getPlayer(), 2, getMessages().get(2)),
                     new PlotTutorialHologram(getPlayer(), 3, getMessages().get(4), 2),
-                    new PlotTutorialHologram(getPlayer(), 4, getMessages().get(5), 0),
+                    new PlotTutorialHologram(getPlayer(), 4, getMessages().get(5), 5),
                     new PlotTutorialHologram(getPlayer(), 5, getMessages().get(6))
             );
         }
@@ -504,7 +521,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
                     new PlotTutorialHologram(getPlayer(), 6, getMessages().get(2)),
-                    new PlotTutorialHologram(getPlayer(), 7, getMessages().get(3), 0)
+                    new PlotTutorialHologram(getPlayer(), 7, getMessages().get(3))
             );
         }
 
@@ -586,7 +603,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         public List<String> setMessages() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE10_MESSAGES,
                     "/hdb",
-                    "/discord");
+                    TEXT_HIGHLIGHT_START + "/discord" + TEXT_HIGHLIGHT_END);
         }
 
         @Override
@@ -598,7 +615,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
                     new PlotTutorialHologram(getPlayer(), 11, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 12, getMessages().get(2), 0)
+                    new PlotTutorialHologram(getPlayer(), 12, getMessages().get(2))
             );
         }
 
@@ -613,15 +630,16 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .deleteHolograms()
                     .delay(2)
                     .sendChatMessage(new Object[] {
-                        getMessages().get(3),
-                        "",
-                        new ChatMessageTask.ClickableTaskMessage(deserialize(TEXT_CLICK_HIGHLIGHT + getMessages().get(4)).color(GRAY),
-                                deserialize(LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE)).append(text("...")),
-                                ClickEvent.openUrl(TutorialUtils.getDocumentationLinks(ConfigUtil.getTutorialInstance().getBeginnerTutorial()).get(0))),
-                    }, Sound.NPC_TALK, true)
+                            deserialize(getMessages().get(3)),
+                            "",
+                            new ChatMessageTask.ClickableTaskMessage(deserialize(TEXT_CLICK_HIGHLIGHT + getMessages().get(4)).color(GRAY),
+                                deserialize(LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE)).color(GRAY).append(text("...")),
+                                ClickEvent.openUrl(TutorialUtils.getDocumentationLinks(ConfigUtil.getTutorialInstance().getBeginnerTutorial()).get(6))),
+                    }, Sound.NPC_TALK, true).delay(2)
+                    .teleport(2).delay(2)
                     .sendChatMessage(deserialize(getMessages().get(5)), Sound.NPC_TALK, true)
-                    .sendChatMessage(deserialize(getMessages().get(6)), Sound.NPC_TALK, false).delay(3)
-                    .teleport(0);
+                    .sendChatMessage(deserialize(getMessages().get(6)), Sound.NPC_TALK, true)
+                    .sendChatMessage(deserialize(getMessages().get(7)), Sound.NPC_TALK, false).delay(3);
         }
     }
 
@@ -678,5 +696,19 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         });
 
         return windowPoints;
+    }
+
+    public static void sendTutorialCompletedTipMessage(Player player) {
+        Component clickComponent = text("[", DARK_GRAY, BOLD)
+                .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CREATE_PLOT), GREEN))
+                .append(text("]", DARK_GRAY))
+                .clickEvent(ClickEvent.runCommand("/companion"))
+                .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_CREATE), GRAY)));
+
+        player.sendMessage(text());
+        player.sendMessage(TutorialUtils.CHAT_TASK_PREFIX_COMPONENT
+                .append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.BEGINNER_TUTORIAL_COMPLETED)).color(GRAY)));
+        player.sendMessage(clickComponent);
+        player.sendMessage(text());
     }
 }

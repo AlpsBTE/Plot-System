@@ -134,8 +134,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     public void saveTutorial(int stageId) {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
-                if (stageId >= stages.size()) plot.setCompleted();
-                else if (stageId > plot.getStageID()) plot.setStageID(stageId);
+                if (stageId >= stages.size()) {
+                    if (!plot.isCompleted()) plot.setCompleted();
+                } else if (stageId > plot.getStageID()) plot.setStageID(stageId);
             } catch (SQLException ex) {
                 onException(ex);
             }
@@ -160,17 +161,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     public void onTutorialComplete(UUID playerUUID) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            try {
-                if (!plot.isCompleted()) {
-                    saveTutorial(getCurrentStage() + 1);
-                    getPlayer().playSound(getPlayer().getLocation(), Sound.TUTORIAL_COMPLETED, 1f, 1f);
-                    sendTutorialCompletedMessage(getPlayer(), getName());
-                }
-            } catch (SQLException ex) {
-                onException(ex);
-            }
-        });
+        saveTutorial(getCurrentStage() + 1);
+        getPlayer().playSound(getPlayer().getLocation(), Sound.TUTORIAL_COMPLETED, 1f, 1f);
+        sendTutorialCompletedMessage(getPlayer(), getName());
     }
 
     @Override
