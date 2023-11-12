@@ -26,16 +26,22 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import li.cinnazeyy.langlibs.core.menu.LanguageSelectMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 import java.util.function.Consumer;
+
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class SettingsMenu extends AbstractMenu {
     private Consumer<Player> onBack = (player) -> player.performCommand("companion");
@@ -53,8 +59,8 @@ public class SettingsMenu extends AbstractMenu {
         // Set language item
         getMenu().getSlot(11).setItem(
                 new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.GLOBE_HEAD.getId()))
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE))
-                        .setLore(new LegacyLoreBuilder()
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_LANGUAGE), GOLD, BOLD))
+                        .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_LANGUAGE))
                                 .build())
                         .build());
@@ -62,8 +68,8 @@ public class SettingsMenu extends AbstractMenu {
         // Set Plot type item
         getMenu().getSlot(15).setItem(
                 new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PLOT_TYPE_BUTTON.getId()))
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE))
-                        .setLore(new LegacyLoreBuilder()
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_PLOT_TYPE), GOLD, BOLD))
+                        .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_PLOT_TYPE))
                                 .build())
                         .build());
@@ -75,10 +81,10 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for language item
-        getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> new SelectLanguageMenu(clickPlayer)));
+        getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> clickPlayer.performCommand("language")));
 
         // Set click event for plot type item
-        getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> new SelectPlotTypeMenu(clickPlayer)));
+        getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> new PlotTypeMenu(clickPlayer)));
 
         // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> onBack.accept(clickPlayer));
@@ -87,7 +93,7 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111101111")
