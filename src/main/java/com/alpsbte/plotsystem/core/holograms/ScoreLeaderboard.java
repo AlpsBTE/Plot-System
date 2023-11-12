@@ -55,13 +55,13 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ScoreLeaderboard extends HolographicPagedDisplay {
+public class ScoreLeaderboard extends HolographicPagedDisplay implements LeaderboardConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
 
     protected ScoreLeaderboard() {
-        super("score-leaderboard", LeaderboardManager.getPosition(ConfigPaths.SCORE_LEADERBOARD),
-                false, PlotSystem.getPlugin());
+        super("score-leaderboard", null, false, PlotSystem.getPlugin());
+        setPosition(LeaderboardManager.getPosition(this));
 
         new BukkitRunnable() {
             @Override
@@ -190,11 +190,12 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
         boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLE, true);
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
+        if (!actionBarEnabled) return players;
         for (Player player : Bukkit.getOnlinePlayers()) {
             Hologram holo = getHologram(player.getUniqueId());
             if (holo == null) continue;
             if (player.getWorld().getName().equals(holo.getPosition().getWorldName()) &&
-                    (!actionBarEnabled || holo.getPosition().distance(player.getLocation()) <= actionBarRadius)) {
+                    holo.getPosition().distance(player.getLocation()) <= actionBarRadius) {
                 players.add(player);
             }
         }
@@ -212,6 +213,26 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     @Override
     public long getInterval() {
         return PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
+    }
+
+    @Override
+    public String getEnablePath() {
+        return ConfigPaths.SCORE_LEADERBOARD_ENABLE;
+    }
+
+    @Override
+    public String getXPath() {
+        return ConfigPaths.SCORE_LEADERBOARD_X;
+    }
+
+    @Override
+    public String getYPath() {
+        return ConfigPaths.SCORE_LEADERBOARD_Y;
+    }
+
+    @Override
+    public String getZPath() {
+        return ConfigPaths.SCORE_LEADERBOARD_Z;
     }
 
     public enum LeaderboardTimeframe {

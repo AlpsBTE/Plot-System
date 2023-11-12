@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands.admin;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
@@ -49,7 +50,8 @@ public class CMD_PReload extends BaseCommand {
             PlotSystem.getPlugin().reloadConfig();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
-            LeaderboardManager.getLeaderboards().forEach(leaderboard -> leaderboard.setPosition(LeaderboardManager.getPosition(leaderboard.getId())));
+            LeaderboardManager.getLeaderboards().forEach(leaderboard -> leaderboard.setPosition(LeaderboardManager
+                    .getPosition((LeaderboardConfiguration) leaderboard)));
             LeaderboardManager.reloadLeaderboards();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded leaderboards!"));
 

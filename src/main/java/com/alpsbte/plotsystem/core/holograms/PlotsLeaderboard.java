@@ -37,9 +37,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class PlotsLeaderboard extends HolographicDisplay {
+public class PlotsLeaderboard extends HolographicDisplay implements LeaderboardConfiguration {
     protected PlotsLeaderboard() {
-        super("plots-leaderboard", LeaderboardManager.getPosition(ConfigPaths.PLOTS_LEADERBOARD), false);
+        super(ConfigPaths.PLOTS_LEADERBOARD, null, false);
+        setPosition(LeaderboardManager.getPosition(this));
     }
 
     @Override
@@ -73,5 +74,25 @@ public class PlotsLeaderboard extends HolographicDisplay {
     @Override
     public boolean hasViewPermission(UUID uuid) {
         return true;
+    }
+
+    @Override
+    public String getEnablePath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_ENABLE;
+    }
+
+    @Override
+    public String getXPath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_X;
+    }
+
+    @Override
+    public String getYPath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_Y;
+    }
+
+    @Override
+    public String getZPath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_Z;
     }
 }

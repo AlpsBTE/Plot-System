@@ -27,9 +27,9 @@ package com.alpsbte.plotsystem.commands.admin;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -59,7 +59,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         Player player = (Player)sender;
         if (args.length != 1) {
             sendInfo(sender);
-            player.sendMessage("§8------- §6§lHolograms §8-------");
+            player.sendMessage("§8------- §6§lLeaderboards §8-------");
             for(HolographicDisplay holo : LeaderboardManager.getLeaderboards()) {
                 player.sendMessage(" §6> §f" + holo.getId());
             }
@@ -67,19 +67,18 @@ public class CMD_SetLeaderboard extends BaseCommand {
             return true;
         }
 
-        // Find hologram by name
-        HolographicDisplay hologram = LeaderboardManager.getLeaderboards().stream()
+        // Find leaderboard by name
+        HolographicDisplay leaderboard = LeaderboardManager.getLeaderboards().stream()
                 .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
                 .findFirst()
                 .orElse(null);
 
-        // Update hologram location
-        if(hologram == null) {
-            player.sendMessage(Utils.ChatUtils.getAlertFormat("Hologram could not be found!"));
+        // Update leaderboard location
+        if(leaderboard == null) {
+            player.sendMessage(Utils.ChatUtils.getAlertFormat("Leaderboard could not be found!"));
             return true;
         }
-        LeaderboardManager.savePosition(hologram.getId(), hologram.getId().startsWith("score") ? ConfigPaths.SCORE_LEADERBOARD :
-                ConfigPaths.PLOTS_LEADERBOARD, getPlayer(sender).getLocation());
+        LeaderboardManager.savePosition(leaderboard.getId(), (LeaderboardConfiguration) leaderboard, getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
         player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
         return true;

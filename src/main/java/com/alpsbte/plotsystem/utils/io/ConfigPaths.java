@@ -48,13 +48,18 @@ public abstract class ConfigPaths {
 
 
     // Leaderboards
-    public static final String HOLOGRAMS = "holograms.";
-    public static final String SCORE_LEADERBOARD = HOLOGRAMS + "score-leaderboard.sl-";
-    public static final String PLOTS_LEADERBOARD = HOLOGRAMS + "plots-leaderboard.pl-";
-    public static final String LEADERBOARD_ENABLE = "enable";
-    public static final String LEADERBOARD_X = "x";
-    public static final String LEADERBOARD_Y = "y";
-    public static final String LEADERBOARD_Z = "z";
+    private static final String HOLOGRAMS = "holograms.";
+    public static final String SCORE_LEADERBOARD = "score-leaderboard";
+    public static final String SCORE_LEADERBOARD_ENABLE = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-enable";
+    public static final String SCORE_LEADERBOARD_X =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-x";
+    public static final String SCORE_LEADERBOARD_Y =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-y";
+    public static final String SCORE_LEADERBOARD_Z =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-z";
+    public static final String PLOTS_LEADERBOARD = "plots-leaderboard";
+    public static final String PLOTS_LEADERBOARD_ENABLE = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-enable";
+    public static final String PLOTS_LEADERBOARD_X =  HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-x";
+    public static final String PLOTS_LEADERBOARD_Y =  HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-y";
+    public static final String PLOTS_LEADERBOARD_Z =  HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-z";
+
 
     private static final String DISPLAY_OPTIONS = "display-options.";
     public static final String DISPLAY_OPTIONS_INTERVAL = DISPLAY_OPTIONS + "interval";
