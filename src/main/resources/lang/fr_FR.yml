@@ -95,7 +95,7 @@ menu-title:
   feedback: 'Retour | Review #{0}'
   custom-heads: 'Têtes Custom'
   banner-maker: 'Outil Bannière'
-  special-blocks: 'Blocs Spéciaux'
+  special-tools: 'Special Blocks & Items'
   review-point: 'Point'
   review-points: 'Points'
   cancel: 'Annuler'
@@ -138,8 +138,8 @@ menu-description:
   manage-members-desc: "Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter%newline%supprimer d'autres joueurs sur votre plot"
   feedback-desc: "Cliquez pour afficher les commentaires sur la review de votre plot"
   custom-heads-desc: "Cliquez pour ouvrir le menu des têtes pour obtenir une variété de têtes personnalisées"
-  banner-maker-desc: "Cliquez pour ouvrir le menu du créateur de bannières pour créer vos propres bannières personnalisées"
-  special-blocks-desc: "Cliquez pour ouvrir le menu des blocs spéciaux pour obtenir une variété de blocs inaccessibles"
+  banner-maker-desc: "Click to create and save your own banners"
+  special-tools-desc: "Click here to access a variety of inaccessible blocks and items"
   add-member-to-plot-desc: "Invitez vos amis à votre plot et construisez ensemble"
   review-points-desc: "Cliquez pour sélectionner"
   submit-review-desc: "Soumettre les points sélectionnés et marquer le tracé comme révisé"

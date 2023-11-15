@@ -26,61 +26,67 @@ package com.alpsbte.plotsystem.utils.items;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+
 public class MenuItems {
 
     public static ItemStack closeMenuItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
-                .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.CLOSE))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CLOSE), RED, BOLD))
                 .build();
     }
 
     public static ItemStack backMenuItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.BACK_BUTTON.getId()))
-                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.BACK))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.BACK), GOLD, BOLD))
                 .build();
     }
 
     public static ItemStack nextPageItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.NEXT_BUTTON.getId()))
-                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.NEXT_PAGE))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.NEXT_PAGE), GOLD, BOLD))
                 .build();
     }
 
     public static ItemStack previousPageItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PREVIOUS_BUTTON.getId()))
-                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PREVIOUS_PAGE))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PREVIOUS_PAGE), GOLD, BOLD))
                 .build();
     }
 
     public static ItemStack errorItem(Player player) {
         return new ItemBuilder(Material.BARRIER)
-                .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.ERROR))
-                .setLore(new LegacyLoreBuilder()
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.ERROR), RED, BOLD))
+                .setLore(new LoreBuilder()
                     .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.ERROR)).build())
                 .build();
     }
 
     public static ItemStack loadingItem(Material material, Player player) {
         return new ItemBuilder(material)
-                .setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING), GOLD, BOLD))
                 .build();
     }
 
     public static ItemStack loadingItem(ItemStack itemStack, Player player) {
-        return new ItemBuilder(itemStack).setName("§6§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING))
+        return new ItemBuilder(itemStack)
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING), GOLD, BOLD))
                 .build();
     }
 
     public static ItemStack filterItem(Player langPlayer) {
         return new ItemBuilder(Material.HOPPER, 1)
-                .setName("§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY))
+                .setName(text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY), GOLD, BOLD))
                 .build();
     }
 }

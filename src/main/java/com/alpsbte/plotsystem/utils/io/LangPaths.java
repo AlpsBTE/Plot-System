@@ -101,7 +101,7 @@ public abstract class LangPaths {
         public static final String FEEDBACK = MENU_TITLES + "feedback";
         public static final String CUSTOM_HEADS = MENU_TITLES + "custom-heads";
         public static final String BANNER_MAKER = MENU_TITLES + "banner-maker";
-        public static final String SPECIAL_BLOCKS = MENU_TITLES + "special-blocks";
+        public static final String SPECIAL_TOOLS = MENU_TITLES + "special-tools";
         public static final String REVIEW_POINT = MENU_TITLES + "review-point";
         public static final String REVIEW_POINTS = MENU_TITLES + "review-points";
         public static final String CANCEL = MENU_TITLES + "cancel";
@@ -144,7 +144,7 @@ public abstract class LangPaths {
         public static final String FEEDBACK = MENU_DESCRIPTIONS + "feedback-desc";
         public static final String CUSTOM_HEADS = MENU_DESCRIPTIONS + "custom-heads-desc";
         public static final String BANNER_MAKER = MENU_DESCRIPTIONS + "banner-maker-desc";
-        public static final String SPECIAL_BLOCKS = MENU_DESCRIPTIONS + "special-blocks-desc";
+        public static final String SPECIAL_TOOLS = MENU_DESCRIPTIONS + "special-tools-desc";
         public static final String ADD_MEMBER_TO_PLOT = MENU_DESCRIPTIONS + "add-member-to-plot-desc";
         public static final String REVIEW_POINTS = MENU_DESCRIPTIONS + "review-points-desc";
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";

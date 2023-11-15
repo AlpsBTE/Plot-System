@@ -40,7 +40,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -59,11 +58,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 
 import java.sql.ResultSet;
@@ -73,8 +70,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class EventListener extends SpecialBlocks implements Listener {
-
+public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         // User has joined for the first time
@@ -243,13 +239,7 @@ public class EventListener extends SpecialBlocks implements Listener {
             PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
         }
 
-        if (PlotUtils.isPlotWorld(event.getPlayer().getWorld())) {
-            event.getPlayer().getInventory().setItem(8, CompanionMenu.getMenuItem(event.getPlayer()));
-
-            if (event.getPlayer().hasPermission("plotsystem.review")) {
-                event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem(event.getPlayer()));
-            }
-        }
+        if (PlotUtils.isPlotWorld(event.getPlayer().getWorld())) Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 
     @EventHandler
@@ -264,42 +254,9 @@ public class EventListener extends SpecialBlocks implements Listener {
 
     @EventHandler
     public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer()))) {
+        if(event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
+                event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
-        }
-        if(event.getItemDrop() != null && event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerBlockPlaceEvent(BlockPlaceEvent event) {
-        if(event.canBuild()) {
-            ItemStack item = event.getItemInHand();
-
-            if(item.isSimilar(SeamlessSandstone)) {
-                event.getBlockPlaced().setType(Material.SMOOTH_SANDSTONE, true);
-            } else if(item.isSimilar(SeamlessRedSandstone)) {
-                event.getBlockPlaced().setType(Material.SMOOTH_RED_SANDSTONE, true);
-            } else if(item.isSimilar(SeamlessStone)) {
-                event.getBlockPlaced().setType(Material.SMOOTH_STONE, true);
-            } else if(item.isSimilar(SeamlessMushroomStem)) {
-                event.getBlockPlaced().setType(Material.MUSHROOM_STEM, true);
-            } else if(item.isSimilar(LightBrownMushroom)) {
-                event.getBlockPlaced().setType(Material.LEGACY_HUGE_MUSHROOM_1, true);
-            } else if(item.isSimilar(BarkOakLog)) {
-                event.getBlockPlaced().setType(Material.LEGACY_HUGE_MUSHROOM_1, true);
-            } else if(item.isSimilar(BarkSpruceLog)) {
-                event.getBlockPlaced().setType(Material.SPRUCE_WOOD, true);
-            } else if(item.isSimilar(BarkBirchLog)) {
-                event.getBlockPlaced().setType(Material.BIRCH_WOOD, true);
-            } else if(item.isSimilar(BarkJungleLog)) {
-                event.getBlockPlaced().setType(Material.JUNGLE_WOOD, true);
-            } else if(item.isSimilar(BarkAcaciaLog)) {
-                event.getBlockPlaced().setType(Material.ACACIA_WOOD, true);
-            } else if(item.isSimilar(BarkDarkOakLog)) {
-                event.getBlockPlaced().setType(Material.DARK_OAK_WOOD, true);
-            }
         }
     }
 
