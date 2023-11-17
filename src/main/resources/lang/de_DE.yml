@@ -197,8 +197,10 @@ note:
     create-plot: 'Plot Erstellen'
     right-click: "Rechtsklick"
     left-click: "Linksklick"
+    accept-invite: 'Einladung Annehmen'
     click-to-create-plot: 'Klicke um ein neues Plot zu erstellen...'
     click-to-proceed: "Klicke um fortzusetzen..."
+    click-to-accept-invite: 'Klicke um die Einladung anzunehmen...'
     click-to-remove-plot-member: "Klicke, um ein Mitglied vom Plot zu entfernen..."
     click-to-open-link: "Klicke hier um den {0} Link zu öffnen..."
     click-to-open-link-with-shortlink: "§6Klicke hier, §7 um den §a{0}§7 Link zu öffnen oder benutze diesen Link: §a{1}"
@@ -207,13 +209,6 @@ note:
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
     tutorial-show-stages: 'Stages Anzeigen'
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "Spieler ist bereits Besitzer!"
-    player-already-added: "Spieler ist bereits hinzugefügt!"
-    player-not-online: "Spieler ist nicht online!"
-    invalid-input: "Ungültige Eingabe!"
-    enter-player-name: "Spielername..."
 
 # -----------------------------------------------------
 # | Messages
@@ -243,10 +238,16 @@ message:
     saving-plot: "§aSpeichere Plot..."
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
-    enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
-    input-expires-after: "§9Die Chat-Eingabe läuft nach §6{0} §9Minuten ab."
+    chat-enter-player: 'Bitte gebe den Namen des Spielers im Chat ein.'
+    chat-enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
+    chat-input-expires-after: "Die Eingabe läuft nach {0} Minuten ab."
     beginner-tutorial-required: 'Schließe das Tutorial ab, um an dem Projekt teilzunehmen.'
     beginner-tutorial-completed: 'Bist du bereit, dein eigenes Plot zu bauen? Nun bist du an der Reihe!'
+    player-invite-sent: 'Eine Einladung wurde an {0} gesendet.'
+    player-invite-to-sent: '{0} hat dich zu seinem Plot eingeladen.'
+    player-invite-accepted: 'Die Einladung von {0}´s Plot wurde angenommen.'
+    player-invite-to-accepted: '{0} hat deine Einladung angenommen und wurde zu deinem Plot hinzugefügt.'
+    player-invite-rejected: 'Die Einladung von {0}´s Plot wurde abgelehnt.'
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
     plot-either-unclaimed-or-unreviewed: "Dieser Plot ist entweder unbeansprucht oder wurde noch nicht bewertet!"
@@ -266,6 +267,10 @@ message:
     player-is-plot-member: "Dieser Spieler ist bereits Mitglied von diesem Plot!"
     player-is-not-online: "Dieser Spieler ist nicht online!"
     player-not-found: "Konnte diesen Spieler nicht finden!"
+    player-already-invited: '{0} wurde bereits auf ein Plot eingeladen.'
+    player-invite-expired: 'Die Einladung von {0} ist abgelaufen.'
+    player-invite-to-expired: 'Die Einladung an {0} ist abgelaufen.'
+    player-invite-to-rejected: '{0} hat deine Einladung abgelehnt.'
     player-needs-to-be-on-plot: "Um dies zu nutzen musst du auf einem Plot sein!"
     player-needs-higher-score: "Du benötigst einen höheren Punktestand, um in diesem Schwierigkeitsgrad zu bauen."
     invalid-input: "Ungültige Eingabe!"
@@ -275,7 +280,7 @@ message:
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
     no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
-    feedback-input-expired: "Die Chat-Eingabe ist abgelaufen! Nutze §7/editfeedback <ID> <Text> §cum das Feedback zu bearbeiten."
+    chat-input-expired: "Die Eingabe ist abgelaufen."
     tutorial-disabled: 'Tutorials sind auf diesem Server deaktiviert.'
     tutorial-already-running: "Du hast bereits ein Tutorial am Laufen! Schließe dieses ab, bevor du ein neues beginnst."
 

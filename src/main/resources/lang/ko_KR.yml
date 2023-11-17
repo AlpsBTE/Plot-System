@@ -197,8 +197,10 @@ note:
     create-plot: 'Create Plot'
     right-click: "우클릭"
     left-click: "Left Click"
+    accept-invite: 'Accept Invite'
     click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
+    click-to-accept-invite: 'Click to accept the invite...'
     click-to-remove-plot-member: "클릭하여 플롯에서 멤버 퇴출하기"
     click-to-open-link: "여기를 클릭해 {0} 페이지를 여세요!"
     click-to-open-link-with-shortlink: "§6여기§7를 클릭해 §a{0}§7 페이지를 열거나 이 링크를 사용하세요: §a{1}"
@@ -207,13 +209,6 @@ note:
     click-to-show-plots: "§6여기§a를 클릭해 자신의 플롯들을 확인하세요!"
     click-to-play-with-friends: "§7친구와 플레이하시려면 §6여기§7를 클릭하세요!"
     tutorial-show-stages: 'Show Stages'
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "이미 주인인 플레이어입니다!"
-    player-already-added: "이미 추가된 플레이어입니다!"
-    player-not-online: "플레이어가 접속 중이 아닙니다!"
-    invalid-input: "잘못된 입력입니다!"
-    enter-player-name: "플레이어 이름 입력:"
 
 # -----------------------------------------------------
 # | Messages
@@ -243,10 +238,16 @@ message:
     saving-plot: "§a플롯 저장 중..."
     creating-plot: "§a새로운 플롯 생성 중..."
     created-new-plot: "§6{0}§a님의 플롯을 생성하였습니다!"
-    enter-feedback: "Please enter a feedback for the player in the chat."
-    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    chat-enter-player: 'Please enter the name of the player in the chat.'
+    chat-enter-feedback: "Please enter a feedback for the player in the chat."
+    chat-input-expires-after: "Chat input expires after {0} minutes."
     beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
     beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
+    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
+    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
+    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
+    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
   error:
     plot-does-not-exist: "존재하지 않는 플롯입니다!"
     plot-either-unclaimed-or-unreviewed: "아직 소유되거나 검토되지 않은 플롯입니다!"
@@ -266,6 +267,10 @@ message:
     player-is-plot-member: "이미 이 플롯의 멤버인 플레이어입니다!"
     player-is-not-online: "접속 중이 아닌 플레이어입니다!"
     player-not-found: "플레이어를 찾을 수 없습니다!"
+    player-already-invited: '{0} has already been invited to a plot.'
+    player-invite-expired: 'The invitation from {0} has expired.'
+    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
+    player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "플롯에서만 사용할 수 있습니다!"
     player-needs-higher-score: "해당 난이도에서 건축하시려면 더 높은 점수가 필요합니다."
     invalid-input: "잘못된 입력입니다!"
@@ -275,7 +280,7 @@ message:
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+    chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 

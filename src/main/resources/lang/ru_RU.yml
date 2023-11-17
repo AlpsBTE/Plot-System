@@ -197,8 +197,10 @@ note:
     create-plot: 'Create Plot'
     right-click: "Правая кнопка мыши"
     left-click: "Left Click"
+    accept-invite: 'Accept Invite'
     click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
+    click-to-accept-invite: 'Click to accept the invite...'
     click-to-remove-plot-member: "Нажмите, чтобы убрать участника с участка..."
     click-to-open-link: "Нажмите Здесь чтобы открыть {0} ссылку..."
     click-to-open-link-with-shortlink: "§6Нажмите Здесь §7чтобы открыть §a{0}§7 или воспользоваться этой ссылкой§a{1}"
@@ -207,13 +209,6 @@ note:
     click-to-show-plots: "§6Нажмите,чтобы показать ваши участки..."
     click-to-play-with-friends: "§7Хотите играть с друзьями? §6Нажмите здесь..."
     tutorial-show-stages: 'Show Stages'
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "Игрок уже владелец!"
-    player-already-added: "Игрок уже был добавлен!"
-    player-not-online: "Игрок не в сети!"
-    invalid-input: "Недопустимый ввод!!"
-    enter-player-name: "Имя Игрока..."
 
 # -----------------------------------------------------
 # | Messages
@@ -243,10 +238,16 @@ message:
     saving-plot: "§aСохранение участка..."
     creating-plot: "§aСоздание нового участка..."
     created-new-plot: "§aСоздан новый участок§a для §6{0}§a!"
-    enter-feedback: "Please enter a feedback for the player in the chat."
-    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    chat-enter-player: 'Please enter the name of the player in the chat.'
+    chat-enter-feedback: "Please enter a feedback for the player in the chat."
+    chat-input-expires-after: "Chat input expires after {0} minutes."
     beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
     beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
+    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
+    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
+    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
+    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
   error:
     plot-does-not-exist: "Этот участок не существует!"
     plot-either-unclaimed-or-unreviewed: "Этот участок не занят либо ещё не был оценён!!"
@@ -266,6 +267,10 @@ message:
     player-is-plot-member: "Этот игрок уже участник этого участка!"
     player-is-not-online: "Этот игрок не в сети!"
     player-not-found: "Не удалось найти этого игрока!"
+    player-already-invited: '{0} has already been invited to a plot.'
+    player-invite-expired: 'The invitation from {0} has expired.'
+    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
+    player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "Вам нужно быть на участке чтобы использовать это!"
     player-needs-higher-score: "Вам нужна более высокая оценка чтобы строить на этом уровне сложности."
     invalid-input: "Недопустимый Ввод!"
@@ -275,7 +280,7 @@ message:
     please-wait: "Пожалуйста, подождите несколько секунд перед созданием нового участка!"
     all-slots-occupied: "Все ваши слоты заняты! Пожалуйста, завершите текущие участки, прежде чем создавать новый."
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+    chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 

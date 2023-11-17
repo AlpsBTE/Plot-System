@@ -201,7 +201,7 @@ public class PlotSystem extends JavaPlugin {
         LeaderboardManager.initLeaderboards();
         PlotUtils.checkPlotsForLastActivity();
         PlotUtils.syncPlotSchematicFiles();
-        Review.checkReviewerFeedbackList();
+        Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
 
         try {

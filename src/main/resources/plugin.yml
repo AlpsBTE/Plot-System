@@ -8,6 +8,9 @@ depend: [LangLibs]
 
 
 commands:
+  cancelchat:
+    description: Cancels the chat input.
+    usage: /cancelchat
   companion:
     description: Opens the Companion menu.
     usage: /companion

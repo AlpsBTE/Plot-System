@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.Invitation;
+import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
@@ -49,8 +49,8 @@ public class CMD_Plot_Invite extends SubCommand {
         if (args.length > 0) {
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
             if (getPlayer(sender) != null && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
-                Invitation invite = null;
-                for (Invitation item : Invitation.invitationsList) {
+                PlotMemberInvitation invite = null;
+                for (PlotMemberInvitation item : PlotMemberInvitation.invitationsList) {
                     if (item.invitee == getPlayer(sender)){
                         invite = item;
                         try {
@@ -72,7 +72,7 @@ public class CMD_Plot_Invite extends SubCommand {
                 }
 
                 if (invite != null) {
-                    Invitation.invitationsList.remove(invite);
+                    PlotMemberInvitation.invitationsList.remove(invite);
                 } else {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
                 }

@@ -26,15 +26,18 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.chat.ChatInput;
+import com.alpsbte.plotsystem.utils.chat.PlayerInviteeChatInput;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,6 +48,12 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlotMemberMenu extends AbstractMenu {
     private final Plot plot;
@@ -80,10 +89,12 @@ public class PlotMemberMenu extends AbstractMenu {
         ItemStack whitePlus = AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId());
         getMenu().getSlot(16)
                 .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LegacyLoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
-                                        "",
-                                        Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT), GOLD, BOLD))
+                        .setLore(new LoreBuilder()
+                                .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT)),
+                                        empty(),
+                                        text(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))))
+                                .build())
                         .build());
 
         // Set back item
@@ -98,7 +109,8 @@ public class PlotMemberMenu extends AbstractMenu {
         try {
             getMenu().getSlot(10)
                     .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LegacyLoreBuilder()
+                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER), GOLD, BOLD))
+                            .setLore(new LoreBuilder()
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
@@ -114,11 +126,11 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(i - 12);
                 getMenu().getSlot(i)
                         .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
-                                .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER))
-                                .setLore(new LegacyLoreBuilder()
-                                        .addLines(builder.getName(),
-                                                "",
-                                                Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
+                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER), AQUA, BOLD))
+                                .setLore(new LoreBuilder()
+                                        .addLines(text(builder.getName()),
+                                                empty(),
+                                                text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER))))
                                         .build())
                                 .build());
             }
@@ -133,11 +145,12 @@ public class PlotMemberMenu extends AbstractMenu {
         for (int i = 12; i < 15; i++) {
             int itemSlot = i;
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
+                if (getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
                 Builder builder = builders.get(itemSlot-12);
                     try {
                         plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
+                                LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
@@ -148,47 +161,8 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set click event for add plot member item
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            /*new AnvilGUI.Builder()
-                    .onComplete((player, text) -> {
-                        try {
-                            if (Builder.getBuilderByName(text) == null) {
-                                // Input was invalid or Player hasn't joined the server yet
-                                player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                                return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.INVALID_INPUT));
-                            }
-                            Builder builder = Builder.getBuilderByName(text);
-                            if (!Objects.requireNonNull(builder).isOnline()) {
-                                // Builder isn't online, thus can't be asked if he/she wants to be added
-                                player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
-                                return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_NOT_ONLINE));
-                            }
-
-                            // Check if player is owner of plot
-                            if (builder.getPlayer() == plot.getPlotOwner().getPlayer()) {
-                                player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
-                                return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_IS_OWNER));
-                            }
-
-                            // Check if player is already a member of the plot
-                            for (Builder item : plot.getPlotMembers()) {
-                                if (builder.getPlayer() == item.getPlayer()) {
-                                    player.sendMessage(Utils.getAlertFormat(LangUtil.get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_MEMBER)));
-                                    return AnvilGUI.Response.text(LangUtil.get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_ALREADY_ADDED));
-                                }
-                            }
-
-                            new Invitation(builder.getPlayer(), plot);
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        }
-                        return AnvilGUI.Response.close();
-                    })
-                    .text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
-                    .itemLeft(new ItemStack(Material.NAME_TAG))
-                    .itemRight(new ItemStack(Material.PLAYER_HEAD))
-                    .title(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
-                    .plugin(PlotSystem.getPlugin())
-                    .open(clickPlayer);*/
+            ChatInput.awaitChatInput.put(clickPlayer.getUniqueId(), new PlayerInviteeChatInput(clickPlayer.getUniqueId(), plot));
+            PlayerInviteeChatInput.sendChatInputMessage(clickPlayer);
         });
 
         // Set click event for back item
@@ -204,7 +178,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111101111")

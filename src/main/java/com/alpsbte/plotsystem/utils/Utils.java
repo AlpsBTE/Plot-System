@@ -29,11 +29,16 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -41,11 +46,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.logging.Level;
 
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_END;
+import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_START;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class Utils {
 
@@ -103,8 +112,40 @@ public class Utils {
             return infoPrefix.append(LegacyComponentSerializer.legacySection().deserialize(info).color(GREEN));
         }
 
+        public static Component getInfoFormat(Component infoComponent) {
+            return infoPrefix.append(infoComponent).color(GREEN);
+        }
+
         public static Component getAlertFormat(String alert) {
             return alertPrefix.append(LegacyComponentSerializer.legacySection().deserialize(alert).color(RED));
+        }
+
+        public static Component getAlertFormat(Component alertComponent) {
+            return alertPrefix.append(alertComponent).color(RED);
+        }
+
+        public static void checkForChatInputExpiry() {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+                if (!ChatInput.awaitChatInput.isEmpty()) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (ChatInput.awaitChatInput.containsKey(player.getUniqueId()) && ChatInput.awaitChatInput
+                                .get(player.getUniqueId()).getDateTime().isBefore(LocalDateTime.now().minusMinutes(5))) {
+                            ChatInput.awaitChatInput.remove(player.getUniqueId());
+                            player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CHAT_INPUT_EXPIRED)));
+                            player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
+                        }
+                    }
+                }
+            }, 0L, 20 * 60);
+        }
+
+        public static void sendChatInputExpiryComponent(Player player) {
+            Component comp = text(" [", DARK_GRAY, BOLD).append(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CANCEL), RED)
+                    .append(text("]", DARK_GRAY)))
+                    .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CANCEL), GRAY)))
+                    .clickEvent(ClickEvent.runCommand("/cancelchat"));
+            player.sendMessage(text().color(GRAY).append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.CHAT_INPUT_EXPIRES_AFTER,
+                    TEXT_HIGHLIGHT_START + "5" + TEXT_HIGHLIGHT_END)).append(comp)));
         }
     }
 

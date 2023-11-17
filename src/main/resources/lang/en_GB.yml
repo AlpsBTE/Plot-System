@@ -197,8 +197,10 @@ note:
     create-plot: 'Create Plot'
     right-click: "Right Click"
     left-click: "Left Click"
+    accept-invite: 'Accept Invite'
     click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
+    click-to-accept-invite: 'Click to accept the invite...'
     click-to-remove-plot-member: "Click to remove member from plot..."
     click-to-open-link: "Click here to open the {0} link..."
     click-to-open-link-with-shortlink: "§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}"
@@ -207,13 +209,6 @@ note:
     click-to-show-plots: "§6Click Here §ato show your plots..."
     click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
     tutorial-show-stages: 'Show Stages'
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "Player is already the owner!"
-    player-already-added: "Player already added!"
-    player-not-online: "Player is not online!"
-    invalid-input: "Invalid input!"
-    enter-player-name: "Player Name..."
 
 # -----------------------------------------------------
 # | Messages
@@ -243,10 +238,16 @@ message:
     saving-plot: "§aSaving plot..."
     creating-plot: "§aCreating new plot..."
     created-new-plot: "§aCreated new plot§a for §6{0}§a!"
-    enter-feedback: "Please enter a feedback for the player in the chat."
-    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    chat-enter-player: 'Please enter the name of the player in the chat.'
+    chat-enter-feedback: "Please enter a feedback for the player in the chat."
+    chat-input-expires-after: "Chat input expires after {0} minutes."
     beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
     beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
+    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
+    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
+    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
+    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
@@ -268,14 +269,16 @@ message:
     player-not-found: "Could not find that player!"
     player-needs-to-be-on-plot: "You need to be on a plot in order to use this!"
     player-needs-higher-score: "You need a higher score to build in this difficulty level."
-    invalid-input: "Invalid input!"
+    player-already-invited: '{0} has already been invited to a plot.'
+    player-invite-expired: 'The invitation from {0} has expired.'
+    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
+    player-invite-to-rejected: '{0} has rejected your invitation.'
     error-occurred: "An error occurred! Please try again!"
     command-disabled: "This command is disabled!"
     no-plots-left: "This city project does not have any more plots left. Please select another project."
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
-    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+    chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 

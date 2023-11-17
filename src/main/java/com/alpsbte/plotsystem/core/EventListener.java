@@ -26,12 +26,15 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
-import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
+import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
+import com.alpsbte.plotsystem.utils.chat.ChatInput;
+import com.alpsbte.plotsystem.utils.chat.PlayerInviteeChatInput;
+import com.alpsbte.plotsystem.utils.chat.PlayerFeedbackChatInput;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -47,7 +50,9 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import li.cinnazeyy.langlibs.core.event.LanguageChangeEvent;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -228,7 +233,7 @@ public class EventListener implements Listener {
                 } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
-            Review.awaitReviewerFeedbackList.remove(event.getPlayer().getUniqueId());
+            ChatInput.awaitChatInput.remove(event.getPlayer().getUniqueId());
             PlotUtils.Cache.clearCache(event.getPlayer().getUniqueId());
         }, 60L);
     }
@@ -261,21 +266,40 @@ public class EventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerChatEvent(AsyncPlayerChatEvent event) throws SQLException {
+    public void onPlayerChatEvent(AsyncChatEvent event) throws SQLException {
         UUID playerUUID = event.getPlayer().getUniqueId();
-        if (Review.awaitReviewerFeedbackList.containsKey(playerUUID)) {
+        if (ChatInput.awaitChatInput.containsKey(playerUUID)) {
             event.setCancelled(true);
-            String feedback = event.getMessage();
+            TextComponent messageComp = (TextComponent) event.message();
 
-            if (!feedback.equalsIgnoreCase("cancel")) {
-                Review review = Review.awaitReviewerFeedbackList.get(playerUUID).getReview();
-                review.setFeedback(feedback);
-                Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(review.getPlotID()))));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
-            } else {
-                Review.awaitReviewerFeedbackList.remove(playerUUID);
-                event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(event.getPlayer(), LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
+            ChatInput input = ChatInput.awaitChatInput.get(playerUUID);
+            if (input instanceof PlayerFeedbackChatInput) {
+                PlayerFeedbackChatInput feedbackInput = (PlayerFeedbackChatInput) input;
+                feedbackInput.getReview().setFeedback(messageComp.content());
+                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(),
+                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlotID()))));
+            } else if (input instanceof PlayerInviteeChatInput) {
+                PlayerInviteeChatInput inviteeInput = (PlayerInviteeChatInput) input;
+                Player player = Bukkit.getPlayer(messageComp.content());
+
+                if (player == null) {
+                    event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
+                            .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                } else if (!player.isOnline()) {
+                    event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
+                            .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
+                } else if (inviteeInput.getPlot().getPlotMembers().contains(Builder.byUUID(player.getUniqueId()))) {
+                    event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
+                            .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_MEMBER)));
+                } else if (inviteeInput.getPlot().getPlotOwner().getUUID().toString().equals(player.getUniqueId().toString())) {
+                    event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
+                            .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
+                } else {
+                    new PlotMemberInvitation(Bukkit.getPlayer(messageComp.content()), inviteeInput.getPlot());
+                    ChatInput.awaitChatInput.remove(playerUUID);
+                    event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
+                    return;
+                }
                 event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
             }
         }

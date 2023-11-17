@@ -205,8 +205,10 @@ public abstract class LangPaths {
             public static final String CREATE_PLOT = ACTION + "create-plot";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";
+            public static final String ACCEPT_INVITE = ACTION + "accept-invite";
             public static final String CLICK_TO_CREATE = ACTION + "click-to-create-plot";
             public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
+            public static final String CLICK_TO_ACCEPT_INVITE = ACTION + "click-to-accept-invite";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";
@@ -215,15 +217,6 @@ public abstract class LangPaths {
             public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
             public static final String TUTORIAL_SHOW_STAGES = ACTION + "tutorial-show-stages";
-        }
-
-        public static final class Anvil {
-            private static final String ANVIL = NOTES + "anvil.";
-            public static final String PLAYER_IS_OWNER = ANVIL + "player-is-owner";
-            public static final String PLAYER_ALREADY_ADDED = ANVIL + "player-already-added";
-            public static final String PLAYER_NOT_ONLINE = ANVIL + "player-not-online";
-            public static final String INVALID_INPUT = ANVIL + "invalid-input";
-            public static final String ENTER_PLAYER_NAME = ANVIL + "enter-player-name";
         }
     }
 
@@ -255,10 +248,16 @@ public abstract class LangPaths {
             public static final String SAVING_PLOT = INFO + "saving-plot";
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
-            public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
-            public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
+            public static final String CHAT_ENTER_PLAYER = INFO + "chat-enter-player";
+            public static final String CHAT_ENTER_FEEDBACK = INFO + "chat-enter-feedback";
+            public static final String CHAT_INPUT_EXPIRES_AFTER = INFO + "chat-input-expires-after";
             public static final String BEGINNER_TUTORIAL_REQUIRED = INFO + "beginner-tutorial-required";
             public static final String BEGINNER_TUTORIAL_COMPLETED = INFO + "beginner-tutorial-completed";
+            public static final String PLAYER_INVITE_SENT = INFO + "player-invite-sent";
+            public static final String PLAYER_INVITE_TO_SENT = INFO + "player-invite-to-sent";
+            public static final String PLAYER_INVITE_ACCEPTED = INFO + "player-invite-accepted";
+            public static final String PLAYER_INVITE_TO_ACCEPTED = INFO + "player-invite-to-accepted";
+            public static final String PLAYER_INVITE_REJECTED = INFO + "player-invite-rejected";
         }
 
         public static final class Error {
@@ -285,15 +284,18 @@ public abstract class LangPaths {
             public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
             public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";
             public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR + "player-needs-higher-score";
+            public static final String PLAYER_ALREADY_INVITED = ERROR + "player-already-invited";
+            public static final String PLAYER_INVITE_EXPIRED = ERROR + "player-invite-expired";
+            public static final String PLAYER_INVITE_TO_EXPIRED = ERROR + "player-invite-to-expired";
+            public static final String PLAYER_INVITE_TO_REJECTED = ERROR + "player-invite-to-rejected";
 
-            public static final String INVALID_INPUT = ERROR + "invalid-input";
+
             public static final String ERROR_OCCURRED = ERROR + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR + "command-disabled";
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
-            public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
-            public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
+            public static final String CHAT_INPUT_EXPIRED = ERROR + "chat-input-expired";
             public static final String TUTORIAL_DISABLED = ERROR + "tutorial-disabled";
             public static final String TUTORIAL_ALREADY_RUNNING = ERROR + "tutorial-already-running";
         }

@@ -197,8 +197,10 @@ note:
     create-plot: 'Create Plot'
     right-click: "右键点击"
     left-click: "Left Click"
+    accept-invite: 'Accept Invite'
     click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
+    click-to-accept-invite: 'Click to accept the invite...'
     click-to-remove-plot-member: "点击以从建地中移除成员..."
     click-to-open-link: "点击此区 以开启 {0} 连结..."
     click-to-open-link-with-shortlink: "§6点击此区 §7以开启 §a{0}§7 连结或使用此连结： §a{1}"
@@ -207,13 +209,6 @@ note:
     click-to-show-plots: "§6点击此区 §a显示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩吗？ §6点击此区..."
     tutorial-show-stages: 'Show Stages'
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "玩家已经是所有人！ "
-    player-already-added: "玩家已经被添加！ "
-    player-not-online: "玩家不在线上！ "
-    invalid-input: "输入无效！ "
-    enter-player-name: "玩家名称..."
 
 # -----------------------------------------------------
 # | Messages
@@ -243,10 +238,16 @@ message:
     saving-plot: "§a储存建地..."
     creating-plot: "§a创建新建地..."
     created-new-plot: "§a创建新建地§a 为 §6{0}§a！ "
-    enter-feedback: "Please enter a feedback for the player in the chat."
-    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    chat-enter-player: 'Please enter the name of the player in the chat.'
+    chat-enter-feedback: "Please enter a feedback for the player in the chat."
+    chat-input-expires-after: "Chat input expires after {0} minutes."
     beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
     beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
+    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
+    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
+    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
+    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
   error:
     plot-does-not-exist: "此建地不存在！ "
     plot-either-unclaimed-or-unreviewed: "此建地无人认领或尚未审核！ "
@@ -266,6 +267,10 @@ message:
     player-is-plot-member: "此玩家已经是此建地的成员！ "
     player-is-not-online: "此玩家不在线上！ "
     player-not-found: "无法找到该玩家！ "
+    player-already-invited: '{0} has already been invited to a plot.'
+    player-invite-expired: 'The invitation from {0} has expired.'
+    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
+    player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "你需要在一个建地上才能使用它！ "
     player-needs-higher-score: "你需要更高的积分来才能在这个难度度建设。"
     invalid-input: "输入邀请！"
@@ -275,7 +280,7 @@ message:
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
     no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
+    chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 

@@ -24,19 +24,13 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
-import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -46,15 +40,11 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Review {
-    public static final HashMap<UUID, ChatFeedbackInput> awaitReviewerFeedbackList = new HashMap<>();
-
     private final int reviewID;
 
     public Review(int reviewID) {
@@ -270,19 +260,5 @@ public class Review {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
         });
-    }
-
-    public static void checkReviewerFeedbackList() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            if (!awaitReviewerFeedbackList.isEmpty()) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (awaitReviewerFeedbackList.containsKey(player.getUniqueId()) && awaitReviewerFeedbackList.get(player.getUniqueId()).getDateTime().isBefore(LocalDateTime.now().minusMinutes(5))) {
-                        awaitReviewerFeedbackList.remove(player.getUniqueId());
-                        player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
-                        player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
-                    }
-                }
-            }
-        }, 0L, 20 * 60);
     }
 }

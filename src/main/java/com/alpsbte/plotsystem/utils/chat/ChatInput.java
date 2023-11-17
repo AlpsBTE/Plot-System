@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,26 +22,13 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.utils;
-
-import com.alpsbte.plotsystem.core.system.Review;
+package com.alpsbte.plotsystem.utils.chat;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
-public class ChatFeedbackInput {
-    private final Review review;
-    private final LocalDateTime dateTime;
+public interface ChatInput {
+    Map<UUID, ChatInput> awaitChatInput = new HashMap<>();
 
-    public ChatFeedbackInput(Review review) {
-        this.review = review;
-        this.dateTime = LocalDateTime.now();
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
+    LocalDateTime getDateTime();
 }

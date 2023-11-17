@@ -43,6 +43,7 @@ public class CommandManager {
 
     public final List<BaseCommand> baseCommands = new ArrayList<BaseCommand>() {{
         // Default Commands
+        add(new CMD_CancelChat());
         add(new CMD_Companion());
         add(new CMD_Plots());
         add(new CMD_Tpll());

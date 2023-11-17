@@ -31,7 +31,8 @@ import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
-import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
+import com.alpsbte.plotsystem.utils.chat.ChatInput;
+import com.alpsbte.plotsystem.utils.chat.PlayerFeedbackChatInput;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
@@ -392,15 +393,9 @@ public class ReviewPlotMenu extends AbstractMenu {
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
 
                         try {
-                            Review.awaitReviewerFeedbackList.remove(clickPlayer.getUniqueId());
-                            Review.awaitReviewerFeedbackList.put(clickPlayer.getUniqueId(), new ChatFeedbackInput(plot.getReview()));
-                            clickPlayer.sendMessage("");
-                            clickPlayer.sendMessage("§a" + LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.ENTER_FEEDBACK));
-                            TextComponent txtComponent = new TextComponent();
-                            txtComponent.setText(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Info.INPUT_EXPIRES_AFTER, "5") + " §7§l[§c§l" + LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL).toUpperCase(Locale.ROOT) + "§7§l]");
-                            txtComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(clickPlayer, LangPaths.MenuTitle.CANCEL))));
-                            txtComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "cancel"));
-                            clickPlayer.spigot().sendMessage(txtComponent);
+                            ChatInput.awaitChatInput.put(clickPlayer.getUniqueId(),
+                                    new PlayerFeedbackChatInput(clickPlayer.getUniqueId(), plot.getReview()));
+                            PlayerFeedbackChatInput.sendChatInputMessage(clickPlayer);
                         } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
                     });
 
