@@ -428,10 +428,13 @@ public final class PlotUtils {
                                         .setValue(dPlot.getReview().getReviewID()).executeUpdate();
                             }
 
+                            for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
+
                             if (plot.getPlotOwner() != null) {
                                 Cache.clearCache(plot.getPlotOwner().getUUID());
                                 plot.getPlotOwner().removePlot(dPlot.getSlot());
                             }
+
                             dPlot.setPlotOwner(null);
                             dPlot.setLastActivity(true);
                             dPlot.setTotalScore(-1);
