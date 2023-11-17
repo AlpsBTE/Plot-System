@@ -75,7 +75,7 @@ public class PlotMemberInvitation {
         invitee.sendMessage(empty());
         invitee.sendMessage(Utils.ChatUtils.getInfoFormat(AlpsUtils.deserialize(LangUtil.getInstance().get(invitee,
                 LangPaths.Message.Info.PLAYER_INVITE_TO_SENT, TEXT_HIGHLIGHT_START + plot.getPlotOwner().getName() + TEXT_HIGHLIGHT_END))));
-        invitee.sendMessage(getInvitationAcceptComponent(invitee));
+        invitee.sendMessage(getInviteAcceptComponent(invitee).append(text(" ").append(getInviteRejectComponent(invitee))));
         invitee.sendMessage(empty());
         invitee.playSound(invitee.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
 
@@ -128,12 +128,21 @@ public class PlotMemberInvitation {
         scheduler.cancelTask(taskID);
     }
 
-    private static Component getInvitationAcceptComponent(Player player) {
+    private static Component getInviteAcceptComponent(Player player) {
         return text("[", DARK_GRAY, BOLD)
-                .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.ACCEPT_INVITE), GREEN))
+                .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.ACCEPT), GREEN))
                 .append(text("]", DARK_GRAY))
                 .clickEvent(ClickEvent.runCommand("/plot invite accept"))
                 .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player,
-                        LangPaths.Note.Action.CLICK_TO_ACCEPT_INVITE), GRAY)));
+                        LangPaths.Note.Action.CLICK_TO_PROCEED), GRAY)));
+    }
+
+    private static Component getInviteRejectComponent(Player player) {
+        return text("[", DARK_GRAY, BOLD)
+                .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.REJECT), RED))
+                .append(text("]", DARK_GRAY))
+                .clickEvent(ClickEvent.runCommand("/plot invite reject"))
+                .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player,
+                        LangPaths.Note.Action.CLICK_TO_PROCEED), GRAY)));
     }
 }

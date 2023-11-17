@@ -197,10 +197,10 @@ note:
     create-plot: 'Create Plot'
     right-click: "Правая кнопка мыши"
     left-click: "Left Click"
-    accept-invite: 'Accept Invite'
+    accept: 'Accept'
+    reject: 'Reject'
     click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
-    click-to-accept-invite: 'Click to accept the invite...'
     click-to-remove-plot-member: "Нажмите, чтобы убрать участника с участка..."
     click-to-open-link: "Нажмите Здесь чтобы открыть {0} ссылку..."
     click-to-open-link-with-shortlink: "§6Нажмите Здесь §7чтобы открыть §a{0}§7 или воспользоваться этой ссылкой§a{1}"

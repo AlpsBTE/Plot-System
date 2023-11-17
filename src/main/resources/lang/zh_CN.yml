@@ -197,10 +197,10 @@ note:
     create-plot: 'Create Plot'
     right-click: "右键点击"
     left-click: "Left Click"
-    accept-invite: 'Accept Invite'
+    accept: 'Accept'
+    reject: 'Reject'
     click-to-create-plot: 'Click to create new plot...'
     click-to-proceed: "Click to proceed..."
-    click-to-accept-invite: 'Click to accept the invite...'
     click-to-remove-plot-member: "点击以从建地中移除成员..."
     click-to-open-link: "点击此区 以开启 {0} 连结..."
     click-to-open-link-with-shortlink: "§6点击此区 §7以开启 §a{0}§7 连结或使用此连结： §a{1}"

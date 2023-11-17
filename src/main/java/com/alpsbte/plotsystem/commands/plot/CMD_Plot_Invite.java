@@ -51,14 +51,14 @@ public class CMD_Plot_Invite extends SubCommand {
             if (getPlayer(sender) != null && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 PlotMemberInvitation invite = null;
                 for (PlotMemberInvitation item : PlotMemberInvitation.invitationsList) {
-                    if (item.invitee == getPlayer(sender)){
+                    if (item.invitee.getUniqueId().toString().equals(getPlayer(sender).getUniqueId().toString())) {
                         invite = item;
                         try {
                             switch (args[0]){
                                 case "accept":
                                     item.AcceptInvite();
                                     break;
-                                case "deny":
+                                case "reject":
                                     item.RejectInvite();
                                     break;
                                 default:
@@ -89,12 +89,12 @@ public class CMD_Plot_Invite extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Accept or deny incoming invitations.";
+        return "Accept or reject incoming invitations.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Accept/Deny" };
+        return new String[] { "Accept/Reject" };
     }
 
     @Override

@@ -205,10 +205,10 @@ public abstract class LangPaths {
             public static final String CREATE_PLOT = ACTION + "create-plot";
             public static final String RIGHT_CLICK = ACTION + "right-click";
             public static final String LEFT_CLICK = ACTION + "left-click";
-            public static final String ACCEPT_INVITE = ACTION + "accept-invite";
+            public static final String ACCEPT = ACTION + "accept";
+            public static final String REJECT = ACTION + "reject";
             public static final String CLICK_TO_CREATE = ACTION + "click-to-create-plot";
             public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
-            public static final String CLICK_TO_ACCEPT_INVITE = ACTION + "click-to-accept-invite";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";

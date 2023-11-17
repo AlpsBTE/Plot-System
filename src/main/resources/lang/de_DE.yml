@@ -197,10 +197,10 @@ note:
     create-plot: 'Plot Erstellen'
     right-click: "Rechtsklick"
     left-click: "Linksklick"
-    accept-invite: 'Einladung Annehmen'
+    accept: 'Annehmen'
+    reject: 'Ablehnen'
     click-to-create-plot: 'Klicke um ein neues Plot zu erstellen...'
     click-to-proceed: "Klicke um fortzusetzen..."
-    click-to-accept-invite: 'Klicke um die Einladung anzunehmen...'
     click-to-remove-plot-member: "Klicke, um ein Mitglied vom Plot zu entfernen..."
     click-to-open-link: "Klicke hier um den {0} Link zu öffnen..."
     click-to-open-link-with-shortlink: "§6Klicke hier, §7 um den §a{0}§7 Link zu öffnen oder benutze diesen Link: §a{1}"
