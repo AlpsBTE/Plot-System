@@ -241,7 +241,7 @@ public abstract class AbstractTutorial implements Tutorial {
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
         npc.create(world.getNpcSpawnLocation(), false, true);
-        npc.show(player);
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> npc.show(player));
     }
 
     @Override
