@@ -265,7 +265,7 @@ public class EventListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChatEvent(AsyncChatEvent event) throws SQLException {
         UUID playerUUID = event.getPlayer().getUniqueId();
         if (ChatInput.awaitChatInput.containsKey(playerUUID)) {
