@@ -115,7 +115,14 @@ public class CountryMenu extends AbstractMenu {
 
         // Set click event for tutorial item
         if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
-            getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> new TutorialsMenu(clickPlayer));
+            getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
+                if (!clickPlayer.hasPermission("plotsystem.tutorial")) {
+                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer.getUniqueId(),
+                            LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                    return;
+                }
+                new TutorialsMenu(clickPlayer);
+            });
 
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {

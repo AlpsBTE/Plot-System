@@ -62,7 +62,7 @@ public class CMD_Companion extends BaseCommand {
             if (tutorial != null) {
                 new TutorialStagesMenu(getPlayer(sender), tutorial.getId());
             } else if (config.getBoolean(ConfigPaths.TUTORIAL_ENABLE) && config.getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                    !TutorialPlot.isPlotCompleted(getPlayer(sender), TutorialCategory.BEGINNER.getId())) {
+                    !TutorialPlot.isPlotCompleted(getPlayer(sender), TutorialCategory.BEGINNER.getId()) && getPlayer(sender).hasPermission("plotsystem.tutorial")) {
                 new TutorialsMenu(getPlayer(sender));
             } else CompanionMenu.open((Player) sender);
         } catch (SQLException ex) {
