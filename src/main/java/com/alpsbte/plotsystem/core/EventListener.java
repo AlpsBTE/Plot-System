@@ -218,7 +218,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
-        if (event.getRightClicked().getType().equals(EntityType.PLAYER)) {
+        if (event.getRightClicked().getType().equals(EntityType.PLAYER) && event.getHand() == EquipmentSlot.HAND) {
             event.getPlayer().performCommand("plots " + Builder.byUUID(event.getRightClicked().getUniqueId()).getName());
         }
     }
