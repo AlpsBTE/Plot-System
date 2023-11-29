@@ -282,13 +282,12 @@ public abstract class LangPaths {
             public static final String PLAYER_IS_PLOT_MEMBER = ERROR + "player-is-plot-member";
             public static final String PLAYER_IS_NOT_ONLINE = ERROR + "player-is-not-online";
             public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
-            public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";
-            public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR + "player-needs-higher-score";
             public static final String PLAYER_ALREADY_INVITED = ERROR + "player-already-invited";
             public static final String PLAYER_INVITE_EXPIRED = ERROR + "player-invite-expired";
             public static final String PLAYER_INVITE_TO_EXPIRED = ERROR + "player-invite-to-expired";
             public static final String PLAYER_INVITE_TO_REJECTED = ERROR + "player-invite-to-rejected";
-
+            public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";
+            public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR + "player-needs-higher-score";
 
             public static final String ERROR_OCCURRED = ERROR + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR + "command-disabled";

@@ -7,14 +7,10 @@
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | English translation by R3tuxn#7169 and Cinnazeyy#2440
 # -----------------------------------------------------
-
 lang:
   name: "English (GB)"
   head-id: "27577"
-
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
@@ -35,7 +31,6 @@ plot:
   group-system:
     empty-member-slot: "Empty Member Slot"
     shared-by-members: "(shared by {0} members)"
-
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
@@ -47,13 +42,11 @@ city-project:
   plots-available: 'Plots Available'
   no-plots-available: "No Plots Available"
   for-your-difficulty: "({0} for your difficulty)"
-
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
   countries: "Countries"
-
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
@@ -64,14 +57,12 @@ continent:
   oceania: "Oceania"
   south-america: "South America"
   north-america: "North America"
-
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
   automatic: "Automatic"
   score-multiplier: "Score Multiplier"
-
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
@@ -120,7 +111,6 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
-
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -154,7 +144,6 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -177,7 +166,6 @@ review:
     detailing-desc: "How much detail does the building have?%newline%%newline%- Roof details%newline%- Details on the facades%newline%- Heads and Banners"
     technique: "Technique"
     technique-desc: "What building techniques have been used and how creative are they?%newline%%newline%- World-Edit%newline%- Special Blocks"
-
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -209,7 +197,6 @@ note:
     click-to-show-plots: "§6Click Here §ato show your plots..."
     click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
     tutorial-show-stages: 'Show Stages'
-
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -267,12 +254,12 @@ message:
     player-is-plot-member: "This player is already a member of this plot!"
     player-is-not-online: "This player is not online!"
     player-not-found: "Could not find that player!"
-    player-needs-to-be-on-plot: "You need to be on a plot in order to use this!"
-    player-needs-higher-score: "You need a higher score to build in this difficulty level."
     player-already-invited: '{0} has already been invited to a plot.'
     player-invite-expired: 'The invitation from {0} has expired.'
     player-invite-to-expired: 'The invitation you sent to {0} has expired.'
     player-invite-to-rejected: '{0} has rejected your invitation.'
+    player-needs-to-be-on-plot: "You need to be on a plot in order to use this!"
+    player-needs-higher-score: "You need a higher score to build in this difficulty level."
     error-occurred: "An error occurred! Please try again!"
     command-disabled: "This command is disabled!"
     no-plots-left: "This city project does not have any more plots left. Please select another project."
@@ -281,7 +268,6 @@ message:
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -292,7 +278,6 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on Leaderboard"
-
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -403,6 +388,5 @@ tutorials:
         - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
-
 # NOTE: Do not change
 config-version: 2.0

@@ -7,14 +7,10 @@
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | Chinese Traditional translation by Longhi#1912
 # -----------------------------------------------------
-
 lang:
   name: "繁體中文(台灣)"
   head-id: "11627"
-
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
@@ -35,7 +31,6 @@ plot:
   group-system:
     empty-member-slot: "成員空位"
     shared-by-members: "(由{0}位成員共享)"
-
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
@@ -47,13 +42,11 @@ city-project:
   plots-available: 'Plots Available'
   no-plots-available: "無可用建地"
   for-your-difficulty: "({0} for your difficulty)"
-
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
   countries: "Countries"
-
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
@@ -64,14 +57,12 @@ continent:
   oceania: "Oceania"
   south-america: "South America"
   north-america: "North America"
-
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
   automatic: "自動"
   score-multiplier: "積分增幅器"
-
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
@@ -120,7 +111,6 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
-
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -154,7 +144,6 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -177,7 +166,6 @@ review:
     detailing-desc: "建築有多少細節？%newline%%newline%- 屋頂細節%newline%- 外牆上的細節%newline%- 頭顱和旗幟"
     technique: "技巧"
     technique-desc: "使用了什麼建築技巧，它們的創意如何？%newline%%newline%- World-Edit%newline%- 特殊方塊"
-
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -209,7 +197,6 @@ note:
     click-to-show-plots: "§6點擊此區 §a顯示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩嗎？ §6點擊此區..."
     tutorial-show-stages: 'Show Stages'
-
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -273,17 +260,14 @@ message:
     player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "你需要在一個建地上才能使用它！"
     player-needs-higher-score: "你需要更高的積分來才能在這個難度度建設。"
-    invalid-input: "輸入邀請！"
     error-occurred: "發生錯誤！請再次嘗試！"
     command-disabled: "此命令已禁用！"
     no-plots-left: "此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。"
     please-wait: "請稍後再創建一個新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！請在創建新的建地之前先完成您當前的建地。"
-    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -294,7 +278,6 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
-
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -405,6 +388,5 @@ tutorials:
         - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
-
 # NOTE: Do not change
 config-version: 2.0

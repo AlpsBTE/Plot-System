@@ -7,14 +7,10 @@
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | Russian translation by antarctis#7406 and renardykt#3744
 # -----------------------------------------------------
-
 lang:
   name: "Русский (Россия)"
   head-id: "4406"
-
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
@@ -35,7 +31,6 @@ plot:
   group-system:
     empty-member-slot: "Пустое место для участника"
     shared-by-members: "(разделен {0} участниками)"
-
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
@@ -47,13 +42,11 @@ city-project:
   plots-available: 'Plots Available'
   no-plots-available: "Доступных Участков Нет"
   for-your-difficulty: "({0} for your difficulty)"
-
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
   countries: "Countries"
-
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
@@ -64,14 +57,12 @@ continent:
   oceania: "Oceania"
   south-america: "South America"
   north-america: "North America"
-
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
   automatic: "Автоматическая"
   score-multiplier: "Множитель Оценки"
-
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
@@ -120,7 +111,6 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
-
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -154,7 +144,6 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -177,7 +166,6 @@ review:
     detailing-desc: "Насколько детализировано здание?%newline%%newline%- Детали крыши%newline%- Детали фасада%newline%- Головы и Баннеры"
     technique: "Техника"
     technique-desc: "Какие строительные техники были применены и насколько они креативны?%newline%%newline%- World-Edit%newline%- Специальные Блоки"
-
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -209,7 +197,6 @@ note:
     click-to-show-plots: "§6Нажмите,чтобы показать ваши участки..."
     click-to-play-with-friends: "§7Хотите играть с друзьями? §6Нажмите здесь..."
     tutorial-show-stages: 'Show Stages'
-
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -273,17 +260,14 @@ message:
     player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "Вам нужно быть на участке чтобы использовать это!"
     player-needs-higher-score: "Вам нужна более высокая оценка чтобы строить на этом уровне сложности."
-    invalid-input: "Недопустимый Ввод!"
     error-occurred: "Произошла ошибка! Пожалуйста, попробуйте снова!"
     command-disabled: "Эта команда отключена!!"
     no-plots-left: "У этого градостроительного проекта больше не осталось участков. Пожалуйста, выберите другой проект."
     please-wait: "Пожалуйста, подождите несколько секунд перед созданием нового участка!"
     all-slots-occupied: "Все ваши слоты заняты! Пожалуйста, завершите текущие участки, прежде чем создавать новый."
-    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -294,7 +278,6 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
-
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -405,6 +388,5 @@ tutorials:
         - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
-
 # NOTE: Do not change
 config-version: 2.0

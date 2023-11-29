@@ -7,10 +7,7 @@
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | Chinese Simplified translation by PikaNiko#7875
 # -----------------------------------------------------
-
 lang:
   name: "简体中文(中国大陆)"
   head-id: "23238"
@@ -35,7 +32,6 @@ plot:
   group-system:
     empty-member-slot: "成员空位"
     shared-by-members: "(由{0}位成员共享)"
-
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
@@ -47,13 +43,11 @@ city-project:
   plots-available: 'Plots Available'
   no-plots-available: "无可用建地"
   for-your-difficulty: "({0} for your difficulty)"
-
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
   countries: "Countries"
-
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
@@ -64,14 +58,12 @@ continent:
   oceania: "Oceania"
   south-america: "South America"
   north-america: "North America"
-
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
   automatic: "自动"
   score-multiplier: "积分增幅器"
-
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
@@ -120,7 +112,6 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
-
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -154,7 +145,6 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -177,7 +167,6 @@ review:
     detailing-desc: "建筑有多少细节？ %newline%%newline%- 屋顶细节%newline%- 外墙上的细节%newline%- 头颅和旗帜"
     technique: "技巧"
     technique-desc: "使用了什么建筑技巧，它们的创意如何？ %newline%%newline%- World-Edit%newline%- 特殊方块"
-
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -209,7 +198,6 @@ note:
     click-to-show-plots: "§6点击此区 §a显示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩吗？ §6点击此区..."
     tutorial-show-stages: 'Show Stages'
-
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -273,17 +261,14 @@ message:
     player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "你需要在一个建地上才能使用它！ "
     player-needs-higher-score: "你需要更高的积分来才能在这个难度度建设。"
-    invalid-input: "输入邀请！"
     error-occurred: "发生错误！请再次尝试！"
     command-disabled: "此命令已禁用！"
     no-plots-left: "此城市计画区没有剩余更多建地了。请选择其他计画区。"
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
-    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -294,7 +279,6 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
-
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -405,6 +389,5 @@ tutorials:
         - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
-
 # NOTE: Do not change
 config-version: 2.0

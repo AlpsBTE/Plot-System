@@ -7,14 +7,10 @@
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | Korean translation by m4ndeokyi#4063
 # -----------------------------------------------------
-
 lang:
   name: "한국어 (한국)"
   head-id: "27583"
-
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
@@ -35,7 +31,6 @@ plot:
   group-system:
     empty-member-slot: "빈 멤버 슬롯"
     shared-by-members: "(총점/{0}명)"
-
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
@@ -47,13 +42,11 @@ city-project:
   plots-available: 'Plots Available'
   no-plots-available: "건축할 수 있는 플롯이 없음"
   for-your-difficulty: "({0} for your difficulty)"
-
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
   countries: "Countries"
-
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
@@ -64,14 +57,12 @@ continent:
   oceania: "Oceania"
   south-america: "South America"
   north-america: "North America"
-
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
   automatic: "자동"
   score-multiplier: "점수 배수"
-
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
@@ -120,7 +111,6 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
-
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -154,7 +144,6 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
-
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -177,7 +166,6 @@ review:
     detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?%newline%%newline%- 지붕 디테일%newline%- 건물 정면 디테일%newline%- 머리와 현수막의 사용"
     technique: "기법"
     technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?%newline%%newline%- 월드에딧%newline%- 특수 블록"
-
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -209,7 +197,6 @@ note:
     click-to-show-plots: "§6여기§a를 클릭해 자신의 플롯들을 확인하세요!"
     click-to-play-with-friends: "§7친구와 플레이하시려면 §6여기§7를 클릭하세요!"
     tutorial-show-stages: 'Show Stages'
-
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -273,17 +260,14 @@ message:
     player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "플롯에서만 사용할 수 있습니다!"
     player-needs-higher-score: "해당 난이도에서 건축하시려면 더 높은 점수가 필요합니다."
-    invalid-input: "잘못된 입력입니다!"
     error-occurred: "에러 발생! 다시 시도해주세요!"
     command-disabled: "비활성화된 커맨드입니다!"
     no-plots-left: "이 도시 프로젝트에 남아있는 플롯이 없습니다. 다른 프로젝트를 선택해주세요."
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
-    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -294,7 +278,6 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
-
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -405,6 +388,5 @@ tutorials:
         - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
-
 # NOTE: Do not change
 config-version: 2.0
