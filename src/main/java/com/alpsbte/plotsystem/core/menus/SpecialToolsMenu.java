@@ -91,7 +91,7 @@ public class SpecialToolsMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(Material.BRUSH ,1)
-                .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_TOOLS), GOLD, BOLD))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_TOOLS), GOLD, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_TOOLS))
                         .build())

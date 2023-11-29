@@ -232,7 +232,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         LegacyLoreBuilder lore = new LegacyLoreBuilder().addLine(getStageTitle(getMenuPlayer(), tutorialId, stageId + 1));
         boolean isInProgress = playerHighestStage == stageId && plot != null && !isTutorialCompleted;
 
-        ChatColor titleColor = isInProgress ? ChatColor.YELLOW : (stageId < playerHighestStage || isTutorialCompleted ? ChatColor.GREEN : RED);
+        ChatColor titleColor = isInProgress ? YELLOW : (stageId < playerHighestStage || isTutorialCompleted ? GREEN : RED);
         ItemStack stageItem = new ItemStack(isInProgress ? Material.YELLOW_STAINED_GLASS_PANE : (stageId < playerHighestStage || isTutorialCompleted ?
                 Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE), stageId + 1);
         boolean isClickable = stageId != playerCurrentStage && stageId <= playerHighestStage;
@@ -241,7 +241,7 @@ public class TutorialStagesMenu extends AbstractMenu {
                 "§e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.START));
 
         return new ItemBuilder(stageItem)
-                .setName(titleColor + ChatColor.BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + " " + (stageId + 1))
+                .setName(titleColor + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + " " + (stageId + 1))
                 .setLore(lore.build())
                 .setEnchanted(playerCurrentStage == stageId)
                 .build();

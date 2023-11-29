@@ -24,24 +24,18 @@
 
 package com.alpsbte.plotsystem.utils.chat;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_END;
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_START;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlayerInviteeChatInput implements ChatInput {
     private final LocalDateTime dateTime;

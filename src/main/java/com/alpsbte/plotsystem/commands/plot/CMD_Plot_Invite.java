@@ -56,10 +56,10 @@ public class CMD_Plot_Invite extends SubCommand {
                         try {
                             switch (args[0]){
                                 case "accept":
-                                    item.AcceptInvite();
+                                    item.acceptInvite();
                                     break;
                                 case "reject":
-                                    item.RejectInvite();
+                                    item.rejectInvite();
                                     break;
                                 default:
                                     sendInfo(sender);

@@ -102,8 +102,8 @@ public class ChatMessageTask extends AbstractTask {
         private final ClickEvent clickEvent;
 
         public ClickableTaskMessage(String message, String hoverText, ClickEvent clickEvent) {
-            this.messageComponent = Component.text(message);
-            this.hoverTextComponent = Component.text(hoverText);
+            this.messageComponent = text(message);
+            this.hoverTextComponent = text(hoverText);
             this.clickEvent = clickEvent;
         }
 

@@ -100,7 +100,7 @@ public class PlotMemberInvitation {
         }, 20 * 30);
     }
 
-    public void AcceptInvite() throws SQLException {
+    public void acceptInvite() throws SQLException {
         Builder builder = Builder.byUUID(invitee.getUniqueId());
         if (builder.getFreeSlot() != null) {
             plot.addPlotMember(Builder.byUUID(invitee.getUniqueId()));
@@ -119,7 +119,7 @@ public class PlotMemberInvitation {
         }
     }
 
-    public void RejectInvite() throws SQLException {
+    public void rejectInvite() throws SQLException {
         invitee.sendMessage(Utils.ChatUtils.getInfoFormat(AlpsUtils.deserialize(LangUtil.getInstance().get(invitee, LangPaths.Message.Info.PLAYER_INVITE_REJECTED,
                 TEXT_HIGHLIGHT_START + plot.getPlotOwner().getName() + TEXT_HIGHLIGHT_END))));
         plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(AlpsUtils.deserialize(LangUtil.getInstance().get(plot.getPlotOwner().getPlayer(),

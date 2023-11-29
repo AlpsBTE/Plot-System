@@ -32,7 +32,6 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.*;
@@ -48,7 +47,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,10 +62,6 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "4.0";

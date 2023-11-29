@@ -614,7 +614,8 @@ public class Plot extends AbstractPlot {
     }
 
     public static boolean hasPlotDifficultyScoreRequirement(Builder builder, PlotDifficulty plotDifficulty) throws SQLException {
-        int playerScore = builder.getScore(), scoreRequirement = Plot.getScoreRequirementByDifficulty(plotDifficulty);
+        int playerScore = builder.getScore();
+        int scoreRequirement = Plot.getScoreRequirementByDifficulty(plotDifficulty);
         return playerScore >= scoreRequirement;
     }
 
