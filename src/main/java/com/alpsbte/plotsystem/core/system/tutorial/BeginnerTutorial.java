@@ -264,7 +264,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     .createHolograms(getHolograms().get(0))
                     .addTeleportEvent(deserialize(getTasks().get(0)), getPlotPoints(getPlot()), 1, (teleportPoint, isCorrect) -> {
                         if (isCorrect) {
-                            TutorialUtils.setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
+                            setBlockAt(getPlayer().getWorld(), teleportPoint, Material.LIME_CONCRETE_POWDER);
                             getPlayer().playSound(new Location(getPlayer().getWorld(), teleportPoint.getBlockX(), teleportPoint.getBlockY(), teleportPoint.getBlockZ()),
                                     Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
                         } else {
@@ -375,8 +375,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                         if (minPoint != null && maxPoint != null) {
                             buildingLinePoints.remove(minPoint);
 
-                            TutorialUtils.setBlockAt(getPlayer().getWorld(), minPoint, Material.LIME_CONCRETE_POWDER);
-                            TutorialUtils.setBlockAt(getPlayer().getWorld(), maxPoint, Material.LIME_CONCRETE_POWDER);
+                            setBlockAt(getPlayer().getWorld(), minPoint, Material.LIME_CONCRETE_POWDER);
+                            setBlockAt(getPlayer().getWorld(), maxPoint, Material.LIME_CONCRETE_POWDER);
                             getPlayer().playSound(getPlayer().getLocation(), Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
                         } else {
                             ChatMessageTask.sendTaskMessage(getPlayer(), new Object[] { deserialize(getMessages().get(3)) }, false);
@@ -634,7 +634,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             "",
                             new ChatMessageTask.ClickableTaskMessage(deserialize(TEXT_CLICK_HIGHLIGHT + getMessages().get(4)).color(GRAY),
                                 deserialize(LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.READ_MORE)).color(GRAY).append(text("...")),
-                                ClickEvent.openUrl(TutorialUtils.getDocumentationLinks(ConfigUtil.getTutorialInstance().getBeginnerTutorial()).get(6))),
+                                ClickEvent.openUrl(getDocumentationLinks(ConfigUtil.getTutorialInstance().getBeginnerTutorial()).get(6))),
                     }, Sound.NPC_TALK, true).delay(2)
                     .teleport(2).delay(2)
                     .sendChatMessage(deserialize(getMessages().get(5)), Sound.NPC_TALK, true)
@@ -707,7 +707,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         player.sendMessage(text());
         player.sendMessage(TutorialUtils.CHAT_TASK_PREFIX_COMPONENT
-                .append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.BEGINNER_TUTORIAL_COMPLETED)).color(GRAY)));
+                .append(deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.BEGINNER_TUTORIAL_COMPLETED)).color(GRAY)));
         player.sendMessage(clickComponent);
         player.sendMessage(text());
     }

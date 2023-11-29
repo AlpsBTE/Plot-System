@@ -43,9 +43,9 @@ public class TutorialUtils {
     public static String TEXT_CLICK_HIGHLIGHT = "<underlined>";
 
     public static Component CHAT_PREFIX_COMPONENT = text("»", DARK_GRAY)
-            .append(Component.text(" ", GRAY));
+            .append(text(" ", GRAY));
     public static Component CHAT_TASK_PREFIX_COMPONENT = text("[", DARK_GRAY)
-            .append(text("Tutorial", NamedTextColor.GOLD).append(text("] ", DARK_GRAY)));
+            .append(text("Tutorial", GOLD).append(text("] ", DARK_GRAY)));
 
     /**
      * Set a block at a specific location
