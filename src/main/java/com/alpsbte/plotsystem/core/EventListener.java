@@ -54,6 +54,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import li.cinnazeyy.langlibs.core.event.LanguageChangeEvent;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -66,6 +67,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 
 import java.sql.ResultSet;
@@ -248,12 +250,19 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClickEvent(InventoryClickEvent event){
+    public void onInventoryClickEvent(InventoryClickEvent event) {
         if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked()))){
             event.setCancelled(true);
-        }
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()).getPlayer()))){
+        } else if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()).getPlayer()))){
             event.setCancelled(true);
+        }
+
+        if (event.getWhoClicked().getGameMode() == GameMode.CREATIVE) {
+            if (event.getCursor().isSimilar(CompanionMenu.getMenuItem((Player) event.getWhoClicked())) ||
+                    event.getCursor().isSimilar(ReviewMenu.getMenuItem((Player) event.getWhoClicked()))) {
+                event.setCursor(ItemStack.empty());
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -263,6 +272,14 @@ public class EventListener implements Listener {
                 event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onPlayerSwapHandItemsEvent(PlayerSwapHandItemsEvent event) {
+        if (event.getMainHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
+                event.getMainHandItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) event.setCancelled(true);
+        if (event.getOffHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))||
+                event.getOffHandItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
