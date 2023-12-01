@@ -47,6 +47,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -163,18 +164,6 @@ public class PlotSystem extends JavaPlugin {
             return;
         }
 
-        // Check for extensions
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Extensions:");
-
-        if (DependencyManager.isHolographicDisplaysEnabled()) {
-            HolographicDisplay.registerPlugin(this);
-            LeaderboardManager.reloadLeaderboards();
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
-        } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
-        }
-
         if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) Bukkit.getLogger().log(Level.WARNING, "WorldGuardExtraFlags is not enabled!");
 
         // Check for updates
@@ -182,7 +171,7 @@ public class PlotSystem extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
 
         UpdateChecker.getVersion(version -> {
-            if (version.equals(VERSION)) {
+            if (new ComparableVersion(VERSION).compareTo(new ComparableVersion(version)) >= 0) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
             } else {
                 UpdateChecker.isUpdateAvailable = true;
@@ -290,20 +279,20 @@ public class PlotSystem extends JavaPlugin {
         private static boolean checkForRequiredDependencies() {
             PluginManager pluginManager = plugin.getServer().getPluginManager();
 
+            if (!pluginManager.isPluginEnabled("HolographicDisplays")) {
+                missingDependencies.add("HolographicDisplays");
+            }
+
             if (!pluginManager.isPluginEnabled("Multiverse-Core")) {
-                missingDependencies.add("Multiverse-Core (V2.5.0)");
-            }
-
-            if (!pluginManager.isPluginEnabled("WorldEdit")) {
-                missingDependencies.add("WorldEdit (V6.1.9)");
-            }
-
-            if (!pluginManager.isPluginEnabled("WorldGuard")) {
-                missingDependencies.add("WorldGuard (V6.2.2)");
+                missingDependencies.add("Multiverse-Core");
             }
 
             if (!pluginManager.isPluginEnabled("FastAsyncWorldEdit")) {
-                missingDependencies.add("FastAsyncWorldEdit (FAWE)");
+                missingDependencies.add("FastAsyncWorldEdit");
+            }
+
+            if (!pluginManager.isPluginEnabled("WorldGuard")) {
+                missingDependencies.add("WorldGuard");
             }
 
             if (!pluginManager.isPluginEnabled("HeadDatabase")) {
@@ -311,17 +300,18 @@ public class PlotSystem extends JavaPlugin {
             }
 
             if (!pluginManager.isPluginEnabled("VoidGen")) {
-                missingDependencies.add("VoidGen (V2.0)");
+                missingDependencies.add("VoidGen");
+            }
+
+            if (!pluginManager.isPluginEnabled("LangLibs")) {
+                missingDependencies.add("LangLibs");
+            }
+
+            if (!pluginManager.isPluginEnabled("FancyNpcs")) {
+                missingDependencies.add("FancyNpcs (https://mvn.alps-bte.com/repository/fancyNpcs/de/oliver/FancyNpcs/2.0.5/FancyNpcs-2.0.5.jar)");
             }
 
             return missingDependencies.isEmpty();
-        }
-
-        /**
-         * @return True if HolographicDisplays is present
-         */
-        public static boolean isHolographicDisplaysEnabled() {
-            return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         }
 
         /**

@@ -47,12 +47,10 @@ public final class LeaderboardManager {
     }
 
     public static void reloadLeaderboards() {
-        if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            for (HolographicDisplay leaderboard : leaderboards) {
-                if (PlotSystem.getPlugin().getConfig().getBoolean(((LeaderboardConfiguration) leaderboard).getEnablePath()))
-                    for (Player player : Objects.requireNonNull(Bukkit.getWorld(leaderboard.getPosition().getWorldName())).getPlayers()) leaderboard.create(player);
-                else leaderboard.removeAll();
-            }
+        for (HolographicDisplay leaderboard : leaderboards) {
+            if (PlotSystem.getPlugin().getConfig().getBoolean(((LeaderboardConfiguration) leaderboard).getEnablePath()))
+                for (Player player : Objects.requireNonNull(Bukkit.getWorld(leaderboard.getPosition().getWorldName())).getPlayers()) leaderboard.create(player);
+            else leaderboard.removeAll();
         }
     }
 

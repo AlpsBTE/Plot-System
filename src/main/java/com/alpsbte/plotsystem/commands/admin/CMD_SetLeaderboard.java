@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.commands.admin;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
@@ -41,11 +40,6 @@ public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Holograms (Holographic Displays) extension is not loaded!"));
-            return true;
-        }
-
         if (!sender.hasPermission(getPermission())){
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
