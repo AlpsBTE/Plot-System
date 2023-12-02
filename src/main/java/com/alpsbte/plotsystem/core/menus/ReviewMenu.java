@@ -26,14 +26,11 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -51,10 +48,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ReviewMenu extends AbstractPaginatedMenu {
-    private final List<Country> countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
+    private List<Country> countries = new ArrayList<>();
     private Country filteredCountry = null;
 
-    public ReviewMenu(Player player) throws SQLException {
+    public ReviewMenu(Player player) {
         super(6, 4, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
@@ -62,6 +59,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
         try {
+            countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
             plots.addAll(Plot.getPlots(countries, Status.unreviewed));
             plots.addAll(Plot.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
@@ -117,20 +115,12 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             Plot plot = plots.get(i);
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
-                    if (plot.getStatus() == Status.unreviewed) {
+                    if (plot.getStatus() == Status.unfinished) {
                         new PlotActionsMenu(getMenuPlayer(), plot);
                         return;
                     }
 
-                    if (plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                        getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
-                        return;
-                    }
-
-                    Plot currentPlot = (Plot) PlotUtils.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
-                    if (currentPlot != null && currentPlot.getID() == plot.getID()) {
-                        new ReviewPlotMenu(getMenuPlayer(), currentPlot);
-                    } else plot.getWorld().teleportPlayer(getMenuPlayer());
+                    player.performCommand("review " + plot.getID());
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                     getMenuPlayer().closeInventory();

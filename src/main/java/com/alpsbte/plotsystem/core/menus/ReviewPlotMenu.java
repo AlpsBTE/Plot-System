@@ -232,7 +232,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     protected void setItemClickEventsAsync() {
         // Set click event for back item
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> {
-            try { new ReviewMenu(getMenuPlayer()); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+            new ReviewMenu(getMenuPlayer());
         });
 
         // Set click event for close item

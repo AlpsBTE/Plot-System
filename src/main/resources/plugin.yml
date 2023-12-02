@@ -27,7 +27,7 @@ commands:
     usage: /plot help
   review:
     description: Opens the review or review plot menu.
-    usage: /review
+    usage: /review <ID>
   undoreview:
     description: Undo a review of a plot.
     usage: /undoreview <ID>
