@@ -98,7 +98,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.generateOutlines(plotSchematic, environmentSchematic);
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
-        if (PlotWorld.isOnePlotWorld(plot.getWorld().getWorldName()) && plot.getVersion() >= 3 && plot.getStatus() != Status.completed) {
+        if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
             // Generate city plot world if it doesn't exist
             new AbstractPlotGenerator(plot, getBuilder(), PlotType.CITY_INSPIRATION_MODE) {
                 @Override

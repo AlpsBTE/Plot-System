@@ -84,7 +84,7 @@ public abstract class AbstractPlotGenerator {
     protected final AbstractPlot plot;
     private final Builder builder;
     protected final PlotWorld world;
-    private final double plotVersion;
+    protected final double plotVersion;
     protected final PlotType plotType;
 
     /**
