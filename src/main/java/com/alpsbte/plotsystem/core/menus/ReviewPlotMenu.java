@@ -257,17 +257,14 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 6; j++) {
-                        if (Objects.requireNonNull(getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE))
-                            continue;
-
-                        if (i == 3) {
-                            score.append(j);
-                        } else {
-                            score.append(j).append(",");
-                        }
-                        totalRating += j;
-                        if (j <= 0) {
-                            isRejected = true;
+                        if (Objects.requireNonNull(getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE)) {
+                            if (i == 3) {
+                                score.append(j);
+                            } else {
+                                score.append(j).append(",");
+                            }
+                            totalRating += j;
+                            if (j == 0) isRejected = true;
                         }
                     }
                 }
@@ -296,79 +293,79 @@ public class ReviewPlotMenu extends AbstractMenu {
                     new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
                 }
 
-                    double totalRatingWithMultiplier = totalRating * Plot.getMultiplierByDifficulty(plot.getDifficulty());
-                    totalRating = (int) Math.floor(totalRatingWithMultiplier);
-                    plot.setTotalScore(totalRating);
+                double totalRatingWithMultiplier = totalRating * Plot.getMultiplierByDifficulty(plot.getDifficulty());
+                totalRating = (int) Math.floor(totalRatingWithMultiplier);
+                plot.setTotalScore(totalRating);
 
-                    Component reviewerConfirmationMessage;
-                    //clickPlayer.closeInventory(); crashes debugging process
+                Component reviewerConfirmationMessage;
+                //clickPlayer.closeInventory(); crashes debugging process
 
-                    if (!isRejected) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
-                        try {
-                            if (!PlotUtils.savePlotAsSchematic(plot)) {
-                                clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-                                Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
-                                return;
-                            }
-                        } catch (IOException | SQLException | WorldEditException ex) {
-                            Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!", ex);
+                if (!isRejected) {
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
+                    try {
+                        if (!PlotUtils.savePlotAsSchematic(plot)) {
+                            clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                            Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
+                            return;
                         }
-
-                    plot.setStatus(Status.completed);
-                    plot.getReview().setFeedbackSent(false);
-                    plot.getReview().setFeedback("No Feedback");
-                    plot.getPlotOwner().addCompletedBuild(1);
-
-                    // Remove Plot from Owner
-                    plot.getPlotOwner().removePlot(plot.getSlot());
-
-                        if (plot.getPlotMembers().isEmpty()) {
-                            // Plot was made alone
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
-
-                            // Builder gets 100% of score
-                            plot.getPlotOwner().addScore(totalRating);
-                        } else {
-                            // Plot was made in a group
-                            StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < plot.getPlotMembers().size(); i++) {
-                                sb.append(i == plot.getPlotMembers().size() - 1 ?
-                                        plot.getPlotMembers().get(i).getName() :
-                                        plot.getPlotMembers().get(i).getName() + ", ");
-                            }
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
-
-                        // Score gets split between all participants
-                        plot.getPlotOwner().addScore(plot.getSharedScore());
-
-                        for (Builder builder : plot.getPlotMembers()) {
-                            // Score gets split between all participants
-                            builder.addScore(plot.getSharedScore());
-                            builder.addCompletedBuild(1);
-
-                                // Remove Slot from Member
-                                builder.removePlot(builder.getSlot(plot));
-                            }
-                        }
-                    } else {
-                        if (!plot.getPlotMembers().isEmpty()) {
-                            // Plot was made alone
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
-                        } else {
-                            // Plot was made in a group
-                            StringBuilder sb = new StringBuilder();
-
-                            for (int i = 0; i < plot.getPlotMembers().size(); i++) {
-                                sb.append(i == plot.getPlotMembers().size() - 1 ?
-                                        plot.getPlotMembers().get(i).getName() :
-                                        plot.getPlotMembers().get(i).getName() + ", ");
-                            }
-                            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
-                        }
-
-                        PlotUtils.Actions.undoSubmit(plot);
+                    } catch (IOException | SQLException | WorldEditException ex) {
+                        Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!", ex);
                     }
+
+                plot.setStatus(Status.completed);
+                plot.getReview().setFeedbackSent(false);
+                plot.getReview().setFeedback("No Feedback");
+                plot.getPlotOwner().addCompletedBuild(1);
+
+                // Remove Plot from Owner
+                plot.getPlotOwner().removePlot(plot.getSlot());
+
+                    if (plot.getPlotMembers().isEmpty()) {
+                        // Plot was made alone
+                        reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
+
+                        // Builder gets 100% of score
+                        plot.getPlotOwner().addScore(totalRating);
+                    } else {
+                        // Plot was made in a group
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < plot.getPlotMembers().size(); i++) {
+                            sb.append(i == plot.getPlotMembers().size() - 1 ?
+                                    plot.getPlotMembers().get(i).getName() :
+                                    plot.getPlotMembers().get(i).getName() + ", ");
+                        }
+                        reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
+
+                    // Score gets split between all participants
+                    plot.getPlotOwner().addScore(plot.getSharedScore());
+
+                    for (Builder builder : plot.getPlotMembers()) {
+                        // Score gets split between all participants
+                        builder.addScore(plot.getSharedScore());
+                        builder.addCompletedBuild(1);
+
+                            // Remove Slot from Member
+                            builder.removePlot(builder.getSlot(plot));
+                        }
+                    }
+                } else {
+                    if (!plot.getPlotMembers().isEmpty()) {
+                        // Plot was made alone
+                        reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
+                    } else {
+                        // Plot was made in a group
+                        StringBuilder sb = new StringBuilder();
+
+                        for (int i = 0; i < plot.getPlotMembers().size(); i++) {
+                            sb.append(i == plot.getPlotMembers().size() - 1 ?
+                                    plot.getPlotMembers().get(i).getName() :
+                                    plot.getPlotMembers().get(i).getName() + ", ");
+                        }
+                        reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
+                    }
+
+                    PlotUtils.Actions.undoSubmit(plot);
+                }
 
                 boolean finalIsRejected = isRejected;
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {

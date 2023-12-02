@@ -204,7 +204,9 @@ public final class PlotUtils {
                     Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().getBlockY(), cuboidRegion.getMaximumPoint().getBlockY());
 
                     // Copy and write finished plot clipboard to schematic file
-                    File finishedSchematicFile = plot.getCompletedSchematic();
+                    File finishedSchematicFile = Paths.get(PlotUtils.getDefaultSchematicPath(),
+                            String.valueOf(plot.getCity().getCountry().getServer().getID()),
+                            "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schem").toFile();
 
                     if (!finishedSchematicFile.exists()) {
                         boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();

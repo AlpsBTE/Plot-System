@@ -202,7 +202,7 @@ public class Plot extends AbstractPlot {
             List<BlockVector2> pointVectors = new ArrayList<>();
             if (rs.next()) {
                 String points = rs.getString(1);
-                pointVectors = getOutlinePoints(rs.wasNull() ? null : points);
+                pointVectors = getOutlinePoints((rs.wasNull() || points.isEmpty() || getVersion() <= 2) ? null : points);
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -385,7 +385,12 @@ public class Plot extends AbstractPlot {
 
     public File getCompletedSchematic() {
         try {
-            return Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schem").toFile();
+            File file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schem").toFile();
+            if (!file.exists()) {
+                // if .schem doesn't exist, it looks for old .schematic format for backwards compatibility
+                file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+            }
+            return file;
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }

@@ -44,6 +44,7 @@ import org.bukkit.*;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.time.LocalDateTime;
@@ -77,12 +78,10 @@ public class Utils {
     public static void updatePlayerInventorySlots(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             // Add Items
-            if (!player.getInventory().contains(CompanionMenu.getMenuItem(player))) {
-                player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
-            }
-            if (player.hasPermission("plotsystem.review") && !player.getInventory().contains(ReviewMenu.getMenuItem(player))) {
+            player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
+            if (player.hasPermission("plotsystem.review")) {
                 player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
-            }
+            } else player.getInventory().setItem(7, ItemStack.empty());
         });
     }
 

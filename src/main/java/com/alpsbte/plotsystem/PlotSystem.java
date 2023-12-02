@@ -181,6 +181,7 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
+        HolographicDisplay.registerPlugin(this);
         LeaderboardManager.initLeaderboards();
         PlotUtils.checkPlotsForLastActivity();
         PlotUtils.syncPlotSchematicFiles();

@@ -245,8 +245,7 @@ public class EventListener implements Listener {
         if (PlotUtils.isPlotWorld(event.getFrom())) {
             PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
         }
-
-        if (PlotUtils.isPlotWorld(event.getPlayer().getWorld())) Utils.updatePlayerInventorySlots(event.getPlayer());
+        Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 
     @EventHandler
@@ -302,7 +301,7 @@ public class EventListener implements Listener {
                 if (player == null) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                } else if (!player.isOnline()) {
+                } else if (!player.isOnline() || !TutorialPlot.isPlotCompleted(player, TutorialCategory.BEGINNER.getId())) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
                 } else if (inviteeInput.getPlot().getPlotMembers().contains(Builder.byUUID(player.getUniqueId()))) {
