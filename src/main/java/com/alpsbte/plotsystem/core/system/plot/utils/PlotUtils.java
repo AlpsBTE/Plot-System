@@ -76,6 +76,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -102,21 +103,23 @@ public final class PlotUtils {
      *
      * @return the current plot of the player
      */
+    @Nullable
     public static AbstractPlot getCurrentPlot(Builder builder, Status... statuses) throws SQLException {
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
 
             if(PlotWorld.isOnePlotWorld(worldName)) {
                 int id = Integer.parseInt(worldName.substring(2));
-                return worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id) : new TutorialPlot(id);
+                AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id) : new TutorialPlot(id);
+                if (statuses == null) return plot;
+                for (Status status : statuses) if (status == plot.getStatus()) return plot;
+                return null;
             } else if (CityPlotWorld.isCityPlotWorld(worldName)) {
                 int cityID = Integer.parseInt(worldName.substring(2));
                 List<Plot> plots = Plot.getPlots(cityID, statuses);
 
-                if(plots.isEmpty())
-                    return Plot.getPlots(builder).get(0);
-                if(plots.size() == 1)
-                    return plots.get(0);
+                if(plots.isEmpty()) return null;
+                if(plots.size() == 1) return plots.get(0);
 
                 // Find the plot in the city world that is closest to the player
                 Location playerLoc = builder.getPlayer().getLocation().clone();

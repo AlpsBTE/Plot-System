@@ -78,6 +78,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPaginatedMenuItemsAsync(List<?> source) {
+        // Set filter item
+        getMenu().getSlot(7).setItem(getFilterItem(getMenuPlayer()));
+
         // Set unreviewed and unfinished plot items
         List<Plot> plots = getFilteredPlots(source);
         for(int i = 0; i < plots.size(); i++) {
@@ -131,9 +134,6 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Set filter item
-        getMenu().getSlot(7).setItem(getFilterItem(getMenuPlayer()));
-
         // Set previous page item
         if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem(getMenuPlayer()));
 
