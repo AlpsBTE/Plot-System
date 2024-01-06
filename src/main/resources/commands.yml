@@ -1,0 +1,19 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# -----------------------------------------------------
+
+# Allow /editplot on plots for reviewers
+# NOTE: Reviewers will be able to modify plots
+editplot-enabled: false
+
+# Blocked commands for plot owner and plot members on plots
+blocked-commands-builders:
+  - /cmd1
+
+
+# NOTE: Do not change
+config-version: 1.1

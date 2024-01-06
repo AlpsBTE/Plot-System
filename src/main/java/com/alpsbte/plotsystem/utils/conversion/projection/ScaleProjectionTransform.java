@@ -3,7 +3,7 @@ package com.alpsbte.plotsystem.utils.conversion.projection;
 import com.google.common.base.Preconditions;
 
 /**
- * Scales the warps projection's projected space up or down.
+ * Scales the warp's projection's projected space up or down.
  * More specifically, it multiplies x and y by there respective scale factors.
  */
 public class ScaleProjectionTransform extends ProjectionTransform {
@@ -11,11 +11,11 @@ public class ScaleProjectionTransform extends ProjectionTransform {
     private final double scaleY;
 
     /**
-     * Creates a new ScaleProjection with different scale factors for the x and y axis.
+     * Creates a new ScaleProjection with different scale factors for the x and y-axis.
      *
      * @param input - projection to transform
-     * @param scaleX - scaling to apply along the x axis
-     * @param scaleY - scaling to apply along the y axis
+     * @param scaleX - scaling to apply along the x-axis
+     * @param scaleY - scaling to apply along the y-axis
      */
     public ScaleProjectionTransform(GeographicProjection input, double scaleX, double scaleY) {
         super(input);

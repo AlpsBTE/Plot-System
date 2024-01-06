@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -53,10 +54,7 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), player -> {
-            player.closeInventory();
-            new ContinentMenu(player);
-        }).entrySet()) {
+        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
@@ -65,24 +63,17 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        for(Map.Entry<Integer, Continent> continent : layout.entrySet()) {
+        for(Map.Entry<Integer, Continent> continent : layout.entrySet())
             getMenu().getSlot(continent.getKey()).setItem(continent.getValue().getItem(getMenuPlayer()));
-        }
     }
 
     @Override
     protected void setItemClickEventsAsync() {
         for(Map.Entry<Integer, Continent> continent : layout.entrySet()) {
-            getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> {
-                clickPlayer.closeInventory();
-                new CountryMenu(clickPlayer, continent.getValue());
-            });
+            getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));
         }
 
-        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), player -> {
-            player.closeInventory();
-            new ContinentMenu(player);
-        }).entrySet()) {
+        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
     }
@@ -90,7 +81,7 @@ public class ContinentMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
                 .pattern("111111111")
                 .pattern("010101010")
                 .pattern("111101111")

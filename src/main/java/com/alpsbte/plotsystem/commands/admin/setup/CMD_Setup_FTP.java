@@ -85,16 +85,17 @@ public class CMD_Setup_FTP extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             List<FTPConfiguration> ftpConfigs = FTPConfiguration.getFTPConfigurations();
-            if (ftpConfigs.size() != 0) {
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently " + ftpConfigs.size() + " FTP-Configurations registered in the database:"));
-                sender.sendMessage("§8--------------------------");
-                for (FTPConfiguration ftp : ftpConfigs) {
-                    sender.sendMessage(" §6> §b" + ftp.getID() + " §f- Address: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - SFTP: " + (ftp.isSFTP() ? "True" : "False") + " - Username: " + getCensorString(ftp.getUsername().length()) + " - Password: " + getCensorString(ftp.getPassword().length()) + " - Path: " + ftp.getSchematicPath());
-                }
-                sender.sendMessage("§8--------------------------");
-            } else {
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("There are currently no FTP Configurations registered in the database!"));
+            if (ftpConfigs.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no FTP Configurations registered in the database!"));
+                return;
             }
+
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + ftpConfigs.size() + " FTP-Configurations registered in the database:"));
+            sender.sendMessage("§8--------------------------");
+            for (FTPConfiguration ftp : ftpConfigs) {
+                sender.sendMessage(" §6> §b" + ftp.getID() + " §f- Address: " + ftp.getAddress() + " - Port: " + ftp.getPort() + " - SFTP: " + (ftp.isSFTP() ? "True" : "False") + " - Username: " + getCensorString(ftp.getUsername().length()) + " - Password: " + getCensorString(ftp.getPassword().length()) + " - Path: " + ftp.getSchematicPath());
+            }
+            sender.sendMessage("§8--------------------------");
         }
 
         @Override
@@ -133,23 +134,19 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 5 && AlpsUtils.TryParseInt(args[2]) != null) {
-                if (args[3].equalsIgnoreCase("true") || args[3].equalsIgnoreCase("false")) {
-                    if (!args[1].toLowerCase().startsWith("sftp:") && !args[1].toLowerCase().startsWith("ftp:")) {
-                        try {
-                            FTPConfiguration.addFTPConfiguration(args[1], Integer.parseInt(args[2]), args[3].equalsIgnoreCase("true"), args[4], args[5]);
-                            sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully added FTP-Configuration!"));
-                        } catch (SQLException ex) {
-                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        }
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Please remove the protocol URL from the host address!"));
-                    }
-                }
+            if (args.length <= 5 || AlpsUtils.tryParseInt(args[2]) == null) { sendInfo(sender); return; }
+            if (!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("false")) return;
+            if (args[1].toLowerCase().startsWith("sftp:") || args[1].toLowerCase().startsWith("ftp:")) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Please remove the protocol URL from the host address!"));
                 return;
             }
-            sendInfo(sender);
+            try {
+                FTPConfiguration.addFTPConfiguration(args[1], Integer.parseInt(args[2]), args[3].equalsIgnoreCase("true"), args[4], args[5]);
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added FTP-Configuration!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
         }
 
         @Override
@@ -180,23 +177,21 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 1 && AlpsUtils.TryParseInt(args[1]) != null) {
-                // Check if ftp config exists
-                try {
-                    if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[1]))) {
-                        FTPConfiguration.removeFTPConfiguration(Integer.parseInt(args[1]));
-                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully removed FTP-Configuration!"));
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any FTP-Configurations with ID " + args[1] + "!"));
-                        sendInfo(sender);
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+
+            // Check if ftp config exists
+            try {
+                if (FTPConfiguration.getFTPConfigurations().stream().noneMatch(f -> f.getID() == Integer.parseInt(args[1]))) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any FTP-Configurations with ID " + args[1] + "!"));
+                    sendInfo(sender);
+                    return;
                 }
-                return;
+                FTPConfiguration.removeFTPConfiguration(Integer.parseInt(args[1]));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed FTP-Configuration!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-            sendInfo(sender);
         }
 
         @Override
@@ -227,23 +222,21 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length > 2 && AlpsUtils.TryParseInt(args[1]) != null) {
-                // Check if ftp config exists
-                try {
-                    if (FTPConfiguration.getFTPConfigurations().stream().anyMatch(f -> f.getID() == Integer.parseInt(args[1]))) {
-                        FTPConfiguration.setSchematicPath(Integer.parseInt(args[1]), args[2]);
-                        sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully set path of FTP-Configuration " + args[1] + " to " + args[2] + "!"));
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("Could not find any FTP-Configurations with ID " + args[1] + "!"));
-                        sendInfo(sender);
-                    }
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+
+            // Check if ftp config exists
+            try {
+                if (FTPConfiguration.getFTPConfigurations().stream().noneMatch(f -> f.getID() == Integer.parseInt(args[1]))) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any FTP-Configurations with ID " + args[1] + "!"));
+                    sendInfo(sender);
+                    return;
                 }
-                return;
+                FTPConfiguration.setSchematicPath(Integer.parseInt(args[1]), args[2]);
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set path of FTP-Configuration " + args[1] + " to " + args[2] + "!"));
+            } catch (SQLException ex) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
-            sendInfo(sender);
         }
 
         @Override

@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.Invitation;
+import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
@@ -49,17 +49,17 @@ public class CMD_Plot_Invite extends SubCommand {
         if (args.length > 0) {
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
             if (getPlayer(sender) != null && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
-                Invitation invite = null;
-                for (Invitation item : Invitation.invitationsList) {
-                    if (item.invitee == getPlayer(sender)){
+                PlotMemberInvitation invite = null;
+                for (PlotMemberInvitation item : PlotMemberInvitation.invitationsList) {
+                    if (item.invitee.getUniqueId().toString().equals(getPlayer(sender).getUniqueId().toString())) {
                         invite = item;
                         try {
                             switch (args[0]){
                                 case "accept":
-                                    item.AcceptInvite();
+                                    item.acceptInvite();
                                     break;
-                                case "deny":
-                                    item.RejectInvite();
+                                case "reject":
+                                    item.rejectInvite();
                                     break;
                                 default:
                                     sendInfo(sender);
@@ -72,9 +72,9 @@ public class CMD_Plot_Invite extends SubCommand {
                 }
 
                 if (invite != null) {
-                    Invitation.invitationsList.remove(invite);
+                    PlotMemberInvitation.invitationsList.remove(invite);
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_INVITATIONS)));
                 }
             }
         } else {
@@ -89,12 +89,12 @@ public class CMD_Plot_Invite extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Accept or deny incoming invitations.";
+        return "Accept or reject incoming invitations.";
     }
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Accept/Deny" };
+        return new String[] { "Accept/Reject" };
     }
 
     @Override

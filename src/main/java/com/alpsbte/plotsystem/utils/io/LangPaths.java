@@ -25,8 +25,6 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class LangPaths {
-    private static final String LANG = "lang.";
-
     public static final class Plot {
         private static final String PLOT = "plot.";
         public static final String PLOT_NAME = PLOT + "plot-name";
@@ -90,7 +88,6 @@ public abstract class LangPaths {
         public static final String PREVIOUS_PAGE = MENU_TITLES + "previous-page";
         public static final String ERROR = MENU_TITLES + "error";
         public static final String LOADING = MENU_TITLES + "loading";
-        public static final String NAVIGATOR = MENU_TITLES + "navigator";
         public static final String PLOT_DIFFICULTY = MENU_TITLES + "plot-difficulty";
         public static final String SLOT = MENU_TITLES + "slot";
         public static final String BUILDER_UTILITIES = MENU_TITLES + "builder-utilities";
@@ -104,7 +101,7 @@ public abstract class LangPaths {
         public static final String FEEDBACK = MENU_TITLES + "feedback";
         public static final String CUSTOM_HEADS = MENU_TITLES + "custom-heads";
         public static final String BANNER_MAKER = MENU_TITLES + "banner-maker";
-        public static final String SPECIAL_BLOCKS = MENU_TITLES + "special-blocks";
+        public static final String SPECIAL_TOOLS = MENU_TITLES + "special-tools";
         public static final String REVIEW_POINT = MENU_TITLES + "review-point";
         public static final String REVIEW_POINTS = MENU_TITLES + "review-points";
         public static final String CANCEL = MENU_TITLES + "cancel";
@@ -119,19 +116,21 @@ public abstract class LangPaths {
         public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
         public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
-        public static final String AUTO_DETECT_LANGUAGE = MENU_TITLES + "auto-detect-language";
         public static final String SELECT_PLOT_TYPE = MENU_TITLES + "select-plot-type";
         public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
         public static final String SELECT_INSPIRATION_MODE = MENU_TITLES + "select-local-inspiration-mode";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_TITLES + "select-city-inspiration-mode";
         public static final String FILTER_BY_COUNTRY = MENU_TITLES + "filter-by-country";
         public static final String INFORMATION = MENU_TITLES + "information";
+        public static final String TUTORIALS = MENU_TITLES + "tutorials";
+        public static final String TUTORIAL_STAGES = MENU_TITLES + "tutorial-stages";
+        public static final String TUTORIAL_END = MENU_TITLES + "tutorial-end";
+        public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
     }
 
     public static final class MenuDescription {
         private static final String MENU_DESCRIPTIONS = "menu-description.";
         public static final String ERROR = MENU_DESCRIPTIONS + "error-desc";
-        public static final String NAVIGATOR = MENU_DESCRIPTIONS + "navigator-desc";
         public static final String PLOT_DIFFICULTY = MENU_DESCRIPTIONS + "plot-difficulty-desc";
         public static final String SLOT = MENU_DESCRIPTIONS + "slot-desc";
         public static final String BUILDER_UTILITIES = MENU_DESCRIPTIONS + "builder-utilities-desc";
@@ -145,7 +144,7 @@ public abstract class LangPaths {
         public static final String FEEDBACK = MENU_DESCRIPTIONS + "feedback-desc";
         public static final String CUSTOM_HEADS = MENU_DESCRIPTIONS + "custom-heads-desc";
         public static final String BANNER_MAKER = MENU_DESCRIPTIONS + "banner-maker-desc";
-        public static final String SPECIAL_BLOCKS = MENU_DESCRIPTIONS + "special-blocks-desc";
+        public static final String SPECIAL_TOOLS = MENU_DESCRIPTIONS + "special-tools-desc";
         public static final String ADD_MEMBER_TO_PLOT = MENU_DESCRIPTIONS + "add-member-to-plot-desc";
         public static final String REVIEW_POINTS = MENU_DESCRIPTIONS + "review-points-desc";
         public static final String SUBMIT_REVIEW = MENU_DESCRIPTIONS + "submit-review-desc";
@@ -155,9 +154,11 @@ public abstract class LangPaths {
         public static final String SELECT_FOCUS_MODE = MENU_DESCRIPTIONS + "select-focus-mode-desc";
         public static final String SELECT_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-local-inspiration-mode-desc";
         public static final String SELECT_CITY_INSPIRATION_MODE = MENU_DESCRIPTIONS + "select-city-inspiration-mode-desc";
-        public static final String AUTO_DETECT_LANGUAGE = MENU_DESCRIPTIONS + "auto-detect-language-desc";
         public static final String FILTER = MENU_DESCRIPTIONS + "filter-desc";
         public static final String INFORMATION = MENU_DESCRIPTIONS + "information-desc";
+        public static final String TUTORIALS = MENU_DESCRIPTIONS + "tutorials-desc";
+        public static final String TUTORIAL_END = MENU_DESCRIPTIONS + "tutorial-end-desc";
+        public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
     }
 
     public static final class Review {
@@ -187,15 +188,27 @@ public abstract class LangPaths {
 
     public static final class Note {
         private static final String NOTES = "note.";
+        public static final String TIP = NOTES + "tip";
+        public static final String UNDER_CONSTRUCTION = NOTES + "under-construction";
         public static final String WONT_BE_ABLE_CONTINUE_BUILDING = NOTES + "wont-be-able-continue-building";
         public static final String SCORE_WILL_BE_SPLIT = NOTES + "score-will-be-split";
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
 
         public static final class Action {
             private static final String ACTION = NOTES + "action.";
+            public static final String READ = ACTION + "read";
+            public static final String READ_MORE = ACTION + "read-more";
+            public static final String MARK_AS_READ = ACTION + "mark-as-read";
+            public static final String START = ACTION + "start";
+            public static final String CONTINUE = ACTION + "continue";
+            public static final String CONTINUE_TUTORIAL = ACTION + "continue-tutorial";
+            public static final String CREATE_PLOT = ACTION + "create-plot";
             public static final String RIGHT_CLICK = ACTION + "right-click";
-            public static final String CLICK_TO_ENABLE = ACTION + "click-to-enable";
-            public static final String CLICK_TO_DISABLE = ACTION + "click-to-disable";
+            public static final String LEFT_CLICK = ACTION + "left-click";
+            public static final String ACCEPT = ACTION + "accept";
+            public static final String REJECT = ACTION + "reject";
+            public static final String CLICK_TO_CREATE = ACTION + "click-to-create-plot";
+            public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";
@@ -203,15 +216,7 @@ public abstract class LangPaths {
             public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION + "click-to-show-open-reviews";
             public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
-        }
-
-        public static final class Anvil {
-            private static final String ANVIL = NOTES + "anvil.";
-            public static final String PLAYER_IS_OWNER = ANVIL + "player-is-owner";
-            public static final String PLAYER_ALREADY_ADDED = ANVIL + "player-already-added";
-            public static final String PLAYER_NOT_ONLINE = ANVIL + "player-not-online";
-            public static final String INVALID_INPUT = ANVIL + "invalid-input";
-            public static final String ENTER_PLAYER_NAME = ANVIL + "enter-player-name";
+            public static final String TUTORIAL_SHOW_STAGES = ACTION + "tutorial-show-stages";
         }
     }
 
@@ -221,7 +226,6 @@ public abstract class LangPaths {
         public static final class Info {
             private static final String INFO = MESSAGE + "info.";
             public static final String TELEPORTING_PLOT = INFO + "teleporting-plot";
-            public static final String TELEPORTING_SPAWN = INFO + "teleporting-spawn";
             public static final String TELEPORTING_TPLL = INFO + "teleporting-tpll";
             public static final String ABANDONED_PLOT = INFO + "abandoned-plot";
             public static final String FINISHED_PLOT = INFO + "finished-plot";
@@ -244,9 +248,16 @@ public abstract class LangPaths {
             public static final String SAVING_PLOT = INFO + "saving-plot";
             public static final String CREATING_PLOT = INFO + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
-            public static final String CHANGED_LANGUAGE = INFO + "changed-language";
-            public static final String ENTER_FEEDBACK = INFO + "enter-feedback";
-            public static final String INPUT_EXPIRES_AFTER = INFO + "input-expires-after";
+            public static final String CHAT_ENTER_PLAYER = INFO + "chat-enter-player";
+            public static final String CHAT_ENTER_FEEDBACK = INFO + "chat-enter-feedback";
+            public static final String CHAT_INPUT_EXPIRES_AFTER = INFO + "chat-input-expires-after";
+            public static final String BEGINNER_TUTORIAL_REQUIRED = INFO + "beginner-tutorial-required";
+            public static final String BEGINNER_TUTORIAL_COMPLETED = INFO + "beginner-tutorial-completed";
+            public static final String PLAYER_INVITE_SENT = INFO + "player-invite-sent";
+            public static final String PLAYER_INVITE_TO_SENT = INFO + "player-invite-to-sent";
+            public static final String PLAYER_INVITE_ACCEPTED = INFO + "player-invite-accepted";
+            public static final String PLAYER_INVITE_TO_ACCEPTED = INFO + "player-invite-to-accepted";
+            public static final String PLAYER_INVITE_REJECTED = INFO + "player-invite-rejected";
         }
 
         public static final class Error {
@@ -271,17 +282,21 @@ public abstract class LangPaths {
             public static final String PLAYER_IS_PLOT_MEMBER = ERROR + "player-is-plot-member";
             public static final String PLAYER_IS_NOT_ONLINE = ERROR + "player-is-not-online";
             public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
+            public static final String PLAYER_ALREADY_INVITED = ERROR + "player-already-invited";
+            public static final String PLAYER_INVITE_EXPIRED = ERROR + "player-invite-expired";
+            public static final String PLAYER_INVITE_TO_EXPIRED = ERROR + "player-invite-to-expired";
+            public static final String PLAYER_INVITE_TO_REJECTED = ERROR + "player-invite-to-rejected";
             public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";
             public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR + "player-needs-higher-score";
 
-            public static final String INVALID_INPUT = ERROR + "invalid-input";
             public static final String ERROR_OCCURRED = ERROR + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR + "command-disabled";
             public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
-            public static final String NO_ASSIGNMENT_AS_REVIEWER = ERROR + "no-assignment-as-reviewer";
-            public static final String FEEDBACK_INPUT_EXPIRED = ERROR + "feedback-input-expired";
+            public static final String CHAT_INPUT_EXPIRED = ERROR + "chat-input-expired";
+            public static final String TUTORIAL_DISABLED = ERROR + "tutorial-disabled";
+            public static final String TUTORIAL_ALREADY_RUNNING = ERROR + "tutorial-already-running";
         }
     }
 
@@ -291,5 +306,75 @@ public abstract class LangPaths {
         public static final String ACTIONBAR_POSITION = LBS + "actionbar-position";
         public static final String ACTIONBAR_PERCENTAGE = LBS + "actionbar-percentage";
         public static final String NOT_ON_LEADERBOARD = LBS + "not-on-leaderboard";
+    }
+
+    public static final class Tutorials {
+        public static final String TUTORIALS = "tutorials.";
+        public static final String STAGE = TUTORIALS + "stage";
+        public static final String NEW_STAGE_UNLOCKED = TUTORIALS + "new-stage-unlocked";
+        public static final String TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
+
+        public static class Beginner {
+            private static final String TUTORIALS_BEGINNER = TUTORIALS + "beginner.";
+
+            private static final String STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
+            public static final String STAGE1_TITLE = STAGE1 + "stage-1-title";
+            public static final String STAGE1_MESSAGES = STAGE1 + "stage-1-messages";
+            public static final String STAGE1_TASKS = STAGE1 + "stage-1-tasks";
+
+
+            private static final String STAGE2 = TUTORIALS_BEGINNER + "stage-2.";
+            public static final String STAGE2_TITLE = STAGE2 + "stage-2-title";
+            public static final String STAGE2_MESSAGES = STAGE2 + "stage-2-messages";
+            public static final String STAGE2_TASKS = STAGE2 + "stage-2-tasks";
+
+
+            private static final String STAGE3 = TUTORIALS_BEGINNER + "stage-3.";
+            public static final String STAGE3_TITLE = STAGE3 + "stage-3-title";
+            public static final String STAGE3_MESSAGES = STAGE3 + "stage-3-messages";
+            public static final String STAGE3_TASKS = STAGE3 + "stage-3-tasks";
+
+
+            private static final String STAGE4 = TUTORIALS_BEGINNER + "stage-4.";
+            public static final String STAGE4_TITLE = STAGE4 + "stage-4-title";
+            public static final String STAGE4_MESSAGES = STAGE4 + "stage-4-messages";
+            public static final String STAGE4_TASKS = STAGE4 + "stage-4-tasks";
+
+
+            private static final String STAGE5 = TUTORIALS_BEGINNER + "stage-5.";
+            public static final String STAGE5_TITLE = STAGE5 + "stage-5-title";
+            public static final String STAGE5_MESSAGES = STAGE5 + "stage-5-messages";
+            public static final String STAGE5_TASKS = STAGE5 + "stage-5-tasks";
+
+
+            private static final String STAGE6 = TUTORIALS_BEGINNER + "stage-6.";
+            public static final String STAGE6_TITLE = STAGE6 + "stage-6-title";
+            public static final String STAGE6_MESSAGES = STAGE6 + "stage-6-messages";
+            public static final String STAGE6_TASKS = STAGE6 + "stage-6-tasks";
+
+
+            private static final String STAGE7 = TUTORIALS_BEGINNER + "stage-7.";
+            public static final String STAGE7_TITLE = STAGE7 + "stage-7-title";
+            public static final String STAGE7_MESSAGES = STAGE7 + "stage-7-messages";
+            public static final String STAGE7_TASKS = STAGE7 + "stage-7-tasks";
+
+
+            private static final String STAGE8 = TUTORIALS_BEGINNER + "stage-8.";
+            public static final String STAGE8_TITLE = STAGE8 + "stage-8-title";
+            public static final String STAGE8_MESSAGES = STAGE8 + "stage-8-messages";
+            public static final String STAGE8_TASKS = STAGE8 + "stage-8-tasks";
+
+
+            private static final String STAGE9 = TUTORIALS_BEGINNER + "stage-9.";
+            public static final String STAGE9_TITLE = STAGE9 + "stage-9-title";
+            public static final String STAGE9_MESSAGES = STAGE9 + "stage-9-messages";
+            public static final String STAGE9_TASKS = STAGE9 + "stage-9-tasks";
+
+
+            private static final String STAGE10 = TUTORIALS_BEGINNER + "stage-10.";
+            public static final String STAGE10_TITLE = STAGE10 + "stage-10-title";
+            public static final String STAGE10_MESSAGES = STAGE10 + "stage-10-messages";
+            public static final String STAGE10_TASKS = STAGE10 + "stage-10-tasks";
+        }
     }
 }

@@ -24,23 +24,23 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.core.system.Review;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -57,8 +57,7 @@ public class FeedbackMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
-
+        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
         super.setPreviewItems();
     }
 
@@ -68,10 +67,7 @@ public class FeedbackMenu extends AbstractMenu {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
                 .setValue(plot.getID()).executeQuery()) {
 
-            if (rs.next()) {
-                this.review = new Review(rs.getInt(1));
-            }
-
+            if (rs.next()) this.review = new Review(rs.getInt(1));
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
@@ -81,13 +77,13 @@ public class FeedbackMenu extends AbstractMenu {
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE))
-                    .setLore(new LoreBuilder()
+                    .setLore(new LegacyLoreBuilder()
                             .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
                                     "",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ChatUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
+                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
                                     "",
                                     plot.isRejected() ? "§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED) : "§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
                             .build())
@@ -99,9 +95,9 @@ public class FeedbackMenu extends AbstractMenu {
 
         // Set feedback text item
         try {
-            getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+            getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
-                    .setLore(new LoreBuilder()
+                    .setLore(new LegacyLoreBuilder()
                             .addLines(plot.getReview().getFeedback())
                             .build())
                     .build());
@@ -112,9 +108,9 @@ public class FeedbackMenu extends AbstractMenu {
 
         // Set reviewer item
         try {
-            getMenu().getSlot(16).setItem(new ItemBuilder(AlpsUtils.getPlayerHead(review.getReviewer().getUUID()))
+            getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER))
-                    .setLore(new LoreBuilder()
+                    .setLore(new LegacyLoreBuilder()
                             .addLine(review.getReviewer().getName()).build())
                     .build());
         } catch (SQLException ex) {
@@ -129,7 +125,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

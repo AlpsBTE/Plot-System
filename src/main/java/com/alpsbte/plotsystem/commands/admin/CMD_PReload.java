@@ -24,37 +24,41 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
 public class CMD_PReload extends BaseCommand {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if (sender.hasPermission(getPermission())){
-            try {
-                ConfigUtil.getInstance().reloadFiles();
-                ConfigUtil.getInstance().saveFiles();
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded config!"));
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        if (!sender.hasPermission(getPermission())){
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
+            return true;
+        }
 
-                LeaderboardManager.reloadLeaderboards();
-                sender.sendMessage(Utils.ChatUtils.getInfoMessageFormat("Successfully reloaded leaderboards!"));
+        try {
+            PlotSystem.getPlugin().reloadConfig();
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
-                DatabaseConnection.InitializeDatabase();
-            } catch (Exception ex) {
-                sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
-        } else {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to use this command!"));
+            LeaderboardManager.getLeaderboards().forEach(leaderboard -> leaderboard.setPosition(LeaderboardManager
+                    .getPosition((LeaderboardConfiguration) leaderboard)));
+            LeaderboardManager.reloadLeaderboards();
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded leaderboards!"));
+
+            DatabaseConnection.InitializeDatabase();
+        } catch (Exception ex) {
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return true;
     }

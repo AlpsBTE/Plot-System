@@ -25,25 +25,22 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +48,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ReviewMenu extends AbstractPaginatedMenu {
-    private final List<Country> countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
+    private List<Country> countries = new ArrayList<>();
     private Country filteredCountry = null;
 
-    public ReviewMenu(Player player) throws SQLException {
+    public ReviewMenu(Player player) {
         super(6, 4, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
@@ -62,8 +59,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
         try {
-            plots.addAll(PlotManager.getPlots(countries, Status.unreviewed));
-            plots.addAll(PlotManager.getPlots(countries, Status.unfinished));
+            countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
+            plots.addAll(Plot.getPlots(countries, Status.unreviewed));
+            plots.addAll(Plot.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -80,6 +78,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPaginatedMenuItemsAsync(List<?> source) {
+        // Set filter item
+        getMenu().getSlot(7).setItem(getFilterItem(getMenuPlayer()));
+
         // Set unreviewed and unfinished plot items
         List<Plot> plots = getFilteredPlots(source);
         for(int i = 0; i < plots.size(); i++) {
@@ -98,7 +99,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
                 lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
-                getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
+                getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
                         .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
                         .setLore(lines)
                         .build());
@@ -117,18 +118,12 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             Plot plot = plots.get(i);
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
                 try {
-                    if (plot.getStatus() == Status.unreviewed) {
-                        if (!plot.getPlotOwner().getUUID().toString().equals(getMenuPlayer().getUniqueId().toString()) || PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                            Plot currentPlot = PlotManager.getCurrentPlot(Builder.byUUID(getMenuPlayer().getUniqueId()), Status.unreviewed);
-                            if (currentPlot != null && currentPlot.getID() == plot.getID()) {
-                                new ReviewPlotMenu(getMenuPlayer(), currentPlot);
-                            } else plot.getWorld().teleportPlayer(getMenuPlayer());
-                        } else {
-                            getMenuPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
-                        }
-                    } else {
+                    if (plot.getStatus() == Status.unfinished) {
                         new PlotActionsMenu(getMenuPlayer(), plot);
+                        return;
                     }
+
+                    player.performCommand("review " + plot.getID());
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                     getMenuPlayer().closeInventory();
@@ -139,9 +134,6 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Set filter item
-        getMenu().getSlot(7).setItem(getFilterItem(getMenuPlayer()));
-
         // Set previous page item
         if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem(getMenuPlayer()));
 
@@ -154,7 +146,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         // Set click event for filter item
         getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-            if (countries.size() == 0) return;
+            if (countries.isEmpty()) return;
 
             if (filteredCountry == null) {
                 filteredCountry = countries.get(0);
@@ -189,7 +181,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -210,18 +202,18 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     }
 
     private ItemStack getFilterItem(Player langPlayer) {
-        LoreBuilder loreBuilder = new LoreBuilder();
-        loreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.FILTER));
-        loreBuilder.emptyLine();
+        LegacyLoreBuilder LegacyLoreBuilder = new LegacyLoreBuilder();
+        LegacyLoreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.FILTER));
+        LegacyLoreBuilder.emptyLine();
 
         countries.forEach(c -> {
             if (filteredCountry != null && filteredCountry.getID() == c.getID()) {
-                loreBuilder.addLine("§b§l> §f§l" + filteredCountry.getName());
-            } else loreBuilder.addLine("§7" + c.getName());
+                LegacyLoreBuilder.addLine("§b§l> §f§l" + filteredCountry.getName());
+            } else LegacyLoreBuilder.addLine("§7" + c.getName());
         });
 
         return new ItemBuilder(MenuItems.filterItem(getMenuPlayer()))
-                .setLore(loreBuilder.build())
+                .setLore(LegacyLoreBuilder.build())
                 .setEnchanted(filteredCountry != null)
                 .build();
     }

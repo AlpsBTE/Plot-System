@@ -24,32 +24,30 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 public class PlayerPlotsMenu extends AbstractMenu {
-
     private final Builder builder;
     private List<Plot> plots;
 
@@ -63,7 +61,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for player head item
-        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         // Set back item
         getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -73,14 +71,11 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Load player head
-        ItemStack playerHead = AlpsUtils.getPlayerHead(builder.getUUID());
-
         // Set player stats item
         try {
             getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(playerHead)
-                            .setName("§6§l" + builder.getName()).setLore(new LoreBuilder()
+                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
+                            .setName("§6§l" + builder.getName()).setLore(new LegacyLoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": §f" + builder.getScore(),
                                             "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": §f" + builder.getCompletedBuilds())
                                     .build())
@@ -92,14 +87,14 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         // Set player plot items
         try {
-            plots = PlotManager.getPlots(builder);
+            plots = Plot.getPlots(builder);
 
             plotDisplayCount = Math.min(plots.size(), 36);
             for (int i = 0; i < plotDisplayCount; i++) {
                 Plot plot = plots.get(i);
                 try {
-                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.WOOL, 1, (byte) 1) :
-                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.MAP) : new ItemStack(Material.WOOL, 1, (byte) 13);
+                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.ORANGE_WOOL, 1) :
+                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.FILLED_MAP) : new ItemStack(Material.GREEN_WOOL, 1);
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(item)
@@ -126,21 +121,19 @@ public class PlayerPlotsMenu extends AbstractMenu {
                     new PlotActionsMenu(clickPlayer, plots.get(itemSlot));
                 } catch (SQLException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    clickPlayer.closeInventory();
                 }
             });
         }
 
         // Set click event for back item
-        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand("companion");
-        });
+        getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
     }
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -159,7 +152,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
      */
     private List<String> getDescription(Plot plot, Player p) throws SQLException {
         List<String> lines = new ArrayList<>();
-        if (plot.getPlotMembers().size() == 0) {
+        if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": §6" + (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()));
         } else {
@@ -174,10 +167,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         if (plot.isReviewed() || plot.isRejected()) {
             lines.add("");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ChatUtils.getColorByPoints(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
             lines.add("");
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":");
 
@@ -196,9 +189,9 @@ public class PlayerPlotsMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player p) {
-        return new ItemBuilder(AlpsUtils.getItemHead(Utils.HeadUtils.WHITE_P_HEAD))
+        return new ItemBuilder(AlpsHeadUtils.getPlayerHead(p.getUniqueId()))
                 .setName("§b§l" + LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS))
-                .setLore(new LoreBuilder()
+                .setLore(new LegacyLoreBuilder()
                     .addLine(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS)).build())
                 .build();
     }

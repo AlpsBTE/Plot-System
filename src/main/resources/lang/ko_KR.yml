@@ -7,14 +7,10 @@
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | Korean translation by m4ndeokyi#4063
 # -----------------------------------------------------
-
 lang:
-  name: "한국어 (KO)"
+  name: "한국어 (한국)"
   head-id: "27583"
-
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
@@ -35,7 +31,6 @@ plot:
   group-system:
     empty-member-slot: "빈 멤버 슬롯"
     shared-by-members: "(총점/{0}명)"
-
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
@@ -47,13 +42,11 @@ city-project:
   plots-available: 'Plots Available'
   no-plots-available: "건축할 수 있는 플롯이 없음"
   for-your-difficulty: "({0} for your difficulty)"
-
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
   countries: "Countries"
-
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
@@ -64,14 +57,12 @@ continent:
   oceania: "Oceania"
   south-america: "South America"
   north-america: "North America"
-
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
   automatic: "자동"
   score-multiplier: "점수 배수"
-
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
@@ -82,7 +73,6 @@ menu-title:
   previous-page: "이전 페이지"
   error: "에러"
   loading: "로딩 중..."
-  navigator: "내비게이터"
   plot-difficulty: "플롯 난이도"
   slot: "슬롯"
   builder-utilities: "건축 도구"
@@ -96,7 +86,7 @@ menu-title:
   feedback: "피드백 | 리뷰 #{0}"
   custom-heads: "커스텀 헤드"
   banner-maker: "현수막 제조기"
-  special-blocks: "특수 블록들"
+  special-tools: "Special Blocks & Items"
   review-point: "점"
   review-points: "점"
   cancel: "취소"
@@ -111,20 +101,21 @@ menu-title:
   review-plot: "플롯 리뷰 #{0}"
   enter-player-name: "플레이어 이름 입력하기"
   select-language: "언어 설정"
-  auto-detect-language: "언어 감지"
   select-plot-type: 'Select Plot Type'
   select-focus-mode: "Select Focus Mode"
   select-local-inspiration-mode: "Select Inspiration Mode"
   select-city-inspiration-mode: "Select City Inspiration Mode"
   filter-by-country: "Filter By Country"
   information: "Info"
-
+  tutorials: 'Tutorials'
+  tutorial-stages: 'Tutorial Stages'
+  tutorial-end: 'End Tutorial'
+  tutorial-beginner: 'Get Started'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
   error-desc: "에러가 발생했습니다."
-  navigator-desc: "클릭하여 메뉴 열기"
   plot-difficulty-desc: "클릭하여 변경하기"
   slot-desc: "도시 프로젝트를 클릭해 새로운 플롯을 생성하세요"
   builder-utilities-desc: "클릭하여 커스텀 헤드와 현수막, 그리고 특수 블록을 얻으세요"
@@ -137,21 +128,22 @@ menu-description:
   manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 %newline% 제외할 수 있는 플롯 멤버 메뉴를 여세요"
   feedback-desc: "클릭하여 플롯 리뷰 피드백 보기"
   custom-heads-desc: "클릭하여 다양한 커스텀 헤드를 얻으세요"
-  banner-maker-desc: "클릭하여 커스텀 현수막을 제작하세요"
-  special-blocks-desc: "클릭하여 일반적으로 얻을 수 없는 특수 블록들을 얻으세요"
+  banner-maker-desc: "Click to create and save your own banners"
+  special-tools-desc: "Click here to access a variety of inaccessible blocks and items"
   add-member-to-plot-desc: "플롯에 친구를 초대해 함께 건축하세요"
   review-points-desc: "클릭하여 선택"
   submit-review-desc: "선택한 점수를 부여하고 플롯을 리뷰된 것으로 표시합니다"
   leave-plot-desc: "클릭하여 플롯에서 나가기"
   select-language-desc: "언어를 선택하세요"
-  auto-detect-language-desc: "클릭하여 자동으로 언어 감지"
   select-plot-type-desc: 'Choose your plot type'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-
+  tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
+  tutorial-end-desc: 'Your progress will be saved.'
+  tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -174,40 +166,43 @@ review:
     detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?%newline%%newline%- 지붕 디테일%newline%- 건물 정면 디테일%newline%- 머리와 현수막의 사용"
     technique: "기법"
     technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?%newline%%newline%- 월드에딧%newline%- 특수 블록"
-
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
 note:
+  tip: "Tip"
+  under-construction: 'Under Construction'
   wont-be-able-continue-building: "더 이상 이 플롯에서 건축하실 수 없게 됩니다!"
   score-will-be-split: "리뷰된 후에는 플롯의 모든 멤버에게 점수가 배분될 것입니다."
   player-has-to-be-online: "해당 플레이어가 접속 중이어야 합니다!"
   action:
+    read: 'Read'
+    read-more: 'Read More'
+    mark-as-read: 'Mark as read'
+    start: 'Start'
+    continue: "Continue"
+    continue-tutorial: 'Continue Tutorial'
+    create-plot: 'Create Plot'
     right-click: "우클릭"
-    click-to-enable: "클릭하여 활성화하기"
-    click-to-disable: "클릭하여 비활성화하기"
+    left-click: "Left Click"
+    accept: 'Accept'
+    reject: 'Reject'
+    click-to-create-plot: 'Click to create new plot...'
+    click-to-proceed: "Click to proceed..."
     click-to-remove-plot-member: "클릭하여 플롯에서 멤버 퇴출하기"
-    click-to-open-link: "§6여기§7를 클릭해 §a{0}§7 페이지를 여세요!"
+    click-to-open-link: "여기를 클릭해 {0} 페이지를 여세요!"
     click-to-open-link-with-shortlink: "§6여기§7를 클릭해 §a{0}§7 페이지를 열거나 이 링크를 사용하세요: §a{1}"
     click-to-show-feedback: "§6여기§a를 클릭해 자신 플롯의 피드백을 확인하세요!"
     click-to-show-open-reviews: "§6여기§a를 클릭해 대기 중인 리뷰들을 확인하세요!"
     click-to-show-plots: "§6여기§a를 클릭해 자신의 플롯들을 확인하세요!"
     click-to-play-with-friends: "§7친구와 플레이하시려면 §6여기§7를 클릭하세요!"
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "이미 주인인 플레이어입니다!"
-    player-already-added: "이미 추가된 플레이어입니다!"
-    player-not-online: "플레이어가 접속 중이 아닙니다!"
-    invalid-input: "잘못된 입력입니다!"
-    enter-player-name: "플레이어 이름 입력:"
-
+    tutorial-show-stages: 'Show Stages'
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§a플롯 §6#{0}§a(으)로 이동합니다..."
-    teleporting-spawn: "§a스폰으로 이동합니다..."
     teleporting-tpll: "§a좌표 §6{0}§a, §6{1}§a(으)로 이동합니다..."
     abandoned-plot: "§aID §6#{0}§a의 플롯을 버렸습니다!"
     finished-plot: "§6{1}§a님의 플롯 §6#{0}§a(이)가 완성되었습니다!"
@@ -230,9 +225,16 @@ message:
     saving-plot: "§a플롯 저장 중..."
     creating-plot: "§a새로운 플롯 생성 중..."
     created-new-plot: "§6{0}§a님의 플롯을 생성하였습니다!"
-    changed-language: "§a언어를 §6{0}§a(으)로 변경하였습니다!"
-    enter-feedback: "Please enter a feedback for the player in the chat."
-    input-expires-after: "§9Chat input expires after §6{0} §9minutes."
+    chat-enter-player: 'Please enter the name of the player in the chat.'
+    chat-enter-feedback: "Please enter a feedback for the player in the chat."
+    chat-input-expires-after: "Chat input expires after {0} minutes."
+    beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
+    beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
+    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
+    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
+    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
+    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
   error:
     plot-does-not-exist: "존재하지 않는 플롯입니다!"
     plot-either-unclaimed-or-unreviewed: "아직 소유되거나 검토되지 않은 플롯입니다!"
@@ -252,17 +254,20 @@ message:
     player-is-plot-member: "이미 이 플롯의 멤버인 플레이어입니다!"
     player-is-not-online: "접속 중이 아닌 플레이어입니다!"
     player-not-found: "플레이어를 찾을 수 없습니다!"
+    player-already-invited: '{0} has already been invited to a plot.'
+    player-invite-expired: 'The invitation from {0} has expired.'
+    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
+    player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "플롯에서만 사용할 수 있습니다!"
     player-needs-higher-score: "해당 난이도에서 건축하시려면 더 높은 점수가 필요합니다."
-    invalid-input: "잘못된 입력입니다!"
     error-occurred: "에러 발생! 다시 시도해주세요!"
     command-disabled: "비활성화된 커맨드입니다!"
     no-plots-left: "이 도시 프로젝트에 남아있는 플롯이 없습니다. 다른 프로젝트를 선택해주세요."
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."
-    no-assignment-as-reviewer: "You have not been assigned to a build team as a reviewer."
-    feedback-input-expired: "The chat input has expired! Use §7/editfeedback <ID> <Text> §cto edit the feedback."
-
+    chat-input-expired: "The chat input has expired."
+    tutorial-disabled: 'Tutorials are disabled on this server.'
+    tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -273,6 +278,115 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Not on leaderboard"
-
+tutorials:
+  stage: 'Stage'
+  new-stage-unlocked: 'NEW STAGE UNLOCKED'
+  tutorial-completed: 'TUTORIAL COMPLETED'
+  beginner:
+    stage-1:
+      stage-1-title: 'Understanding the BuildTheEarth Project'
+      stage-1-messages:
+        - 'Hello {0}! Nice to meet you, my name is {1}. You´ve just stepped into the exciting world of the BuildTheEarth project!'
+        - 'Our mission is to recreate the entire planet Earth in Minecraft at a 1:1 scale. Yes, you heard right, at a 1:1 scale!'
+        - 'However, we at Alps BTE are only responsible to recreate the beautiful alpine countries of Austria, Switzerland and Liechtenstein.'
+        - 'Are you ready to learn how to build for BTE? I will guide you through the basics to participate in the project. Let´s continue!'
+      stage-1-tasks:
+        - 'Talk to {0} at the construction site.'
+    stage-2:
+      stage-2-title: 'References'
+      stage-2-messages:
+        - 'Welcome on your little island. Here we will construct our first building for the Build The Earth project!'
+        - 'Before we begin building, we need to know how the real-life building looks like. For that we use tools like {0} and {1}.'
+        - 'We use {2} to copy coordinates, so we can teleport to a specific point. In addition we can access {3} to have a closer look at the building.'
+        - '{4}'
+        - 'We use {5} to measure the height of the building. This is important to know, so the building has the correct height.'
+        - '{6}'
+        - 'Use the command {7} if you need the links later.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleporting'
+      stage-3-messages:
+        - 'The building outlines are generated by default, but since they are mostly not accurate, we have to correct them. To correct the outlines we firstly need to teleport to the edges of the building.'
+        - 'Use the command {0} to teleport to the location in-game. {1} on one of the edges of the building to copy the coordinates.'
+        - '{2}'
+        - 'To continue teleport to the marked points. Try again!'
+        - 'Switch to §6Satellite§f view in Google Maps to show the building in 3D.%newline%%newline%Click on §6Layers§f at the bottom left of the map. If no 3D buildings appear, enable the §6Globe View§f under "More".'
+      stage-3-tasks:
+        - 'Teleport to all {0} edges of the building by using {1}.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Before we continue with the outlines, we need to know an important tool called {0}. WorldEdit allows us to build faster and more efficiently.'
+        - 'In order to use WorldEdit, you need to get a <gold>wooden axe</gold>.'
+        - 'Now that you have your wooden axe, you can {1} and {2} on blocks to make your selection.'
+      stage-4-tasks:
+        - 'Use the command {0} to get your wooden axe.'
+    stage-5:
+      stage-5-title: 'Draw the Outlines'
+      stage-5-messages:
+        - 'Now that we know about WorldEdit, we can draw the outlines of the building.'
+        - 'To draw the outlines, we use the command {0}.'
+        - '{1} to select the first point and {2} to select the second point.'
+        - 'To continue connect the points using {0}. Try again!'
+      stage-5-tasks:
+        - 'Connect the points by using {0}.'
+    stage-6:
+      stage-6-title: 'Building Heights'
+      stage-6-messages:
+        - 'Now that we have the building outlines, we need to <gold>measure</gold> the height of the building.'
+        - 'Calculate the height of the <gold>facade</gold> by subtracting the height of the <gold>ground</gold> from the height of the <gold>roof</gold>.'
+        - 'Enter the height (in metres) of the building facade in the chat to continue.'
+        - '{0}'
+        - 'Well done! The height of the building is {1} blocks.'
+        - 'You´ve almost made it. The height of the building is {1} blocks.'
+        - 'You´ve almost made it. Try again!'
+        - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
+      stage-6-tasks:
+        - 'Calculate the height of the building.'
+    stage-7:
+      stage-7-title: 'Building Shells'
+      stage-7-messages:
+        - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
+        - 'Teleport to at least §6one point§f of the roof ridge to §6connect§f the point(s) with the facade.'
+        - 'Use §6different types§f of blocks and colours for the shells to make it easier to §6separate§f the building into sections.'
+        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
+        - 'Use the WorldEdit command §6{0}§f to raise the walls quickly and easily.'
+        - 'Fill the roof by hand or use the WorldEdit command §6{1}§f. Alternatively use the command §6{2}§f to switch the selection for larger and more complex roofs.'
+        - 'Always check the §6height§f of the windows and doors so that it §6matches§f with the facade.'
+      stage-7-tasks:
+        - 'Read all tips on the plot and mark them as read.'
+    stage-8:
+      stage-8-title: 'Windows'
+      stage-8-messages:
+        - 'The building shell is done! Let´s continue with the windows and doors.'
+        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
+        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
+        - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
+        - 'Use the same blocks as for the windows on the right. Try again!'
+        - 'Thank you for your help! Now we can continue with the texturing.'
+      stage-8-tasks:
+        - 'Place the missing window details.'
+    stage-9:
+      stage-9-title: 'Texturing'
+      stage-9-messages:
+        - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
+        - 'Use §6Google Street View§f or §6images§f to make the right block choice, as aerial images are sometimes not very accurate.'
+        - 'Use the WorldEdit command §6{0}§f to simply replace the shell with your pattern.'
+        - 'Try to use §6block mixes§f and §6gradients§f for the walls and roof so that the building looks more realistic and stand out.'
+      stage-9-tasks:
+        - 'Read all tips on the plot and mark them as read.'
+    stage-10:
+      stage-10-title: 'Detailing & Further Steps'
+      stage-10-messages:
+        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
+        - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
+        - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
+        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
+        - 'Click here to learn more about the project.'
+        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
+        - 'If you want to explore the current progress of the map, check out the <gold>Terra</gold> server!'
+        - 'Happy building! ☺'
+      stage-10-tasks:
+        - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 1.3
+config-version: 2.0

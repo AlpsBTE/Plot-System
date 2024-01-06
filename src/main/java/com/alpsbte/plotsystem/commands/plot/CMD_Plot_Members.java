@@ -29,8 +29,9 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.menus.PlotMemberMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
@@ -38,6 +39,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class CMD_Plot_Members extends SubCommand {
@@ -52,33 +54,39 @@ public class CMD_Plot_Members extends SubCommand {
             if (getPlayer(sender) != null) {
                 Plot plot;
                 // Get Plot
-                if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                     //plot members <id>
                     int plotID = Integer.parseInt(args[0]);
-                    if (PlotManager.plotExists(plotID)) {
+                    if (PlotUtils.plotExists(plotID)) {
                         plot = new Plot(plotID);
                     } else {
-                        sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("This plot does not exist!"));
+                        sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot does not exist!"));
                         return;
                     }
-                } else if (PlotManager.isPlotWorld(getPlayer(sender).getWorld())) {
+                } else if (PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
                     //plot members
-                    plot = PlotManager.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
+                    AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
+                    if (p instanceof Plot) {
+                        plot = (Plot) p;
+                    } else {
+                        sendInfo(sender);
+                        return;
+                    }
                 } else {
                     sendInfo(sender);
                     return;
                 }
 
-                if(plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
+                if(Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
                     new PlotMemberMenu(plot,getPlayer(sender));
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to manage this plot's members!"));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to manage this plot's members!"));
                 }
             } else {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("An error occurred while executing command!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

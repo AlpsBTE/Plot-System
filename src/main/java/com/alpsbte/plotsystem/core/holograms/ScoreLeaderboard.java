@@ -28,11 +28,12 @@ import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import me.filoghost.holographicdisplays.api.Position;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -44,44 +45,49 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ScoreLeaderboard extends HolographicPagedDisplay {
+public class ScoreLeaderboard extends HolographicPagedDisplay implements LeaderboardConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
-    private BukkitTask actionbarTask = null;
 
-    protected ScoreLeaderboard(@NotNull String id) {
-        super(id, PlotSystem.getPlugin());
-    }
+    protected ScoreLeaderboard() {
+        super("score-leaderboard", null, false, PlotSystem.getPlugin());
+        setPosition(LeaderboardManager.getPosition(this));
 
-    @Override
-    public void create(Position position) {
-        if (!PlotSystem.getPlugin().isEnabled()) return;
-        if (getPages().size() < 1) {
-            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
-            return;
-        }
-
-        super.create(position);
-
-        actionbarTask = new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 for (Player player : showToPlayers()) {
+                    if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) return;
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, rankingString(player));
                 }
             }
         }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
+    }
+
+    @Override
+    public void create(Player player) {
+        if (!PlotSystem.getPlugin().isEnabled()) return;
+        if (getPages().isEmpty()) {
+            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
+            return;
+        }
+
+        super.create(player);
+    }
+
+    @Override
+    public boolean hasViewPermission(UUID uuid) {
+        return true;
     }
 
     @Override
@@ -90,18 +96,18 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle(UUID playerUUID) {
         return "§b§lTOP SCORE §6§l[" + (sortByLeaderboard.toString().charAt(0) + sortByLeaderboard.toString().toLowerCase().substring(1)) + "]";
     }
 
     @Override
-    public List<DataLine<?>> getHeader() {
+    public List<DataLine<?>> getHeader(UUID playerUUID) {
         sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
-        return super.getHeader();
+        return super.getHeader(playerUUID);
     }
 
     @Override
-    public List<DataLine<?>> getContent() {
+    public List<DataLine<?>> getContent(UUID playerUUID) {
         try {
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
@@ -131,7 +137,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
             return TextComponent.fromLegacyText("§cSQL Exception");
         }
 
@@ -181,12 +187,15 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
 
     private List<Player> showToPlayers() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLED, true);
+        boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLE, true);
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
+        if (!actionBarEnabled) return players;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Position position = getHologram().getPosition();
-            if (player.getWorld().getName().equals(position.getWorldName()) && (!actionBarEnabled || position.distance(player.getLocation()) <= actionBarRadius)) {
+            Hologram holo = getHologram(player.getUniqueId());
+            if (holo == null) continue;
+            if (player.getWorld().getName().equals(holo.getPosition().getWorldName()) &&
+                    holo.getPosition().distance(player.getLocation()) <= actionBarRadius) {
                 players.add(player);
             }
         }
@@ -207,12 +216,23 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
     }
 
     @Override
-    public void remove() {
-        if (actionbarTask != null) {
-            actionbarTask.cancel();
-            actionbarTask = null;
-        }
-        super.remove();
+    public String getEnablePath() {
+        return ConfigPaths.SCORE_LEADERBOARD_ENABLE;
+    }
+
+    @Override
+    public String getXPath() {
+        return ConfigPaths.SCORE_LEADERBOARD_X;
+    }
+
+    @Override
+    public String getYPath() {
+        return ConfigPaths.SCORE_LEADERBOARD_Y;
+    }
+
+    @Override
+    public String getZPath() {
+        return ConfigPaths.SCORE_LEADERBOARD_Z;
     }
 
     public enum LeaderboardTimeframe {
@@ -244,18 +264,15 @@ public class ScoreLeaderboard extends HolographicPagedDisplay {
             try {
                 String line = super.getLine();
                 Payout payout = sortByLeaderboard != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortByLeaderboard, position) : null;
-                if (payout == null) {
-                    return line;
-                } else {
-                    String payoutAmount = payout.getPayoutAmount();
-                    try {
-                        // if payout amount can be number, prefix with dollar sign
-                        Integer.valueOf(payoutAmount);
-                        payoutAmount = "$" + payoutAmount;
-                    } catch (NumberFormatException ignored) {}
+                if (payout == null) return line;
+                String payoutAmount = payout.getPayoutAmount();
+                try {
+                    // if payout amount can be number, prefix with dollar sign
+                    Integer.valueOf(payoutAmount);
+                    payoutAmount = "$" + payoutAmount;
+                } catch (NumberFormatException ignored) {}
 
-                    return line + " §7- §e§l" + payoutAmount;
-                }
+                return line + " §7- §e§l" + payoutAmount;
             } catch (SQLException e) {
                 return super.getLine() + " §7- §cSQL ERR";
             }

@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +36,7 @@ public abstract class SubCommand implements ICommand {
     private final BaseCommand baseCommand;
     private final SubCommand subCommand;
     private final List<SubCommand> subCommands = new ArrayList<>();
-    protected LangUtil langUtil = LangUtil.getInstance();
+    protected final LangUtil langUtil = LangUtil.getInstance();
 
     public SubCommand(BaseCommand baseCommand) {
         this.baseCommand = baseCommand;
@@ -98,7 +97,6 @@ public abstract class SubCommand implements ICommand {
     public void sendInfo(CommandSender sender) {
         List<String> lines = new ArrayList<>();
         if (!subCommands.isEmpty()) {
-            lines.add(Utils.ChatUtils.getInfoMessageFormat(getNames()[0].substring(0, 1).toUpperCase() + getNames()[0].substring(1) + " Commands:"));
             lines.add("§8--------------------------");
             getSubCommands().forEach(sub -> {
                 StringBuilder subCommand = new StringBuilder("§7§l> §b/" + getBaseCommand().getNames()[0] + " §6" + getNames()[0] + " " + sub.getNames()[0] + "§7");

@@ -35,7 +35,7 @@ public abstract class ConfigPaths {
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
 
     private static final String SYNC_FTP_FILES = "sync-ftp-files.";
-    public static final String SYNC_FTP_FILES_ENABLED = SYNC_FTP_FILES + "enabled";
+    public static final String SYNC_FTP_FILES_ENABLE = SYNC_FTP_FILES + "sff-enable";
     public static final String SYNC_FTP_FILES_INTERVAL = SYNC_FTP_FILES + "sync-interval";
 
 
@@ -48,13 +48,18 @@ public abstract class ConfigPaths {
 
 
     // Leaderboards
-    public static final String HOLOGRAMS = "holograms.";
+    private static final String HOLOGRAMS = "holograms.";
     public static final String SCORE_LEADERBOARD = "score-leaderboard";
+    public static final String SCORE_LEADERBOARD_ENABLE = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-enable";
+    public static final String SCORE_LEADERBOARD_X =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-x";
+    public static final String SCORE_LEADERBOARD_Y =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-y";
+    public static final String SCORE_LEADERBOARD_Z =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-z";
     public static final String PLOTS_LEADERBOARD = "plots-leaderboard";
-    public static final String LEADERBOARD_ENABLED = ".enabled";
-    public static final String LEADERBOARD_X = ".x";
-    public static final String LEADERBOARD_Y = ".y";
-    public static final String LEADERBOARD_Z = ".z";
+    public static final String PLOTS_LEADERBOARD_ENABLE = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-enable";
+    public static final String PLOTS_LEADERBOARD_X =  HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-x";
+    public static final String PLOTS_LEADERBOARD_Y =  HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-y";
+    public static final String PLOTS_LEADERBOARD_Z =  HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-z";
+
 
     private static final String DISPLAY_OPTIONS = "display-options.";
     public static final String DISPLAY_OPTIONS_INTERVAL = DISPLAY_OPTIONS + "interval";
@@ -63,29 +68,35 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_SHOW_MONTHLY = DISPLAY_OPTIONS + "show-monthly";
     public static final String DISPLAY_OPTIONS_SHOW_YEARLY = DISPLAY_OPTIONS + "show-yearly";
     public static final String DISPLAY_OPTIONS_SHOW_LIFETIME = DISPLAY_OPTIONS + "show-lifetime";
-    public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLED = DISPLAY_OPTIONS + "action-bar-enabled";
+    public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLE = DISPLAY_OPTIONS + "action-bar-enable";
     public static final String DISPLAY_OPTIONS_ACTION_BAR_RADIUS = DISPLAY_OPTIONS + "action-bar-radius";
 
 
-    // Navigator
-    private static final String NAVIGATOR = "navigator.";
-    public static final String NAVIGATOR_ITEM = NAVIGATOR + "item";
-    public static final String NAVIGATOR_COMMAND = NAVIGATOR + "command";
-
-
     // FORMATTING
-    public static final String MESSAGE_PREFIX = "message-prefix";
-    public static final String MESSAGE_INFO_COLOUR = "info-colour";
-    public static final String MESSAGE_ERROR_COLOUR = "error-colour";
+    private static final String CHAT_FORMAT = "chat-format.";
+    public static final String CHAT_FORMAT_INFO_PREFIX = CHAT_FORMAT + "info-prefix";
+    public static final String CHAT_FORMAT_ALERT_PREFIX = CHAT_FORMAT + "alert-prefix";
+
 
     // COMMANDS
     public static final String EDITPLOT_ENABLED = "editplot-enabled";
     public static final String BLOCKED_COMMANDS_BUILDERS = "blocked-commands-builders";
     public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
 
+
     // SHORTLINKS
     private static final String SHORTLINK = "shortlink.";
     public static final String SHORTLINK_ENABLE = SHORTLINK + "enable";
     public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
     public static final String SHORTLINK_HOST = SHORTLINK + "host";
+
+
+    // TUTORIALS
+    private static final String TUTORIALS = "tutorials.";
+    public static final String TUTORIAL_ENABLE = TUTORIALS + "tutorial-enable";
+    public static final String TUTORIAL_REQUIRE_BEGINNER_TUTORIAL = TUTORIALS + "require-beginner-tutorial";
+    public static final String TUTORIAL_NPC_NAME = TUTORIALS + "tutorial-npc-name";
+    public static final String TUTORIAL_NPC_TEXTURE = TUTORIALS + "tutorial-npc-texture";
+    public static final String TUTORIAL_NPC_SIGNATURE = TUTORIALS + "tutorial-npc-signature";
+    public static final String TUTORIAL_CHAT_PREFIX = TUTORIALS + "tutorial-chat-prefix";
 }

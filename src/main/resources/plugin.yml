@@ -1,14 +1,15 @@
 main: com.alpsbte.plotsystem.PlotSystem
-version: 3.0.3
-api-version: 1.12.2
+version: 4.0
+api-version: "1.20"
 name: Plot-System
 author: R3tuxn & Cinnazeyy
-softdepend: [VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit, HolographicDisplays, WorldGuard, HeadDatabase, ProtocolLib, ParticleNativeAPI]
+softdepend: [LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit,
+             HolographicDisplays, WorldGuard, WorldGuardExtraFlags, HeadDatabase, ProtocolLib, ParticleNativeAPI]
 
 commands:
-  spawn:
-    description: Teleport to the spawn point.
-    usage: /spawn
+  cancelchat:
+    description: Cancels the chat input.
+    usage: /cancelchat
   companion:
     description: Opens the Companion menu.
     usage: /companion
@@ -26,7 +27,7 @@ commands:
     usage: /plot help
   review:
     description: Opens the review or review plot menu.
-    usage: /review
+    usage: /review <ID>
   undoreview:
     description: Undo a review of a plot.
     usage: /undoreview <ID>
@@ -36,9 +37,6 @@ commands:
   editplot:
     description: Enable/disable build permissions for reviewers on a plot.
     usage: /editplot
-  cleanplot:
-    description: Cleans and refreshes plots due to bugs or permission changes.
-    usage: /cleanplot <All/ID>
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
@@ -51,6 +49,9 @@ commands:
   pss:
     description: Command for setting up the database.
     usage: /pss help
+  tutorial:
+    description: Start the Beginner Tutorial process. Only for test usages.
+    usage: /tutorial
 permissions:
   plotsystem.plot:
     description: Builder permissions

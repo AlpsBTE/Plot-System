@@ -27,17 +27,20 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
-public class PlotsLeaderboard extends HolographicDisplay {
-    protected PlotsLeaderboard(String id) {
-        super(id);
+public class PlotsLeaderboard extends HolographicDisplay implements LeaderboardConfiguration {
+    protected PlotsLeaderboard() {
+        super(ConfigPaths.PLOTS_LEADERBOARD, null, false);
+        setPosition(LeaderboardManager.getPosition(this));
     }
 
     @Override
@@ -46,12 +49,12 @@ public class PlotsLeaderboard extends HolographicDisplay {
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle(UUID playerUUID) {
         return "§b§lCOMPLETED PLOTS §6§l[Lifetime]";
     }
 
     @Override
-    public List<DataLine<?>> getContent() {
+    public List<DataLine<?>> getContent(UUID playerUUID) {
         try {
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
@@ -66,5 +69,30 @@ public class PlotsLeaderboard extends HolographicDisplay {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean hasViewPermission(UUID uuid) {
+        return true;
+    }
+
+    @Override
+    public String getEnablePath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_ENABLE;
+    }
+
+    @Override
+    public String getXPath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_X;
+    }
+
+    @Override
+    public String getYPath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_Y;
+    }
+
+    @Override
+    public String getZPath() {
+        return ConfigPaths.PLOTS_LEADERBOARD_Z;
     }
 }

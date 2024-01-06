@@ -27,12 +27,17 @@ package com.alpsbte.plotsystem;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
-import com.alpsbte.alpslib.utils.heads.CustomHeadEventListener;
+import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
-import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.*;
 import com.alpsbte.plotsystem.utils.PacketListener;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -42,24 +47,25 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
-    private static final String VERSION = "3.0.3";
+    private static final String VERSION = "4.0";
 
     private static PlotSystem plugin;
     private CommandManager commandManager;
@@ -70,6 +76,7 @@ public class PlotSystem extends JavaPlugin {
     public void onEnable() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog"); // Disable Logging
         YamlFileFactory.registerPlugin(this);
+        li.cinnazeyy.langlibs.core.file.YamlFileFactory.registerPlugin(this);
         plugin = this;
 
         String successPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "✔" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
@@ -101,7 +108,8 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        ConfigUtil.getInstance().reloadFiles();
+        reloadConfig();
+
 
         // Load language files
         try {
@@ -131,7 +139,9 @@ public class PlotSystem extends JavaPlugin {
         try {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
-            this.getServer().getPluginManager().registerEvents(new CustomHeadEventListener(), this);
+            this.getServer().getPluginManager().registerEvents(new AlpsHeadEventListener(), this);
+            if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
+                this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
@@ -154,24 +164,14 @@ public class PlotSystem extends JavaPlugin {
             return;
         }
 
-        // Check for extensions
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Extensions:");
-
-        if (DependencyManager.isHolographicDisplaysEnabled()) {
-            HolographicDisplay.registerPlugin(this);
-            LeaderboardManager.reloadLeaderboards();
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "- HolographicDisplays (Leaderboards)");
-        } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "No extensions enabled.");
-        }
+        if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) Bukkit.getLogger().log(Level.WARNING, "WorldGuardExtraFlags is not enabled!");
 
         // Check for updates
         Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
 
         UpdateChecker.getVersion(version -> {
-            if (version.equals(VERSION)) {
+            if (new ComparableVersion(VERSION).compareTo(new ComparableVersion(version)) >= 0) {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
             } else {
                 UpdateChecker.isUpdateAvailable = true;
@@ -181,16 +181,26 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
-        PlotManager.checkPlotsForLastActivity();
-        PlotManager.syncPlotSchematicFiles();
-        Review.checkReviewerFeedbackList();
-        PlotManager.startTimer();
+        HolographicDisplay.registerPlugin(this);
+        LeaderboardManager.initLeaderboards();
+        PlotUtils.checkPlotsForLastActivity();
+        PlotUtils.syncPlotSchematicFiles();
+        Utils.ChatUtils.checkForChatInputExpiry();
+        PlotUtils.Effects.startTimer();
 
         try {
             new PacketListener();
         } catch (NoClassDefFoundError ex) {
             Bukkit.getConsoleSender().sendMessage("");
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not find Protocol-Lib! Consider installing it to avoid issues.");
+        }
+
+        // Cache and register custom heads
+        Bukkit.getScheduler().runTaskAsynchronously(this, Utils::registerCustomHeads);
+
+        // Register tutorials
+        if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
+            AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));
         }
 
         pluginEnabled = true;
@@ -212,18 +222,36 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
-            LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::remove);
+            LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::delete);
+        } else {
+            // Unload plots
+            for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
+                for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(Builder.byUUID(player))) {
+                    if (plot != null) plot.getWorld().unloadWorld(true);
+                }
+            }
+
+            // Unload tutorials
+            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++) {
+                Tutorial tutorial = AbstractTutorial.getActiveTutorials().get(i);
+                tutorial.onTutorialStop(tutorial.getPlayerUUID());
+            }
         }
     }
 
     @Override
-    public FileConfiguration getConfig() {
+    public @NotNull FileConfiguration getConfig() {
         return ConfigUtil.getInstance().configs[0];
     }
 
     @Override
     public void reloadConfig() {
         ConfigUtil.getInstance().reloadFiles();
+        ConfigUtil.getInstance().saveFiles();
+        Utils.ChatUtils.setChatFormat(getConfig().getString(ConfigPaths.CHAT_FORMAT_INFO_PREFIX),
+                getConfig().getString(ConfigPaths.CHAT_FORMAT_ALERT_PREFIX));
+        String chatPrefix = getConfig().getString(ConfigPaths.TUTORIAL_CHAT_PREFIX);
+        if (chatPrefix != null) TutorialUtils.CHAT_TASK_PREFIX_COMPONENT = AlpsUtils.deserialize(chatPrefix);
     }
 
     @Override
@@ -252,20 +280,20 @@ public class PlotSystem extends JavaPlugin {
         private static boolean checkForRequiredDependencies() {
             PluginManager pluginManager = plugin.getServer().getPluginManager();
 
+            if (!pluginManager.isPluginEnabled("HolographicDisplays")) {
+                missingDependencies.add("HolographicDisplays");
+            }
+
             if (!pluginManager.isPluginEnabled("Multiverse-Core")) {
-                missingDependencies.add("Multiverse-Core (V2.5.0)");
-            }
-
-            if (!pluginManager.isPluginEnabled("WorldEdit")) {
-                missingDependencies.add("WorldEdit (V6.1.9)");
-            }
-
-            if (!pluginManager.isPluginEnabled("WorldGuard")) {
-                missingDependencies.add("WorldGuard (V6.2.2)");
+                missingDependencies.add("Multiverse-Core");
             }
 
             if (!pluginManager.isPluginEnabled("FastAsyncWorldEdit")) {
-                missingDependencies.add("FastAsyncWorldEdit (FAWE)");
+                missingDependencies.add("FastAsyncWorldEdit");
+            }
+
+            if (!pluginManager.isPluginEnabled("WorldGuard")) {
+                missingDependencies.add("WorldGuard");
             }
 
             if (!pluginManager.isPluginEnabled("HeadDatabase")) {
@@ -273,17 +301,18 @@ public class PlotSystem extends JavaPlugin {
             }
 
             if (!pluginManager.isPluginEnabled("VoidGen")) {
-                missingDependencies.add("VoidGen (V2.0)");
+                missingDependencies.add("VoidGen");
+            }
+
+            if (!pluginManager.isPluginEnabled("LangLibs")) {
+                missingDependencies.add("LangLibs");
+            }
+
+            if (!pluginManager.isPluginEnabled("FancyNpcs")) {
+                missingDependencies.add("FancyNpcs (https://mvn.alps-bte.com/repository/fancyNpcs/de/oliver/FancyNpcs/2.0.5/FancyNpcs-2.0.5.jar)");
             }
 
             return missingDependencies.isEmpty();
-        }
-
-        /**
-         * @return True if HolographicDisplays is present
-         */
-        public static boolean isHolographicDisplaysEnabled() {
-            return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
         }
 
         /**
@@ -297,12 +326,16 @@ public class PlotSystem extends JavaPlugin {
             return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
         }
 
+        public static boolean isWorldGuardExtraFlagsEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("WorldGuardExtraFlags");
+        }
+
         /**
          * @param worldName Name of the world
          * @return Config path for the world
          */
         public static String getMultiverseInventoriesConfigPath(String worldName) {
-            return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Bukkit.getPluginManager().getPlugin("Multiverse-Inventories").getDataFolder() + "/worlds/" + worldName : "";
+            return PlotSystem.DependencyManager.isMultiverseInventoriesEnabled() ? Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Multiverse-Inventories")).getDataFolder() + "/worlds/" + worldName : "";
         }
 
         /**
@@ -331,7 +364,7 @@ public class PlotSystem extends JavaPlugin {
          * @return Config path for the world
          */
         public static String getWorldGuardConfigPath(String worldName) {
-            return Bukkit.getPluginManager().getPlugin("WorldGuard").getDataFolder() + "/worlds/" + worldName;
+            return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("WorldGuard")).getDataFolder() + "/worlds/" + worldName;
         }
 
         /**
@@ -345,15 +378,15 @@ public class PlotSystem extends JavaPlugin {
         private static boolean isUpdateAvailable = false;
 
         /**
-         * Get latest plugin version from SpigotMC
+         * Get the latest plugin version from SpigotMC
          * @param version Returns latest stable version
          */
         public static void getVersion(final Consumer<String> version) {
-            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).openStream(); Scanner scanner = new Scanner(inputStream)) {
+            try (InputStream inputStream = new URI("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).toURL().openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
                     version.accept(scanner.next());
                 }
-            } catch (IOException ex) {
+            } catch (IOException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
             }
         }

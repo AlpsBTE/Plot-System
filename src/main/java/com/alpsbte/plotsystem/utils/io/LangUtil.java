@@ -24,9 +24,12 @@
 
 package com.alpsbte.plotsystem.utils.io;
 
-import com.alpsbte.alpslib.io.lang.LanguageUtil;
-import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.Utils.ChatUtils;
+import li.cinnazeyy.langlibs.core.Language;
+import li.cinnazeyy.langlibs.core.file.LanguageFile;
+import li.cinnazeyy.langlibs.core.language.LangLibAPI;
+import li.cinnazeyy.langlibs.core.language.LanguageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -35,34 +38,26 @@ public class LangUtil extends LanguageUtil {
 
     public static void init() {
         if (langUtilInstance != null) return;
-        langUtilInstance = new LangUtil(new LanguageFile[]{
-                new LanguageFile("en_GB", 1.3),
-                new LanguageFile("de_DE", 1.3, "de_AT", "de_CH"),
-                new LanguageFile("fr_FR", 1.3, "fr_CA"),
-                new LanguageFile("pt_PT", 1.2, "pt_BR"),
-                new LanguageFile("ko_KR", 1.3),
-                new LanguageFile("ru_RU", 1.3, "ba_RU", "tt_RU"),
-                new LanguageFile("zh_CN", 1.3),
-                new LanguageFile("zh_TW", 1.3, "zh_HK"),
+        LangLibAPI.register(PlotSystem.getPlugin(),new LanguageFile[]{
+                new LanguageFile(Language.en_GB, 2.0),
+                new LanguageFile(Language.de_DE, 2.0, "de_AT", "de_CH"),
+                new LanguageFile(Language.fr_FR, 2.0, "fr_CA"),
+                new LanguageFile(Language.pt_PT, 2.0, "pt_BR"),
+                new LanguageFile(Language.ko_KR, 2.0),
+                new LanguageFile(Language.ru_RU, 2.0, "ba_RU", "tt_RU"),
+                new LanguageFile(Language.zh_CN, 2.0),
+                new LanguageFile(Language.zh_TW, 2.0, "zh_HK"),
         });
+        langUtilInstance = new LangUtil();
     }
 
-
-    public LangUtil(LanguageFile[] langFiles) {
-        super(langFiles);
-    }
-
-    @Override
-    public String getLocaleTagByPlayer(Player player) {
-        Builder builder = Builder.byUUID(player.getUniqueId());
-        if (builder.getLanguageTag() != null) {
-            return builder.getLanguageTag();
-        } else return player.getPlayer().getLocale();
+    public LangUtil() {
+        super(PlotSystem.getPlugin());
     }
 
     public void broadcast(String key, String... args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(ChatUtils.getInfoMessageFormat(get(player, key, args)));
+            player.sendMessage(ChatUtils.getInfoFormat(get(player, key, args)));
         }
     }
 

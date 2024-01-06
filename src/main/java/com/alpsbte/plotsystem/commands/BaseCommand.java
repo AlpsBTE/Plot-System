@@ -30,6 +30,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ import java.util.List;
 
 public abstract class BaseCommand implements CommandExecutor, ICommand {
     private final List<SubCommand> subCommands = new ArrayList<>();
-    protected LangUtil langUtil = LangUtil.getInstance();
+    protected final LangUtil langUtil = LangUtil.getInstance();
 
     /**
      * Executes base command and checks for sub commands
@@ -45,7 +46,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
      * @param args parameter
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (args.length > 0) {
             SubCommand subCommand = subCommands.stream()
                     .filter(subCmd -> Arrays.stream(subCmd.getNames()).anyMatch(sub -> sub.equalsIgnoreCase(args[0])))
@@ -74,7 +75,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
                 sendInfo(sender);
             } else {
                 if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
-                    sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat("You don't have permission to execute this command!"));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to execute this command!"));
                     return true;
                 }
                 subCommand.onCommand(sender, Arrays.copyOfRange(args, 1, args.length));
@@ -111,7 +112,6 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
     public void sendInfo(CommandSender sender) {
         List<String> lines = new ArrayList<>();
         if (!subCommands.isEmpty()) {
-            lines.add(Utils.ChatUtils.getInfoMessageFormat(getNames()[0].substring(0, 1).toUpperCase() + getNames()[0].substring(1) + " Commands:"));
             lines.add("§8--------------------------");
             getSubCommands().forEach(sub -> {
                 StringBuilder subCommand = new StringBuilder("§7§l> §b/" + getNames()[0] + " §6" + sub.getNames()[0] + "§7");

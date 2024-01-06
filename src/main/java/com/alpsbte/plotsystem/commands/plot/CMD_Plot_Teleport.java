@@ -30,8 +30,8 @@ import com.alpsbte.plotsystem.commands.ICommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -52,16 +52,16 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
     public void onCommand(CommandSender sender, String[] args) {
         try {
             if (getPlayer(sender) != null) {
-                if (args.length > 0 && AlpsUtils.TryParseInt(args[0]) != null) {
+                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                     int plotID = Integer.parseInt(args[0]);
                     Plot plot;
-                    if (PlotManager.plotExists(plotID) && (plot = new Plot(plotID)).getStatus() != Status.unclaimed) {
+                    if (PlotUtils.plotExists(plotID) && (plot = new Plot(plotID)).getStatus() != Status.unclaimed) {
                         plot.getWorld().teleportPlayer(getPlayer(sender));
                     } else {
-                        if (sender.hasPermission("plotsystem.admin") && PlotManager.plotExists(plotID)) {
+                        if (sender.hasPermission("plotsystem.admin") && PlotUtils.plotExists(plotID)) {
                             new DefaultPlotGenerator(new Plot(plotID), Builder.byUUID(getPlayer(sender).getUniqueId()));
                         } else {
-                            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                         }
                     }
                 } else {
@@ -71,7 +71,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                 Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
             }
         } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getErrorMessageFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
     }

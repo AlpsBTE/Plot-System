@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands.plot;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 public class CMD_Plot extends BaseCommand {
 
@@ -43,7 +44,7 @@ public class CMD_Plot extends BaseCommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         if (args.length == 0) {
             sendInfo(sender);
             return true;

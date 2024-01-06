@@ -26,14 +26,14 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
-import com.alpsbte.plotsystem.core.system.plot.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 
 public class Builder {
 
-    public static HashMap<UUID, Builder> builders = new HashMap<>();
+    public static final HashMap<UUID, Builder> builders = new HashMap<>();
 
     private final UUID uuid;
     public PlotType plotType;
@@ -160,19 +160,19 @@ public class Builder {
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
         if (plot == null) {
-            return new ItemBuilder(Material.EMPTY_MAP, 1 + slotIndex)
+            return new ItemBuilder(Material.MAP, 1 + slotIndex)
                     .setName("§b§l" + LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
-                    .setLore(new LoreBuilder()
+                    .setLore(new LegacyLoreBuilder()
                             .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT),
                                     "",
-                                    "§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Cant translate because name is stored in the database
+                                    "§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Can't translate because name is stored in the database
                             .build())
                     .build();
         }
 
-        return new ItemBuilder(Material.MAP, 1 + slotIndex)
+        return new ItemBuilder(Material.FILLED_MAP, 1 + slotIndex)
                 .setName("§b§l" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
-                .setLore(new LoreBuilder()
+                .setLore(new LegacyLoreBuilder()
                         .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),
                                 "§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
                                 "§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(),
@@ -187,7 +187,8 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream().filter(holo -> holo instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::reload));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream()
+                .filter(leaderboard -> leaderboard instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::reloadAll));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -195,7 +196,8 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream().filter(holo -> holo instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::reload));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream()
+                .filter(leaderboard -> leaderboard instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::reloadAll));
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {
@@ -367,32 +369,6 @@ public class Builder {
             }
         }
         return null;
-    }
-
-    public String getLanguageTag() {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT lang FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(getUUID().toString()).executeQuery()) {
-            if (rs.next()) {
-                String tag = rs.getString(1);
-                DatabaseConnection.closeResultSet(rs);
-                return tag;
-            }
-            DatabaseConnection.closeResultSet(rs);
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while getting language setting from database", ex);
-        }
-        return null;
-    }
-
-    public void setLanguageTag(String langTag) throws SQLException {
-        if (langTag == null) {
-            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = DEFAULT(lang) WHERE uuid = ?")
-                    .setValue(getUUID().toString()).executeUpdate();
-        } else {
-            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET lang = ? WHERE uuid = ?")
-                    .setValue(langTag).setValue(getUUID().toString())
-                    .executeUpdate();
-        }
     }
 
     public PlotType getPlotTypeSetting() {

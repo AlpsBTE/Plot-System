@@ -24,18 +24,19 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.utils.Invitation;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.chat.ChatInput;
+import com.alpsbte.plotsystem.utils.chat.PlayerInviteeChatInput;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.Utils;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,11 +48,16 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
-public class PlotMemberMenu extends AbstractMenu {
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
+public class PlotMemberMenu extends AbstractMenu {
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 13).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -62,23 +68,36 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected void setPreviewItems() {
         // Set loading item for plot owner item
-        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
+        getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
                 List<Builder> plotMembers = plot.getPlotMembers();
                 for (int i = 1; i <= 3; i++) {
-                    if (plotMembers.size() >= i) {
-                        getMenu().getSlot(11 + i).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3, getMenuPlayer()));
-                    } else {
-                        getMenu().getSlot(11 + i).setItem(emptyMemberSlotItem);
-                    }
+                    getMenu().getSlot(11 + i).setItem(plotMembers.size() >= i
+                            ? MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer())
+                            : emptyMemberSlotItem);
                 }
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
+
+        // Set add plot member item
+        ItemStack whitePlus = AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId());
+        getMenu().getSlot(16)
+                .setItem(new ItemBuilder(whitePlus)
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT), GOLD, BOLD))
+                        .setLore(new LoreBuilder()
+                                .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT)),
+                                        empty(),
+                                        text(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))))
+                                .build())
+                        .build());
+
+        // Set back item
+        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         super.setPreviewItems();
     }
@@ -88,8 +107,9 @@ public class PlotMemberMenu extends AbstractMenu {
         // Set plot owner item
         try {
             getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(AlpsUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER)).setLore(new LoreBuilder()
+                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER), GOLD, BOLD))
+                            .setLore(new LoreBuilder()
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
@@ -100,35 +120,22 @@ public class PlotMemberMenu extends AbstractMenu {
         try {
             builders = plot.getPlotMembers();
             for (int i = 12; i < 15; i++) {
-                if (builders.size() >= (i - 11)) {
-                    Builder builder = builders.get(i - 12);
-                    getMenu().getSlot(i)
-                            .setItem(new ItemBuilder(AlpsUtils.getPlayerHead(builder.getUUID()))
-                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER))
-                                    .setLore(new LoreBuilder()
-                                            .addLines(builder.getName(),
-                                                    "",
-                                                    Utils.ChatUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
-                                            .build())
-                                    .build());
-                }
+                if (builders.size() < (i - 11)) return;
+
+                Builder builder = builders.get(i - 12);
+                getMenu().getSlot(i)
+                        .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
+                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER), AQUA, BOLD))
+                                .setLore(new LoreBuilder()
+                                        .addLines(text(builder.getName()),
+                                                empty(),
+                                                text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER))))
+                                        .build())
+                                .build());
             }
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
-
-        // Set add plot member item
-        ItemStack whitePlus = AlpsUtils.getItemHead(Utils.HeadUtils.ADD_BUTTON_HEAD);
-        getMenu().getSlot(16)
-                .setItem(new ItemBuilder(whitePlus)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT)).setLore(new LoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT),
-                                        "",
-                                        Utils.ChatUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))).build())
-                        .build());
-
-        // Set back item
-        getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override
@@ -137,65 +144,24 @@ public class PlotMemberMenu extends AbstractMenu {
         for (int i = 12; i < 15; i++) {
             int itemSlot = i;
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) {
-                    Builder builder = builders.get(itemSlot-12);
-
+                if (getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
+                Builder builder = builders.get(itemSlot-12);
                     try {
                         plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.REMOVED_PLOT_MEMBER,builder.getName(), Integer.toString(plot.getID()))));
+                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
+                                LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
                     } catch (SQLException ex) {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
-
-                    reloadMenuAsync();
-                }
+                reloadMenuAsync();
             });
         }
 
         // Set click event for add plot member item
         getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            new AnvilGUI.Builder()
-                    .onComplete((player, text) -> {
-                        try {
-                            if (Builder.getBuilderByName(text) != null) {
-                                Builder builder = Builder.getBuilderByName(text);
-                                if (builder.isOnline()) {
-                                    // Check if player is owner of plot
-                                    if (builder.getPlayer() == plot.getPlotOwner().getPlayer()) {
-                                        player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
-                                        return AnvilGUI.Response.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_IS_OWNER));
-                                    }
-
-                                    // Check if player is already a member of the plot
-                                    for (Builder item : plot.getPlotMembers()) {
-                                        if (builder.getPlayer() == item.getPlayer()) {
-                                            player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_MEMBER)));
-                                            return AnvilGUI.Response.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_ALREADY_ADDED));
-                                        }
-                                    }
-
-                                    new Invitation(builder.getPlayer(), plot);
-                                    return AnvilGUI.Response.close();
-                                } else {
-                                    // Builder isn't online, thus can't be asked if he/she wants to be added
-                                    player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
-                                    return AnvilGUI.Response.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.PLAYER_NOT_ONLINE));
-                                }
-                            }
-                        } catch (SQLException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                        }
-                        // Input was invalid or Player hasn't joined the server yet
-                        player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                        return AnvilGUI.Response.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.INVALID_INPUT));
-                    })
-                    .text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Anvil.ENTER_PLAYER_NAME))
-                    .itemLeft(new ItemStack(Material.NAME_TAG))
-                    .itemRight(new ItemStack(Material.SKULL))
-                    .title(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ENTER_PLAYER_NAME))
-                    .plugin(PlotSystem.getPlugin())
-                    .open(clickPlayer);
+            ChatInput.awaitChatInput.put(clickPlayer.getUniqueId(), new PlayerInviteeChatInput(clickPlayer.getUniqueId(), plot));
+            PlayerInviteeChatInput.sendChatInputMessage(clickPlayer);
         });
 
         // Set click event for back item
@@ -211,10 +177,10 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111111111")
                 .pattern("000000000")
-                .pattern("111111111")
+                .pattern("111101111")
                 .build();
     }
 }

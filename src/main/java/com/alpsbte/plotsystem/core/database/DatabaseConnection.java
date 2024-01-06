@@ -392,6 +392,24 @@ public class DatabaseConnection {
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +
+                            ";",
+
+                    // Tutorial Plots
+                    "CREATE TABLE IF NOT EXISTS `plotsystem_plots_tutorial` (" +
+                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
+                            "`player_uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
+                            "`tutorial_id` INT(11) NOT NULL," +
+                            "`stage_id` INT(11) NOT NULL DEFAULT '0'," +
+                            "`is_completed` TINYINT(4) NOT NULL DEFAULT '0'," +
+                            "`create_date` DATETIME NOT NULL DEFAULT current_timestamp()," +
+                            "`last_stage_complete_date` DATETIME NULL DEFAULT NULL," +
+                            "`complete_date` DATETIME NULL DEFAULT NULL," +
+                            "PRIMARY KEY (`id`) USING BTREE," +
+                            "INDEX `FK_142` (`player_uuid`) USING BTREE," +
+                            "CONSTRAINT `FK_12` FOREIGN KEY (`player_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            ")" +
+                            "COLLATE='utf8mb4_general_ci'" +
+                            "ENGINE=InnoDB" +
                             ";"
             );
         }

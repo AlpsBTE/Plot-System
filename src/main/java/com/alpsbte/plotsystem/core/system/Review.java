@@ -27,32 +27,22 @@ package com.alpsbte.plotsystem.core.system;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.utils.ChatFeedbackInput;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class Review {
-    public static HashMap<UUID, ChatFeedbackInput> awaitReviewerFeedbackList = new HashMap<>();
-
     private final int reviewID;
 
     public Review(int reviewID) {
@@ -225,62 +215,58 @@ public class Review {
         }
     }
 
-    public static void undoReview(Review review) throws SQLException {
-        CompletableFuture.runAsync(() -> {
+    public static void undoReview(Review review) {
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
                 Plot plot = new Plot(review.getPlotID());
 
-                if (plot.getWorld().loadWorld()) {
-                    for (Builder member : plot.getPlotMembers()) {
-                        member.addScore(-plot.getSharedScore());
-                        member.addCompletedBuild(-1);
+                for (Builder member : plot.getPlotMembers()) {
+                    member.addScore(-plot.getSharedScore());
+                    member.addCompletedBuild(-1);
 
-                        if (member.getFreeSlot() != null) {
-                            member.setPlot(plot.getID(), member.getFreeSlot());
-                        }
+                    if (member.getFreeSlot() != null) {
+                        member.setPlot(plot.getID(), member.getFreeSlot());
                     }
-
-                    plot.getPlotOwner().addScore(-plot.getSharedScore());
-                    plot.getPlotOwner().addCompletedBuild(-1);
-                    plot.setTotalScore(-1);
-                    plot.setStatus(Status.unreviewed);
-                    plot.setPasted(false);
-
-                    if (plot.getPlotOwner().getFreeSlot() != null) {
-                        plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
-                    }
-
-                     Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                     Server plotServer = plot.getCity().getCountry().getServer();
-                     if (plotServer.getFTPConfiguration() != null) {
-                         FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
-                     }
-
-                    DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
-                            .setValue(review.getPlotID()).executeUpdate();
-
-                    DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                            .setValue(review.reviewID).executeUpdate();
-
-                    plot.getWorld().unloadWorld(false);
                 }
-            } catch (SQLException | IOException | URISyntaxException ex) {
+
+                plot.getPlotOwner().addScore(-plot.getSharedScore());
+                plot.getPlotOwner().addCompletedBuild(-1);
+                plot.setTotalScore(-1);
+                plot.setStatus(Status.unreviewed);
+                plot.setPasted(false);
+
+                if (plot.getPlotOwner().getFreeSlot() != null) {
+                    plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
+                }
+
+                int cityId = plot.getCity().getID();
+                Server plotServer = plot.getCity().getCountry().getServer();
+                boolean hasFTPConfiguration = plotServer.getFTPConfiguration() != null;
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                    plot.getWorld().loadWorld();
+
+                    try {
+                        Files.deleteIfExists(plot.getCompletedSchematic().toPath());
+
+                        if (hasFTPConfiguration) {
+                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schem");
+                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schematic");
+                        }
+                    } catch (IOException | SQLException | URISyntaxException ex) {
+                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
+                    }
+
+                    plot.getWorld().unloadWorld(true);
+                });
+
+                DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
+                        .setValue(review.getPlotID()).executeUpdate();
+
+                DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
+                        .setValue(review.reviewID).executeUpdate();
+            } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
             }
         });
-    }
-
-    public static void checkReviewerFeedbackList() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            if (!awaitReviewerFeedbackList.isEmpty()) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (awaitReviewerFeedbackList.containsKey(player.getUniqueId()) && awaitReviewerFeedbackList.get(player.getUniqueId()).getDateTime().isBefore(LocalDateTime.now().minusMinutes(5))) {
-                        awaitReviewerFeedbackList.remove(player.getUniqueId());
-                        player.sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.FEEDBACK_INPUT_EXPIRED)));
-                        player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1f, 1f);
-                    }
-                }
-            }
-        }, 0L, 20 * 60);
     }
 }

@@ -1,23 +1,19 @@
-# -----------------------------------------------------
-# |            Plot System - by Alps BTE
-# -----------------------------------------------------
-# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
-# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
-# |
-# | [Formatting] Use %newline% for a newline
-# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-# |
-# | German translation by BlackStarHD#1333 and R3tuxn#7169
-# -----------------------------------------------------
-
+#-----------------------------------------------------
+#|            Plot System - by Alps BTE
+#-----------------------------------------------------
+#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+#| [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
+#| [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+#|
+#| [Formatting] Use %newline% for a newline
+#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+#-----------------------------------------------------
 lang:
   name: "Deutsch (DE)"
   head-id: "522"
-
-# -----------------------------------------------------
-# | Plot
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| Plot
+#-----------------------------------------------------
 plot:
   plot-name: "Plot"
   id: "ID"
@@ -35,10 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Leerer Mitglied-Slot"
     shared-by-members: "(wird von {0} Mitgliedern geteilt)"
-
-# -----------------------------------------------------
-# | City Projects
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| City Projects
+#-----------------------------------------------------
 city-project:
   cities: "Städte"
   open: "Offene Plots"
@@ -47,16 +42,14 @@ city-project:
   plots-available: 'Plots Verfügbar'
   no-plots-available: "Keine Plots Verfügbar"
   for-your-difficulty: "({0} für deinen Schwierigkeitsgrad)"
-
-# -----------------------------------------------------
-# | Countries
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| Countries
+#-----------------------------------------------------
 country:
   countries: "Länder"
-
-# -----------------------------------------------------
-# | Continents
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| Continents
+#-----------------------------------------------------
 continent:
   europe: "Europa"
   asia: "Asien"
@@ -64,104 +57,103 @@ continent:
   oceania: "Ozeanien"
   south-america: "Südamerika"
   north-america: "Nordamerika"
-
-# -----------------------------------------------------
-# | Difficulty
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| Difficulty
+#-----------------------------------------------------
 difficulty:
   automatic: "Automatisch"
   score-multiplier: "Punkte-Multiplikator"
-
-# -----------------------------------------------------
-# | Menu Titles
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| Menu Titles
+#-----------------------------------------------------
 menu-title:
-  close: "Schließen"
-  back: "Zurück"
-  next-page: "Nächste Seite"
-  previous-page: "Vorherige Seite"
-  error: "Fehler"
-  loading: "Lade..."
-  navigator: "Navigator"
-  plot-difficulty: "Plot Schwierigkeitsgrad"
-  slot: "Slot"
-  builder-utilities: "Hilfsmittel für Builder"
-  show-plots: "Plots Anzeigen"
-  settings: "Einstellungen"
-  submit: "Einreichen"
-  teleport: "Teleportieren"
-  abandon: "Löschen"
-  undo-submit: "Einreichung Zurückziehen"
-  manage-members: "Mitglieder Verwalten"
-  feedback: "Feedback | Review #{0}"
-  custom-heads: "Individuelle Köpfe"
-  banner-maker: "Banner-Ersteller"
-  special-blocks: "Spezielle Blöcke"
-  review-point: "Punkt"
-  review-points: "Punkte"
-  cancel: "Abbrechen"
-  add-member-to-plot: "Mitglied zum Plot Hinzufügen"
-  companion: "Companion"
+  close: 'Schließen'
+  back: 'Zurück'
+  next-page: 'Nächste Seite'
+  previous-page: 'Vorherige Seite'
+  error: 'Fehler'
+  loading: 'Lade...'
+  plot-difficulty: 'Plot Schwierigkeitsgrad'
+  slot: 'Slot'
+  builder-utilities: 'Hilfsmittel für Builder'
+  show-plots: 'Plots Anzeigen'
+  settings: 'Einstellungen'
+  submit: 'Einreichen'
+  teleport: 'Teleportieren'
+  abandon: 'Löschen'
+  undo-submit: 'Einreichung Zurückziehen'
+  manage-members: 'Mitglieder Verwalten'
+  feedback: 'Feedback | Bewertung #{0}'
+  custom-heads: 'Individuelle Köpfe'
+  banner-maker: 'Banner-Ersteller'
+  special-tools: 'Spezielle Blöcke & Items'
+  review-point: 'Punkt'
+  review-points: 'Punkte'
+  cancel: 'Abbrechen'
+  add-member-to-plot: 'Mitglied zum Plot Hinzufügen'
+  companion: 'Companion'
   companion-select-continent: 'Wähle Ein Kontinent'
   companion-select-country: 'Wähle Ein Land'
   companion-select-city: 'Wähle Eine Stadt'
-  player-plots: "{0}s Plots"
-  leave-plot: "Plot Verlassen"
-  review-plots: "Plots Bewerten"
-  review-plot: "Plot #{0} Bewerten"
-  enter-player-name: "Spielername Eingeben"
-  select-language: "Sprache Auswählen"
-  auto-detect-language: "Sprache Automatisch Erkennen"
-  select-plot-type: "Plot Typ Auswählen"
-  select-focus-mode: "Focus-Mode Auswählen"
-  select-local-inspiration-mode: "Inspiration-Mode Auswählen"
-  select-city-inspiration-mode: "City-Inspiration-Mode Auswählen"
-  filter-by-country: "Nach Land Filtern"
-  information: "Info"
-
-# -----------------------------------------------------
-# | Menu Descriptions
-# -----------------------------------------------------
+  player-plots: '{0}s Plots'
+  leave-plot: 'Plot Verlassen'
+  review-plots: 'Plots Bewerten'
+  review-plot: 'Plot #{0} Bewerten'
+  enter-player-name: 'Spielername Eingeben'
+  select-language: 'Sprache Auswählen'
+  select-plot-type: 'Plot Typ Auswählen'
+  select-focus-mode: 'Focus-Mode Auswählen'
+  select-local-inspiration-mode: 'Inspiration-Mode Auswählen'
+  select-city-inspiration-mode: 'City-Inspiration-Mode Auswählen'
+  filter-by-country: 'Nach Land Filtern'
+  information: 'Info'
+  tutorials: 'Tutorials'
+  tutorial-stages: 'Tutorial Stages'
+  tutorial-end: 'Tutorial Beenden'
+  tutorial-beginner: 'Erste Schritte'
+#-----------------------------------------------------
+#| Menu Descriptions
+#-----------------------------------------------------
 menu-description:
-  error-desc: "Ein Fehler ist aufgetreten..."
-  navigator-desc: "Öffne das Navigator-Menü"
-  plot-difficulty-desc: "Zum Umschalten klicken..."
-  slot-desc: "Klicke auf eine Stadt, um einen neuen Plot zu erstellen"
-  builder-utilities-desc: "Erhalte Zugang zu benutzerdefinierten Köpfen, Bannern und speziellen Blöcken"
-  show-plots-desc: "Alle deine Plots anzeigen"
-  settings-desc: "Bearbeite deine Benutzereinstellungen"
-  submit-plot-desc: "Klicke hier, um diesen Plot abzuschließen und ihn zur Bewertung einzureichen"
-  teleport-desc: "Klicke hier, um dich zum Plot zu teleportieren"
-  abandon-desc: "Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben"
-  undo-submit-desc: "Klicke hier, um deine Eingabe rückgängig zu machen"
-  manage-members-desc: "Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du%newline%andere Spieler zu deinem Plot hinzufügen oder entfernen kannst"
-  feedback-desc: "Klicke hier, um das Feedback zu deinem Plot anzuzeigen"
-  custom-heads-desc: "Klicke hier, um eine Auswahl an benutzerdefinierten Köpfen zu erhalten"
-  banner-maker-desc: "Klicke hier, um den Banner-Ersteller zu öffnen und selbstständig Banner zu erstellen"
-  special-blocks-desc: "Klicke hier, um das Menü 'Spezialstrecke' zu öffnen und an eine Vielzahl von unzugänglichen Blöcken zu gelangen"
-  add-member-to-plot-desc: "Lade deine Freunde ein und baue gemeinsam an deinem Plot"
-  review-points-desc: "Zum Auswählen klicken"
-  submit-review-desc: "Sende deine Bewertung ein und markiere den Plot als geprüft"
-  leave-plot-desc: "Klicke hier, um den Plot zu verlassen"
-  select-language-desc: "Wähle deine Sprache"
-  auto-detect-language-desc: "Klicke hier, um deine Sprache automatisch zu erkennen"
+  error-desc: 'Ein Fehler ist aufgetreten...'
+  plot-difficulty-desc: 'Zum Umschalten klicken...'
+  slot-desc: 'Klicke auf eine Stadt, um einen neuen Plot zu erstellen'
+  builder-utilities-desc: 'Erhalte Zugang zu benutzerdefinierten Köpfen, Bannern und speziellen Blöcken'
+  show-plots-desc: 'Alle deine Plots anzeigen'
+  settings-desc: 'Bearbeite deine Benutzereinstellungen'
+  submit-plot-desc: 'Klicke hier, um diesen Plot abzuschließen und ihn zur Bewertung einzureichen'
+  teleport-desc: 'Klicke hier, um dich zum Plot zu teleportieren'
+  abandon-desc: 'Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben'
+  undo-submit-desc: 'Klicke hier, um deine Eingabe rückgängig zu machen'
+  manage-members-desc: 'Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du%newline%andere Spieler zu deinem Plot hinzufügen oder entfernen kannst'
+  feedback-desc: 'Klicke hier, um das Feedback zu deinem Plot anzuzeigen'
+  custom-heads-desc: 'Klicke hier, um eine Auswahl an benutzerdefinierten Köpfen zu erhalten'
+  banner-maker-desc: 'Klicke hier, um deine eigenen Banner zu erstellen und zu speichern'
+  special-tools-desc: 'Klicke hier, um auf eine Vielzahl von unzugänglichen Blöcken und Items zuzugreifen'
+  add-member-to-plot-desc: 'Lade deine Freunde ein und baue gemeinsam an deinem Plot'
+  review-points-desc: 'Zum Auswählen klicken'
+  submit-review-desc: 'Sende deine Bewertung ein und markiere den Plot als geprüft'
+  leave-plot-desc: 'Klicke hier, um den Plot zu verlassen'
+  select-language-desc: 'Wähle deine Sprache'
   select-plot-type-desc: 'Wähle dein Plot Typ aus'
   select-focus-mode-desc: "Baue dein Plot auf einer schwebenden Insel in einer leeren Welt.%newline%%newline%- Keine Umgebung%newline%- Keine Nachbarsgrundstücke"
   select-local-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung, welche als Referenz dient.%newline%%newline%+ Umgebung%newline%- Keine Nachbarsgrundstücke"
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.%newline%%newline%+ Umgebung%newline%+ Nachbarsgrundstücke"
   filter-desc: "Alle Anzeigen"
   information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte oder eine Kategorie 0 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
-
-# -----------------------------------------------------
-# | Review
-# -----------------------------------------------------
+  tutorials-desc: 'Lerne die Grundlagen des BuildTheEarth%newline%Projekts und erweitere deine Baukenntnisse%newline%mit Tutorials zu verschiedenen Themen.'
+  tutorial-end-desc: 'Dein Fortschritt wird gespeichert.'
+  tutorial-beginner-desc: 'Lerne die Baugrundlagen für%newline%das BuildTheEarth Projekt.'
+#-----------------------------------------------------
+#| Review
+#-----------------------------------------------------
 review:
   review-plot: "Plot Bewerten"
   manage-plot: "Plot Verwalten"
   manage-and-review-plots: "Plots Verwalten & Bewerten"
   accepted: "Angenommen"
-  abandoned: "Gelöscht"
   rejected: "Abgelehnt"
+  abandoned: "Gelöscht"
   feedback: "Feedback"
   reviewer: "Reviewer"
   player-language: "Spielersprache"
@@ -174,40 +166,43 @@ review:
     detailing-desc: "Wie viele Details hat das Gebäude?%newline%%newline%- Dachdetails%newline%- Details an den Fassaden%newline%- Köpfe und Banner"
     technique: "Technik"
     technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?%newline%%newline%- World-Edit%newline%- Spezialblöcke"
-
-# -----------------------------------------------------
-# | Notes
-# -----------------------------------------------------
+#-----------------------------------------------------
+#| Notes
+#-----------------------------------------------------
 note:
+  tip: "Tipp"
+  under-construction: 'In Arbeit'
   wont-be-able-continue-building: "Du wirst auf diesem Plot nicht weiterbauen können!"
   score-will-be-split: "Die Punkte werden bei der Bewertung auf alle Mitglieder aufgeteilt!"
   player-has-to-be-online: "Spieler muss online sein!"
   action:
+    read: 'Gelesen'
+    read-more: 'Mehr lesen'
+    mark-as-read: 'Als gelesen markieren'
+    start: 'Start'
+    continue: "Weiter"
+    continue-tutorial: 'Tutorial Fortsetzen'
+    create-plot: 'Plot Erstellen'
     right-click: "Rechtsklick"
-    click-to-enable: "Zum Aktivieren klicken..."
-    click-to-disable: "Zum Deaktivieren klicken..."
+    left-click: "Linksklick"
+    accept: 'Annehmen'
+    reject: 'Ablehnen'
+    click-to-create-plot: 'Klicke um ein neues Plot zu erstellen...'
+    click-to-proceed: "Klicke um fortzusetzen..."
     click-to-remove-plot-member: "Klicke, um ein Mitglied vom Plot zu entfernen..."
-    click-to-open-link: "§6Klicke hier, §7um den §a{0}§7 Link zu öffnen..."
+    click-to-open-link: "Klicke hier um den {0} Link zu öffnen..."
     click-to-open-link-with-shortlink: "§6Klicke hier, §7 um den §a{0}§7 Link zu öffnen oder benutze diesen Link: §a{1}"
     click-to-show-feedback: "§6Klicke hier, §aum dein Plot Feedback anzuzeigen..."
     click-to-show-open-reviews: "§6Klicke hier, §aum offene Bewertungen anzuzeigen..."
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
-  # NOTE: Try to keep it as short as possible
-  anvil:
-    player-is-owner: "Spieler ist bereits Besitzer!"
-    player-already-added: "Spieler ist bereits hinzugefügt!"
-    player-not-online: "Spieler ist nicht online!"
-    invalid-input: "Ungültige Eingabe!"
-    enter-player-name: "Spielername..."
-
-# -----------------------------------------------------
-# | Messages
-# -----------------------------------------------------
+    tutorial-show-stages: 'Stages Anzeigen'
+#-----------------------------------------------------
+#| Messages
+#-----------------------------------------------------
 message:
   info:
     teleporting-plot: "§aTeleportiere zum Plot §6#{0}§a..."
-    teleporting-spawn: "§aTeleportiere zum Spawn..."
     teleporting-tpll: "§aTeleportiere nach §6{0}§a, §6{1}§a..."
     abandoned-plot: "§aPlot mit ID §6#{0}§a gelöscht!"
     finished-plot: "§a§6{1}§a hat den Plot §6#{0}§a fertiggestellt!"
@@ -230,9 +225,16 @@ message:
     saving-plot: "§aSpeichere Plot..."
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
-    changed-language: "§aAlle Systemnachrichten sind nun auf §6{0}§a!"
-    enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
-    input-expires-after: "§9Die Chat-Eingabe läuft nach §6{0} §9Minuten ab."
+    chat-enter-player: 'Bitte gebe den Namen des Spielers im Chat ein.'
+    chat-enter-feedback: "Bitte gebe eine Bewertung des Plots für den Spieler im Chat ein."
+    chat-input-expires-after: "Die Eingabe läuft nach {0} Minuten ab."
+    beginner-tutorial-required: 'Schließe das Tutorial ab, um an dem Projekt teilzunehmen.'
+    beginner-tutorial-completed: 'Bist du bereit, dein eigenes Plot zu bauen? Nun bist du an der Reihe!'
+    player-invite-sent: 'Eine Einladung wurde an {0} gesendet.'
+    player-invite-to-sent: '{0} hat dich zu seinem Plot eingeladen.'
+    player-invite-accepted: 'Die Einladung von {0}´s Plot wurde angenommen.'
+    player-invite-to-accepted: '{0} hat deine Einladung angenommen und wurde zu deinem Plot hinzugefügt.'
+    player-invite-rejected: 'Die Einladung von {0}´s Plot wurde abgelehnt.'
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
     plot-either-unclaimed-or-unreviewed: "Dieser Plot ist entweder unbeansprucht oder wurde noch nicht bewertet!"
@@ -252,17 +254,20 @@ message:
     player-is-plot-member: "Dieser Spieler ist bereits Mitglied von diesem Plot!"
     player-is-not-online: "Dieser Spieler ist nicht online!"
     player-not-found: "Konnte diesen Spieler nicht finden!"
+    player-already-invited: '{0} wurde bereits auf ein Plot eingeladen.'
+    player-invite-expired: 'Die Einladung von {0} ist abgelaufen.'
+    player-invite-to-expired: 'Die Einladung an {0} ist abgelaufen.'
+    player-invite-to-rejected: '{0} hat deine Einladung abgelehnt.'
     player-needs-to-be-on-plot: "Um dies zu nutzen musst du auf einem Plot sein!"
     player-needs-higher-score: "Du benötigst einen höheren Punktestand, um in diesem Schwierigkeitsgrad zu bauen."
-    invalid-input: "Ungültige Eingabe!"
     error-occurred: "Ein Fehler ist aufgetreten! Bitte versuche es erneut!"
     command-disabled: "Dieser Befehl ist deaktiviert!"
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
-    no-assignment-as-reviewer: "Du wurdest keinem Build Team als Reviewer zugewiesen."
-    feedback-input-expired: "Die Chat-Eingabe ist abgelaufen! Nutze §7/editfeedback <ID> <Text> §cum das Feedback zu bearbeiten."
-
+    chat-input-expired: "Die Eingabe ist abgelaufen."
+    tutorial-disabled: 'Tutorials sind auf diesem Server deaktiviert.'
+    tutorial-already-running: "Du hast bereits ein Tutorial am Laufen! Schließe dieses ab, bevor du ein neues beginnst."
 leaderboards:
   pages:
     DAILY: "Heute"
@@ -273,6 +278,115 @@ leaderboards:
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
   not-on-leaderboard: "Nicht auf Leaderboard"
-
-# NOTE: Do not change
-config-version: 1.3
+tutorials:
+  stage: 'Stage'
+  new-stage-unlocked: 'NEUE STAGE FREIGESCHALTEN'
+  tutorial-completed: 'TUTORIAL ABGESCHLOSSEN'
+  beginner:
+    stage-1:
+      stage-1-title: 'Die ersten Schritte im BuildTheEarth Projekt'
+      stage-1-messages:
+        - 'Hallo {0}! Schön dich kennenzulernen, mein Name ist {1}. Willkommen in der spannenden Welt des BuildTheEarth Projekts!'
+        - 'Unser Ziel ist es, den gesamten Planeten Erde in Minecraft im Maßstab 1:1 nachzubauen. Ja, du hast richtig gehört, im Maßstab 1:1!'
+        - 'Wir von Alps BTE sind jedoch nur für die Nachbildung der Alpenländer Österreich, Schweiz und Liechtenstein zuständig.'
+        - 'Bist du bereit zu lernen, wie man für BTE baut? Ich werde dir die Grundlagen zur Teilnahme des Projektes zeigen. Los geht´s!'
+      stage-1-tasks:
+        - 'Sprich mit {0} auf der Baustelle.'
+    stage-2:
+      stage-2-title: 'Referenzen'
+      stage-2-messages:
+        - 'Willkommen auf deiner kleinen Insel. Hier werden wir unser erstes Gebäude errichten!'
+        - 'Bevor wir mit dem Bauen beginnen, müssen wir wissen, wie das reale Gebäude aussieht. Dafür verwenden wir Tools wie {0} und {1}.'
+        - 'Wir benutzen {2}, um Koordinaten zu kopieren, damit wir uns an einen bestimmten Punkt teleportieren können. Außerdem können wir auf {3} zugreifen, um uns das Gebäude genauer anzusehen.'
+        - '{4}'
+        - 'Wir verwenden {5}, um die Höhe des Gebäudes zu messen. Dies ist wichtig zu wissen, damit das Gebäude die richtige Höhe hat.'
+        - '{6}'
+        - 'Verwenden Sie den Befehl {7}, wenn du die Links später benötigst.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleportieren'
+      stage-3-messages:
+        - 'Die Umrisse werden standardmäßig erzeugt, aber da sie meist nicht korrekt sind, müssen wir sie korrigieren. Um die Umrisse zu korrigieren, müssen wir uns zunächst an die Ränder des Gebäudes teleportieren.'
+        - 'Benutze den Befehl {0}, um zu dem Ort im Spiel zu teleportieren. {1} auf einer der Kanten des Gebäudes, um die Koordinaten zu kopieren.'
+        - '{2}'
+        - 'Um fortzufahren, teleportiere dich zu den markierten Punkten. Versuche es noch einmal!'
+        - 'Wechsle zu der §6Satelliten§f Ansicht in Google Maps, um das Gebäude in 3D anzuzeigen.%newline%%newline%Klicke auf §6Ebenen§f unten links auf der Karte. Wenn keine 3D-Gebäude erscheinen, aktiviere die §6Globusansicht§f unter "Mehr".'
+      stage-3-tasks:
+        - 'Teleportiere dich zu allen {0} Kanten des Gebäudes mittels {1}.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Bevor wir mit den Umrissen fortfahren, müssen wir ein wichtiges Werkzeug namens {0} kennen. WorldEdit ermöglicht es uns, schneller und effizienter zu bauen.'
+        - 'Um WorldEdit nutzen zu können, benötigst du eine <gold>Holzaxt</gold>.'
+        - 'Nun, da du deine Holzaxt hast, kannst du auf Blöcken {1} und {2} um einen Bereich auszuwählen.'
+      stage-4-tasks:
+        - 'Benutze den Befehl {0}, um deine Holzaxt zu erhalten.'
+    stage-5:
+      stage-5-title: 'Umrisse zeichnen'
+      stage-5-messages:
+        - 'Nun, da wir WorldEdit kennen, können wir die Umrisse des Gebäudes ziehen.'
+        - 'Um die Umrisse zu zeichnen, verwenden wir den Befehl {0}.'
+        - '{1} um den ersten Punkt zu wählen und {2}, um den zweiten Punkt auszuwählen.'
+        - 'Um weiterzumachen, verbinde die Punkte mit {0}. Versuche es noch einmal!'
+      stage-5-tasks:
+        - 'Verbinde die Punkte mit {0}.'
+    stage-6:
+      stage-6-title: 'Gebäudehöhe'
+      stage-6-messages:
+        - 'Jetzt, da wir die Gebäudeumrisse haben, müssen wir <gold>die Höhe des Gebäudes</gold> messen.'
+        - 'Berechnen Sie die Höhe der <gold>Fassade</gold> durch Abziehen der Höhe der <gold>Grundfläche</gold> von der Höhe des <gold>Daches</gold>.'
+        - 'Gib die Höhe (in Meter) der Gebäudefassade im Chat ein, um fortzufahren.'
+        - '{0}'
+        - 'Gut gemacht! Die Höhe des Gebäudes ist {1} Blöcke.'
+        - 'Du hast es fast geschafft. Die Höhe des Gebäudes ist {1} Blöcke.'
+        - 'Du hast es fast geschafft. Versuche es noch einmal!'
+        - 'Du kannst die §6Höhe§f in Google Earth §6unten rechts§f auf der Karte ablesen.%newline%%newline% Um die Höhe zu §6messen§f, bewege deinen §6Mauszeiger§f auf der Karte.'
+      stage-6-tasks:
+        - 'Berechne die Höhe des Gebäudes.'
+    stage-7:
+      stage-7-title: 'Gebäudehüllen'
+      stage-7-messages:
+        - 'Jetzt können wir endlich mit dem Gebäude anfangen! Die ersten Schritte sind die Gebäudeschalen, die wir nun mit den Umrissen und den Gebäudehöhen erstellen können.'
+        - 'Teleportiere dich zu mindestens §6einem Punkt§f des Dachkammes, um den Punkt, bzw. die Punkte, mit der Fassade zu §6verbinden§f.'
+        - 'Verwende §6verschiedene§f Blöcke und Farben für die Gebäudeschalen, um das Gebäude in §6Abschnitte§f zu trennen.'
+        - 'Als Nächstes können wir die Wände heben und das Dach versiegeln. Jetzt ist es Zeit, die Fenster und Türen zu markieren.'
+        - 'Benutze den WorldEdit Befehl §6{0}§f um die Wände schnell und einfach zu heben.'
+        - 'Füll das Dach per Hand oder verwende den WorldEdit Befehl §6{1}§f. Alternativ kannst du den Befehl §6{2}§f verwenden, um grössere und komplexere Dächer auszuwählen.'
+        - 'Überprüfe immer die §6Höhe§f der Fenster und Türen, damit sie mit der Fassade §6übereinstimmen§f.'
+      stage-7-tasks:
+        - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
+    stage-8:
+      stage-8-title: 'Fenster'
+      stage-8-messages:
+        - 'Die Gebäudeschale ist fertig! Weiter geht''s mit den Fenstern und Türen.'
+        - 'Ohh... es sieht so aus, als würden zwei Fenster fehlen. Kannst du mir helfen, sie zu platzieren? Sie sehen wie die auf der rechten Seite aus.'
+        - 'Vergiss nicht, die §6Fenster§f und §6Türen§f zu §6verdunkeln§f, damit man nicht durchsehen kann. Wir bauen keine Innenräume!'
+        - 'Es gibt viele Möglichkeiten, Fenster für BTE zu bauen, indem man zum Beispiel §6Banner§f, §6Falltüren§f oder §6Teppiche§f verwendet.'
+        - 'Benutze die gleichen Blöcke wie für die Fenster auf der rechten Seite. Versuche es noch einmal!'
+        - 'Vielen Dank für deine Hilfe! Jetzt können wir mit dem Texturieren fortfahren.'
+      stage-8-tasks:
+        - 'Platziere die fehlenden Fensterdetails.'
+    stage-9:
+      stage-9-title: 'Texturierung'
+      stage-9-messages:
+        - 'Die Texturierung ist ein integraler Bestandteil des Bauprozesses. Es ist wichtig, die richtigen Blöcke und Farben zu verwenden, um das Gebäude realistisch aussehen zu lassen.'
+        - 'Verwende §6Google Street View§f oder §6Bilder§f um die richtige Blockauswahl zu treffen, da Luftbilder meist nicht sehr genau sind.'
+        - 'Benutze den WorldEdit Befehl §6{0}§f um die Gebäudeschale einfach mit deinem Muster zu ersetzen.'
+        - 'Versuche §6Blockmischungen§f und §6Gradienten§f für die Wände und das Dach zu verwenden, damit das Gebäude realistischer und interessanter aussieht.'
+      stage-9-tasks:
+        - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
+    stage-10:
+      stage-10-title: 'Detaillierung & weitere Schritte'
+      stage-10-messages:
+        - 'Detaillierung ist einer der wichtigsten Prozesse, da es das Gebäude einzigartig und unverwechselbar macht.'
+        - 'Füge §6custom Banner§f und §6custom heads§f zu deinen Builds hinzu. Benutze den Befehl §6{0}§f um eine Vielzahl von custom heads zu erhalten.'
+        - 'Es gibt viele Möglichkeiten, deine Gebäude zu §6dekorieren§f. Achte immer auf Details an der Fassade und Dächer wie §6Kamine§f, §6Fenster§f und §6Dachrinnen§f.'
+        - 'Vielen Dank für deine Teilnahme. Du bist jetzt bereit, deine eigenen Gebäude für das BuildTheEarth-Projekt zu erstellen!'
+        - 'Klicke hier, um mehr über das Projekt zu erfahren.'
+        - 'Um dich <gold>als Builder</gold> zu bewerben, erstelle und reiche <gold>einen oder mehrere Plots</gold> auf unserem Server ein. Mehr Informationen zum Bewerbungsprozess findest du auf unserer Website oder {1}.'
+        - 'Wenn du den aktuellen Fortschritt der Karte erkunden möchtest, schau dir den <gold>Terra</gold> Server an!'
+        - 'Frohes Bauen! ☺'
+      stage-10-tasks:
+        - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
+#NOTE: Do not change
+config-version: 2.0

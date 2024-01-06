@@ -27,54 +27,52 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import me.filoghost.holographicdisplays.api.Position;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class LeaderboardManager {
-    private LeaderboardManager() {}
-    private static final List<HolographicDisplay> leaderboards = Arrays.asList(
-            new ScoreLeaderboard(ConfigPaths.SCORE_LEADERBOARD),
-            new PlotsLeaderboard(ConfigPaths.PLOTS_LEADERBOARD)
-    );
+    private static final List<HolographicDisplay> leaderboards = new ArrayList<>();
+
+    public static void initLeaderboards() {
+        leaderboards.add(new ScoreLeaderboard());
+        leaderboards.add(new PlotsLeaderboard());
+    }
 
     public static void reloadLeaderboards() {
-        if (PlotSystem.DependencyManager.isHolographicDisplaysEnabled()) {
-            for (HolographicDisplay leaderboard : leaderboards) {
-                String path = ConfigPaths.HOLOGRAMS + leaderboard.getId();
-                if (PlotSystem.getPlugin().getConfig().getBoolean(path + ConfigPaths.LEADERBOARD_ENABLED))
-                    leaderboard.create(getPosition(leaderboard.getId()));
-            }
+        for (HolographicDisplay leaderboard : leaderboards) {
+            if (PlotSystem.getPlugin().getConfig().getBoolean(((LeaderboardConfiguration) leaderboard).getEnablePath()))
+                for (Player player : Objects.requireNonNull(Bukkit.getWorld(leaderboard.getPosition().getWorldName())).getPlayers()) leaderboard.create(player);
+            else leaderboard.removeAll();
         }
     }
 
-    public static Position getPosition(String id) {
+    public static Position getPosition(LeaderboardConfiguration configPaths) {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        String path = ConfigPaths.HOLOGRAMS + id;
-
-        return Position.of(Utils.getSpawnLocation().getWorld().getName(),
-                config.getDouble(path + ConfigPaths.LEADERBOARD_X),
-                config.getDouble(path + ConfigPaths.LEADERBOARD_Y),
-                config.getDouble(path + ConfigPaths.LEADERBOARD_Z)
+        return Position.of(Objects.requireNonNull(Utils.getSpawnLocation().getWorld()).getName(),
+                config.getDouble(configPaths.getXPath()),
+                config.getDouble(configPaths.getYPath()),
+                config.getDouble(configPaths.getZPath())
         );
     }
 
-    public static void savePosition(String id, Location newLocation) {
+    public static void savePosition(String id, LeaderboardConfiguration configPaths, Location newLocation) {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        String path = ConfigPaths.HOLOGRAMS + id;
-
-        config.set(path + ConfigPaths.LEADERBOARD_ENABLED, true);
-        config.set(path + ConfigPaths.LEADERBOARD_X, newLocation.getX());
-        config.set(path + ConfigPaths.LEADERBOARD_Y, newLocation.getY() + 4);
-        config.set(path + ConfigPaths.LEADERBOARD_Z, newLocation.getZ());
+        config.set(configPaths.getEnablePath(), true);
+        config.set(configPaths.getXPath(), newLocation.getX());
+        config.set(configPaths.getYPath(), newLocation.getY());
+        config.set(configPaths.getZPath(), newLocation.getZ());
         ConfigUtil.getInstance().saveFiles();
 
-        reloadLeaderboards();
+        LeaderboardManager.getLeaderboards().stream().filter(leaderboard -> leaderboard.getId().equals(id)).findFirst()
+                .ifPresent(holo -> holo.setPosition(Position.of(newLocation)));
     }
 
     public static class LeaderboardPositionLine extends HolographicDisplay.TextLine {

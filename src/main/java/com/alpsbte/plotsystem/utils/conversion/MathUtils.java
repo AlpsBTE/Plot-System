@@ -102,7 +102,7 @@ public class MathUtils {
      * Multiples the given matrix with the given vector.
      * The matrix is assumed to be square and the vector is assumed to be of the same dimension as the matrix.
      *
-     * @param matrix - the matrix as a n*n double array
+     * @param matrix - the matrix as an n*n double array
      * @param vector - the vector as double array of length n
      * @return the result of the multiplication as an array of double on length n
      */

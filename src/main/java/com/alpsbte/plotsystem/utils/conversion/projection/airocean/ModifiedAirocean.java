@@ -86,7 +86,7 @@ public class ModifiedAirocean extends ConformalEstimate {
 
     protected boolean isEurasianPart(double x, double y) {
 
-        //catch vast majority of cases in not near boundary
+        //catch the vast majority of cases in not near boundary
         if (x > 0) {
             return false;
         }

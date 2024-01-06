@@ -24,8 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.heads.CustomHead;
+import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import org.bukkit.Bukkit;
@@ -77,11 +76,11 @@ public class Country {
     }
 
     public ItemStack getHead() {
-        return AlpsUtils.getItemHead(new CustomHead(headID));
+        return AlpsHeadUtils.getCustomHead(headID);
     }
 
     /**
-     * Get city projects that are inside of this country
+     * Get city projects that are inside this country
      * <p>
      * Might be a good idea to put this in CityProject but could work in both classes
      *

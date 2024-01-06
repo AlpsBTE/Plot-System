@@ -25,17 +25,23 @@
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
-import com.alpsbte.plotsystem.core.system.plot.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.sk89q.worldedit.WorldEditException;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -48,14 +54,14 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
     public DefaultPlotGenerator(int cityID, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
-        this(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(PlotManager.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
+        this(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
-    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder) throws SQLException {
+    public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
         super(plot, builder);
     }
 
-    public DefaultPlotGenerator(@NotNull Plot plot, @NotNull Builder builder, PlotType plotType) throws SQLException {
+    public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, PlotType plotType) throws SQLException {
         super(plot, builder, plotType);
     }
 
@@ -67,18 +73,18 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                     if (DefaultPlotGenerator.playerPlotGenerationHistory.get(getBuilder().getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
                         DefaultPlotGenerator.playerPlotGenerationHistory.remove(getBuilder().getUUID());
                     } else {
-                        getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
+                        getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
                         getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         return false;
                     }
                 }
 
                 DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
-                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoMessageFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
+                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                 return true;
             } else {
-                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getErrorMessageFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
+                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
             }
         } catch (SQLException ex) {
@@ -88,12 +94,47 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
+    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
+        super.generateOutlines(plotSchematic, environmentSchematic);
+
+        // If the player is playing in his own world, then additionally generate the plot in the city world
+        if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
+            // Generate city plot world if it doesn't exist
+            new AbstractPlotGenerator(plot, getBuilder(), PlotType.CITY_INSPIRATION_MODE) {
+                @Override
+                protected boolean init() {
+                    return true;
+                }
+
+                @Override
+                protected void createPlotProtection() {}
+
+                @Override
+                protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+                    super.onComplete(true, true);
+                }
+
+                @Override
+                protected void onException(Throwable ex) {
+                    Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
+                }
+            };
+        }
+    }
+
+    @Override
     protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
         super.onComplete(failed, false);
 
         if (!failed) {
-            getPlot().getWorld().teleportPlayer(getBuilder().getPlayer());
-            LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getPlot().getPlotOwner().getName());
+            getBuilder().setPlot(plot.getID(), getBuilder().getFreeSlot());
+            plot.setStatus(Status.unfinished);
+            ((Plot) plot).setPlotType(plotType);
+            ((Plot) plot).setPlotOwner(getBuilder().getPlayer().getUniqueId().toString());
+            PlotUtils.Cache.clearCache(getBuilder().getUUID());
+
+            plot.getWorld().teleportPlayer(getBuilder().getPlayer());
+            LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, plot.getPlotOwner().getName());
         }
     }
 }
