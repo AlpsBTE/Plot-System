@@ -362,6 +362,7 @@ public class Plot extends AbstractPlot {
             return CompletableFuture.supplyAsync(() -> {
                 try {
                     File file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), fileName + ".schem").toFile();
+
                     if (!file.exists()) {
                         // if .schem doesn't exist, it looks for old .schematic format for backwards compatibility
                         file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), fileName + ".schematic").toFile();
@@ -369,9 +370,13 @@ public class Plot extends AbstractPlot {
 
                     if (!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
-                            FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
+                            if (!FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file)) {
+                                file = Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), fileName + ".schem").toFile();
+                                FTPManager.downloadSchematic(FTPManager.getFTPUrl(getCity().getCountry().getServer(), getCity().getID()), file);
+                            }
                         }
                     }
+
                     return file;
                 } catch (SQLException | URISyntaxException ex) {
                     Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
