@@ -279,15 +279,17 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     @Override
     protected File getSchematicFile(String fileName) {
-        File file = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials", fileName + ".schematic").toFile();
-        if (file.exists()) return file;
+        File newSchem = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials", fileName + ".schem").toFile();
+        if (newSchem.exists()) return newSchem;
+        File oldSchem = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials", fileName + ".schematic").toFile();
+        if (oldSchem.exists()) return oldSchem;
 
         try {
-            FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".schematic.gz")), file);
+            FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".schematic.gz")), oldSchem);
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while copying the schematic file!", ex);
         }
-        return file;
+        return oldSchem;
     }
 
     public File getOutlinesSchematic(int schematicId) {
