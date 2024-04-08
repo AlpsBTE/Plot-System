@@ -56,7 +56,7 @@ import java.util.logging.Level;
 public class PlotWorld implements IWorld {
     public static final int PLOT_SIZE = 150;
     public static final int MAX_WORLD_HEIGHT = 256;
-    public static final int MIN_WORLD_HEIGHT = 5;
+    public static final int MIN_WORLD_HEIGHT = -69;
 
     private final MultiverseCore mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     private final String worldName;
