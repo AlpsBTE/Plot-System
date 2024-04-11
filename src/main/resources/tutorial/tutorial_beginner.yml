@@ -14,6 +14,8 @@ tutorial-id: 0
 tutorial-item-name: "BRICKS"
 tutorial-stages: 10
 
+# Tutorials plot offset: (x: 3693363, z: -4531335)
+
 # Spawn points for the player and the NPC (x, y, z, yaw, pitch)
 # To define the plot world spawn, use the key word ´plot´
 tutorial-worlds:
@@ -21,51 +23,51 @@ tutorial-worlds:
     spawn-player: '580.5, 42.0, 538.5, -65, 0'
     spawn-npc: '591.5, 43.0, 542.5, 115.8, 3.0'
   plot:
-    spawn-player: '3693357.5, 11.0, -4531324.5, 150, 0'
-    spawn-npc: '3693348.5, 11.0, -4531329.5, -60, 0'
+    spawn-player: '-6.5, 11.0, 11.5, 150, 0' # '3693357.5, 11.0, -4531324.5, 150, 0'
+    spawn-npc: '-15.5, 11.0, -6.5, -60, 0' # '3693348.5, 11.0, -4531329.5, -60, 0'
   spawn_end:
     spawn-player: '550.5, 53.0, 576.5, 135.3, 2.2'
     spawn-npc: '545.5, 52.0, 570.5, -39.3, -3.6'
 
 # Tip hologram coordinates (x, y, z)
 tip-hologram-coordinates:
-  - '3693351.5, 14, -4531334.5'
-  - '3693362.5, 21, -4531331.5'
-  - '3693363.5, 14, -4531330.5'
-  - '3693363.5, 17, -4531325.5'
-  - '3693358.5, 24, -4531334.5'
-  - '3693355.5, 14, -4531329.5'
-  - '3693365.5, 14, -4531325.5'
-  - '3693351.5, 14, -4531331.5'
-  - '3693365.5, 14, -4531325.5'
-  - '3693360.5, 22, -4531330.5'
-  - '3693356.5, 14, -4531329.5'
-  - '3693365.5, 14, -4531325.5'
-  - '3693355.5, 14, -4531329.5'
-  - '3693351.5, 14, -4531334.5'
+  - '-12.5, 14, 1.5' # '3693351.5, 14, -4531334.5'
+  - '-1.5, 21, 4.5' # '3693362.5, 21, -4531331.5'
+  - '0.5, 14, 5.5' # '3693363.5, 14, -4531330.5'
+  - '0.5, 17, 10.5' # '3693363.5, 17, -4531325.5'
+  - '-5.5, 24, 1.5' # '3693358.5, 24, -4531334.5'
+  - '-8.5, 14, 6.5' # '3693355.5, 14, -4531329.5'
+  - '2.5, 14, 10.5' # '3693365.5, 14, -4531325.5'
+  - '-12.5, 14, 4.5' # '3693351.5, 14, -4531331.5'
+  - '2.5, 14, 10.5' # '3693365.5, 14, -4531325.5'
+  - '-3.5, 22, 5.5' # '3693360.5, 22, -4531330.5'
+  - '-7.5, 14, 6.5' # '3693356.5, 14, -4531329.5'
+  - '2.5, 14, 10.5' # '3693365.5, 14, -4531325.5'
+  - '-8.5, 14, 6.5' # '3693355.5, 14, -4531329.5'
+  - '-12.5, 14, 1.5' # '3693351.5, 14, -4531334.5'
 
 # Documentation links which can be opened by clicking on ´Read More´ on tip holograms.
 documentation-links:
-  - 'https://docs.alps-bte.com/'
+  - 'https://asean.buildtheearth.asia/guide/builder-guide'
   - 'https://minecraft-worldedit.fandom.com/wiki///replace'
   - 'https://minecraft-worldedit.fandom.com/wiki///stack'
   - 'https://cdn.buildtheearth.net/static/tpll.mp4'
   - 'https://youtu.be/eYpry4CZ1uQ?si=qZe9i2eMIbzqS_AF&t=122'
   - 'https://youtu.be/VX7E7o9zLyI?si=krc0OPTMEjTUrtG7'
-  - 'https://alps-bte.com/en/'
+  - 'https://asean.buildtheearth.asia/'
 
 # -----------------------------------------------------
 # | Beginner Tutorial
 # -----------------------------------------------------
 beginner:
   # Outlines of the plot area the player can build and interact
-  plot-outlines: '3693351.0,-4531330.0|3693370.0,-4531324.0|3693375.0,-4531339.0|3693355.0,-4531346.0'
+  plot-outlines: '-12.0,5.0|7.0,11.0|12.0,-4.0|-8.0,-11.0'
   # Coordinates for the building outlines
   building-coordinates:
-    point-1: '3693354.0,-4531333.0'
-    point-2: '3693367.0,-4531328.0'
-    point-3: '3693370.0,-4531337.0'
-    point-4: '3693357.0,-4531342.0'
+    point-1: '-9.0,2.0'
+    point-2: '4.0,7.0'
+    point-3: '7.0,-2.0'
+    point-4: '-6.0,-7.0'
   # BaseBlock for the building outline
   base-block: 'WHITE_WOOL'
   base-block-id: 35
@@ -76,11 +78,11 @@ beginner:
   # Get material name from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
   # NOTE: Material needs to be placeable block!
   window-points:
-    - '3693356.0;12.0;-4531332.0;minecraft:white_banner'
-    - '3693357.0;12.0;-4531332.0;minecraft:white_banner'
-    - '3693356.0;13.0;-4531332.0;minecraft:iron_trapdoor[half=bottom]'
-    - '3693357.0;13.0;-4531332.0;minecraft:iron_trapdoor[half=bottom]'
-    - '3693356.0;15.0;-4531332.0;minecraft:white_banner'
-    - '3693356.0;16.0;-4531332.0;minecraft:quartz_slab[type=top]'
+    - '-7.0;12.0;3.0;minecraft:white_banner'
+    - '-6.0;12.0;3.0;minecraft:white_banner'
+    - '-7.0;13.0;3.0;minecraft:iron_trapdoor[half=bottom]'
+    - '-6.0;13.0;3.0;minecraft:iron_trapdoor[half=bottom]'
+    - '-7.0;15.0;3.0;minecraft:white_banner'
+    - '-7.0;16.0;3.0;minecraft:quartz_slab[type=top]'
 
 config-version: 1.1

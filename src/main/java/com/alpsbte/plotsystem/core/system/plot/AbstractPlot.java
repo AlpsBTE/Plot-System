@@ -51,6 +51,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
+import static com.alpsbte.plotsystem.core.system.plot.world.PlotWorld.MAX_WORLD_HEIGHT;
+import static com.alpsbte.plotsystem.core.system.plot.world.PlotWorld.MIN_WORLD_HEIGHT;
+
 public abstract class AbstractPlot {
     public static final double PLOT_VERSION = 3;
 
@@ -166,6 +169,9 @@ public abstract class AbstractPlot {
             Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
             if (clipboard != null) {
                 Vector3 clipboardCenter = clipboard.getRegion().getCenter();
+
+                Bukkit.getLogger().log(Level.INFO, "Loading Clipboard Center at: " + BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ()));
+
                 return BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
             }
         } catch (IOException | SQLException ex) {

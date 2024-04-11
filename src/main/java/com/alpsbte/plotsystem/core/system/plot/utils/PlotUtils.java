@@ -44,6 +44,7 @@ import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.fastasyncworldedit.core.FaweAPI;
+import com.fastasyncworldedit.core.util.collection.BlockVector3Set;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
@@ -74,8 +75,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockVector;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -93,6 +96,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.logging.Level;
 
+import static com.alpsbte.plotsystem.core.system.plot.world.PlotWorld.MAX_WORLD_HEIGHT;
+import static com.alpsbte.plotsystem.core.system.plot.world.PlotWorld.MIN_WORLD_HEIGHT;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public final class PlotUtils {
@@ -200,11 +205,23 @@ public final class PlotUtils {
 
                 // Get plot outline
                 List<BlockVector2> plotOutlines = plot.getOutline();
+                Bukkit.getLogger().log(Level.INFO, "Getting Plot region for saving from: " + cuboidRegion);
+
+
+
+                // Shift schematic region to the force (0, 0) paste
+                for(int i = 0; i < plotOutlines.size(); i++)
+                    plotOutlines.set(i, BlockVector2.at(plotOutlines.get(i).getX() - plotCenter.getX(), plotOutlines.get(i).getZ() - plotCenter.getZ()));
+                cuboidRegion.shift(BlockVector3.at(-plotCenter.getX(), 0, -plotCenter.getZ()));
+
+                Bukkit.getLogger().log(Level.INFO, "Shifted Plot region for saving to: " + cuboidRegion);
 
                 // Load finished plot region as cuboid region
                 if (plot.getWorld().loadWorld()) {
                     com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
                     Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().getBlockY(), cuboidRegion.getMaximumPoint().getBlockY());
+
+                    Bukkit.getLogger().log(Level.INFO, "Saving schems at region: " + region);
 
                     // Copy and write finished plot clipboard to schematic file
                     File finishedSchematicFile = Paths.get(PlotUtils.getDefaultSchematicPath(),
@@ -221,8 +238,10 @@ public final class PlotUtils {
 
                     Clipboard cb = new BlockArrayClipboard(region);
                     if (plot.getVersion() >= 3) {
-                        cb.setOrigin(BlockVector3.at(plotCenter.getX(), cuboidRegion.getMinimumY(), (double) plotCenter.getZ()));
+                        Bukkit.getLogger().log(Level.INFO, "Setting origin schems at: " + BlockVector3.at(0, cuboidRegion.getMinimumY(), (double) 0));
+                        cb.setOrigin(BlockVector3.at(0, cuboidRegion.getMinimumY(), (double) 0));
                     } else {
+                        Bukkit.getLogger().log(Level.SEVERE, "This should not happen, whyyy");
                         BlockVector3 terraCenter = plot.getMinecraftCoordinates();
                         plotCenter = BlockVector3.at(
                                 (double) terraCenter.getX() - (double) clipboard.getMinimumPoint().getX() + cuboidRegion.getMinimumPoint().getX(),
@@ -280,8 +299,8 @@ public final class PlotUtils {
 
                 // Add additional plot sizes to relative plot schematic coordinates
                 double[] plotCoords = {
-                        schematicCoords[0] + plotRegion.getMinimumPoint().getX(),
-                        schematicCoords[1] + plotRegion.getMinimumPoint().getZ()
+                        schematicCoords[0] + plotRegion.getMinimumPoint().getX() - plot.getCenter().getX(),
+                        schematicCoords[1] + plotRegion.getMinimumPoint().getZ() - plot.getCenter().getZ()
                 };
 
                 // Return coordinates if they are in the schematic plot region
@@ -567,26 +586,63 @@ public final class PlotUtils {
 
                     if(plots.isEmpty()) continue;
 
-                    for(Plot plot : plots){
-                        if(!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
+                    for(Plot plot : plots) {
+                        if (!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
                             continue;
 
-                        if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
+                        if (!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
                             continue;
 
                         List<BlockVector2> points = plot.getBlockOutline();
+                        // BlockVector2 center = BlockVector2.at(plot.getCenter().getX(), plot.getCenter().getZ());
 
-                        for(BlockVector2 point : points) if(point.distanceSq(playerPos2D) < 50*50)
-                            if(!ParticleAPIEnabled)
-                                player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + 1, point.getZ(), 1, 0.0 ,0.0,0.0, 0);
-                            else{
-                                Location loc = new Location(player.getWorld(), point.getX(), player.getLocation().getY() + 1, point.getZ());
-                                // create a particle packet
-                                Object packet = particles.FLAME().packet(true, loc);
+                        // for(int i = 0; i < points.size(); i++)
+                        //    points.set(i, BlockVector2.at(points.get(i).getX() - center.getX(), points.get(i).getZ() - center.getZ()));
 
-                                // send this packet to player
-                                particles.sendPacket(player, packet);
+                        BlockVector2 min = BlockVector2.ZERO;
+                        BlockVector2 max = BlockVector2.ZERO;
+
+                        int minX = points.get(0).getX();
+                        int minZ = points.get(0).getZ();
+                        int maxX = points.get(0).getX();
+                        int maxZ = points.get(0).getZ();
+
+                        for (BlockVector2 v : points) {
+                            int x = v.getX();
+                            int z = v.getZ();
+                            if (x < minX) {
+                                minX = x;
                             }
+                            if (z < minZ) {
+                                minZ = z;
+                            }
+                            if (x > maxX) {
+                                maxX = x;
+                            }
+                            if (z > maxZ) {
+                                maxZ = z;
+                            }
+                        }
+
+                        min = BlockVector2.at(minX, minZ);
+                        max = BlockVector2.at(maxX, maxZ);
+
+                        Vector3 center = min.add(max).toVector3().divide(2);
+
+                        for (BlockVector2 point : points) {
+                            BlockVector2 shiftedPoint = BlockVector2.at(point.getX() - center.getX(), point.getZ() - center.getZ());
+                            if (shiftedPoint.distanceSq(playerPos2D) < 50 * 50)
+                                if (!ParticleAPIEnabled)
+                                    player.spawnParticle(Particle.FLAME, shiftedPoint.getX(), player.getLocation().getY() + 1, shiftedPoint.getZ(), 1, 0.0, 0.0, 0.0, 0);
+                                else {
+                                    Location loc = new Location(player.getWorld(), shiftedPoint.getX(), player.getLocation().getY() + 1, shiftedPoint.getZ());
+                                    // create a particle packet
+                                    Object packet = particles.FLAME().packet(true, loc);
+
+                                    // send this packet to player
+                                    particles.sendPacket(player, packet);
+                                }
+                        }
                     }
                 }
             } catch (SQLException | IOException ex) {
@@ -714,6 +770,13 @@ public final class PlotUtils {
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
             player.spigot().sendMessage(tc);
+        }
+
+        public static BlockVector3 getCoordinateNormalised(int x, int y, int z) {
+
+            BlockVector3 normalised = BlockVector3.at(x, y, z).normalize();
+
+            return BlockVector3.at(normalised.getX(), y, normalised.getZ());
         }
     }
 }

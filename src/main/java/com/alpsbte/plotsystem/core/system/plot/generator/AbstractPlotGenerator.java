@@ -50,6 +50,7 @@ import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.RegionMask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector2;
 import com.sk89q.worldedit.regions.CylinderRegion;
@@ -68,6 +69,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -174,13 +176,21 @@ public abstract class AbstractPlotGenerator {
         RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
 
         if (regionManager != null) {
+            BlockVector2 center = BlockVector2.at(plot.getCenter().getX(), plot.getCenter().getZ()) ;
             // Create build region for plot from the outline of the plot
-            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), plot.getOutline(), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
+            List<BlockVector2> plotOutlines = plot.getOutline();
+
+            Bukkit.getLogger().log(Level.INFO, "Configuring Plot outlines protection from:\n" + plotOutlines);
+            for(int i = 0; i < plotOutlines.size(); i++)
+                plotOutlines.set(i, BlockVector2.at(plotOutlines.get(i).getX() - center.getX(), plotOutlines.get(i).getZ() - center.getZ()));
+            Bukkit.getLogger().log(Level.INFO, "Configured Plot outlines protection to:\n" + plotOutlines);
+
+            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), plotOutlines, PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedBuildRegion.setPriority(100);
 
             // Create protected plot region for plot
             World weWorld = new BukkitWorld(world.getBukkitWorld());
-            CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
+            CylinderRegion cylinderRegion = new CylinderRegion(weWorld, BlockVector3.at(0, plot.getCenter().getY(), 0), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(world.getRegionName() + "-1", cylinderRegion.polygonize(-1), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedRegion.setPriority(50);
 
@@ -294,7 +304,12 @@ public abstract class AbstractPlotGenerator {
             World weWorld = new BukkitWorld(world.getBukkitWorld());
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
                 if (clearArea) {
-                    Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+                    BlockVector3 center = BlockVector3.at(world.getPlot().getCenter().getBlockX(), world.getPlotHeight(), world.getPlot().getCenter().getBlockZ());
+                    Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld,  world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+                    polyRegion.shift(BlockVector3.at(-center.getX(), 0, -center.getZ()));
+
+                    Bukkit.getLogger().log(Level.INFO, "Clearing plot region at:\n" + polyRegion);
+
                     editSession.setMask(new RegionMask(polyRegion));
                     editSession.setBlocks(polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
                 }
@@ -302,10 +317,12 @@ public abstract class AbstractPlotGenerator {
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
                 if(pasteMask != null) editSession.setMask(pasteMask);
                 Clipboard clipboard = FaweAPI.load(schematicFile);
+
                 Operation clipboardHolder = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(world.getPlot().getCenter().getBlockX(), world.getPlotHeight(), world.getPlot().getCenter().getBlockZ()))
+                        .to(BlockVector3.at(0, world.getPlotHeight(), 0))
                         .build();
+
                 Operations.complete(clipboardHolder);
             }
         }

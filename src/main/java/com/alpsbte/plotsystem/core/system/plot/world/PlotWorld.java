@@ -35,6 +35,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -50,13 +51,14 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
 public class PlotWorld implements IWorld {
     public static final int PLOT_SIZE = 150;
     public static final int MAX_WORLD_HEIGHT = 256;
-    public static final int MIN_WORLD_HEIGHT = -69;
+    public static final int MIN_WORLD_HEIGHT = 5;
 
     private final MultiverseCore mvCore = PlotSystem.DependencyManager.getMultiverseCore();
     private final String worldName;
@@ -127,7 +129,7 @@ public class PlotWorld implements IWorld {
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
         if (loadWorld() && plot != null) {
-            player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()));
+            player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : BlockVector3.at(0, plot.getCenter().getY(), 0)));
             return true;
         } else Bukkit.getLogger().log(Level.WARNING, "Could not teleport player " + player.getName() + " to world " + worldName + "!");
         return false;

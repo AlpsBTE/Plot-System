@@ -110,6 +110,8 @@ public class CMD_Tpll extends BaseCommand {
             // Convert terra coordinates to plot relative coordinates
             CompletableFuture<double[]> plotCoords = plot != null ? PlotUtils.convertTerraToPlotXZ(plot, terraCoords) : null;
 
+            Bukkit.getLogger().log(Level.INFO, "doing TPLL to coords: " + plotCoords);
+
             if(plotCoords == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                 return true;
