@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
@@ -77,9 +78,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 public abstract class AbstractPlotGenerator {
@@ -174,19 +173,14 @@ public abstract class AbstractPlotGenerator {
     protected void createPlotProtection() throws StorageException, SQLException, IOException {
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
+        List<BlockVector2> plotOutlines = plot instanceof TutorialPlot ? plot.getOutline() : plot.getShiftedOutline();
 
         if (regionManager != null) {
-            BlockVector2 center = BlockVector2.at(plot.getCenter().getX(), plot.getCenter().getZ()) ;
             // Create build region for plot from the outline of the plot
-            List<BlockVector2> plotOutlines = plot.getOutline();
-
-            Bukkit.getLogger().log(Level.INFO, "Configuring Plot outlines protection from:\n" + plotOutlines);
-            for(int i = 0; i < plotOutlines.size(); i++)
-                plotOutlines.set(i, BlockVector2.at(plotOutlines.get(i).getX() - center.getX(), plotOutlines.get(i).getZ() - center.getZ()));
-            Bukkit.getLogger().log(Level.INFO, "Configured Plot outlines protection to:\n" + plotOutlines);
-
             ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), plotOutlines, PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedBuildRegion.setPriority(100);
+
+            Bukkit.getLogger().log(Level.INFO, "Configured Plot outlines protection to:\n" + protectedBuildRegion.getPoints() + "\n" + protectedBuildRegion);
 
             // Create protected plot region for plot
             World weWorld = new BukkitWorld(world.getBukkitWorld());
@@ -304,9 +298,7 @@ public abstract class AbstractPlotGenerator {
             World weWorld = new BukkitWorld(world.getBukkitWorld());
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
                 if (clearArea) {
-                    BlockVector3 center = BlockVector3.at(world.getPlot().getCenter().getBlockX(), world.getPlotHeight(), world.getPlot().getCenter().getBlockZ());
-                    Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld,  world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
-                    polyRegion.shift(BlockVector3.at(-center.getX(), 0, -center.getZ()));
+                    Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld,  world.getPlot().getShiftedOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
 
                     Bukkit.getLogger().log(Level.INFO, "Clearing plot region at:\n" + polyRegion);
 

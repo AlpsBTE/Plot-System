@@ -39,7 +39,7 @@ public enum CustomHeads {
     GLOBE_HEAD("49973"),
     PLOT_TYPE_BUTTON("4159"),
     FOCUS_MODE_BUTTON("38199"),
-    CITY_INSPIRATION_MODE_BUTTON("38094");
+    CITY_INSPIRATION_MODE_BUTTON("24175");
 
     final String id;
 

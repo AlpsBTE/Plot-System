@@ -110,7 +110,7 @@ public class CMD_Tpll extends BaseCommand {
             // Convert terra coordinates to plot relative coordinates
             CompletableFuture<double[]> plotCoords = plot != null ? PlotUtils.convertTerraToPlotXZ(plot, terraCoords) : null;
 
-            Bukkit.getLogger().log(Level.INFO, "doing TPLL to coords: " + plotCoords);
+
 
             if(plotCoords == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
@@ -130,6 +130,13 @@ public class CMD_Tpll extends BaseCommand {
                 highestY = PlotWorld.MIN_WORLD_HEIGHT;
             }
 
+            Bukkit.getLogger().log(Level.INFO, "Doing TPLL to terraCoords: (lon: "
+                + terraCoords[0] + ", lat: "
+                + terraCoords[1] + ") "
+                + "To block coordinate: (x: "
+                + plotCoords.get()[0]
+                + ", y: " + plotCoords.get()[1] + ")"
+            );
             player.teleport(new Location(playerWorld, plotCoords.get()[0], highestY + 1, plotCoords.get()[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
 
             DecimalFormat df = new DecimalFormat("##.#####");

@@ -199,19 +199,15 @@ public final class PlotUtils {
         Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
         if (clipboard != null) {
             CuboidRegion cuboidRegion = getPlotAsRegion(plot);
+            Bukkit.getLogger().log(Level.INFO, "Getting Plot region for saving from: " + cuboidRegion);
 
             if (cuboidRegion != null) {
                 BlockVector3 plotCenter = plot.getCenter();
 
                 // Get plot outline
-                List<BlockVector2> plotOutlines = plot.getOutline();
-                Bukkit.getLogger().log(Level.INFO, "Getting Plot region for saving from: " + cuboidRegion);
-
-
+                List<BlockVector2> plotOutlines = plot.getShiftedOutline();
 
                 // Shift schematic region to the force (0, 0) paste
-                for(int i = 0; i < plotOutlines.size(); i++)
-                    plotOutlines.set(i, BlockVector2.at(plotOutlines.get(i).getX() - plotCenter.getX(), plotOutlines.get(i).getZ() - plotCenter.getZ()));
                 cuboidRegion.shift(BlockVector3.at(-plotCenter.getX(), 0, -plotCenter.getZ()));
 
                 Bukkit.getLogger().log(Level.INFO, "Shifted Plot region for saving to: " + cuboidRegion);
@@ -221,7 +217,7 @@ public final class PlotUtils {
                     com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
                     Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().getBlockY(), cuboidRegion.getMaximumPoint().getBlockY());
 
-                    Bukkit.getLogger().log(Level.INFO, "Saving schems at region: " + region);
+                    Bukkit.getLogger().log(Level.INFO, "Saving Schematic at region: " + region);
 
                     // Copy and write finished plot clipboard to schematic file
                     File finishedSchematicFile = Paths.get(PlotUtils.getDefaultSchematicPath(),
@@ -312,6 +308,24 @@ public final class PlotUtils {
         }
 
         return null;
+    }
+
+    public static BlockVector2 getCenterFromOutline(List<BlockVector2> points) {
+        int minX = points.get(0).getX();
+        int minZ = points.get(0).getZ();
+        int maxX = points.get(0).getX();
+        int maxZ = points.get(0).getZ();
+
+        for (BlockVector2 v : points) {
+            int x = v.getX();
+            int z = v.getZ();
+            if (x < minX) minX = x;
+            if (z < minZ) minZ = z;
+            if (x > maxX) maxX = x;
+            if (z > maxZ) maxZ = z;
+        }
+        Vector3 center = BlockVector2.at(minX, minZ).add(BlockVector2.at(maxX, maxZ)).toVector3().divide(2);
+        return BlockVector2.at(center.getX(), center.getZ());
     }
 
     public static void checkPlotsForLastActivity() {
@@ -594,43 +608,11 @@ public final class PlotUtils {
                             continue;
 
                         List<BlockVector2> points = plot.getBlockOutline();
-                        // BlockVector2 center = BlockVector2.at(plot.getCenter().getX(), plot.getCenter().getZ());
-
-                        // for(int i = 0; i < points.size(); i++)
-                        //    points.set(i, BlockVector2.at(points.get(i).getX() - center.getX(), points.get(i).getZ() - center.getZ()));
-
-                        BlockVector2 min = BlockVector2.ZERO;
-                        BlockVector2 max = BlockVector2.ZERO;
-
-                        int minX = points.get(0).getX();
-                        int minZ = points.get(0).getZ();
-                        int maxX = points.get(0).getX();
-                        int maxZ = points.get(0).getZ();
-
-                        for (BlockVector2 v : points) {
-                            int x = v.getX();
-                            int z = v.getZ();
-                            if (x < minX) {
-                                minX = x;
-                            }
-                            if (z < minZ) {
-                                minZ = z;
-                            }
-                            if (x > maxX) {
-                                maxX = x;
-                            }
-                            if (z > maxZ) {
-                                maxZ = z;
-                            }
-                        }
-
-                        min = BlockVector2.at(minX, minZ);
-                        max = BlockVector2.at(maxX, maxZ);
-
-                        Vector3 center = min.add(max).toVector3().divide(2);
+                        BlockVector2 center = getCenterFromOutline(points);
 
                         for (BlockVector2 point : points) {
                             BlockVector2 shiftedPoint = BlockVector2.at(point.getX() - center.getX(), point.getZ() - center.getZ());
+
                             if (shiftedPoint.distanceSq(playerPos2D) < 50 * 50)
                                 if (!ParticleAPIEnabled)
                                     player.spawnParticle(Particle.FLAME, shiftedPoint.getX(), player.getLocation().getY() + 1, shiftedPoint.getZ(), 1, 0.0, 0.0, 0.0, 0);
@@ -770,13 +752,6 @@ public final class PlotUtils {
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
             player.spigot().sendMessage(tc);
-        }
-
-        public static BlockVector3 getCoordinateNormalised(int x, int y, int z) {
-
-            BlockVector3 normalised = BlockVector3.at(x, y, z).normalize();
-
-            return BlockVector3.at(normalised.getX(), y, normalised.getZ());
         }
     }
 }
