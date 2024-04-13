@@ -104,7 +104,7 @@ menu-title:
   select-plot-type: 'Select Plot Type'
   select-focus-mode: 'Select Focus Mode'
   select-local-inspiration-mode: 'Select Inspiration Mode'
-  select-city-inspiration-mode: 'City Inspiration Mode'
+  select-city-inspiration-mode: 'City Mode'
   filter-by-country: 'Filter By Country'
   information: 'Info'
   tutorials: 'Tutorials'
