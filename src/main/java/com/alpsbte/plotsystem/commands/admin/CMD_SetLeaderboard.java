@@ -24,10 +24,10 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
+import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,7 +54,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         if (args.length != 1) {
             sendInfo(sender);
             player.sendMessage("§8------- §6§lLeaderboards §8-------");
-            for(HolographicDisplay holo : LeaderboardManager.getLeaderboards()) {
+            for(DecentHologramDisplay holo : LeaderboardManager.getActiveDisplays()) {
                 player.sendMessage(" §6> §f" + holo.getId());
             }
             player.sendMessage("§8--------------------------");
@@ -62,7 +62,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         }
 
         // Find leaderboard by name
-        HolographicDisplay leaderboard = LeaderboardManager.getLeaderboards().stream()
+        DecentHologramDisplay leaderboard = LeaderboardManager.getActiveDisplays().stream()
                 .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
                 .findFirst()
                 .orElse(null);
@@ -72,7 +72,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
             player.sendMessage(Utils.ChatUtils.getAlertFormat("Leaderboard could not be found!"));
             return true;
         }
-        LeaderboardManager.savePosition(leaderboard.getId(), (LeaderboardConfiguration) leaderboard, getPlayer(sender).getLocation());
+        LeaderboardManager.saveLocation(leaderboard.getId(), (HologramConfiguration) leaderboard, getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
         player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
         return true;

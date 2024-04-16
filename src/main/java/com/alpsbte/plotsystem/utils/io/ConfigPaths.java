@@ -49,6 +49,11 @@ public abstract class ConfigPaths {
 
     // Leaderboards
     private static final String HOLOGRAMS = "holograms.";
+    public static final String WELCOME_MESSAGE = "welcome-message";
+    public static final String WELCOME_MESSAGE_ENABLE = HOLOGRAMS + WELCOME_MESSAGE + ".wm-enable";
+    public static final String WELCOME_MESSAGE_X =  HOLOGRAMS + WELCOME_MESSAGE + ".wm-x";
+    public static final String WELCOME_MESSAGE_Y =  HOLOGRAMS + WELCOME_MESSAGE + ".wm-y";
+    public static final String WELCOME_MESSAGE_Z =  HOLOGRAMS + WELCOME_MESSAGE + ".wm-z";
     public static final String SCORE_LEADERBOARD = "score-leaderboard";
     public static final String SCORE_LEADERBOARD_ENABLE = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-enable";
     public static final String SCORE_LEADERBOARD_X =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-x";

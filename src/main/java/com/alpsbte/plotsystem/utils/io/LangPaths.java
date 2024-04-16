@@ -300,6 +300,14 @@ public abstract class LangPaths {
         }
     }
 
+    public static final class WelcomeMessage {
+        private static final String WELCOME = "welcome-message.";
+        public static final String WELCOME_TITLE1 = WELCOME + "title-1";
+        public static final String WELCOME_TITLE2 = WELCOME + "title-2";
+        public static final String JAVA_TITLE1 = WELCOME + "java-title-1";
+        public static final String JAVA_MESSAGE1 = WELCOME + "java-message-1";
+    }
+
     public static final class Leaderboards {
         private static final String LBS = "leaderboards.";
         public static final String PAGES = LBS + "pages.";

@@ -24,8 +24,8 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -33,7 +33,8 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -48,20 +49,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ScoreLeaderboard extends HolographicPagedDisplay implements LeaderboardConfiguration {
+public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
 
     protected ScoreLeaderboard() {
-        super("score-leaderboard", null, false, PlotSystem.getPlugin());
-        setPosition(LeaderboardManager.getPosition(this));
+        super( "score-leaderboard", null, false, PlotSystem.getPlugin());
+        setLocation(LeaderboardManager.getLocation(this));
 
         new BukkitRunnable() {
             @Override
@@ -192,10 +190,10 @@ public class ScoreLeaderboard extends HolographicPagedDisplay implements Leaderb
         List<Player> players = new ArrayList<>();
         if (!actionBarEnabled) return players;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Hologram holo = getHologram(player.getUniqueId());
+            Hologram holo = DHAPI.getHologram(player.getUniqueId().toString());
             if (holo == null) continue;
-            if (player.getWorld().getName().equals(holo.getPosition().getWorldName()) &&
-                    holo.getPosition().distance(player.getLocation()) <= actionBarRadius) {
+            if (player.getWorld().getName().equals(holo.getLocation().getWorld().getName()) &&
+                    holo.getLocation().distance(player.getLocation()) <= actionBarRadius) {
                 players.add(player);
             }
         }

@@ -50,18 +50,24 @@ database:
 # | NOTE: Requires the HolographicDisplays plugin to work
 # -----------------------------------------------------
 holograms:
+  # Displays Welcome message
+  welcome-message:
+    wm-enable: false
+    wm-x: 650
+    wm-y: 71
+    wm-z: 105
   # Displays the top 10 builders with the highest score
   score-leaderboard:
     sl-enable: false
-    sl-x: 0
-    sl-y: 0
-    sl-z: 0
+    sl-x: 657
+    sl-y: 72
+    sl-z: 107
   # Displays the top 10 players with the most completed plots
   plots-leaderboard:
     pl-enable: false
-    pl-x: 0
-    pl-y: 0
-    pl-z: 0
+    pl-x: 646
+    pl-y: 72
+    pl-z: 99
 
 # Switch score-leaderboard between different time stamps
 # [interval] -> default: 15 seconds

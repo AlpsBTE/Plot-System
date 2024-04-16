@@ -24,9 +24,9 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
@@ -169,7 +169,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     @Override
     public List<AbstractTutorialHologram> getActiveHolograms() {
-        return HolographicDisplay.activeDisplays.stream()
+        return DecentHologramDisplay.activeDisplays.stream()
                 .filter(AbstractTutorialHologram.class::isInstance)
                 .filter(holo -> holo.isVisible(playerUUID))
                 .map(h -> (AbstractTutorialHologram) h)

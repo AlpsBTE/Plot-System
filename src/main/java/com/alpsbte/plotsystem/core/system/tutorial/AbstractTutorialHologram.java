@@ -24,26 +24,33 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import me.filoghost.holographicdisplays.api.Position;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
-import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
+import eu.decentsoftware.holograms.api.holograms.HologramLine;
+//import me.filoghost.holographicdisplays.api.Position;
+//import me.filoghost.holographicdisplays.api.hologram.Hologram;
+//import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
+import eu.decentsoftware.holograms.event.HologramClickEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.logging.Level;
 
-public abstract class AbstractTutorialHologram extends HolographicDisplay {
+public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected static final String READ_EMOJI = "✅";
-
     /**
      * This action is executed when the player clicks on the 'mark as read' text on the hologram.
      */
     @FunctionalInterface
     public interface ClickAction {
-        void onClick();
+        void onClick(@NotNull HologramClickEvent clickEvent);
     }
 
     private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
@@ -101,7 +108,7 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
 
     @Override
     public void create(Player player) {
-        setPosition(Position.of(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
+        setLocation(new Location(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
         super.create(player);
     }
 
@@ -153,20 +160,44 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
     public void reload(UUID playerUUID) {
         super.reload(playerUUID);
 
+
+
         // Set click listener
-        Hologram holo = getHologram(playerUUID);
+        Hologram holo = DHAPI.getHologram(playerUUID.toString() + "-" + holoId);
+
         if (holo == null) return;
         if (readMoreId != -1) {
-            TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - (markAsReadClickAction == null ? 1 : 3));
-            line.setClickListener((clickEvent) -> handleReadMoreClickAction());
+            HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - (markAsReadClickAction == null ? 1 : 3));
+            Bukkit.getLogger().log(Level.INFO, "Looking to line " + line);
+            super.setClickListener((clickEvent) -> {
+                Bukkit.getLogger().log(Level.INFO, "Recieved Click Event " + clickEvent);
+                handleReadMoreClickAction();
+            });
+            // line.setEntity(new HologramEntity("click"));
+            // holo.onClick(player, line.getEntityIds()[0], ClickType.LEFT);
+            // line.setClickListener((clickEvent) -> handleReadMoreClickAction());
         }
         if (markAsReadClickAction != null) {
-            TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - 1);
-            line.setClickListener((clickEvent) -> {
+            HologramLine line = (HologramLine) holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
+            super.setClickListener((clickEvent) -> {
+                Bukkit.getLogger().log(Level.INFO, "Recieved Click Event " + clickEvent);
                 line.setText(getMarkAsReadActionDoneText());
-                markAsReadClickAction.onClick();
+                markAsReadClickAction.onClick(clickEvent);
             });
         }
+//        Hologram holo = getHologram(playerUUID);
+//        if (holo == null) return;
+//        if (readMoreId != -1) {
+//            HologramLine line = (HologramLine) holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - (markAsReadClickAction == null ? 1 : 3));
+//            // line.setClickListener((clickEvent) -> handleReadMoreClickAction());
+//        }
+//        if (markAsReadClickAction != null) {
+//            HologramLine line = (HologramLine) holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
+//            line.setClickListener((clickEvent) -> {
+//                line.setText(getMarkAsReadActionDoneText());
+//                markAsReadClickAction.onClick();
+//            });
+//        }
     }
 
     protected String getReadMoreLink() {

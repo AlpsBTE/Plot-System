@@ -20,14 +20,14 @@ tutorial-stages: 10
 # To define the plot world spawn, use the key word ´plot´
 tutorial-worlds:
   spawn_start:
-    spawn-player: '580.5, 42.0, 538.5, -65, 0'
-    spawn-npc: '591.5, 43.0, 542.5, 115.8, 3.0'
+    spawn-player: '740.5, 75.0, 129.5, 88.1, 8'
+    spawn-npc: '730.5, 75.0, 129.5, -57.0, 3.0'
   plot:
     spawn-player: '-6.5, 11.0, 11.5, 150, 0' # '3693357.5, 11.0, -4531324.5, 150, 0'
     spawn-npc: '-15.5, 11.0, -6.5, -60, 0' # '3693348.5, 11.0, -4531329.5, -60, 0'
   spawn_end:
-    spawn-player: '550.5, 53.0, 576.5, 135.3, 2.2'
-    spawn-npc: '545.5, 52.0, 570.5, -39.3, -3.6'
+    spawn-player: '638.54, 66.0, 120.4, -2.25, -140.4'
+    spawn-npc: '641.5, 67.0, 114.5, 30.0, 20.0'
 
 # Tip hologram coordinates (x, y, z)
 tip-hologram-coordinates:

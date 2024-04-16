@@ -24,8 +24,8 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Material;
@@ -37,10 +37,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class PlotsLeaderboard extends HolographicDisplay implements LeaderboardConfiguration {
+public class PlotsLeaderboard extends DecentHologramDisplay implements HologramConfiguration {
     protected PlotsLeaderboard() {
         super(ConfigPaths.PLOTS_LEADERBOARD, null, false);
-        setPosition(LeaderboardManager.getPosition(this));
+        setLocation(LeaderboardManager.getLocation(this));
     }
 
     @Override

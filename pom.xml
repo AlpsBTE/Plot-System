@@ -9,6 +9,10 @@
     <version>4.0</version>
 
     <repositories>
+        <repository>
+            <id>opencollab-snapshot</id>
+            <url>https://repo.opencollab.dev/main/</url>
+        </repository>
         <!-- WorldGuard -->
         <repository>
             <id>sk89q-repo</id>
@@ -47,6 +51,13 @@
     </repositories>
 
     <dependencies>
+        <!-- Geyser Connector -->
+        <dependency>
+            <groupId>org.geysermc.geyser</groupId>
+            <artifactId>api</artifactId>
+            <version>2.2.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Paper -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
@@ -100,6 +111,13 @@
             <groupId>me.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>3.0.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Decent Hologram -->
+        <dependency>
+            <groupId>com.github.decentsoftware-eu</groupId>
+            <artifactId>decentholograms</artifactId>
+            <version>2.8.6</version>
             <scope>provided</scope>
         </dependency>
         <!-- Alps Utils -->

@@ -24,12 +24,14 @@
 
 package com.alpsbte.plotsystem;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
+import com.alpsbte.plotsystem.core.holograms.HologramManager;
+import com.alpsbte.plotsystem.core.holograms.MessagesManager;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -181,8 +183,9 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
-        HolographicDisplay.registerPlugin(this);
-        LeaderboardManager.initLeaderboards();
+        DecentHologramDisplay.registerPlugin(this);
+        LeaderboardManager.init();
+        MessagesManager.init();
         PlotUtils.checkPlotsForLastActivity();
         PlotUtils.syncPlotSchematicFiles();
         Utils.ChatUtils.checkForChatInputExpiry();
@@ -222,7 +225,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
-            LeaderboardManager.getLeaderboards().forEach(HolographicDisplay::delete);
+            LeaderboardManager.getActiveDisplays().forEach(DecentHologramDisplay::delete);
         } else {
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
@@ -282,6 +285,10 @@ public class PlotSystem extends JavaPlugin {
 
             if (!pluginManager.isPluginEnabled("HolographicDisplays")) {
                 missingDependencies.add("HolographicDisplays");
+            }
+
+            if (!pluginManager.isPluginEnabled("DecentHolograms")) {
+                missingDependencies.add("DecentHolograms");
             }
 
             if (!pluginManager.isPluginEnabled("Multiverse-Core")) {

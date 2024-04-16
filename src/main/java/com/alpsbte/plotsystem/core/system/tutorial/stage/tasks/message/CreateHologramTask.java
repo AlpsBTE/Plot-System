@@ -51,7 +51,7 @@ public class CreateHologramTask extends AbstractTask {
     @Override
     public void performTask() {
         for (AbstractTutorialHologram hologram : hologramsToCreate) {
-            if (isMarkAsRead) hologram.setMarkAsReadClickAction(() -> onMarkAsReadClick(hologram.getId()));
+            if (isMarkAsRead) hologram.setMarkAsReadClickAction((clickEvent) -> onMarkAsReadClick(hologram.getId()));
             hologram.create(player);
         }
         if (!isMarkAsRead) setTaskDone();
