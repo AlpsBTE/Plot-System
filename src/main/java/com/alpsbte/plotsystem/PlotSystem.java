@@ -188,6 +188,7 @@ public class PlotSystem extends JavaPlugin {
         MessagesManager.init();
         PlotUtils.checkPlotsForLastActivity();
         PlotUtils.syncPlotSchematicFiles();
+        PlotUtils.syncPlotGeoCoordinate();
         Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
 

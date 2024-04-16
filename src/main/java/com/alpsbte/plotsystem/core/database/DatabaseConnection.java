@@ -329,6 +329,8 @@ public class DatabaseConnection {
                     "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NULL DEFAULT NULL;",
                     "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS type int NOT NULL DEFAULT 1;",
                     "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS version DOUBLE NULL DEFAULT NULL;",
+                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS geo_coordinates varchar(255) NULL DEFAULT NULL;",
+
 
                     // API Keys
                     "CREATE TABLE IF NOT EXISTS `plotsystem_api_keys`" +

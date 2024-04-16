@@ -38,6 +38,8 @@ import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
@@ -88,6 +90,8 @@ import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -369,6 +373,34 @@ public final class PlotUtils {
         }
     }
 
+    public static void syncPlotGeoCoordinate() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+            Bukkit.getConsoleSender().sendMessage("Checking for Unsync Coordinates Data");
+            try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_plots").executeQuery()) {
+
+                while (rs.next()) {
+                    int rsId = rs.getInt("id");
+                    String rsCoordinate = rs.getString("mc_coordinates");
+                    String rsGeoCoordinate = rs.getString("geo_coordinates");
+                    String[] mcLocation = rsCoordinate.split(",");
+
+                    if(rsGeoCoordinate == null) {
+                        BlockVector3 mcCoordinates = BlockVector3.at(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+                        String geoCoordinates = CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
+
+                        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET geo_coordinates = ? WHERE id = ?")
+                            .setValue(geoCoordinates).setValue(rsId).executeUpdate();
+                        Bukkit.getConsoleSender().sendMessage("Syncing Geo Coordinate From: " + mcCoordinates + "To: " + geoCoordinates);
+                    }
+                }
+
+                DatabaseConnection.closeResultSet(rs);
+            } catch (SQLException | OutOfProjectionBoundsException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred trying to sync coordinates data!", ex);
+            }
+        }, 0L, 20 * 60 * 60); // Check every hour
+    }
+
     public static boolean plotExists(int ID) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
                 .setValue(ID).executeQuery()) {
@@ -555,13 +587,13 @@ public final class PlotUtils {
     }
 
     public static final class Effects {
-        public static final int CACHE_UPDATE_TICKS = 20*60;
+        public static final int CACHE_UPDATE_TICKS = 20 * 60;
         private static int time;
 
         private static boolean ParticleAPIEnabled = false;
         private static Particles_1_8 particles;
 
-        public static void loadParticleNativeAPI(){
+        public static void loadParticleNativeAPI() {
             ParticleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
 
             // get API
@@ -571,26 +603,26 @@ public final class PlotUtils {
             particles = api.getParticles_1_8();
         }
 
-        public static void startTimer(){
-            if(PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+        public static void startTimer() {
+            if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
                 loadParticleNativeAPI();
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-                if(PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+                if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
                     loadParticleNativeAPI();
-            }, 20*10L);
+            }, 20 * 10L);
 
 
             Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), Effects::tick, 0L, 0L);
         }
 
-        public static void tick(){
+        public static void tick() {
             time++;
-            if(time%CACHE_UPDATE_TICKS == 0) Cache.clearCache();
-            if(time%10 == 0) showOutlines();
+            if (time % CACHE_UPDATE_TICKS == 0) Cache.clearCache();
+            if (time % 10 == 0) showOutlines();
         }
 
-        public static void showOutlines(){
+        public static void showOutlines() {
             try {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Builder builder = Builder.byUUID(player.getUniqueId());
@@ -598,9 +630,9 @@ public final class PlotUtils {
                     List<Plot> plots = Cache.getCachedInProgressPlots(builder);
                     BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
 
-                    if(plots.isEmpty()) continue;
+                    if (plots.isEmpty()) continue;
 
-                    for(Plot plot : plots) {
+                    for (Plot plot : plots) {
                         if (!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
                             continue;
 
