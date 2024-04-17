@@ -302,10 +302,12 @@ public abstract class LangPaths {
 
     public static final class WelcomeMessage {
         private static final String WELCOME = "welcome-message.";
-        public static final String WELCOME_TITLE1 = WELCOME + "title-1";
-        public static final String WELCOME_TITLE2 = WELCOME + "title-2";
-        public static final String JAVA_TITLE1 = WELCOME + "java-title-1";
-        public static final String JAVA_MESSAGE1 = WELCOME + "java-message-1";
+        public static final String WELCOME_TITLE = WELCOME + "title";
+        public static final String WELCOME_HEADER = WELCOME + "header";
+        public static final String WELCOME_JAVA1 = WELCOME + "java-message-1";
+        public static final String WELCOME_JAVA2 = WELCOME + "java-message-2";
+        public static final String WELCOME_BEDROCK1 = WELCOME + "bedrock-message-1";
+        public static final String WELCOME_BEDROCK2 = WELCOME + "bedrock-message-2";
     }
 
     public static final class Leaderboards {

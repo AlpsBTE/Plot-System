@@ -15,7 +15,7 @@ public class DecentHologramListener implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-
+        // Create player's hologram each time they join
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
             if (display.getLocation() == null) return;
             if (display.getLocation().getWorld().getName().equals(event.getPlayer().getWorld().getName()))
@@ -44,15 +44,9 @@ public class DecentHologramListener implements Listener {
     @EventHandler
     public void onHologramClick(HologramClickEvent event) {
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
-            if (display.getLocation() == null) return;
+            if (display.getLocation() == null | display.getClickListender() == null) continue;
             if (display.getHologram(event.getPlayer().getUniqueId()).equals(event.getHologram()))
-                if(display.getClickListender() != null)
                     display.getClickListender().onClick(event);
         }
-
-        Bukkit.getLogger().info("Hologram clicked on an entity: "
-                + event.getEntityId()
-                + " with hologram lines: "
-                + event.getHologram().getPage(event.getPlayer()).getLines());
     }
 }

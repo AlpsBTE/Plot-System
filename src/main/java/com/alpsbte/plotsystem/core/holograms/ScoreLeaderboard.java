@@ -59,7 +59,8 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
 
     protected ScoreLeaderboard() {
         super( "score-leaderboard", null, false, PlotSystem.getPlugin());
-        setLocation(LeaderboardManager.getLocation(this));
+        setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
+        setLocation(HologramManager.getLocation(this));
 
         new BukkitRunnable() {
             @Override

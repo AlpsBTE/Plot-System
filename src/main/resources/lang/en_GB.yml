@@ -269,10 +269,12 @@ message:
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
 welcome-message:
-  title-1: "Welcome"
-  title-2: "ASEAN Build The Earth"
-  java-title-1: "Getting Started"
+  title: "ASEAN Build The Earth"
+  header: "To Start Building"
   java-message-1: "Use your §bCompanion§r to see available plots and start creating your first build!"
+  java-message-2: "§7Look up our §9Discord Server§r%newline%§7to get help from our staff."
+  bedrock-message-1: "Look at the §bCountry Board§r on the left to see all of our available plots."
+  bedrock-message-2: "Using §9plot ID§r from the board, you may use the command §e/plot create §e<§9ID§r§e>§r and start creating your first build!"
 leaderboards:
   pages:
     DAILY: "Daily"

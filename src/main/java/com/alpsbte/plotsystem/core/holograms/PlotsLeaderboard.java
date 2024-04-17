@@ -40,7 +40,8 @@ import java.util.logging.Level;
 public class PlotsLeaderboard extends DecentHologramDisplay implements HologramConfiguration {
     protected PlotsLeaderboard() {
         super(ConfigPaths.PLOTS_LEADERBOARD, null, false);
-        setLocation(LeaderboardManager.getLocation(this));
+        setLocation(HologramManager.getLocation(this));
+        setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
     }
 
     @Override

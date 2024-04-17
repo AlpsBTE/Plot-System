@@ -24,11 +24,26 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.Objects;
+import java.util.logging.Level;
 
 public final class LeaderboardManager extends HologramManager {
 
     public static void init() {
+        for (DecentHologramDisplay display : activeDisplays) {
+            Bukkit.getLogger().log(Level.INFO, "Enabling Hologram: " + PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()));
+
+            // Register and create holograms
+            if (PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()))
+                for (Player player : Objects.requireNonNull(Bukkit.getWorld(display.getLocation().getWorld().getName())).getPlayers())
+                    display.create(player);
+            else display.removeAll();
+        }
         activeDisplays.add(new ScoreLeaderboard());
         activeDisplays.add(new PlotsLeaderboard());
     }

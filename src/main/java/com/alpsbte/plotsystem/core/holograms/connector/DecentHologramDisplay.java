@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -49,7 +48,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
     public static final String EMPTY_TAG = "&f";
     private final String id;
     private Location position;
-    private final boolean isPlaceholdersEnabled;
+    private boolean isEnabled;
     protected final HashMap<UUID, Hologram> holograms = new HashMap<>();
     private AbstractTutorialHologram.ClickAction clickListener;
 
@@ -58,14 +57,15 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
         plugin.getServer().getPluginManager().registerEvents(new DecentHologramListener(), plugin);
     }
 
-    public DecentHologramDisplay(@NotNull String id, Location position, boolean enablePlaceholders) {
+    public DecentHologramDisplay(@NotNull String id, Location position, boolean isEnabled) {
         this.id = id;
         this.position = position;
-        this.isPlaceholdersEnabled = enablePlaceholders;
+        this.isEnabled = isEnabled;
         activeDisplays.add(this);
     }
 
     public void create(Player player) {
+        if(!isEnabled) return;
         if (this.hasViewPermission(player.getUniqueId())) {
             if (this.holograms.containsKey(player.getUniqueId())) {
                 this.reload(player.getUniqueId());
@@ -153,9 +153,10 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     }
 
-    public boolean isPlaceholdersEnabled() {
-        return this.isPlaceholdersEnabled;
+    public boolean isEnabled() {
+        return this.isEnabled;
     }
+    public void setEnabled(boolean isEnabled) { this.isEnabled = isEnabled; }
 
     public Hologram getHologram(UUID playerUUID) {
         return this.holograms.get(playerUUID);

@@ -10,6 +10,8 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.geysermc.geyser.api.GeyserApi;
+import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -21,12 +23,24 @@ import java.util.logging.Level;
 
 public class WelcomeMessage extends DecentHologramDisplay implements HologramConfiguration  {
     public static String contentSeparator = "§7---------------";
-    public static final String EMPTY_TAG = "&f";
-    private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
-    private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
+
+    private static ArrayList<DataLine<?>> makeContent(String header, String message1, String message2) {
+        final int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
+        final String HOLOGRAM_LINE_BREAKER = "%newline%";
+        ArrayList<DataLine<?>> lines = new ArrayList<>();
+        ArrayList<String> innerLines1 = AlpsUtils.createMultilineFromString(message1, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
+        ArrayList<String> innerLines2 = AlpsUtils.createMultilineFromString(message2, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
+
+        lines.add(new TextLine("<#45b5ff>&l" + header + "</#30f8ff>"));
+        innerLines1.forEach(innerLine -> lines.add(new TextLine(innerLine)));
+        innerLines2.forEach(innerLine -> lines.add(new TextLine(innerLine)));
+        return lines;
+    }
+
     public WelcomeMessage() {
         super(ConfigPaths.WELCOME_MESSAGE, null, false);
-        setLocation(LeaderboardManager.getLocation(this));
+        setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
+        setLocation(HologramManager.getLocation(this));
     }
 
     @Override
@@ -36,17 +50,24 @@ public class WelcomeMessage extends DecentHologramDisplay implements HologramCon
 
     @Override
     public List<DataLine<?>> getContent(UUID playerUUID) {
-        ArrayList<DataLine<?>> lines = new ArrayList<>();
-        lines.add(new TextLine("<#45b5ff>&l" + LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.JAVA_TITLE1) + "</#30f8ff>"));
-        String content = LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.JAVA_MESSAGE1);
-        List<String> innerLines = AlpsUtils.createMultilineFromString(content, MAX_HOLOGRAM_LENGTH, HOLOGRAM_LINE_BREAKER);
-        innerLines.forEach(innerLine -> lines.add(new TextLine(innerLine)));
-        return lines;
+        GeyserConnection connection = GeyserApi.api().connectionByUuid(playerUUID);
+        String header = LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_HEADER);
+
+        if(connection == null) {
+            return makeContent(header, // Java Player Message
+                    LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_JAVA1),
+                    LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_JAVA2));
+        }
+
+        return makeContent(header, // Bedrock Player Message
+                LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_BEDROCK1),
+                LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_BEDROCK2));
     }
 
     @Override
     public String getTitle(UUID playerUUID) {
-        return "<#ANIM:burn:<#fc3903>,<#fcba03>&l>" + LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_TITLE2) + "</#ANIM>";
+        String title = LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_HEADER);
+        return "<#ANIM:burn:<#fc3903>,<#fcba03>&l>" + title + "</#ANIM>";
     }
     @Override
     public List<DataLine<?>> getFooter(UUID playerUUID) {

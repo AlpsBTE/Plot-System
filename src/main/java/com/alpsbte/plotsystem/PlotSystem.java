@@ -288,6 +288,11 @@ public class PlotSystem extends JavaPlugin {
                 missingDependencies.add("HolographicDisplays");
             }
 
+            if (!pluginManager.isPluginEnabled("Geyser-Spigot")) {
+                missingDependencies.add("Geyser-Spigot");
+            }
+
+
             if (!pluginManager.isPluginEnabled("DecentHolograms")) {
                 missingDependencies.add("DecentHolograms");
             }

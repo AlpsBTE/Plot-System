@@ -21,9 +21,16 @@ public abstract class HologramManager {
         for (DecentHologramDisplay display : activeDisplays) {
             Bukkit.getLogger().log(Level.INFO, "Enabling Hologram: " + PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()));
 
-            if (PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()))
-                for (Player player : Objects.requireNonNull(Bukkit.getWorld(display.getLocation().getWorld().getName())).getPlayers()) display.create(player);
-            else display.removeAll();
+            // Register and create holograms
+            if (PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath())) {
+                display.setEnabled(true);
+                for (Player player : Objects.requireNonNull(Bukkit.getWorld(display.getLocation().getWorld().getName())).getPlayers())
+                    display.create(player);
+            }
+            else {
+                display.setEnabled(false);
+                display.removeAll();
+            }
         }
     }
 
