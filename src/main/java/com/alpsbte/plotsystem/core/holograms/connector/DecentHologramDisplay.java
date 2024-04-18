@@ -112,7 +112,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
         List<DataLine<?>> footer = getFooter(playerUUID);
         if (footer != null) dataLines.addAll(footer);
 
-        updateDataLines(holograms.get(playerUUID), 0, dataLines);
+        updateDataLines(holograms.get(playerUUID).getPage(0), 0, dataLines);
     }
 
     public void reloadAll() {
@@ -166,77 +166,68 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
         return this.holograms;
     }
 
-    protected static void updateDataLines(Hologram hologram, int startIndex, List<DataLine<?>> dataLines) {
+    protected static void updateDataLines(HologramPage page, int startIndex, List<DataLine<?>> dataLines) {
         int index = startIndex;
-        Bukkit.getLogger().log(Level.INFO, "Updating dataline of: " + hologram + " with: " + dataLines);
-        Bukkit.getLogger().log(Level.INFO, "Looking for pages: " + hologram.getPage(0) + " of line: " + hologram.getPage(0).getLines());
+        Bukkit.getLogger().log(Level.INFO, "Updating dataline of: " + page + " with: " + dataLines);
+        Bukkit.getLogger().log(Level.INFO, "Looking for pages: " + page + " of line: " + page.getLines());
 
-        if (index == 0 && hologram.getPage(0).getLines().size() > dataLines.size()) {
-            int removeCount = hologram.getPage(0).getLines().size() - dataLines.size();
+        if (index == 0 && page.getLines().size() > dataLines.size()) {
+            int removeCount = page.getLines().size() - dataLines.size();
 
             for(int i = 0; i < removeCount; ++i) {
-                int lineIndex = hologram.getPage(0).getLines().size() - 1;
+                int lineIndex = page.getLines().size() - 1;
                 if (lineIndex >= 0) {
-                    hologram.getPage(0).getLines().remove(lineIndex);
+                    page.getLines().remove(lineIndex);
                 }
             }
         }
 
         for (DataLine<?> data : dataLines) {
-            if (data instanceof TextLine) replaceLine(hologram, index, ((TextLine) data).getLine());
-            else if (data instanceof ItemLine) replaceLine(hologram, index, ((ItemLine) data).getLine());
+            if (data instanceof TextLine) replaceLine(page, index, ((TextLine) data).getLine());
+            else if (data instanceof ItemLine) replaceLine(page, index, ((ItemLine) data).getLine());
             index++;
         }
 
     }
 
-    protected static void replaceLine(Hologram hologram, int line, ItemStack item) {
-        Bukkit.getLogger().log(Level.INFO, "Replacing data item of: " + hologram.getPage(0).getLines().size() + " with: " + item);
-
-        if(hologram.getPages().isNotEmpty() && hologram.getPages().size() > 1)
-            Bukkit.getLogger().log(Level.SEVERE, "Trying to replace text to invalid hologram of page: " + hologram.getPages());
-
-        HologramPage page = hologram.getPage(0);
+    protected static void replaceLine(HologramPage page, int line, ItemStack item) {
+        Bukkit.getLogger().log(Level.INFO, "Replacing data item of: " + page.getLines().size() + " with: " + item);
 
         if (page.getLines().size() < line + 1) {
             Bukkit.getLogger().log(Level.INFO, "Inserting item 1: " + line);
-            DHAPI.addHologramLine(hologram, item);
+            DHAPI.addHologramLine(page, item);
         } else {
             Bukkit.getLogger().log(Level.INFO, "Inserting item 2: " + item);
             HologramLine hologramLine = page.getLines().get(line);
             if (hologramLine != null) {
 
-                DHAPI.insertHologramLine(hologram, line, item);
-                DHAPI.removeHologramLine(hologram, line + 1);
+                DHAPI.insertHologramLine(page, line, item);
+                DHAPI.removeHologramLine(page, line + 1);
             } else {
                 Bukkit.getLogger().log(Level.INFO, "Inserting item 3: " + line);
-                DHAPI.setHologramLine(hologram, line,  item);
+                DHAPI.setHologramLine(page, line,  item);
 
             }
         }
     }
 
-    protected static void replaceLine(Hologram hologram, int line, String text) {
-        Bukkit.getLogger().log(Level.INFO, "Replacing dataline of: " + hologram.getPage(0).getLines().size() + " with: " + text);
+    protected static void replaceLine(HologramPage page, int line, String text) {
+        Bukkit.getLogger().log(Level.INFO, "Replacing dataline of: " + page.getLines().size() + " with: " + text);
 
-        if(hologram.getPages().isNotEmpty() && hologram.getPages().size() > 1)
-            Bukkit.getLogger().log(Level.SEVERE, "Trying to replace text to invalid hologram of page: " + hologram.getPages());
-
-        HologramPage page = hologram.getPage(0);
 
         if (page.getLines().size() < line + 1) {
             Bukkit.getLogger().log(Level.INFO, "Inserting 1: " + line);
-            DHAPI.addHologramLine(hologram, text);
+            DHAPI.addHologramLine(page, text);
         } else {
             Bukkit.getLogger().log(Level.INFO, "Inserting 2: " + line);
             HologramLine hologramLine = page.getLines().get(line);
             if (hologramLine != null) {
 
-                DHAPI.insertHologramLine(hologram, line, text);
-                DHAPI.removeHologramLine(hologram, line + 1);
+                DHAPI.insertHologramLine(page, line, text);
+                DHAPI.removeHologramLine(page, line + 1);
             } else {
                 Bukkit.getLogger().log(Level.INFO, "Inserting 3: " + line);
-                DHAPI.setHologramLine(hologram, line,  text);
+                DHAPI.setHologramLine(page, line,  text);
             }
         }
 

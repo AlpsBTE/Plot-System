@@ -29,10 +29,8 @@ import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.core.holograms.HologramManager;
-import com.alpsbte.plotsystem.core.holograms.MessagesManager;
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -62,6 +60,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -184,8 +183,7 @@ public class PlotSystem extends JavaPlugin {
         });
 
         DecentHologramDisplay.registerPlugin(this);
-        LeaderboardManager.init();
-        MessagesManager.init();
+        HologramRegister.init();
         PlotUtils.checkPlotsForLastActivity();
         PlotUtils.syncPlotSchematicFiles();
         PlotUtils.syncPlotGeoCoordinate();
@@ -226,7 +224,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
             Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
 
-            LeaderboardManager.getActiveDisplays().forEach(DecentHologramDisplay::delete);
+            HologramRegister.getActiveDisplays().forEach(DecentHologramDisplay::delete);
         } else {
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {

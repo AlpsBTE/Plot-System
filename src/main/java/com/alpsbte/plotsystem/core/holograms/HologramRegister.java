@@ -24,33 +24,28 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
-import java.util.Objects;
-import java.util.logging.Level;
+import java.sql.SQLException;
 
-public final class LeaderboardManager extends HologramManager {
+public final class HologramRegister extends HologramManager {
 
     public static void init() {
-        for (DecentHologramDisplay display : activeDisplays) {
-            Bukkit.getLogger().log(Level.INFO, "Enabling Hologram: " + PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()));
-
-            // Register and create holograms
-            if (PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()))
-                for (Player player : Objects.requireNonNull(Bukkit.getWorld(display.getLocation().getWorld().getName())).getPlayers())
-                    display.create(player);
-            else display.removeAll();
-        }
         activeDisplays.add(new ScoreLeaderboard());
         activeDisplays.add(new PlotsLeaderboard());
+        activeDisplays.add(new WelcomeMessage());
+        activeDisplays.add(new CountryBoard());
     }
 
     public static class LeaderboardPositionLine extends DecentHologramDisplay.TextLine {
         public LeaderboardPositionLine(int position, String username, int score) {
             super("§e#" + position + " " + (username != null ? "§a" + username : "§8No one, yet") + " §7- §b" + score);
+        }
+    }
+
+    public static class CountryBoardPositionLine extends DecentHologramDisplay.TextLine {
+        public CountryBoardPositionLine(String id, String city, String status) {
+            super(id + " " + (city != null ? "§a" + city : "§8No plot left") + " §7- §b" + (status != null ? status : "§8Null"));
         }
     }
 }

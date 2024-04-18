@@ -3,23 +3,18 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
-import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import org.bukkit.Location;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.connection.GeyserConnection;
-import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class WelcomeMessage extends DecentHologramDisplay implements HologramConfiguration  {
     public static String contentSeparator = "§7---------------";
@@ -43,12 +38,18 @@ public class WelcomeMessage extends DecentHologramDisplay implements HologramCon
         setLocation(HologramManager.getLocation(this));
     }
 
-    @Override
+    @Override // Floating golden apple at the top
     public ItemStack getItem() {
         return new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
     }
 
-    @Override
+    @Override // ASEAN Build The Earth title
+    public String getTitle(UUID playerUUID) {
+        String title = LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_TITLE);
+        return "<#ANIM:burn:<#fc3903>,<#fcba03>&l>" + title + "</#ANIM>";
+    }
+
+    @Override // Welcome message to guide people
     public List<DataLine<?>> getContent(UUID playerUUID) {
         GeyserConnection connection = GeyserApi.api().connectionByUuid(playerUUID);
         String header = LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_HEADER);
@@ -64,12 +65,7 @@ public class WelcomeMessage extends DecentHologramDisplay implements HologramCon
                 LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_BEDROCK2));
     }
 
-    @Override
-    public String getTitle(UUID playerUUID) {
-        String title = LangUtil.getInstance().get(playerUUID, LangPaths.WelcomeMessage.WELCOME_HEADER);
-        return "<#ANIM:burn:<#fc3903>,<#fcba03>&l>" + title + "</#ANIM>";
-    }
-    @Override
+    @Override // Line footer with cute axolotl buddy
     public List<DataLine<?>> getFooter(UUID playerUUID) {
         ArrayList<DataLine<?>> lines = new ArrayList<>();
         lines.add(new TextLine(contentSeparator));

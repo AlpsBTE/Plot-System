@@ -52,22 +52,34 @@ database:
 holograms:
   # Displays Welcome message
   welcome-message:
-    wm-enable: false
+    wm-enable: true
     wm-x: 650
     wm-y: 71
     wm-z: 105
   # Displays the top 10 builders with the highest score
   score-leaderboard:
-    sl-enable: false
-    sl-x: 657
+    sl-enable: true
+    sl-x: 652
     sl-y: 72
-    sl-z: 107
+    sl-z: 114
   # Displays the top 10 players with the most completed plots
   plots-leaderboard:
-    pl-enable: false
-    pl-x: 646
+    pl-enable: true
+    pl-x: 640
     pl-y: 72
-    pl-z: 99
+    pl-z: 104
+  # Displays the top 10 players with the most completed plots
+  country-board:
+    cb-enable: true
+    cb-x: 646
+    cb-y: 72
+    cb-z: 99
+  # Displays the top 10 builders with the highest score
+  player-dashboard:
+    pd-enable: true
+    pd-x: 657
+    pd-y: 72
+    pd-z: 107
 
 # Switch score-leaderboard between different time stamps
 # [interval] -> default: 15 seconds

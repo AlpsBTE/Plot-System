@@ -28,7 +28,7 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
@@ -187,7 +187,7 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getActiveDisplays().stream()
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramRegister.getActiveDisplays().stream()
                 .filter(leaderboard -> leaderboard instanceof ScoreLeaderboard).findFirst().ifPresent(DecentHologramDisplay::reloadAll));
     }
 
@@ -196,7 +196,7 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getActiveDisplays().stream()
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramRegister.getActiveDisplays().stream()
                 .filter(leaderboard -> leaderboard instanceof PlotsLeaderboard).findFirst().ifPresent(DecentHologramDisplay::reloadAll));
     }
 
@@ -279,6 +279,72 @@ public class Builder {
 
             DatabaseConnection.closeResultSet(rs);
             return score;
+        }
+    }
+
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
+    public static ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>, DatabaseEntry<Integer, String>>> getProjectsSorted() throws SQLException {
+        String query = "SELECT countries.id AS country_id, "
+                + "countries.name AS country_name, "
+                + "city_projects.id AS project_id, "
+                + "city_projects.name AS project_name "
+                + "FROM plotsystem_countries AS countries\n"
+                + "LEFT JOIN plotsystem_city_projects AS city_projects ON countries.id = city_projects.country_id\n"
+                + "ORDER BY country_id";
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>, DatabaseEntry<Integer, String>>> result = new ArrayList<>();
+
+            while(rs.next()) {
+                result.add(new DatabaseEntry<>(
+                    new DatabaseEntry<>(rs.getInt("country_id"), rs.getString("country_name")),
+                    new DatabaseEntry<>(rs.getInt("project_id"), rs.getString("project_name"))
+                ));
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return result;
+        }
+    }
+
+    public static ArrayList<DatabaseEntry<Integer, ArrayList<DatabaseEntry<Integer, String>>>> getPlotsSorted() throws SQLException {
+        String query = "SELECT city_projects.id AS city_id, "
+                + "city_projects.name AS city_name, plots.status, plots.id "
+                + "FROM plotsystem_city_projects AS city_projects\n"
+                + "RIGHT JOIN plotsystem_plots AS plots "
+                + "ON city_projects.id = plots.city_project_id\n"
+                + "ORDER BY city_projects.id";
+
+        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+            ArrayList<DatabaseEntry<Integer, ArrayList<DatabaseEntry<Integer, String>>>> result = new ArrayList<>();
+
+            int currentCursor = 0;
+            ArrayList<DatabaseEntry<Integer, String>> entries = new ArrayList<>();
+
+            while(rs.next()) {
+                int currentCity = rs.getInt("city_id");
+                if(currentCity == currentCursor) {
+                    entries.add(new DatabaseEntry<>(rs.getInt("id"), rs.getString("status")));
+                    if(rs.isLast()) result.add(new DatabaseEntry<>(currentCity, entries));
+                }
+                else {
+                    if(entries.isEmpty()) {
+                        entries.add(new DatabaseEntry<>(rs.getInt("id"), rs.getString("status")));
+                        currentCursor++;
+                    }
+                    else {
+                        result.add(new DatabaseEntry<>(currentCity, entries));
+                        entries.clear();
+                    }
+                }
+            }
+
+            DatabaseConnection.closeResultSet(rs);
+            return result;
         }
     }
 

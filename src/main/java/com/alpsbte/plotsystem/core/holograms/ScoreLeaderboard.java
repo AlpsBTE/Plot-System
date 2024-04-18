@@ -250,7 +250,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
         }
     }
 
-    private class LeaderboardPositionLineWithPayout extends LeaderboardManager.LeaderboardPositionLine {
+    private class LeaderboardPositionLineWithPayout extends HologramRegister.LeaderboardPositionLine {
         private final int position;
 
         public LeaderboardPositionLineWithPayout(int position, String username, int score) {

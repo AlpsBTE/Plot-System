@@ -54,6 +54,11 @@ public abstract class ConfigPaths {
     public static final String WELCOME_MESSAGE_X =  HOLOGRAMS + WELCOME_MESSAGE + ".wm-x";
     public static final String WELCOME_MESSAGE_Y =  HOLOGRAMS + WELCOME_MESSAGE + ".wm-y";
     public static final String WELCOME_MESSAGE_Z =  HOLOGRAMS + WELCOME_MESSAGE + ".wm-z";
+    public static final String COUNTRY_BOARD = "country-board";
+    public static final String COUNTRY_BOARD_ENABLE = HOLOGRAMS + COUNTRY_BOARD + ".cb-enable";
+    public static final String COUNTRY_BOARD_X =  HOLOGRAMS + COUNTRY_BOARD + ".cb-x";
+    public static final String COUNTRY_BOARD_Y =  HOLOGRAMS + COUNTRY_BOARD + ".cb-y";
+    public static final String COUNTRY_BOARD_Z =  HOLOGRAMS + COUNTRY_BOARD + ".cb-z";
     public static final String SCORE_LEADERBOARD = "score-leaderboard";
     public static final String SCORE_LEADERBOARD_ENABLE = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-enable";
     public static final String SCORE_LEADERBOARD_X =  HOLOGRAMS + SCORE_LEADERBOARD + ".sl-x";

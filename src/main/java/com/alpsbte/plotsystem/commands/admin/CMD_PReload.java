@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -50,9 +50,9 @@ public class CMD_PReload extends BaseCommand {
             PlotSystem.getPlugin().reloadConfig();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
-            LeaderboardManager.getActiveDisplays().forEach(leaderboard -> leaderboard.setLocation(LeaderboardManager
+            HologramRegister.getActiveDisplays().forEach(leaderboard -> leaderboard.setLocation(HologramRegister
                     .getLocation((HologramConfiguration) leaderboard)));
-            LeaderboardManager.reload();
+            HologramRegister.reload();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded leaderboards!"));
 
             DatabaseConnection.InitializeDatabase();

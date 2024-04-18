@@ -12,15 +12,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 
 public abstract class HologramManager {
     public static List<DecentHologramDisplay> activeDisplays = new ArrayList<>();
 
     public static void reload() {
         for (DecentHologramDisplay display : activeDisplays) {
-            Bukkit.getLogger().log(Level.INFO, "Enabling Hologram: " + PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath()));
-
             // Register and create holograms
             if (PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath())) {
                 display.setEnabled(true);
@@ -52,7 +49,7 @@ public abstract class HologramManager {
         config.set(configPaths.getZPath(), newLocation.getZ());
         ConfigUtil.getInstance().saveFiles();
 
-        LeaderboardManager.getActiveDisplays().stream().filter(leaderboard -> leaderboard.getId().equals(id)).findFirst()
+        HologramRegister.getActiveDisplays().stream().filter(leaderboard -> leaderboard.getId().equals(id)).findFirst()
                 .ifPresent(holo -> holo.setLocation(newLocation));
     }
 
