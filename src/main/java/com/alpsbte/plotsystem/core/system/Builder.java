@@ -311,36 +311,56 @@ public class Builder {
         }
     }
 
-    public static ArrayList<DatabaseEntry<Integer, ArrayList<DatabaseEntry<Integer, String>>>> getPlotsSorted() throws SQLException {
+    /**
+     * Select city_id as "city_id", plot id as "id", "difficulty_id", "difficulty"
+     * Ordered by each city project id, do this will be incrementing from 1
+     * <pre>
+     * {@code
+     *   SELECT city_projects.id AS city_id, difficulties.name AS difficulty FROM plotsystem_city_projects AS city_projects
+     *   RIGHT JOIN plotsystem_plots AS plots ON city_projects.id = plots.city_project_id
+     *   INNER JOIN plotsystem_difficulties AS difficulties ON difficulty_id = difficulties.id
+     *   ORDER BY city_projects.id
+     * }</pre> SQL Query statement
+     * @return A List of every City ID containing a List of all plot entries in the city project.
+     * @throws SQLException If Database connection is lost
+     */
+    public static ArrayList<DatabaseEntry<Integer,
+            ArrayList<DatabaseEntry<Integer,
+            DatabaseEntry<String, String>>>>> getPlotsSorted() throws SQLException {
         String query = "SELECT city_projects.id AS city_id, "
-                + "city_projects.name AS city_name, plots.status, plots.id "
+                + "plots.status, plots.id, plots.difficulty_id AS difficulty_id, "
+                + "difficulties.name AS difficulty "
                 + "FROM plotsystem_city_projects AS city_projects\n"
                 + "RIGHT JOIN plotsystem_plots AS plots "
                 + "ON city_projects.id = plots.city_project_id\n"
+                + "INNER JOIN plotsystem_difficulties AS difficulties "
+                + "ON difficulty_id = difficulties.id\n"
                 + "ORDER BY city_projects.id";
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
-            ArrayList<DatabaseEntry<Integer, ArrayList<DatabaseEntry<Integer, String>>>> result = new ArrayList<>();
+            ArrayList<DatabaseEntry<Integer,    // City ID parent
+                ArrayList<DatabaseEntry<Integer,// List of all plots in the parent City ID
+                DatabaseEntry<String, String>>  // the plot entry containing a pair of Status and Difficulty
+            >>> result = new ArrayList<>();
 
             int currentCursor = 0;
-            ArrayList<DatabaseEntry<Integer, String>> entries = new ArrayList<>();
+            ArrayList<DatabaseEntry<Integer, DatabaseEntry<String, String>>> entries = new ArrayList<>();
 
             while(rs.next()) {
                 int currentCity = rs.getInt("city_id");
-                if(currentCity == currentCursor) {
-                    entries.add(new DatabaseEntry<>(rs.getInt("id"), rs.getString("status")));
-                    if(rs.isLast()) result.add(new DatabaseEntry<>(currentCity, entries));
-                }
-                else {
-                    if(entries.isEmpty()) {
-                        entries.add(new DatabaseEntry<>(rs.getInt("id"), rs.getString("status")));
-                        currentCursor++;
+                if(currentCity != currentCursor)
+                {
+                    if(!entries.isEmpty()) {
+                        result.add(new DatabaseEntry<>(currentCursor, new ArrayList<>(entries)));
+                        if(!rs.isLast()) entries.clear();
                     }
-                    else {
-                        result.add(new DatabaseEntry<>(currentCity, entries));
-                        entries.clear();
-                    }
+                    currentCursor++;
                 }
+
+                entries.add(new DatabaseEntry<>(rs.getInt("id"),
+                    new DatabaseEntry<>(rs.getString("status"),
+                    rs.getString("difficulty"))));
+                if(rs.isLast()) result.add(new DatabaseEntry<>(currentCity, entries));
             }
 
             DatabaseConnection.closeResultSet(rs);

@@ -3,22 +3,19 @@ package com.alpsbte.plotsystem.core.holograms;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import it.unimi.dsi.fastutil.Hash;
-import net.md_5.bungee.api.ChatMessageType;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -31,8 +28,9 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
             Builder.DatabaseEntry<Integer, String>,
             Builder.DatabaseEntry<Integer, String>>> projectsData = null;
     private ArrayList<Builder.DatabaseEntry<Integer,
-            ArrayList<Builder.DatabaseEntry<Integer, String>>>> plotEntries = null;
-    private static final String contentSeparator = "§7---------------";
+            ArrayList<Builder.DatabaseEntry<Integer,
+            Builder.DatabaseEntry<String, String>>>>> plotByCities = null;
+    private static final String contentSeparator = "§7------------------------";
     private int currentPage = 0;
 
     protected CountryBoard() {
@@ -42,7 +40,7 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
 
         try {
             this.projectsData = Builder.getProjectsSorted();
-            this.plotEntries = Builder.getPlotsSorted();
+            this.plotByCities = Builder.getPlotsSorted();
         }
         catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading country board content", ex);
@@ -82,7 +80,7 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
 
     @Override
     public String getTitle(UUID playerUUID) {
-        return "§b§lCOUNTRY BOARD §6§l";
+        return "§7[§eID§7] - [§bStatus§7] - [§uDifficulty§7]";
     }
 
     @Override
@@ -93,7 +91,8 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
     @Override
     public List<List<DataLine<?>>> getPagedHeader(UUID playerUUID) {
         List<List<DataLine<?>>> header = new ArrayList<>();
-        if(projectsData == null) super.getPagedHeader(playerUUID);
+        if(projectsData == null) return super.getPagedHeader(playerUUID);
+
         for (Builder.DatabaseEntry<
                 Builder.DatabaseEntry<Integer, String>,
                 Builder.DatabaseEntry<Integer, String>> cityProject
@@ -101,93 +100,146 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
         ) {
             header.add(Arrays.asList(
                 new ItemLine(this.getItem()),
-                new TextLine(this.getTitle(playerUUID)),
-                new TextLine("----- " + cityProject.getKey().getValue() + " -----")
+                new TextLine("§b§lCOUNTRY BOARD §6§l"),
+                new TextLine(contentSeparator),
+                new TextLine("§6§l[" + cityProject.getKey().getValue() + "§7§l: §r§3" + cityProject.getValue().getValue() + "§6§l]"),
+                new TextLine(contentSeparator),
+                new TextLine(this.getTitle(playerUUID))
             ));
         }
-
 
         return header;
     }
 
     @Override
-    public List<List<DataLine<?>>>  getPagedContent(UUID playerUUID) {
+    public List<List<DataLine<?>>> getPagedFooter(UUID playerUUID) {
+        return Collections.singletonList(Arrays.asList(
+                new TextLine(contentSeparator),
+                new TextLine("§6<<< click to swap pages >>>"),
+                new TextLine(contentSeparator)
+        ));
+    }
+
+    @Override
+    public List<List<DataLine<?>>> getPagedContent(UUID playerUUID) {
         List<List<DataLine<?>>> content = new ArrayList<>();
-        if(projectsData == null) super.getPagedHeader(playerUUID);
+        if(projectsData == null) return super.getPagedContent(playerUUID);
+
         for (Builder.DatabaseEntry<
                 Builder.DatabaseEntry<Integer, String>,
                 Builder.DatabaseEntry<Integer, String>> cityProject
                 : projectsData
-        ) {
+        ) { // For each registered city projects
+            ArrayList<DataLine<?>> lines = new ArrayList<>();
+            int index = 0;
+            for (int i = 0; i < 10; i++) lines.add(new HologramRegister.CountryBoardPositionLine("&8#" + 0,null, null));
+
+            plotEntry: // For each plotEntries in the city project
             for (Builder.DatabaseEntry<Integer,
-                    ArrayList<Builder.DatabaseEntry<Integer, String>>> plots : plotEntries)
+                    ArrayList<Builder.DatabaseEntry<Integer,
+                    Builder.DatabaseEntry<String, String>>>> plotEntries
+                    : plotByCities)
             {
-                Bukkit.getLogger().log(Level.INFO, "Looking for " + cityProject.getValue().getKey() + " " + plots.getKey());
-                ArrayList<DataLine<?>> lines = new ArrayList<>();
+                if(!cityProject.getValue().getKey().equals(plotEntries.getKey())) continue;
 
-                for (int i = 0; i < 10; i++) {
-                    lines.add(new HologramRegister.CountryBoardPositionLine("§8#" + 0,null, null));
-                }
+                for(Map.Entry<Integer, Builder.DatabaseEntry<String, String>> plot : plotStatusSorter(plotEntries.getValue())) {
+                    if(index >= 10) break plotEntry;
 
-                int index = 0;
-                if(cityProject.getValue().getKey().equals(plots.getKey()))
-                {
-                    HashMap<Integer, Status> sortedEntries = new HashMap<>();
+                    Status status = Status.valueOf(plot.getValue().getKey());
+                    PlotDifficulty difficulty = PlotDifficulty.valueOf(plot.getValue().getValue());
 
-                    for(Builder.DatabaseEntry<Integer, String> entry : plots.getValue()) {
-                        sortedEntries.put(entry.getKey(), Status.valueOf(entry.getValue()));
-                        Bukkit.getLogger().log(Level.INFO, "Found " + entry.getKey() + " " + entry.getValue());
+                    String statusColor = plot.getValue().getKey();
+                    switch (status) {
+                        case unclaimed: statusColor = "&7" + statusColor + " "; break;
+                        case unfinished: statusColor = "&6" + statusColor; break;
+                        case unreviewed: statusColor = "&3" + statusColor; break;
+                        case completed: statusColor = "&a" + statusColor + " "; break;
                     }
-
-                    for(Map.Entry<Integer, Status> plot : plotStatusSorter(sortedEntries)) {
-                        String statusText = plot.getValue().toString();
-                        switch (plot.getValue()) {
-                            case unclaimed: statusText = "&8" + statusText;
-                            case unfinished: statusText = "&6" + statusText;
-                            case unreviewed: statusText = "&3" + statusText;
-                            case completed: statusText = "&a" + statusText;
-                        }
-                        lines.set(index, new HologramRegister.CountryBoardPositionLine("§e#" + plot.getKey(),
-                                cityProject.getValue().getValue(), // city name
-                                statusText)); // city status
-                        index++;
+                    String difficultyColor = "";
+                    switch (difficulty) {
+                        case EASY: difficultyColor += "&a"; break;
+                        case MEDIUM: difficultyColor += "&6"; break;
+                        case HARD: difficultyColor += "&c"; break;
                     }
+                    PositionLineWithSpacing innerLine = new PositionLineWithSpacing(this.getTitle(playerUUID),
+                            "&e#" + plot.getKey(), // id
+                            statusColor, // city status
+                            difficultyColor + "[" + plot.getValue().getValue() + "]"); // difficulty
+
+                    lines.set(index, new TextLine(innerLine.getLine())); // city difficulty
+                    index++;
                 }
-                content.add(lines);
             }
-
+            content.add(lines);
         }
 
 
         return content;
     }
 
-    private static ArrayList<Map.Entry<Integer, Status>> plotStatusSorter(HashMap<Integer, Status> entries) {
+    private static ArrayList<Map.Entry<Integer, Builder.DatabaseEntry<String, String>>>
+            plotStatusSorter(ArrayList<Builder.DatabaseEntry<Integer,
+            Builder.DatabaseEntry<String, String>>> plotEntries)
+    {
+        // Prepare entries with Hashmap
+        HashMap<Integer, Builder.DatabaseEntry<String, String>> entriesMap = new HashMap<>();
+        for(Builder.DatabaseEntry<Integer, Builder.DatabaseEntry<String, String>> entry : plotEntries)
+            entriesMap.put(entry.getKey(), entry.getValue());
+
         // Create an ArrayList and insert all hashmap key-value pairs.
-        ArrayList<Map.Entry<Integer, Status>> sortEntries = new ArrayList<>(entries.entrySet());
+        ArrayList<Map.Entry<Integer, Builder.DatabaseEntry<String, String>>> sortedEntries = new ArrayList<>(entriesMap.entrySet());
 
         // Sort the Arraylist using a custom comparator.
-        sortEntries.sort(new Comparator<Map.Entry<Integer, Status>>() {
+        sortedEntries.sort(new Comparator<Map.Entry<Integer, Builder.DatabaseEntry<String, String>>>() {
             @Override
-            public int compare(Map.Entry<Integer, Status> o1, Map.Entry<Integer, Status> o2) {
+            public int compare(Map.Entry<Integer, Builder.DatabaseEntry<String, String>> o1,
+                               Map.Entry<Integer, Builder.DatabaseEntry<String, String>> o2) {
+                Status status1 = Status.valueOf(o1.getValue().getKey());
+                Status status2 = Status.valueOf(o2.getValue().getKey());
+
                 if (o1.getValue() == o2.getValue())
                     return o1.getKey().compareTo(o2.getKey());
 
-                return Integer.compare(o1.getValue().ordinal(), o2.getValue().ordinal());
+                return Integer.compare(status1.ordinal(), status2.ordinal());
             }
         });
 
-        return sortEntries;
+        return sortedEntries;
+    }
 
-        // Create a LinkedHashMap.
-        // Map sortedMap = new LinkedHashMap<>();
+    private static class PositionLineWithSpacing extends HologramRegister.CountryBoardPositionLine {
+        private final int width;
 
-        // Iterate over the ArrayList and insert the key-value pairs into LinkedHashMap.
-//        for (int i = 0; i hashmap){
-//            for (Map.Entry entry : hashmap.entrySet()) {
-//                System.out.println("Key : " + entry.getKey() + " \t  value :  " + entry.getValue());
-//            }
-//        }
+        public PositionLineWithSpacing(String spacing, String id, String status, String difficulty) {
+            super(id, status, difficulty);
+            String split = spacing.replaceAll("[§&][a-zA-Z0-9]", "");
+            Bukkit.getLogger().log(Level.INFO, "Splited: >" + split);
+            this.width = split.length();
+        }
+
+        public String getLine() {
+            Bukkit.getLogger().log(Level.INFO, "Splited: " + super.getLine());
+            String[] split = super.getLine().split("-");
+
+            int spaceLeft = width - super.getLine().length();
+            int difficultyText = split[split.length - 1].length();
+            int difficultySpacing = 6 - difficultyText;
+            if(difficultySpacing > 0) spaceLeft = spaceLeft - difficultySpacing;
+
+            String result = "";
+            for (String text : split) {
+                if(text.equals(split[split.length - 2])) {
+                    String frontSpacing = StringUtils.repeat(" ", spaceLeft);
+                    String backSpacing = StringUtils.repeat(" ", difficultySpacing);
+                    result = result.concat(text.concat(frontSpacing + "- " + backSpacing));
+                }
+                else if(text.equals(split[split.length - 1]))  result = result.concat(text);
+                else result = result.concat(text.concat(" -"));
+            }
+            Bukkit.getLogger().log(Level.INFO, "Result: " + result);
+
+            return result;
+        }
     }
 
     @Override
@@ -227,5 +279,5 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
     public boolean hasViewPermission(UUID uuid) {
         return true;
     }
-
 }
+

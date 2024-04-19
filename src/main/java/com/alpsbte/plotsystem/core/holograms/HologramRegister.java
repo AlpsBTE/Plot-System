@@ -44,8 +44,8 @@ public final class HologramRegister extends HologramManager {
     }
 
     public static class CountryBoardPositionLine extends DecentHologramDisplay.TextLine {
-        public CountryBoardPositionLine(String id, String city, String status) {
-            super(id + " " + (city != null ? "§a" + city : "§8No plot left") + " §7- §b" + (status != null ? status : "§8Null"));
+        public CountryBoardPositionLine(String id, String status, String difficulty) {
+            super(id + "§7 - " + (status != null ? "§a" + status : "§8No plot left") + " §7- " + (difficulty != null ? difficulty : "§8Unknown"));
         }
     }
 }
