@@ -1,11 +1,5 @@
 package com.alpsbte.plotsystem.core.holograms.connector;
 
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,25 +8,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-// import com.alpsbte.alpslib.hologram.HolographicEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.DecentHolograms;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.DecentHologramsAPI;
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
-import eu.decentsoftware.holograms.api.holograms.HologramManager;
-
 import eu.decentsoftware.holograms.api.holograms.HologramPage;
 
-
-//import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
-// import me.filoghost.holographicdisplays.api.Position;
-//import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
-//import me.filoghost.holographicdisplays.api.hologram.VisibilitySettings.Visibility;
-//import me.filoghost.holographicdisplays.api.hologram.line.HologramLine;
-//import me.filoghost.holographicdisplays.api.hologram.line.ItemHologramLine;
-//import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -70,14 +53,11 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
             if (this.holograms.containsKey(player.getUniqueId())) {
                 this.reload(player.getUniqueId());
             } else {
-                HologramManager hologramManager = decentHolograms.getHologramManager();
-                hologramManager.updateVisibility(player);
-
+                Bukkit.getLogger().log(Level.INFO, "[DHAPI] Created display ID: " + id + " For player: " + player.getUniqueId());
                 Hologram hologram = DHAPI.createHologram(player.getUniqueId() + "-" + id, position);
                 // Allow only player to see
                 hologram.setDefaultVisibleState(false);
                 hologram.setShowPlayer(player);
-                Bukkit.getLogger().log(Level.INFO, "Creating a hologram: " + hologram + " of hologram: " + hologramManager.getHologram(player.getUniqueId().toString()));
 
                 this.holograms.put(player.getUniqueId(), hologram);
                 this.reload(player.getUniqueId());
@@ -166,11 +146,14 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
         return this.holograms;
     }
 
+    /**
+     * Write a hologram page by any DataLine of type
+     * @param page The hologram page to write
+     * @param startIndex Start line to update
+     * @param dataLines The data item to be write on the page
+     */
     protected static void updateDataLines(HologramPage page, int startIndex, List<DataLine<?>> dataLines) {
         int index = startIndex;
-        Bukkit.getLogger().log(Level.INFO, "Updating dataline of: " + page + " with: " + dataLines);
-        Bukkit.getLogger().log(Level.INFO, "Looking for pages: " + page + " of line: " + page.getLines());
-
         if (index == 0 && page.getLines().size() > dataLines.size()) {
             int removeCount = page.getLines().size() - dataLines.size();
 
@@ -190,43 +173,43 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     }
 
+    /**
+     * Write an index line of a hologram page
+     * @param page The hologram page to write
+     * @param line The index line to write to
+     * @param item any minecraft item as an ItemStack to be inserted
+     */
     protected static void replaceLine(HologramPage page, int line, ItemStack item) {
-        Bukkit.getLogger().log(Level.INFO, "Replacing data item of: " + page.getLines().size() + " with: " + item);
-
         if (page.getLines().size() < line + 1) {
-            Bukkit.getLogger().log(Level.INFO, "Inserting item 1: " + line);
             DHAPI.addHologramLine(page, item);
         } else {
-            Bukkit.getLogger().log(Level.INFO, "Inserting item 2: " + item);
             HologramLine hologramLine = page.getLines().get(line);
             if (hologramLine != null) {
 
                 DHAPI.insertHologramLine(page, line, item);
                 DHAPI.removeHologramLine(page, line + 1);
             } else {
-                Bukkit.getLogger().log(Level.INFO, "Inserting item 3: " + line);
                 DHAPI.setHologramLine(page, line,  item);
 
             }
         }
     }
 
+    /**
+     * Write an index line of a hologram page
+     * @param page The hologram page to write
+     * @param line The index line to write to
+     * @param text The text to be written on
+     */
     protected static void replaceLine(HologramPage page, int line, String text) {
-        Bukkit.getLogger().log(Level.INFO, "Replacing dataline of: " + page.getLines().size() + " with: " + text);
-
-
         if (page.getLines().size() < line + 1) {
-            Bukkit.getLogger().log(Level.INFO, "Inserting 1: " + line);
             DHAPI.addHologramLine(page, text);
         } else {
-            Bukkit.getLogger().log(Level.INFO, "Inserting 2: " + line);
             HologramLine hologramLine = page.getLines().get(line);
             if (hologramLine != null) {
-
                 DHAPI.insertHologramLine(page, line, text);
                 DHAPI.removeHologramLine(page, line + 1);
             } else {
-                Bukkit.getLogger().log(Level.INFO, "Inserting 3: " + line);
                 DHAPI.setHologramLine(page, line,  text);
             }
         }
@@ -237,7 +220,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
         this.clickListener = clickListener;
     }
 
-    public @Nullable AbstractTutorialHologram.ClickAction getClickListender() {
+    public @Nullable AbstractTutorialHologram.ClickAction getClickListener() {
         return this.clickListener;
     }
 

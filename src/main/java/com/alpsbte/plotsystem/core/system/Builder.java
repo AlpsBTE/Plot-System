@@ -283,11 +283,20 @@ public class Builder {
     }
 
     /**
-     *
-     * @return
-     * @throws SQLException
+     * Select both country and city entries as ID and name, intersect with city ID ordered by country ID
+     * <pre>
+     * {@code
+     *   SELECT countries.id AS country_id, countries.name AS country_name, city_projects.id AS project_id, city_projects.name AS project_name FROM plotsystem_countries AS countries
+     *   FROM plotsystem_countries AS countries
+     *   LEFT JOIN plotsystem_city_projects AS city_projects ON countries.id = city_projects.country_id
+     *   ORDER BY country_id
+     * }</pre> SQL Query statement
+     * @return A List of every registered city project data as a pair of country entry and city entry.
+     * @throws SQLException If Database connection is lost
      */
-    public static ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>, DatabaseEntry<Integer, String>>> getProjectsSorted() throws SQLException {
+    public static ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>,
+        DatabaseEntry<Integer, String>>> getProjectsSorted() throws SQLException
+    {
         String query = "SELECT countries.id AS country_id, "
                 + "countries.name AS country_name, "
                 + "city_projects.id AS project_id, "
@@ -297,15 +306,14 @@ public class Builder {
                 + "ORDER BY country_id";
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
-            ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>, DatabaseEntry<Integer, String>>> result = new ArrayList<>();
-
+            ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>,
+                DatabaseEntry<Integer, String>>> result = new ArrayList<>();
             while(rs.next()) {
                 result.add(new DatabaseEntry<>(
                     new DatabaseEntry<>(rs.getInt("country_id"), rs.getString("country_name")),
                     new DatabaseEntry<>(rs.getInt("project_id"), rs.getString("project_name"))
                 ));
             }
-
             DatabaseConnection.closeResultSet(rs);
             return result;
         }
@@ -324,9 +332,9 @@ public class Builder {
      * @return A List of every City ID containing a List of all plot entries in the city project.
      * @throws SQLException If Database connection is lost
      */
-    public static ArrayList<DatabaseEntry<Integer,
-            ArrayList<DatabaseEntry<Integer,
-            DatabaseEntry<String, String>>>>> getPlotsSorted() throws SQLException {
+    public static ArrayList<DatabaseEntry<Integer, ArrayList<DatabaseEntry<Integer,
+        DatabaseEntry<String, String>>>>> getPlotsSorted() throws SQLException
+    {
         String query = "SELECT city_projects.id AS city_id, "
                 + "plots.status, plots.id, plots.difficulty_id AS difficulty_id, "
                 + "difficulties.name AS difficulty "

@@ -2,7 +2,6 @@ package com.alpsbte.plotsystem.core.holograms.connector;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import eu.decentsoftware.holograms.api.holograms.HologramManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -41,17 +40,13 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
             if (this.holograms.containsKey(player.getUniqueId())) {
                 this.reload(player.getUniqueId());
             } else {
-                HologramManager hologramManager = decentHolograms.getHologramManager();
-                hologramManager.updateVisibility(player);
-
+                Bukkit.getLogger().log(Level.INFO, "[DHAPI] Created display ID: " + super.getId() + " For player: " + player.getUniqueId());
                 Hologram hologram = DHAPI.createHologram(player.getUniqueId() + "-" + super.getId(), super.getLocation());
                 for(int i = 1; i <= pageCount; i++) hologram.addPage();
 
                 // Allow only player to see
                 hologram.setDefaultVisibleState(false);
                 hologram.setShowPlayer(player);
-                Bukkit.getLogger().log(Level.INFO, "Creating a hologram: " + hologram + " of hologram: " + hologramManager.getHologram(player.getUniqueId().toString()));
-
                 this.holograms.put(player.getUniqueId(), hologram);
                 this.reload(player.getUniqueId());
             }

@@ -310,6 +310,15 @@ public abstract class LangPaths {
         public static final String WELCOME_BEDROCK2 = WELCOME + "bedrock-message-2";
     }
 
+    public static final class CountryBoard {
+        private static final String CB = "country-board.";
+        public static final String TITLE = CB + "title";
+        public static final String HEADER_ID= CB + "header.id";
+        public static final String HEADER_STATUS = CB + "header.status";
+        public static final String HEADER_DIFFICULTY = CB + "header.difficulty";
+        public static final String FOOTER = CB + "footer";
+    }
+
     public static final class Leaderboards {
         private static final String LBS = "leaderboards.";
         public static final String PAGES = LBS + "pages.";

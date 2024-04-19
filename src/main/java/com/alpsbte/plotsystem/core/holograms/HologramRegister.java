@@ -26,8 +26,6 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 
-import java.sql.SQLException;
-
 public final class HologramRegister extends HologramManager {
 
     public static void init() {
@@ -45,7 +43,7 @@ public final class HologramRegister extends HologramManager {
 
     public static class CountryBoardPositionLine extends DecentHologramDisplay.TextLine {
         public CountryBoardPositionLine(String id, String status, String difficulty) {
-            super(id + "§7 - " + (status != null ? "§a" + status : "§8No plot left") + " §7- " + (difficulty != null ? difficulty : "§8Unknown"));
+            super(id + "§7 - " + (status != null ? "§a" + status : "§8No plot left") + " §7-  " + (difficulty != null ? difficulty : "§8Unknown"));
         }
     }
 }

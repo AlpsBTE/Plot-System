@@ -1,7 +1,6 @@
 package com.alpsbte.plotsystem.core.holograms.connector;
 
 import eu.decentsoftware.holograms.event.HologramClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -44,9 +43,9 @@ public class DecentHologramListener implements Listener {
     @EventHandler
     public void onHologramClick(HologramClickEvent event) {
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
-            if (display.getLocation() == null | display.getClickListender() == null) continue;
+            if (display.getLocation() == null | display.getClickListener() == null) continue;
             if (display.getHologram(event.getPlayer().getUniqueId()).equals(event.getHologram()))
-                    display.getClickListender().onClick(event);
+                    display.getClickListener().onClick(event);
         }
     }
 }
