@@ -65,10 +65,15 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
         Hologram holo = DHAPI.getHologram(playerUUID.toString().concat("-" + id));
         if (holo == null | projectsData == null) return;
         super.setClickListener((clickEvent) -> {
-            int nextViewPage = currentPage + 1;
-            if(nextViewPage == projectsData.size()) nextViewPage = 0;
-            holo.show(holo.getViewerPlayers().get(0), nextViewPage);
-            currentPage = nextViewPage;
+            try {
+                int nextViewPage = currentPage + 1;
+                if(nextViewPage == projectsData.size()) nextViewPage = 0;
+                holo.show(holo.getViewerPlayers().get(0), nextViewPage);
+                currentPage = nextViewPage;
+            }
+            catch (IndexOutOfBoundsException ex) {
+                PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "[DHAPI] Hologram page indexing out of bounds", ex);
+            }
         });
     }
 
@@ -137,7 +142,7 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
             ArrayList<DataLine<?>> lines = new ArrayList<>();
             int index = 0;
             for (int i = 0; i < 10; i++)
-                lines.add(new HologramRegister.CountryBoardPositionLine("&8#" + 0,null, null));
+                lines.add(new HologramRegister.CountryBoardPositionLine("&8#0",null, null));
 
             plotEntry: // For each plotEntries in the city project
             for (DatabaseEntry<Integer,
@@ -206,9 +211,11 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
             Status status1 = Status.valueOf(o1.getValue().getKey());
             Status status2 = Status.valueOf(o2.getValue().getKey());
 
-            if (o1.getValue() == o2.getValue())
+            // If the status state is the same, sort with plot id
+            if (status1.ordinal() == status2.ordinal())
                 return o1.getKey().compareTo(o2.getKey());
 
+            // Else sort by status state
             return Integer.compare(status1.ordinal(), status2.ordinal());
         });
         return plotEntries;
