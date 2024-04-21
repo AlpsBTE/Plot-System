@@ -3,7 +3,7 @@
 
 <p align="Center">
   <a href="https://github.com/AlpsBTE/PlotSystem">
-    <img src="https://cdn.discordapp.com/attachments/406907194228080652/881142301831888936/PlotSystemLogo.gif" alt="Logo" width="250" height="250">
+    <img src="https://github.com/AlpsBTE/Plot-System/assets/64250550/cf75c770-e91c-41dd-bd50-7b4c606c2ed9.gif" alt="Logo" width="250" height="250">
   </a>
 </p>
 
