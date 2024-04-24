@@ -1,7 +1,8 @@
 package com.alpsbte.plotsystem.core.holograms;
 
+import com.aseanbte.aseanlib.hologram.DecentHologramDisplay;
+// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Bukkit;

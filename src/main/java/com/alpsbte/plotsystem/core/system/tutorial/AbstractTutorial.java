@@ -24,13 +24,11 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.npc.AbstractNpc;
+// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.aseanbte.aseanlib.npc.AbstractNpc;
+import com.aseanbte.aseanlib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
@@ -241,7 +239,9 @@ public abstract class AbstractTutorial implements Tutorial {
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
         npc.create(world.getNpcSpawnLocation(), false, true);
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> npc.show(player));
+        Bukkit.getLogger().log(Level.INFO, "Showing NPC at: " + world.getNpcSpawnLocation());
+        npc.show(player);
+        npc.getHologram().delete();
     }
 
     @Override

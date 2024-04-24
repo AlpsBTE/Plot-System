@@ -1,7 +1,8 @@
 package com.alpsbte.plotsystem.core.holograms;
 
+import com.aseanbte.aseanlib.hologram.DecentHologramPagedDisplay;
+// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.core.system.Builder.DatabaseEntry;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;

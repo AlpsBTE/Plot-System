@@ -29,7 +29,8 @@ import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.*;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.aseanbte.aseanlib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -182,6 +183,7 @@ public class PlotSystem extends JavaPlugin {
             }
         });
 
+        // com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay.registerPlugin(this);
         DecentHologramDisplay.registerPlugin(this);
         HologramRegister.init();
         PlotUtils.checkPlotsForLastActivity();

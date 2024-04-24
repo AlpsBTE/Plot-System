@@ -24,8 +24,9 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
+import com.aseanbte.aseanlib.hologram.DecentHologramPagedDisplay;
+// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;

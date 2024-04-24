@@ -25,8 +25,9 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
-import eu.decentsoftware.holograms.api.DHAPI;
+// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.aseanbte.aseanlib.hologram.DecentHologramDisplay;
+
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
 //import me.filoghost.holographicdisplays.api.Position;
@@ -45,16 +46,9 @@ import java.util.logging.Level;
 
 public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected static final String READ_EMOJI = "✅";
-    /**
-     * This action is executed when the player clicks on the 'mark as read' text on the hologram.
-     */
-    @FunctionalInterface
-    public interface ClickAction {
-        void onClick(@NotNull HologramClickEvent clickEvent);
-    }
-
     private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
     private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
+    private final static String EMPTY_TAG = "&f";
 
     protected final Player player;
     protected final int holoId;
@@ -160,12 +154,10 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     public void reload(UUID playerUUID) {
         super.reload(playerUUID);
 
-
-
         // Set click listener
-        Hologram holo = DHAPI.getHologram(playerUUID.toString() + "-" + holoId);
+        Hologram holo = this.getHologram(playerUUID);
+        Bukkit.getLogger().log(Level.INFO, "Setting tutorial click listener for " + holo.getName());
 
-        if (holo == null) return;
         if (readMoreId != -1) {
             HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - (markAsReadClickAction == null ? 1 : 3));
             Bukkit.getLogger().log(Level.INFO, "Looking to line " + line);

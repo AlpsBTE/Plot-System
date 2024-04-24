@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
-import com.alpsbte.alpslib.npc.AbstractNpc;
+import com.aseanbte.aseanlib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -50,3 +50,4 @@ public class TutorialNPC extends AbstractNpc {
         return GRAY + "(" + LangUtil.getInstance().get(playerUUID, LangPaths.Note.Action.RIGHT_CLICK) + ")";
     }
 }
+
