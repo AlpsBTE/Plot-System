@@ -134,13 +134,13 @@
         <dependency>
             <groupId>com.aseanbte.aseanlib</groupId>
             <artifactId>aseanlib-npc</artifactId>
-            <version>1.1.5</version>
+            <version>1.1.6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aseanbte.aseanlib</groupId>
             <artifactId>aseanlib-hologram</artifactId>
-            <version>1.1.5</version>
+            <version>1.1.6</version>
             <scope>compile</scope>
         </dependency>
         <!-- MariaDB Connector -->
@@ -294,6 +294,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <build.number>SNAPSHOT</build.number>
+        <build.number>rc.1</build.number>
     </properties>
 </project>

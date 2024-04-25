@@ -1,7 +1,6 @@
 package com.alpsbte.plotsystem.core.holograms;
 
 import com.aseanbte.aseanlib.hologram.DecentHologramPagedDisplay;
-// import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder.DatabaseEntry;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -10,8 +9,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import eu.decentsoftware.holograms.api.DHAPI;
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,10 +33,9 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
             DatabaseEntry<String, String>>>>> plotByCities = null;
     private static final String contentSeparator = "§7------------------------";
     private static final String id = "country-board";
-    private int currentPage = 0;
 
     protected CountryBoard() {
-        super(id, null, false, PlotSystem.getPlugin());
+        super(id, null, false);
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
         setLocation(HologramManager.getLocation(this));
 
@@ -57,25 +53,6 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
         if (!PlotSystem.getPlugin().isEnabled()) return;
         super.setPageCount(projectsData != null? projectsData.size() : 1);
         super.create(player);
-    }
-
-    @Override
-    public void reload(UUID playerUUID) {
-        super.reload(playerUUID);
-
-        Hologram holo = DHAPI.getHologram(playerUUID.toString().concat("-" + id));
-        if (holo == null | projectsData == null) return;
-        super.setClickListener((clickEvent) -> {
-            try {
-                int nextViewPage = currentPage + 1;
-                if(nextViewPage == projectsData.size()) nextViewPage = 0;
-                holo.show(holo.getViewerPlayers().get(0), nextViewPage);
-                currentPage = nextViewPage;
-            }
-            catch (IndexOutOfBoundsException ex) {
-                PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "[DHAPI] Hologram page indexing out of bounds", ex);
-            }
-        });
     }
 
     @Override
@@ -222,13 +199,10 @@ public class CountryBoard extends DecentHologramPagedDisplay implements Hologram
         return plotEntries;
     }
 
-    @Override //TODO implement country board reloading by interval
+    @Override
     public long getInterval() {
         return PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.DISPLAY_OPTIONS_INTERVAL) * 20L;
     }
-
-    @Override
-    public List<String> getPages() { return null; }
     @Override
     public String getEnablePath() { return ConfigPaths.COUNTRY_BOARD_ENABLE; }
     @Override

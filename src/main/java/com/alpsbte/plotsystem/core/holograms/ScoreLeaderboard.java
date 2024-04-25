@@ -52,11 +52,12 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
+
 
 public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
-    private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
+    // TODO If we actually gets much player entries, revamp leaderboard paging function (currently this is forced to LIFETIME)
+    private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.LIFETIME;
 
     protected ScoreLeaderboard() {
         super( "score-leaderboard", null, false, PlotSystem.getPlugin());
@@ -77,10 +78,10 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
     @Override
     public void create(Player player) {
         if (!PlotSystem.getPlugin().isEnabled()) return;
-        if (getPages().isEmpty()) {
-            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
-            return;
-        }
+//        if (getPages().isEmpty()) {
+//            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
+//            return;
+//        }
 
         super.create(player);
     }
@@ -102,7 +103,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
 
     @Override
     public List<DataLine<?>> getHeader(UUID playerUUID) {
-        sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
+        // sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
         return super.getHeader(playerUUID);
     }
 
@@ -200,14 +201,6 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             }
         }
         return players;
-    }
-
-    @Override
-    public List<String> getPages() {
-        if (ConfigUtil.getInstance() == null) return new ArrayList<>();
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        return Arrays.stream(LeaderboardTimeframe.values())
-                .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).collect(Collectors.toList());
     }
 
     @Override

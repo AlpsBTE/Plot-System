@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.DeleteHol
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -44,6 +45,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class StageTimeline implements TutorialTimeline {
     private static final Map<UUID, TutorialTimeline> activeTimelines = new HashMap<>();
@@ -92,6 +94,12 @@ public class StageTimeline implements TutorialTimeline {
                         } else updatePlayerActionBar();
                     }
                 }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
+            }
+
+            // Name-tag hologram creating may be un-sync, check it every task and re-create it if none
+            if(tutorial.getNPC().getHologram().getHolograms().isEmpty()
+                && tutorial.getNPC().getNpc().getIsVisibleForPlayer().get(player.getUniqueId())) {
+                tutorial.getNPC().getHologram().create(player);
             }
 
             // If the task has npc interaction show the hologram click info, otherwise hide it
