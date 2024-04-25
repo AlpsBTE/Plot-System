@@ -239,7 +239,6 @@ public abstract class AbstractTutorial implements Tutorial {
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
         npc.create(world.getNpcSpawnLocation(), false, true);
-        Bukkit.getLogger().log(Level.INFO, "Showing NPC at: " + world.getNpcSpawnLocation());
         npc.show(player);
         npc.getHologram().delete();
     }

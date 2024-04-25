@@ -180,7 +180,7 @@ public abstract class AbstractPlotGenerator {
             ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(world.getRegionName(), plotOutlines, PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
             protectedBuildRegion.setPriority(100);
 
-            Bukkit.getLogger().log(Level.INFO, "Configured Plot outlines protection to:\n" + protectedBuildRegion.getPoints() + "\n" + protectedBuildRegion);
+            Bukkit.getLogger().log(Level.INFO, "[Plot-System] Configured " + protectedBuildRegion + " " + protectedBuildRegion.getPoints());
 
             // Create protected plot region for plot
             World weWorld = new BukkitWorld(world.getBukkitWorld());
@@ -300,7 +300,7 @@ public abstract class AbstractPlotGenerator {
                 if (clearArea) {
                     Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld,  world.getPlot().getShiftedOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
 
-                    Bukkit.getLogger().log(Level.INFO, "Clearing plot region at:\n" + polyRegion);
+                    Bukkit.getLogger().log(Level.INFO, "[Plot-System] Clearing plot region at: " + polyRegion);
 
                     editSession.setMask(new RegionMask(polyRegion));
                     editSession.setBlocks(polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());

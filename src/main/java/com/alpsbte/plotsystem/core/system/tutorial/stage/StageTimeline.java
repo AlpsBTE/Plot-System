@@ -97,9 +97,10 @@ public class StageTimeline implements TutorialTimeline {
             }
 
             // Name-tag hologram creating may be un-sync, check it every task and re-create it if none
-            if(tutorial.getNPC().getHologram().getHolograms().isEmpty()
-                && tutorial.getNPC().getNpc().getIsVisibleForPlayer().get(player.getUniqueId())) {
-                tutorial.getNPC().getHologram().create(player);
+            if(tutorial.getNPC().getHologram().getHolograms().isEmpty()) {
+                if(tutorial.getNPC().getNpc().getIsVisibleForPlayer().get(player.getUniqueId()) != null
+                && tutorial.getNPC().getNpc().getIsVisibleForPlayer().get(player.getUniqueId()))
+                    tutorial.getNPC().getHologram().create(player);
             }
 
             // If the task has npc interaction show the hologram click info, otherwise hide it

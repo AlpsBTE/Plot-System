@@ -203,7 +203,7 @@ public final class PlotUtils {
         Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
         if (clipboard != null) {
             CuboidRegion cuboidRegion = getPlotAsRegion(plot);
-            Bukkit.getLogger().log(Level.INFO, "Getting Plot region for saving from: " + cuboidRegion);
+            Bukkit.getLogger().log(Level.INFO, "[Plot-System] Getting Plot region for saving from: " + cuboidRegion);
 
             if (cuboidRegion != null) {
                 BlockVector3 plotCenter = plot.getCenter();
@@ -214,14 +214,14 @@ public final class PlotUtils {
                 // Shift schematic region to the force (0, 0) paste
                 cuboidRegion.shift(BlockVector3.at(-plotCenter.getX(), 0, -plotCenter.getZ()));
 
-                Bukkit.getLogger().log(Level.INFO, "Shifted Plot region for saving to: " + cuboidRegion);
+                Bukkit.getLogger().log(Level.INFO, "[Plot-System] Shifted Plot region for saving to: " + cuboidRegion);
 
                 // Load finished plot region as cuboid region
                 if (plot.getWorld().loadWorld()) {
                     com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
                     Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().getBlockY(), cuboidRegion.getMaximumPoint().getBlockY());
 
-                    Bukkit.getLogger().log(Level.INFO, "Saving Schematic at region: " + region);
+                    Bukkit.getLogger().log(Level.INFO, "[Plot-System] Saving Schematic at region: " + region);
 
                     // Copy and write finished plot clipboard to schematic file
                     File finishedSchematicFile = Paths.get(PlotUtils.getDefaultSchematicPath(),
@@ -238,7 +238,6 @@ public final class PlotUtils {
 
                     Clipboard cb = new BlockArrayClipboard(region);
                     if (plot.getVersion() >= 3) {
-                        Bukkit.getLogger().log(Level.INFO, "Setting origin schems at: " + BlockVector3.at(0, cuboidRegion.getMinimumY(), (double) 0));
                         cb.setOrigin(BlockVector3.at(0, cuboidRegion.getMinimumY(), (double) 0));
                     } else {
                         Bukkit.getLogger().log(Level.SEVERE, "This should not happen, whyyy");

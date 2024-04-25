@@ -294,6 +294,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <build.number>rc.1</build.number>
+        <build.number>rc.2</build.number>
     </properties>
 </project>

@@ -156,40 +156,15 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
 
         // Set click listener
         Hologram holo = this.getHologram(playerUUID);
-        Bukkit.getLogger().log(Level.INFO, "Setting tutorial click listener for " + holo.getName());
 
-        if (readMoreId != -1) {
-            HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - (markAsReadClickAction == null ? 1 : 3));
-            Bukkit.getLogger().log(Level.INFO, "Looking to line " + line);
-            super.setClickListener((clickEvent) -> {
-                Bukkit.getLogger().log(Level.INFO, "Recieved Click Event " + clickEvent);
-                handleReadMoreClickAction();
-            });
-            // line.setEntity(new HologramEntity("click"));
-            // holo.onClick(player, line.getEntityIds()[0], ClickType.LEFT);
-            // line.setClickListener((clickEvent) -> handleReadMoreClickAction());
-        }
+        if (readMoreId != -1)  super.setClickListener((clickEvent) -> handleReadMoreClickAction());
         if (markAsReadClickAction != null) {
-            HologramLine line = (HologramLine) holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
+            HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
             super.setClickListener((clickEvent) -> {
-                Bukkit.getLogger().log(Level.INFO, "Recieved Click Event " + clickEvent);
                 line.setText(getMarkAsReadActionDoneText());
                 markAsReadClickAction.onClick(clickEvent);
             });
         }
-//        Hologram holo = getHologram(playerUUID);
-//        if (holo == null) return;
-//        if (readMoreId != -1) {
-//            HologramLine line = (HologramLine) holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - (markAsReadClickAction == null ? 1 : 3));
-//            // line.setClickListener((clickEvent) -> handleReadMoreClickAction());
-//        }
-//        if (markAsReadClickAction != null) {
-//            HologramLine line = (HologramLine) holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
-//            line.setClickListener((clickEvent) -> {
-//                line.setText(getMarkAsReadActionDoneText());
-//                markAsReadClickAction.onClick();
-//            });
-//        }
     }
 
     protected String getReadMoreLink() {

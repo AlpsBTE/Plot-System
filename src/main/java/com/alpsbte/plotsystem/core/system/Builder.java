@@ -287,9 +287,10 @@ public class Builder {
      * Select both country and city entries as ID and name, intersect with city ID ordered by country ID
      * <pre>
      * {@code
-     *   SELECT countries.id AS country_id, countries.name AS country_name, city_projects.id AS project_id, city_projects.name AS project_name FROM plotsystem_countries AS countries
+     *   SELECT countries.id AS country_id, city_projects.visible, countries.name AS country_name, city_projects.id AS project_id, city_projects.name AS project_name
      *   FROM plotsystem_countries AS countries
      *   LEFT JOIN plotsystem_city_projects AS city_projects ON countries.id = city_projects.country_id
+     *   WHERE city_projects.visible = 1
      *   ORDER BY country_id
      * }</pre> SQL Query statement
      * @return A List of every registered city project data as a pair of country entry and city entry.
@@ -298,12 +299,13 @@ public class Builder {
     public static ArrayList<DatabaseEntry<DatabaseEntry<Integer, String>,
         DatabaseEntry<Integer, String>>> getProjectsSorted() throws SQLException
     {
-        String query = "SELECT countries.id AS country_id, "
+        String query = "SELECT countries.id AS country_id, city_projects.visible, "
                 + "countries.name AS country_name, "
                 + "city_projects.id AS project_id, "
                 + "city_projects.name AS project_name "
                 + "FROM plotsystem_countries AS countries\n"
                 + "LEFT JOIN plotsystem_city_projects AS city_projects ON countries.id = city_projects.country_id\n"
+                + "WHERE city_projects.visible = 1\n"
                 + "ORDER BY country_id";
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -325,9 +327,10 @@ public class Builder {
      * Ordered by each city project id, do this will be incrementing from 1
      * <pre>
      * {@code
-     *   SELECT city_projects.id AS city_id, difficulties.name AS difficulty FROM plotsystem_city_projects AS city_projects
+     *   SELECT city_projects.id AS city_id, city_projects.visible, difficulties.name AS difficulty FROM plotsystem_city_projects AS city_projects
      *   RIGHT JOIN plotsystem_plots AS plots ON city_projects.id = plots.city_project_id
      *   INNER JOIN plotsystem_difficulties AS difficulties ON difficulty_id = difficulties.id
+     *   WHERE city_projects.visible = 1
      *   ORDER BY city_projects.id
      * }</pre> SQL Query statement
      * @return A List of every City ID containing a List of all plot entries in the city project.
@@ -336,7 +339,7 @@ public class Builder {
     public static ArrayList<DatabaseEntry<Integer, ArrayList<DatabaseEntry<Integer,
         DatabaseEntry<String, String>>>>> getPlotsSorted() throws SQLException
     {
-        String query = "SELECT city_projects.id AS city_id, "
+        String query = "SELECT city_projects.id AS city_id, city_projects.visible, "
                 + "plots.status, plots.id, plots.difficulty_id AS difficulty_id, "
                 + "difficulties.name AS difficulty "
                 + "FROM plotsystem_city_projects AS city_projects\n"
@@ -344,6 +347,7 @@ public class Builder {
                 + "ON city_projects.id = plots.city_project_id\n"
                 + "INNER JOIN plotsystem_difficulties AS difficulties "
                 + "ON difficulty_id = difficulties.id\n"
+                + "WHERE city_projects.visible = 1\n"
                 + "ORDER BY city_projects.id";
 
         try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {

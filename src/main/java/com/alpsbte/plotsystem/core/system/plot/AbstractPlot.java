@@ -169,9 +169,6 @@ public abstract class AbstractPlot {
             Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
             if (clipboard != null) {
                 Vector3 clipboardCenter = clipboard.getRegion().getCenter();
-
-                Bukkit.getLogger().log(Level.INFO, "Loading Clipboard Center at: " + BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ()));
-
                 return BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
             }
         } catch (IOException | SQLException ex) {
