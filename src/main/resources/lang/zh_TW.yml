@@ -127,7 +127,7 @@ menu-description:
   undo-submit-desc: "點擊以撤回你的提交"
   manage-members-desc: "點擊以開啟建地成員選單%newline%你可以在那裡添加和移除在你建地上的其他玩家"
   feedback-desc: "點擊以查看你建地的審核評語"
-  custom-heads-desc: "點擊開啟頭驢選單以取得一個定製頭驢"
+  custom-heads-desc: "點擊開啟頭顱選單以取得一個定製頭顱"
   banner-maker-desc: "點擊以創造並儲存你自己的旗幟"
   special-tools-desc: "點擊此處以存取各種無法存取的方塊和物品"
   add-member-to-plot-desc: "邀請你的朋友到你的建地並開始共同建設"
@@ -176,7 +176,7 @@ note:
   score-will-be-split: "審核時積分將分配給全部的成員！"
   player-has-to-be-online: "玩家必須上線！"
   action:
-    read: '閱讀'
+    read: '已讀'
     read-more: '閱讀更多'
     mark-as-read: '標記為已讀'
     start: '開始'
