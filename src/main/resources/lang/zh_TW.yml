@@ -80,7 +80,7 @@ menu-title:
   settings: "設定"
   submit: "提交"
   teleport: "傳送"
-  abandon: "放棄"
+  abandon: "廢棄"
   undo-submit: "撤回提交"
   manage-members: "管理成員"
   feedback: "評語 | 審核 #{0}"
