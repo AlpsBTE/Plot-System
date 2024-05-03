@@ -185,8 +185,8 @@ note:
     create-plot: 'Créer une parcelle'
     right-click: "clic droit"
     left-click: "Click Gauche"
-    accept: 'Accept'
-    reject: 'Reject'
+    accept: 'Accepter'
+    reject: 'Annuler'
     click-to-create-plot: 'Cliquez pour créer une nouvelle parcelle...'
     click-to-proceed: "Cliquez pour continuer..."
     click-to-remove-plot-member: "Cliquez pour supprimer le membre du tracé..."
@@ -225,16 +225,16 @@ message:
     saving-plot: "§aEnregistrement de l'intrigue..."
     creating-plot: "§aCréation d'un nouveau tracé..."
     created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
-    chat-enter-player: 'Please enter the name of the player in the chat.'
-    chat-enter-feedback: "Please enter a feedback for the player in the chat."
-    chat-input-expires-after: "Chat input expires after {0} minutes."
+    chat-enter-player: 'Merci d''entrer le nom d''un joueur dans le chat.'
+    chat-enter-feedback: "Merci d'entrer votre avis sur le joueur dans le chat."
+    chat-input-expires-after: "Vous avez {0} minutes pour écrire un commentaire."
     beginner-tutorial-required: 'Complétez le tutoriel pour prendre part au projet.'
     beginner-tutorial-completed: 'Êtes-vous prêts à construire votre propre parcelle ? C''est à votre tour !'
-    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
-    player-invite-to-sent: '{0} has invited you to help building on his plot.'
-    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
-    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
-    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
+    player-invite-sent: 'Une invitation a été envoyé à {0} afin de rejoindre votre plot.'
+    player-invite-to-sent: '{0} vous a invité à l''aider à construire sur son plot.'
+    player-invite-accepted: 'L''invitation à {0} a été acceptée.'
+    player-invite-to-accepted: '{0} a accepté votre invitation et a été ajouté au plot.'
+    player-invite-rejected: 'L''invitation au plot de {0} a été refusée.'
   error:
     plot-does-not-exist: "Ce complot n'existe pas!"
     plot-either-unclaimed-or-unreviewed: "Cette parcelle est soit non réclamée, soit n'a pas encore été examinée!"
@@ -254,10 +254,10 @@ message:
     player-is-plot-member: "Ce joueur est déjà membre de cette parcelle!"
     player-is-not-online: "Ce joueur n'est pas en ligne!"
     player-not-found: "Impossible de trouver ce joueur!"
-    player-already-invited: '{0} has already been invited to a plot.'
-    player-invite-expired: 'The invitation from {0} has expired.'
-    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
-    player-invite-to-rejected: '{0} has rejected your invitation.'
+    player-already-invited: '{0} a déjà été invité à un plot.'
+    player-invite-expired: 'L''invitation de {0} a expirée.'
+    player-invite-to-expired: 'Votre invitation pour {0} a expirée.'
+    player-invite-to-rejected: '{0} a rejeté votre invitation.'
     player-needs-to-be-on-plot: "Vous devez être sur un terrain pour pouvoir l'utiliser!"
     player-needs-higher-score: "Vous avez besoin d'un score plus élevé pour intégrer ce niveau de difficulté."
     error-occurred: "Une erreur s'est produite! Veuillez réessayer!"
@@ -265,7 +265,7 @@ message:
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
-    chat-input-expired: "The chat input has expired."
+    chat-input-expired: "La saisie du chat a expiré."
     tutorial-disabled: 'Les tutoriels sont désactivés sur ce serveur.'
     tutorial-already-running: "Vous avez déjà un tutoriel en cours ! Terminez-le avant d'en commencer un nouveau."
 leaderboards:
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Lisez tous les conseils sur les parcelles et marquez-les comme lus.'
 #NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

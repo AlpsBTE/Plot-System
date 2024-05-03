@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - '閱讀建地上全部的提示並將其標記為已讀。'
 # NOTE: Do not change
-config-version: 2.0
+config-version: 2.1
