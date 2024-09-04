@@ -58,97 +58,98 @@ public class OnePlotWorld extends PlotWorld {
 
     @Override
     public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
-        if (!isWorldGenerated()) {
-            try {
-                if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-                    new DefaultPlotGenerator(getPlot(), plotOwner);
-                } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
-                    new TutorialPlotGenerator(getPlot(), plotOwner);
-                } else return false;
-                return true;
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+        if (isWorldGenerated()) return false;
+
+        try {
+            if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
+                new DefaultPlotGenerator(getPlot(), plotOwner);
+            } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
+                new TutorialPlotGenerator(getPlot(), plotOwner);
+            } else return false;
+            return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
         return false;
     }
 
     @Override
     public boolean loadWorld() {
+        if (getPlot() == null || isWorldGenerated()) return super.loadWorld();
+
         // Generate plot if it doesn't exist
-        if (getPlot() != null && !isWorldGenerated()) {
-            try {
-                if (getPlot().getPlotType() != PlotType.TUTORIAL && ((Plot) getPlot()).getCompletedSchematic().exists()) {
-                    new DefaultPlotGenerator(getPlot(), plotOwner, getPlot().getPlotType()) {
-                        @Override
-                        protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, WorldEditException {
-                            super.generateOutlines(((Plot) getPlot()).getCompletedSchematic(), environmentSchematic);
-                        }
+        try {
+            if (getPlot().getPlotType() == PlotType.TUTORIAL ||
+                    !((Plot) getPlot()).getCompletedSchematic().exists())
+                generateWorld(TutorialPlotGenerator.class);
 
-                        @Override
-                        protected boolean init() {
-                            return true;
-                        }
+            new DefaultPlotGenerator(getPlot(), plotOwner, getPlot().getPlotType()) {
+                @Override
+                protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws SQLException, IOException, WorldEditException {
+                    super.generateOutlines(((Plot) getPlot()).getCompletedSchematic(), environmentSchematic);
+                }
 
-                        @Override
-                        protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
-                            getPlot().getPermissions().clearAllPerms();
-                            super.onComplete(true, false);
-                        }
-                    };
-                } else generateWorld(TutorialPlotGenerator.class);
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-            }
+                @Override
+                protected boolean init() {
+                    return true;
+                }
 
-            if (!isWorldGenerated() || !isWorldLoaded()) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world " + getWorldName() + " for plot " + getPlot().getID() + "!");
-                return false;
-            }
-            return true;
-        } else return super.loadWorld();
+                @Override
+                protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+                    getPlot().getPermissions().clearAllPerms();
+                    super.onComplete(true, false);
+                }
+            };
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+        }
+
+        if (!isWorldGenerated() || !isWorldLoaded()) {
+            Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world " + getWorldName() + " for plot " + getPlot().getID() + "!");
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if (super.unloadWorld(movePlayers)) {
-            try {
-                if (getPlot() != null && (getPlot().getStatus() == Status.completed || getPlot().getPlotType() == PlotType.TUTORIAL)) {
-                    deleteWorld();
-                    return true;
-                }
+        if (super.unloadWorld(movePlayers)) return false;
+        try {
+            if (getPlot() == null ||
+                    (getPlot().getStatus() != Status.completed && getPlot().getPlotType() != PlotType.TUTORIAL)) {
                 return !isWorldLoaded();
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
             }
+
+            deleteWorld();
+            return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
         }
         return false;
     }
 
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
-        if (super.teleportPlayer(player)) {
-            try {
-                player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND, 1, 1);
-                player.setAllowFlight(true);
-                player.setFlying(true);
+        if (!super.teleportPlayer(player)) return false;
 
-                if (getPlot() != null) {
-                    if (getPlot().getPlotType() != PlotType.TUTORIAL) {
-                        player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
-                        PlotUtils.ChatFormatting.sendLinkMessages((Plot) getPlot(), player);
-                    }
-                    Utils.updatePlayerInventorySlots(player);
+        try {
+            player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND, 1, 1);
+            player.setAllowFlight(true);
+            player.setFlying(true);
 
-                    if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                        getPlot().setLastActivity(false);
-                    }
-                }
-
-                return true;
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
+            if (getPlot() == null) return true;
+            if (getPlot().getPlotType() != PlotType.TUTORIAL) {
+                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+                PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
             }
+            Utils.updatePlayerInventorySlots(player);
+
+            if(!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
+            getPlot().setLastActivity(false);
+
+            return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
         }
         return false;
     }

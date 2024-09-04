@@ -103,8 +103,8 @@ public class CoordinateConversion {
         int latitudeMinutes = (int) minLat;
         double secLon = minLon * 60 - longitudeMinutes * 60;
         double secLat = minLat * 60 - latitudeMinutes * 60;
-        String formattedLongitude = "" + longitudeDegrees + "°" + longitudeMinutes + "'" + decFormat1.format(secLon) + "\"" + eo;
-        String formattedLatitude = "" + latitudeDegrees + "°" + latitudeMinutes + "'" + decFormat1.format(secLat) + "\"" + ns;
+        String formattedLongitude = longitudeDegrees + "°" + longitudeMinutes + "'" + decFormat1.format(secLon) + "\"" + eo;
+        String formattedLatitude = latitudeDegrees + "°" + latitudeMinutes + "'" + decFormat1.format(secLat) + "\"" + ns;
         return formattedLatitude + " " + formattedLongitude;
     }
 }

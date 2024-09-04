@@ -59,7 +59,7 @@ public class CityPlotWorld extends PlotWorld {
                     player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
                     Utils.updatePlayerInventorySlots(player);
-                    PlotUtils.ChatFormatting.sendLinkMessages((Plot) getPlot(), player);
+                    PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
 
                     if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
                         getPlot().setLastActivity(false);

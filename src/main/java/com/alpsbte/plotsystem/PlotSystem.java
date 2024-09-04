@@ -78,7 +78,6 @@ public class PlotSystem extends JavaPlugin {
         YamlFileFactory.registerPlugin(this);
         li.cinnazeyy.langlibs.core.file.YamlFileFactory.registerPlugin(this);
         plugin = this;
-
         String successPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "✔" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
         String errorPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.RED + "X" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
 
