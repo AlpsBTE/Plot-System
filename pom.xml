@@ -51,7 +51,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.2-R0.1-SNAPSHOT</version>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- World Guard -->
@@ -106,8 +106,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-io</artifactId>
-            <version>1.0.37</version>
-            <scope>compile</scope>
+            <version>1.0.38</version>
         </dependency>
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
@@ -152,7 +151,7 @@
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
-            <version>3.8.0</version>
+            <version>3.9.0</version>
             <scope>compile</scope>
         </dependency>
         <!-- JSCH -->

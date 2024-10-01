@@ -141,7 +141,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                             //Add Enchantment
                             ItemMeta itemMeta = itemPointZero[position].getItemMeta();
-                            Objects.requireNonNull(itemMeta).addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                            Objects.requireNonNull(itemMeta).addEnchant(Enchantment.POWER, 1, true);
                             itemPointZero[position].setItemMeta(itemMeta);
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
@@ -257,7 +257,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 6; j++) {
-                        if (Objects.requireNonNull(getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE)) {
+                        if (Objects.requireNonNull(getMenu().getSlot(11 + (i * 9) + j).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.POWER)) {
                             if (i == 3) {
                                 score.append(j);
                             } else {
@@ -417,18 +417,18 @@ public class ReviewPlotMenu extends AbstractMenu {
                 //Go through the whole points row
                 getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                     for (int j = 0; j < 6; j++) {
-                        if (!Objects.requireNonNull(getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.ARROW_DAMAGE)) continue;
+                        if (!Objects.requireNonNull(getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer).getItemMeta()).hasEnchant(Enchantment.POWER)) continue;
 
                         ItemStack itemPrevious = getMenu().getSlot(slot - (column - 1) + j + 2).getItem(clickPlayer);
                         ItemMeta metaPrevious = itemPrevious.getItemMeta();
                         assert metaPrevious != null;
-                        metaPrevious.removeEnchant(Enchantment.ARROW_DAMAGE);
+                        metaPrevious.removeEnchant(Enchantment.POWER);
                         itemPrevious.setItemMeta(metaPrevious);
                         getMenu().getSlot(slot - (column - 1) + j + 2).setItem(itemPrevious);
                     }
 
                     assert meta != null;
-                    meta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                    meta.addEnchant(Enchantment.POWER, 1, true);
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
 
                     ItemStack newItem = getMenu().getSlot(slot).getItem(clickPlayer);
