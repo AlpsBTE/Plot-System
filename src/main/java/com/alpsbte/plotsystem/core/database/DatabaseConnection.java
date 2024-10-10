@@ -264,7 +264,7 @@ public class DatabaseConnection {
                     // Builders
                     "CREATE TABLE IF NOT EXISTS `plotsystem_builders`" +
                             "(" +
-                            " `uuid`            varchar(36) NOT NULL ," +
+                            " `uuid`            varchar(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
                             " `name`            varchar(16) NOT NULL ," +
                             " `score`           int DEFAULT 0 ," +
                             " `completed_plots` int DEFAULT 0 ," +
@@ -280,7 +280,7 @@ public class DatabaseConnection {
                     "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
                             "(" +
                             " `id`            int NOT NULL AUTO_INCREMENT ," +
-                            " `reviewer_uuid` varchar(36) NOT NULL ," +
+                            " `reviewer_uuid` varchar(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
                             " `rating`        varchar(45) NOT NULL ," +
                             " `feedback`      varchar(420) NOT NULL ," +
                             " `review_date`   datetime NOT NULL ," +
@@ -307,7 +307,7 @@ public class DatabaseConnection {
                             " `city_project_id` int NOT NULL ," +
                             " `difficulty_id`   int NOT NULL ," +
                             " `review_id`       int NULL ," +
-                            " `owner_uuid`      varchar(36) NULL ," +
+                            " `owner_uuid`      varchar(36) NULL COLLATE 'utf8mb4_general_ci'," +
                             " `member_uuids`    varchar(110) NULL ," +
                             " `status`          enum ('unclaimed', 'unfinished', 'unreviewed', 'completed') NOT NULL DEFAULT 'unclaimed' ," +
                             " `mc_coordinates`  varchar(255) NOT NULL ," +
@@ -373,10 +373,10 @@ public class DatabaseConnection {
                             "`builder_uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
                             "`buildteam_id` INT(11) NOT NULL," +
                             "PRIMARY KEY (`id`) USING BTREE," +
-                            "KEY `FK_138` (`builder_uuid`)," +
-                            "KEY `FK_141` (`buildteam_id`)," +
-                            "CONSTRAINT `FK_136` FOREIGN KEY `FK_138` (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
-                            "CONSTRAINT `FK_139` FOREIGN KEY `FK_141` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
+                            "INDEX `FK_138` (`builder_uuid`) USING BTREE," +
+                            "INDEX `FK_141` (`buildteam_id`) USING BTREE," +
+                            "CONSTRAINT `FK_136` FOREIGN KEY (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
+                            "CONSTRAINT `FK_139` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" + 
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +
