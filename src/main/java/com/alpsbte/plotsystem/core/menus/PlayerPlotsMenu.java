@@ -36,6 +36,8 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -75,7 +77,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
         try {
             getMenu().getSlot(4)
                     .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
-                            .setName("§6§l" + builder.getName()).setLore(new LegacyLoreBuilder()
+                            .setName(Component.text(builder.getName(), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                            .setLore(new LegacyLoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": §f" + builder.getScore(),
                                             "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": §f" + builder.getCompletedBuilds())
                                     .build())

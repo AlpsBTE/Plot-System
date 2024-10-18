@@ -142,7 +142,7 @@ public abstract class AbstractPlot {
         // Convert MC coordinates to geo coordinates
         BlockVector3 mcCoordinates = getCoordinates();
         try {
-            return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
+            return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z()));
         } catch (OutOfProjectionBoundsException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not convert MC coordinates to geo coordinates!", ex);
         }
@@ -166,7 +166,7 @@ public abstract class AbstractPlot {
             Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
             if (clipboard != null) {
                 Vector3 clipboardCenter = clipboard.getRegion().getCenter();
-                return BlockVector3.at(clipboardCenter.getX(), this.getWorld().getPlotHeightCentered(), clipboardCenter.getZ());
+                return BlockVector3.at(clipboardCenter.x(), this.getWorld().getPlotHeightCentered(), clipboardCenter.z());
             }
         } catch (IOException | SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);

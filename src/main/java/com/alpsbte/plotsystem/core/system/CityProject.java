@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -34,6 +35,9 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -103,9 +107,9 @@ public class CityProject {
             int plotsOpenForPlayer = cpPlotDifficulty != null && plotsUnclaimed != 0 ? getOpenPlotsForPlayer(getID(), cpPlotDifficulty) : 0;
 
             return new ItemBuilder(cpItem)
-                    .setName("§b§l" + getName())
-                    .setLore(new LegacyLoreBuilder()
-                            .addLines(getDescription(),
+                    .setName(Component.text(getName(), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    .setLore(new LoreBuilder()
+                            .addLines(getDescription(), // TODO: Use components
                                     "",
                                     "§6" + plotsOpen + " §7" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_OPEN) + " §8" + LangUtil.getInstance().get(player, LangPaths.CityProject.FOR_YOUR_DIFFICULTY, (plotsOpenForPlayer == 0 ? "§c" : "§a") + plotsOpenForPlayer + "§8"),
                                     "§8---------------------",
@@ -115,7 +119,6 @@ public class CityProject {
                                     plotsUnclaimed != 0 ? Utils.ItemUtils.getFormattedDifficulty(cpPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE)
                             ).build())
                     .build();
-
         } catch (SQLException | ExecutionException | InterruptedException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             return MenuItems.errorItem(player);

@@ -100,7 +100,7 @@ public class CityPlotWorld extends PlotWorld {
     @Beta
     public int getWorldHeight() throws IOException {
         Clipboard clipboard = FaweAPI.load(getPlot().getOutlinesSchematic());
-        int plotHeight = clipboard != null ? clipboard.getMinimumPoint().getBlockY() : MIN_WORLD_HEIGHT;
+        int plotHeight = clipboard != null ? clipboard.getMinimumPoint().y() : MIN_WORLD_HEIGHT;
 
         // Plots created below min world height are not supported
         if (plotHeight < MIN_WORLD_HEIGHT) throw new IOException("Plot height is not supported");

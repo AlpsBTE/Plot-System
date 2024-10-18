@@ -58,6 +58,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Openable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -68,7 +70,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Openable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -201,8 +202,7 @@ public class EventListener implements Listener {
 
                         if (query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) {
                             BlockState state = event.getClickedBlock().getState();
-                            Openable tp = (Openable) state.getData();
-
+                            Openable tp = (Openable) state.getBlockData();
                             if (!tp.isOpen()) {
                                 tp.setOpen(true);
                                 event.getPlayer().playSound(event.getClickedBlock().getLocation(), "block.iron_trapdoor.open", 1f, 1f);

@@ -140,7 +140,7 @@ public class PlotWorld implements IWorld {
             if (plotVector == null) {
                 spawnLocation = getBukkitWorld().getSpawnLocation();
             } else {
-                spawnLocation = new Location(getBukkitWorld(), plotVector.getX(), plotVector.getY(), plotVector.getZ());
+                spawnLocation = new Location(getBukkitWorld(), plotVector.x(), plotVector.y(), plotVector.z());
             }
 
             // Set spawn point 1 block above the highest block at the spawn location
@@ -160,7 +160,7 @@ public class PlotWorld implements IWorld {
         if (plot != null) {
             Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
             if (clipboard != null) {
-                return (int) clipboard.getRegion().getCenter().getY() - clipboard.getMinimumPoint().getBlockY();
+                return (int) clipboard.getRegion().getCenter().y() - clipboard.getMinimumPoint().y();
             }
         }
         return 0;

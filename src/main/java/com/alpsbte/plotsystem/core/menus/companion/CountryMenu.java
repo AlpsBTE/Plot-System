@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
@@ -41,6 +42,8 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -170,8 +173,8 @@ public class CountryMenu extends AbstractMenu {
             int plotsUnclaimed = Plot.getPlots(cities, Status.unclaimed).size();
 
             getMenu().getSlot(startingSlot + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
-                    .setName("§b§l" + country.getName())
-                    .setLore(new LegacyLoreBuilder()
+                    .setName(Component.text(country.getName(), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    .setLore(new LoreBuilder() //TODO: use components
                             .addLines(
                                     "§6" + cities.size() + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.CITIES),
                                     "",
