@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial.connector;
 
 // import de.oliver.fancynpcs.FancyNpcs;
+
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
@@ -43,6 +44,7 @@ import java.util.Objects;
 /**
  * FancyNpcs Wrapper class to manage NPC visibility and name-tag holograms.
  * Using SkinFetcher to get minecraft skin from signature or player UUID.
+ *
  * @see SkinFetcher
  */
 public abstract class AbstractNpc {
@@ -55,6 +57,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get the NPC name.
+     *
      * @param playerUUID Focused player.
      * @return The NPC name to be overridden.
      */
@@ -62,6 +65,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get the NPC Name suffix message to be added.
+     *
      * @param playerUUID Focused player.
      * @return The NPC name suffix to be overridden.
      */
@@ -74,11 +78,12 @@ public abstract class AbstractNpc {
 
     /**
      * Create a new NPC by custom skin texture and signature.
+     *
+     * @param id            Identifier for this NPC to prevent duplicate naming.
+     * @param skinTexture   Minecraft skin texture value.
+     * @param skinSignature Minecraft skin texture signature.
      * @see <a href="https://mineskin.org/">mineskin.org</a>
      * Minecraft skin texture and signature can be generated at Mineskin.
-     * @param id Identifier for this NPC to prevent duplicate naming.
-     * @param skinTexture Minecraft skin texture value.
-     * @param skinSignature Minecraft skin texture signature.
      */
     public AbstractNpc(String id, String skinTexture, String skinSignature) {
         this.id = id;
@@ -87,8 +92,9 @@ public abstract class AbstractNpc {
 
     /**
      * Create NPC Data on a world with location, the npc will not be visible to any player yet.
-     * @param spawnPos The NPC spawn location.
-     * @param saveToFile Whether the NPC Data will be persistent.
+     *
+     * @param spawnPos     The NPC spawn location.
+     * @param saveToFile   Whether the NPC Data will be persistent.
      * @param turnToPlayer Will the NPC always facing the player.
      */
     public void create(Location spawnPos, boolean saveToFile, boolean turnToPlayer) {
@@ -110,8 +116,9 @@ public abstract class AbstractNpc {
 
     /**
      * Spawn the NPC on a location, this will only be visible to a focused player.
-     * @see Npc#spawn(Player) FancyNpcs spawn method.
+     *
      * @param player Focused player.
+     * @see Npc#spawn(Player) FancyNpcs spawn method.
      */
     public void show(Player player) {
         if (npc == null) return;
@@ -126,6 +133,7 @@ public abstract class AbstractNpc {
 
     /**
      * Spawn the NPC on a location, with any player be able to see.
+     *
      * @see Npc#spawnForAll() FancyNpcs::Npc#spawnForAll()
      */
     public void showForAll() {
@@ -143,6 +151,7 @@ public abstract class AbstractNpc {
 
     /**
      * Hide NPC from the focused player.
+     *
      * @param player Focused player.
      */
     public void hide(Player player) {
@@ -155,8 +164,9 @@ public abstract class AbstractNpc {
 
     /**
      * Update NPC name-tag hologram and NPC glow.
+     *
      * @param playerUUID The focused player.
-     * @param isVisible Is the name-tag visible.
+     * @param isVisible  Is the name-tag visible.
      * @param enableGlow Set npc to glow
      * @see NpcData#setGlowing(boolean)
      */
@@ -183,6 +193,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get the identifier used to construct this NPC.
+     *
      * @return Identifier
      */
     public String getId() {
@@ -191,6 +202,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get this NPC skin texture value.
+     *
      * @return Minecraft Skin Value
      */
     public String getSkinTexture() {
@@ -199,6 +211,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get this NPC skin signature value.
+     *
      * @return Minecraft Skin Signature
      */
     public String getSkinSignature() {
@@ -207,6 +220,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get the FancyNpcs class created by this wrapper.
+     *
      * @return npc
      */
     public Npc getNpc() {
@@ -215,6 +229,7 @@ public abstract class AbstractNpc {
 
     /**
      * Get the NPC name-tag hologram.
+     *
      * @return NpcHologram
      */
     public NpcHologram getHologram() {

@@ -101,7 +101,7 @@ public class FTPManager {
             FileObject localSchematic = fileManager.toFileObject(schematic);
 
             // Get remote path
-            FileObject remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/",""), fileOptions);
+            FileObject remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/", ""), fileOptions);
 
             // Get remote schematic and write it to local file
             FileObject remoteSchematic = remote.resolveFile(schematic.getName());

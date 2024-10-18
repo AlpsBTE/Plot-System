@@ -59,7 +59,7 @@ public class CMD_Setup_Country extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "country" };
+        return new String[]{"country"};
     }
 
     @Override
@@ -76,7 +76,6 @@ public class CMD_Setup_Country extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.country";
     }
-
 
 
     public static class CMD_Setup_Country_List extends SubCommand {
@@ -106,7 +105,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -132,7 +131,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 3 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 3 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             if (args[2].length() > 45) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country name cannot be longer than 45 characters!"));
@@ -142,7 +141,7 @@ public class CMD_Setup_Country extends SubCommand {
             Continent continent;
             try {
                 continent = Continent.valueOf(args[3].toUpperCase());
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
                 return;
             }
@@ -157,7 +156,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "add" };
+            return new String[]{"add"};
         }
 
         @Override
@@ -167,7 +166,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Server-ID", "Name", "Continent" };
+            return new String[]{"Server-ID", "Name", "Continent"};
         }
 
         @Override
@@ -183,7 +182,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if country exists
             try {
@@ -202,7 +201,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "remove" };
+            return new String[]{"remove"};
         }
 
         @Override
@@ -212,7 +211,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Country-ID" };
+            return new String[]{"Country-ID"};
         }
 
         @Override
@@ -250,7 +249,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "sethead" };
+            return new String[]{"sethead"};
         }
 
         @Override
@@ -260,7 +259,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Country-ID", "Head-ID" };
+            return new String[]{"Country-ID", "Head-ID"};
         }
 
         @Override

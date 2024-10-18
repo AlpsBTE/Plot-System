@@ -40,6 +40,7 @@ import java.util.Objects;
  * [2] Delete displays when a player quit.<br/>
  * [3] Re-create and delete displays when a player changes world.<br/>
  * [4] HologramClickEvent callback to any registered hologram.<br/>
+ *
  * @see PlayerJoinEvent
  * @see PlayerQuitEvent
  * @see PlayerChangedWorldEvent
@@ -79,8 +80,8 @@ public class DecentHologramListener implements Listener {
     public void onHologramClick(HologramClickEvent event) {
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
             if (display.getLocation() == null
-                | display.getClickListener() == null
-                | display.getHologram(event.getPlayer().getUniqueId()) == null) continue;
+                    | display.getClickListener() == null
+                    | display.getHologram(event.getPlayer().getUniqueId()) == null) continue;
             if (display.getHologram(event.getPlayer().getUniqueId()).equals(event.getHologram()))
                 display.getClickListener().onClick(event);
         }

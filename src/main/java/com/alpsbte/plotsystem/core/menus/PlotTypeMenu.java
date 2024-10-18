@@ -91,9 +91,9 @@ public class PlotTypeMenu extends AbstractMenu {
 
         // Set selected glass pane
         int selectedPlotTypeSlot = 13;
-        if(builder.getPlotTypeSetting() == PlotType.FOCUS_MODE)
+        if (builder.getPlotTypeSetting() == PlotType.FOCUS_MODE)
             selectedPlotTypeSlot = 11;
-        if(builder.getPlotTypeSetting() == PlotType.CITY_INSPIRATION_MODE)
+        if (builder.getPlotTypeSetting() == PlotType.CITY_INSPIRATION_MODE)
             selectedPlotTypeSlot = 15;
         getMenu().getSlot(selectedPlotTypeSlot - 9).setItem(new ItemBuilder(Material.LIME_STAINED_GLASS_PANE, 1).setName(empty()).build());
 

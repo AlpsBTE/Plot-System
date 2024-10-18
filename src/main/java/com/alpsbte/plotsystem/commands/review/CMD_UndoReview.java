@@ -43,30 +43,30 @@ import java.util.logging.Level;
 public class CMD_UndoReview extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if(!sender.hasPermission(getPermission())) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
-        if(args.length == 0 || AlpsUtils.tryParseInt(args[0]) == null) {
+        if (args.length == 0 || AlpsUtils.tryParseInt(args[0]) == null) {
             sendInfo(sender);
             return true;
         }
 
         int plotID = Integer.parseInt(args[0]);
-        if(!PlotUtils.plotExists(plotID)) {
+        if (!PlotUtils.plotExists(plotID)) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
             return true;
         }
 
         try {
             Plot plot = new Plot(plotID);
-            if(!plot.isReviewed()) {
+            if (!plot.isReviewed()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
                 return true;
             }
 
-            if(getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(getPlayer(sender).getUniqueId())) {
+            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(getPlayer(sender).getUniqueId())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_UNDO_REVIEW)));
                 return true;
             }
@@ -82,7 +82,7 @@ public class CMD_UndoReview extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "undoReview" };
+        return new String[]{"undoReview"};
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CMD_UndoReview extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

@@ -51,7 +51,7 @@ public class CMD_Setup extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "pss" };
+        return new String[]{"pss"};
     }
 
     @Override

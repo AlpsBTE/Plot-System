@@ -62,7 +62,7 @@ public class CreateHologramTask extends AbstractTask {
     private void onMarkAsReadClick(String holoId) {
         AbstractTutorialHologram hologram = hologramsToCreate.stream().filter(holo -> holo.getId().equals(holoId)).findFirst().orElse(null);
         if (hologram == null) return;
-        player.playSound(player.getLocation(), TutorialUtils.Sound.ASSIGNMENT_COMPLETED,1f, 1f);
+        player.playSound(player.getLocation(), TutorialUtils.Sound.ASSIGNMENT_COMPLETED, 1f, 1f);
         hologramsToCreate.remove(hologram);
         updateAssignments();
 

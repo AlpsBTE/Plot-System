@@ -62,7 +62,7 @@ public class CountryMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = null;
 
     CountryMenu(Player player, Continent continent) {
-        super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY) , player);
+        super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY), player);
         selectedContinent = continent;
     }
 

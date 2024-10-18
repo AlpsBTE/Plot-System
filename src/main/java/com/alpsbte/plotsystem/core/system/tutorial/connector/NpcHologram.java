@@ -54,9 +54,10 @@ public class NpcHologram extends DecentHologramDisplay {
 
     /**
      * Create a new NPC name-tag Hologram.
-     * @param id Any identifier to be set as hologram name.
+     *
+     * @param id       Any identifier to be set as hologram name.
      * @param location The location to create this hologram.
-     * @param npc AbstractNpc to be assigned to this hologram.
+     * @param npc      AbstractNpc to be assigned to this hologram.
      */
     public NpcHologram(@NotNull String id, Location location, AbstractNpc npc) {
         super(id, location.clone().add(0, NPC_HOLOGRAM_Y, 0), true);
@@ -66,12 +67,13 @@ public class NpcHologram extends DecentHologramDisplay {
 
     /**
      * Create NPC name-tag, with view permission set to its assigned NPC's viewing player.
+     *
      * @param player The player that will be able to view this hologram
      */
     @Override
     public void create(Player player) {
         Bukkit.getScheduler().runTask(FancyNpcsPlugin.get().getPlugin(), () -> {
-            if(npc.getNpc().getIsVisibleForPlayer().containsKey(player.getUniqueId())
+            if (npc.getNpc().getIsVisibleForPlayer().containsKey(player.getUniqueId())
                     && npc.getNpc().getIsVisibleForPlayer().get(player.getUniqueId())) {
                 super.create(player);
             }
@@ -81,11 +83,12 @@ public class NpcHologram extends DecentHologramDisplay {
     /**
      * This always returns true since view permission check
      * of this hologram happens before creating the hologram.
+     *
      * @param playerUUID Focused player
      * @return TRUE
      */
     @Override
-    public boolean hasViewPermission(UUID playerUUID) { return true; }
+    public boolean hasViewPermission(UUID playerUUID) {return true;}
 
     @Override
     public ItemStack getItem() {
@@ -117,24 +120,26 @@ public class NpcHologram extends DecentHologramDisplay {
         this.baseLocation = newLocation;
         for (UUID playerUUID : getHolograms().keySet())
             getHolograms().get(playerUUID)
-            .setLocation(newLocation.add(0, isActionTitleVisible(playerUUID) ?
-                NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
+                    .setLocation(newLocation.add(0, isActionTitleVisible(playerUUID) ?
+                            NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
     }
 
     /**
      * Update this name-tag hologram's location and visibility.
+     *
      * @param playerUUID Focused player.
-     * @param isVisible Set the hologram visible or not.
+     * @param isVisible  Set the hologram visible or not.
      */
     public void setActionTitleVisibility(UUID playerUUID, boolean isVisible) {
         isActionTitleVisible.put(playerUUID, isVisible);
         getHologram(playerUUID).setLocation(baseLocation.clone().add(0, isActionTitleVisible(playerUUID) ?
-            NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
+                NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
         reload(playerUUID);
     }
 
     /**
      * Get whether this hologram is visible.
+     *
      * @param playerUUID Focused player.
      * @return isActionTitleVisible
      */

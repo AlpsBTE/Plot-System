@@ -56,7 +56,7 @@ import java.util.logging.Level;
 public class CMD_Tpll extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if(!sender.hasPermission(getPermission())) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
@@ -112,7 +112,7 @@ public class CMD_Tpll extends BaseCommand {
             // Convert terra coordinates to plot relative coordinates
             CompletableFuture<double[]> plotCoords = plot != null ? PlotUtils.convertTerraToPlotXZ(plot, terraCoords) : null;
 
-            if(plotCoords == null) {
+            if (plotCoords == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CANNOT_TELEPORT_OUTSIDE_PLOT)));
                 return true;
             }
@@ -150,7 +150,7 @@ public class CMD_Tpll extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "tpll" };
+        return new String[]{"tpll"};
     }
 
     @Override
@@ -160,7 +160,7 @@ public class CMD_Tpll extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Lat", "Lon" };
+        return new String[]{"Lat", "Lon"};
     }
 
     @Override

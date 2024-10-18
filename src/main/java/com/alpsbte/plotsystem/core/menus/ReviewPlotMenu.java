@@ -52,6 +52,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -78,7 +79,7 @@ public class ReviewPlotMenu extends AbstractMenu {
         final ItemStack[] itemPointFour = new ItemStack[4];
         final ItemStack[] itemPointFive = new ItemStack[4];
 
-        for(int i = 0; i < 54; i++) {
+        for (int i = 0; i < 54; i++) {
             switch (i) {
                 case 4:
                     getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP, getMenuPlayer()));
@@ -206,7 +207,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                                     "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(),
                                     "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase())
                             .emptyLine()
-                            .addLine("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.PLAYER_LANGUAGE) + ": §f" + LangUtil.getInstance().get(plot.getPlotOwner().getPlayer(),"lang.name"))
+                            .addLine("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.PLAYER_LANGUAGE) + ": §f" + LangUtil.getInstance().get(plot.getPlotOwner().getPlayer(), "lang.name"))
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -219,11 +220,11 @@ public class ReviewPlotMenu extends AbstractMenu {
         getMenu().getSlot(7).setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.INFO_BUTTON.getId()))
                 .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.INFORMATION))
                 .setLore(new LegacyLoreBuilder()
-                        .addLines(AlpsUtils.createMultilineFromString( "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), LoreBuilder.MAX_LORE_LINE_LENGTH, LegacyLoreBuilder.LINE_BAKER))
+                        .addLines(AlpsUtils.createMultilineFromString("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.INFORMATION), LoreBuilder.MAX_LORE_LINE_LENGTH, LegacyLoreBuilder.LINE_BAKER))
                         .emptyLine()
                         .addLines("§f" + points + " <= 0: §c" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED),
-                                  "§f" + points + " <= 8: §e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED),
-                                  "§f" + points + " <= 20: §a" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
+                                "§f" + points + " <= 8: §e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED),
+                                "§f" + points + " <= 20: §a" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
                         .build())
                 .build());
     }
@@ -243,7 +244,7 @@ public class ReviewPlotMenu extends AbstractMenu {
             try {
                 new PlotActionsMenu(clickPlayer, plot);
             } catch (SQLException ex) {
-               Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
         });
 
@@ -312,13 +313,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                         Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!", ex);
                     }
 
-                plot.setStatus(Status.completed);
-                plot.getReview().setFeedbackSent(false);
-                plot.getReview().setFeedback("No Feedback");
-                plot.getPlotOwner().addCompletedBuild(1);
+                    plot.setStatus(Status.completed);
+                    plot.getReview().setFeedbackSent(false);
+                    plot.getReview().setFeedback("No Feedback");
+                    plot.getPlotOwner().addCompletedBuild(1);
 
-                // Remove Plot from Owner
-                plot.getPlotOwner().removePlot(plot.getSlot());
+                    // Remove Plot from Owner
+                    plot.getPlotOwner().removePlot(plot.getSlot());
 
                     if (plot.getPlotMembers().isEmpty()) {
                         // Plot was made alone
@@ -336,13 +337,13 @@ public class ReviewPlotMenu extends AbstractMenu {
                         }
                         reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
 
-                    // Score gets split between all participants
-                    plot.getPlotOwner().addScore(plot.getSharedScore());
-
-                    for (Builder builder : plot.getPlotMembers()) {
                         // Score gets split between all participants
-                        builder.addScore(plot.getSharedScore());
-                        builder.addCompletedBuild(1);
+                        plot.getPlotOwner().addScore(plot.getSharedScore());
+
+                        for (Builder builder : plot.getPlotMembers()) {
+                            // Score gets split between all participants
+                            builder.addScore(plot.getSharedScore());
+                            builder.addCompletedBuild(1);
 
                             // Remove Slot from Member
                             builder.removePlot(builder.getSlot(plot));
@@ -369,7 +370,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                 boolean finalIsRejected = isRejected;
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                    for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                         player.teleport(Utils.getSpawnLocation());
                     }
 
@@ -381,28 +382,28 @@ public class ReviewPlotMenu extends AbstractMenu {
                         Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
                     }
 
-                        clickPlayer.sendMessage(reviewerConfirmationMessage);
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
+                    clickPlayer.sendMessage(reviewerConfirmationMessage);
+                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);
 
-                        try {
-                            ChatInput.awaitChatInput.put(clickPlayer.getUniqueId(),
-                                    new PlayerFeedbackChatInput(clickPlayer.getUniqueId(), plot.getReview()));
-                            PlayerFeedbackChatInput.sendChatInputMessage(clickPlayer);
-                        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
-                    });
+                    try {
+                        ChatInput.awaitChatInput.put(clickPlayer.getUniqueId(),
+                                new PlayerFeedbackChatInput(clickPlayer.getUniqueId(), plot.getReview()));
+                        PlayerFeedbackChatInput.sendChatInputMessage(clickPlayer);
+                    } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+                });
 
-                    for (Builder member : plot.getPlotMembers()) {
-                        if (member.isOnline()) PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
-                    }
-
-                    if(plot.getPlotOwner().isOnline()) {
-                        PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
-                        plot.getReview().setFeedbackSent(true);
-                    }
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                for (Builder member : plot.getPlotMembers()) {
+                    if (member.isOnline()) PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
                 }
-            }));
+
+                if (plot.getPlotOwner().isOnline()) {
+                    PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
+                    plot.getReview().setFeedbackSent(true);
+                }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            }
+        }));
 
         // Set click event for point selection items
         for (int i = 0; i < 54; i++) {

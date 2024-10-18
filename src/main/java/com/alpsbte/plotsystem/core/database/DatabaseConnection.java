@@ -93,7 +93,7 @@ public class DatabaseConnection {
     }
 
     public static void closeResultSet(ResultSet resultSet) throws SQLException {
-        if(resultSet.isClosed()
+        if (resultSet.isClosed()
                 && resultSet.getStatement().isClosed()
                 && resultSet.getStatement().getConnection().isClosed())
             return;
@@ -104,7 +104,7 @@ public class DatabaseConnection {
 
         connectionClosed++;
 
-        if(connectionOpened > connectionClosed + 5) {
+        if (connectionOpened > connectionClosed + 5) {
             Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
             Bukkit.getLogger().log(Level.SEVERE, "Connections Open: " + (connectionOpened - connectionClosed));
         }
@@ -140,12 +140,13 @@ public class DatabaseConnection {
 
     /**
      * Returns a missing auto increment id
+     *
      * @param table in the database
      * @return smallest missing auto increment id in the table
      */
     public static int getTableID(String table) {
         try {
-            String query ="SELECT id + 1 available_id FROM $table t WHERE NOT EXISTS (SELECT * FROM $table WHERE $table.id = t.id + 1) ORDER BY id LIMIT 1"
+            String query = "SELECT id + 1 available_id FROM $table t WHERE NOT EXISTS (SELECT * FROM $table WHERE $table.id = t.id + 1) ORDER BY id LIMIT 1"
                     .replace("$table", table);
             try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
                 if (rs.next()) {
@@ -376,7 +377,7 @@ public class DatabaseConnection {
                             "INDEX `FK_138` (`builder_uuid`) USING BTREE," +
                             "INDEX `FK_141` (`buildteam_id`) USING BTREE," +
                             "CONSTRAINT `FK_136` FOREIGN KEY (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
-                            "CONSTRAINT `FK_139` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" + 
+                            "CONSTRAINT `FK_139` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
                             ")" +
                             "COLLATE='utf8mb4_general_ci'" +
                             "ENGINE=InnoDB" +

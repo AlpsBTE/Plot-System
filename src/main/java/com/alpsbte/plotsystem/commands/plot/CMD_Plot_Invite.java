@@ -54,7 +54,7 @@ public class CMD_Plot_Invite extends SubCommand {
                     if (item.invitee.getUniqueId().toString().equals(getPlayer(sender).getUniqueId().toString())) {
                         invite = item;
                         try {
-                            switch (args[0]){
+                            switch (args[0]) {
                                 case "accept":
                                     item.acceptInvite();
                                     break;
@@ -78,13 +78,13 @@ public class CMD_Plot_Invite extends SubCommand {
                 }
             }
         } else {
-           sendInfo(sender);
+            sendInfo(sender);
         }
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "invite" };
+        return new String[]{"invite"};
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CMD_Plot_Invite extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Accept/Reject" };
+        return new String[]{"Accept/Reject"};
     }
 
     @Override

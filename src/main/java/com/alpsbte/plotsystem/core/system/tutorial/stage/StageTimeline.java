@@ -142,6 +142,7 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a task to the timeline. If there is no function for a specific task available, use this method.
+     *
      * @param task the task to be added
      */
     public StageTimeline addTask(AbstractTask task) {
@@ -151,28 +152,31 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a ChatMessageTask to the timeline.
-     * @param message the message to be sent
-     * @param soundEffect the sound effect to be played, can be null
+     *
+     * @param message        the message to be sent
+     * @param soundEffect    the sound effect to be played, can be null
      * @param waitToContinue whether the timeline should wait for the player to continue
      */
     public StageTimeline sendChatMessage(Component message, Sound soundEffect, boolean waitToContinue) {
-        return sendChatMessage(new Object[] {message} , soundEffect, waitToContinue);
+        return sendChatMessage(new Object[]{message}, soundEffect, waitToContinue);
     }
 
     /**
      * Adds a ChatMessageTask to the timeline.
-     * @param message the clickable message to be sent
-     * @param soundEffect the sound effect to be played, can be null
+     *
+     * @param message        the clickable message to be sent
+     * @param soundEffect    the sound effect to be played, can be null
      * @param waitToContinue whether the timeline should wait for the player to continue
      */
     public StageTimeline sendChatMessage(ChatMessageTask.ClickableTaskMessage message, Sound soundEffect, boolean waitToContinue) {
-        return sendChatMessage(new Object[] {message} , soundEffect, waitToContinue);
+        return sendChatMessage(new Object[]{message}, soundEffect, waitToContinue);
     }
 
     /**
      * Adds a ChatMessageTask to the timeline. Use this method if you want to send multiple messages at once.
-     * @param messages the messages to be sent, can be a String or a ClickableTaskMessage
-     * @param soundEffect the sound effect to be played, can be null
+     *
+     * @param messages       the messages to be sent, can be a String or a ClickableTaskMessage
+     * @param soundEffect    the sound effect to be played, can be null
      * @param waitToContinue whether the timeline should wait for the player to continue
      */
     public StageTimeline sendChatMessage(Object[] messages, Sound soundEffect, boolean waitToContinue) {
@@ -184,10 +188,11 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a TeleportPointEventTask to the timeline.
+     *
      * @param assignmentMessage the task message to show in the action bar to the player
-     * @param teleportPoint a list of teleport points the player needs to teleport to
-     * @param offsetRange the range in which the player can teleport to the teleport point
-     * @param onTeleportAction the action to be performed when the player teleports to a teleport point
+     * @param teleportPoint     a list of teleport points the player needs to teleport to
+     * @param offsetRange       the range in which the player can teleport to the teleport point
+     * @param onTeleportAction  the action to be performed when the player teleports to a teleport point
      */
     public StageTimeline addTeleportEvent(Component assignmentMessage, List<Vector> teleportPoint, int offsetRange, AbstractTask.BiTaskAction<Vector, Boolean> onTeleportAction) {
         tasks.add(new TeleportPointEventTask(player, assignmentMessage, teleportPoint, offsetRange, onTeleportAction));
@@ -196,11 +201,12 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a ChatEventTask to the timeline.
+     *
      * @param assignmentMessage the task message to show in the action bar to the player
-     * @param expectedValue the expected value the player needs to chat
-     * @param offset the offset in which the player can chat the expected value
-     * @param maxAttempts the maximum amount of attempts the player has to chat the expected value
-     * @param onChatAction the action to be performed when the player chats the expected value
+     * @param expectedValue     the expected value the player needs to chat
+     * @param offset            the offset in which the player can chat the expected value
+     * @param maxAttempts       the maximum amount of attempts the player has to chat the expected value
+     * @param onChatAction      the action to be performed when the player chats the expected value
      */
     public StageTimeline addPlayerChatEvent(Component assignmentMessage, int expectedValue, int offset, int maxAttempts, AbstractTask.BiTaskAction<Boolean, Integer> onChatAction) {
         tasks.add(new ChatEventTask(player, assignmentMessage, expectedValue, offset, maxAttempts, onChatAction));
@@ -209,6 +215,7 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a TeleportTask to the timeline.
+     *
      * @param tutorialWorldIndex the index of the tutorial world the player teleports to
      */
     public StageTimeline teleport(int tutorialWorldIndex) {
@@ -218,6 +225,7 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a InteractNPCEventTask to the timeline.
+     *
      * @param assignmentMessage the task message to show in the action bar to the player
      */
     public StageTimeline interactNPC(Component assignmentMessage) {
@@ -228,8 +236,9 @@ public class StageTimeline implements TutorialTimeline {
     /**
      * Adds a CreateHologramTask to the timeline.
      * This function adds the task with no mark as read functionality.
-     * @see AbstractStage#getHolograms()
+     *
      * @param holograms holograms to show to the player, only the tutorial player can see them
+     * @see AbstractStage#getHolograms()
      */
     public StageTimeline createHolograms(AbstractTutorialHologram... holograms) {
         tasks.add(new CreateHologramTask(player, new LinkedList<>(Arrays.asList(holograms))));
@@ -238,9 +247,10 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a CreateHologramTask to the timeline.
-     * @see AbstractStage#getHolograms()
+     *
      * @param assignmentMessage the task message to show in the action bar to the player
-     * @param holograms holograms to show to the player, only the tutorial player can see them
+     * @param holograms         holograms to show to the player, only the tutorial player can see them
+     * @see AbstractStage#getHolograms()
      */
     public StageTimeline createHolograms(Component assignmentMessage, AbstractTutorialHologram... holograms) {
         tasks.add(new CreateHologramTask(player, assignmentMessage, new LinkedList<>(Arrays.asList(holograms)), true));
@@ -250,8 +260,9 @@ public class StageTimeline implements TutorialTimeline {
     /**
      * Adds a DeleteHologramTask to the timeline.
      * Deletes a specific tutorial hologram from the stage.
-     * @see AbstractStage#getHolograms()
+     *
      * @param hologram hologram to delete from the current stage
+     * @see AbstractStage#getHolograms()
      */
     public StageTimeline deleteHologram(AbstractTutorialHologram hologram) {
         tasks.add(new DeleteHologramTask(player, Collections.singletonList(hologram)));
@@ -261,6 +272,7 @@ public class StageTimeline implements TutorialTimeline {
     /**
      * Adds a DeleteHologramTask to the timeline.
      * Deletes all tutorial holograms from the current stage.
+     *
      * @see AbstractStage#getHolograms()
      */
     public StageTimeline deleteHolograms() {
@@ -270,6 +282,7 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Adds a WaitTask to the timeline.
+     *
      * @param seconds the number of seconds to wait
      */
     public StageTimeline delay(long seconds) {
@@ -280,6 +293,7 @@ public class StageTimeline implements TutorialTimeline {
 
     /**
      * Gets the active tutorial timelines.
+     *
      * @return timelines
      */
     public static Map<UUID, TutorialTimeline> getActiveTimelines() {

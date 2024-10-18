@@ -60,6 +60,7 @@ public abstract class AbstractMenu {
 
     /**
      * Places pre-defined items in the menu before it is opened
+     *
      * @return Pre-defined mask
      * @see <a href=https://github.com/IPVP-MC/canvas#masks</a>
      */
@@ -70,7 +71,7 @@ public abstract class AbstractMenu {
      * NOTE: This method gets called before class is loaded!
      */
     protected void setPreviewItems() {
-        if(getMask() != null) getMask().apply(getMenu());
+        if (getMask() != null) getMask().apply(getMenu());
         getMenu().open(getMenuPlayer());
         getMenuPlayer().getOpenInventory().setTitle(title);
     }

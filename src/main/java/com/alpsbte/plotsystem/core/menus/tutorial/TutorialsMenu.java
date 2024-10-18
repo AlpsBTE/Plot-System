@@ -155,8 +155,9 @@ public class TutorialsMenu extends AbstractMenu {
 
     /**
      * Sets the click event for a tutorial item and loads the tutorial stage
+     *
      * @param tutorialId The tutorial id
-     * @param clickType The click type (left or right)
+     * @param clickType  The click type (left or right)
      */
     private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {

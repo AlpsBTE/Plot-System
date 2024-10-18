@@ -46,6 +46,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -132,10 +133,14 @@ public class CompanionMenu {
 
         if (selectedPlotDifficulty != null) {
             switch (selectedPlotDifficulty) {
-                case EASY: item = AlpsHeadUtils.getCustomHead(CustomHeads.GREEN_CONCRETE.getId()); break;
-                case MEDIUM: item = AlpsHeadUtils.getCustomHead(CustomHeads.YELLOW_CONCRETE.getId()); break;
-                case HARD: item = AlpsHeadUtils.getCustomHead(CustomHeads.RED_CONCRETE.getId()); break;
-                default: break;
+                case EASY:
+                    item = AlpsHeadUtils.getCustomHead(CustomHeads.GREEN_CONCRETE.getId()); break;
+                case MEDIUM:
+                    item = AlpsHeadUtils.getCustomHead(CustomHeads.YELLOW_CONCRETE.getId()); break;
+                case HARD:
+                    item = AlpsHeadUtils.getCustomHead(CustomHeads.RED_CONCRETE.getId()); break;
+                default:
+                    break;
             }
         } else item = AlpsHeadUtils.getCustomHead(CustomHeads.WHITE_CONCRETE.getId());
 

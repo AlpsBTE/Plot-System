@@ -43,7 +43,7 @@ public enum CustomHeads {
 
     final String id;
 
-    CustomHeads(String id){
+    CustomHeads(String id) {
         this.id = id;
     }
 

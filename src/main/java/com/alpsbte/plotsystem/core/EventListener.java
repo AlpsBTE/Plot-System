@@ -91,11 +91,11 @@ public class EventListener implements Listener {
             try (ResultSet rs = DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
                     .setValue(event.getPlayer().getUniqueId().toString()).executeQuery()) {
 
-                if(!rs.first()) {
-                        DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
-                                .setValue(event.getPlayer().getUniqueId().toString())
-                                .setValue(event.getPlayer().getName())
-                                .executeUpdate();
+                if (!rs.first()) {
+                    DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
+                            .setValue(event.getPlayer().getUniqueId().toString())
+                            .setValue(event.getPlayer().getName())
+                            .executeUpdate();
                 }
 
                 DatabaseConnection.closeResultSet(rs);
@@ -125,16 +125,16 @@ public class EventListener implements Listener {
                 List<Plot> plots = Plot.getPlots(builder, Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
-                for(Plot plot : plots) {
-                    if(plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
+                for (Plot plot : plots) {
+                    if (plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
                         reviewedPlots.add(plot);
                         plot.getReview().setFeedbackSent(true);
                     }
                 }
 
-                if(!reviewedPlots.isEmpty()) {
+                if (!reviewedPlots.isEmpty()) {
                     PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, event.getPlayer());
-                    event.getPlayer().sendTitle("","§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
+                    event.getPlayer().sendTitle("", "§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
                 }
             } catch (Exception ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
@@ -143,25 +143,25 @@ public class EventListener implements Listener {
             // Informing player about unfinished plots
             try {
                 List<Plot> plots = Plot.getPlots(builder, Status.unfinished);
-                if(!plots.isEmpty()) {
+                if (!plots.isEmpty()) {
                     PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");
                 }
-            } catch (Exception ex){
-                Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about his unfinished plots!", ex);
+            } catch (Exception ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his unfinished plots!", ex);
             }
 
             // Informing reviewer about new reviews
             try {
-                if(event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
+                if (event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
                     List<Plot> unreviewedPlots = Plot.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
 
-                    if(!unreviewedPlots.isEmpty()) {
+                    if (!unreviewedPlots.isEmpty()) {
                         PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
                     }
                 }
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE,"An error occurred while trying to inform the player about unreviewed plots!", ex);
+                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about unreviewed plots!", ex);
             }
 
             // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
@@ -184,10 +184,10 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))){
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))) {
                 event.getPlayer().performCommand("companion");
-            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))){
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
                 event.getPlayer().performCommand("review");
             }
         }
@@ -195,7 +195,7 @@ public class EventListener implements Listener {
         // Open/Close iron trap door when right-clicking
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             if (event.getHand() != EquipmentSlot.OFF_HAND) {
-                if (!event.getPlayer().isSneaking()){
+                if (!event.getPlayer().isSneaking()) {
                     if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
                         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
                         RegionQuery query = regionContainer.createQuery();
@@ -230,9 +230,10 @@ public class EventListener implements Listener {
         final World w = event.getPlayer().getWorld();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-            if(PlotUtils.isPlotWorld(w)) {
-                try { PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
-                } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+            if (PlotUtils.isPlotWorld(w)) {
+                try {
+                    PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
+                } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
             ChatInput.awaitChatInput.remove(event.getPlayer().getUniqueId());
@@ -250,9 +251,9 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked()))){
+        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked()))) {
             event.setCancelled(true);
-        } else if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()).getPlayer()))){
+        } else if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()).getPlayer()))) {
             event.setCancelled(true);
         }
 
@@ -266,8 +267,8 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onlPlayerItemDropEvent(PlayerDropItemEvent event){
-        if(event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
+    public void onlPlayerItemDropEvent(PlayerDropItemEvent event) {
+        if (event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
                 event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
         }
@@ -277,7 +278,7 @@ public class EventListener implements Listener {
     public void onPlayerSwapHandItemsEvent(PlayerSwapHandItemsEvent event) {
         if (event.getMainHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
                 event.getMainHandItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) event.setCancelled(true);
-        if (event.getOffHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))||
+        if (event.getOffHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
                 event.getOffHandItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) event.setCancelled(true);
     }
 

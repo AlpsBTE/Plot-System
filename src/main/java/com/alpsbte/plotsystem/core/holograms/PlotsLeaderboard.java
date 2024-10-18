@@ -60,7 +60,7 @@ public class PlotsLeaderboard extends DecentHologramDisplay implements HologramC
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
             List<Builder.DatabaseEntry<String, Integer>> entries = Builder.getBuildersByCompletedBuilds(10);
-            for(int i = 0; i < 10; i++ ) {
+            for (int i = 0; i < 10; i++) {
                 Builder.DatabaseEntry<String, Integer> entry = i < entries.size() && entries.get(i).getValue() != 0 ? entries.get(i) : null;
                 lines.add(new HologramRegister.LeaderboardPositionLine(i + 1, entry != null ? entry.getKey() : null, entry != null ? entry.getValue() : 0));
             }

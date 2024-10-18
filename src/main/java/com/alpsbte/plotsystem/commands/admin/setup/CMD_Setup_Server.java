@@ -63,7 +63,7 @@ public class CMD_Setup_Server extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "server" };
+        return new String[]{"server"};
     }
 
     @Override
@@ -80,8 +80,6 @@ public class CMD_Setup_Server extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.server";
     }
-
-
 
 
     public static class CMD_Setup_Server_List extends SubCommand {
@@ -111,7 +109,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -137,7 +135,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1) { sendInfo(sender); return; }
+            if (args.length <= 1) {sendInfo(sender); return;}
             if (args[1].length() > 45) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 45 characters!"));
                 sendInfo(sender);
@@ -158,7 +156,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "add" };
+            return new String[]{"add"};
         }
 
         @Override
@@ -168,7 +166,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Name" };
+            return new String[]{"Name"};
         }
 
         @Override
@@ -184,7 +182,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if server exists
             try {
@@ -205,7 +203,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "remove" };
+            return new String[]{"remove"};
         }
 
         @Override
@@ -215,7 +213,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Server-ID" };
+            return new String[]{"Server-ID"};
         }
 
         @Override
@@ -231,7 +229,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if server exists
             try {
@@ -256,7 +254,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "setftp" };
+            return new String[]{"setftp"};
         }
 
         @Override
@@ -266,7 +264,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Server-ID", "FTP-ID/None" };
+            return new String[]{"Server-ID", "FTP-ID/None"};
         }
 
         @Override

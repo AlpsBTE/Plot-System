@@ -33,6 +33,6 @@ public class UprightOrientationProjectionTransform extends ProjectionTransform {
     @Override
     public double[] bounds() {
         double[] b = this.input.bounds();
-        return new double[]{ b[0], -b[3], b[2], -b[1] };
+        return new double[]{b[0], -b[3], b[2], -b[1]};
     }
 }

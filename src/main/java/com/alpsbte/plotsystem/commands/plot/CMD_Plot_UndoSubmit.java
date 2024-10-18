@@ -72,7 +72,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
                 return;
             }
 
-            if(Objects.requireNonNull(plot).getStatus() == Status.unreviewed) {
+            if (Objects.requireNonNull(plot).getStatus() == Status.unreviewed) {
                 PlotUtils.Actions.undoSubmit(plot);
 
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
@@ -88,7 +88,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "undoSubmit" };
+        return new String[]{"undoSubmit"};
     }
 
     @Override
@@ -98,7 +98,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

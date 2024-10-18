@@ -49,10 +49,10 @@ public class CMD_EditFeedback extends BaseCommand {
             return true;
         }
 
-        if (args.length <= 1 || AlpsUtils.tryParseInt(args[0]) == null) { sendInfo(sender); return true; }
+        if (args.length <= 1 || AlpsUtils.tryParseInt(args[0]) == null) {sendInfo(sender); return true;}
         int plotID = Integer.parseInt(args[0]);
 
-        if(!PlotUtils.plotExists(plotID)) {
+        if (!PlotUtils.plotExists(plotID)) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
             return true;
         }
@@ -63,13 +63,13 @@ public class CMD_EditFeedback extends BaseCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
                 return true;
             }
-            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
+            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player) sender).getUniqueId())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
                 return true;
             }
 
             StringBuilder feedback = new StringBuilder();
-            for(int i = 2; i <= args.length; i++) {
+            for (int i = 2; i <= args.length; i++) {
                 feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
             }
             plot.getReview().setFeedback(feedback.toString());
@@ -84,7 +84,7 @@ public class CMD_EditFeedback extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "editfeedback" };
+        return new String[]{"editfeedback"};
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CMD_EditFeedback extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID", "Feedback" };
+        return new String[]{"ID", "Feedback"};
     }
 
     @Override

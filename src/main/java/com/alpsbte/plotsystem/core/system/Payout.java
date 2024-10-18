@@ -44,10 +44,10 @@ public class Payout {
     }
 
     public static Payout getPayout(ScoreLeaderboard.LeaderboardTimeframe timeframe, int position) throws SQLException {
-        if(timeframe == ScoreLeaderboard.LeaderboardTimeframe.LIFETIME) {
+        if (timeframe == ScoreLeaderboard.LeaderboardTimeframe.LIFETIME) {
             throw new IllegalArgumentException("Invalid option LIFETIME");
         }
-        if(position < 1 || position > 10){
+        if (position < 1 || position > 10) {
             throw new IllegalArgumentException("Illegal position " + position);
         }
 

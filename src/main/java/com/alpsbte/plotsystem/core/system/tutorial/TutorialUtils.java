@@ -49,8 +49,9 @@ public class TutorialUtils {
 
     /**
      * Set a block at a specific location
-     * @param world The world to set the block in
-     * @param vector The vector of the location
+     *
+     * @param world    The world to set the block in
+     * @param vector   The vector of the location
      * @param material The material of the block
      */
     public static void setBlockAt(World world, Vector vector, Material material) {
@@ -60,6 +61,7 @@ public class TutorialUtils {
 
     /**
      * Get a list of 3D vectors for the tip holograms
+     *
      * @param tutorialConfig the tutorial config file
      * @return A list of vector points
      */
@@ -76,6 +78,7 @@ public class TutorialUtils {
 
     /**
      * Get a list of documentation links which can be opened by clicking on the hologram
+     *
      * @param tutorialConfig the tutorial config file
      * @return A list of documentation links
      */

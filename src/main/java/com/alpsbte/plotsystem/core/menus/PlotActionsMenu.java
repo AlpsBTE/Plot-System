@@ -44,6 +44,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -163,7 +164,7 @@ public class PlotActionsMenu extends AbstractMenu {
         });
 
         // Set click event for feedback menu button
-        if(hasFeedback) {
+        if (hasFeedback) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
                 clickPlayer.performCommand("plot feedback " + plot.getID());

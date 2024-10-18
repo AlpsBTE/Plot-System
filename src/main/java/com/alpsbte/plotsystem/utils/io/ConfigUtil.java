@@ -56,6 +56,7 @@ public class ConfigUtil {
     public static ConfigurationUtil getInstance() {
         return configUtilInstance;
     }
+
     public static TutorialConfigurationUtil getTutorialInstance() {
         return tutorialConfigUtilInstance;
     }

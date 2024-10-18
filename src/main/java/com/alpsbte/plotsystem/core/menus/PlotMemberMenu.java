@@ -145,14 +145,14 @@ public class PlotMemberMenu extends AbstractMenu {
             int itemSlot = i;
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 if (getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
-                Builder builder = builders.get(itemSlot-12);
-                    try {
-                        plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
-                                LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
+                Builder builder = builders.get(itemSlot - 12);
+                try {
+                    plot.removePlotMember(builder);
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
+                            LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
+                } catch (SQLException ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                }
                 reloadMenuAsync();
             });
         }

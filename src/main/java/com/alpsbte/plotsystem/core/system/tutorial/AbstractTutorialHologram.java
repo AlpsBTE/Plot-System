@@ -75,12 +75,14 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
 
     /**
      * Gets the hologram title in the header
+     *
      * @return formatted title
      */
     protected abstract String getTitle();
 
     /**
      * The text which is displayed on the hologram to read more.
+     *
      * @return formatted read more text
      */
     protected abstract String getReadMoreActionText();
@@ -92,12 +94,14 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
 
     /**
      * The text which is displayed on the hologram to mark it as read.
+     *
      * @return formatted text
      */
     protected abstract String getMarkAsReadActionText();
 
     /**
      * The text which is displayed after the player marked the hologram as read.
+     *
      * @return formatted text
      */
     protected abstract String getMarkAsReadActionDoneText();
@@ -159,7 +163,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
         // Set click listener
         Hologram holo = this.getHologram(playerUUID);
 
-        if (readMoreId != -1)  super.setClickListener((clickEvent) -> handleReadMoreClickAction());
+        if (readMoreId != -1) super.setClickListener((clickEvent) -> handleReadMoreClickAction());
         if (markAsReadClickAction != null) {
             HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
             super.setClickListener((clickEvent) -> {

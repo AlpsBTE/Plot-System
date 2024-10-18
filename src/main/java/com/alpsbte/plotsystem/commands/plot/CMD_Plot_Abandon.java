@@ -75,11 +75,11 @@ public class CMD_Plot_Abandon extends SubCommand {
             if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
                 if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
                     if (PlotUtils.Actions.abandonPlot(plot)) {
-                        sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT,plot.getID() + "")));
+                        sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
                         if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
                     }
                 } else {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender,LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                 }
             } else {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
@@ -92,7 +92,7 @@ public class CMD_Plot_Abandon extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "abandon" };
+        return new String[]{"abandon"};
     }
 
     @Override
@@ -102,7 +102,7 @@ public class CMD_Plot_Abandon extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

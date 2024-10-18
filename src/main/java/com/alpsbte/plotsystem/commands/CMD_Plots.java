@@ -49,21 +49,21 @@ public class CMD_Plots extends BaseCommand {
             return true;
         }
 
-        if(getPlayer(sender) == null) {
+        if (getPlayer(sender) == null) {
             Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
-        Player player = (Player)sender;
+        Player player = (Player) sender;
 
         try {
-            if(args.length < 1) {
+            if (args.length < 1) {
                 new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
                 return true;
             }
 
             Builder builder = Builder.getBuilderByName(args[0]);
-            if (builder == null){
+            if (builder == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
                 return true;
             }
@@ -78,7 +78,7 @@ public class CMD_Plots extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "plots" } ;
+        return new String[]{"plots"};
     }
 
     @Override
@@ -88,7 +88,7 @@ public class CMD_Plots extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Player" };
+        return new String[]{"Player"};
     }
 
     @Override

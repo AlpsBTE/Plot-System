@@ -144,7 +144,7 @@ public class OnePlotWorld extends PlotWorld {
             }
             Utils.updatePlayerInventorySlots(player);
 
-            if(!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
+            if (!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
             getPlot().setLastActivity(false);
 
             return true;

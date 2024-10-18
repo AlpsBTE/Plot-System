@@ -29,7 +29,7 @@ public class CMD_CancelChat extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "cancelchat" };
+        return new String[]{"cancelchat"};
     }
 
     @Override

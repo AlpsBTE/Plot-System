@@ -44,6 +44,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +118,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         // Add click event for player plot items
-        for(int i = 0; i < plotDisplayCount; i++) {
+        for (int i = 0; i < plotDisplayCount; i++) {
             int itemSlot = i;
             getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
                 try {
@@ -148,8 +149,9 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
     /**
      * Returns description for plot item
+     *
      * @param plot Plot class
-     * @param p player instance for language system
+     * @param p    player instance for language system
      * @return Description lore for plot item
      * @throws SQLException When querying database
      */
@@ -178,7 +180,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":");
 
             String[] splitText = plot.getReview().getFeedback().split("//");
-            for(String line : splitText) {
+            for (String line : splitText) {
                 lines.add("§f" + line.replace("//", ""));
             }
         }
@@ -195,7 +197,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
         return new ItemBuilder(AlpsHeadUtils.getPlayerHead(p.getUniqueId()))
                 .setName("§b§l" + LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS))
                 .setLore(new LegacyLoreBuilder()
-                    .addLine(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS)).build())
+                        .addLine(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS)).build())
                 .build();
     }
 }

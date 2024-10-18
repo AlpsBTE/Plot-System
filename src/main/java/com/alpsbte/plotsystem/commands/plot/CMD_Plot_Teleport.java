@@ -80,7 +80,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "tp", "teleport" };
+        return new String[]{"tp", "teleport"};
     }
 
     @Override
@@ -90,7 +90,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

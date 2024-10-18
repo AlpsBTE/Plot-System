@@ -69,16 +69,17 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Register hologram listener as DecentHologramListener Class.
-     * @see DecentHologramDisplay#registerPlugin(Plugin)
+     *
      * @param plugin Plugin in use of this library.
+     * @see DecentHologramDisplay#registerPlugin(Plugin)
      */
     public static void registerPlugin(Plugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(new DecentHologramListener(), plugin);
     }
 
     /**
-     * @param id Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
-     * @param location The location in a world to create hologram.
+     * @param id        Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
+     * @param location  The location in a world to create hologram.
      * @param isEnabled Force enable or disable this hologram on create, this will not register new hologram in the hashmap.
      */
     public DecentHologramDisplay(@NotNull String id, Location location, boolean isEnabled) {
@@ -92,10 +93,11 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
      * Create hologram for player to see.
      * If the player has correct ViewPermission and hologram is configured enabled,
      * the hologram will be created
+     *
      * @param player The player that will be able to view this hologram
      */
     public void create(Player player) {
-        if(!isEnabled | !this.hasViewPermission(player.getUniqueId())) return;
+        if (!isEnabled | !this.hasViewPermission(player.getUniqueId())) return;
         if (this.holograms.containsKey(player.getUniqueId())) {
             this.reload(player.getUniqueId());
         } else {
@@ -113,6 +115,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Abstract method to add functionality to whether a player creating this hologram can view it or not.
+     *
      * @param playerUUID Focused player.
      * @return If true, the hologram will be created for player. Else not.
      */
@@ -120,6 +123,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Check if a player can view this hologram.
+     *
      * @param playerUUID Focused player.
      * @return True if hologram is visible to player.
      */
@@ -137,6 +141,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Re-Write hologram dataLines received by getHeader(), getContent() and getFooter() in order.
+     *
      * @param playerUUID Focused player.
      */
     public void reload(UUID playerUUID) {
@@ -164,6 +169,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Remove a hologram assigned to this display from player access.
+     *
      * @param playerUUID Focused player.
      */
     public void remove(UUID playerUUID) {
@@ -195,6 +201,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Get the identifier from when this hologram is first constructed.
+     *
      * @return ID as String.
      */
     public String getId() {
@@ -203,11 +210,13 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Get the hologram location.
+     *
      * @return hologram location.
      */
     public Location getLocation() {
         return this.location;
     }
+
     public void setLocation(Location newPosition) {
         this.location = newPosition;
         for (UUID playerUUID : holograms.keySet()) holograms.get(playerUUID).setLocation(newPosition);
@@ -216,6 +225,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Is this hologram enabled.
+     *
      * @return Is enabled.
      */
     public boolean isEnabled() {
@@ -224,12 +234,14 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Force set the hologram enabled or disabled.
+     *
      * @param isEnabled If false, the hologram will not be created in any way.
      */
-    public void setEnabled(boolean isEnabled) { this.isEnabled = isEnabled; }
+    public void setEnabled(boolean isEnabled) {this.isEnabled = isEnabled;}
 
     /**
      * Get hologram instance mapped in this display.
+     *
      * @param playerUUID Focused player.
      * @return Hologram object from DecentHologram plugin.
      */
@@ -239,6 +251,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Get all the mapped hologram in this display.
+     *
      * @return HashMap of Hologram by a player UUID.
      */
     public HashMap<UUID, Hologram> getHolograms() {
@@ -247,16 +260,17 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Write a hologram page by any DataLine of type
-     * @param page The hologram page to write
+     *
+     * @param page       The hologram page to write
      * @param startIndex Start line to update
-     * @param dataLines The data item to be write on the page
+     * @param dataLines  The data item to be write on the page
      */
     protected static void updateDataLines(HologramPage page, int startIndex, List<DataLine<?>> dataLines) {
         int index = startIndex;
         if (index == 0 && page.getLines().size() > dataLines.size()) {
             int removeCount = page.getLines().size() - dataLines.size();
 
-            for(int i = 0; i < removeCount; ++i) {
+            for (int i = 0; i < removeCount; ++i) {
                 int lineIndex = page.getLines().size() - 1;
                 if (lineIndex >= 0) {
                     DHAPI.removeHologramLine(page, lineIndex);
@@ -274,6 +288,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Write an index line of a hologram page
+     *
      * @param page The hologram page to write
      * @param line The index line to write to
      * @param item any minecraft item as an ItemStack to be inserted
@@ -284,7 +299,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
                 DHAPI.addHologramLine(page, item);
             } else {
                 HologramLine hologramLine = page.getLines().get(line);
-                DHAPI.setHologramLine(hologramLine,  item);
+                DHAPI.setHologramLine(hologramLine, item);
             }
         } catch (IllegalArgumentException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Trying to set invalid HologramLine ", ex);
@@ -293,6 +308,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Write an index line of a hologram page
+     *
      * @param page The hologram page to write
      * @param line The index line to write to
      * @param text The text to be written on
@@ -320,17 +336,20 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
      *     super.setClickListener((clickEvent) -> {});
      * }}
      * </pre>
+     *
      * @param clickListener Action callback.
      */
     public void setClickListener(@Nullable ClickAction clickListener) {
         this.clickListener = clickListener;
     }
+
     public @Nullable ClickAction getClickListener() {
         return this.clickListener;
     }
 
     /**
      * Get activeDisplays in DecentHologramDisplay by ID
+     *
      * @param id The id first used to construct a new DecentHologramDisplay
      * @return The hologram assigned to id.
      */
@@ -340,9 +359,12 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * DataLine of any type, acts as a text lines per hologram page.
+     *
      * @param <T> DataLine type, this can only be ItemStack as ItemLine or String as TextLine
      */
-    public interface DataLine<T> { T getLine(); }
+    public interface DataLine<T> {
+        T getLine();
+    }
 
     /**
      * Minecraft ItemStack as DataLine

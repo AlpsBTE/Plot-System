@@ -63,8 +63,8 @@ public class Builder {
         this.uuid = UUID;
     }
 
-    public static Builder byUUID(UUID uuid){
-        if(builders.containsKey(uuid))
+    public static Builder byUUID(UUID uuid) {
+        if (builders.containsKey(uuid))
             return builders.get(uuid);
 
         Builder builder = new Builder(uuid);
@@ -82,7 +82,7 @@ public class Builder {
         return uuid;
     }
 
-    public boolean isOnline() { return Bukkit.getPlayer(uuid) != null; }
+    public boolean isOnline() {return Bukkit.getPlayer(uuid) != null;}
 
     public String getName() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
@@ -277,17 +277,17 @@ public class Builder {
     public static int getBuilderScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 0);
 
-        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+        try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
             boolean found = false;
             int score = 0;
-            while(rs.next() && !found) {
-                if(rs.getString(3).equals(uuid.toString())) {
+            while (rs.next() && !found) {
+                if (rs.getString(3).equals(uuid.toString())) {
                     found = true;
                     score = rs.getInt(4);
                 }
             }
 
-            if(!found) score = -1;
+            if (!found) score = -1;
 
             DatabaseConnection.closeResultSet(rs);
             return score;
@@ -297,17 +297,17 @@ public class Builder {
     public static int getBuilderScorePosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 0);
 
-        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+        try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
             boolean found = false;
             int position = 0;
-            while(rs.next() && !found) {
+            while (rs.next() && !found) {
                 position++;
-                if(rs.getString(3).equals(uuid.toString())) {
+                if (rs.getString(3).equals(uuid.toString())) {
                     found = true;
                 }
             }
 
-            if(!found) position = -1;
+            if (!found) position = -1;
 
             DatabaseConnection.closeResultSet(rs);
             return position;
@@ -317,7 +317,7 @@ public class Builder {
     public static int getBuildersInSort(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = "SELECT COUNT(*) FROM (" + getBuildersByScoreQuery(sortBy, 0) + ") results";
 
-        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+        try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
             rs.next();
             int position = rs.getInt(1);
 
@@ -347,10 +347,10 @@ public class Builder {
     public static List<DatabaseEntry<String, Integer>> getBuildersByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getBuildersByScoreQuery(sortBy, 10);
 
-        try(ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
+        try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
             ArrayList<DatabaseEntry<String, Integer>> lines = new ArrayList<>();
 
-            while(rs.next()) {
+            while (rs.next()) {
                 lines.add(new DatabaseEntry<>(rs.getString(2), rs.getInt(4)));
             }
 
@@ -384,7 +384,7 @@ public class Builder {
     }
 
     public PlotType getPlotTypeSetting() {
-        if(plotType != null)
+        if (plotType != null)
             return plotType;
 
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
@@ -399,12 +399,12 @@ public class Builder {
             }
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while getting language setting from database", ex);
         }
         return null;
     }
 
-    public void setPlotTypeSetting(PlotType plotType){
+    public void setPlotTypeSetting(PlotType plotType) {
         try {
             if (plotType == null) {
                 DatabaseConnection.createStatement("UPDATE plotsystem_builders SET setting_plot_type = DEFAULT(setting_plot_type) WHERE uuid = ?")
@@ -414,8 +414,8 @@ public class Builder {
                         .setValue(plotType.getId()).setValue(getUUID().toString())
                         .executeUpdate();
             }
-        }catch (SQLException ex){
-            Bukkit.getLogger().log(Level.SEVERE,"An error occurred while getting language setting from database", ex);
+        } catch (SQLException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while getting language setting from database", ex);
         }
 
         this.plotType = plotType;
@@ -456,7 +456,7 @@ public class Builder {
             return countries.stream().map(c -> {
                 try {
                     return new Country(c);
-                } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+                } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
                 return null;
             }).collect(Collectors.toList());
         }

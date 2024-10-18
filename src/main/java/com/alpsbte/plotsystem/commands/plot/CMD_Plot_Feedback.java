@@ -77,7 +77,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                     return;
                 }
 
-                if(Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getPlayer(sender).getUniqueId())) || getPlayer(sender).hasPermission("plotsystem.plot.review")) {
+                if (Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getPlayer(sender).getUniqueId())) || getPlayer(sender).hasPermission("plotsystem.plot.review")) {
                     if (plot.isReviewed()) {
                         new FeedbackMenu(getPlayer(sender), plot.getID());
                     } else {
@@ -97,7 +97,7 @@ public class CMD_Plot_Feedback extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "feedback" };
+        return new String[]{"feedback"};
     }
 
     @Override
@@ -107,7 +107,7 @@ public class CMD_Plot_Feedback extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

@@ -42,21 +42,21 @@ public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())){
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
 
-        if (getPlayer(sender) == null){
+        if (getPlayer(sender) == null) {
             Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
-        Player player = (Player)sender;
+        Player player = (Player) sender;
         if (args.length != 1) {
             sendInfo(sender);
             player.sendMessage("§8------- §6§lLeaderboards §8-------");
-            for(DecentHologramDisplay holo : HologramRegister.getActiveDisplays()) {
+            for (DecentHologramDisplay holo : HologramRegister.getActiveDisplays()) {
                 player.sendMessage(" §6> §f" + holo.getId());
             }
             player.sendMessage("§8--------------------------");
@@ -70,19 +70,19 @@ public class CMD_SetLeaderboard extends BaseCommand {
                 .orElse(null);
 
         // Update leaderboard location
-        if(leaderboard == null) {
+        if (leaderboard == null) {
             player.sendMessage(Utils.ChatUtils.getAlertFormat("Leaderboard could not be found!"));
             return true;
         }
         HologramRegister.saveLocation(leaderboard.getId(), (HologramConfiguration) leaderboard, getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
-        player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
+        player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "setleaderboard" };
+        return new String[]{"setleaderboard"};
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Name" };
+        return new String[]{"Name"};
     }
 
     @Override

@@ -89,7 +89,8 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Generates a new plot in the plot world
-     * @param plot - plot which should be generated
+     *
+     * @param plot    - plot which should be generated
      * @param builder - builder of the plot
      */
     public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
@@ -98,8 +99,9 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Generates a new plot in the given world
-     * @param plot - plot which should be generated
-     * @param builder - builder of the plot
+     *
+     * @param plot     - plot which should be generated
+     * @param builder  - builder of the plot
      * @param plotType - type of the plot
      */
     public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) throws SQLException {
@@ -108,9 +110,10 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Generates a new plot in the given world
-     * @param plot - plot which should be generated
+     *
+     * @param plot    - plot which should be generated
      * @param builder - builder of the plot
-     * @param world - world of the plot
+     * @param world   - world of the plot
      */
     private AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType, @NotNull PlotWorld world) {
         this.plot = plot;
@@ -147,6 +150,7 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Executed before plot generation
+     *
      * @return true if initialization was successful
      */
     protected abstract boolean init();
@@ -154,12 +158,13 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Generates plot schematic and outlines
-     * @param plotSchematic - plot schematic file
+     *
+     * @param plotSchematic        - plot schematic file
      * @param environmentSchematic - environment schematic file
      */
     protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
         Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-        if(plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()){
+        if (plotVersion >= 3 && plotType.hasEnvironment() && environmentSchematic != null && environmentSchematic.exists()) {
             pasteSchematic(airMask, environmentSchematic, world, false);
         }
         pasteSchematic(airMask, plotSchematic, world, true);
@@ -207,6 +212,7 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Sets the permissions for the plot build region only
+     *
      * @param region build region
      */
     protected void setBuildRegionPermissions(ProtectedRegion region) {
@@ -218,6 +224,7 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Sets the permissions for the whole plot region
+     *
      * @param region plot region
      */
     protected void setRegionPermissions(ProtectedRegion region) {
@@ -233,6 +240,7 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Reads the blocked commands for the plot region from the config
+     *
      * @param config commands.yml config
      * @return list of blocked commands
      */
@@ -244,7 +252,8 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Gets invoked when generation is completed
-     * @param failed - true if generation has failed
+     *
+     * @param failed      - true if generation has failed
      * @param unloadWorld - try to unload world after generation
      * @throws SQLException - caused by a database exception
      */
@@ -256,12 +265,13 @@ public abstract class AbstractPlotGenerator {
 
     /**
      * Gets invoked when an exception has occurred
+     *
      * @param ex - caused exception
      */
     protected void onException(Throwable ex) {
         Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
         builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND,1,1);
+        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
     }
 
 
@@ -281,13 +291,13 @@ public abstract class AbstractPlotGenerator {
     }
 
 
-
     /**
      * Pastes the schematic to the plot center in the given world
-     * @param pasteMask - sets a mask for the paste operation, can be null
+     *
+     * @param pasteMask     - sets a mask for the paste operation, can be null
      * @param schematicFile - plot/environment schematic file
-     * @param world - world to paste in
-     * @param clearArea - clears the plot area with air before pasting
+     * @param world         - world to paste in
+     * @param clearArea     - clears the plot area with air before pasting
      */
     public static void pasteSchematic(@Nullable Mask pasteMask, File schematicFile, PlotWorld world, boolean clearArea) throws IOException, WorldEditException, SQLException {
         if (world.loadWorld()) {
@@ -300,7 +310,7 @@ public abstract class AbstractPlotGenerator {
                 }
             }
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
-                if(pasteMask != null) editSession.setMask(pasteMask);
+                if (pasteMask != null) editSession.setMask(pasteMask);
                 Clipboard clipboard = FaweAPI.load(schematicFile);
                 Operation clipboardHolder = new ClipboardHolder(clipboard)
                         .createPaste(editSession)

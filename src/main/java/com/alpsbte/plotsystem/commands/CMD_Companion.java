@@ -74,7 +74,7 @@ public class CMD_Companion extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "companion" };
+        return new String[]{"companion"};
     }
 
     @Override

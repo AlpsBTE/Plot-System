@@ -117,7 +117,7 @@ public class CMD_EditPlot extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "editplot" };
+        return new String[]{"editplot"};
     }
 
     @Override
@@ -127,7 +127,7 @@ public class CMD_EditPlot extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

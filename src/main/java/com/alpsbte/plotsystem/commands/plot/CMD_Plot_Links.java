@@ -74,7 +74,7 @@ public class CMD_Plot_Links extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "links", "link" };
+        return new String[]{"links", "link"};
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CMD_Plot_Links extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

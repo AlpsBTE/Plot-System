@@ -68,7 +68,7 @@ public class MenuItems {
         return new ItemBuilder(Material.BARRIER)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.ERROR), RED, BOLD))
                 .setLore(new LoreBuilder()
-                    .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.ERROR)).build())
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.ERROR)).build())
                 .build();
     }
 

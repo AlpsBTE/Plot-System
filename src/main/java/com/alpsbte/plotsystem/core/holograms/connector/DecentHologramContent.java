@@ -40,12 +40,14 @@ public interface DecentHologramContent {
     /**
      * Display entity as minecraft item.
      * This will be display at the top of hologram
+     *
      * @return Minecraft ItemStack
      */
     ItemStack getItem();
 
     /**
      * Title message as String.
+     *
      * @param playerUUID Focused player.
      * @return The message.
      */
@@ -54,6 +56,7 @@ public interface DecentHologramContent {
     /**
      * Header message as DataLine.
      * By default, this is using the value from getTitle as a header with a separator line
+     *
      * @param playerUUID Focused player.
      * @return The DataLine.
      */
@@ -61,6 +64,7 @@ public interface DecentHologramContent {
 
     /**
      * Main content to be written in the hologram
+     *
      * @param playerUUID Focused player.
      * @return The DataLine.
      */
@@ -69,6 +73,7 @@ public interface DecentHologramContent {
     /**
      * The footer line at the bottom of the hologram.
      * By default, this is a separator line.
+     *
      * @param playerUUID Focused player.
      * @return The DataLine.
      */

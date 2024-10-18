@@ -106,7 +106,7 @@ public class CMD_Plot_Submit extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "submit" };
+        return new String[]{"submit"};
     }
 
     @Override
@@ -116,7 +116,7 @@ public class CMD_Plot_Submit extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

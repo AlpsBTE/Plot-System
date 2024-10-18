@@ -186,7 +186,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     /**
      * Gets the tutorial plot for a player with a specific tutorial id.
      * If player has not started the tutorial yet, a new plot will be created.
-     * @param player the player to get the plot for.
+     *
+     * @param player     the player to get the plot for.
      * @param tutorialId the tutorial id.
      * @return the tutorial plot.
      * @throws SQLException if a SQL error occurs.
@@ -200,8 +201,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     /**
      * Sends a message to the player when a new stage is unlocked.
+     *
      * @param player The player to send the message to.
-     * @param title The title of the stage.
+     * @param title  The title of the stage.
      */
     protected static void sendStageUnlockedMessage(Player player, String title) {
         player.sendMessage(text());
@@ -212,7 +214,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     /**
      * Sends a message to the player when a tutorial is completed.
-     * @param player The player to send the message to.
+     *
+     * @param player       The player to send the message to.
      * @param tutorialName The name of the tutorial.
      * @see TutorialCategory
      */
@@ -225,7 +228,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     /**
      * Sends a message to the player if they have not completed a tutorial, if required.
-     * @param player the player to send the message to
+     *
+     * @param player     the player to send the message to
      * @param tutorialId the id of the tutorial
      */
     public static void sendTutorialRequiredMessage(Player player, int tutorialId) {

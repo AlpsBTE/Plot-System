@@ -53,7 +53,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     private Vector maxPoint;
 
     public LineCmdEventTask(Player player, Component assignmentMessage, String blockName, int blockId, Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
-        super(player, "//line", new String[] { blockName, String.valueOf(blockId) },  assignmentMessage, linePoints.size(),true);
+        super(player, "//line", new String[]{blockName, String.valueOf(blockId)}, assignmentMessage, linePoints.size(), true);
         this.linePoints = linePoints;
         this.lineCmdAction = lineCmdAction;
     }
@@ -113,8 +113,8 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
                     BlockVector3.at(maxPoint.getX(), maxPoint.getY(), maxPoint.getZ()), 0, false);
             editSession.close();
         } catch (MaxChangedBlocksException ex) {
-           Bukkit.getLogger().log(Level.SEVERE, "An error occurred while drawing line!", ex);
-           return false;
+            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while drawing line!", ex);
+            return false;
         }
         return true;
     }

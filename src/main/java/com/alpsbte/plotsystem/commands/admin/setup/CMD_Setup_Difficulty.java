@@ -56,7 +56,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "difficulty" };
+        return new String[]{"difficulty"};
     }
 
     @Override
@@ -73,7 +73,6 @@ public class CMD_Setup_Difficulty extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.difficulty";
     }
-
 
 
     public static class CMD_Setup_Difficulty_List extends SubCommand {
@@ -94,7 +93,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -138,7 +137,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "setmultiplier" };
+            return new String[]{"setmultiplier"};
         }
 
         @Override
@@ -148,7 +147,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Difficulty-ID", "Multiplier" };
+            return new String[]{"Difficulty-ID", "Multiplier"};
         }
 
         @Override
@@ -182,7 +181,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "setrequirement" };
+            return new String[]{"setrequirement"};
         }
 
         @Override
@@ -192,7 +191,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Difficulty-ID", "Score Requirement" };
+            return new String[]{"Difficulty-ID", "Score Requirement"};
         }
 
         @Override

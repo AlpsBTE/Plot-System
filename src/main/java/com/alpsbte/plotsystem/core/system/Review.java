@@ -176,7 +176,7 @@ public class Review {
         int lines = 0;
 
         for (String word : feedbackArr) {
-            if((lineLength + word.length()) <= 60) {
+            if ((lineLength + word.length()) <= 60) {
                 finalFeedback.append((lines == 0 && lineLength == 0) ? "" : " ").append(word);
                 lineLength += word.length();
             } else {

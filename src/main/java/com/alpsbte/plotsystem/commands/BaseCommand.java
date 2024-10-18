@@ -42,8 +42,9 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
 
     /**
      * Executes base command and checks for sub commands
+     *
      * @param sender player or console
-     * @param args parameter
+     * @param args   parameter
      */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
@@ -93,6 +94,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
 
     /**
      * Gets the player
+     *
      * @param sender player
      * @return null if sender is not a player
      */
@@ -102,6 +104,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
 
     /**
      * Registers sub command
+     *
      * @param subCommand base sub command
      */
     protected void registerSubCommand(SubCommand subCommand) {

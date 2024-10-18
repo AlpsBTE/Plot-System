@@ -61,7 +61,7 @@ public class CityPlotWorld extends PlotWorld {
                     Utils.updatePlayerInventorySlots(player);
                     PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
 
-                    if(getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                    if (getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
                         getPlot().setLastActivity(false);
                     }
                 }
@@ -94,6 +94,7 @@ public class CityPlotWorld extends PlotWorld {
 
     /**
      * Calculate additional height for the plot
+     *
      * @return additional height
      * @throws IOException if the outline schematic fails to load
      */
@@ -114,6 +115,7 @@ public class CityPlotWorld extends PlotWorld {
 
     /**
      * Gets all players located on the plot in the city plot world
+     *
      * @return a list of players located on the plot
      */
     public List<Player> getPlayersOnPlot() throws SQLException {

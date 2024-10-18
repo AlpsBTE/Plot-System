@@ -53,31 +53,36 @@ public abstract class AbstractStage {
 
     /**
      * Sets the title of the tutorial stage
+     *
      * @return title
      */
     protected abstract String setTitle();
 
     /**
      * Sets the messages of the tutorial stage
+     *
      * @return messages
      */
     protected abstract List<String> setMessages();
 
     /**
      * Sets the tasks of the tutorial stage
-     * @see AbstractTask#getAssignmentMessage()
+     *
      * @return tasks
+     * @see AbstractTask#getAssignmentMessage()
      */
     protected abstract List<String> setTasks();
 
     /**
      * Sets the tutorial holograms for the tutorial stage
+     *
      * @return holograms
      */
     protected abstract List<AbstractTutorialHologram> setHolograms();
 
     /**
      * Gets the timeline of the tutorial stage
+     *
      * @return timeline
      */
     public abstract StageTimeline getTimeline() throws IOException, SQLException;

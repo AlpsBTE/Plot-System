@@ -54,20 +54,20 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
     protected boolean automaticallySkipPage;
 
     /**
-     * @param id Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
-     * @param location The location in a world to create hologram.
+     * @param id        Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
+     * @param location  The location in a world to create hologram.
      * @param isEnabled Force enable or disable this hologram on create, this will not register new hologram in the hashmap.
-     * @param plugin Assign a plugin reference and this hologram pages will be automatically turns by a fixed interval.
+     * @param plugin    Assign a plugin reference and this hologram pages will be automatically turns by a fixed interval.
      */
     public DecentHologramPagedDisplay(@NotNull String id, Location location, boolean isEnabled, @NotNull Plugin plugin) {
         super(id, location, isEnabled);
         this.plugin = plugin;
-        this.automaticallySkipPage =  true;
+        this.automaticallySkipPage = true;
     }
 
     /**
-     * @param id Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
-     * @param location The location in a world to create hologram.
+     * @param id        Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
+     * @param location  The location in a world to create hologram.
      * @param isEnabled Force enable or disable this hologram on create, this will not register new hologram in the hashmap.
      */
     public DecentHologramPagedDisplay(@NotNull String id, Location location, boolean isEnabled) {
@@ -78,6 +78,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
 
     /**
      * Set a number of pages in this hologram.
+     *
      * @param pageCount Pages size, this should be in sync with how many member page contents has.
      */
     public void setPageCount(int pageCount) {
@@ -91,7 +92,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
         else {
             Bukkit.getLogger().log(Level.INFO, "[DHAPI] Created display ID: " + super.getId() + " For player: " + player.getUniqueId());
             Hologram hologram = DHAPI.createHologram(player.getUniqueId() + "-" + super.getId(), super.getLocation());
-            for(int i = 1; i <= pageCount; i++) hologram.addPage();
+            for (int i = 1; i <= pageCount; i++) hologram.addPage();
 
             // Allow only player to see
             hologram.setDefaultVisibleState(false);
@@ -102,7 +103,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
 
             // Write hologram data-lines and assign click listener
             this.reload(player.getUniqueId());
-            if(!automaticallySkipPage) super.setClickListener(this::assignClickListener);
+            if (!automaticallySkipPage) super.setClickListener(this::assignClickListener);
             else startChangePageTask(player, hologram);
         }
 
@@ -117,7 +118,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
         List<List<DataLine<?>>> content = getPagedContent(playerUUID);
         List<List<DataLine<?>>> footer = getPagedFooter(playerUUID);
 
-        for(int i = 0; i < pageCount; i++) {
+        for (int i = 0; i < pageCount; i++) {
 
             List<DataLine<?>> dataLines = new ArrayList<>();
 
@@ -138,6 +139,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
     /**
      * getHeader as paged list, the list indexing will be mapped to hologram page one by one.<br/>
      * If the parent list only have one index, will use the index for every pageCount.
+     *
      * @param playerUUID Focused player.
      * @return Lists of DataLine, with a parent List being a page indexing.
      */
@@ -148,6 +150,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
     /**
      * getContent as paged list, the list indexing will be mapped to hologram page one by one.<br/>
      * If the parent list only have one index, will use the index for every pageCount.
+     *
      * @param playerUUID Focused player.
      * @return Lists of DataLine, with a parent List being a page indexing.
      */
@@ -158,6 +161,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
     /**
      * getFooter as paged list, the list indexing will be mapped to hologram page one by one.<br/>
      * If the parent list only have one index, will use the index for every pageCount.
+     *
      * @param playerUUID Focused player.
      * @return Lists of DataLine, with a parent List being a page indexing.
      */
@@ -168,6 +172,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
     /**
      * Override this function to implement click action of the hologram,
      * defaulted to calling next page.
+     *
      * @param event Click event callback
      * @see HologramClickEvent
      */
@@ -177,7 +182,8 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
 
     /**
      * Recursively change pages of this hologram by a fixed interval forever.
-     * @param player Focused player.
+     *
+     * @param player   Focused player.
      * @param hologram Focused hologram.
      */
     private void startChangePageTask(Player player, Hologram hologram) {
@@ -187,7 +193,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
         changeState = 0;
 
         // Cancel if no page, and cancel previous task to start anew
-        if(pageCount <= 1 | plugin == null) return;
+        if (pageCount <= 1 | plugin == null) return;
         if (changePageTask != null) changePageTask.cancel();
 
         // Count every 1 seconds, if reaches a fixed interval, recursive call a new task.
@@ -199,8 +205,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
                     if (automaticallySkipPage) {
                         nextPage(player, hologram);
                         startChangePageTask(player, hologram);
-                    }
-                    else changePageTask.cancel();
+                    } else changePageTask.cancel();
                 } else {
                     onTick(player, hologram);
                     changeState++;
@@ -212,14 +217,16 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
 
     /**
      * If provided plugin reference, override this method to set interval value in milliseconds.
+     *
      * @return Plugin's check interval for when turning to next page automatically.
      */
-    public long getInterval() { return 15 * 20L; }
+    public long getInterval() {return 15 * 20L;}
 
     /**
      * If provided plugin reference, override this method to create any animation to hologram each tick of one second.
      * This is defaulted to footer color changing animation as a tick increased.
-     * @param player Focused player.
+     *
+     * @param player   Focused player.
      * @param hologram Focused hologram.
      */
     public void onTick(Player player, Hologram hologram) {
@@ -245,18 +252,18 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
      * Turn a new page to player.<br/>
      * Note that currently there's no previous page function,
      * calling this beyond page size will loop back to the first page.
-     * @see Hologram#show(Player, int)
-     * @param player Focused player.
+     *
+     * @param player   Focused player.
      * @param hologram Focused hologram.
+     * @see Hologram#show(Player, int)
      */
     public void nextPage(Player player, Hologram hologram) {
         try {
             int nextViewPage = currentPage + 1;
-            if(nextViewPage == pageCount) nextViewPage = 0;
+            if (nextViewPage == pageCount) nextViewPage = 0;
             hologram.show(player, nextViewPage);
             currentPage = nextViewPage;
-        }
-        catch (IndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Hologram page indexing out of bounds", ex);
         }
     }

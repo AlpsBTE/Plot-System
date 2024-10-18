@@ -80,9 +80,9 @@ public class InvertableVectorField {
         double w2 = 2 * (y - y3) / MathUtils.ROOT3;
         double w3 = 1 - w1 - w2;
 
-        return new double[]{ valx1 * w1 + valx2 * w2 + valx3 * w3, valy1 * w1 + valy2 * w2 + valy3 * w3,
+        return new double[]{valx1 * w1 + valx2 * w2 + valx3 * w3, valy1 * w1 + valy2 * w2 + valy3 * w3,
                 (valx3 - valx1) * this.sideLength, this.sideLength * flip * (2 * valx2 - valx1 - valx3) / MathUtils.ROOT3,
-                (valy3 - valy1) * this.sideLength, this.sideLength * flip * (2 * valy2 - valy1 - valy3) / MathUtils.ROOT3 };
+                (valy3 - valy1) * this.sideLength, this.sideLength * flip * (2 * valy2 - valy1 - valy3) / MathUtils.ROOT3};
     }
 
     public double[] applyNewtonsMethod(double expectedf, double expectedg, double xest, double yest, int iter) {
@@ -102,6 +102,6 @@ public class InvertableVectorField {
             yest -= determinant * (-dgdx * f + dfdx * g);
         }
 
-        return new double[]{ xest, yest };
+        return new double[]{xest, yest};
     }
 }

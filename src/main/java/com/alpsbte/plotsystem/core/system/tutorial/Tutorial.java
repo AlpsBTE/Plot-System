@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 // import com.alpsbte.alpslib.npc.AbstractNpc;
+
 import com.alpsbte.plotsystem.core.system.tutorial.connector.AbstractNpc;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
@@ -39,42 +40,49 @@ public interface Tutorial {
 
     /**
      * Gets the ID of the Tutorial
+     *
      * @return id, cannot be negative
      */
     int getId();
 
     /**
      * Gets the name of the Tutorial
+     *
      * @return name
      */
     String getName();
 
     /**
      * Gets the UUID of the player who is currently doing the tutorial
+     *
      * @return uuid of the player
      */
     UUID getPlayerUUID();
 
     /**
      * Gets the player who is currently doing the tutorial
+     *
      * @return player
      */
     Player getPlayer();
 
     /**
      * Gets the NPC of the current tutorial world. Can be null if npc has not yet been created.
+     *
      * @return NPC
      */
     AbstractNpc getNPC();
 
     /**
      * Gets a list of all active holograms from the current tutorial stage.
+     *
      * @return list of active tutorial holograms
      */
     List<AbstractTutorialHologram> getActiveHolograms();
 
     /**
      * Gets the current tutorial world the player is in
+     *
      * @return bukkit world
      */
     World getCurrentWorld();
@@ -82,6 +90,7 @@ public interface Tutorial {
     /**
      * Gets the current stage the player is in.
      * This value does not have to be the highest stage the player has completed.
+     *
      * @return stage id, cannot be negative
      */
     int getCurrentStage();
@@ -89,24 +98,28 @@ public interface Tutorial {
     /**
      * Sets the stage of the tutorial. This method does not save the stage.
      * It switches the given stage of the tutorial the player is currently in.
+     *
      * @param stageId stage id, cannot be negative
      */
     void setStage(int stageId);
 
     /**
      * Saves the current stage of the tutorial the completion state.
+     *
      * @param stageId stage id, cannot be negative
      */
     void saveTutorial(int stageId);
 
     /**
      * Gets the individual tutorial config
+     *
      * @return tutorial config
      */
     FileConfiguration getConfig();
 
     /**
      * This method is called when the player completes a stage.
+     *
      * @param playerUUID uuid of the player
      * @see StageTimeline#onTaskDone(AbstractTask)
      */
@@ -115,7 +128,8 @@ public interface Tutorial {
     /**
      * This method is called when the player switches the tutorial world.
      * This method is NOT called when the player switches out of the tutorial.
-     * @param playerUUID uuid of the player
+     *
+     * @param playerUUID         uuid of the player
      * @param tutorialWorldIndex index of the tutorial world
      * @see AbstractTutorial#initWorlds()
      */
@@ -124,6 +138,7 @@ public interface Tutorial {
     /**
      * This method is called when the player completes the tutorial.
      * This method is ONLY called when the player completes the tutorial for the first time!
+     *
      * @param playerUUID uuid of the player
      * @see Tutorial#onTutorialStop(UUID)
      */
@@ -133,12 +148,14 @@ public interface Tutorial {
      * The method is called when the tutorial is stopped.
      * This can happen when tutorial is completed, when the player leaves the tutorial or when an error occurs.
      * For example by switching world or leaving the server.
+     *
      * @param playerUUID uuid of the player
      */
     void onTutorialStop(UUID playerUUID);
 
     /**
      * This method is called when an error occurs.
+     *
      * @param ex exception
      */
     void onException(Exception ex);

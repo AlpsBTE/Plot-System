@@ -98,7 +98,7 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean loadWorld() {
-        if(isWorldGenerated()) {
+        if (isWorldGenerated()) {
             if (isWorldLoaded()) {
                 return true;
             } else return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
@@ -109,7 +109,7 @@ public class PlotWorld implements IWorld {
     @Override
     public boolean unloadWorld(boolean movePlayers) {
         if (isWorldGenerated()) {
-            if(isWorldLoaded()) {
+            if (isWorldLoaded()) {
                 if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
                     for (Player player : getBukkitWorld().getPlayers()) {
                         player.teleport(Utils.getSpawnLocation());
@@ -178,7 +178,7 @@ public class PlotWorld implements IWorld {
 
     @Override
     public String getRegionName() {
-       return worldName.toLowerCase(Locale.ROOT);
+        return worldName.toLowerCase(Locale.ROOT);
     }
 
     @Override
@@ -236,9 +236,10 @@ public class PlotWorld implements IWorld {
     /**
      * Returns OnePlotWorld or PlotWorld (CityPlotWorld) class depending on the world name.
      * It won't return the CityPlotWorld class because there is no use case without a plot.
+     *
      * @param worldName - name of the world
+     * @param <T>       - OnePlotWorld or PlotWorld
      * @return - plot world
-     * @param <T> - OnePlotWorld or PlotWorld
      */
     @SuppressWarnings("unchecked")
     public static <T extends PlotWorld> T getPlotWorldByName(String worldName) throws SQLException {

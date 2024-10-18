@@ -44,6 +44,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;

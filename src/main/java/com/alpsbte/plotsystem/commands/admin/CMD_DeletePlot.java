@@ -40,18 +40,18 @@ import java.util.logging.Level;
 public class CMD_DeletePlot extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if(!sender.hasPermission(getPermission())) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
 
-        if(!(args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null)) {
+        if (!(args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null)) {
             sendInfo(sender);
             return true;
         }
 
         int plotID = Integer.parseInt(args[0]);
-        if(!PlotUtils.plotExists(plotID)) {
+        if (!PlotUtils.plotExists(plotID)) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find plot with ID #" + plotID + "!"));
             return true;
         }
@@ -71,7 +71,7 @@ public class CMD_DeletePlot extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "deleteplot" };
+        return new String[]{"deleteplot"};
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CMD_DeletePlot extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

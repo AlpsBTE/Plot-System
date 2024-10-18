@@ -41,7 +41,7 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())){
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
@@ -65,7 +65,7 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "preload" };
+        return new String[]{"preload"};
     }
 
     @Override

@@ -41,6 +41,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
         // Set unreviewed and unfinished plot items
         List<Plot> plots = getFilteredPlots(source);
-        for(int i = 0; i < plots.size(); i++) {
+        for (int i = 0; i < plots.size(); i++) {
             try {
                 Plot plot = plots.get(i);
                 List<String> lines = new ArrayList<>();
@@ -91,7 +92,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 lines.add("");
                 lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
                 if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
-                            try { return m.getName(); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex); }
+                            try {return m.getName();} catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);}
                             return "";
                         }).collect(Collectors.joining(", "))
                 );
@@ -194,8 +195,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     private List<Plot> getFilteredPlots(List<?> plots) {
         List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).collect(Collectors.toList());
         if (filteredCountry != null) filteredPlots = filteredPlots.stream().filter(p -> {
-            try { return p.getCity().getCountry().getID() == filteredCountry.getID();
-            } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+            try {
+                return p.getCity().getCountry().getID() == filteredCountry.getID();
+            } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
             return false;
         }).collect(Collectors.toList());
         return filteredPlots;

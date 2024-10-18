@@ -32,13 +32,14 @@ import org.bukkit.event.Event;
 /**
  * This command event task is used to wait till the player clicks on the "continue" button in
  * the chat to proceed with the tutorial.
+ *
  * @see com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask#sendTaskMessage(Player, Object[], boolean)
  */
 public class ContinueCmdEventTask extends AbstractCmdEventTask {
     private final String npcId;
 
     public ContinueCmdEventTask(Player player, String npcId) {
-        super(player, "/tutorial", new String[] { "continue" }, null, 0, false);
+        super(player, "/tutorial", new String[]{"continue"}, null, 0, false);
         this.npcId = npcId;
     }
 

@@ -97,9 +97,10 @@ import static net.md_5.bungee.api.ChatColor.*;
 
 public final class PlotUtils {
 
-    /** Returns the plot that the player is currently standing on or next to.
-     *  If he is standing in a single plot world it returns the plot of this world.
-     *  If he is standing in a multi plot world it returns the closest plot of all unfinished plots of this city
+    /**
+     * Returns the plot that the player is currently standing on or next to.
+     * If he is standing in a single plot world it returns the plot of this world.
+     * If he is standing in a multi plot world it returns the closest plot of all unfinished plots of this city
      *
      * @return the current plot of the player
      */
@@ -108,7 +109,7 @@ public final class PlotUtils {
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
 
-            if(PlotWorld.isOnePlotWorld(worldName)) {
+            if (PlotWorld.isOnePlotWorld(worldName)) {
                 int id = Integer.parseInt(worldName.substring(2));
                 AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id) : new TutorialPlot(id);
                 if (statuses == null) return plot;
@@ -118,8 +119,8 @@ public final class PlotUtils {
                 int cityID = Integer.parseInt(worldName.substring(2));
                 List<Plot> plots = Plot.getPlots(cityID, statuses);
 
-                if(plots.isEmpty()) return null;
-                if(plots.size() == 1) return plots.get(0);
+                if (plots.isEmpty()) return null;
+                if (plots.size() == 1) return plots.get(0);
 
                 // Find the plot in the city world that is closest to the player
                 Location playerLoc = builder.getPlayer().getLocation().clone();
@@ -127,7 +128,7 @@ public final class PlotUtils {
 
                 double distance = 100000000;
                 Plot chosenPlot = plots.get(0);
-                for(Plot plot : plots)
+                for (Plot plot : plots)
                     if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
                         distance = plot.getCenter().distance(playerVector.toBlockPoint());
                         chosenPlot = plot;
@@ -236,7 +237,7 @@ public final class PlotUtils {
                     ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, cb, region.getMinimumPoint());
                     Operations.complete(forwardExtentCopy);
 
-                    try(ClipboardWriter writer = Objects.requireNonNull(ClipboardFormats.findByFile(finishedSchematicFile)).getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+                    try (ClipboardWriter writer = Objects.requireNonNull(ClipboardFormats.findByFile(finishedSchematicFile)).getWriter(new FileOutputStream(finishedSchematicFile, false))) {
                         writer.write(cb);
                     }
 
@@ -356,8 +357,8 @@ public final class PlotUtils {
         public static void submitPlot(Plot plot) throws SQLException {
             plot.setStatus(Status.unreviewed);
 
-            if(plot.getWorld().isWorldLoaded()) {
-                for(Player player : plot.getWorld() instanceof OnePlotWorld ? plot.getWorld().getBukkitWorld().getPlayers() : ((CityPlotWorld) plot.getWorld()).getPlayersOnPlot()) {
+            if (plot.getWorld().isWorldLoaded()) {
+                for (Player player : plot.getWorld() instanceof OnePlotWorld ? plot.getWorld().getBukkitWorld().getPlayers() : ((CityPlotWorld) plot.getWorld()).getPlayersOnPlot()) {
                     player.teleport(Utils.getSpawnLocation());
                 }
             }
@@ -386,7 +387,7 @@ public final class PlotUtils {
                 if (plot.getWorld() instanceof OnePlotWorld) {
                     if (plot.getWorld().isWorldGenerated()) {
                         if (plot.getWorld().isWorldLoaded()) {
-                            for(Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+                            for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                                 player.teleport(Utils.getSpawnLocation());
                             }
                         }
@@ -471,8 +472,8 @@ public final class PlotUtils {
 
                             if (plotServer.getFTPConfiguration() != null) {
                                 FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/",""), plot.getID() + ".schematic");
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/",""), plot.getID() + "-env.schematic");
+                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + ".schematic");
+                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + "-env.schematic");
                             }
 
                             DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
@@ -495,7 +496,7 @@ public final class PlotUtils {
     public static final class Cache {
         private static final HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
-        public static void clearCache(){
+        public static void clearCache() {
             cachedInProgressPlots.clear();
         }
 
@@ -503,8 +504,8 @@ public final class PlotUtils {
             cachedInProgressPlots.remove(builderUUID);
         }
 
-        public static List<Plot> getCachedInProgressPlots(Builder builder){
-            if(!cachedInProgressPlots.containsKey(builder.getUUID())) {
+        public static List<Plot> getCachedInProgressPlots(Builder builder) {
+            if (!cachedInProgressPlots.containsKey(builder.getUUID())) {
                 try {
                     cachedInProgressPlots.put(builder.getUUID(), Plot.getPlots(builder, Status.unfinished));
                 } catch (SQLException ex) {
@@ -522,13 +523,13 @@ public final class PlotUtils {
     }
 
     public static final class Effects {
-        public static final int CACHE_UPDATE_TICKS = 20*60;
+        public static final int CACHE_UPDATE_TICKS = 20 * 60;
         private static int time;
 
         private static boolean ParticleAPIEnabled = false;
         private static Particles_1_8 particles;
 
-        public static void loadParticleNativeAPI(){
+        public static void loadParticleNativeAPI() {
             ParticleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
 
             // get API
@@ -538,26 +539,26 @@ public final class PlotUtils {
             particles = api.getParticles_1_8();
         }
 
-        public static void startTimer(){
-            if(PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+        public static void startTimer() {
+            if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
                 loadParticleNativeAPI();
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-                if(PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+                if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
                     loadParticleNativeAPI();
-            }, 20*10L);
+            }, 20 * 10L);
 
 
             Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), Effects::tick, 0L, 0L);
         }
 
-        public static void tick(){
+        public static void tick() {
             time++;
-            if(time%CACHE_UPDATE_TICKS == 0) Cache.clearCache();
-            if(time%10 == 0) showOutlines();
+            if (time % CACHE_UPDATE_TICKS == 0) Cache.clearCache();
+            if (time % 10 == 0) showOutlines();
         }
 
-        public static void showOutlines(){
+        public static void showOutlines() {
             try {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Builder builder = Builder.byUUID(player.getUniqueId());
@@ -565,28 +566,29 @@ public final class PlotUtils {
                     List<Plot> plots = Cache.getCachedInProgressPlots(builder);
                     BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
 
-                    if(plots.isEmpty()) continue;
+                    if (plots.isEmpty()) continue;
 
-                    for(Plot plot : plots){
-                        if(!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
+                    for (Plot plot : plots) {
+                        if (!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
                             continue;
 
-                        if(!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
+                        if (!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
                             continue;
 
                         List<BlockVector2> points = plot.getBlockOutline();
 
-                        for(BlockVector2 point : points) if(point.distanceSq(playerPos2D) < 50*50)
-                            if(!ParticleAPIEnabled)
-                                player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0 ,0.0,0.0, 0);
-                            else{
-                                Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
-                                // create a particle packet
-                                Object packet = particles.FLAME().packet(true, loc);
+                        for (BlockVector2 point : points)
+                            if (point.distanceSq(playerPos2D) < 50 * 50)
+                                if (!ParticleAPIEnabled)
+                                    player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
+                                else {
+                                    Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
+                                    // create a particle packet
+                                    Object packet = particles.FLAME().packet(true, loc);
 
-                                // send this packet to player
-                                particles.sendPacket(player, packet);
-                            }
+                                    // send this packet to player
+                                    particles.sendPacket(player, packet);
+                                }
                     }
                 }
             } catch (SQLException | IOException ex) {
@@ -596,7 +598,7 @@ public final class PlotUtils {
     }
 
     public static final class ChatFormatting {
-        public static void sendLinkMessages(AbstractPlot plot, Player player){
+        public static void sendLinkMessages(AbstractPlot plot, Player player) {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 TextComponent[] tc = new TextComponent[3];
                 tc[0] = new TextComponent();
@@ -604,7 +606,7 @@ public final class PlotUtils {
                 tc[2] = new TextComponent();
 
                 try {
-                    if(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
+                    if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
                         tc[0].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Maps", ShortLink.generateShortLink(
                                 plot.getGoogleMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
@@ -665,7 +667,7 @@ public final class PlotUtils {
                 if (plot.getPlotMembers().isEmpty()) {
                     TextComponent tc = new TextComponent();
                     tc.setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
-                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/plot members " + plot.getID()));
+                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot members " + plot.getID()));
                     tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS))));
 
                     player.spigot().sendMessage(tc);
@@ -678,7 +680,7 @@ public final class PlotUtils {
 
         public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
             player.sendMessage("§8--------------------------");
-            for(Plot plot : plots) {
+            for (Plot plot : plots) {
                 player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
                 TextComponent tc = new TextComponent();
                 tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
@@ -687,7 +689,7 @@ public final class PlotUtils {
                         LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK))));
                 player.spigot().sendMessage(tc);
 
-                if(plots.size() != plots.indexOf(plot) + 1) {
+                if (plots.size() != plots.indexOf(plot) + 1) {
                     player.sendMessage("");
                 }
             }

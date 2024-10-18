@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem;
 
 //import com.alpsbte.alpslib.hologram.HolographicDisplay;
+
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.alpslib.io.YamlFileFactory;
@@ -275,6 +276,7 @@ public class PlotSystem extends JavaPlugin {
 
         /**
          * Check for all required dependencies and inform in console about missing dependencies
+         *
          * @return True if all dependencies are present
          */
         private static boolean checkForRequiredDependencies() {
@@ -369,7 +371,7 @@ public class PlotSystem extends JavaPlugin {
         /**
          * @return Protocol Lib Instance
          */
-        public static ProtocolManager getProtocolManager() { return ProtocolLibrary.getProtocolManager(); }
+        public static ProtocolManager getProtocolManager() {return ProtocolLibrary.getProtocolManager();}
     }
 
     public static class UpdateChecker {
@@ -378,6 +380,7 @@ public class PlotSystem extends JavaPlugin {
 
         /**
          * Get the latest plugin version from SpigotMC
+         *
          * @param version Returns latest stable version
          */
         public static void getVersion(final Consumer<String> version) {

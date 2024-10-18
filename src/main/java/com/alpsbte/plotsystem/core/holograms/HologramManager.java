@@ -47,8 +47,7 @@ public abstract class HologramManager {
                 display.setEnabled(true);
                 for (Player player : Objects.requireNonNull(Bukkit.getWorld(display.getLocation().getWorld().getName())).getPlayers())
                     display.create(player);
-            }
-            else {
+            } else {
                 display.setEnabled(false);
                 display.removeAll();
             }

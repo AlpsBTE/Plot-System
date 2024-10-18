@@ -73,7 +73,7 @@ public class PlotWorldGenerator {
     protected void createMultiverseWorld() throws Exception {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            if(!worldManager.isMVWorld(worldName))
+            if (!worldManager.isMVWorld(worldName))
                 worldManager.addWorld(worldName, environment, null, worldType, false,
                         "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}", false);
         } else {
@@ -93,10 +93,10 @@ public class PlotWorldGenerator {
         bukkitWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
         bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         bukkitWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
-        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE,false);
-        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY,true);
-        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING,false);
-        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS,false);
+        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
+        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);

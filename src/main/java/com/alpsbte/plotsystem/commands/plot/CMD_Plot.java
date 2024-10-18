@@ -55,7 +55,7 @@ public class CMD_Plot extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "plot", "p" };
+        return new String[]{"plot", "p"};
     }
 
     @Override

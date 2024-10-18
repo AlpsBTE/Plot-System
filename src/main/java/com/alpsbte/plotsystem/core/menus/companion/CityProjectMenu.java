@@ -156,7 +156,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected List<?> getSource() {
-        if(projects == null) projects = CityProject.getCityProjects(country, true);
+        if (projects == null) projects = CityProject.getCityProjects(country, true);
         return projects;
     }
 
@@ -179,7 +179,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected void setPaginatedItemClickEventsAsync(List<?> source) {
         List<CityProject> cities = source.stream().map(l -> (CityProject) l).collect(Collectors.toList());
         int slot = 9;
-        for(CityProject city : cities) {
+        for (CityProject city : cities) {
             final int _slot = slot;
             getMenu().getSlot(_slot).setClickHandler((clickPlayer, clickInformation) -> {
                 if (getMenu().getSlot(_slot).getItem(clickPlayer).equals(MenuItems.errorItem(getMenuPlayer()))) {

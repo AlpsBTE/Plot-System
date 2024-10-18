@@ -79,8 +79,8 @@ public class CMD_Plot_Members extends SubCommand {
                     return;
                 }
 
-                if(Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
-                    new PlotMemberMenu(plot,getPlayer(sender));
+                if (Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
+                    new PlotMemberMenu(plot, getPlayer(sender));
                 } else {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to manage this plot's members!"));
                 }
@@ -95,7 +95,7 @@ public class CMD_Plot_Members extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "members" };
+        return new String[]{"members"};
     }
 
     @Override
@@ -105,7 +105,7 @@ public class CMD_Plot_Members extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

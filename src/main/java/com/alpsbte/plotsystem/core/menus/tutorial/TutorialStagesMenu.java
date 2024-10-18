@@ -143,9 +143,9 @@ public class TutorialStagesMenu extends AbstractMenu {
         if (plot != null) {
             tutorialItem.setLore(
                     new LegacyLoreBuilder().addLines("",
-                            LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + ": " + WHITE +
-                            (playerHighestStage + (isTutorialCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES))
-                    .build());
+                                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + ": " + WHITE +
+                                            (playerHighestStage + (isTutorialCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES))
+                            .build());
         }
         getMenu().getSlot(4).setItem(tutorialItem.build());
 
@@ -196,7 +196,8 @@ public class TutorialStagesMenu extends AbstractMenu {
 
     /**
      * Sets the click event for a stage item and loads the tutorial stage
-     * @param slot The slot of the stage item
+     *
+     * @param slot    The slot of the stage item
      * @param stageId The id of the stage
      */
     private void setStageClickEvent(int slot, int stageId) {
@@ -224,8 +225,9 @@ public class TutorialStagesMenu extends AbstractMenu {
 
     /**
      * Gets the menu stage item by the given tutorial id and stage id
+     *
      * @param tutorialId The tutorial id
-     * @param stageId The stage id
+     * @param stageId    The stage id
      * @return The menu stage item
      */
     private ItemStack getStageItem(int tutorialId, int stageId) {
@@ -249,9 +251,10 @@ public class TutorialStagesMenu extends AbstractMenu {
 
     /**
      * Gets the stage title by reading the language file manually.
-     * @param player The player
+     *
+     * @param player     The player
      * @param tutorialId The tutorial id
-     * @param stageId The stage id
+     * @param stageId    The stage id
      * @return The stage title
      */
     private static String getStageTitle(Player player, int tutorialId, int stageId) {
