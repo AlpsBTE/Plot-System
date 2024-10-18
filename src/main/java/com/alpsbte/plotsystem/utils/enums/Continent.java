@@ -25,16 +25,20 @@
 package com.alpsbte.plotsystem.utils.enums;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.*;
 
 public enum Continent {
     EUROPE("europe", LangPaths.Continent.EUROPE),
@@ -67,8 +71,8 @@ public enum Continent {
         List<Country> countries = Country.getCountries(this);
 
         return new ItemBuilder(Material.COMPASS)
-                .setName("§e§l" + LangUtil.getInstance().get(player, langPath))
-                .setLore(new LegacyLoreBuilder().addLines("§6" + countries.size() + " §7" + LangUtil.getInstance().get(player, LangPaths.Country.COUNTRIES)).build())
+                .setName(text(LangUtil.getInstance().get(player, langPath), NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true))
+                .setLore(new LoreBuilder().addLines(text(countries.size() + " ", NamedTextColor.GOLD).append(text(LangUtil.getInstance().get(player, LangPaths.Country.COUNTRIES), NamedTextColor.GRAY))).build())
                 .build();
     }
 }

@@ -29,6 +29,8 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -46,7 +48,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         }
 
         if (getPlayer(sender) == null){
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 

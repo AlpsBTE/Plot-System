@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -36,6 +37,8 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -76,8 +79,8 @@ public class FeedbackMenu extends AbstractMenu {
         // Set score item
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE))
-                    .setLore(new LegacyLoreBuilder()
+                    .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    .setLore(new LoreBuilder() //TODO: use components
                             .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
                                     "",
                                     "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
@@ -96,8 +99,8 @@ public class FeedbackMenu extends AbstractMenu {
         // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
-                    .setLore(new LegacyLoreBuilder()
+                    .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    .setLore(new LoreBuilder() //TODO: use components
                             .addLines(plot.getReview().getFeedback())
                             .build())
                     .build());
@@ -109,9 +112,9 @@ public class FeedbackMenu extends AbstractMenu {
         // Set reviewer item
         try {
             getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER))
-                    .setLore(new LegacyLoreBuilder()
-                            .addLine(review.getReviewer().getName()).build())
+                    .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    .setLore(new LoreBuilder()
+                            .addLine(Component.text(review.getReviewer().getName())).build())
                     .build());
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

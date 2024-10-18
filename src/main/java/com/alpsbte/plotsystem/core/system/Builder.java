@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system;
 import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
@@ -37,6 +38,9 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -159,26 +163,34 @@ public class Builder {
     }
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
-        if (plot == null) {
-            return new ItemBuilder(Material.MAP, 1 + slotIndex)
-                    .setName("§b§l" + LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
-                    .setLore(new LegacyLoreBuilder()
-                            .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT),
-                                    "",
-                                    "§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": §7§lUnassigned") // Can't translate because name is stored in the database
-                            .build())
+        String nameText = LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
+        Component statusComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
+        Component slotDescriptionComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
+
+        Material itemMaterial = Material.MAP;
+        ArrayList<Component> lore = new LoreBuilder()
+                .addLines(slotDescriptionComp,
+                        Component.empty(),
+                        statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                .build();
+
+        if (plot != null) {
+            itemMaterial = Material.FILLED_MAP;
+            String plotIdText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID);
+            String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
+            String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
+            lore = new LoreBuilder()
+                    .addLines(Component.text(plotIdText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getID(), NamedTextColor.WHITE)),
+                            Component.text(plotCityText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getCity().getName(), NamedTextColor.WHITE)),
+                            Component.text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
+                            Component.empty(),
+                            statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
                     .build();
         }
 
-        return new ItemBuilder(Material.FILLED_MAP, 1 + slotIndex)
-                .setName("§b§l" + LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1))
-                .setLore(new LegacyLoreBuilder()
-                        .addLines("§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID) + ": §f" + plot.getID(),
-                                "§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(),
-                                "§7" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(),
-                                "",
-                                "§6§l" + LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": §7§l" + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1)
-                        ).build())
+        return new ItemBuilder(itemMaterial, 1 + slotIndex)
+                .setName(Component.text(nameText, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                .setLore(lore)
                 .build();
     }
 

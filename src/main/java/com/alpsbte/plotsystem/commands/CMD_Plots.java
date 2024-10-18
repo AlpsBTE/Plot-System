@@ -29,6 +29,8 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -48,7 +50,7 @@ public class CMD_Plots extends BaseCommand {
         }
 
         if(getPlayer(sender) == null) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
