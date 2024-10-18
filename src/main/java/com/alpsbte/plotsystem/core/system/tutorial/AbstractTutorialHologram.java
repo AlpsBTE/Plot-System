@@ -24,18 +24,20 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import me.filoghost.holographicdisplays.api.Position;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
-import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
+import eu.decentsoftware.holograms.api.holograms.HologramLine;
+import eu.decentsoftware.holograms.event.HologramClickEvent;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class AbstractTutorialHologram extends HolographicDisplay {
+public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected static final String READ_EMOJI = "✅";
 
     /**
@@ -43,11 +45,12 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
      */
     @FunctionalInterface
     public interface ClickAction {
-        void onClick();
+        void onClick(@NotNull HologramClickEvent clickEvent);
     }
 
     private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
     private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
+    private final static String EMPTY_TAG = "&f";
 
     protected final Player player;
     protected final int holoId;
@@ -101,7 +104,7 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
 
     @Override
     public void create(Player player) {
-        setPosition(Position.of(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
+        setLocation(new Location(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
         super.create(player);
     }
 
@@ -154,17 +157,14 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
         super.reload(playerUUID);
 
         // Set click listener
-        Hologram holo = getHologram(playerUUID);
-        if (holo == null) return;
-        if (readMoreId != -1) {
-            TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - (markAsReadClickAction == null ? 1 : 3));
-            line.setClickListener((clickEvent) -> handleReadMoreClickAction());
-        }
+        Hologram holo = this.getHologram(playerUUID);
+
+        if (readMoreId != -1)  super.setClickListener((clickEvent) -> handleReadMoreClickAction());
         if (markAsReadClickAction != null) {
-            TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - 1);
-            line.setClickListener((clickEvent) -> {
+            HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
+            super.setClickListener((clickEvent) -> {
                 line.setText(getMarkAsReadActionDoneText());
-                markAsReadClickAction.onClick();
+                markAsReadClickAction.onClick(clickEvent);
             });
         }
     }
