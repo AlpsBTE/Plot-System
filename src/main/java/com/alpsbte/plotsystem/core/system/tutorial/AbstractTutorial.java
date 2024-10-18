@@ -24,8 +24,9 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
-import com.alpsbte.alpslib.npc.AbstractNpc;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.alpsbte.plotsystem.core.system.tutorial.connector.AbstractNpc;
+// import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
@@ -169,7 +170,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     @Override
     public List<AbstractTutorialHologram> getActiveHolograms() {
-        return HolographicDisplay.activeDisplays.stream()
+        return DecentHologramDisplay.activeDisplays.stream()
                 .filter(AbstractTutorialHologram.class::isInstance)
                 .filter(holo -> holo.isVisible(playerUUID))
                 .map(h -> (AbstractTutorialHologram) h)
@@ -241,7 +242,8 @@ public abstract class AbstractTutorial implements Tutorial {
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
         npc.create(world.getNpcSpawnLocation(), false, true);
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> npc.show(player));
+        npc.show(player);
+        npc.getHologram().delete();
     }
 
     @Override

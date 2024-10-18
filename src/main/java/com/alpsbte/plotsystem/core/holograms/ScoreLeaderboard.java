@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.alpslib.hologram.HolographicPagedDisplay;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
@@ -33,7 +33,8 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -55,13 +56,15 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class ScoreLeaderboard extends HolographicPagedDisplay implements LeaderboardConfiguration {
+public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
-    private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.DAILY;
+    // TODO If we actually gets much player entries, revamp leaderboard paging function (currently this is forced to LIFETIME)
+    private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.LIFETIME;
 
     protected ScoreLeaderboard() {
-        super("score-leaderboard", null, false, PlotSystem.getPlugin());
-        setPosition(LeaderboardManager.getPosition(this));
+        super( "score-leaderboard", null, false, PlotSystem.getPlugin());
+        setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
+        setLocation(HologramManager.getLocation(this));
 
         new BukkitRunnable() {
             @Override
@@ -77,10 +80,10 @@ public class ScoreLeaderboard extends HolographicPagedDisplay implements Leaderb
     @Override
     public void create(Player player) {
         if (!PlotSystem.getPlugin().isEnabled()) return;
-        if (getPages().isEmpty()) {
-            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
-            return;
-        }
+//        if (getPages().isEmpty()) {
+//            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
+//            return;
+//        }
 
         super.create(player);
     }
@@ -102,7 +105,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay implements Leaderb
 
     @Override
     public List<DataLine<?>> getHeader(UUID playerUUID) {
-        sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
+        // sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
         return super.getHeader(playerUUID);
     }
 
@@ -192,22 +195,14 @@ public class ScoreLeaderboard extends HolographicPagedDisplay implements Leaderb
         List<Player> players = new ArrayList<>();
         if (!actionBarEnabled) return players;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Hologram holo = getHologram(player.getUniqueId());
+            Hologram holo = DHAPI.getHologram(player.getUniqueId().toString());
             if (holo == null) continue;
-            if (player.getWorld().getName().equals(holo.getPosition().getWorldName()) &&
-                    holo.getPosition().distance(player.getLocation()) <= actionBarRadius) {
+            if (player.getWorld().getName().equals(holo.getLocation().getWorld().getName()) &&
+                    holo.getLocation().distance(player.getLocation()) <= actionBarRadius) {
                 players.add(player);
             }
         }
         return players;
-    }
-
-    @Override
-    public List<String> getPages() {
-        if (ConfigUtil.getInstance() == null) return new ArrayList<>();
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        return Arrays.stream(LeaderboardTimeframe.values())
-                .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).collect(Collectors.toList());
     }
 
     @Override
@@ -251,7 +246,7 @@ public class ScoreLeaderboard extends HolographicPagedDisplay implements Leaderb
         }
     }
 
-    private class LeaderboardPositionLineWithPayout extends LeaderboardManager.LeaderboardPositionLine {
+    private class LeaderboardPositionLineWithPayout extends HologramRegister.LeaderboardPositionLine {
         private final int position;
 
         public LeaderboardPositionLineWithPayout(int position, String username, int score) {

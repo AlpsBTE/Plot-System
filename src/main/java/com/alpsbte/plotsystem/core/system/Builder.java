@@ -24,14 +24,14 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -187,8 +187,8 @@ public class Builder {
                 .setValue(getScore() + score).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream()
-                .filter(leaderboard -> leaderboard instanceof ScoreLeaderboard).findFirst().ifPresent(HolographicDisplay::reloadAll));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramRegister.getActiveDisplays().stream()
+                .filter(leaderboard -> leaderboard instanceof ScoreLeaderboard).findFirst().ifPresent(DecentHologramDisplay::reloadAll));
     }
 
     public void addCompletedBuild(int amount) throws SQLException {
@@ -196,8 +196,8 @@ public class Builder {
                 .setValue(getCompletedBuilds() + amount).setValue(getUUID().toString())
                 .executeUpdate();
 
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> LeaderboardManager.getLeaderboards().stream()
-                .filter(leaderboard -> leaderboard instanceof PlotsLeaderboard).findFirst().ifPresent(HolographicDisplay::reloadAll));
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> HologramRegister.getActiveDisplays().stream()
+                .filter(leaderboard -> leaderboard instanceof PlotsLeaderboard).findFirst().ifPresent(DecentHologramDisplay::reloadAll));
     }
 
     public void setPlot(int plotID, Slot slot) throws SQLException {

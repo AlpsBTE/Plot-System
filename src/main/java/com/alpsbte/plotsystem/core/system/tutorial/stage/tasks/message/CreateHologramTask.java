@@ -27,8 +27,10 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import eu.decentsoftware.holograms.event.HologramClickEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class CreateHologramTask extends AbstractTask {
     @Override
     public void performTask() {
         for (AbstractTutorialHologram hologram : hologramsToCreate) {
-            if (isMarkAsRead) hologram.setMarkAsReadClickAction(() -> onMarkAsReadClick(hologram.getId()));
+            if (isMarkAsRead) hologram.setMarkAsReadClickAction((@NotNull HologramClickEvent clickEvent) -> onMarkAsReadClick(hologram.getId()));
             hologram.create(player);
         }
         if (!isMarkAsRead) setTaskDone();

@@ -24,7 +24,8 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.npc.AbstractNpc;
+// import com.alpsbte.alpslib.npc.AbstractNpc;
+import com.alpsbte.plotsystem.core.system.tutorial.connector.AbstractNpc;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.World;

@@ -24,7 +24,8 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
-import com.alpsbte.alpslib.npc.AbstractNpc;
+import com.alpsbte.plotsystem.core.system.tutorial.connector.AbstractNpc;
+// import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
