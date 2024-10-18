@@ -214,10 +214,10 @@ public class Utils {
     }
 
     public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine){
-        double p1X = point1.getX();
-        double p1Z = point1.getZ();
-        double p2X = point2.getX();
-        double p2Z = point2.getZ();
+        double p1X = point1.x();
+        double p1Z = point1.z();
+        double p2X = point2.x();
+        double p2Z = point2.z();
 
         double lineAveX = (p2X-p1X)/pointsInLine;
         double lineAveZ = (p2Z-p1Z)/pointsInLine;

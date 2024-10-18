@@ -304,7 +304,7 @@ public abstract class AbstractPlotGenerator {
                 Clipboard clipboard = FaweAPI.load(schematicFile);
                 Operation clipboardHolder = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
-                        .to(BlockVector3.at(world.getPlot().getCenter().getBlockX(), world.getPlotHeight(), world.getPlot().getCenter().getBlockZ()))
+                        .to(BlockVector3.at(world.getPlot().getCenter().x(), world.getPlotHeight(), world.getPlot().getCenter().z()))
                         .build();
                 Operations.complete(clipboardHolder);
             }

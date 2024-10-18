@@ -128,7 +128,7 @@ public final class PlotUtils {
                 double distance = 100000000;
                 Plot chosenPlot = plots.get(0);
                 for(Plot plot : plots)
-                    if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().withY((int) playerVector.getY()).distance(playerVector.toBlockPoint()) < distance) {
+                    if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
                         distance = plot.getCenter().distance(playerVector.toBlockPoint());
                         chosenPlot = plot;
                     }
@@ -164,15 +164,15 @@ public final class PlotUtils {
                 int outlinesClipboardCenterZ = (int) Math.floor(clipboard.getRegion().getLength() / 2d);
 
                 BlockVector3 schematicMinPoint = BlockVector3.at(
-                        plotCenter.getX() - (outlinesClipboardCenterX - regionCenterModX),
+                        plotCenter.x() - (outlinesClipboardCenterX - regionCenterModX),
                         PlotWorld.MIN_WORLD_HEIGHT,
-                        plotCenter.getZ() - (outlinesClipboardCenterZ - regionCenterModZ)
+                        plotCenter.z() - (outlinesClipboardCenterZ - regionCenterModZ)
                 );
 
                 BlockVector3 schematicMaxPoint = BlockVector3.at(
-                        plotCenter.getX() + outlinesClipboardCenterX,
+                        plotCenter.x() + outlinesClipboardCenterX,
                         PlotWorld.MAX_WORLD_HEIGHT,
-                        plotCenter.getZ() + outlinesClipboardCenterZ
+                        plotCenter.z() + outlinesClipboardCenterZ
                 );
 
                 return new CuboidRegion(schematicMinPoint, schematicMaxPoint);
@@ -204,7 +204,7 @@ public final class PlotUtils {
                 // Load finished plot region as cuboid region
                 if (plot.getWorld().loadWorld()) {
                     com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-                    Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().getBlockY(), cuboidRegion.getMaximumPoint().getBlockY());
+                    Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
 
                     // Copy and write finished plot clipboard to schematic file
                     File finishedSchematicFile = Paths.get(PlotUtils.getDefaultSchematicPath(),
@@ -221,13 +221,13 @@ public final class PlotUtils {
 
                     Clipboard cb = new BlockArrayClipboard(region);
                     if (plot.getVersion() >= 3) {
-                        cb.setOrigin(BlockVector3.at(plotCenter.getX(), cuboidRegion.getMinimumY(), (double) plotCenter.getZ()));
+                        cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
                     } else {
                         BlockVector3 terraCenter = plot.getMinecraftCoordinates();
                         plotCenter = BlockVector3.at(
-                                (double) terraCenter.getX() - (double) clipboard.getMinimumPoint().getX() + cuboidRegion.getMinimumPoint().getX(),
-                                (double) terraCenter.getY() - (double) clipboard.getMinimumPoint().getY() + cuboidRegion.getMinimumPoint().getY(),
-                                (double) terraCenter.getZ() - (double) clipboard.getMinimumPoint().getZ() + cuboidRegion.getMinimumPoint().getZ()
+                                (double) terraCenter.x() - (double) clipboard.getMinimumPoint().x() + cuboidRegion.getMinimumPoint().x(),
+                                (double) terraCenter.y() - (double) clipboard.getMinimumPoint().y() + cuboidRegion.getMinimumPoint().y(),
+                                (double) terraCenter.z() - (double) clipboard.getMinimumPoint().z() + cuboidRegion.getMinimumPoint().z()
                         );
                         cb.setOrigin(plotCenter);
                     }
@@ -274,14 +274,14 @@ public final class PlotUtils {
             if (plotRegion != null) {
                 // Convert terra schematic coordinates into relative plot schematic coordinates
                 double[] schematicCoords = {
-                        terraCoords[0] - clipboard.getMinimumPoint().getX(),
-                        terraCoords[1] - clipboard.getMinimumPoint().getZ()
+                        terraCoords[0] - clipboard.getMinimumPoint().x(),
+                        terraCoords[1] - clipboard.getMinimumPoint().z()
                 };
 
                 // Add additional plot sizes to relative plot schematic coordinates
                 double[] plotCoords = {
-                        schematicCoords[0] + plotRegion.getMinimumPoint().getX(),
-                        schematicCoords[1] + plotRegion.getMinimumPoint().getZ()
+                        schematicCoords[0] + plotRegion.getMinimumPoint().x(),
+                        schematicCoords[1] + plotRegion.getMinimumPoint().z()
                 };
 
                 // Return coordinates if they are in the schematic plot region
@@ -578,9 +578,9 @@ public final class PlotUtils {
 
                         for(BlockVector2 point : points) if(point.distanceSq(playerPos2D) < 50*50)
                             if(!ParticleAPIEnabled)
-                                player.spawnParticle(Particle.FLAME, point.getX(), player.getLocation().getY() + 1, point.getZ(), 1, 0.0 ,0.0,0.0, 0);
+                                player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0 ,0.0,0.0, 0);
                             else{
-                                Location loc = new Location(player.getWorld(), point.getX(), player.getLocation().getY() + 1, point.getZ());
+                                Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
                                 // create a particle packet
                                 Object packet = particles.FLAME().packet(true, loc);
 
