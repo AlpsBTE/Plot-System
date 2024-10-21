@@ -33,6 +33,7 @@ import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -98,8 +99,18 @@ public class PlayerPlotsMenu extends AbstractMenu {
             for (int i = 0; i < plotDisplayCount; i++) {
                 Plot plot = plots.get(i);
                 try {
-                    ItemStack item = plot.getStatus() == Status.unfinished ? new ItemStack(Material.ORANGE_WOOL, 1) :
-                            plot.getStatus() == Status.unreviewed ? new ItemStack(Material.FILLED_MAP) : new ItemStack(Material.GREEN_WOOL, 1);
+                    ItemStack item;
+                    switch (plot.getStatus()) {
+                        case unfinished:
+                            item = BaseItems.PLOT_UNFINISHED.getItem();
+                            break;
+                        case unreviewed:
+                            item = BaseItems.PLOT_UNREVIEWED.getItem();
+                            break;
+                        default:
+                            item = BaseItems.PLOT_COMPLETED.getItem();
+                            break;
+                    }
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(item)

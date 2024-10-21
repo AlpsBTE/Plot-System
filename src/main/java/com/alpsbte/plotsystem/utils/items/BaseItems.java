@@ -6,7 +6,19 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public enum BaseItems {
-    COMPANION_ITEM("companion-item");
+    COMPANION_ITEM("companion-item"),
+    LEADERBOARD_PLOT("leaderboard-plot"),
+    LEADERBOARD_SCORE("leaderboard-score"),
+    REVIEW_ITEM("review-item"),
+    PLOT_UNFINISHED("plot-unfinished"),
+    PLOT_UNREVIEWED("plot-unreviewed"),
+    PLOT_COMPLETED("plot-completed"),
+    MENU_ERROR("menu-error"),
+    MENU_CLOSE("menu-close"),
+    REVIEW_ACCURACY("review-accuracy"),
+    REVIEW_BLOCK_PALETTE("review-block-palette"),
+    REVIEW_DETAILING("review-detailing"),
+    REVIEW_TECHNIQUE("review-technique");
 
     final ItemStack itemStack;
 

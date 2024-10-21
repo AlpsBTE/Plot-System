@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,7 +47,7 @@ public class PlotsLeaderboard extends DecentHologramDisplay implements HologramC
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.NETHER_STAR);
+        return new ItemStack(BaseItems.LEADERBOARD_PLOT.getItem());
     }
 
     @Override

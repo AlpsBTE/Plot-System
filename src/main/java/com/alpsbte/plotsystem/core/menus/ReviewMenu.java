@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -224,7 +225,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player player) {
-        return new ItemBuilder(Material.BOOK, 1)
+        return new ItemBuilder(BaseItems.REVIEW_ITEM.getItem())
                 .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOTS) + " §7(" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
                 .setEnchanted(true)
                 .build();

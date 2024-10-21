@@ -32,6 +32,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import net.md_5.bungee.api.ChatColor;
@@ -92,7 +93,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.NETHER_STAR);
+        return new ItemStack(BaseItems.LEADERBOARD_SCORE.getItem());
     }
 
     @Override

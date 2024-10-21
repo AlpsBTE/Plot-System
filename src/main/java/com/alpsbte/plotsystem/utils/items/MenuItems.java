@@ -41,7 +41,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public class MenuItems {
 
     public static ItemStack closeMenuItem(Player player) {
-        return new ItemBuilder(Material.BARRIER)
+        return new ItemBuilder(BaseItems.MENU_CLOSE.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CLOSE), RED, BOLD))
                 .build();
     }
@@ -65,7 +65,7 @@ public class MenuItems {
     }
 
     public static ItemStack errorItem(Player player) {
-        return new ItemBuilder(Material.BARRIER)
+        return new ItemBuilder(BaseItems.MENU_ERROR.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.ERROR), RED, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.ERROR)).build())
@@ -78,6 +78,7 @@ public class MenuItems {
                 .build();
     }
 
+    @SuppressWarnings("unused")
     public static ItemStack loadingItem(ItemStack itemStack, Player player) {
         return new ItemBuilder(itemStack)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.LOADING), GOLD, BOLD))

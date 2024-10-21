@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.chat.PlayerFeedbackChatInput;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.sk89q.worldedit.WorldEditException;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -85,7 +86,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     getMenu().getSlot(i).setItem(MenuItems.loadingItem(Material.MAP, getMenuPlayer()));
                     break;
                 case 10:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.ARROW, 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(BaseItems.REVIEW_ACCURACY.getItem())
                             .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY))
                             .setLore(new LegacyLoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY_DESC))
@@ -93,7 +94,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 19:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.PAINTING, 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(BaseItems.REVIEW_BLOCK_PALETTE.getItem())
                             .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE))
                             .setLore(new LegacyLoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE_DESC))
@@ -101,7 +102,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 28:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.ENDER_EYE, 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(BaseItems.REVIEW_DETAILING.getItem())
                             .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING))
                             .setLore(new LegacyLoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING_DESC))
@@ -109,7 +110,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 37:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOODEN_AXE, 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(BaseItems.REVIEW_TECHNIQUE.getItem())
                             .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE))
                             .setLore(new LegacyLoreBuilder()
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE_DESC))

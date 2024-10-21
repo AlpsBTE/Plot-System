@@ -1,3 +1,43 @@
 companion-item:
-  material:
-  modelId:
+  material: NETHER_STAR
+  modelId: 0
+
+leaderboard-plot:
+  material: NETHER_STAR
+  modelId: 0
+leaderboard-score:
+  material: NETHER_STAR
+  modelId: 0
+
+plot-unfinished:
+  material: ORANGE_WOOL
+  modelId: 0
+plot-unreviewed:
+  material: FILLED_MAP
+  modelId: 0
+plot-completed:
+  material: GREEN_WOOL
+  modelId: 0
+
+menu-error:
+  material: BARRIER
+  modelId: 0
+menu-close:
+  material: BARRIER
+  modelId: 0
+
+review-item:
+  material: KNOWLEDGE_BOOK
+  modelId: 0
+review-accuracy:
+  material: ARROW
+  modelId: 0
+review-block-palette:
+  material: PAINTING
+  modelId: 0
+review-detailing:
+  material: ENDER_EYE
+  modelId: 0
+review-technique:
+  material: WOODEN_AXE
+  modelId: 0
