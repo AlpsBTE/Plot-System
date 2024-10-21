@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.menus.companion;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.menus.BuilderUtilitiesMenu;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
@@ -40,8 +41,12 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -97,8 +102,8 @@ public class CompanionMenu {
 
         // Set player settings menu item
         items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
-                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS))
-                .setLore(new LegacyLoreBuilder()
+                .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                .setLore(new LoreBuilder() //TODO: use components
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())
                 .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
 
@@ -146,8 +151,8 @@ public class CompanionMenu {
 
         try {
             return new ItemBuilder(item)
-                    .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY))
-                    .setLore(new LegacyLoreBuilder()
+                    .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
+                    .setLore(new LoreBuilder() //TODO: use components
                             .addLines("",
                                     selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC),
                                     selectedPlotDifficulty != null ? "§7" + LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": §fx" + Plot.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
@@ -165,8 +170,10 @@ public class CompanionMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player player) {
-        return new ItemBuilder(Material.NETHER_STAR, 1)
-                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION) + " §7(" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")")
+        return new ItemBuilder(BaseItems.COMPANION_ITEM.getItem())
+                .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION), NamedTextColor.AQUA)
+                        .decoration(TextDecoration.BOLD, true)
+                        .append(Component.text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")", NamedTextColor.GRAY)))
                 .setEnchanted(true)
                 .build();
     }

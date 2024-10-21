@@ -59,7 +59,6 @@ import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
 import static com.alpsbte.alpslib.utils.AlpsUtils.deserialize;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {

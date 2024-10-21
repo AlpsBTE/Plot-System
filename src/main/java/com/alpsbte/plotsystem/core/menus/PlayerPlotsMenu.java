@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -79,7 +80,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             getMenu().getSlot(4)
                     .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
                             .setName(Component.text(builder.getName(), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                            .setLore(new LegacyLoreBuilder()
+                            .setLore(new LoreBuilder() //TODO: use components
                                     .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": §f" + builder.getScore(),
                                             "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": §f" + builder.getCompletedBuilds())
                                     .build())

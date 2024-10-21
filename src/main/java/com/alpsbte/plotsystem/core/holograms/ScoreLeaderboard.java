@@ -30,7 +30,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import eu.decentsoftware.holograms.api.DHAPI;
@@ -50,11 +49,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");

@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

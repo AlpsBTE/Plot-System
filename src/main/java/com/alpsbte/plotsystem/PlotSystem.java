@@ -111,7 +111,6 @@ public class PlotSystem extends JavaPlugin {
         }
         reloadConfig();
 
-
         // Load language files
         try {
             LangUtil.init();
