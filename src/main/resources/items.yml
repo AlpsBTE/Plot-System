@@ -41,3 +41,30 @@ review-detailing:
 review-technique:
   material: WOODEN_AXE
   modelId: 0
+review-point-zero:
+  material: LIGHT_GRAY_WOOL
+  modelId: 0
+review-point-one:
+  material: RED_WOOL
+  modelId: 0
+review-point-two:
+  material: ORANGE_WOOL
+  modelId: 0
+review-point-three:
+  material: YELLOW_WOOL
+  modelId: 0
+review-point-four:
+  material: GREEN_WOOL
+  modelId: 0
+review-point-five:
+  material: LIME_WOOL
+  modelId: 0
+review-submit:
+  material: GREEN_CONCRETE
+  modelId: 0
+review-cancel:
+  material: RED_CONCRETE
+  modelId: 0
+review-info-plot:
+  material: MAP
+  modelId: 0
