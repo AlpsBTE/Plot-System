@@ -206,7 +206,7 @@ public class TutorialStagesMenu extends AbstractMenu {
                 getMenuPlayer().closeInventory();
 
                 // Load the tutorial stage by id
-                if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId, stageId)) {
+                if (!AbstractTutorial.loadTutorialByStage(getMenuPlayer(), tutorialId, stageId)) {
                     Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
                     if (tutorial != null) {
                         if (tutorial.getId() == tutorialId) tutorial.setStage(stageId);

@@ -122,12 +122,6 @@
         </dependency>
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
-            <artifactId>alpslib-npc</artifactId>
-            <version>1.0.37</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-utils</artifactId>
             <version>1.1.1</version>
             <scope>compile</scope>
@@ -178,7 +172,7 @@
         <dependency>
             <groupId>de.oliver</groupId>
             <artifactId>FancyNpcs</artifactId>
-            <version>2.3.0</version>
+            <version>2.3.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

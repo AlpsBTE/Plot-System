@@ -72,7 +72,7 @@ public class ChatMessageTask extends AbstractTask {
 
         // Send the task message
         player.sendMessage(text());
-        player.sendMessage(text(tutorial.getNPC().getDisplayName(player.getUniqueId()) + " ")
+        player.sendMessage(text(tutorial.getNPC().getDisplayName() + " ")
                 .append(TutorialUtils.CHAT_PREFIX_COMPONENT));
         for (Object message : messages) {
             if (message instanceof ClickableTaskMessage) {

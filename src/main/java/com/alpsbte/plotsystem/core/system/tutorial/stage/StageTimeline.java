@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.DeleteHol
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -97,8 +98,13 @@ public class StageTimeline implements TutorialTimeline {
             // If the task has npc interaction show the hologram click info, otherwise hide it
             if (currentTask instanceof NpcInteractEventTask || currentTask instanceof ContinueCmdEventTask ||
                     (currentTask instanceof ChatMessageTask && ((ChatMessageTask) currentTask).isWaitToContinue())) {
-                tutorial.getNPC().setActionTitleVisibility(player.getUniqueId(), true, currentTask instanceof NpcInteractEventTask);
-            } else if (tutorial.getNPC().getHologram().isActionTitleVisible(player.getUniqueId())) tutorial.getNPC().setActionTitleVisibility(player.getUniqueId(), false, false);
+                tutorial.getNPC().setInteractionPromptVisibility(player.getUniqueId(), true, currentTask instanceof NpcInteractEventTask);
+            } else if (tutorial.getNPC().getHologram().isInteractionPromptVisible()) tutorial.getNPC().setInteractionPromptVisibility(player.getUniqueId(), false, false);
+
+            // Set the look direction of the npc to the player
+            Location newLoc = player.getLocation().clone();
+            newLoc.setDirection(newLoc.subtract(tutorial.getNPC().getNpc().getData().getLocation()).toVector());
+            tutorial.getNPC().getNpc().lookAt(player, newLoc);
 
             currentTask.performTask();
         } catch (Exception ex) {
@@ -128,7 +134,7 @@ public class StageTimeline implements TutorialTimeline {
         if (assignmentProgressTask != null) assignmentProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
         tutorial.getActiveHolograms().forEach(AbstractTutorialHologram::delete);
-        tutorial.getNPC().setActionTitleVisibility(player.getUniqueId(), false, false);
+        tutorial.getNPC().setInteractionPromptVisibility(player.getUniqueId(), false, false);
         tasks.clear();
     }
 
@@ -182,7 +188,7 @@ public class StageTimeline implements TutorialTimeline {
     public StageTimeline sendChatMessage(Object[] messages, Sound soundEffect, boolean waitToContinue) {
         tasks.add(new ChatMessageTask(player, messages, soundEffect, waitToContinue));
         // Add a task to wait for player to continue
-        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorial.getNPC().getNpc().getData().getName()));
+        if (waitToContinue) tasks.add(new ContinueCmdEventTask(player, tutorial.getNPC().getNpc().getEntityId()));
         return this;
     }
 
@@ -229,7 +235,7 @@ public class StageTimeline implements TutorialTimeline {
      * @param assignmentMessage the task message to show in the action bar to the player
      */
     public StageTimeline interactNPC(Component assignmentMessage) {
-        tasks.add(new NpcInteractEventTask(player, tutorial.getNPC().getNpc().getData().getName(), assignmentMessage));
+        tasks.add(new NpcInteractEventTask(player, tutorial.getNPC().getNpc().getEntityId(), assignmentMessage));
         return this;
     }
 

@@ -25,8 +25,6 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
-import com.alpsbte.plotsystem.core.system.tutorial.connector.AbstractNpc;
-// import com.alpsbte.alpslib.npc.AbstractNpc;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
@@ -95,7 +93,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
 
     private StageTimeline stageTimeline;
-    private AbstractNpc npc;
+    private TutorialNPC npc;
 
     /**
      * Creates a new instance of the tutorial current stage.
@@ -174,7 +172,7 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
-    public AbstractNpc getNPC() {
+    public TutorialNPC getNPC() {
         return npc;
     }
 
@@ -251,8 +249,8 @@ public abstract class AbstractTutorial implements Tutorial {
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
-        npc.create(world.getNpcSpawnLocation(), false, true);
-        npc.show(player);
+        npc.create(world.getNpcSpawnLocation());
+        npc.spawn(player);
         npc.getHologram().delete();
     }
 
@@ -319,7 +317,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @param playerUUID uuid of the player
      * @return true if the player can interact, otherwise false
      */
-    public static boolean playerIsOnInteractCoolDown(UUID playerUUID) {
+    public static boolean isPlayerIsOnInteractCoolDown(UUID playerUUID) {
         if (playerInteractionHistory.containsKey(playerUUID)) {
             long lastInteraction = playerInteractionHistory.get(playerUUID);
             if (System.currentTimeMillis() - lastInteraction <= PLAYER_INTERACTION_COOLDOWN) return true;
@@ -336,7 +334,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @return true if the tutorial was loaded successfully, otherwise false
      */
     public static boolean loadTutorial(Player player, int tutorialId) {
-        return loadTutorial(player, tutorialId, -1);
+        return loadTutorialByStage(player, tutorialId, -1);
     }
 
     /**
@@ -347,7 +345,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @param stageId    id of the stage to start with
      * @return true if the tutorial was loaded successfully, otherwise false
      */
-    public static boolean loadTutorial(Player player, int tutorialId, int stageId) {
+    public static boolean loadTutorialByStage(Player player, int tutorialId, int stageId) {
         if (tutorialId >= tutorials.size()) return false;
         if (getActiveTutorial(player.getUniqueId()) != null) return false;
 

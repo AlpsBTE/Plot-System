@@ -24,10 +24,8 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-// import com.alpsbte.alpslib.npc.AbstractNpc;
-
-import com.alpsbte.plotsystem.core.system.tutorial.connector.AbstractNpc;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
+import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -71,7 +69,7 @@ public interface Tutorial {
      *
      * @return NPC
      */
-    AbstractNpc getNPC();
+    TutorialNPC getNPC();
 
     /**
      * Gets a list of all active holograms from the current tutorial stage.

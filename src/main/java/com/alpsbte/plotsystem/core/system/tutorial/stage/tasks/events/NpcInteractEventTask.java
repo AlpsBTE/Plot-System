@@ -27,17 +27,17 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
-import de.oliver.fancynpcs.api.events.NpcInteractEvent;
+import com.destroystokyo.paper.event.player.PlayerUseUnknownEntityEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public class NpcInteractEventTask extends AbstractTask implements EventTask {
-    private final String npcId;
+    private final int entityId;
 
-    public NpcInteractEventTask(Player player, String npcId, Component assignmentMessage) {
+    public NpcInteractEventTask(Player player, int entityId, Component assignmentMessage) {
         super(player, assignmentMessage, 1);
-        this.npcId = npcId;
+        this.entityId = entityId;
     }
 
     @Override
@@ -47,9 +47,8 @@ public class NpcInteractEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (AbstractTutorial.playerIsOnInteractCoolDown(player.getUniqueId())) return;
-        if (event instanceof NpcInteractEvent && npcId.equals(((NpcInteractEvent) event).getNpc().getData().getName())) {
-            ((NpcInteractEvent) event).setCancelled(true);
+        if (AbstractTutorial.isPlayerIsOnInteractCoolDown(player.getUniqueId())) return;
+        if (event instanceof PlayerUseUnknownEntityEvent && entityId == ((PlayerUseUnknownEntityEvent) event).getEntityId()) {
             updateAssignments();
             setTaskDone();
         }
