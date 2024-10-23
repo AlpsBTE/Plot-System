@@ -228,4 +228,8 @@ public class Utils {
         }
         return line;
     }
+
+    public static void LogInfo(String content) {
+        PlotSystem.getPlugin().getComponentLogger().info(Component.text(content));
+    }
 }
