@@ -52,9 +52,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import li.cinnazeyy.langlibs.core.event.LanguageChangeEvent;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -77,7 +75,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class EventListener implements Listener {
     @EventHandler
@@ -101,7 +100,7 @@ public class EventListener implements Listener {
 
                 DatabaseConnection.closeResultSet(rs);
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
 
             // Inform player about update
@@ -118,7 +117,7 @@ public class EventListener implements Listener {
                             .setValue(event.getPlayer().getName()).setValue(event.getPlayer().getUniqueId().toString()).executeUpdate();
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
 
             // Informing player about new feedback
@@ -138,7 +137,7 @@ public class EventListener implements Listener {
                     event.getPlayer().sendTitle("", "§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
                 }
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his plot feedback!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his plot feedback!"), ex);
             }
 
             // Informing player about unfinished plots
@@ -149,7 +148,7 @@ public class EventListener implements Listener {
                     event.getPlayer().sendMessage("");
                 }
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about his unfinished plots!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his unfinished plots!"), ex);
             }
 
             // Informing reviewer about new reviews
@@ -162,7 +161,7 @@ public class EventListener implements Listener {
                     }
                 }
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while trying to inform the player about unreviewed plots!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about unreviewed plots!"), ex);
             }
 
             // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
@@ -178,7 +177,7 @@ public class EventListener implements Listener {
                     }
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
     }
@@ -234,7 +233,7 @@ public class EventListener implements Listener {
             if (PlotUtils.isPlotWorld(w)) {
                 try {
                     PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
-                } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+                } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
             }
             DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
             ChatInput.awaitChatInput.remove(event.getPlayer().getUniqueId());

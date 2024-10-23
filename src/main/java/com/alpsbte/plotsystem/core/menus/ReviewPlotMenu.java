@@ -59,7 +59,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -154,7 +153,7 @@ public class ReviewPlotMenu extends AbstractMenu {
             try {
                 new PlotActionsMenu(clickPlayer, plot);
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
 
@@ -200,9 +199,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 if (plot.isReviewed()) {
                     plot.getReview().setRating(score.toString());
                     plot.getReview().setReviewer(clickPlayer.getUniqueId());
-                } else {
-                    new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
-                }
+                } else new Review(plot.getID(), clickPlayer.getUniqueId(), score.toString());
 
                 double totalRatingWithMultiplier = totalRating * Plot.getMultiplierByDifficulty(plot.getDifficulty());
                 totalRating = (int) Math.floor(totalRatingWithMultiplier);
@@ -216,11 +213,11 @@ public class ReviewPlotMenu extends AbstractMenu {
                     try {
                         if (!PlotUtils.savePlotAsSchematic(plot)) {
                             clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-                            Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!");
+                            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
                             return;
                         }
                     } catch (IOException | SQLException | WorldEditException ex) {
-                        Bukkit.getLogger().log(Level.WARNING, "Could not save finished plot schematic (ID: " + plot.getID() + ")!", ex);
+                        PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
                     }
 
                     plot.setStatus(Status.completed);
@@ -289,7 +286,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                         if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
                             plot.getWorld().deleteWorld();
                     } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                     }
 
                     clickPlayer.sendMessage(reviewerConfirmationMessage);
@@ -299,7 +296,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                         ChatInput.awaitChatInput.put(clickPlayer.getUniqueId(),
                                 new PlayerFeedbackChatInput(clickPlayer.getUniqueId(), plot.getReview()));
                         PlayerFeedbackChatInput.sendChatInputMessage(clickPlayer);
-                    } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+                    } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
                 });
 
                 for (Builder member : plot.getPlotMembers()) {
@@ -311,7 +308,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     plot.getReview().setFeedbackSent(true);
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }));
 
@@ -377,7 +374,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
             plotOwnerPlayer = plot.getPlotOwner().getPlayer();
         } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
             return MenuItems.errorItem(getMenuPlayer());
         }
 

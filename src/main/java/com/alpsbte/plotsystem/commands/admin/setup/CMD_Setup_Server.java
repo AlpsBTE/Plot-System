@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
@@ -32,7 +33,6 @@ import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.io.IOException;
@@ -40,7 +40,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Setup_Server extends SubCommand {
 
@@ -101,7 +102,7 @@ public class CMD_Setup_Server extends SubCommand {
                 try {
                     sender.sendMessage(" §6> §b" + s.getID() + " (" + s.getName() + ") §f- FTP-Configuration: " + (s.getFTPConfiguration() == null ? "None" : s.getFTPConfiguration().getID()));
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
             }
             sender.sendMessage("§8--------------------------");
@@ -150,7 +151,7 @@ public class CMD_Setup_Server extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added server!"));
             } catch (SQLException | IOException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
@@ -197,7 +198,7 @@ public class CMD_Setup_Server extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed server with ID " + args[1] + "!"));
             } catch (SQLException | IOException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
@@ -248,7 +249,7 @@ public class CMD_Setup_Server extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 

@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Bukkit;
@@ -32,7 +33,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Set;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class TutorialWorld {
     private String worldName;
@@ -49,13 +51,13 @@ public class TutorialWorld {
         // Read tutorial spawn section
         ConfigurationSection tutorialSpawnsSection = config.getConfigurationSection(TutorialUtils.Path.TUTORIAL_WORLDS);
         if (tutorialSpawnsSection == null) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not find tutorial spawns section in tutorial config!");
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find tutorial spawns section in the tutorial config!"));
             return;
         }
 
         Set<String> tutorialSpawn = tutorialSpawnsSection.getKeys(false);
         if (tutorialSpawn.size() < tutorialWorldIndex) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not find spawn point " + tutorialWorldIndex + " in tutorial config!");
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find spawn point " + tutorialWorldIndex + " in the tutorial config!"));
             return;
         }
 

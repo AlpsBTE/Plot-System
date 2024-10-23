@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -36,7 +37,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -46,8 +46,9 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class ReviewMenu extends AbstractPaginatedMenu {
     private List<Country> countries = new ArrayList<>();
@@ -65,7 +66,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             plots.addAll(Plot.getPlots(countries, Status.unreviewed));
             plots.addAll(Plot.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return plots;
     }
@@ -93,7 +94,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 lines.add("");
                 lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
                 if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
-                            try {return m.getName();} catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);}
+                    try {return m.getName();} catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
                             return "";
                         }).collect(Collectors.joining(", "))
                 );
@@ -106,7 +107,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                         .setLore(lines)
                         .build());
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 getMenu().getSlot(i).setItem(MenuItems.errorItem(getMenuPlayer()));
             }
         }
@@ -127,7 +128,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
                     player.performCommand("review " + plot.getID());
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                     getMenuPlayer().closeInventory();
                 }
             });
@@ -198,7 +199,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         if (filteredCountry != null) filteredPlots = filteredPlots.stream().filter(p -> {
             try {
                 return p.getCity().getCountry().getID() == filteredCountry.getID();
-            } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+            } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
             return false;
         }).collect(Collectors.toList());
         return filteredPlots;

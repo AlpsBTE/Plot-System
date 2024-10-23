@@ -49,7 +49,6 @@ import org.bukkit.util.Vector;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.logging.Level;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_START;
@@ -68,7 +67,7 @@ public class Utils {
                 MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
             } catch (Exception ignore) {
-                Bukkit.getLogger().log(Level.WARNING, String.format("Could not find %s in multiverse config!", ConfigPaths.SPAWN_WORLD));
+                PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find %s in multiverse config!"), ConfigPaths.SPAWN_WORLD);
             }
         }
 
@@ -187,7 +186,6 @@ public class Utils {
         }
     }
 
-
     public static void registerCustomHeads() {
         for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
@@ -227,9 +225,5 @@ public class Utils {
             line.add(vector);
         }
         return line;
-    }
-
-    public static void LogInfo(String content) {
-        PlotSystem.getPlugin().getComponentLogger().info(Component.text(content));
     }
 }

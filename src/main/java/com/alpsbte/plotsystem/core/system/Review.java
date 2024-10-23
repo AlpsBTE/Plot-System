@@ -40,7 +40,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.UUID;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class Review {
     private final int reviewID;
@@ -253,7 +254,7 @@ public class Review {
                             FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schematic");
                         }
                     } catch (IOException | SQLException | URISyntaxException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
+                        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while undoing review!"), ex);
                     }
 
                     plot.getWorld().unloadWorld(true);
@@ -265,7 +266,7 @@ public class Review {
                 DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
                         .setValue(review.reviewID).executeUpdate();
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while undoing review!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while undoing review!"), ex);
             }
         });
     }

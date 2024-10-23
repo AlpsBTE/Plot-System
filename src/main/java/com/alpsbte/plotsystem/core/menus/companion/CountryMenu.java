@@ -43,7 +43,6 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +52,8 @@ import org.ipvp.canvas.mask.Mask;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CountryMenu extends AbstractMenu {
     private List<Country> countryProjects;
@@ -93,7 +93,7 @@ public class CountryMenu extends AbstractMenu {
             countryProjects = Country.getCountries(selectedContinent);
             setCountryItems();
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -111,7 +111,7 @@ public class CountryMenu extends AbstractMenu {
             try {
                 setCountryItems();
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }));
 

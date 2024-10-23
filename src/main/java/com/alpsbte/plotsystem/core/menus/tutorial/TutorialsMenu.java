@@ -41,7 +41,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -51,8 +50,8 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.md_5.bungee.api.ChatColor.WHITE;
 
 public class TutorialsMenu extends AbstractMenu {
@@ -106,7 +105,7 @@ public class TutorialsMenu extends AbstractMenu {
             if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
                 getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -175,7 +174,7 @@ public class TutorialsMenu extends AbstractMenu {
                     }
                 } catch (Exception ex) {
                     getMenuPlayer().closeInventory();
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while handling menu click event", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while handling menu click event!"), ex);
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                     return;

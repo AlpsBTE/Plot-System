@@ -68,3 +68,6 @@ review-cancel:
 review-info-plot:
   material: MAP
   modelId: 0
+
+# NOTE: Do not change
+config-version: 1.0

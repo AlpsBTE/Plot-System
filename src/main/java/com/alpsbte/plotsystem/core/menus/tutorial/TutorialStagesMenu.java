@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus.tutorial;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -39,7 +40,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -48,8 +48,8 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public class TutorialStagesMenu extends AbstractMenu {
@@ -134,7 +134,7 @@ public class TutorialStagesMenu extends AbstractMenu {
                 isTutorialCompleted = plot.isCompleted();
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         // Set tutorial stats item

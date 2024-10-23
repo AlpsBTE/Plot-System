@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotPermissions;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
@@ -40,7 +41,6 @@ import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -49,7 +49,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public abstract class AbstractPlot {
     public static final double PLOT_VERSION = 3;
@@ -146,7 +147,7 @@ public abstract class AbstractPlot {
         try {
             return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z()));
         } catch (OutOfProjectionBoundsException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not convert MC coordinates to geo coordinates!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not convert MC coordinates to geo coordinates!"), ex);
         }
         return null;
     }
@@ -172,7 +173,7 @@ public abstract class AbstractPlot {
                 return BlockVector3.at(clipboardCenter.x(), this.getWorld().getPlotHeightCentered(), clipboardCenter.z());
             }
         } catch (IOException | SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to load schematic file to clipboard!"), ex);
         }
         return null;
     }

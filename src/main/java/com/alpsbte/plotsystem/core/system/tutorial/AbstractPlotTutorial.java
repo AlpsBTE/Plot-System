@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
@@ -66,7 +65,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
         // Check if tutorial plot is null
         if (plot == null) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not load tutorial. Plot is null!"));
             return;
         }
 

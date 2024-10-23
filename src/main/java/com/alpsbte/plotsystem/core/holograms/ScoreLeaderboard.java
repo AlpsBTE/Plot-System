@@ -41,7 +41,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,6 +52,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
@@ -138,7 +139,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
         } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
             return TextComponent.fromLegacyText("§cSQL Exception");
         }
 

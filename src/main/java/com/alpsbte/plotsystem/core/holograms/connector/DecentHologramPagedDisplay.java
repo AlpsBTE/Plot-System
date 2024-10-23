@@ -24,10 +24,10 @@
 
 package com.alpsbte.plotsystem.core.holograms.connector;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.event.HologramClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -39,7 +39,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.Collections;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * Extended class to create paged hologram display
@@ -90,7 +91,6 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
         if (!super.isEnabled() | !this.hasViewPermission(player.getUniqueId())) return;
         if (this.holograms.containsKey(player.getUniqueId())) this.reload(player.getUniqueId());
         else {
-            Bukkit.getLogger().log(Level.INFO, "[DHAPI] Created display ID: " + super.getId() + " For player: " + player.getUniqueId());
             Hologram hologram = DHAPI.createHologram(player.getUniqueId() + "-" + super.getId(), super.getLocation());
             for (int i = 1; i <= pageCount; i++) hologram.addPage();
 
@@ -264,7 +264,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
             hologram.show(player, nextViewPage);
             currentPage = nextViewPage;
         } catch (IndexOutOfBoundsException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Hologram page indexing out of bounds", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("[DHAPI] Hologram page indexing out of bounds"), ex);
         }
     }
 }

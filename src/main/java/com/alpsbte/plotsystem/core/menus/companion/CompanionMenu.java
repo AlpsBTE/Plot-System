@@ -26,8 +26,8 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.BuilderUtilitiesMenu;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
@@ -47,7 +47,6 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +56,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CompanionMenu {
     public static boolean hasContinentView() {
@@ -121,11 +121,11 @@ public class CompanionMenu {
                     } catch (SQLException ex) {
                         clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while opening the plot actions menu!", ex);
+                        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while opening the plot actions menu!"), ex);
                     }
                 }));
             } catch (NullPointerException | SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "An error occurred while placing player slot items!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while placing player slot items!"), ex);
                 items.put(startingSlot + 1 + i, new FooterItem(MenuItems.errorItem(player)));
             }
         }
@@ -161,7 +161,7 @@ public class CompanionMenu {
                             .build())
                     .build();
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             return MenuItems.errorItem(player);
         }
     }
@@ -178,7 +178,7 @@ public class CompanionMenu {
                 .build();
     }
 
-    static class FooterItem {
+    public static class FooterItem {
         public final ItemStack item;
         public org.ipvp.canvas.slot.Slot.ClickHandler clickHandler = null;
 

@@ -24,15 +24,16 @@
 
 package com.alpsbte.plotsystem.core.system;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class BuildTeam {
     private final int ID;
@@ -97,7 +98,7 @@ public class BuildTeam {
             DatabaseConnection.closeResultSet(rs);
             return buildTeams;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return new ArrayList<>();
     }

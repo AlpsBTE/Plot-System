@@ -30,12 +30,11 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.logging.Level;
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_PReload extends BaseCommand {
 
@@ -58,7 +57,7 @@ public class CMD_PReload extends BaseCommand {
             DatabaseConnection.InitializeDatabase();
         } catch (Exception ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return true;
     }

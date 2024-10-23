@@ -42,7 +42,8 @@ import org.bukkit.generator.ChunkGenerator;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Random;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
     private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
@@ -130,7 +131,7 @@ public class PlotWorldGenerator {
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
             regionManager.addRegion(globalRegion);
             regionManager.saveChanges();
-        } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
     }
 
     public static class EmptyChunkGenerator extends ChunkGenerator {

@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -32,7 +33,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.google.common.annotations.Beta;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) throws SQLException {
@@ -68,7 +69,7 @@ public class CityPlotWorld extends PlotWorld {
 
                 return true;
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
         return false;

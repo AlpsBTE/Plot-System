@@ -51,7 +51,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorld implements IWorld {
     public static final int PLOT_SIZE = 150;
@@ -87,11 +88,11 @@ public class PlotWorld implements IWorld {
                     if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
                     if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
                 } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not delete config files for world " + getWorldName() + "!");
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"));
                     return false;
                 }
                 return true;
-            } else Bukkit.getLogger().log(Level.WARNING, "Could not delete world " + getWorldName() + "!");
+            } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete world " + getWorldName() + "!"));
         }
         return false;
     }
@@ -102,7 +103,7 @@ public class PlotWorld implements IWorld {
             if (isWorldLoaded()) {
                 return true;
             } else return mvCore.getMVWorldManager().loadWorld(getWorldName()) || isWorldLoaded();
-        } else Bukkit.getLogger().log(Level.WARNING, "Could not load world " + worldName + " because it is not generated!");
+        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world " + worldName + " because it is not generated!"));
         return false;
     }
 
@@ -120,7 +121,7 @@ public class PlotWorld implements IWorld {
                 return !isWorldLoaded();
             }
             return true;
-        } else Bukkit.getLogger().log(Level.WARNING, "Could not unload world " + worldName + " because it is not generated!");
+        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not unload world " + worldName + " because it is not generated!"));
         return false;
     }
 
@@ -129,7 +130,7 @@ public class PlotWorld implements IWorld {
         if (loadWorld() && plot != null) {
             player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()));
             return true;
-        } else Bukkit.getLogger().log(Level.WARNING, "Could not teleport player " + player.getName() + " to world " + worldName + "!");
+        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not teleport player " + player.getName() + " to world " + worldName + "!"));
         return false;
     }
 
@@ -207,7 +208,7 @@ public class PlotWorld implements IWorld {
             RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
             if (regionManager != null) {
                 return regionManager.getRegion(regionName);
-            } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");
+            } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region manager is null!"));
         }
         return null;
     }

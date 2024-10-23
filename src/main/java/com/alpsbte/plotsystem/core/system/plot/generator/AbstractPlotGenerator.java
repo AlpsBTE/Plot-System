@@ -67,7 +67,7 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +78,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public abstract class AbstractPlotGenerator {
     protected final AbstractPlot plot;
@@ -207,7 +208,7 @@ public abstract class AbstractPlotGenerator {
             regionManager.addRegion(protectedBuildRegion);
             regionManager.addRegion(protectedRegion);
             regionManager.saveChanges();
-        } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
     }
 
     /**
@@ -269,7 +270,7 @@ public abstract class AbstractPlotGenerator {
      * @param ex - caused exception
      */
     protected void onException(Throwable ex) {
-        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot!", ex);
+        PlotSystem.getPlugin().getComponentLogger().error(Component.text("An error occurred while generating plot!"), ex);
         builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
     }

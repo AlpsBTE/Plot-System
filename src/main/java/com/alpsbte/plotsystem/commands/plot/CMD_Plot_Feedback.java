@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.menus.FeedbackMenu;
@@ -42,7 +43,8 @@ import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Plot_Feedback extends SubCommand {
 
@@ -90,7 +92,7 @@ public class CMD_Plot_Feedback extends SubCommand {
             }
         } catch (SQLException ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 

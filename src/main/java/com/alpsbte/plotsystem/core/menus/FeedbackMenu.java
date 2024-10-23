@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -38,7 +39,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -46,7 +46,8 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class FeedbackMenu extends AbstractMenu {
 
@@ -73,7 +74,7 @@ public class FeedbackMenu extends AbstractMenu {
             if (rs.next()) this.review = new Review(rs.getInt(1));
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         // Set score item
@@ -92,7 +93,7 @@ public class FeedbackMenu extends AbstractMenu {
                             .build())
                     .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(10).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
@@ -105,7 +106,7 @@ public class FeedbackMenu extends AbstractMenu {
                             .build())
                     .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
@@ -117,7 +118,7 @@ public class FeedbackMenu extends AbstractMenu {
                             .addLine(Component.text(review.getReviewer().getName())).build())
                     .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
     }

@@ -46,7 +46,6 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -80,7 +79,7 @@ public class PlotMemberMenu extends AbstractMenu {
                             : emptyMemberSlotItem);
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
 
@@ -113,7 +112,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         // Set plot member items
@@ -134,7 +133,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 .build());
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -151,7 +150,7 @@ public class PlotMemberMenu extends AbstractMenu {
                     clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
                             LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
                 reloadMenuAsync();
             });
@@ -169,7 +168,7 @@ public class PlotMemberMenu extends AbstractMenu {
             try {
                 new PlotActionsMenu(clickPlayer, plot);
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
     }

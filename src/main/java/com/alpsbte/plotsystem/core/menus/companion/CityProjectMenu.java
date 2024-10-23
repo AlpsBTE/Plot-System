@@ -41,7 +41,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -51,8 +50,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CityProjectMenu extends AbstractPaginatedMenu {
     final Country country;
@@ -168,7 +168,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             try {
                 getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), selectedPlotDifficulty));
             } catch (SQLException e) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", e);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
                 getMenu().getSlot(slot).setItem(MenuItems.errorItem(getMenuPlayer()));
             }
             slot++;
@@ -207,7 +207,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
                     new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
                 } catch (SQLException | ExecutionException | InterruptedException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                     clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                 }

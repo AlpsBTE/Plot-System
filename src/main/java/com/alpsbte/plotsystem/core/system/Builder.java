@@ -48,8 +48,9 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class Builder {
 
@@ -398,7 +399,7 @@ public class Builder {
             }
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while getting language setting from database", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while getting language setting from database"), ex);
         }
         return null;
     }
@@ -414,7 +415,7 @@ public class Builder {
                         .executeUpdate();
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while getting language setting from database", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while getting language setting from database"), ex);
         }
 
         this.plotType = plotType;
@@ -448,14 +449,14 @@ public class Builder {
                 try {
                     countries.addAll(b.getCountries().stream().map(Country::getID).collect(Collectors.toList()));
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
             });
 
             return countries.stream().map(c -> {
                 try {
                     return new Country(c);
-                } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+                } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
                 return null;
             }).collect(Collectors.toList());
         }

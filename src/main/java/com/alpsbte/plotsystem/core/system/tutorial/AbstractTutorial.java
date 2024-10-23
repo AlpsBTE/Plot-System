@@ -37,8 +37,9 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * Abstract class for all tutorials. Inherit this class to create a new tutorial.
@@ -263,14 +264,11 @@ public abstract class AbstractTutorial implements Tutorial {
         for (AbstractTutorialHologram holo : getActiveHolograms()) holo.delete();
         playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine();
-
-        // Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
-        // Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
     }
 
     @Override
     public void onException(Exception ex) {
-        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial!", ex);
+        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while processing tutorial!"), ex);
 
         // Send player back to hub after 3 seconds if an error occurred
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20 * 3);
@@ -356,7 +354,8 @@ public abstract class AbstractTutorial implements Tutorial {
         try {
             tutorials.get(tutorialId).getDeclaredConstructor(Player.class, int.class).newInstance(player, stageId);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-            Bukkit.getLogger().log(Level.INFO, "An error occurred while loading tutorial!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while loading tutorial!"), ex);
+
             return false;
         }
         return true;

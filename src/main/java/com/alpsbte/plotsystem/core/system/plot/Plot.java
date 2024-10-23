@@ -42,7 +42,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -57,8 +56,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class Plot extends AbstractPlot {
     private CityProject city;
@@ -187,7 +187,7 @@ public class Plot extends AbstractPlot {
                 if (cityPlotWorld == null) cityPlotWorld = new CityPlotWorld(this);
                 return (T) cityPlotWorld;
             }
-        } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+        } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
         return null;
     }
 
@@ -342,7 +342,7 @@ public class Plot extends AbstractPlot {
             }
 
             DatabaseConnection.closeResultSet(rs);
-        } catch (SQLException ex) {Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);}
+        } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
         return PLOT_VERSION;
     }
 
@@ -379,7 +379,7 @@ public class Plot extends AbstractPlot {
 
                     return file;
                 } catch (SQLException | URISyntaxException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
                 return null;
             }).get();
@@ -397,7 +397,7 @@ public class Plot extends AbstractPlot {
             }
             return file;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return null;
     }
@@ -425,7 +425,7 @@ public class Plot extends AbstractPlot {
                 return super.getCenter();
             } else return BlockVector3.at(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
         } catch (IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to load schematic file to clipboard!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to load schematic file to clipboard!"), ex);
         }
         return null;
     }

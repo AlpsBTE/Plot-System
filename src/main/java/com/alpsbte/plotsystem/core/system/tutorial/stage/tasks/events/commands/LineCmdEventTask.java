@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
@@ -31,7 +32,6 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -43,7 +43,8 @@ import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class LineCmdEventTask extends AbstractCmdEventTask {
     private final Map<Vector, Vector> linePoints;
@@ -113,7 +114,7 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
                     BlockVector3.at(maxPoint.getX(), maxPoint.getY(), maxPoint.getZ()), 0, false);
             editSession.close();
         } catch (MaxChangedBlocksException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while drawing line!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while drawing line!"), ex);
             return false;
         }
         return true;

@@ -91,8 +91,8 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.md_5.bungee.api.ChatColor.*;
 
 public final class PlotUtils {
@@ -247,7 +247,7 @@ public final class PlotUtils {
                             try {
                                 return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
                             } catch (SQLException | URISyntaxException ex) {
-                                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                             }
                             return null;
                         });
@@ -307,14 +307,15 @@ public final class PlotUtils {
                     if (plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                             if (Actions.abandonPlot(plot)) {
-                                Bukkit.getLogger().log(Level.INFO, "Abandoned plot #" + plot.getID() + " due to inactivity!");
-                            } else
-                                Bukkit.getLogger().log(Level.WARNING, "An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!");
+                                PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
+                            } else {
+                                PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
+                            }
                         });
                     }
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }, 0L, 20 * 60 * 60); // Check every hour
     }
@@ -331,7 +332,7 @@ public final class PlotUtils {
                         plots.forEach(Plot::getOutlinesSchematic);
                     }
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
             }), 0L, 20 * interval);
         }
@@ -348,7 +349,7 @@ public final class PlotUtils {
 
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return false;
     }
@@ -391,7 +392,7 @@ public final class PlotUtils {
                                 player.teleport(Utils.getSpawnLocation());
                             }
                         }
-                        if (!plot.getWorld().deleteWorld()) Bukkit.getLogger().log(Level.WARNING, "Could not delete plot world " + plot.getWorld().getWorldName() + "!");
+                        if (!plot.getWorld().deleteWorld()) PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete plot world " + plot.getWorld().getWorldName() + "!"));
                     }
                 } else if (!(plot instanceof TutorialPlot)) {
                     RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -410,14 +411,14 @@ public final class PlotUtils {
                             if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
                             AbstractPlotGenerator.pasteSchematic(null, plot.getOutlinesSchematic(), world, true);
-                        } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+                        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
 
                         playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
                         if (plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(false);
                     }
                 }
             } catch (SQLException | IOException | WorldEditException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
                 return false;
             }
 
@@ -448,12 +449,12 @@ public final class PlotUtils {
                             dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                         }
                     } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                         throw new CompletionException(ex);
                     }
                 }).join();
             } catch (CompletionException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to abandon plot with the ID " + plot.getID() + "!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
                 return false;
             }
             return true;
@@ -479,7 +480,7 @@ public final class PlotUtils {
                             DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
                                     .setValue(plot.getID()).executeUpdate();
                         } catch (IOException | SQLException | URISyntaxException ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
                             throw new CompletionException(ex);
                         }
                     });
@@ -488,7 +489,7 @@ public final class PlotUtils {
                 }
                 return true;
             }
-            Bukkit.getLogger().log(Level.WARNING, "Failed to delete plot with the ID " + plot.getID() + "!");
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + "!"));
             return false;
         }
     }
@@ -509,7 +510,7 @@ public final class PlotUtils {
                 try {
                     cachedInProgressPlots.put(builder.getUUID(), Plot.getPlots(builder, Status.unfinished));
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                     return new ArrayList<>();
                 }
             }
@@ -592,7 +593,7 @@ public final class PlotUtils {
                     }
                 }
             } catch (SQLException | IOException ex) {
-                Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
     }
@@ -631,7 +632,7 @@ public final class PlotUtils {
                     tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
                     tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
                 } catch (IOException | URISyntaxException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating short link!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating short link!"), ex);
                 }
 
                 tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Google Maps")));
@@ -648,7 +649,7 @@ public final class PlotUtils {
                     df.setRoundingMode(RoundingMode.FLOOR);
                     coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
                 } catch (IOException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
                 }
 
                 player.sendMessage("§8--------------------------");
@@ -674,7 +675,7 @@ public final class PlotUtils {
                     player.sendMessage("§8--------------------------");
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
             }
         }
 

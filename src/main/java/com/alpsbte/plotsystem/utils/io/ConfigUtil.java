@@ -26,13 +26,14 @@ package com.alpsbte.plotsystem.utils.io;
 
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.io.config.ConfigurationUtil;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
-import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class ConfigUtil {
     private static ConfigurationUtil configUtilInstance;
@@ -78,7 +79,7 @@ public class ConfigUtil {
             // Delete schematic files of the updated tutorial config after config has been updated
             for (File schematic : files) {
                 if (schematic.getName().startsWith(String.valueOf(tutorialId)) && !schematic.delete()) {
-                    Bukkit.getLogger().log(Level.SEVERE, "Failed to delete " + schematic.getName() + " after update.");
+                    PlotSystem.getPlugin().getComponentLogger().error(text("Failed to delete " + schematic.getName() + " after update."));
                 }
             }
 

@@ -30,8 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
@@ -45,6 +45,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * Wrapper class to use DecentHologram API, this creates and manage hologram per player.
@@ -302,7 +304,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
                 DHAPI.setHologramLine(hologramLine, item);
             }
         } catch (IllegalArgumentException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Trying to set invalid HologramLine ", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("[DHAPI] Trying to set invalid HologramLine"), ex);
         }
     }
 
@@ -322,7 +324,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
                 DHAPI.setHologramLine(hologramLine, text);
             }
         } catch (IllegalArgumentException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Trying to set invalid HologramLine", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("[DHAPI] Trying to set invalid HologramLine"), ex);
         }
     }
 

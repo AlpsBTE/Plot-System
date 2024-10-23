@@ -28,7 +28,6 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.*;
@@ -37,7 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class DatabaseConnection {
 
@@ -81,7 +81,7 @@ public class DatabaseConnection {
             try {
                 return dataSource.getConnection();
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "Database connection failed!\n\n" + ex.getMessage());
+                PlotSystem.getPlugin().getComponentLogger().error(text("Database connection failed!"), ex);
             }
             retries--;
         }
@@ -105,8 +105,8 @@ public class DatabaseConnection {
         connectionClosed++;
 
         if (connectionOpened > connectionClosed + 5) {
-            Bukkit.getLogger().log(Level.SEVERE, "There are multiple database connections opened. Please report this issue.");
-            Bukkit.getLogger().log(Level.SEVERE, "Connections Open: " + (connectionOpened - connectionClosed));
+            PlotSystem.getPlugin().getComponentLogger().error(text("There are multiple database connections opened. Please report this issue."));
+            PlotSystem.getPlugin().getComponentLogger().error(text("Connections Open: " + (connectionOpened - connectionClosed)));
         }
     }
 
@@ -134,7 +134,7 @@ public class DatabaseConnection {
                 }
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while creating database table!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating á database table"), ex);
         }
     }
 
@@ -159,7 +159,7 @@ public class DatabaseConnection {
                 return 1;
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             return 1;
         }
     }

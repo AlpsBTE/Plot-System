@@ -52,7 +52,6 @@ import org.bukkit.util.Vector;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.*;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
@@ -689,7 +688,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             try {
                 blockData = Bukkit.createBlockData(pointsSplit[3].trim().toLowerCase());
             } catch (IllegalArgumentException ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not read tutorial config value for material.", ex);
+                PlotSystem.getPlugin().getComponentLogger().warn(text("Could not read tutorial config value for material!"), ex);
                 return;
             }
             windowPoints.put(new Vector(x, y, z), blockData);

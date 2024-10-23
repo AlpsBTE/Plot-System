@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -50,7 +51,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Tpll extends BaseCommand {
     @Override
@@ -136,10 +138,10 @@ public class CMD_Tpll extends BaseCommand {
             player.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
 
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
         } catch (IOException | OutOfProjectionBoundsException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A coordinate conversion error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A coordinate conversion error occurred!"), ex);
             player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
         } catch (InterruptedException | ExecutionException ex) {
             sendInfo(sender);

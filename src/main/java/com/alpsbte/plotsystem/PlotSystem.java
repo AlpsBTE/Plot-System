@@ -64,7 +64,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "4.0";
@@ -117,7 +118,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded language files.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load language file.");
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -129,7 +130,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully initialized database connection.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not initialize database connection.");
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -145,7 +146,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -158,13 +159,13 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered commands.");
         } catch (Exception ex) {
             Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register commands.");
-            Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) Bukkit.getLogger().log(Level.WARNING, "WorldGuardExtraFlags is not enabled!");
+        if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) PlotSystem.getPlugin().getComponentLogger().warn(text("WorldGuardExtraFlags is not enabled!"));
 
         // Check for updates
         Bukkit.getConsoleSender().sendMessage("");
@@ -388,7 +389,7 @@ public class PlotSystem extends JavaPlugin {
                     version.accept(scanner.next());
                 }
             } catch (IOException | URISyntaxException ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot look for new updates: " + ex.getMessage());
+                PlotSystem.getPlugin().getComponentLogger().warn(text("Cannot look for new updates:" + ex.getMessage()));
             }
         }
 
