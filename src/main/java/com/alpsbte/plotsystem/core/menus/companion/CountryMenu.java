@@ -40,9 +40,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +50,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CountryMenu extends AbstractMenu {
     private List<Country> countryProjects;
@@ -77,7 +77,7 @@ public class CountryMenu extends AbstractMenu {
 
         // Set tutorial item
         getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
-                TutorialsMenu.getTutorialItem(getMenuPlayer()) : new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build());
+                TutorialsMenu.getTutorialItem(getMenuPlayer()) : new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build());
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
@@ -144,7 +144,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("101111001")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -159,7 +159,7 @@ public class CountryMenu extends AbstractMenu {
         if (CompanionMenu.hasContinentView()) {
             getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } else {
-            getMenu().getSlot(1).setItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build());
+            getMenu().getSlot(1).setItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build());
         }
 
         for (Country country : countryProjects) {
@@ -172,18 +172,18 @@ public class CountryMenu extends AbstractMenu {
             int plotsUnclaimed = Plot.getPlots(cities, Status.unclaimed).size();
 
             getMenu().getSlot(startingSlot + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
-                    .setName(Component.text(country.getName(), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
-                    .setLore(new LoreBuilder() //TODO: use components
-                            .addLines(
-                                    "§6" + cities.size() + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.CITIES),
-                                    "",
-                                    "§6" + plotsOpen + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_OPEN),
-                                    "§8---------------------",
-                                    "§6" + plotsInProgress + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS),
-                                    "§6" + plotsCompleted + " §7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED),
-                                    "",
-                                    (plotsUnclaimed > 0 ? "§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_PLOTS_AVAILABLE) : "§f§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE))
-                            )
+                    .setName(text(country.getName(), AQUA).decoration(BOLD, true))
+                    .setLore(new LoreBuilder()
+                            .addLine(text(cities.size(), GOLD).append(text(" " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.CITIES), GRAY)))
+                            .emptyLine()
+                            .addLines(text(plotsOpen, GOLD).append(text(" " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_OPEN), GRAY)),
+                                    text("---------------------", DARK_GRAY),
+                                    text(plotsInProgress, GOLD).append(text(" " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_IN_PROGRESS), GRAY)),
+                                    text(plotsCompleted, GOLD).append(text(" " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_COMPLETED), GRAY)))
+                            .emptyLine()
+                            .addLine(plotsUnclaimed > 0
+                                    ? text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_PLOTS_AVAILABLE), GREEN).decoration(BOLD, true)
+                                    : text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE), WHITE).decoration(BOLD, true))
                             .build())
                     .build());
         }

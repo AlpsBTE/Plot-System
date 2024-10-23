@@ -29,7 +29,6 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;

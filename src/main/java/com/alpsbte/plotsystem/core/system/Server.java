@@ -26,13 +26,11 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 

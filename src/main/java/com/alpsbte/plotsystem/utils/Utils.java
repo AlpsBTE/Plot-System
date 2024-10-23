@@ -52,6 +52,7 @@ import java.util.HashSet;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_START;
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -155,33 +156,33 @@ public class Utils {
 
         public static String getActionFormat(String action) {return "§8§l> §c" + action;}
 
-        public static String getColorByPoints(int points) {
+        public static Component getColoredPointsComponent(int points) {
             switch (points) {
                 case 0:
-                    return "§7" + points;
+                    return text(points, GRAY);
                 case 1:
-                    return "§4" + points;
+                    return text(points, DARK_RED);
                 case 2:
-                    return "§6" + points;
+                    return text(points, GOLD);
                 case 3:
-                    return "§e" + points;
+                    return text(points, YELLOW);
                 case 4:
-                    return "§2" + points;
+                    return text(points, DARK_GREEN);
                 default:
-                    return "§a" + points;
+                    return text(points, GREEN);
             }
         }
 
-        public static String getFormattedDifficulty(PlotDifficulty plotDifficulty) {
+        public static Component getFormattedDifficulty(PlotDifficulty plotDifficulty) {
             switch (plotDifficulty) {
                 case EASY:
-                    return "§a§lEasy";
+                    return text("Easy", GREEN).decoration(BOLD, true);
                 case MEDIUM:
-                    return "§6§lMedium";
+                    return text("Medium", GOLD).decoration(BOLD, true);
                 case HARD:
-                    return "§c§lHard";
+                    return text("Hard", RED).decoration(BOLD, true);
                 default:
-                    return "";
+                    return empty();
             }
         }
     }

@@ -44,9 +44,7 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +55,10 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CompanionMenu {
     public static boolean hasContinentView() {
@@ -102,9 +103,8 @@ public class CompanionMenu {
 
         // Set player settings menu item
         items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
-                .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
-                .setLore(new LoreBuilder() //TODO: use components
-                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), AQUA).decoration(BOLD, true))
+                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())
                 .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
 
         for (int i = 0; i < 3; i++) {
@@ -151,13 +151,13 @@ public class CompanionMenu {
 
         try {
             return new ItemBuilder(item)
-                    .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY), NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true))
-                    .setLore(new LoreBuilder() //TODO: use components
-                            .addLines("",
-                                    selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty) : "§f§l" + LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC),
-                                    selectedPlotDifficulty != null ? "§7" + LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": §fx" + Plot.getMultiplierByDifficulty(selectedPlotDifficulty) : "",
-                                    "",
-                                    "§7" + LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY))
+                    .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY), AQUA).decoration(BOLD, true))
+                    .setLore(new LoreBuilder()
+                            .emptyLine()
+                            .addLines(selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty) : text(LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC), WHITE).decoration(BOLD, true),
+                                    selectedPlotDifficulty != null ? text(LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": ", GRAY).append(text("x" + Plot.getMultiplierByDifficulty(selectedPlotDifficulty), WHITE)) : empty())
+                            .emptyLine()
+                            .addLine(text(LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY), GRAY))
                             .build())
                     .build();
         } catch (SQLException ex) {
@@ -171,9 +171,9 @@ public class CompanionMenu {
      */
     public static ItemStack getMenuItem(Player player) {
         return new ItemBuilder(BaseItems.COMPANION_ITEM.getItem())
-                .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION), NamedTextColor.AQUA)
-                        .decoration(TextDecoration.BOLD, true)
-                        .append(Component.text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")", NamedTextColor.GRAY)))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION), AQUA)
+                        .decoration(BOLD, true)
+                        .append(text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")", NamedTextColor.GRAY)))
                 .setEnchanted(true)
                 .build();
     }

@@ -37,9 +37,6 @@ import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +47,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlayerPlotsMenu extends AbstractMenu {
     private final Builder builder;
@@ -80,10 +80,12 @@ public class PlayerPlotsMenu extends AbstractMenu {
         try {
             getMenu().getSlot(4)
                     .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
-                            .setName(Component.text(builder.getName(), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                            .setLore(new LoreBuilder() //TODO: use components
-                                    .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": §f" + builder.getScore(),
-                                            "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": §f" + builder.getCompletedBuilds())
+                            .setName(text(builder.getName(), GOLD).decoration(BOLD, true))
+                            .setLore(new LoreBuilder()
+                                    .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ")
+                                            .append(text(builder.getScore(), WHITE)))
+                                    .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": ", GRAY)
+                                            .append(text(builder.getCompletedBuilds(), WHITE)))
                                     .build())
                             .build());
         } catch (SQLException ex) {
@@ -149,7 +151,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")
@@ -184,10 +186,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         if (plot.isReviewed() || plot.isRejected()) {
             lines.add("");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
-            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColorByPoints(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.ACCURACY)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.BLOCKPALETTE)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.DETAILING)) + "§8/§a5");
+            lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.TECHNIQUE)) + "§8/§a5");
             lines.add("");
             lines.add("§7" + LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":");
 
