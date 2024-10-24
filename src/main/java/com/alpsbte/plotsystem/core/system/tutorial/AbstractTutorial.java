@@ -249,9 +249,12 @@ public abstract class AbstractTutorial implements Tutorial {
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
-        npc.create(world.getNpcSpawnLocation());
-        npc.spawn(player);
-        npc.getHologram().delete();
+        if (npc.getNpc() != null) {
+            npc.move(player, world.getNpcSpawnLocation());
+        } else {
+            npc.create(world.getNpcSpawnLocation());
+            npc.spawn(player);
+        }
     }
 
     @Override

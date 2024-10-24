@@ -40,7 +40,7 @@ import java.util.UUID;
 public class TutorialNPC {
     public static final List<TutorialNPC> activeTutorialNPCs = new ArrayList<>();
     private static final String EMPTY_TAG = "<empty>";
-    private static final String IDENTIFIER_TAG = "tutorial_";
+    private static final String IDENTIFIER_TAG = "npc-";
 
     private final String id;
     private final String displayName;
@@ -92,7 +92,7 @@ public class TutorialNPC {
     public void spawn(Player player) {
         if (npc == null) return;
         Bukkit.getScheduler().runTaskAsynchronously(FancyNpcsPlugin.get().getPlugin(), () -> {
-            if (npc.getIsVisibleForPlayer().isEmpty()) npc.spawn(player);
+            npc.spawn(player);
             if (hologram != null && player.getWorld().getName().equals(
                     Objects.requireNonNull(hologram.getLocation().getWorld()).getName()))
                 hologram.create(player);
@@ -100,11 +100,24 @@ public class TutorialNPC {
     }
 
     /**
+     * Moves the NPC to a new location and updates its hologram.
+     *
+     * @param player The tutorial player.
+     * @param newLoc The new {@link Location} to move the NPC to.
+     */
+    public void move(Player player, Location newLoc) {
+        if (npc == null) return;
+        npc.getData().setLocation(newLoc);
+        if (hologram != null) hologram.delete();
+        hologram = new TutorialNPCHologram(IDENTIFIER_TAG + id, newLoc, this);
+        spawn(player);
+    }
+
+    /**
      * Deletes the NPC and its associated hologram from the game.
      */
     public void delete() {
         if (npc != null) npc.removeForAll();
-        FancyNpcsPlugin.get().getNpcManager().removeNpc(npc);
         if (hologram != null) hologram.delete();
         activeTutorialNPCs.remove(this);
     }

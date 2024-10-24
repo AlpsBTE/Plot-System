@@ -63,7 +63,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     private ClickAction markAsReadClickAction;
 
     public AbstractTutorialHologram(Player player, int holoId, String content, int readMoreId) {
-        super(String.valueOf(holoId), null, true);
+        super("tutorial-" + holoId, null, true);
         this.holoId = holoId;
         this.player = player;
         this.content = content;
