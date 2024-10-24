@@ -242,11 +242,15 @@ public class PlotWorld implements IWorld {
      * @param <T>       - OnePlotWorld or PlotWorld
      * @return - plot world
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends PlotWorld> T getPlotWorldByName(String worldName) throws SQLException {
-        if (isOnePlotWorld(worldName)) {
+    public static <T extends PlotWorld> T getPlotWorldByName(String worldName) {
+        if (isOnePlotWorld(worldName) || isCityPlotWorld(worldName)) {
             int id = Integer.parseInt(worldName.substring(2));
-            return worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id).getWorld() : new TutorialPlot(id).getWorld();
-        } else return (T) new PlotWorld(worldName, null);
+            try {
+                return worldName.toLowerCase().startsWith("t-") ? new TutorialPlot(id).getWorld() : new Plot(id).getWorld();
+            } catch (SQLException ex) {
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            }
+        }
+        return null;
     }
 }

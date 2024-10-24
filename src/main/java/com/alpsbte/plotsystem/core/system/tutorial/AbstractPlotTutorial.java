@@ -177,7 +177,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         super.onTutorialStop(playerUUID);
         try {
-            if (plot != null && plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(true);
+            if (plot != null) plot.getWorld().deleteWorld();
         } catch (SQLException ex) {
             onException(ex);
         }

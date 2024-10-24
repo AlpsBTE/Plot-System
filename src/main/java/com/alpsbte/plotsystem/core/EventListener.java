@@ -30,6 +30,8 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
@@ -74,6 +76,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
@@ -229,23 +232,32 @@ public class EventListener implements Listener {
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         final World w = event.getPlayer().getWorld();
 
+        DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+        ChatInput.awaitChatInput.remove(event.getPlayer().getUniqueId());
+        PlotUtils.Cache.clearCache(event.getPlayer().getUniqueId());
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-            if (PlotUtils.isPlotWorld(w)) {
-                try {
-                    PlotWorld.getPlotWorldByName(w.getName()).unloadWorld(false);
-                } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
+            if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
+                Tutorial tutorial = AbstractTutorial.getActiveTutorial(event.getPlayer().getUniqueId());
+                if (tutorial != null) {
+                    tutorial.onTutorialStop(event.getPlayer().getUniqueId());
+                    return;
+                }
             }
-            DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
-            ChatInput.awaitChatInput.remove(event.getPlayer().getUniqueId());
-            PlotUtils.Cache.clearCache(event.getPlayer().getUniqueId());
+
+            PlotWorld plotWorld = PlotWorld.getPlotWorldByName(w.getName());
+            if (plotWorld != null && !plotWorld.getWorldName().toLowerCase(Locale.ROOT).startsWith("t-"))
+                plotWorld.unloadWorld(false);
         }, 60L);
     }
 
     @EventHandler
-    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
-        if (PlotUtils.isPlotWorld(event.getFrom())) {
-            PlotWorld.getPlotWorldByName(event.getFrom().getName()).unloadWorld(false);
-        }
+    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
+            PlotWorld plotWorld = PlotWorld.getPlotWorldByName(event.getFrom().getName());
+            if (plotWorld != null) plotWorld.unloadWorld(false);
+        }, 60L);
+
         Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 

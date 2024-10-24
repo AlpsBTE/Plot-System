@@ -35,7 +35,6 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
@@ -114,17 +113,16 @@ public class OnePlotWorld extends PlotWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if (super.unloadWorld(movePlayers)) return false;
+        boolean isTutorialPlot = false;
         try {
-            if (getPlot() == null ||
-                    (getPlot().getStatus() != Status.completed && getPlot().getPlotType() != PlotType.TUTORIAL)) {
-                return !isWorldLoaded();
-            }
-
-            deleteWorld();
-            return true;
+            isTutorialPlot = getPlot().getPlotType() == PlotType.TUTORIAL;
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        }
+
+        if (getPlot() != null) {
+            if (isTutorialPlot) return deleteWorld();
+            else return super.unloadWorld(movePlayers);
         }
         return false;
     }
