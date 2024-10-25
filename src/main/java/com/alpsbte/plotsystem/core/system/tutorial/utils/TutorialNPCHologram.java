@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.stage;
+package com.alpsbte.plotsystem.core.system.tutorial.utils;
 
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;

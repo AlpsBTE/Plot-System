@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
-import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;

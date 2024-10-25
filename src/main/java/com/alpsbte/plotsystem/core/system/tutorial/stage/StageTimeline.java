@@ -101,11 +101,6 @@ public class StageTimeline implements TutorialTimeline {
                 tutorial.getNPC().setInteractionPromptVisibility(player.getUniqueId(), true, currentTask instanceof NpcInteractEventTask);
             } else if (tutorial.getNPC().getHologram().isInteractionPromptVisible()) tutorial.getNPC().setInteractionPromptVisibility(player.getUniqueId(), false, false);
 
-            // Set the look direction of the npc to the player
-            Location newLoc = player.getLocation().clone();
-            newLoc.setDirection(newLoc.subtract(tutorial.getNPC().getNpc().getData().getLocation()).toVector());
-            tutorial.getNPC().getNpc().lookAt(player, newLoc);
-
             currentTask.performTask();
         } catch (Exception ex) {
             tutorial.onException(ex);

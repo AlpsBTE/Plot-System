@@ -28,7 +28,7 @@ import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

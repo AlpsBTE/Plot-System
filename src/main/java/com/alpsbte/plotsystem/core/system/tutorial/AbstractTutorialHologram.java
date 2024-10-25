@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import eu.decentsoftware.holograms.event.HologramClickEvent;

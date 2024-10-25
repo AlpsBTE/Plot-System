@@ -38,6 +38,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.BuildEvent
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.LineCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.WandCmdEventTask;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.*;
 import net.kyori.adventure.text.Component;
@@ -53,8 +54,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.*;
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.*;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
 import static com.alpsbte.alpslib.utils.AlpsUtils.deserialize;
 import static net.kyori.adventure.text.format.NamedTextColor.*;

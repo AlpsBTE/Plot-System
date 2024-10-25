@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial;
+package com.alpsbte.plotsystem.core.system.tutorial.utils;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
