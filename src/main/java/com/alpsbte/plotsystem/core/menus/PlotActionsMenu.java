@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -46,7 +46,10 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlotActionsMenu extends AbstractMenu {
     private final Plot plot;
@@ -66,15 +69,17 @@ public class PlotActionsMenu extends AbstractMenu {
             if (plot.getStatus().equals(Status.unreviewed)) {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.FIRE_CHARGE, 1)
-                                .setName("§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT)).setLore(new LegacyLoreBuilder()
-                                        .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT)).build())
+                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT), RED).decoration(BOLD, true))
+                                .setLore(new LoreBuilder()
+                                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT))).build())
                                 .build());
             } else {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
-                                .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT)).setLore(new LegacyLoreBuilder()
-                                        .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT),
-                                                "",
+                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT), GREEN).decoration(BOLD, true))
+                                .setLore(new LoreBuilder()
+                                        .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT)),
+                                                text("\\ue13c"),
                                                 Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                         .build())
                                 .build());
@@ -87,16 +92,17 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13)
                 .setItem(new ItemBuilder(Material.COMPASS, 1)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT)).setLore(new LegacyLoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).build())
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT), GOLD).decoration(BOLD, true))
+                        .setLore(new LoreBuilder().addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT))).build())
                         .build());
 
         // Set plot abandon item
         getMenu().getSlot(hasFeedback ? 14 : 16)
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
-                        .setName("§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON)).setLore(new LegacyLoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON),
-                                        "",
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON), RED).decoration(BOLD, true))
+                        .setLore(new LoreBuilder()
+                                .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON)),
+                                        empty(),
                                         Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                 .build())
                         .build());
@@ -105,8 +111,8 @@ public class PlotActionsMenu extends AbstractMenu {
         if (hasFeedback) {
             getMenu().getSlot(16)
                     .setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                            .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK)).setLore(new LegacyLoreBuilder()
-                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK)).build())
+                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
+                            .setLore(new LoreBuilder().addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK))).build())
                             .build());
         }
 
@@ -117,18 +123,20 @@ public class PlotActionsMenu extends AbstractMenu {
                 if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId()))
-                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS)).setLore(new LegacyLoreBuilder()
-                                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS),
-                                                    "",
+                                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS), AQUA).decoration(BOLD, true))
+                                    .setLore(new LoreBuilder()
+                                            .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS)),
+                                                    empty(),
                                                     Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.SCORE_WILL_BE_SPLIT)))
                                             .build())
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.REMOVE_BUTTON.getId()))
-                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT)).setLore(new LegacyLoreBuilder()
-                                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT),
-                                                    "",
+                                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT), AQUA).decoration(BOLD, true))
+                                    .setLore(new LoreBuilder()
+                                            .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT)),
+                                                    empty(),
                                                     Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                             .build())
                                     .build());

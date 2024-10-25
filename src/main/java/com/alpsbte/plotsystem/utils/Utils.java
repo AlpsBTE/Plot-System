@@ -49,6 +49,7 @@ import org.bukkit.util.Vector;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
@@ -63,7 +64,7 @@ public class Utils {
     public static Location getSpawnLocation() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
 
-        if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
+        if (!Objects.requireNonNull(config.getString(ConfigPaths.SPAWN_WORLD)).equalsIgnoreCase("default")) {
             try {
                 MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
@@ -150,8 +151,8 @@ public class Utils {
 
 
     public static class ItemUtils {
-        public static String getNoteFormat(String note) {
-            return "§c§lNote: §8" + note;
+        public static Component getNoteFormat(String note) {
+            return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY));
         }
 
         public static String getActionFormat(String action) {return "§8§l> §c" + action;}

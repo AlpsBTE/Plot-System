@@ -52,9 +52,9 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.EventListener;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
+import net.kyori.adventure.text.Component;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -68,7 +68,9 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "4.0";
@@ -84,31 +86,31 @@ public class PlotSystem extends JavaPlugin {
         YamlFileFactory.registerPlugin(this);
         li.cinnazeyy.langlibs.core.file.YamlFileFactory.registerPlugin(this);
         plugin = this;
-        String successPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.DARK_GREEN + "✔" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
-        String errorPrefix = ChatColor.DARK_GRAY + "[" + ChatColor.RED + "X" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
+        Component successPrefix = text("[", DARK_GRAY).append(text("✔", DARK_GREEN)).append(text("]", DARK_GRAY)).append(text(" ", GRAY));
+        Component errorPrefix = text("[", DARK_GRAY).append(text("X", RED)).append(text("]", DARK_GRAY)).append(text(" ", GRAY));
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------ Plot-System V" + VERSION + " ------------------");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Starting plugin...");
-        Bukkit.getConsoleSender().sendMessage("");
+        Bukkit.getConsoleSender().sendMessage(text("------------------ Plot-System V" + VERSION + " ------------------", GOLD));
+        Bukkit.getConsoleSender().sendMessage(text("Starting plugin...", DARK_GREEN));
+        Bukkit.getConsoleSender().sendMessage(empty());
 
         // Check for required dependencies, if it returns false disable plugin
         if (!DependencyManager.checkForRequiredDependencies()) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load required dependencies.");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Missing Dependencies:");
-            DependencyManager.missingDependencies.forEach(dependency -> Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + " - " + dependency));
+            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not load required dependencies.")));
+            Bukkit.getConsoleSender().sendMessage(text("Missing Dependencies:", YELLOW));
+            DependencyManager.missingDependencies.forEach(dependency -> Bukkit.getConsoleSender().sendMessage(text(" - " + dependency, YELLOW)));
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded required dependencies.");
+        Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully loaded required dependencies.")));
 
         // Load config, if it throws an exception disable plugin
         try {
             ConfigUtil.init();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded configuration files.");
+            Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully loaded configuration files.")));
         } catch (ConfigNotImplementedException ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load configuration file.");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "The config file must be configured!");
+            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not load configuration file.")));
+            Bukkit.getConsoleSender().sendMessage(text("The config file must be configured!", YELLOW));
 
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -118,9 +120,9 @@ public class PlotSystem extends JavaPlugin {
         // Load language files
         try {
             LangUtil.init();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully loaded language files.");
+            Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully loaded language files.")));
         } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not load language file.");
+            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not load language file.")));
             PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
@@ -130,9 +132,9 @@ public class PlotSystem extends JavaPlugin {
         // Initialize database connection
         try {
             DatabaseConnection.InitializeDatabase();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully initialized database connection.");
+            Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully initialized database connection.")));
         } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not initialize database connection.");
+            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not initialize database connection.")));
             PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
@@ -146,9 +148,9 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new AlpsHeadEventListener(), this);
             if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
                 this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered event listeners.");
+            Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully registered event listeners.")));
         } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register event listeners.");
+            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not register event listeners.")));
             PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
@@ -159,9 +161,9 @@ public class PlotSystem extends JavaPlugin {
         try {
             commandManager = new CommandManager();
             commandManager.init();
-            Bukkit.getConsoleSender().sendMessage(successPrefix + "Successfully registered commands.");
+            Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully registered commands.")));
         } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix + "Could not register commands.");
+            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not register commands.")));
             PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
 
             this.getServer().getPluginManager().disablePlugin(this);
@@ -171,17 +173,17 @@ public class PlotSystem extends JavaPlugin {
         if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) PlotSystem.getPlugin().getComponentLogger().warn(text("WorldGuardExtraFlags is not enabled!"));
 
         // Check for updates
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Update-Checker:");
+        Bukkit.getConsoleSender().sendMessage(empty());
+        Bukkit.getConsoleSender().sendMessage(text("Update-Checker:", GOLD));
 
         UpdateChecker.getVersion(version -> {
             if (new ComparableVersion(VERSION).compareTo(new ComparableVersion(version)) >= 0) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "You are using the latest stable version.");
+                Bukkit.getConsoleSender().sendMessage(text("You are using the latest stable version.", YELLOW));
             } else {
                 UpdateChecker.isUpdateAvailable = true;
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You are using a outdated version!");
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Latest version: " + ChatColor.GREEN + version + ChatColor.GRAY + " | Your version: " + ChatColor.RED + VERSION);
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GRAY + "Update here: " + ChatColor.AQUA + "https://github.com/AlpsBTE/Plot-System/releases");
+                Bukkit.getConsoleSender().sendMessage(text("You are using a outdated version!", RED));
+                Bukkit.getConsoleSender().sendMessage(text("Latest version: ", GRAY).append(text(version, GREEN)).append(text(" | Your version: ", GRAY)).append(text(VERSION, RED)));
+                Bukkit.getConsoleSender().sendMessage(text("Update here: ", GRAY).append(text("https://github.com/AlpsBTE/Plot-System/releases", AQUA)));
             }
         });
 
@@ -195,8 +197,8 @@ public class PlotSystem extends JavaPlugin {
         try {
             new PacketListener();
         } catch (NoClassDefFoundError ex) {
-            Bukkit.getConsoleSender().sendMessage("");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not find Protocol-Lib! Consider installing it to avoid issues.");
+            Bukkit.getConsoleSender().sendMessage(empty());
+            Bukkit.getConsoleSender().sendMessage(text("Could not find Protocol-Lib! Consider installing it to avoid issues.", RED));
         }
 
         // Cache and register custom heads
@@ -205,28 +207,27 @@ public class PlotSystem extends JavaPlugin {
         // Register tutorials
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
             AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));
-            Bukkit.getScheduler().runTaskTimerAsynchronously(FancyNpcsPlugin.get().getPlugin(),
-                    new TutorialNPCTurnTracker(), 0, 1L);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(FancyNpcsPlugin.get().getPlugin(), new TutorialNPCTurnTracker(), 0, 1L);
         }
 
         pluginEnabled = true;
-        Bukkit.getConsoleSender().sendMessage("");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "Enabled Plot-System plugin.");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+        Bukkit.getConsoleSender().sendMessage(empty());
+        Bukkit.getConsoleSender().sendMessage(text("Enabled Plot-System plugin.", DARK_GREEN));
+        Bukkit.getConsoleSender().sendMessage(text("------------------------------------------------------", GOLD));
+        Bukkit.getConsoleSender().sendMessage(text("> ", DARK_GRAY).append(text("Made by ", GRAY)).append(text("Alps BTE (AT/CH/LI)", RED)));
+        Bukkit.getConsoleSender().sendMessage(text("> ", DARK_GRAY).append(text("GitHub: ", GRAY)).append(text("https://github.com/AlpsBTE/Plot-System", WHITE)));
+        Bukkit.getConsoleSender().sendMessage(text("------------------------------------------------------", GOLD));
     }
 
     @Override
     public void onDisable() {
         if (!pluginEnabled) {
-            Bukkit.getConsoleSender().sendMessage("");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Disabling plugin...");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "Made by " + ChatColor.RED + "Alps BTE (AT/CH/LI)");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GRAY + "> " + ChatColor.GRAY + "GitHub: " + ChatColor.WHITE + "https://github.com/AlpsBTE/Plot-System");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "------------------------------------------------------");
+            Bukkit.getConsoleSender().sendMessage(empty());
+            Bukkit.getConsoleSender().sendMessage(text("Disabling plugin...", RED));
+            Bukkit.getConsoleSender().sendMessage(text("------------------------------------------------------", GOLD));
+            Bukkit.getConsoleSender().sendMessage(text("> ", DARK_GRAY).append(text("Made by ", GRAY)).append(text("Alps BTE (AT/CH/LI)", RED)));
+            Bukkit.getConsoleSender().sendMessage(text("> ", DARK_GRAY).append(text("GitHub: ", GRAY)).append(text("https://github.com/AlpsBTE/Plot-System", WHITE)));
+            Bukkit.getConsoleSender().sendMessage(text("------------------------------------------------------", GOLD));
 
             HologramRegister.getActiveDisplays().forEach(DecentHologramDisplay::delete);
         } else {

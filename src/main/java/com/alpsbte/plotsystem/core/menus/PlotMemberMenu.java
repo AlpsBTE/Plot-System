@@ -49,14 +49,13 @@ import java.util.List;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlotMemberMenu extends AbstractMenu {
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS), DARK_GREEN).decoration(BOLD, true)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
