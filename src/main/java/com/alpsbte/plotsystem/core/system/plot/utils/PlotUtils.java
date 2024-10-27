@@ -66,10 +66,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -92,8 +89,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.md_5.bungee.api.ChatColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public final class PlotUtils {
 
@@ -601,63 +600,60 @@ public final class PlotUtils {
     public static final class ChatFormatting {
         public static void sendLinkMessages(AbstractPlot plot, Player player) {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-                TextComponent[] tc = new TextComponent[3];
-                tc[0] = new TextComponent();
-                tc[1] = new TextComponent();
-                tc[2] = new TextComponent();
+                Component[] tc = new Component[3];
 
                 try {
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                        tc[0].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Maps", ShortLink.generateShortLink(
+                        tc[0] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
                                 plot.getGoogleMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
+                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
 
-                        tc[1].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Google Earth Web", ShortLink.generateShortLink(
+                        tc[1] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Earth Web", GREEN), text(ShortLink.generateShortLink(
                                 plot.getGoogleEarthLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
+                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
 
-                        tc[2].setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, "Open Street Map", ShortLink.generateShortLink(
+                        tc[2] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
                                 plot.getOSMMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST))));
+                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
                     } else {
-                        tc[0].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Maps" + GRAY));
-                        tc[1].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Google Earth Web" + GRAY));
-                        tc[2].setText("§8§l> " + GRAY + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GREEN + BOLD.toString() + "Open Street Map" + GRAY));
+                        tc[0] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text("Google Maps", GREEN)));
+                        tc[1] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text("Google Earth Web", GREEN)));
+                        tc[2] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text("Open Street Map", GREEN)));
                     }
 
-                    tc[0].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleMapsLink()));
-                    tc[1].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getGoogleEarthLink()));
-                    tc[2].setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, plot.getOSMMapsLink()));
+                    tc[0] = tc[0].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getGoogleMapsLink()));
+                    tc[1] = tc[1].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getGoogleEarthLink()));
+                    tc[2] = tc[2].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getOSMMapsLink()));
                 } catch (IOException | URISyntaxException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating short link!"), ex);
                 }
 
-                tc[0].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Google Maps")));
-                tc[1].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Google Earth Web")));
-                tc[2].setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Open Street Map")));
+                tc[0] = tc[0].hoverEvent(text("Google Maps"));
+                tc[1] = tc[1].hoverEvent(text("Google Earth Web"));
+                tc[2] = tc[2].hoverEvent(text("Open Street Map"));
 
                 // Temporary fix for bedrock players
-                String coords = null;
+                Component coords = null;
                 try {
                     String[] coordsSplit = plot.getGeoCoordinates().split(",");
                     double lat = Double.parseDouble(coordsSplit[0]);
                     double lon = Double.parseDouble(coordsSplit[1]);
                     DecimalFormat df = new DecimalFormat("##.#####");
                     df.setRoundingMode(RoundingMode.FLOOR);
-                    coords = "§a" + df.format(lat) + "§7, §a" + df.format(lon);
+                    coords = text(df.format(lat), GREEN).append(text(", ", GRAY)).append(text(df.format(lon), GREEN));
                 } catch (IOException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
                 }
 
-                player.sendMessage("§8--------------------------");
-                if (coords != null) player.sendMessage("§7Coords: " + coords);
-                player.spigot().sendMessage(tc[0]);
-                player.spigot().sendMessage(tc[1]);
-                player.spigot().sendMessage(tc[2]);
-                player.sendMessage("§8--------------------------");
+                player.sendMessage(text("--------------------------", DARK_GRAY));
+                if (coords != null) player.sendMessage(text("Coords: ", GRAY).append(coords));
+                player.sendMessage(tc[0]);
+                player.sendMessage(tc[1]);
+                player.sendMessage(tc[2]);
+                player.sendMessage(text("--------------------------", DARK_GRAY));
 
                 if (plot instanceof Plot) sendGroupTipMessage((Plot) plot, player);
             });
@@ -666,13 +662,13 @@ public final class PlotUtils {
         public static void sendGroupTipMessage(Plot plot, Player player) {
             try {
                 if (plot.getPlotMembers().isEmpty()) {
-                    TextComponent tc = new TextComponent();
-                    tc.setText("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS));
-                    tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot members " + plot.getID()));
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS))));
+                    Component tc = text("» ", DARK_GRAY)
+                            .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
+                            .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/plot members " + plot.getID()))
+                            .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
 
-                    player.spigot().sendMessage(tc);
-                    player.sendMessage("§8--------------------------");
+                    player.sendMessage(tc);
+                    player.sendMessage(text("--------------------------", DARK_GRAY));
                 }
             } catch (SQLException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
@@ -680,43 +676,41 @@ public final class PlotUtils {
         }
 
         public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
-            player.sendMessage("§8--------------------------");
+            player.sendMessage(text("--------------------------", DARK_GRAY));
             for (Plot plot : plots) {
-                player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())));
-                TextComponent tc = new TextComponent();
-                tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK));
-                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot feedback " + plot.getID()));
-                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(
-                        LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK))));
-                player.spigot().sendMessage(tc);
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())), GREEN)));
+
+                Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
+                        .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/plot feedback " + plot.getID()))
+                        .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
+                player.sendMessage(tc);
 
                 if (plots.size() != plots.indexOf(plot) + 1) {
-                    player.sendMessage("");
+                    player.sendMessage(empty());
                 }
             }
-            player.sendMessage("§8--------------------------");
+            player.sendMessage(text("--------------------------", DARK_GRAY));
             player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
         }
 
         public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
-            player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS, String.valueOf(plots.size())));
-            TextComponent tc = new TextComponent();
-            tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS));
-            tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plots"));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
-            player.spigot().sendMessage(tc);
+            player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS, String.valueOf(plots.size())), GREEN)));
+
+            Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS), GOLD)
+                    .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/plots"))
+                    .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)));
+            player.sendMessage(tc);
         }
 
         public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
-            player.sendMessage("§7§l> " + LangUtil.getInstance().get(player, plots.size() <= 1 ?
+            player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, plots.size() <= 1 ?
                     LangPaths.Message.Info.UNREVIEWED_PLOT :
-                    LangPaths.Message.Info.UNREVIEWED_PLOTS, String.valueOf(plots.size())));
+                    LangPaths.Message.Info.UNREVIEWED_PLOTS, String.valueOf(plots.size())), GREEN)));
 
-            TextComponent tc = new TextComponent();
-            tc.setText(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS));
-            tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/review"));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS))));
-            player.spigot().sendMessage(tc);
+            Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS), GOLD)
+                    .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/review"))
+                    .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)));
+            player.sendMessage(tc);
         }
     }
 }
