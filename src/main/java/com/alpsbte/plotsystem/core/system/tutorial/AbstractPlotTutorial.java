@@ -82,7 +82,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     protected TutorialNPC initNpc() {
         return new TutorialNPC(
-                "tutorial-" + plot.getID(),
+                "ps-tutorial-" + plot.getID(),
                 ChatColor.GOLD + ChatColor.BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
                 ChatColor.GRAY + "(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")",
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),

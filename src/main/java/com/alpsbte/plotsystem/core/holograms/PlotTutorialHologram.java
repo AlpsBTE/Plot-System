@@ -38,12 +38,12 @@ import org.bukkit.entity.Player;
 import static org.bukkit.ChatColor.*;
 
 public class PlotTutorialHologram extends AbstractTutorialHologram {
-    public PlotTutorialHologram(Player player, int holoId, String content) {
-        this(player, holoId, content, -1);
+    public PlotTutorialHologram(Player player, int plotTutorialId, int holoId, String content) {
+        this(player, plotTutorialId, holoId, content, -1);
     }
 
-    public PlotTutorialHologram(Player player, int holoId, String content, int readMoreId) {
-        super(player, holoId, content, readMoreId);
+    public PlotTutorialHologram(Player player, int plotTutorialId, int holoId, String content, int readMoreId) {
+        super(player, plotTutorialId, holoId, content, readMoreId);
     }
 
     @Override

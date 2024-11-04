@@ -40,7 +40,6 @@ import java.util.UUID;
 public class TutorialNPC {
     public static final List<TutorialNPC> activeTutorialNPCs = new ArrayList<>();
     private static final String EMPTY_TAG = "<empty>";
-    private static final String IDENTIFIER_TAG = "npc-";
 
     private final String id;
     private final String displayName;
@@ -62,7 +61,7 @@ public class TutorialNPC {
         this.id = npcId;
         this.displayName = npcDisplayName;
         this.interactionPrompt = npcInteractionPrompt;
-        this.skin = new SkinFetcher.SkinData(IDENTIFIER_TAG + npcId, npcSknTexture, npcSkinSignature);
+        this.skin = new SkinFetcher.SkinData(npcId, npcSknTexture, npcSkinSignature);
     }
 
     /**
@@ -80,7 +79,7 @@ public class TutorialNPC {
         npc.getData().setTurnToPlayer(true);
         npc.setSaveToFile(false);
         npc.create();
-        hologram = new TutorialNPCHologram(IDENTIFIER_TAG + id, spawnPos, this);
+        hologram = new TutorialNPCHologram(id, spawnPos, this);
         activeTutorialNPCs.add(this);
     }
 
@@ -109,7 +108,7 @@ public class TutorialNPC {
         if (npc == null) return;
         npc.getData().setLocation(newLoc);
         if (hologram != null) hologram.delete();
-        hologram = new TutorialNPCHologram(IDENTIFIER_TAG + id, newLoc, this);
+        hologram = new TutorialNPCHologram(id, newLoc, this);
         spawn(player);
     }
 

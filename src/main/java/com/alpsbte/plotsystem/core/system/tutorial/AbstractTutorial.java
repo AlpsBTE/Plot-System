@@ -260,11 +260,10 @@ public abstract class AbstractTutorial implements Tutorial {
     @Override
     public void onTutorialStop(UUID playerUUID) {
         if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
-        activeTutorials.remove(this);
-        npc.delete();
-        for (AbstractTutorialHologram holo : getActiveHolograms()) holo.delete();
-        playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine();
+        npc.delete();
+        playerInteractionHistory.remove(playerUUID);
+        activeTutorials.remove(this);
     }
 
     @Override

@@ -90,7 +90,7 @@ public class PlotMemberMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT)),
                                         empty(),
-                                        text(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))))
+                                        Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE)))
                                 .build())
                         .build());
 

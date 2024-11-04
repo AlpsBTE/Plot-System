@@ -244,7 +244,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Collections.singletonList(
-                    new PlotTutorialHologram(getPlayer(), 0, getMessages().get(4), 3)
+                    new PlotTutorialHologram(getPlayer(), getId(), 0, getMessages().get(4), 3)
             );
         }
 
@@ -413,7 +413,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
 
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
-            return Collections.singletonList(new PlotTutorialHologram(getPlayer(), 13, getMessages().get(7), 4));
+            return Collections.singletonList(new PlotTutorialHologram(getPlayer(), getId(), 13, getMessages().get(7), 4));
         }
 
         @Override
@@ -471,11 +471,11 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 1, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 2, getMessages().get(2)),
-                    new PlotTutorialHologram(getPlayer(), 3, getMessages().get(4), 2),
-                    new PlotTutorialHologram(getPlayer(), 4, getMessages().get(5), 5),
-                    new PlotTutorialHologram(getPlayer(), 5, getMessages().get(6))
+                    new PlotTutorialHologram(getPlayer(), getId(), 1, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), getId(), 2, getMessages().get(2)),
+                    new PlotTutorialHologram(getPlayer(), getId(), 3, getMessages().get(4), 2),
+                    new PlotTutorialHologram(getPlayer(), getId(), 4, getMessages().get(5), 5),
+                    new PlotTutorialHologram(getPlayer(), getId(), 5, getMessages().get(6))
             );
         }
 
@@ -519,8 +519,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 6, getMessages().get(2)),
-                    new PlotTutorialHologram(getPlayer(), 7, getMessages().get(3))
+                    new PlotTutorialHologram(getPlayer(), getId(), 6, getMessages().get(2)),
+                    new PlotTutorialHologram(getPlayer(), getId(), 7, getMessages().get(3))
             );
         }
 
@@ -571,9 +571,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 8, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 9, getMessages().get(2), 1),
-                    new PlotTutorialHologram(getPlayer(), 10, getMessages().get(3))
+                    new PlotTutorialHologram(getPlayer(), getId(), 8, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), getId(), 9, getMessages().get(2), 1),
+                    new PlotTutorialHologram(getPlayer(), getId(), 10, getMessages().get(3))
             );
         }
 
@@ -613,8 +613,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<AbstractTutorialHologram> setHolograms() {
             return Arrays.asList(
-                    new PlotTutorialHologram(getPlayer(), 11, getMessages().get(1)),
-                    new PlotTutorialHologram(getPlayer(), 12, getMessages().get(2))
+                    new PlotTutorialHologram(getPlayer(), getId(), 11, getMessages().get(1)),
+                    new PlotTutorialHologram(getPlayer(), getId(), 12, getMessages().get(2))
             );
         }
 

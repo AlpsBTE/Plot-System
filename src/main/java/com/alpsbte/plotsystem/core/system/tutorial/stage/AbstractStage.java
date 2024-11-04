@@ -34,6 +34,7 @@ import java.util.List;
 
 public abstract class AbstractStage {
     private final Player player;
+    private final int id;
     private final int initWorldIndex;
 
     private final String title;
@@ -41,8 +42,9 @@ public abstract class AbstractStage {
     private final List<String> tasks;
     private final List<AbstractTutorialHologram> holograms;
 
-    protected AbstractStage(Player player, int initWorldIndex) {
+    protected AbstractStage(Player player, int id, int initWorldIndex) {
         this.player = player;
+        this.id = id;
         this.initWorldIndex = initWorldIndex;
 
         this.title = setTitle();
@@ -89,6 +91,10 @@ public abstract class AbstractStage {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getInitWorldIndex() {
