@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
@@ -49,7 +50,7 @@ public class CMD_PReload extends BaseCommand {
             PlotSystem.getPlugin().reloadConfig();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
-            HologramRegister.getActiveDisplays().forEach(leaderboard -> leaderboard.setLocation(HologramRegister
+            DecentHologramDisplay.activeDisplays.forEach(leaderboard -> leaderboard.setLocation(HologramRegister
                     .getLocation((HologramConfiguration) leaderboard)));
             HologramRegister.reload();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded leaderboards!"));

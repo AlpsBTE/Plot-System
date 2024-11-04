@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;

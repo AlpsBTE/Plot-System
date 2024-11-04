@@ -24,22 +24,22 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramPagedDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -49,40 +49,46 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-
-import static net.kyori.adventure.text.Component.text;
+import java.util.stream.Collectors;
 
 public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
     private final DecimalFormat df = new DecimalFormat("#.##");
-    // TODO If we actually gets much player entries, revamp leaderboard paging function (currently this is forced to LIFETIME)
-    private LeaderboardTimeframe sortByLeaderboard = LeaderboardTimeframe.LIFETIME;
+    private LeaderboardTimeframe sortByLeaderboard;
 
     protected ScoreLeaderboard() {
         super("score-leaderboard", null, false, PlotSystem.getPlugin());
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
-        setLocation(HologramManager.getLocation(this));
+        setLocation(HologramRegister.getLocation(this));
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player player : showToPlayers()) {
-                    if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) return;
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, rankingString(player));
+                for (Player player : getPlayersInRadiusForRanking()) {
+                    if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
+                    player.sendActionBar(getRankingString(player));
                 }
             }
         }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
     }
 
     @Override
+    public List<String> getPages() {
+        if (ConfigUtil.getInstance() == null) return new ArrayList<>();
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
+        return Arrays.stream(LeaderboardTimeframe.values())
+                .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).collect(Collectors.toList());
+    }
+
+    @Override
     public void create(Player player) {
-        if (!PlotSystem.getPlugin().isEnabled()) return;
-//        if (getPages().isEmpty()) {
-//            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
-//            return;
-//        }
+        if (getPages().isEmpty()) {
+            PlotSystem.getPlugin().getLogger().log(Level.WARNING, "Unable to initialize Score-Leaderboard - No display pages enabled! Check config for display-options.");
+            return;
+        }
 
         super.create(player);
     }
@@ -99,12 +105,13 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
 
     @Override
     public String getTitle(UUID playerUUID) {
-        return "§b§lTOP SCORE §6§l[" + (sortByLeaderboard.toString().charAt(0) + sortByLeaderboard.toString().toLowerCase().substring(1)) + "]";
+        return "§b§lTOP SCORE §6§l[" + (sortByLeaderboard.toString().charAt(0) +
+                sortByLeaderboard.toString().toLowerCase().substring(1)) + "]";
     }
 
     @Override
     public List<DataLine<?>> getHeader(UUID playerUUID) {
-        // sortByLeaderboard = LeaderboardTimeframe.valueOf(sortByPage);
+        sortByLeaderboard = LeaderboardTimeframe.valueOf(currentPage);
         return super.getHeader(playerUUID);
     }
 
@@ -130,71 +137,66 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
         return new ArrayList<>();
     }
 
-    private BaseComponent[] rankingString(Player player) {
-        int position;
-        int rows;
-        int myScore;
+    private Component getRankingString(Player player) {
+        int position, rows, myScore;
         try {
             position = Builder.getBuilderScorePosition(player.getUniqueId(), sortByLeaderboard);
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
-        } catch (SQLException e) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
-            return TextComponent.fromLegacyText("§cSQL Exception");
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(Component.text("A SQL error occurred!"), ex);
+            return Component.empty();
         }
 
-        ComponentBuilder builder = new ComponentBuilder("");
-        builder.append(
-                new ComponentBuilder("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
-                        .color(ChatColor.GOLD)
-                        .bold(true)
-                        .create()
-        );
-
-        builder.append(
-                new ComponentBuilder(" ➜ ")
-                        .color(ChatColor.DARK_GRAY)
-                        .bold(true)
-                        .create()
-        );
+        // Start building the component
+        TextComponent.Builder builder = Component.text()
+                .append(Component.text("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
+                        .color(NamedTextColor.GOLD)
+                        .decorate(TextDecoration.BOLD)
+                )
+                .append(Component.text(" ➜ ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .decorate(TextDecoration.BOLD)
+                );
 
         if (position == -1) {
-            builder.append(
-                    new ComponentBuilder(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
-                            .color(ChatColor.RED)
-                            .bold(false)
-                            .create()
+            builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                    .color(NamedTextColor.RED)
+                    .decoration(TextDecoration.BOLD, false)
             );
         } else if (position < 50) {
-            builder.append(
-                    new ComponentBuilder(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position))
-                    ).color(ChatColor.GREEN).bold(false).create()
+            builder.append(Component.text(
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position)))
+                    .color(NamedTextColor.GREEN)
+                    .decoration(TextDecoration.BOLD, false)
             );
         } else {
             String topPercentage = df.format(position * 1.0 / rows);
-            builder.append(
-                    new ComponentBuilder(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage)
-                    ).bold(false).create()
+            builder.append(Component.text(
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
+                    .decoration(TextDecoration.BOLD, false)
             );
         }
 
         if (myScore != -1) {
-            builder.append(TextComponent.fromLegacyText("§8 (§b" + myScore + " points§8)"));
+            builder.append(
+                    Component.text(" (", NamedTextColor.DARK_GRAY)
+                            .append(Component.text(myScore + " points", NamedTextColor.AQUA))
+                            .append(Component.text(")", NamedTextColor.DARK_GRAY))
+            );
         }
 
-        return builder.bold(false).create();
+        return builder.build();
     }
 
-    private List<Player> showToPlayers() {
+    private List<Player> getPlayersInRadiusForRanking() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
         boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLE, true);
         int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
         List<Player> players = new ArrayList<>();
         if (!actionBarEnabled) return players;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Hologram holo = DHAPI.getHologram(player.getUniqueId().toString());
+            Hologram holo = DHAPI.getHologram(player.getUniqueId() + "-" + getId());
             if (holo == null) continue;
             if (player.getWorld().getName().equals(holo.getLocation().getWorld().getName()) &&
                     holo.getLocation().distance(player.getLocation()) <= actionBarRadius) {

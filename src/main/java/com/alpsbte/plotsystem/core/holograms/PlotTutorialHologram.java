@@ -69,7 +69,7 @@ public class PlotTutorialHologram extends AbstractTutorialHologram {
     }
 
     @Override
-    protected String getMarkAsReadActionDoneText() {
+    protected String getMarkAsReadClickedActionText() {
         return GREEN + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ) + " " + READ_EMOJI;
     }
 }

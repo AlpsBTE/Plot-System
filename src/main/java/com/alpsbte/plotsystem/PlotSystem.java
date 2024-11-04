@@ -24,9 +24,7 @@
 
 package com.alpsbte.plotsystem;
 
-//import com.alpsbte.alpslib.hologram.HolographicDisplay;
-
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
@@ -229,7 +227,7 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(text("> ", DARK_GRAY).append(text("GitHub: ", GRAY)).append(text("https://github.com/AlpsBTE/Plot-System", WHITE)));
             Bukkit.getConsoleSender().sendMessage(text("------------------------------------------------------", GOLD));
 
-            HologramRegister.getActiveDisplays().forEach(DecentHologramDisplay::delete);
+            DecentHologramDisplay.activeDisplays.forEach(DecentHologramDisplay::delete);
         } else {
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {

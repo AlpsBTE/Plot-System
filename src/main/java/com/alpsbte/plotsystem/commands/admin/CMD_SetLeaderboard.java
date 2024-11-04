@@ -24,10 +24,10 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
 import com.alpsbte.plotsystem.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -55,7 +55,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         if (args.length != 1) {
             sendInfo(sender);
             player.sendMessage("§8------- §6§lLeaderboards §8-------");
-            for (DecentHologramDisplay holo : HologramRegister.getActiveDisplays()) {
+            for (DecentHologramDisplay holo : DecentHologramDisplay.activeDisplays) {
                 player.sendMessage(" §6> §f" + holo.getId());
             }
             player.sendMessage("§8--------------------------");
@@ -63,7 +63,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         }
 
         // Find leaderboard by name
-        DecentHologramDisplay leaderboard = HologramRegister.getActiveDisplays().stream()
+        DecentHologramDisplay leaderboard = DecentHologramDisplay.activeDisplays.stream()
                 .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
                 .findFirst()
                 .orElse(null);

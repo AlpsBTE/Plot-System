@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -40,7 +40,7 @@ import java.util.logging.Level;
 public class PlotsLeaderboard extends DecentHologramDisplay implements HologramConfiguration {
     protected PlotsLeaderboard() {
         super(ConfigPaths.PLOTS_LEADERBOARD, null, false);
-        setLocation(HologramManager.getLocation(this));
+        setLocation(HologramRegister.getLocation(this));
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
     }
 

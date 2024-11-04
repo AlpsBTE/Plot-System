@@ -24,10 +24,9 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import eu.decentsoftware.holograms.event.HologramClickEvent;
 import org.bukkit.Location;
@@ -62,9 +61,10 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
 
     private final Vector vectorPos;
     private ClickAction markAsReadClickAction;
+    private boolean isMarkAsReadClicked = false;
 
-    public AbstractTutorialHologram(Player player, int holoId, String content, int readMoreId) {
-        super("tutorial-" + holoId, null, true);
+    public AbstractTutorialHologram(Player player, int tutorialId, int holoId, String content, int readMoreId) {
+        super("ps-tutorial-" + tutorialId + "-" + holoId, null, true);
         this.holoId = holoId;
         this.player = player;
         this.content = content;
@@ -105,7 +105,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
      *
      * @return formatted text
      */
-    protected abstract String getMarkAsReadActionDoneText();
+    protected abstract String getMarkAsReadClickedActionText();
 
     @Override
     public void create(Player player) {
@@ -146,32 +146,30 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
         List<DataLine<?>> lines = new ArrayList<>();
         lines.add(new TextLine(EMPTY_TAG));
         if (readMoreId != -1) lines.add(new TextLine(getReadMoreActionText()));
-        if (markAsReadClickAction != null) {
-            if (readMoreId != -1) lines.add(new TextLine(EMPTY_TAG));
-            lines.add(new TextLine(getMarkAsReadActionText()));
-        }
+        if (markAsReadClickAction != null) lines.add(new TextLine(getMarkAsReadActionText()));
         return lines;
     }
 
-    public void setMarkAsReadClickAction(ClickAction action) {
-        markAsReadClickAction = action;
+    public void setMarkAsReadClickAction(ClickAction clickAction) {
+        markAsReadClickAction = clickAction;
     }
 
     @Override
     public void reload(UUID playerUUID) {
         super.reload(playerUUID);
 
-        // Set click listener
-        Hologram holo = this.getHologram(playerUUID);
-
-        if (readMoreId != -1) super.setClickListener((clickEvent) -> handleReadMoreClickAction());
-        if (markAsReadClickAction != null) {
-            HologramLine line = holo.getPage(0).getLines().get(holo.getPage(0).getLines().size() - 1);
-            super.setClickListener((clickEvent) -> {
-                line.setText(getMarkAsReadActionDoneText());
+        // Add click event for tutorial hologram
+        if (readMoreId == -1 && markAsReadClickAction == null) return;
+        setClickListener(clickEvent -> {
+            if (!isMarkAsReadClicked && markAsReadClickAction != null) {
+                HologramLine line = clickEvent.getPage().getLines().get(clickEvent.getPage().getLines().size() - 1);
+                line.setText(getMarkAsReadClickedActionText());
+                clickEvent.getHologram().update(player);
                 markAsReadClickAction.onClick(clickEvent);
-            });
-        }
+                isMarkAsReadClicked = true;
+            }
+            if (readMoreId != -1) handleReadMoreClickAction();
+        });
     }
 
     protected String getReadMoreLink() {

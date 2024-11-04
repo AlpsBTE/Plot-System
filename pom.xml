@@ -117,7 +117,7 @@
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>
             <artifactId>alpslib-hologram</artifactId>
-            <version>1.0.61</version>
+            <version>1.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

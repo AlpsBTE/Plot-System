@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.utils;
 
-import com.alpsbte.plotsystem.core.holograms.connector.DecentHologramDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -90,7 +90,7 @@ public class TutorialNPCHologram extends DecentHologramDisplay {
 
     @Override
     public List<DataLine<?>> getHeader(UUID playerUUID) {
-        return Collections.singletonList(new TextLine(this.getTitle(playerUUID)));
+        return Collections.singletonList(new DecentHologramDisplay.TextLine(this.getTitle(playerUUID)));
     }
 
     @Override
