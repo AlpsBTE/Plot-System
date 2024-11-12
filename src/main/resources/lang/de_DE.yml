@@ -111,6 +111,7 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'Tutorial Beenden'
   tutorial-beginner: 'Erste Schritte'
+  companion-random: 'Zufallsauswahl'
 #-----------------------------------------------------
 #| Menu Descriptions
 #-----------------------------------------------------
@@ -144,6 +145,7 @@ menu-description:
   tutorials-desc: 'Lerne die Grundlagen des BuildTheEarth%newline%Projekts und erweitere deine Baukenntnisse%newline%mit Tutorials zu verschiedenen Themen.'
   tutorial-end-desc: 'Dein Fortschritt wird gespeichert.'
   tutorial-beginner-desc: 'Lerne die Baugrundlagen für%newline%das BuildTheEarth Projekt.'
+  companion-random-desc: 'Klicke hier, um ein zufällig auszuwählen'
 #-----------------------------------------------------
 #| Review
 #-----------------------------------------------------
@@ -389,4 +391,4 @@ tutorials:
       stage-10-tasks:
         - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
 #NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

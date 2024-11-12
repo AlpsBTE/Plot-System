@@ -46,7 +46,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
@@ -55,7 +54,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
     public DefaultPlotGenerator(int cityID, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
-        this(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
+        this(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).get(Utils.getRandom().nextInt(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
     public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {

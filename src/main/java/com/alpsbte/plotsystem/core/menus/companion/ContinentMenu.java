@@ -26,9 +26,11 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -54,6 +56,8 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
+        getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
+
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
@@ -69,6 +73,14 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> { // Set click event for random selection item
+            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
+            Map.Entry<Integer, Continent> random = layout.entrySet().stream()
+                    .skip(Utils.getRandom().nextInt(layout.size()))
+                    .findFirst().get();
+            getMenu().getSlot(random.getKey()).getClickHandler().get().click(clickPlayer, clickInformation);
+        });
+
         for (Map.Entry<Integer, Continent> continent : layout.entrySet()) {
             getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));
         }
@@ -82,7 +94,7 @@ public class ContinentMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
-                .pattern("111111111")
+                .pattern("011111111")
                 .pattern("010101010")
                 .pattern("111101111")
                 .pattern("111111111")
