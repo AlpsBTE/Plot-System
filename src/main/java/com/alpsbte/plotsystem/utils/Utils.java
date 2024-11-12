@@ -64,6 +64,8 @@ public class Utils {
     private static Random random;
     public static final String EMPTY_MASK = "000000000";
 
+    private Utils() { }
+
     // Spawn Location
     public static Location getSpawnLocation() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
@@ -92,18 +94,20 @@ public class Utils {
 
 
     public static class SoundUtils {
-        public final static Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
-        public final static Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
-        public final static Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        public final static Sound FINISH_PLOT_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
-        public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
-        public final static Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
-        public final static Sound NOTIFICATION_SOUND = Sound.BLOCK_NOTE_BLOCK_PLING;
+        private SoundUtils() {}
+        public static final  Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
+        public static final Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
+        public static final  Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+        public static final Sound FINISH_PLOT_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
+        public static final Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
+        public static final Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+        public static final Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
+        public static final Sound NOTIFICATION_SOUND = Sound.BLOCK_NOTE_BLOCK_PLING;
     }
 
 
     public static class ChatUtils {
+        private ChatUtils() { }
         public static void setChatFormat(String infoPrefix, String alertPrefix) {
             ChatUtils.infoPrefix = AlpsUtils.deserialize(infoPrefix);
             ChatUtils.alertPrefix = AlpsUtils.deserialize(alertPrefix);
@@ -140,7 +144,7 @@ public class Utils {
                         }
                     }
                 }
-            }, 0L, 20 * 60);
+            }, 0L, 20 * (long) 60);
         }
 
         public static void sendChatInputExpiryComponent(Player player) {
@@ -155,6 +159,7 @@ public class Utils {
 
 
     public static class ItemUtils {
+        private ItemUtils() { }
         public static Component getNoteFormat(String note) {
             return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY));
         }
@@ -196,7 +201,7 @@ public class Utils {
         for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
 
-    public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine) {
+    public static Set<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine) {
         double p1X = point1.getX();
         double p1Y = point1.getY();
         double p1Z = point1.getZ();
@@ -216,7 +221,7 @@ public class Utils {
         return line;
     }
 
-    public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine) {
+    public static Set<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine) {
         double p1X = point1.x();
         double p1Z = point1.z();
         double p2X = point2.x();

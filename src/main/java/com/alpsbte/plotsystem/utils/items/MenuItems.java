@@ -41,6 +41,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class MenuItems {
+    private MenuItems() {}
 
     public static ItemStack closeMenuItem(Player player) {
         return new ItemBuilder(BaseItems.MENU_CLOSE.getItem())
