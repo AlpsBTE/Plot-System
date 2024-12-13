@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
@@ -40,8 +41,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.*;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,15 +52,16 @@ import org.bukkit.util.Vector;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class Utils {
+    private Utils() {}
 
     // Spawn Location
     public static Location getSpawnLocation() {
@@ -88,18 +91,21 @@ public class Utils {
 
 
     public static class SoundUtils {
-        public final static Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
-        public final static Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
-        public final static Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        public final static Sound FINISH_PLOT_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
-        public final static Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
-        public final static Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        public final static Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
-        public final static Sound NOTIFICATION_SOUND = Sound.BLOCK_NOTE_BLOCK_PLING;
+        private SoundUtils() {}
+
+        public static final Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
+        public static final Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
+        public static final Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+        public static final Sound FINISH_PLOT_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
+        public static final Sound ABANDON_PLOT_SOUND = Sound.ENTITY_DRAGON_FIREBALL_EXPLODE;
+        public static final Sound DONE_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+        public static final Sound INVENTORY_CLICK_SOUND = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
+        public static final Sound NOTIFICATION_SOUND = Sound.BLOCK_NOTE_BLOCK_PLING;
     }
 
 
     public static class ChatUtils {
+        private ChatUtils() {}
         public static void setChatFormat(String infoPrefix, String alertPrefix) {
             ChatUtils.infoPrefix = AlpsUtils.deserialize(infoPrefix);
             ChatUtils.alertPrefix = AlpsUtils.deserialize(alertPrefix);
@@ -136,7 +142,7 @@ public class Utils {
                         }
                     }
                 }
-            }, 0L, 20 * 60);
+            }, 0L, 20 * 60L);
         }
 
         public static void sendChatInputExpiryComponent(Player player) {
@@ -151,6 +157,7 @@ public class Utils {
 
 
     public static class ItemUtils {
+        private ItemUtils() {}
         public static Component getNoteFormat(String note) {
             return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY));
         }
@@ -158,33 +165,22 @@ public class Utils {
         public static String getActionFormat(String action) {return "§8§l> §c" + action;}
 
         public static Component getColoredPointsComponent(int points) {
-            switch (points) {
-                case 0:
-                    return text(points, GRAY);
-                case 1:
-                    return text(points, DARK_RED);
-                case 2:
-                    return text(points, GOLD);
-                case 3:
-                    return text(points, YELLOW);
-                case 4:
-                    return text(points, DARK_GREEN);
-                default:
-                    return text(points, GREEN);
-            }
+            return switch (points) {
+                case 0 -> text(points, GRAY);
+                case 1 -> text(points, DARK_RED);
+                case 2 -> text(points, GOLD);
+                case 3 -> text(points, YELLOW);
+                case 4 -> text(points, DARK_GREEN);
+                default -> text(points, GREEN);
+            };
         }
 
         public static Component getFormattedDifficulty(PlotDifficulty plotDifficulty) {
-            switch (plotDifficulty) {
-                case EASY:
-                    return text("Easy", GREEN).decoration(BOLD, true);
-                case MEDIUM:
-                    return text("Medium", GOLD).decoration(BOLD, true);
-                case HARD:
-                    return text("Hard", RED).decoration(BOLD, true);
-                default:
-                    return empty();
-            }
+            return switch (plotDifficulty) {
+                case EASY -> text("Easy", GREEN).decoration(BOLD, true);
+                case MEDIUM -> text("Medium", GOLD).decoration(BOLD, true);
+                case HARD -> text("Hard", RED).decoration(BOLD, true);
+            };
         }
     }
 
@@ -192,7 +188,7 @@ public class Utils {
         for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
 
-    public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine) {
+    public static Set<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine) {
         double p1X = point1.getX();
         double p1Y = point1.getY();
         double p1Z = point1.getZ();
@@ -212,7 +208,7 @@ public class Utils {
         return line;
     }
 
-    public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine) {
+    public static Set<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine) {
         double p1X = point1.x();
         double p1Z = point1.z();
         double p2X = point2.x();
@@ -227,5 +223,9 @@ public class Utils {
             line.add(vector);
         }
         return line;
+    }
+
+    public static void logSqlException(Exception ex) {
+        PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
     }
 }
