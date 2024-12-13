@@ -26,13 +26,14 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -59,14 +60,14 @@ public class PlotsLeaderboard extends DecentHologramDisplay implements HologramC
         try {
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
-            List<Builder.DatabaseEntry<String, Integer>> entries = Builder.getBuildersByCompletedBuilds(10);
+            HashMap<String, Integer> entries = Builder.getBuildersByCompletedBuilds(10);
             for (int i = 0; i < 10; i++) {
-                Builder.DatabaseEntry<String, Integer> entry = i < entries.size() && entries.get(i).getValue() != 0 ? entries.get(i) : null;
-                lines.add(new HologramRegister.LeaderboardPositionLine(i + 1, entry != null ? entry.getKey() : null, entry != null ? entry.getValue() : 0));
+                String key = i < entries.size() && entries.get((String) entries.keySet().toArray()[i]) != 0 ? (String) entries.keySet().toArray()[i] : null;
+                lines.add(new HologramRegister.LeaderboardPositionLine(i + 1, key, entries.get(key) != null ? entries.get(key) : 0));
             }
 
             return lines;
-        } catch (SQLException ex) {
+        } catch (DataException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();

@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -88,8 +89,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                 getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        } catch (DataException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);
         }
         return false;
     }

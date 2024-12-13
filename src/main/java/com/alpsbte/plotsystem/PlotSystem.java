@@ -25,6 +25,8 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
+import com.alpsbte.plotsystem.core.data.DataProvider;
+import com.alpsbte.plotsystem.core.database.DataProviderSql;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
@@ -74,6 +76,7 @@ public class PlotSystem extends JavaPlugin {
     private static final String VERSION = "4.0";
 
     private static PlotSystem plugin;
+    private static DataProvider dataProvider;
     private CommandManager commandManager;
 
     private boolean pluginEnabled = false;
@@ -138,6 +141,10 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        // Set data provider
+        //TODO: get from config
+        dataProvider = new DataProviderSql();
 
         // Register event listeners
         try {
@@ -266,6 +273,10 @@ public class PlotSystem extends JavaPlugin {
 
     public static PlotSystem getPlugin() {
         return plugin;
+    }
+
+    public static DataProvider getDataProvider() {
+        return dataProvider;
     }
 
     public CommandManager getCommandManager() {

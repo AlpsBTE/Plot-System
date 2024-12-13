@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -48,10 +49,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -124,14 +122,14 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
                 lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
             }
 
-            int index = 0;
-            for (Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortByLeaderboard)) {
-                lines.set(index, new LeaderboardPositionLineWithPayout(index + 1, entry.getKey(), entry.getValue()));
-                index++;
+            HashMap<String, Integer> leaderboardScores = Builder.getBuildersByScore(sortByLeaderboard);
+            for (int i = 0; i < leaderboardScores.size(); i++) {
+                String key = (String) leaderboardScores.keySet().toArray()[i];
+                lines.set(i, new LeaderboardPositionLineWithPayout(i + 1, key, leaderboardScores.get(key)));
             }
 
             return lines;
-        } catch (SQLException ex) {
+        } catch (DataException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();
@@ -143,7 +141,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             position = Builder.getBuilderScorePosition(player.getUniqueId(), sortByLeaderboard);
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
-        } catch (SQLException ex) {
+        } catch (DataException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(Component.text("A SQL error occurred!"), ex);
             return Component.empty();
         }
