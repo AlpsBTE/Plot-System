@@ -47,6 +47,7 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -101,10 +102,8 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> { // Set click event for random selection item
-            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
-            new CityProjectMenu(clickPlayer, countryProjects.get(Utils.getRandom().nextInt(countryProjects.size())), selectedPlotDifficulty);
-        });
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->  // Set click event for random selection item
+            generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty));
 
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
@@ -146,6 +145,15 @@ public class CountryMenu extends AbstractMenu {
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
+    }
+
+    public static boolean generateRandomPlot(Player clickPlayer, List<Country> countryProjects, PlotDifficulty selectedPlotDifficulty) {
+        List<CityProject> cityProjects = new ArrayList<>();
+        for (Country curCountry : countryProjects) {
+            cityProjects.addAll(CityProjectMenu.getValidCityProjects(selectedPlotDifficulty, clickPlayer, curCountry));
+        }
+
+        return CityProjectMenu.generateRandomPlot(clickPlayer, cityProjects, selectedPlotDifficulty);
     }
 
     @Override

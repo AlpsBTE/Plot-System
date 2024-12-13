@@ -145,7 +145,7 @@ menu-description:
   tutorials-desc: 'Lerne die Grundlagen des BuildTheEarth%newline%Projekts und erweitere deine Baukenntnisse%newline%mit Tutorials zu verschiedenen Themen.'
   tutorial-end-desc: 'Dein Fortschritt wird gespeichert.'
   tutorial-beginner-desc: 'Lerne die Baugrundlagen für%newline%das BuildTheEarth Projekt.'
-  companion-random-desc: 'Klicke hier, um ein zufällig auszuwählen'
+  companion-random-desc: 'Klicke hier, um zufällig auszuwählen.'
 #-----------------------------------------------------
 #| Review
 #-----------------------------------------------------

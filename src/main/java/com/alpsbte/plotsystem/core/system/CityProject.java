@@ -158,7 +158,7 @@ public class CityProject {
         return new ArrayList<>();
     }
 
-    private int getOpenPlotsForPlayer(int plotID, PlotDifficulty plotDifficulty) throws SQLException {
+    public int getOpenPlotsForPlayer(int plotID, PlotDifficulty plotDifficulty) throws SQLException {
         return Plot.getPlots(plotID, plotDifficulty, Status.unclaimed).size();
     }
 

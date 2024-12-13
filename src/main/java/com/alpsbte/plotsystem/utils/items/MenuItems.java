@@ -95,7 +95,7 @@ public class MenuItems {
     }
 
     public static ItemStack getRandomItem(Player player) {
-        ItemStack item = AlpsHeadUtils.getCustomHead(CustomHeads.WHITE_CONCRETE.getId());
+        ItemStack item = AlpsHeadUtils.getCustomHead(CustomHeads.GRAY_CONCRETE.getId());
         return new ItemBuilder(item)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_RANDOM), AQUA).decoration(BOLD, true))
                 .setLore(new LoreBuilder()

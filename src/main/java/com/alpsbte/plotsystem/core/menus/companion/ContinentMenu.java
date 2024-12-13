@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
+import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -38,6 +39,7 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ContinentMenu extends AbstractMenu {
@@ -74,11 +76,17 @@ public class ContinentMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> { // Set click event for random selection item
-            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
-            Map.Entry<Integer, Continent> random = layout.entrySet().stream()
-                    .skip(Utils.getRandom().nextInt(layout.size()))
-                    .findFirst().get();
-            getMenu().getSlot(random.getKey()).getClickHandler().get().click(clickPlayer, clickInformation);
+
+            List<Continent> layout2 = new java.util.ArrayList<>(layout.values().stream().toList());
+            while (!layout2.isEmpty()) {
+                var rndContinent = layout2.get(Utils.getRandom().nextInt(layout2.size()));
+                var successful = CountryMenu.generateRandomPlot(clickPlayer, Country.getCountries(rndContinent), null);
+                if (successful) {
+                    return;
+                } else {
+                    layout2.remove(rndContinent);
+                }
+            }
         });
 
         for (Map.Entry<Integer, Continent> continent : layout.entrySet()) {
