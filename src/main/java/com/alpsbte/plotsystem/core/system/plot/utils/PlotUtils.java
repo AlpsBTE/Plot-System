@@ -66,6 +66,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -91,7 +92,6 @@ import java.util.concurrent.CompletionException;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public final class PlotUtils {
 
@@ -600,41 +600,36 @@ public final class PlotUtils {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 Component[] tc = new Component[3];
 
+                String shortLinkGoogleMaps = null;
+                String shortLinkGoogleEarth = null;
+                String shortLinkOSM = null;
+                String googleMaps = "Google Maps";
+                String googleEarthWeb = "Google Earth Web";
+                String openStreetMap = "Open Street Map";
                 try {
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
-                                plot.getGoogleMapsLink(),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
-
-                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Earth Web", GREEN), text(ShortLink.generateShortLink(
-                                plot.getGoogleEarthLink(),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
-
-                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
-                                plot.getOSMMapsLink(),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
+                        shortLinkGoogleMaps = ShortLink.generateShortLink(plot.getGoogleMapsLink());
+                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(googleMaps, GREEN), text(shortLinkGoogleMaps, GREEN)));
+                        shortLinkGoogleEarth = ShortLink.generateShortLink(plot.getGoogleEarthLink());
+                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(googleEarthWeb, GREEN), text(shortLinkGoogleEarth, GREEN)));
+                        shortLinkOSM = ShortLink.generateShortLink(plot.getOSMMapsLink());
+                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(openStreetMap, GREEN), text(shortLinkOSM, GREEN)));
                     } else {
-                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
-                                LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Google Maps ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
-                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
-                                LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Google Earth Web ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
-                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
-                                LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Open Street Map ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
+                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(googleMaps, GREEN)));
+                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(googleEarthWeb, GREEN)));
+                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(openStreetMap, GREEN)));
                     }
 
-                    tc[0] = tc[0].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getGoogleMapsLink()));
-                    tc[1] = tc[1].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getGoogleEarthLink()));
-                    tc[2] = tc[2].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getOSMMapsLink()));
+                    tc[0] = tc[0].clickEvent(ClickEvent.openUrl((shortLinkGoogleMaps != null) ? shortLinkGoogleMaps : plot.getGoogleMapsLink()));
+                    tc[1] = tc[1].clickEvent(ClickEvent.openUrl((shortLinkGoogleEarth != null) ? shortLinkGoogleEarth : plot.getGoogleEarthLink()));
+                    tc[2] = tc[2].clickEvent(ClickEvent.openUrl((shortLinkOSM != null) ? shortLinkOSM : plot.getOSMMapsLink()));
                 } catch (IOException | URISyntaxException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating short link!"), ex);
                 }
 
-                tc[0] = tc[0].hoverEvent(text("Google Maps"));
-                tc[1] = tc[1].hoverEvent(text("Google Earth Web"));
-                tc[2] = tc[2].hoverEvent(text("Open Street Map"));
+                tc[0] = tc[0].hoverEvent(text(googleMaps));
+                tc[1] = tc[1].hoverEvent(text(googleEarthWeb));
+                tc[2] = tc[2].hoverEvent(text(openStreetMap));
 
                 // Temporary fix for bedrock players
                 Component coords = null;
