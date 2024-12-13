@@ -242,7 +242,7 @@ public class BuilderProviderSql implements BuilderProvider {
         buildTeams.forEach(b -> {
             try {
                 countries.addAll(b.getCountries().stream().map(Country::getID).collect(Collectors.toList()));
-            } catch (SQLException ex) {
+            } catch (DataException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });

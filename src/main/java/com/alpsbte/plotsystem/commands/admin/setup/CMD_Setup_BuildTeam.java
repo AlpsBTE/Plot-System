@@ -106,7 +106,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                     b.getCountries().forEach(c -> countriesAsString.add(String.valueOf(c.getID())));
                     b.getReviewers().forEach(r -> {try {reviewersAsString.add(r.getName());} catch (DataException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);}});
                     sender.sendMessage(" §6> §b" + b.getID() + " (" + b.getName() + ") §f- Country IDs: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString) + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString));
-                } catch (SQLException ex) {
+                } catch (DataException ex) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                     PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
@@ -152,7 +152,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 String name = CMD_Setup.appendArgs(args, 1);
                 BuildTeam.addBuildTeam(name);
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added build team with name '" + name + "'!"));
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
@@ -197,7 +197,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 }
                 BuildTeam.removeBuildTeam(Integer.parseInt(args[1]));
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
@@ -244,7 +244,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
                 BuildTeam.setBuildTeamName(Integer.parseInt(args[1]), name);
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed name of build team with ID " + args[1] + " to '" + name + "'!"));
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
@@ -391,7 +391,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 }
                 BuildTeam.addReviewer(Integer.parseInt(args[1]), builder.getUUID().toString());
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + args[1] + "!"));
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
