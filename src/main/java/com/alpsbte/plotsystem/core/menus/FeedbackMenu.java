@@ -82,7 +82,7 @@ public class FeedbackMenu extends AbstractMenu {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
                     .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
-                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ").append(text(plot.getTotalScore(), WHITE)))
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(plot.getTotalScore(), WHITE)))
                             .emptyLine()
                             .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
                                     .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating(Category.ACCURACY))
@@ -116,7 +116,7 @@ public class FeedbackMenu extends AbstractMenu {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
                     .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
-                            .addLines(plot.getReview().getFeedback())
+                            .addLines(true, plot.getReview().getFeedback())
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -129,7 +129,7 @@ public class FeedbackMenu extends AbstractMenu {
             getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
                     .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
-                            .addLine(text(review.getReviewer().getName())).build())
+                            .addLine(review.getReviewer().getName()).build())
                     .build());
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);

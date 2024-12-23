@@ -36,7 +36,7 @@ import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -82,7 +82,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                     .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
                             .setName(text(builder.getName(), GOLD).decoration(BOLD, true))
                             .setLore(new LoreBuilder()
-                                    .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ")
+                                    .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ", GRAY)
                                             .append(text(builder.getScore(), WHITE)))
                                     .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": ", GRAY)
                                             .append(text(builder.getCompletedBuilds(), WHITE)))
@@ -169,8 +169,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
      * @return Description lore for plot item
      * @throws SQLException When querying database
      */
-    private List<Component> getDescription(Plot plot, Player p) throws SQLException {
-        List<Component> lines = new ArrayList<>();
+    private List<TextComponent> getDescription(Plot plot, Player p) throws SQLException {
+        List<TextComponent> lines = new ArrayList<>();
         if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
             lines.add(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
@@ -220,9 +220,9 @@ public class PlayerPlotsMenu extends AbstractMenu {
      */
     public static ItemStack getMenuItem(Player p) {
         return new ItemBuilder(AlpsHeadUtils.getPlayerHead(p.getUniqueId()))
-                .setName(text(LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS)))
+                .setName(text(LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS), AQUA, BOLD))
                 .setLore(new LoreBuilder()
-                        .addLine(text(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS))).build())
+                        .addLine(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS), true).build())
                 .build();
     }
 }

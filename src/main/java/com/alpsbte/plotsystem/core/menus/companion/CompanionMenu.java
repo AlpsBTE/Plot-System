@@ -104,7 +104,7 @@ public class CompanionMenu {
         // Set player settings menu item
         items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), AQUA).decoration(BOLD, true))
-                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())
+                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS), true).build())
                 .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
 
         for (int i = 0; i < 3; i++) {
@@ -173,7 +173,8 @@ public class CompanionMenu {
         return new ItemBuilder(BaseItems.COMPANION_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION), AQUA)
                         .decoration(BOLD, true)
-                        .append(text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")", NamedTextColor.GRAY)))
+                        .append(text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")",
+                                NamedTextColor.GRAY).decoration(BOLD, false)))
                 .setEnchanted(true)
                 .build();
     }

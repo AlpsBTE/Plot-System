@@ -36,7 +36,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -49,6 +49,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class Builder {
@@ -163,14 +164,14 @@ public class Builder {
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
         String nameText = LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        Component statusComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
-        Component slotDescriptionComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
+        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
+        TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
 
         Material itemMaterial = Material.MAP;
-        ArrayList<Component> lore = new LoreBuilder()
+        ArrayList<TextComponent> lore = new LoreBuilder()
                 .addLines(slotDescriptionComp,
-                        Component.empty(),
-                        statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                        empty(),
+                        statusComp.append(text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
                 .build();
 
         if (plot != null) {
@@ -179,16 +180,16 @@ public class Builder {
             String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
             String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
             lore = new LoreBuilder()
-                    .addLines(Component.text(plotIdText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getID(), NamedTextColor.WHITE)),
-                            Component.text(plotCityText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getCity().getName(), NamedTextColor.WHITE)),
-                            Component.text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
-                            Component.empty(),
-                            statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                    .addLines(text(plotIdText + ": ", NamedTextColor.GRAY).append(text(plot.getID(), NamedTextColor.WHITE)),
+                            text(plotCityText + ": ", NamedTextColor.GRAY).append(text(plot.getCity().getName(), NamedTextColor.WHITE)),
+                            text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
+                            empty(),
+                            statusComp.append(text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
                     .build();
         }
 
         return new ItemBuilder(itemMaterial, 1 + slotIndex)
-                .setName(Component.text(nameText, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                .setName(text(nameText, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                 .setLore(lore)
                 .build();
     }

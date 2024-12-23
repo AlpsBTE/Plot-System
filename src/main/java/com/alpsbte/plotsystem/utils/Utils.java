@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -113,7 +114,7 @@ public class Utils {
         }
 
         public static Component getInfoFormat(Component infoComponent) {
-            return infoPrefix.append(infoComponent).color(GREEN);
+            return infoPrefix.append(infoComponent.color(GREEN));
         }
 
         public static Component getAlertFormat(String alert) {
@@ -121,7 +122,7 @@ public class Utils {
         }
 
         public static Component getAlertFormat(Component alertComponent) {
-            return alertPrefix.append(alertComponent).color(RED);
+            return alertPrefix.append(alertComponent.color(RED));
         }
 
         public static void checkForChatInputExpiry() {
@@ -151,8 +152,8 @@ public class Utils {
 
 
     public static class ItemUtils {
-        public static Component getNoteFormat(String note) {
-            return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY));
+        public static TextComponent getNoteFormat(String note) {
+            return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY).decoration(BOLD, false));
         }
 
         public static String getActionFormat(String action) {return "§8§l> §c" + action;}
@@ -174,7 +175,7 @@ public class Utils {
             }
         }
 
-        public static Component getFormattedDifficulty(PlotDifficulty plotDifficulty) {
+        public static TextComponent getFormattedDifficulty(PlotDifficulty plotDifficulty) {
             switch (plotDifficulty) {
                 case EASY:
                     return text("Easy", GREEN).decoration(BOLD, true);

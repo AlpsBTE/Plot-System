@@ -93,7 +93,7 @@ public class SpecialToolsMenu extends AbstractMenu {
         return new ItemBuilder(Material.BRUSH, 1)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_TOOLS), GOLD, BOLD))
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_TOOLS))
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_TOOLS), true)
                         .build())
                 .build();
     }
