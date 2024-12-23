@@ -602,26 +602,26 @@ public final class PlotUtils {
 
                 try {
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                        tc[0] = text("> ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
+                        tc[0] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
                                 plot.getGoogleMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
 
-                        tc[1] = text("> ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Earth Web", GREEN), text(ShortLink.generateShortLink(
+                        tc[1] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Earth Web", GREEN), text(ShortLink.generateShortLink(
                                 plot.getGoogleEarthLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
 
-                        tc[2] = text("> ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
+                        tc[2] = text(" ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
                                 plot.getOSMMapsLink(),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
                                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
                     } else {
-                        tc[0] = text("> ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
+                        tc[0] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
                                 LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Google Maps ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
-                        tc[1] = text("> ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
+                        tc[1] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
                                 LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Google Earth Web ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
-                        tc[2] = text("> ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
+                        tc[2] = text("» ", DARK_GRAY).decoration(BOLD, true).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
                                 LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Open Street Map ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
                     }
 
