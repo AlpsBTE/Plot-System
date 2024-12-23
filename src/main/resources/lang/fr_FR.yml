@@ -125,7 +125,7 @@ menu-description:
   teleport-desc: 'Cliquez pour vous téléporter sur l''intrigue'
   abandon-desc: 'Cliquez pour réinitialiser votre plot et le donner à quelqu''un d''autre'
   undo-submit-desc: 'Cliquez pour annuler votre soumission'
-  manage-members-desc: 'Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter%newline%supprimer d''autres joueurs sur votre plot'
+  manage-members-desc: 'Cliquez pour ouvrir le menu Plot Members, où vous pouvez ajouter supprimer d''autres joueurs sur votre plot'
   feedback-desc: 'Cliquez pour afficher les commentaires sur la review de votre plot'
   custom-heads-desc: 'Cliquez pour ouvrir le menu des têtes pour obtenir une variété de têtes personnalisées'
   banner-maker-desc: 'Cliquez pour créer et enregistrer vos propres bannières'
@@ -141,9 +141,9 @@ menu-description:
   select-city-inspiration-mode-desc: "Construisez sur une île flottante avec un environnement, et des constructions d'autres joueurs faites autour de votre parcelle.%newline%%newline%+ Environnment%newline%+ Parcelles adjacentes"
   filter-desc: "Tout montrer"
   information-desc: "Une parcelle peut recevoir un maximum de 20 points. Si la parcelle reçoit moins de 8 points, ou a une catégorie a 0 points, le plot est rejeté et le builder reconstruit la parcelle en l'améliorant. Si la parcelle reçoit 0 points, elle est abandonnée."
-  tutorials-desc: 'Apprenez les bases de Build The Earth%newline%project et améliorez vos capacités de construction%newline%avec des tutoriels sur plusieurs sujets.'
+  tutorials-desc: 'Apprenez les bases de Build The Earth project et améliorez vos capacités de construction avec des tutoriels sur plusieurs sujets.'
   tutorial-end-desc: 'Vos progrès seront sauvegardés.'
-  tutorial-beginner-desc: 'Apprenez les bases pour construire%newline%pour le projet Build The Earth.'
+  tutorial-beginner-desc: 'Apprenez les bases pour construire pour le projet Build The Earth.'
 #-----------------------------------------------------
 #| Review
 #-----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Lisez tous les conseils sur les parcelles et marquez-les comme lus.'
 #NOTE: Do not change
-config-version: 2.1
+config-version: 2.2

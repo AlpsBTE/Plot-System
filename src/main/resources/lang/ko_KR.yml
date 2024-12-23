@@ -125,7 +125,7 @@ menu-description:
   teleport-desc: "클릭하여 플롯으로 이동하기"
   abandon-desc: "클릭하여 초기화 및 다른 사람이 건축하도록 하기"
   undo-submit-desc: "클릭하여 제출 취소하기"
-  manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 %newline% 제외할 수 있는 플롯 멤버 메뉴를 여세요"
+  manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 제외할 수 있는 플롯 멤버 메뉴를 여세요"
   feedback-desc: "클릭하여 플롯 리뷰 피드백 보기"
   custom-heads-desc: "클릭하여 다양한 커스텀 헤드를 얻으세요"
   banner-maker-desc: "Click to create and save your own banners"
@@ -141,9 +141,9 @@ menu-description:
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
+  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
+  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

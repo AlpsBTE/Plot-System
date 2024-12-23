@@ -126,7 +126,7 @@ menu-description:
   teleport-desc: "点击以传送至建地"
   abandon-desc: "点击以重设你的建地，并将其交付他人"
   undo-submit-desc: "点击以撤回你的提交"
-  manage-members-desc: "点击以开启建地成员选单，你可以在那添加%newline%和移除在你建地上的其他玩家"
+  manage-members-desc: "点击以开启建地成员选单，你可以在那添加 和移除在你建地上的其他玩家"
   feedback-desc: "点击以查看你的建地审核回馈"
   custom-heads-desc: "点击开启头驴选单以取得一种自定义头驴"
   banner-maker-desc: "Click to create and save your own banners"
@@ -142,9 +142,9 @@ menu-description:
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
+  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
+  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -390,4 +390,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

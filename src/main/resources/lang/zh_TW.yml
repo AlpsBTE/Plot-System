@@ -125,7 +125,7 @@ menu-description:
   teleport-desc: "點擊以傳送至建地"
   abandon-desc: "點擊以重設你的建地，並將其交付他人"
   undo-submit-desc: "點擊以撤回你的提交"
-  manage-members-desc: "點擊以開啟建地成員選單%newline%你可以在那裡添加和移除在你建地上的其他玩家"
+  manage-members-desc: "點擊以開啟建地成員選單你可以在那裡添加和移除在你建地上的其他玩家"
   feedback-desc: "點擊以查看你建地的審核評語"
   custom-heads-desc: "點擊開啟頭顱選單以取得一個定製頭顱"
   banner-maker-desc: "點擊以創造並儲存你自己的旗幟"
@@ -141,7 +141,7 @@ menu-description:
   select-city-inspiration-mode-desc: "在有周邊環境的空島建設，並投影出附近其他玩家的建地。%newline%%newline%+ 周邊環境%newline%+ 鄰近建地"
   filter-desc: "顯示全部"
   information-desc: "一個建地最高可以獲得20積分。如果建地得分小於8分或任一類別獲得0分，該建地將被否決，建造者要取回建地並改進。如果建地獲得0分，它將被廢棄。"
-  tutorials-desc: '透過各種主題的教學%newline%來學習BuildTheEarth計畫的基礎知識%newline%並提升你的建築技巧。'
+  tutorials-desc: '透過各種主題的教學來學習BuildTheEarth計畫的基礎知識並提升你的建築技巧。'
   tutorial-end-desc: '你的進度將被儲存。'
   tutorial-beginner-desc: '學習在BuildTheEarth計畫建築的基礎知識。'
 # -----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - '閱讀建地上全部的提示並將其標記為已讀。'
 # NOTE: Do not change
-config-version: 2.1
+config-version: 2.2
