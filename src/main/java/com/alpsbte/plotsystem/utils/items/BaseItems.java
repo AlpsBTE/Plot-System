@@ -40,9 +40,7 @@ public enum BaseItems {
         Material material = Material.getMaterial(materialString == null ? "" : materialString, false);
         material = material == null ? Material.BARRIER : material;
 
-        int modelId = ConfigUtil.getInstance().configs[2].getInt(configPath + ".modelId");
-
-        itemStack = new ItemBuilder(material).setItemModel(modelId).build();
+        itemStack = new ItemBuilder(material).setItemModel(ConfigUtil.getInstance().configs[2].get(configPath + ".modelId")).build();
     }
 
     public ItemStack getItem() {
