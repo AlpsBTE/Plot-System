@@ -51,6 +51,8 @@ import java.util.stream.Collectors;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public class Builder {
 
@@ -164,14 +166,14 @@ public class Builder {
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
         String nameText = LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
-        TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
+        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": ", GRAY);
+        TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);
 
         Material itemMaterial = Material.MAP;
         ArrayList<TextComponent> lore = new LoreBuilder()
                 .addLines(slotDescriptionComp,
                         empty(),
-                        statusComp.append(text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                        statusComp.append(text("Unassigned", WHITE)))
                 .build();
 
         if (plot != null) {
@@ -179,12 +181,13 @@ public class Builder {
             String plotIdText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID);
             String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
             String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
+            String plotStatusText = plot.getStatus().name();
             lore = new LoreBuilder()
-                    .addLines(text(plotIdText + ": ", NamedTextColor.GRAY).append(text(plot.getID(), NamedTextColor.WHITE)),
-                            text(plotCityText + ": ", NamedTextColor.GRAY).append(text(plot.getCity().getName(), NamedTextColor.WHITE)),
-                            text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
+                    .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getID(), WHITE)),
+                            text(plotCityText + ": ", GRAY).append(text(plot.getCity().getName(), WHITE)),
+                            text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
                             empty(),
-                            statusComp.append(text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                            statusComp.append(text(plotStatusText.substring(0, 1).toUpperCase() + plotStatusText.substring(1), WHITE)))
                     .build();
         }
 

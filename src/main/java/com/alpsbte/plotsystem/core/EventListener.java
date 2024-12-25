@@ -302,13 +302,12 @@ public class EventListener implements Listener {
             TextComponent messageComp = (TextComponent) event.message();
 
             ChatInput input = ChatInput.awaitChatInput.get(playerUUID);
-            if (input instanceof PlayerFeedbackChatInput) {
-                PlayerFeedbackChatInput feedbackInput = (PlayerFeedbackChatInput) input;
+            if (input instanceof PlayerFeedbackChatInput feedbackInput) {
                 feedbackInput.getReview().setFeedback(messageComp.content());
+                ChatInput.awaitChatInput.remove(playerUUID);
                 event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(),
                         LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlotID()))));
-            } else if (input instanceof PlayerInviteeChatInput) {
-                PlayerInviteeChatInput inviteeInput = (PlayerInviteeChatInput) input;
+            } else if (input instanceof PlayerInviteeChatInput inviteeInput) {
                 Player player = Bukkit.getPlayer(messageComp.content());
 
                 if (player == null) {

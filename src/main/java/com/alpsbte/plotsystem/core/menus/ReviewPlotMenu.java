@@ -44,7 +44,6 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -56,10 +55,8 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -160,7 +157,6 @@ public class ReviewPlotMenu extends AbstractMenu {
 
         // Set click event for submit item
         getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 try {
                     StringBuilder score = new StringBuilder();
@@ -198,6 +194,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> clickPlayer.performCommand("plot abandon " + plot.getID()));
                         return;
                     }
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> clickPlayer.closeInventory());
 
                     if (plot.isReviewed()) {
                         plot.getReview().setRating(score.toString());

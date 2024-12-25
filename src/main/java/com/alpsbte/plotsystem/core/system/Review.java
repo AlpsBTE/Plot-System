@@ -171,24 +171,8 @@ public class Review {
     }
 
     public void setFeedback(String feedback) throws SQLException {
-        String[] feedbackArr = feedback.split(" ");
-        StringBuilder finalFeedback = new StringBuilder();
-        int lineLength = 0;
-        int lines = 0;
-
-        for (String word : feedbackArr) {
-            if ((lineLength + word.length()) <= 60) {
-                finalFeedback.append((lines == 0 && lineLength == 0) ? "" : " ").append(word);
-                lineLength += word.length();
-            } else {
-                finalFeedback.append("//").append(word);
-                lineLength = 0;
-                lines++;
-            }
-        }
-
         DatabaseConnection.createStatement("UPDATE plotsystem_reviews SET feedback = ? WHERE id = ?")
-                .setValue(finalFeedback.toString()).setValue(this.reviewID).executeUpdate();
+                .setValue(feedback).setValue(this.reviewID).executeUpdate();
     }
 
     public void setFeedbackSent(boolean isSent) throws SQLException {

@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +43,6 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -101,23 +99,16 @@ public class PlayerPlotsMenu extends AbstractMenu {
             for (int i = 0; i < plotDisplayCount; i++) {
                 Plot plot = plots.get(i);
                 try {
-                    ItemStack item;
-                    switch (plot.getStatus()) {
-                        case unfinished:
-                            item = BaseItems.PLOT_UNFINISHED.getItem();
-                            break;
-                        case unreviewed:
-                            item = BaseItems.PLOT_UNREVIEWED.getItem();
-                            break;
-                        default:
-                            item = BaseItems.PLOT_COMPLETED.getItem();
-                            break;
-                    }
+                    ItemStack item = switch (plot.getStatus()) {
+                        case unfinished -> BaseItems.PLOT_UNFINISHED.getItem();
+                        case unreviewed -> BaseItems.PLOT_UNREVIEWED.getItem();
+                        default -> BaseItems.PLOT_COMPLETED.getItem();
+                    };
 
                     getMenu().getSlot(9 + i)
                             .setItem(new ItemBuilder(item)
                                     .setName(text(plot.getCity().getName() + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), AQUA).decoration(BOLD, true))
-                                    .setLore(new LoreBuilder().addLines(getDescription(plot, getMenuPlayer())).build())
+                                    .setLore(getLore(plot, getMenuPlayer()).build())
                                     .build());
                 } catch (SQLException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
@@ -162,57 +153,57 @@ public class PlayerPlotsMenu extends AbstractMenu {
     }
 
     /**
-     * Returns description for plot item
+     * Returns description lore for plot item
      *
      * @param plot Plot class
      * @param p    player instance for language system
-     * @return Description lore for plot item
-     * @throws SQLException When querying database
+     * @return description lore for plot item
      */
-    private List<TextComponent> getDescription(Plot plot, Player p) throws SQLException {
-        List<TextComponent> lines = new ArrayList<>();
+    private LoreBuilder getLore(Plot plot, Player p) throws SQLException {
+        LoreBuilder builder = new LoreBuilder();
         if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
-                    .append(text((plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()), GOLD)));
+            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
+                    .append(text((plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()), WHITE)));
         } else {
             // Plot is multiplayer plot
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Plot.OWNER) + ": ", GRAY)
-                    .append(text(plot.getPlotOwner().getName(), GREEN)));
-            lines.add(empty());
+            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.OWNER) + ": ", GRAY)
+                    .append(text(plot.getPlotOwner().getName(), WHITE)));
+            builder.emptyLine();
 
             int score = (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore());
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
+            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
                     .append(text(score + " ", WHITE))
                     .append(text(LangUtil.getInstance().get(p, LangPaths.Plot.GroupSystem.SHARED_BY_MEMBERS, Integer.toString(plot.getPlotMembers().size() + 1)), DARK_GRAY)));
         }
 
         if (plot.isReviewed() || plot.isRejected()) {
-            lines.add(empty());
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
-                    .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.ACCURACY)))
-                    .append(text("/", DARK_GRAY)).append(text("5", GREEN)));
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
-                    .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.BLOCKPALETTE)))
-                    .append(text("/", DARK_GRAY)).append(text("5", GREEN)));
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": ", GRAY)
-                    .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.DETAILING)))
-                    .append(text("/", DARK_GRAY)).append(text("5", GREEN)));
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": ", GRAY)
-                    .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.TECHNIQUE)))
-                    .append(text("/", DARK_GRAY)).append(text("5", GREEN)));
-            lines.add(empty());
-            lines.add(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK), GRAY));
-
-            String[] splitText = plot.getReview().getFeedback().split("//");
-            for (String line : splitText) {
-                lines.add(text(line.replace("//", ""), WHITE));
-            }
+            builder.emptyLine();
+            builder.addLines(
+                    text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
+                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.ACCURACY)))
+                            .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
+                    text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
+                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.BLOCKPALETTE)))
+                            .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
+                    text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": ", GRAY)
+                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.DETAILING)))
+                            .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
+                    text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": ", GRAY)
+                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.TECHNIQUE)))
+                            .append(text("/", DARK_GRAY)).append(text("5", GREEN))
+            );
+            builder.emptyLine();
+            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
+            builder.addLine(text(plot.getReview().getFeedback().replaceAll("//", " "), WHITE), true);
         }
-        lines.add(empty());
-        if (plot.isReviewed() && plot.isRejected()) lines.add(text(LangUtil.getInstance().get(p, LangPaths.Review.REJECTED), RED).decoration(BOLD, true));
-        lines.add(text(LangUtil.getInstance().get(p, LangPaths.Plot.STATUS) + ": ", GOLD).append(text(plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), GRAY).decoration(BOLD, true)));
-        return lines;
+
+        builder.emptyLine();
+        if (plot.isReviewed() && plot.isRejected()) builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.REJECTED), RED, BOLD));
+        builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.STATUS) + ": ", GRAY)
+                .append(text(plot.getStatus().name().substring(0, 1).toUpperCase() +
+                        plot.getStatus().name().substring(1), WHITE)));
+        return builder;
     }
 
     /**
