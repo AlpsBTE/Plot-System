@@ -31,7 +31,9 @@ public enum BaseItems {
     REVIEW_POINT_FIVE("review-point-five"),
     REVIEW_SUBMIT("review-submit"),
     REVIEW_CANCEL("review-cancel"),
-    REVIEW_INFO_PLOT("review-info-plot");
+    REVIEW_INFO_PLOT("review-info-plot"),
+
+    SETTINGS_ITEM("settings-item");
 
     final ItemStack itemStack;
 

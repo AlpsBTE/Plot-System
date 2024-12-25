@@ -102,7 +102,7 @@ public class CompanionMenu {
         items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, clickInformation) -> clickPlayer.performCommand("plots " + clickPlayer.getName())));
 
         // Set player settings menu item
-        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
+        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(BaseItems.SETTINGS_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), AQUA).decoration(BOLD, true))
                 .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS), true).build())
                 .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));

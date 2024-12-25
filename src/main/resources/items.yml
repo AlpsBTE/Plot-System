@@ -69,5 +69,8 @@ review-info-plot:
   material: MAP
   modelId: ""
 
+settings-item:
+  material: COMPARATOR
+  modelId: ""
 # NOTE: Do not change
 config-version: 1.0
