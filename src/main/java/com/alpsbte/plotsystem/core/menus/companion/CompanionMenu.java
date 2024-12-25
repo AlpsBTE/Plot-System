@@ -174,7 +174,7 @@ public class CompanionMenu {
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION), AQUA)
                         .decoration(BOLD, true)
                         .append(text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")",
-                                NamedTextColor.GRAY).decoration(BOLD, false)))
+                                GRAY).decoration(BOLD, false)))
                 .setEnchanted(true)
                 .build();
     }

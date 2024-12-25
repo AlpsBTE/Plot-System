@@ -35,7 +35,6 @@ import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsE
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -63,7 +62,7 @@ public class CMD_Tpll extends BaseCommand {
         }
 
         if (getPlayer(sender) == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 

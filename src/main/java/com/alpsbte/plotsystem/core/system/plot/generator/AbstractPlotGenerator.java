@@ -68,7 +68,6 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -271,7 +270,7 @@ public abstract class AbstractPlotGenerator {
      * @param ex - caused exception
      */
     protected void onException(Throwable ex) {
-        PlotSystem.getPlugin().getComponentLogger().error(Component.text("An error occurred while generating plot!"), ex);
+        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot!"), ex);
         builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
         builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
     }
