@@ -27,7 +27,7 @@ menu-close:
   modelId: ""
 
 review-item:
-  material: KNOWLEDGE_BOOK
+  material: BOOK
   modelId: ""
 review-accuracy:
   material: ARROW

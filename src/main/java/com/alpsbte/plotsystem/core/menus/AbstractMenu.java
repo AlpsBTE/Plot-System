@@ -31,6 +31,8 @@ import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
 
+import static net.kyori.adventure.text.Component.text;
+
 public abstract class AbstractMenu {
     private final Menu menu;
     private final Player menuPlayer;
@@ -43,7 +45,7 @@ public abstract class AbstractMenu {
     public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.title = title;
         this.menuPlayer = menuPlayer;
-        this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
+        this.menu = ChestMenu.builder(rows).title(text(title)).redraw(true).build();
 
         if (reload) reloadMenuAsync();
     }

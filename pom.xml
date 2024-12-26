@@ -89,9 +89,9 @@
         </dependency>
         <!-- Canvas Menu Builder -->
         <dependency>
-            <groupId>com.github.IPVP-MC</groupId>
+            <groupId>com.alpsbte</groupId>
             <artifactId>canvas</artifactId>
-            <version>master-2047a9372b-1</version>
+            <version>1.1</version>
             <scope>compile</scope>
         </dependency>
         <!-- HeadDB -->
