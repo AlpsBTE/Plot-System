@@ -31,6 +31,8 @@ import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
 
+import static net.kyori.adventure.text.Component.text;
+
 public abstract class AbstractMenu {
     private final Menu menu;
     private final Player menuPlayer;
@@ -43,7 +45,7 @@ public abstract class AbstractMenu {
     public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.title = title;
         this.menuPlayer = menuPlayer;
-        this.menu = ChestMenu.builder(rows).title(title).redraw(true).build();
+        this.menu = ChestMenu.builder(rows).title(text(title)).redraw(true).build();
 
         if (reload) reloadMenuAsync();
     }
@@ -60,6 +62,7 @@ public abstract class AbstractMenu {
 
     /**
      * Places pre-defined items in the menu before it is opened
+     *
      * @return Pre-defined mask
      * @see <a href=https://github.com/IPVP-MC/canvas#masks</a>
      */
@@ -70,7 +73,7 @@ public abstract class AbstractMenu {
      * NOTE: This method gets called before class is loaded!
      */
     protected void setPreviewItems() {
-        if(getMask() != null) getMask().apply(getMenu());
+        if (getMask() != null) getMask().apply(getMenu());
         getMenu().open(getMenuPlayer());
         getMenuPlayer().getOpenInventory().setTitle(title);
     }

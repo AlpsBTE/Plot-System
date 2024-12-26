@@ -38,6 +38,7 @@ import java.sql.SQLException;
 public interface IWorld {
     /**
      * Generates the plot world with the required configurations and schematic
+     *
      * @param generator generator type as class
      * @return true if world was generated successfully
      */
@@ -45,6 +46,7 @@ public interface IWorld {
 
     /**
      * Regenerates the current plot with an optional new generator type
+     *
      * @param generator generator type as class
      * @return true if world was regenerated successfully
      */
@@ -52,18 +54,21 @@ public interface IWorld {
 
     /**
      * Deletes the world file and entry in the config file
+     *
      * @return true if world was deleted successfully
      */
     boolean deleteWorld();
 
     /**
      * Loads the plot world to memory to be used. Plot has to be generated.
+     *
      * @return true if world was loaded successfully
      */
     boolean loadWorld();
 
     /**
      * Unloads the plot world from memory. Plot cannot be used anymore. Plot has to be generated.
+     *
      * @param movePlayers if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.
      * @return true if world was loaded successfully
      */
@@ -71,6 +76,7 @@ public interface IWorld {
 
     /**
      * Teleports a player to the spawn point of the plot
+     *
      * @param player bukkit player
      * @return true if player was teleported successfully
      */
@@ -78,13 +84,15 @@ public interface IWorld {
 
     /**
      * Returns the spawn point of the plot
-     * @return center coordinates of the plot
+     *
      * @param plotVector plot vector
+     * @return center coordinates of the plot
      */
     Location getSpawnPoint(BlockVector3 plotVector);
 
     /**
      * Calculates the origin Y value in the plot world used for schematic pasting
+     *
      * @return the origin Y value
      * @throws IOException if the outline schematic fails to load
      */
@@ -92,6 +100,7 @@ public interface IWorld {
 
     /**
      * Calculates the centered Y value in the plot world
+     *
      * @return the centered Y value
      * @throws IOException if the outline schematic fails to load
      */
@@ -114,24 +123,28 @@ public interface IWorld {
 
     /**
      * Loads the protected plot world region from WorldGuard config
+     *
      * @return protected WorldGuard region
      */
     ProtectedRegion getProtectedRegion();
 
     /**
      * Loads the protected plot world build region from WorldGuard config
+     *
      * @return protected WorldGuard build region
      */
     ProtectedRegion getProtectedBuildRegion();
 
     /**
      * Checks if the plot world is loaded to memory
+     *
      * @return true if world is loaded
      */
     boolean isWorldLoaded();
 
     /**
      * Checks if the plot world is generated
+     *
      * @return true if world is generated
      */
     boolean isWorldGenerated();

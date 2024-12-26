@@ -27,7 +27,7 @@ public class ConformalEstimate extends Airocean {
         double[][] xs = new double[sideLength + 1][];
         double[][] ys = new double[xs.length][];
 
-        try(InputStream is = this.getClass().getClassLoader().getResourceAsStream("conformal.txt") ; Scanner sc = new Scanner(Objects.requireNonNull(is))) {
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("conformal.txt"); Scanner sc = new Scanner(Objects.requireNonNull(is))) {
 
             for (int u = 0; u < xs.length; u++) {
                 double[] px = new double[xs.length - u];

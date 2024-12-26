@@ -54,7 +54,7 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), ContinentMenu::new).entrySet()) {
+        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
         }
 
@@ -63,17 +63,17 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        for(Map.Entry<Integer, Continent> continent : layout.entrySet())
+        for (Map.Entry<Integer, Continent> continent : layout.entrySet())
             getMenu().getSlot(continent.getKey()).setItem(continent.getValue().getItem(getMenuPlayer()));
     }
 
     @Override
     protected void setItemClickEventsAsync() {
-        for(Map.Entry<Integer, Continent> continent : layout.entrySet()) {
+        for (Map.Entry<Integer, Continent> continent : layout.entrySet()) {
             getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));
         }
 
-        for(Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4,getMenuPlayer(), ContinentMenu::new).entrySet()) {
+        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
     }

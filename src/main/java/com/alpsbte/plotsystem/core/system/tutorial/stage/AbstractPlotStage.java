@@ -33,7 +33,7 @@ public abstract class AbstractPlotStage extends AbstractStage {
     private final int initSchematicId;
 
     protected AbstractPlotStage(Player player, int initWorldIndex, TutorialPlot plot, int initSchematicId) {
-        super(player, initWorldIndex);
+        super(player, plot.getID(), initWorldIndex);
         this.plot = plot;
         this.initSchematicId = initSchematicId;
     }

@@ -25,16 +25,17 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.utils.enums.Continent;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class Country {
 
@@ -96,7 +97,7 @@ public class Country {
             DatabaseConnection.closeResultSet(rs);
             return cityProjects;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return new ArrayList<>();
     }
@@ -115,7 +116,7 @@ public class Country {
             DatabaseConnection.closeResultSet(rs);
             return countries;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return new ArrayList<>();
     }
@@ -130,7 +131,7 @@ public class Country {
             DatabaseConnection.closeResultSet(rs);
             return countries;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return new ArrayList<>();
     }

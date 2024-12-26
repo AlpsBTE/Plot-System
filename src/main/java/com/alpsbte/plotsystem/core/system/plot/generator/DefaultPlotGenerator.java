@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -36,7 +37,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +48,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
@@ -88,7 +89,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                 getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.INFO, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return false;
     }
@@ -116,7 +117,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
 
                 @Override
                 protected void onException(Throwable ex) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not generate plot in city world " + world.getWorldName() + "!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not generate plot in city world " + world.getWorldName() + "!"), ex);
                 }
             };
         }

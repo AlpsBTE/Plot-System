@@ -37,7 +37,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.sk89q.worldedit.math.BlockVector2;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +49,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
     private int tutorialId = -1;
@@ -113,6 +113,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
     /**
      * Sets the stage of the tutorial and updates the last stage completion date.
      * Check if the stage is valid before setting it!
+     *
      * @param stageID stage id, 0 is the first stage
      */
     public void setStageID(int stageID) throws SQLException {
@@ -180,6 +181,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     /**
      * Sets the date when the last stage was completed.
+     *
      * @param date date of the last stage completion
      */
     private void setLastStageCompletionDate(Date date) throws SQLException {
@@ -205,6 +207,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     /**
      * Sets the date when the tutorial was completed.
+     *
      * @param date date of the completion
      */
     private void setCompletionDate(Date date) throws SQLException {
@@ -214,7 +217,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     @Override
     public Builder getPlotOwner() throws SQLException {
-        if(plotOwner != null) return plotOwner;
+        if (plotOwner != null) return plotOwner;
         plotOwner = Builder.byUUID(getPlayerUUID());
         return plotOwner;
     }
@@ -225,7 +228,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
         try {
             if (onePlotWorld == null) onePlotWorld = new OnePlotWorld(this);
             return (T) onePlotWorld;
-        } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }
+        } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
         return null;
     }
 
@@ -287,7 +290,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
         try {
             FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".schematic.gz")), oldSchem);
         } catch (IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while copying the schematic file!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while copying the schematic file!"), ex);
         }
         return oldSchem;
     }
@@ -296,7 +299,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
         try {
             return getSchematicFile(getTutorialID() + "-" + schematicId);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             return null;
         }
     }
@@ -311,16 +314,16 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
         try {
             return getSchematicFile(getTutorialID() + "-env");
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             return null;
         }
     }
 
 
-
     /**
      * Adds a new tutorial plot to the database.
-     * @param UUID uuid of the player
+     *
+     * @param UUID       uuid of the player
      * @param tutorialId id of the tutorial
      * @return the new tutorial plot
      */
@@ -332,7 +335,8 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     /**
      * Gets a tutorial plot from the database.
-     * @param UUID uuid of the player
+     *
+     * @param UUID       uuid of the player
      * @param tutorialId id of the tutorial
      * @return the tutorial plot
      */
@@ -340,7 +344,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots_tutorial WHERE player_uuid = ? AND tutorial_id = ?")
                 .setValue(UUID).setValue(tutorialId).executeQuery()) {
 
-            if (rs.next()){
+            if (rs.next()) {
                 int id = rs.getInt(1);
                 DatabaseConnection.closeResultSet(rs);
 
@@ -354,6 +358,7 @@ public class TutorialPlot extends AbstractPlot implements TutorialDataModel {
 
     /**
      * Gets all tutorials from the player.
+     *
      * @param builderUUID uuid of the player
      * @return list of tutorials
      */

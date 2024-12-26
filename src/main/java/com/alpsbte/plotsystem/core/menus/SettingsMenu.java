@@ -35,6 +35,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.util.function.Consumer;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -48,6 +49,7 @@ public class SettingsMenu extends AbstractMenu {
     public SettingsMenu(Player player) {
         super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), player);
     }
+
     public SettingsMenu(Player player, Consumer<Player> onBack) {
         this(player);
         this.onBack = onBack;

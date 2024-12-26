@@ -26,7 +26,8 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -35,15 +36,18 @@ import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class FeedbackMenu extends AbstractMenu {
 
@@ -70,51 +74,64 @@ public class FeedbackMenu extends AbstractMenu {
             if (rs.next()) this.review = new Review(rs.getInt(1));
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         // Set score item
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE))
-                    .setLore(new LegacyLoreBuilder()
-                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": §f" + plot.getTotalScore(),
-                                    "",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.ACCURACY)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.BLOCKPALETTE)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.DETAILING)) + "§8/§a5",
-                                    "§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": " + Utils.ItemUtils.getColorByPoints(review.getRating(Category.TECHNIQUE)) + "§8/§a5",
-                                    "",
-                                    plot.isRejected() ? "§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED) : "§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED))
+                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), AQUA, BOLD))
+                    .setLore(new LoreBuilder()
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(plot.getTotalScore(), WHITE)))
+                            .emptyLine()
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
+                                    .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating(Category.ACCURACY))
+                                            .append(text("/", DARK_GRAY))
+                                            .append(text("5", GREEN))))
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
+                                    .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating(Category.BLOCKPALETTE)))
+                                    .append(text("/", DARK_GRAY))
+                                    .append(text("5", GREEN)))
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.DETAILING) + ": ", GRAY)
+                                    .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating(Category.DETAILING)))
+                                    .append(text("/", DARK_GRAY))
+                                    .append(text("5", GREEN)))
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.TECHNIQUE) + ": ", GRAY)
+                                    .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating(Category.TECHNIQUE)))
+                                    .append(text("/", DARK_GRAY))
+                                    .append(text("5", GREEN)))
+                            .emptyLine()
+                            .addLine(plot.isRejected()
+                                    ? text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED), RED, BOLD)
+                                    : text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED), GREEN, BOLD))
                             .build())
                     .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(10).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK))
-                    .setLore(new LegacyLoreBuilder()
-                            .addLines(plot.getReview().getFeedback())
+                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA, BOLD))
+                    .setLore(new LoreBuilder()
+                            .addLine(plot.getReview().getFeedback().replaceAll("//", " "), true)
                             .build())
                     .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set reviewer item
         try {
             getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
-                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER))
-                    .setLore(new LegacyLoreBuilder()
-                            .addLine(review.getReviewer().getName()).build())
+                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER), AQUA, BOLD))
+                    .setLore(new LoreBuilder().addLine(review.getReviewer().getName()).build())
                     .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(13).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
     }
@@ -125,7 +142,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")

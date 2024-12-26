@@ -24,23 +24,25 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
-import com.alpsbte.alpslib.npc.AbstractNpc;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.kyori.adventure.text.Component.text;
 
 /**
  * Abstract class for all tutorials. Inherit this class to create a new tutorial.
  * There is no way to save the progress of a tutorial. This needs to be implemented manually.
+ *
  * @see AbstractTutorial#saveTutorial(int)
  * @see AbstractTutorial#onTutorialComplete(UUID)
  */
@@ -48,6 +50,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * This action method is used to set the stage preparation as done when switching to the next stage.
+     *
      * @see AbstractTutorial#prepareStage(PrepareStageAction)
      */
     @FunctionalInterface
@@ -57,12 +60,14 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * A list of all registered tutorials.
+     *
      * @see AbstractTutorial#registerTutorials(List)
      */
     private static final List<Class<? extends AbstractTutorial>> tutorials = new ArrayList<>();
 
     /**
      * A list of all active tutorials.
+     *
      * @see AbstractTutorial#getActiveTutorial(UUID)
      */
     private static final List<AbstractTutorial> activeTutorials = new ArrayList<>();
@@ -72,7 +77,6 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     private static final Map<UUID, Long> playerInteractionHistory = new HashMap<>();
     private static final long PLAYER_INTERACTION_COOLDOWN = 1000; // The cooldown for player interactions in milliseconds
-
 
 
     protected final TutorialDataModel tutorialDataModel;
@@ -89,32 +93,36 @@ public abstract class AbstractTutorial implements Tutorial {
 
 
     private StageTimeline stageTimeline;
-    private AbstractNpc npc;
+    private TutorialNPC npc;
 
     /**
      * Creates a new instance of the tutorial current stage.
+     *
      * @return current stage
-     * @throws NoSuchMethodException if the constructor of the current stage could not be found
+     * @throws NoSuchMethodException     if the constructor of the current stage could not be found
      * @throws InvocationTargetException if the constructor of the current stage could not be invoked
-     * @throws InstantiationException if the current stage could not be instantiated
-     * @throws IllegalAccessException if the current stage could not be accessed
+     * @throws InstantiationException    if the current stage could not be instantiated
+     * @throws IllegalAccessException    if the current stage could not be accessed
      */
     protected abstract AbstractStage getStage() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
     /**
      * Initializes all worlds that can be used in the tutorial.
+     *
      * @return list of all worlds
      */
     protected abstract List<TutorialWorld> initWorlds();
 
     /**
      * Initializes all stages of the tutorial as classes.
+     *
      * @return list of all stages
      */
     protected abstract List<Class<? extends AbstractStage>> initStages();
 
     /**
      * Initializes the individual npc for the tutorial player.
+     *
      * @return tutorial npc
      */
     protected abstract TutorialNPC initNpc();
@@ -122,6 +130,7 @@ public abstract class AbstractTutorial implements Tutorial {
     /**
      * This method is called before the next stage timeline is started.
      * Use this method to do some preparations for the next stage.
+     *
      * @param action action to set the stage preparation as done
      */
     protected abstract void prepareStage(PrepareStageAction action);
@@ -163,13 +172,13 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
-    public AbstractNpc getNPC() {
+    public TutorialNPC getNPC() {
         return npc;
     }
 
     @Override
     public List<AbstractTutorialHologram> getActiveHolograms() {
-        return HolographicDisplay.activeDisplays.stream()
+        return DecentHologramDisplay.activeDisplays.stream()
                 .filter(AbstractTutorialHologram.class::isInstance)
                 .filter(holo -> holo.isVisible(playerUUID))
                 .map(h -> (AbstractTutorialHologram) h)
@@ -240,26 +249,26 @@ public abstract class AbstractTutorial implements Tutorial {
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
         player.teleport(world.getPlayerSpawnLocation());
-        npc.create(world.getNpcSpawnLocation(), false, true);
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> npc.show(player));
+        if (npc.getNpc() != null) {
+            npc.move(player, world.getNpcSpawnLocation());
+        } else {
+            npc.create(world.getNpcSpawnLocation());
+            npc.spawn(player);
+        }
     }
 
     @Override
     public void onTutorialStop(UUID playerUUID) {
         if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
-        activeTutorials.remove(this);
-        npc.delete();
-        for (AbstractTutorialHologram holo : getActiveHolograms()) holo.delete();
-        playerInteractionHistory.remove(playerUUID);
         if (stageTimeline != null) stageTimeline.onStopTimeLine();
-
-        // Bukkit.getLogger().log(Level.INFO, "There are " + activeTutorials.size() + " active tutorials.");
-        // Bukkit.getLogger().log(Level.INFO, "There are " + TutorialEventListener.runningEventTasks.size() + " tutorial event tasks running.");
+        npc.delete();
+        playerInteractionHistory.remove(playerUUID);
+        activeTutorials.remove(this);
     }
 
     @Override
     public void onException(Exception ex) {
-        Bukkit.getLogger().log(Level.SEVERE, "An error occurred while processing tutorial!", ex);
+        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while processing tutorial!"), ex);
 
         // Send player back to hub after 3 seconds if an error occurred
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20 * 3);
@@ -267,6 +276,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * Gets all registered stages of the tutorial.
+     *
      * @return list of all stages
      */
     public List<Class<? extends AbstractStage>> getStages() {
@@ -275,6 +285,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * Gets all registered worlds of the tutorial.
+     *
      * @return list of all worlds
      */
     public List<TutorialWorld> getWorlds() {
@@ -282,9 +293,9 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
 
-
     /**
      * Gets all active tutorials currently being run by a player.
+     *
      * @return list of all active tutorials
      */
     public static List<AbstractTutorial> getActiveTutorials() {
@@ -293,6 +304,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * Gets the active tutorial of a player.
+     *
      * @param playerUUID uuid of the player
      * @return tutorial of the player, can be null
      */
@@ -303,10 +315,11 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * Checks if a player can interact with the tutorial npc or chat input.
+     *
      * @param playerUUID uuid of the player
      * @return true if the player can interact, otherwise false
      */
-    public static boolean playerIsOnInteractCoolDown(UUID playerUUID) {
+    public static boolean isPlayerIsOnInteractCoolDown(UUID playerUUID) {
         if (playerInteractionHistory.containsKey(playerUUID)) {
             long lastInteraction = playerInteractionHistory.get(playerUUID);
             if (System.currentTimeMillis() - lastInteraction <= PLAYER_INTERACTION_COOLDOWN) return true;
@@ -317,29 +330,32 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * This method loads a tutorial for a player. It will start with the first stage.
-     * @param player player to load the tutorial for
+     *
+     * @param player     player to load the tutorial for
      * @param tutorialId id of the tutorial to load
      * @return true if the tutorial was loaded successfully, otherwise false
      */
     public static boolean loadTutorial(Player player, int tutorialId) {
-        return loadTutorial(player, tutorialId, -1);
+        return loadTutorialByStage(player, tutorialId, -1);
     }
 
     /**
      * This method loads a tutorial for a player. It will start with the specified stage.
-     * @param player player to load the tutorial for
+     *
+     * @param player     player to load the tutorial for
      * @param tutorialId id of the tutorial to load
-     * @param stageId id of the stage to start with
+     * @param stageId    id of the stage to start with
      * @return true if the tutorial was loaded successfully, otherwise false
      */
-    public static boolean loadTutorial(Player player, int tutorialId, int stageId) {
+    public static boolean loadTutorialByStage(Player player, int tutorialId, int stageId) {
         if (tutorialId >= tutorials.size()) return false;
         if (getActiveTutorial(player.getUniqueId()) != null) return false;
 
         try {
             tutorials.get(tutorialId).getDeclaredConstructor(Player.class, int.class).newInstance(player, stageId);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-            Bukkit.getLogger().log(Level.INFO, "An error occurred while loading tutorial!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while loading tutorial!"), ex);
+
             return false;
         }
         return true;
@@ -347,6 +363,7 @@ public abstract class AbstractTutorial implements Tutorial {
 
     /**
      * This method needs to be called before any tutorial can be loaded.
+     *
      * @param tutorials list of all tutorials to register
      */
     public static void registerTutorials(List<Class<? extends AbstractTutorial>> tutorials) {

@@ -125,7 +125,7 @@ menu-description:
   teleport-desc: 'Klicke hier, um dich zum Plot zu teleportieren'
   abandon-desc: 'Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben'
   undo-submit-desc: 'Klicke hier, um deine Eingabe rückgängig zu machen'
-  manage-members-desc: 'Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du%newline%andere Spieler zu deinem Plot hinzufügen oder entfernen kannst'
+  manage-members-desc: 'Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du andere Spieler zu deinem Plot hinzufügen oder entfernen kannst'
   feedback-desc: 'Klicke hier, um das Feedback zu deinem Plot anzuzeigen'
   custom-heads-desc: 'Klicke hier, um eine Auswahl an benutzerdefinierten Köpfen zu erhalten'
   banner-maker-desc: 'Klicke hier, um deine eigenen Banner zu erstellen und zu speichern'
@@ -141,9 +141,9 @@ menu-description:
   select-city-inspiration-mode-desc: "Baue dein Plot auf einer schwebenden Insel mit Umgebung und den Plots anderer Spieler, welche sich in der Nähe des eigenen Plots befinden.%newline%%newline%+ Umgebung%newline%+ Nachbarsgrundstücke"
   filter-desc: "Alle Anzeigen"
   information-desc: "Ein Plot kann maximal 20 Punkte erhalten. Erhält das Plot weniger als 8 Punkte oder eine Kategorie 0 Punkte, wird das Plot abgelehnt und der Builder bekommt das Plot zurück, um es zu verbessern. Bei 0 Punkten wird das Plot gelöscht."
-  tutorials-desc: 'Lerne die Grundlagen des BuildTheEarth%newline%Projekts und erweitere deine Baukenntnisse%newline%mit Tutorials zu verschiedenen Themen.'
+  tutorials-desc: 'Lerne die Grundlagen des BuildTheEarth Projekts und erweitere deine Baukenntnisse mit Tutorials zu verschiedenen Themen.'
   tutorial-end-desc: 'Dein Fortschritt wird gespeichert.'
-  tutorial-beginner-desc: 'Lerne die Baugrundlagen für%newline%das BuildTheEarth Projekt.'
+  tutorial-beginner-desc: 'Lerne die Baugrundlagen für das BuildTheEarth Projekt.'
 #-----------------------------------------------------
 #| Review
 #-----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
 #NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

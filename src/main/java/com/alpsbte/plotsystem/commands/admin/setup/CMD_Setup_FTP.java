@@ -25,16 +25,17 @@
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Setup_FTP extends SubCommand {
 
@@ -57,7 +58,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "ftp" };
+        return new String[]{"ftp"};
     }
 
     @Override
@@ -74,7 +75,6 @@ public class CMD_Setup_FTP extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.ftp";
     }
-
 
 
     public static class CMD_Setup_FTP_List extends SubCommand {
@@ -100,7 +100,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -134,7 +134,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 5 || AlpsUtils.tryParseInt(args[2]) == null) { sendInfo(sender); return; }
+            if (args.length <= 5 || AlpsUtils.tryParseInt(args[2]) == null) {sendInfo(sender); return;}
             if (!args[3].equalsIgnoreCase("true") && !args[3].equalsIgnoreCase("false")) return;
             if (args[1].toLowerCase().startsWith("sftp:") || args[1].toLowerCase().startsWith("ftp:")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Please remove the protocol URL from the host address!"));
@@ -145,13 +145,13 @@ public class CMD_Setup_FTP extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added FTP-Configuration!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "add" };
+            return new String[]{"add"};
         }
 
         @Override
@@ -161,7 +161,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Address", "Port", "isSFTP (True/False)", "Username", "Password" };
+            return new String[]{"Address", "Port", "isSFTP (True/False)", "Username", "Password"};
         }
 
         @Override
@@ -177,7 +177,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if ftp config exists
             try {
@@ -190,13 +190,13 @@ public class CMD_Setup_FTP extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed FTP-Configuration!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "remove" };
+            return new String[]{"remove"};
         }
 
         @Override
@@ -206,7 +206,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "FTP-ID" };
+            return new String[]{"FTP-ID"};
         }
 
         @Override
@@ -222,7 +222,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if ftp config exists
             try {
@@ -235,13 +235,13 @@ public class CMD_Setup_FTP extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set path of FTP-Configuration " + args[1] + " to " + args[2] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "setpath" };
+            return new String[]{"setpath"};
         }
 
         @Override
@@ -251,7 +251,7 @@ public class CMD_Setup_FTP extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "FTP-ID", "Path" };
+            return new String[]{"FTP-ID", "Path"};
         }
 
         @Override

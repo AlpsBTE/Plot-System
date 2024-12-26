@@ -24,11 +24,11 @@
 
 package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import org.bukkit.Material;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
@@ -37,15 +37,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class PlotsLeaderboard extends HolographicDisplay implements LeaderboardConfiguration {
+public class PlotsLeaderboard extends DecentHologramDisplay implements HologramConfiguration {
     protected PlotsLeaderboard() {
         super(ConfigPaths.PLOTS_LEADERBOARD, null, false);
-        setPosition(LeaderboardManager.getPosition(this));
+        setLocation(HologramRegister.getLocation(this));
+        setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
     }
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.NETHER_STAR);
+        return new ItemStack(BaseItems.LEADERBOARD_PLOT.getItem());
     }
 
     @Override
@@ -59,9 +60,9 @@ public class PlotsLeaderboard extends HolographicDisplay implements LeaderboardC
             ArrayList<DataLine<?>> lines = new ArrayList<>();
 
             List<Builder.DatabaseEntry<String, Integer>> entries = Builder.getBuildersByCompletedBuilds(10);
-            for(int i = 0; i < 10; i++ ) {
+            for (int i = 0; i < 10; i++) {
                 Builder.DatabaseEntry<String, Integer> entry = i < entries.size() && entries.get(i).getValue() != 0 ? entries.get(i) : null;
-                lines.add(new LeaderboardManager.LeaderboardPositionLine(i + 1, entry != null ? entry.getKey() : null, entry != null ? entry.getValue() : 0));
+                lines.add(new HologramRegister.LeaderboardPositionLine(i + 1, entry != null ? entry.getKey() : null, entry != null ? entry.getValue() : 0));
             }
 
             return lines;

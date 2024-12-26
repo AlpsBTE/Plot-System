@@ -24,19 +24,20 @@
 
 package com.alpsbte.plotsystem.utils.io;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Server;
 import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
-import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class FTPManager {
 
@@ -54,7 +55,7 @@ public class FTPManager {
             FtpFileSystemConfigBuilder.getInstance().setPassiveMode(fileOptions, true);
             FtpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fileOptions, false);
         } catch (FileSystemException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Exception found with FileSystemManager!"), ex);
         }
     }
 
@@ -87,7 +88,7 @@ public class FTPManager {
             localSchematic.close();
             remoteSchematic.close();
         } catch (FileSystemException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Exception found with FileSystemManager!"), ex);
         }
         return CompletableFuture.completedFuture(null);
     }
@@ -101,7 +102,7 @@ public class FTPManager {
             FileObject localSchematic = fileManager.toFileObject(schematic);
 
             // Get remote path
-            FileObject remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/",""), fileOptions);
+            FileObject remote = fileManager.resolveFile(ftpURL.replaceFirst("finishedSchematics/", ""), fileOptions);
 
             // Get remote schematic and write it to local file
             FileObject remoteSchematic = remote.resolveFile(schematic.getName());
@@ -113,7 +114,7 @@ public class FTPManager {
             localSchematic.close();
             remoteSchematic.close();
         } catch (FileSystemException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Exception found with FileSystemManager!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Exception found with FileSystemManager!"), ex);
         }
         return fileExists;
     }

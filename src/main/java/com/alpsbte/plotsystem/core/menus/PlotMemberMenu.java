@@ -46,18 +46,16 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlotMemberMenu extends AbstractMenu {
     private final Plot plot;
 
-    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName("§2§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS)).build();
+    private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS), DARK_GREEN).decoration(BOLD, true)).build();
     private List<Builder> builders;
 
     public PlotMemberMenu(Plot plot, Player menuPlayer) {
@@ -80,7 +78,7 @@ public class PlotMemberMenu extends AbstractMenu {
                             : emptyMemberSlotItem);
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
 
@@ -90,9 +88,9 @@ public class PlotMemberMenu extends AbstractMenu {
                 .setItem(new ItemBuilder(whitePlus)
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT), GOLD, BOLD))
                         .setLore(new LoreBuilder()
-                                .addLines(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT)),
-                                        empty(),
-                                        text(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE))))
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT), true)
+                                .emptyLine()
+                                .addLine(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.PLAYER_HAS_TO_BE_ONLINE)))
                                 .build())
                         .build());
 
@@ -113,7 +111,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                     .addLine(plot.getPlotOwner().getName()).build())
                             .build());
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         // Set plot member items
@@ -134,7 +132,7 @@ public class PlotMemberMenu extends AbstractMenu {
                                 .build());
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -145,14 +143,14 @@ public class PlotMemberMenu extends AbstractMenu {
             int itemSlot = i;
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 if (getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
-                Builder builder = builders.get(itemSlot-12);
-                    try {
-                        plot.removePlotMember(builder);
-                        clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
-                                LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-                    }
+                Builder builder = builders.get(itemSlot - 12);
+                try {
+                    plot.removePlotMember(builder);
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
+                            LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
+                } catch (SQLException ex) {
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                }
                 reloadMenuAsync();
             });
         }
@@ -169,7 +167,7 @@ public class PlotMemberMenu extends AbstractMenu {
             try {
                 new PlotActionsMenu(clickPlayer, plot);
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
     }

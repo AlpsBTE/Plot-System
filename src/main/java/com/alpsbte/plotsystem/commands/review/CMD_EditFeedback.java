@@ -25,20 +25,21 @@
 package com.alpsbte.plotsystem.commands.review;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_EditFeedback extends BaseCommand {
 
@@ -49,10 +50,10 @@ public class CMD_EditFeedback extends BaseCommand {
             return true;
         }
 
-        if (args.length <= 1 || AlpsUtils.tryParseInt(args[0]) == null) { sendInfo(sender); return true; }
+        if (args.length <= 1 || AlpsUtils.tryParseInt(args[0]) == null) {sendInfo(sender); return true;}
         int plotID = Integer.parseInt(args[0]);
 
-        if(!PlotUtils.plotExists(plotID)) {
+        if (!PlotUtils.plotExists(plotID)) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
             return true;
         }
@@ -63,13 +64,13 @@ public class CMD_EditFeedback extends BaseCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
                 return true;
             }
-            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player)sender).getUniqueId())) {
+            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player) sender).getUniqueId())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
                 return true;
             }
 
             StringBuilder feedback = new StringBuilder();
-            for(int i = 2; i <= args.length; i++) {
+            for (int i = 2; i <= args.length; i++) {
                 feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
             }
             plot.getReview().setFeedback(feedback.toString());
@@ -77,14 +78,14 @@ public class CMD_EditFeedback extends BaseCommand {
             sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
         } catch (SQLException ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "editfeedback" };
+        return new String[]{"editfeedback"};
     }
 
     @Override
@@ -94,7 +95,7 @@ public class CMD_EditFeedback extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID", "Feedback" };
+        return new String[]{"ID", "Feedback"};
     }
 
     @Override

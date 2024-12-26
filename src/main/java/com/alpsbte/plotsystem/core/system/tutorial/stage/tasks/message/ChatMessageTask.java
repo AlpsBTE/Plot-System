@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -72,7 +72,7 @@ public class ChatMessageTask extends AbstractTask {
 
         // Send the task message
         player.sendMessage(text());
-        player.sendMessage(text(tutorial.getNPC().getDisplayName(player.getUniqueId()) + " ")
+        player.sendMessage(text(tutorial.getNPC().getDisplayName() + " ")
                 .append(TutorialUtils.CHAT_PREFIX_COMPONENT));
         for (Object message : messages) {
             if (message instanceof ClickableTaskMessage) {

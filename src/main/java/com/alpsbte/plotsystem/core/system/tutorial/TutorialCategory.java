@@ -38,9 +38,9 @@ public enum TutorialCategory {
         return id;
     }
 
-    public static TutorialCategory byId(int id){
-        for(TutorialCategory theme : values())
-            if(theme.getId() == id)
+    public static TutorialCategory byId(int id) {
+        for (TutorialCategory theme : values())
+            if (theme.getId() == id)
                 return theme;
         return null;
     }

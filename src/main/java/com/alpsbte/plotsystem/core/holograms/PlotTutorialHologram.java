@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
-import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -38,12 +38,12 @@ import org.bukkit.entity.Player;
 import static org.bukkit.ChatColor.*;
 
 public class PlotTutorialHologram extends AbstractTutorialHologram {
-    public PlotTutorialHologram(Player player, int holoId, String content) {
-        this(player, holoId, content, -1);
+    public PlotTutorialHologram(Player player, int plotTutorialId, int holoId, String content) {
+        this(player, plotTutorialId, holoId, content, -1);
     }
 
-    public PlotTutorialHologram(Player player, int holoId, String content, int readMoreId) {
-        super(player, holoId, content, readMoreId);
+    public PlotTutorialHologram(Player player, int plotTutorialId, int holoId, String content, int readMoreId) {
+        super(player, plotTutorialId, holoId, content, readMoreId);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PlotTutorialHologram extends AbstractTutorialHologram {
     }
 
     @Override
-    protected String getMarkAsReadActionDoneText() {
+    protected String getMarkAsReadClickedActionText() {
         return GREEN + LangUtil.getInstance().get(player, LangPaths.Note.Action.READ) + " " + READ_EMOJI;
     }
 }

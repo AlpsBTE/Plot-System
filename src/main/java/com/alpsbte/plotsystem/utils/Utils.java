@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -49,10 +50,11 @@ import org.bukkit.util.Vector;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.logging.Level;
+import java.util.Objects;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_END;
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_START;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -63,12 +65,12 @@ public class Utils {
     public static Location getSpawnLocation() {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
 
-        if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
+        if (!Objects.requireNonNull(config.getString(ConfigPaths.SPAWN_WORLD)).equalsIgnoreCase("default")) {
             try {
                 MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
             } catch (Exception ignore) {
-                Bukkit.getLogger().log(Level.WARNING, String.format("Could not find %s in multiverse config!", ConfigPaths.SPAWN_WORLD));
+                PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find %s in multiverse config!"), ConfigPaths.SPAWN_WORLD);
             }
         }
 
@@ -112,7 +114,7 @@ public class Utils {
         }
 
         public static Component getInfoFormat(Component infoComponent) {
-            return infoPrefix.append(infoComponent).color(GREEN);
+            return infoPrefix.append(infoComponent.color(GREEN));
         }
 
         public static Component getAlertFormat(String alert) {
@@ -120,7 +122,7 @@ public class Utils {
         }
 
         public static Component getAlertFormat(Component alertComponent) {
-            return alertPrefix.append(alertComponent).color(RED);
+            return alertPrefix.append(alertComponent.color(RED));
         }
 
         public static void checkForChatInputExpiry() {
@@ -140,7 +142,7 @@ public class Utils {
 
         public static void sendChatInputExpiryComponent(Player player) {
             Component comp = text(" [", DARK_GRAY, BOLD).append(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CANCEL), RED)
-                    .append(text("]", DARK_GRAY)))
+                            .append(text("]", DARK_GRAY)))
                     .hoverEvent(HoverEvent.showText(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CANCEL), GRAY)))
                     .clickEvent(ClickEvent.runCommand("/cancelchat"));
             player.sendMessage(text().color(GRAY).append(AlpsUtils.deserialize(LangUtil.getInstance().get(player, LangPaths.Message.Info.CHAT_INPUT_EXPIRES_AFTER,
@@ -150,50 +152,48 @@ public class Utils {
 
 
     public static class ItemUtils {
-        public static String getNoteFormat(String note) {
-            return "§c§lNote: §8" + note;
+        public static TextComponent getNoteFormat(String note) {
+            return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY).decoration(BOLD, false));
         }
 
-        public static String getActionFormat(String action) { return "§8§l> §c" + action; }
+        public static String getActionFormat(String action) {return "§8§l> §c" + action;}
 
-        public static String getColorByPoints(int points) {
+        public static Component getColoredPointsComponent(int points) {
             switch (points) {
                 case 0:
-                    return "§7" + points;
+                    return text(points, GRAY);
                 case 1:
-                    return "§4" + points;
+                    return text(points, DARK_RED);
                 case 2:
-                    return "§6" + points;
+                    return text(points, GOLD);
                 case 3:
-                    return "§e" + points;
+                    return text(points, YELLOW);
                 case 4:
-                    return "§2" + points;
+                    return text(points, DARK_GREEN);
                 default:
-                    return "§a" + points;
+                    return text(points, GREEN);
             }
         }
 
-        public static String getFormattedDifficulty(PlotDifficulty plotDifficulty) {
+        public static TextComponent getFormattedDifficulty(PlotDifficulty plotDifficulty) {
             switch (plotDifficulty) {
                 case EASY:
-                    return "§a§lEasy";
+                    return text("Easy", GREEN).decoration(BOLD, true);
                 case MEDIUM:
-                    return "§6§lMedium";
+                    return text("Medium", GOLD).decoration(BOLD, true);
                 case HARD:
-                    return "§c§lHard";
+                    return text("Hard", RED).decoration(BOLD, true);
                 default:
-                    return "";
+                    return empty();
             }
         }
     }
-
-
 
     public static void registerCustomHeads() {
         for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
 
-    public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine){
+    public static HashSet<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine) {
         double p1X = point1.getX();
         double p1Y = point1.getY();
         double p1Z = point1.getZ();
@@ -201,29 +201,29 @@ public class Utils {
         double p2Y = point2.getY();
         double p2Z = point2.getZ();
 
-        double lineAveX = (p2X-p1X)/pointsInLine;
-        double lineAveY = (p2Y-p1Y)/pointsInLine;
-        double lineAveZ = (p2Z-p1Z)/pointsInLine;
+        double lineAveX = (p2X - p1X) / pointsInLine;
+        double lineAveY = (p2Y - p1Y) / pointsInLine;
+        double lineAveZ = (p2Z - p1Z) / pointsInLine;
 
         HashSet<Vector> line = new HashSet<>();
-        for(int i = 0; i <= pointsInLine; i++){
+        for (int i = 0; i <= pointsInLine; i++) {
             Vector vector = new Vector(p1X + lineAveX * i, p1Y + lineAveY * i, p1Z + lineAveZ * i);
             line.add(vector);
         }
         return line;
     }
 
-    public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine){
-        double p1X = point1.getX();
-        double p1Z = point1.getZ();
-        double p2X = point2.getX();
-        double p2Z = point2.getZ();
+    public static HashSet<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine) {
+        double p1X = point1.x();
+        double p1Z = point1.z();
+        double p2X = point2.x();
+        double p2Z = point2.z();
 
-        double lineAveX = (p2X-p1X)/pointsInLine;
-        double lineAveZ = (p2Z-p1Z)/pointsInLine;
+        double lineAveX = (p2X - p1X) / pointsInLine;
+        double lineAveZ = (p2Z - p1Z) / pointsInLine;
 
         HashSet<BlockVector2> line = new HashSet<>();
-        for(int i = 0; i <= pointsInLine; i++){
+        for (int i = 0; i <= pointsInLine; i++) {
             BlockVector2 vector = BlockVector2.at(p1X + lineAveX * i, p1Z + lineAveZ * i);
             line.add(vector);
         }

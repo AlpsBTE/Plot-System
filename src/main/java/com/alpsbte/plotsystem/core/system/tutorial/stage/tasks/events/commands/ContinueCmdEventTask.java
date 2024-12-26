@@ -25,28 +25,28 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import de.oliver.fancynpcs.api.events.NpcInteractEvent;
+import com.destroystokyo.paper.event.player.PlayerUseUnknownEntityEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 /**
  * This command event task is used to wait till the player clicks on the "continue" button in
  * the chat to proceed with the tutorial.
+ *
  * @see com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask#sendTaskMessage(Player, Object[], boolean)
  */
 public class ContinueCmdEventTask extends AbstractCmdEventTask {
-    private final String npcId;
+    private final int entityId;
 
-    public ContinueCmdEventTask(Player player, String npcId) {
-        super(player, "/tutorial", new String[] { "continue" }, null, 0, false);
-        this.npcId = npcId;
+    public ContinueCmdEventTask(Player player, int entityId) {
+        super(player, "/tutorial", new String[]{"continue"}, null, 0, false);
+        this.entityId = entityId;
     }
 
     @Override
     public void performEvent(Event event) {
-        if (AbstractTutorial.playerIsOnInteractCoolDown(player.getUniqueId())) return;
-        if (event instanceof NpcInteractEvent && npcId.equals(((NpcInteractEvent) event).getNpc().getData().getName())) {
-            ((NpcInteractEvent) event).setCancelled(true);
+        if (AbstractTutorial.isPlayerIsOnInteractCoolDown(player.getUniqueId())) return;
+        if (event instanceof PlayerUseUnknownEntityEvent && entityId == ((PlayerUseUnknownEntityEvent) event).getEntityId()) {
             setTaskDone();
             return;
         }

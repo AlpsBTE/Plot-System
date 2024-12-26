@@ -25,17 +25,18 @@
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Setup_City extends SubCommand {
 
@@ -60,7 +61,7 @@ public class CMD_Setup_City extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "city" };
+        return new String[]{"city"};
     }
 
     @Override
@@ -77,7 +78,6 @@ public class CMD_Setup_City extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.city";
     }
-
 
 
     public static class CMD_Setup_City_List extends SubCommand {
@@ -100,7 +100,7 @@ public class CMD_Setup_City extends SubCommand {
                     sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Description: " + c.getDescription() + " - Country: " + c.getCountry().getName() + " - Visible: " + c.isVisible());
                 } catch (SQLException ex) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
             }
             sender.sendMessage("§8--------------------------");
@@ -108,7 +108,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -134,7 +134,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             Country country = Country.getCountries().stream().filter(c -> c.getID() == Integer.parseInt(args[1])).findFirst().orElse(null);
             if (country == null) {
@@ -142,7 +142,7 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss country list> to see all countries!"));
                 return;
             }
-            String name = CMD_Setup.appendArgs(args,2);
+            String name = CMD_Setup.appendArgs(args, 2);
             if (name.length() > 45) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project name cannot be longer than 45 characters!"));
                 return;
@@ -153,13 +153,13 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with name '" + name + "' in country with the ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "add" };
+            return new String[]{"add"};
         }
 
         @Override
@@ -169,7 +169,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Country-ID", "Name" };
+            return new String[]{"Country-ID", "Name"};
         }
 
         @Override
@@ -185,7 +185,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if City Project exists
             try {
@@ -198,13 +198,13 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed City Project with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "remove" };
+            return new String[]{"remove"};
         }
 
         @Override
@@ -214,7 +214,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "City-ID" };
+            return new String[]{"City-ID"};
         }
 
         @Override
@@ -230,13 +230,13 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if City Project exits
             try {
                 if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
 
-                String name = CMD_Setup.appendArgs(args,2);
+                String name = CMD_Setup.appendArgs(args, 2);
                 if (name.length() > 45) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project name cannot be longer than 45 characters!"));
                     return;
@@ -247,13 +247,13 @@ public class CMD_Setup_City extends SubCommand {
 
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "setname" };
+            return new String[]{"setname"};
         }
 
         @Override
@@ -263,7 +263,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "City-ID", "Name" };
+            return new String[]{"City-ID", "Name"};
         }
 
         @Override
@@ -279,13 +279,13 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if City Project exits
             try {
                 if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
 
-                String description = CMD_Setup.appendArgs(args,2);
+                String description = CMD_Setup.appendArgs(args, 2);
                 if (description.length() > 255) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project description cant be longer than 255 characters!"));
                     return;
@@ -294,13 +294,13 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set description of City Project with ID " + args[1] + " to '" + description + "'!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "setdescription" };
+            return new String[]{"setdescription"};
         }
 
         @Override
@@ -310,7 +310,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "City-ID", "Description" };
+            return new String[]{"City-ID", "Description"};
         }
 
         @Override
@@ -326,7 +326,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if City Project exits
             try {
@@ -337,13 +337,13 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set visibility of City Project with ID " + args[1] + " to " + args[2].toUpperCase() + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "setvisible" };
+            return new String[]{"setvisible"};
         }
 
         @Override
@@ -353,7 +353,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "City-ID", "True/False" };
+            return new String[]{"City-ID", "True/False"};
         }
 
         @Override

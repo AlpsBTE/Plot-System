@@ -24,13 +24,14 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,21 +41,21 @@ public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())){
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
 
-        if (getPlayer(sender) == null){
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+        if (getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
-        Player player = (Player)sender;
+        Player player = (Player) sender;
         if (args.length != 1) {
             sendInfo(sender);
             player.sendMessage("§8------- §6§lLeaderboards §8-------");
-            for(HolographicDisplay holo : LeaderboardManager.getLeaderboards()) {
+            for (DecentHologramDisplay holo : DecentHologramDisplay.activeDisplays) {
                 player.sendMessage(" §6> §f" + holo.getId());
             }
             player.sendMessage("§8--------------------------");
@@ -62,25 +63,25 @@ public class CMD_SetLeaderboard extends BaseCommand {
         }
 
         // Find leaderboard by name
-        HolographicDisplay leaderboard = LeaderboardManager.getLeaderboards().stream()
+        DecentHologramDisplay leaderboard = DecentHologramDisplay.activeDisplays.stream()
                 .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
                 .findFirst()
                 .orElse(null);
 
         // Update leaderboard location
-        if(leaderboard == null) {
+        if (leaderboard == null) {
             player.sendMessage(Utils.ChatUtils.getAlertFormat("Leaderboard could not be found!"));
             return true;
         }
-        LeaderboardManager.savePosition(leaderboard.getId(), (LeaderboardConfiguration) leaderboard, getPlayer(sender).getLocation());
+        HologramRegister.saveLocation(leaderboard.getId(), (HologramConfiguration) leaderboard, getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
-        player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND,1,1);
+        player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "setleaderboard" };
+        return new String[]{"setleaderboard"};
     }
 
     @Override
@@ -90,7 +91,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Name" };
+        return new String[]{"Name"};
     }
 
     @Override

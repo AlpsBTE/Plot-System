@@ -81,7 +81,7 @@ public class SpecialToolsMenu extends AbstractMenu {
     }
 
     private void setClickEvent(ItemStack item) {
-        if(getMenuPlayer().getInventory().contains(item)) return;
+        if (getMenuPlayer().getInventory().contains(item)) return;
         getMenuPlayer().getInventory().addItem(item);
         getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_PICKUP, 5.0f, 1.0f);
     }
@@ -90,10 +90,10 @@ public class SpecialToolsMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player player) {
-        return new ItemBuilder(Material.BRUSH ,1)
+        return new ItemBuilder(Material.BRUSH, 1)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_TOOLS), GOLD, BOLD))
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_TOOLS))
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SPECIAL_TOOLS), true)
                         .build())
                 .build();
     }

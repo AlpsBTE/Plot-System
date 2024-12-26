@@ -22,31 +22,14 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.system.tutorial.stage;
+package com.alpsbte.plotsystem.core.holograms;
 
-import com.alpsbte.alpslib.npc.AbstractNpc;
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
+public interface HologramConfiguration {
+    String getEnablePath();
 
-import java.util.UUID;
+    String getXPath();
 
-import static net.md_5.bungee.api.ChatColor.*;
+    String getYPath();
 
-public class TutorialNPC extends AbstractNpc {
-    public TutorialNPC(String id) {
-        super(id, PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
-                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_SIGNATURE));
-    }
-
-    @Override
-    public String getDisplayName(UUID playerUUID) {
-        return GOLD + BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME);
-    }
-
-    @Override
-    public String getActionTitle(UUID playerUUID) {
-        return GRAY + "(" + LangUtil.getInstance().get(playerUUID, LangPaths.Note.Action.RIGHT_CLICK) + ")";
-    }
+    String getZPath();
 }

@@ -49,6 +49,7 @@ public interface ICommand {
 
     /**
      * Lists all relevant commands to the player
+     *
      * @param sender player or console
      */
     void sendInfo(CommandSender sender);

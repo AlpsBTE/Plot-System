@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,7 +43,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Companion extends BaseCommand {
     @Override
@@ -66,7 +66,7 @@ public class CMD_Companion extends BaseCommand {
                 new TutorialsMenu(getPlayer(sender));
             } else CompanionMenu.open((Player) sender);
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         return true;
@@ -74,7 +74,7 @@ public class CMD_Companion extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "companion" };
+        return new String[]{"companion"};
     }
 
     @Override

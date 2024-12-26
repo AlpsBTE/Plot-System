@@ -50,13 +50,15 @@ public abstract class SubCommand implements ICommand {
 
     /**
      * Executes sub command
+     *
      * @param sender player or console
-     * @param args parameter
+     * @param args   parameter
      */
     public abstract void onCommand(CommandSender sender, String[] args);
 
     /**
      * Gets the player
+     *
      * @param sender player
      * @return null if sender is not a player
      */
@@ -66,6 +68,7 @@ public abstract class SubCommand implements ICommand {
 
     /**
      * Registers sub command
+     *
      * @param subCommand this
      */
     public void registerSubCommand(SubCommand subCommand) {

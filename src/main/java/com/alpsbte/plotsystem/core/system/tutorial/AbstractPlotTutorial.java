@@ -31,8 +31,10 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
-import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialNPC;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
@@ -40,15 +42,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.Sound;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -66,7 +68,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
         // Check if tutorial plot is null
         if (plot == null) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not load tutorial. Plot is null.");
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not load tutorial. Plot is null!"));
             return;
         }
 
@@ -79,7 +81,12 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     protected TutorialNPC initNpc() {
-        return new TutorialNPC("tutorial-" + plot.getID());
+        return new TutorialNPC(
+                "ps-tutorial-" + plot.getID(),
+                ChatColor.GOLD + ChatColor.BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
+                ChatColor.GRAY + "(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")",
+                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
+                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_SIGNATURE));
     }
 
     @Override
@@ -171,7 +178,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         super.onTutorialStop(playerUUID);
         try {
-            if (plot != null && plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(true);
+            if (plot != null) plot.getWorld().deleteWorld();
         } catch (SQLException ex) {
             onException(ex);
         }
@@ -186,7 +193,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     /**
      * Gets the tutorial plot for a player with a specific tutorial id.
      * If player has not started the tutorial yet, a new plot will be created.
-     * @param player the player to get the plot for.
+     *
+     * @param player     the player to get the plot for.
      * @param tutorialId the tutorial id.
      * @return the tutorial plot.
      * @throws SQLException if a SQL error occurs.
@@ -200,8 +208,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     /**
      * Sends a message to the player when a new stage is unlocked.
+     *
      * @param player The player to send the message to.
-     * @param title The title of the stage.
+     * @param title  The title of the stage.
      */
     protected static void sendStageUnlockedMessage(Player player, String title) {
         player.sendMessage(text());
@@ -212,7 +221,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     /**
      * Sends a message to the player when a tutorial is completed.
-     * @param player The player to send the message to.
+     *
+     * @param player       The player to send the message to.
      * @param tutorialName The name of the tutorial.
      * @see TutorialCategory
      */
@@ -225,7 +235,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     /**
      * Sends a message to the player if they have not completed a tutorial, if required.
-     * @param player the player to send the message to
+     *
+     * @param player     the player to send the message to
      * @param tutorialId the id of the tutorial
      */
     public static void sendTutorialRequiredMessage(Player player, int tutorialId) {

@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.EventTask;
-import de.oliver.fancynpcs.api.events.NpcInteractEvent;
+import com.destroystokyo.paper.event.player.PlayerUseUnknownEntityEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -58,7 +58,7 @@ public class TutorialEventListener implements Listener {
     }
 
     @EventHandler
-    private void onNpcInteractEvent(NpcInteractEvent event) {
+    private void onNpcInteractEvent(PlayerUseUnknownEntityEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
     }
@@ -73,12 +73,6 @@ public class TutorialEventListener implements Listener {
     private void onPlayerPlaceBlockEvent(BlockPlaceEvent event) {
         if (!runningEventTasks.containsKey(event.getPlayer().getUniqueId().toString())) return;
         runningEventTasks.get(event.getPlayer().getUniqueId().toString()).performEvent(event);
-    }
-
-    @EventHandler
-    private void onPlayerQuitEvent(PlayerQuitEvent event) {
-        Tutorial tutorial = AbstractTutorial.getActiveTutorial(event.getPlayer().getUniqueId());
-        if (tutorial != null) tutorial.onTutorialStop(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

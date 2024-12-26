@@ -36,8 +36,9 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +66,7 @@ public class CMD_Tutorial extends BaseCommand {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.TUTORIAL_DISABLED)));
                 }
             } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+                Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             }
         } else {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
@@ -75,7 +76,7 @@ public class CMD_Tutorial extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "tutorial" };
+        return new String[]{"tutorial"};
     }
 
     @Override

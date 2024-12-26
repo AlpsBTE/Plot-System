@@ -24,20 +24,22 @@
 
 package com.alpsbte.plotsystem.commands;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Plots extends BaseCommand {
     @Override
@@ -47,21 +49,21 @@ public class CMD_Plots extends BaseCommand {
             return true;
         }
 
-        if(getPlayer(sender) == null) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+        if (getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
-        Player player = (Player)sender;
+        Player player = (Player) sender;
 
         try {
-            if(args.length < 1) {
+            if (args.length < 1) {
                 new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
                 return true;
             }
 
             Builder builder = Builder.getBuilderByName(args[0]);
-            if (builder == null){
+            if (builder == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
                 return true;
             }
@@ -69,14 +71,14 @@ public class CMD_Plots extends BaseCommand {
             new PlayerPlotsMenu(player, builder);
         } catch (SQLException ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "plots" } ;
+        return new String[]{"plots"};
     }
 
     @Override
@@ -86,7 +88,7 @@ public class CMD_Plots extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "Player" };
+        return new String[]{"Player"};
     }
 
     @Override

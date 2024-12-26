@@ -11,7 +11,7 @@ public class OffsetProjectionTransform extends ProjectionTransform {
     private final double deltaX, deltaY;
 
     /**
-     * @param input - Input projection
+     * @param input  - Input projection
      * @param deltaX - how much to move along the X axis
      * @param deltaY - how much to move along the Y axis
      */

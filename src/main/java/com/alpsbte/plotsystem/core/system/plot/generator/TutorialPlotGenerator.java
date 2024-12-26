@@ -37,13 +37,13 @@ import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class TutorialPlotGenerator extends AbstractPlotGenerator {
     private boolean buildingEnabled = false;
@@ -59,7 +59,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     }
 
     public void generateOutlines(int schematicId) throws SQLException, IOException, WorldEditException {
-        generateOutlines(((TutorialPlot)plot).getOutlinesSchematic(schematicId), null);
+        generateOutlines(((TutorialPlot) plot).getOutlinesSchematic(schematicId), null);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
         try {
             Objects.requireNonNull(WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world.getBukkitWorld()))).save();
         } catch (StorageException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An error occurred while saving plot tutorial region.", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while saving plot tutorial region!"), ex);
         }
     }
 

@@ -42,7 +42,8 @@ import org.bukkit.generator.ChunkGenerator;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Random;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
     private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
@@ -73,7 +74,7 @@ public class PlotWorldGenerator {
     protected void createMultiverseWorld() throws Exception {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            if(!worldManager.isMVWorld(worldName))
+            if (!worldManager.isMVWorld(worldName))
                 worldManager.addWorld(worldName, environment, null, worldType, false,
                         "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}", false);
         } else {
@@ -93,10 +94,10 @@ public class PlotWorldGenerator {
         bukkitWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
         bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         bukkitWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
-        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE,false);
-        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY,true);
-        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING,false);
-        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS,false);
+        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
+        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);
@@ -130,7 +131,7 @@ public class PlotWorldGenerator {
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
             regionManager.addRegion(globalRegion);
             regionManager.saveChanges();
-        } else Bukkit.getLogger().log(Level.WARNING, "Region Manager is null!");
+        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
     }
 
     public static class EmptyChunkGenerator extends ChunkGenerator {

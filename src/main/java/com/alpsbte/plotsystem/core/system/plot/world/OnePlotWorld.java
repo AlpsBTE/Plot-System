@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -34,11 +35,9 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +45,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class OnePlotWorld extends PlotWorld {
     private final Builder plotOwner;
@@ -68,7 +68,7 @@ public class OnePlotWorld extends PlotWorld {
             } else return false;
             return true;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return false;
     }
@@ -101,11 +101,11 @@ public class OnePlotWorld extends PlotWorld {
                 }
             };
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
 
         if (!isWorldGenerated() || !isWorldLoaded()) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not regenerate world " + getWorldName() + " for plot " + getPlot().getID() + "!");
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + getPlot().getID() + "!"));
             return false;
         }
         return true;
@@ -113,17 +113,16 @@ public class OnePlotWorld extends PlotWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if (super.unloadWorld(movePlayers)) return false;
+        boolean isTutorialPlot = false;
         try {
-            if (getPlot() == null ||
-                    (getPlot().getStatus() != Status.completed && getPlot().getPlotType() != PlotType.TUTORIAL)) {
-                return !isWorldLoaded();
-            }
-
-            deleteWorld();
-            return true;
+            isTutorialPlot = getPlot().getPlotType() == PlotType.TUTORIAL;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        }
+
+        if (getPlot() != null) {
+            if (isTutorialPlot) return deleteWorld();
+            else return super.unloadWorld(movePlayers);
         }
         return false;
     }
@@ -144,12 +143,12 @@ public class OnePlotWorld extends PlotWorld {
             }
             Utils.updatePlayerInventorySlots(player);
 
-            if(!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
+            if (!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
             getPlot().setLastActivity(false);
 
             return true;
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "An SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return false;
     }

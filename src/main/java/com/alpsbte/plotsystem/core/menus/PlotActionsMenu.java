@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -38,14 +38,18 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlotActionsMenu extends AbstractMenu {
     private final Plot plot;
@@ -65,38 +69,41 @@ public class PlotActionsMenu extends AbstractMenu {
             if (plot.getStatus().equals(Status.unreviewed)) {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.FIRE_CHARGE, 1)
-                                .setName("§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT)).setLore(new LegacyLoreBuilder()
-                                        .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT)).build())
+                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT), RED).decoration(BOLD, true))
+                                .setLore(new LoreBuilder()
+                                        .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT), true).build())
                                 .build());
             } else {
                 getMenu().getSlot(10)
                         .setItem(new ItemBuilder(Material.NAME_TAG, 1)
-                                .setName("§a§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT)).setLore(new LegacyLoreBuilder()
-                                        .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT),
-                                                "",
-                                                Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
+                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT), GREEN).decoration(BOLD, true))
+                                .setLore(new LoreBuilder()
+                                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT)).color(GRAY), true)
+                                        .emptyLine()
+                                        .addLine(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                         .build())
                                 .build());
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             getMenu().getSlot(10).setItem(MenuItems.errorItem(getMenuPlayer()));
         }
 
         // Set teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13)
                 .setItem(new ItemBuilder(Material.COMPASS, 1)
-                        .setName("§6§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT)).setLore(new LegacyLoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).build())
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT), GOLD).decoration(BOLD, true))
+                        .setLore(new LoreBuilder().addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).color(GRAY), true).build())
                         .build());
 
         // Set plot abandon item
         getMenu().getSlot(hasFeedback ? 14 : 16)
                 .setItem(new ItemBuilder(Material.BARRIER, 1)
-                        .setName("§c§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON)).setLore(new LegacyLoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON),
-                                        "",
-                                        Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON), RED).decoration(BOLD, true))
+                        .setLore(new LoreBuilder()
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON), true)
+                                .emptyLine()
+                                .addLine(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                 .build())
                         .build());
 
@@ -104,8 +111,8 @@ public class PlotActionsMenu extends AbstractMenu {
         if (hasFeedback) {
             getMenu().getSlot(16)
                     .setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                            .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK)).setLore(new LegacyLoreBuilder()
-                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK)).build())
+                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
+                            .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK), true).build())
                             .build());
         }
 
@@ -116,25 +123,27 @@ public class PlotActionsMenu extends AbstractMenu {
                 if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId()))
-                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS)).setLore(new LegacyLoreBuilder()
-                                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS),
-                                                    "",
-                                                    Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.SCORE_WILL_BE_SPLIT)))
+                                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS), AQUA).decoration(BOLD, true))
+                                    .setLore(new LoreBuilder()
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.MANAGE_MEMBERS), true)
+                                            .emptyLine()
+                                            .addLine(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.SCORE_WILL_BE_SPLIT)))
                                             .build())
                                     .build());
                 } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
                     getMenu().getSlot(22)
                             .setItem(new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.REMOVE_BUTTON.getId()))
-                                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT)).setLore(new LegacyLoreBuilder()
-                                            .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT),
-                                                    "",
-                                                    Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
+                                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.LEAVE_PLOT), AQUA).decoration(BOLD, true))
+                                    .setLore(new LoreBuilder()
+                                            .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.LEAVE_PLOT), true)
+                                            .emptyLine()
+                                            .addLine(Utils.ItemUtils.getNoteFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.WONT_BE_ABLE_CONTINUE_BUILDING)))
                                             .build())
                                     .build());
                 }
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -146,7 +155,7 @@ public class PlotActionsMenu extends AbstractMenu {
             try {
                 clickPlayer.performCommand("plot " + (plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getID());
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
 
@@ -163,7 +172,7 @@ public class PlotActionsMenu extends AbstractMenu {
         });
 
         // Set click event for feedback menu button
-        if(hasFeedback) {
+        if (hasFeedback) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
                 clickPlayer.performCommand("plot feedback " + plot.getID());
@@ -190,7 +199,7 @@ public class PlotActionsMenu extends AbstractMenu {
                     clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
                 }
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
     }

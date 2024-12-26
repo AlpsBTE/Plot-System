@@ -21,7 +21,7 @@ public class MathUtils {
     public static double[] geo2Spherical(double[] geo) {
         double lambda = Math.toRadians(geo[0]);
         double phi = Math.toRadians(90 - geo[1]);
-        return new double[]{ lambda, phi };
+        return new double[]{lambda, phi};
     }
 
 
@@ -34,7 +34,7 @@ public class MathUtils {
     public static double[] spherical2Geo(double[] spherical) {
         double lon = Math.toDegrees(spherical[0]);
         double lat = 90 - Math.toDegrees(spherical[1]);
-        return new double[]{ lon, lat };
+        return new double[]{lon, lat};
     }
 
 
@@ -49,7 +49,7 @@ public class MathUtils {
         double x = sinphi * Math.cos(spherical[0]);
         double y = sinphi * Math.sin(spherical[0]);
         double z = Math.cos(spherical[1]);
-        return new double[]{ x, y, z };
+        return new double[]{x, y, z};
     }
 
     /**
@@ -61,7 +61,7 @@ public class MathUtils {
     public static double[] cartesian2Spherical(double[] cartesian) {
         double lambda = Math.atan2(cartesian[1], cartesian[0]);
         double phi = Math.atan2(Math.sqrt(cartesian[0] * cartesian[0] + cartesian[1] * cartesian[1]), cartesian[2]);
-        return new double[]{ lambda, phi };
+        return new double[]{lambda, phi};
     }
 
 

@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.FTPConfiguration;
@@ -32,7 +33,6 @@ import com.alpsbte.plotsystem.core.system.Server;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.io.IOException;
@@ -40,7 +40,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Setup_Server extends SubCommand {
 
@@ -63,7 +64,7 @@ public class CMD_Setup_Server extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "server" };
+        return new String[]{"server"};
     }
 
     @Override
@@ -80,8 +81,6 @@ public class CMD_Setup_Server extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.server";
     }
-
-
 
 
     public static class CMD_Setup_Server_List extends SubCommand {
@@ -103,7 +102,7 @@ public class CMD_Setup_Server extends SubCommand {
                 try {
                     sender.sendMessage(" §6> §b" + s.getID() + " (" + s.getName() + ") §f- FTP-Configuration: " + (s.getFTPConfiguration() == null ? "None" : s.getFTPConfiguration().getID()));
                 } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
             }
             sender.sendMessage("§8--------------------------");
@@ -111,7 +110,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -137,7 +136,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1) { sendInfo(sender); return; }
+            if (args.length <= 1) {sendInfo(sender); return;}
             if (args[1].length() > 45) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 45 characters!"));
                 sendInfo(sender);
@@ -152,13 +151,13 @@ public class CMD_Setup_Server extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added server!"));
             } catch (SQLException | IOException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "add" };
+            return new String[]{"add"};
         }
 
         @Override
@@ -168,7 +167,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Name" };
+            return new String[]{"Name"};
         }
 
         @Override
@@ -184,7 +183,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if server exists
             try {
@@ -199,13 +198,13 @@ public class CMD_Setup_Server extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed server with ID " + args[1] + "!"));
             } catch (SQLException | IOException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "remove" };
+            return new String[]{"remove"};
         }
 
         @Override
@@ -215,7 +214,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Server-ID" };
+            return new String[]{"Server-ID"};
         }
 
         @Override
@@ -231,7 +230,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if server exists
             try {
@@ -250,13 +249,13 @@ public class CMD_Setup_Server extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set FTP Configuration of server with ID " + args[1] + " to " + (ftpID == -1 ? "None" : ftpID) + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "setftp" };
+            return new String[]{"setftp"};
         }
 
         @Override
@@ -266,7 +265,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Server-ID", "FTP-ID/None" };
+            return new String[]{"Server-ID", "FTP-ID/None"};
         }
 
         @Override

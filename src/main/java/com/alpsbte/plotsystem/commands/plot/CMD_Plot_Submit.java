@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -34,12 +35,12 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Plot_Submit extends SubCommand {
 
@@ -100,13 +101,13 @@ public class CMD_Plot_Submit extends SubCommand {
             }
         } catch (SQLException ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "submit" };
+        return new String[]{"submit"};
     }
 
     @Override
@@ -116,7 +117,7 @@ public class CMD_Plot_Submit extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

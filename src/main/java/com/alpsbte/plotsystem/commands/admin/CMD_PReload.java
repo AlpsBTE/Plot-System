@@ -24,24 +24,24 @@
 
 package com.alpsbte.plotsystem.commands.admin;
 
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardConfiguration;
-import com.alpsbte.plotsystem.core.holograms.LeaderboardManager;
+import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.logging.Level;
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_PReload extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())){
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
@@ -50,22 +50,22 @@ public class CMD_PReload extends BaseCommand {
             PlotSystem.getPlugin().reloadConfig();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
-            LeaderboardManager.getLeaderboards().forEach(leaderboard -> leaderboard.setPosition(LeaderboardManager
-                    .getPosition((LeaderboardConfiguration) leaderboard)));
-            LeaderboardManager.reloadLeaderboards();
+            DecentHologramDisplay.activeDisplays.forEach(leaderboard -> leaderboard.setLocation(HologramRegister
+                    .getLocation((HologramConfiguration) leaderboard)));
+            HologramRegister.reload();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded leaderboards!"));
 
             DatabaseConnection.InitializeDatabase();
         } catch (Exception ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "preload" };
+        return new String[]{"preload"};
     }
 
     @Override

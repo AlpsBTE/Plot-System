@@ -25,19 +25,20 @@
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Setup_BuildTeam extends SubCommand {
     public CMD_Setup_BuildTeam(BaseCommand baseCommand) {
@@ -63,7 +64,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "buildteam" };
+        return new String[]{"buildteam"};
     }
 
     @Override
@@ -80,7 +81,6 @@ public class CMD_Setup_BuildTeam extends SubCommand {
     public String getPermission() {
         return "plotsystem.admin.pss.buildteam";
     }
-
 
 
     public static class CMD_Setup_BuildTeam_List extends SubCommand {
@@ -103,11 +103,11 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                     StringJoiner countriesAsString = new StringJoiner(", ");
                     StringJoiner reviewersAsString = new StringJoiner(", ");
                     b.getCountries().forEach(c -> countriesAsString.add(String.valueOf(c.getID())));
-                    b.getReviewers().forEach(r -> { try { reviewersAsString.add(r.getName()); } catch (SQLException ex) { Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex); }});
+                    b.getReviewers().forEach(r -> {try {reviewersAsString.add(r.getName());} catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}});
                     sender.sendMessage(" §6> §b" + b.getID() + " (" + b.getName() + ") §f- Country IDs: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString) + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString));
                 } catch (SQLException ex) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }
             }
             sender.sendMessage("§8--------------------------");
@@ -115,7 +115,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getNames() {
-            return new String[] { "list" };
+            return new String[]{"list"};
         }
 
         @Override
@@ -141,7 +141,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1) { sendInfo(sender); return; }
+            if (args.length <= 1) {sendInfo(sender); return;}
             if (args[1].length() > 45) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team name cannot be longer than 45 characters!"));
                 return;
@@ -153,13 +153,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added build team with name '" + name + "'!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "add" };
+            return new String[]{"add"};
         }
 
         @Override
@@ -169,7 +169,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "Name" };
+            return new String[]{"Name"};
         }
 
         @Override
@@ -185,7 +185,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if build team exists
             try {
@@ -198,13 +198,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "remove" };
+            return new String[]{"remove"};
         }
 
         @Override
@@ -214,7 +214,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "BuildTeam-ID" };
+            return new String[]{"BuildTeam-ID"};
         }
 
         @Override
@@ -230,7 +230,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if build team exits
             try {
@@ -245,13 +245,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed name of build team with ID " + args[1] + " to '" + name + "'!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "setname" };
+            return new String[]{"setname"};
         }
 
         @Override
@@ -261,7 +261,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "BuildTeam-ID", "Name" };
+            return new String[]{"BuildTeam-ID", "Name"};
         }
 
         @Override
@@ -294,13 +294,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.getName() + "' to build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "addcountry" };
+            return new String[]{"addcountry"};
         }
 
         @Override
@@ -310,7 +310,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "BuildTeam-ID", "Country-ID" };
+            return new String[]{"BuildTeam-ID", "Country-ID"};
         }
 
         @Override
@@ -343,13 +343,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.getName() + "' from build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "removecountry" };
+            return new String[]{"removecountry"};
         }
 
         @Override
@@ -359,7 +359,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "BuildTeam-ID", "Country-ID" };
+            return new String[]{"BuildTeam-ID", "Country-ID"};
         }
 
         @Override
@@ -392,13 +392,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "addreviewer" };
+            return new String[]{"addreviewer"};
         }
 
         @Override
@@ -408,7 +408,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "BuildTeam-ID", "Name" };
+            return new String[]{"BuildTeam-ID", "Name"};
         }
 
         @Override
@@ -424,7 +424,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) { sendInfo(sender); return; }
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if build team exits
             try {
@@ -439,13 +439,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed '" + builder.getName() + "' as reviewer from build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }
 
         @Override
         public String[] getNames() {
-            return new String[] { "removereviewer" };
+            return new String[]{"removereviewer"};
         }
 
         @Override
@@ -455,7 +455,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[] { "BuildTeam-ID", "Name" };
+            return new String[]{"BuildTeam-ID", "Name"};
         }
 
         @Override

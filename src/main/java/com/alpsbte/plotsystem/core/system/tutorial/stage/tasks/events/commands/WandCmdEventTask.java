@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
-import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 

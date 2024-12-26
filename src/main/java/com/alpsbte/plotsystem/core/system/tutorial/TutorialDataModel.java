@@ -31,48 +31,56 @@ import java.util.UUID;
 public interface TutorialDataModel {
     /**
      * Gets the ID of the individual tutorial from your storage system (database or config).
+     *
      * @return id, negative if not set
      */
     int getID();
 
     /**
      * Gets the UUID of the player who started the tutorial. The UUID is 36 characters long and contains 4 dashes.
+     *
      * @return uuid of the player
      */
     UUID getPlayerUUID() throws SQLException;
 
     /**
      * The ID which is assigned to the tutorial. This ID is used to identify the tutorial in the system.
+     *
      * @return tutorial id, negative if not set
      */
     int getTutorialID() throws SQLException;
 
     /**
      * Gets the highest stage id which the player has completed. The stage id starts at 0.
+     *
      * @return stage id, negative if not set
      */
     int getStageID() throws SQLException;
 
     /**
      * Checks if the player has completed all stages of the tutorial.
+     *
      * @return true if the player has completed the tutorial otherwise false
      */
     boolean isCompleted() throws SQLException;
 
     /**
      * Gets the date when the player created the tutorial.
+     *
      * @return create date
      */
     Date getCreationDate() throws SQLException;
 
     /**
      * Gets the date when the player last completed a stage.
+     *
      * @return last stage completion date
      */
     Date getLastStageCompletionDate() throws SQLException;
 
     /**
      * Gets the date when the player completed the tutorial.
+     *
      * @return completion date
      */
     Date getCompletionDate() throws SQLException;

@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -33,12 +34,13 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Plot_Links extends SubCommand {
 
@@ -63,16 +65,16 @@ public class CMD_Plot_Links extends SubCommand {
                     sendInfo(sender);
                 }
             } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "This command can only be used as a player!");
+                Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
             }
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "links", "link" };
+        return new String[]{"links", "link"};
     }
 
     @Override
@@ -82,7 +84,7 @@ public class CMD_Plot_Links extends SubCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

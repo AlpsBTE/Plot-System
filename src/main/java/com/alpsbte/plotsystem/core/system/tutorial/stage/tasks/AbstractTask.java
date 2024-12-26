@@ -25,7 +25,7 @@
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
-import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,6 +51,7 @@ public abstract class AbstractTask {
 
     /**
      * This constructor is used if the task has no progress.
+     *
      * @param player The player who is doing the task.
      */
     public AbstractTask(Player player) {
@@ -59,9 +60,10 @@ public abstract class AbstractTask {
 
     /**
      * This constructor is used if the task has progress.
-     * @param player The player who is doing the task.
+     *
+     * @param player            The player who is doing the task.
      * @param assignmentMessage The message which is displayed in the action bar and chat.
-     * @param totalAssignments The total assignment progress which is needed to complete the task.
+     * @param totalAssignments  The total assignment progress which is needed to complete the task.
      */
     public AbstractTask(Player player, Component assignmentMessage, int totalAssignments) {
         this.player = player;
@@ -71,6 +73,7 @@ public abstract class AbstractTask {
 
     /**
      * This method executes the logic of the task one time.
+     *
      * @see StageTimeline#StartTimeline() for more information.
      */
     public abstract void performTask();
@@ -100,6 +103,7 @@ public abstract class AbstractTask {
 
     /**
      * Gets the message which is displayed in the action bar and chat.
+     *
      * @return assignmentMessage
      */
     public Component getAssignmentMessage() {
@@ -108,6 +112,7 @@ public abstract class AbstractTask {
 
     /**
      * Gets the current number of completed assignments. If there are no assignments, it will return 0.
+     *
      * @return completedAssignments
      */
     public int getCompletedAssignments() {
@@ -116,6 +121,7 @@ public abstract class AbstractTask {
 
     /**
      * Gets the total number of assignments for the task. If there are no assignments, it will return 0.
+     *
      * @return totalAssignments
      */
     public int getTotalAssignments() {
@@ -124,6 +130,7 @@ public abstract class AbstractTask {
 
     /**
      * Checks if the task is done.
+     *
      * @return isDone
      */
     public boolean isTaskDone() {
@@ -132,6 +139,7 @@ public abstract class AbstractTask {
 
     /**
      * Check if the task has assignments.
+     *
      * @return true if there are assignments, otherwise false.
      */
     public boolean hasAssignments() {
@@ -139,10 +147,10 @@ public abstract class AbstractTask {
     }
 
 
-
     /**
      * Sends the assignment message to the player via chat.
-     * @param player The player who is doing the task.
+     *
+     * @param player            The player who is doing the task.
      * @param assignmentMessage The message which is displayed in the action bar and chat.
      */
     public static void sendAssignmentMessage(Player player, Component assignmentMessage) {

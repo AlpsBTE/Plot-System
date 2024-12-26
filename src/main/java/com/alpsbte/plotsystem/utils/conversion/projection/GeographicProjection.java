@@ -9,14 +9,13 @@ import java.util.Map;
 
 /**
  * Support for various projection types.
- *
+ * <p>
  * The geographic space is the surface of the earth, parameterized by the usual spherical coordinates system of latitude and longitude.
  * The projected space is a plane on to which the geographic space is being projected, and is parameterized by a 2D Cartesian coordinate system (x and y).
- *
+ * <p>
  * A projection as defined here is something that projects a point in the geographic space to a point of the projected space (and vice versa).
- *
+ * <p>
  * All geographic coordinates are in degrees.
- *
  *
  * @see <a href="https://en.wikipedia.org/wiki/Equirectangular_projection">Wikipedia's article on the equirectangular projection</a>
  */
@@ -38,9 +37,8 @@ public abstract class GeographicProjection {
     /**
      * Orients a projection
      *
-     * @param base - the projection to orient
+     * @param base        - the projection to orient
      * @param orientation - the orientation to use
-     *
      * @return a projection that warps the base projection but applies the transformation described by the given orientation
      */
     public static GeographicProjection orientProjection(GeographicProjection base, Orientation orientation) {
@@ -66,7 +64,6 @@ public abstract class GeographicProjection {
      *
      * @param x - x map coordinate
      * @param y - y map coordinate
-     *
      * @return {longitude, latitude} in degrees
      * @throws OutOfProjectionBoundsException if the specified point on the projected space cannot be mapped to a point of the geographic space
      */
@@ -76,8 +73,7 @@ public abstract class GeographicProjection {
      * Converts geographic coordinates to map coordinates
      *
      * @param longitude - longitude, in degrees
-     * @param latitude - latitude, in degrees
-     *
+     * @param latitude  - latitude, in degrees
      * @return {x, y} map coordinates
      * @throws OutOfProjectionBoundsException if the specified point on the geographic space cannot be mapped to a point of the projected space
      */
@@ -122,7 +118,7 @@ public abstract class GeographicProjection {
 
             return bounds;
         } catch (OutOfProjectionBoundsException e) {
-            return new double[] {0, 0, 1, 1};
+            return new double[]{0, 0, 1, 1};
         }
     }
 

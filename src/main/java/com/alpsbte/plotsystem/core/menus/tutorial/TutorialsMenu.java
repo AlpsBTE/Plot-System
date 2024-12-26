@@ -26,13 +26,13 @@ package com.alpsbte.plotsystem.core.menus.tutorial;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
-import com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -41,7 +41,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -51,9 +50,10 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
-import static net.md_5.bungee.api.ChatColor.WHITE;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class TutorialsMenu extends AbstractMenu {
     private TutorialPlot plot;
@@ -72,7 +72,7 @@ public class TutorialsMenu extends AbstractMenu {
         // Set player stats item
         getMenu().getSlot(4)
                 .setItem(new ItemBuilder(playerHead)
-                        .setName("§6§l" + getMenuPlayer().getName())
+                        .setName(text(getMenuPlayer().getName(), GOLD, BOLD))
                         .build());
 
         // Set loading item for beginner tutorial
@@ -106,7 +106,7 @@ public class TutorialsMenu extends AbstractMenu {
             if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
                 getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -140,23 +140,11 @@ public class TutorialsMenu extends AbstractMenu {
                 .build();
     }
 
-    /*private TutorialPlot getPlotById(int tutorialId) {
-        try {
-            for (TutorialPlot plot : plots) {
-                if (plot.getTutorialID() == tutorialId) {
-                    return plot;
-                }
-            }
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
-        }
-        return null;
-    }*/
-
     /**
      * Sets the click event for a tutorial item and loads the tutorial stage
+     *
      * @param tutorialId The tutorial id
-     * @param clickType The click type (left or right)
+     * @param clickType  The click type (left or right)
      */
     private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
@@ -174,7 +162,7 @@ public class TutorialsMenu extends AbstractMenu {
                     }
                 } catch (Exception ex) {
                     getMenuPlayer().closeInventory();
-                    Bukkit.getLogger().log(Level.SEVERE, "An error occurred while handling menu click event", ex);
+                    PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while handling menu click event!"), ex);
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                     getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                     return;
@@ -189,7 +177,7 @@ public class TutorialsMenu extends AbstractMenu {
     }
 
     private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
-        return (tutorialId != TutorialCategory.BEGINNER.getId() /*&& !isBeginnerTutorialCompleted*/) ? getAdvancedTutorialItem(getMenuPlayer()) :
+        return (tutorialId != TutorialCategory.BEGINNER.getId()) ? getAdvancedTutorialItem(getMenuPlayer()) :
                 constructTutorialItem(getMenuPlayer(), tutorialId, plot, new ItemStack(Material.valueOf(itemName)), title, desc);
     }
 
@@ -197,32 +185,39 @@ public class TutorialsMenu extends AbstractMenu {
         // Create tutorial item lore
         int highestPlotStage = plot != null ? plot.getStageID() : 0;
         boolean isPlotCompleted = plot != null && plot.isCompleted();
-        LegacyLoreBuilder loreBuilder = new LegacyLoreBuilder().addLines("§7" + desc, "", LangUtil.getInstance().get(player, LangPaths.Tutorials.STAGE) + ": " + WHITE +
-                (highestPlotStage + (isPlotCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES), "");
+        LoreBuilder loreBuilder = new LoreBuilder()
+                .addLine(text(desc, GRAY), true)
+                .emptyLine()
+                .addLine(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.STAGE) + ": ", GRAY)
+                        .append(text((highestPlotStage + (isPlotCompleted ? 1 : 0)) + "/" +
+                                ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES), WHITE)))
+                .emptyLine();
         if (plot == null || !isPlotCompleted) {
-            loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
-                    "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.START));
+            loreBuilder.addLine(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.LEFT_CLICK), GRAY)
+                    .append(text(" » ", DARK_GRAY))
+                    .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.START), YELLOW)));
         }
-        loreBuilder.addLine(LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + " §8» " +
-                "§e" + LangUtil.getInstance().get(player, LangPaths.Note.Action.TUTORIAL_SHOW_STAGES));
+        loreBuilder.addLine(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK), GRAY)
+                .append(text(" » ", DARK_GRAY))
+                .append(text( LangUtil.getInstance().get(player, LangPaths.Note.Action.TUTORIAL_SHOW_STAGES), YELLOW)));
 
         // Create tutorial item
         return new ItemBuilder(itemStack)
-                .setName("§b§l" + title)
+                .setName(text(title, AQUA, BOLD))
                 .setLore(loreBuilder.build())
                 .build();
     }
 
     private static ItemStack getAdvancedTutorialItem(Player player) {
         return new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
-                .setName("§c§l" + LangUtil.getInstance().get(player, LangPaths.Note.UNDER_CONSTRUCTION))
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.Note.UNDER_CONSTRUCTION), RED, BOLD))
                 .build();
     }
 
     public static ItemStack getTutorialItem(Player player) {
         return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.WORKBENCH.getId()))
-                .setName("§b§l" + LangUtil.getInstance().get(player, LangPaths.MenuTitle.TUTORIALS))
-                .setLore(new LegacyLoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.TUTORIALS)).build())
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.TUTORIALS), AQUA, BOLD))
+                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.TUTORIALS), true).build())
                 .build();
     }
 }

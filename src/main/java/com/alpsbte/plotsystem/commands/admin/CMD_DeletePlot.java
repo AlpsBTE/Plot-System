@@ -25,33 +25,34 @@
 package com.alpsbte.plotsystem.commands.admin;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CMD_DeletePlot extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if(!sender.hasPermission(getPermission())) {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
 
-        if(!(args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null)) {
+        if (!(args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null)) {
             sendInfo(sender);
             return true;
         }
 
         int plotID = Integer.parseInt(args[0]);
-        if(!PlotUtils.plotExists(plotID)) {
+        if (!PlotUtils.plotExists(plotID)) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find plot with ID #" + plotID + "!"));
             return true;
         }
@@ -64,14 +65,14 @@ public class CMD_DeletePlot extends BaseCommand {
             } else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An unexpected error has occurred!"));
         } catch (SQLException ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[] { "deleteplot" };
+        return new String[]{"deleteplot"};
     }
 
     @Override
@@ -81,7 +82,7 @@ public class CMD_DeletePlot extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

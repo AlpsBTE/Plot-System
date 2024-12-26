@@ -13,7 +13,7 @@ public class ScaleProjectionTransform extends ProjectionTransform {
     /**
      * Creates a new ScaleProjection with different scale factors for the x and y-axis.
      *
-     * @param input - projection to transform
+     * @param input  - projection to transform
      * @param scaleX - scaling to apply along the x-axis
      * @param scaleY - scaling to apply along the y-axis
      */

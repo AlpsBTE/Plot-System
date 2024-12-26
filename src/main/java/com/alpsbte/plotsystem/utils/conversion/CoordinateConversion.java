@@ -44,7 +44,7 @@ public class CoordinateConversion {
         DecimalFormatSymbols usSymbols = new DecimalFormatSymbols(Locale.US);
         decFormat1.setDecimalFormatSymbols(usSymbols);
 
-        projection  = GeographicProjection.projections.get("bteairocean");
+        projection = GeographicProjection.projections.get("bteairocean");
         projection = GeographicProjection.orientProjection(projection, GeographicProjection.Orientation.upright);
         projection = new ScaleProjectionTransform(projection, 7318261.522857145, 7318261.522857145);
         projection = new OffsetProjectionTransform(projection, 0, 0);
@@ -91,7 +91,7 @@ public class CoordinateConversion {
     public static String formatGeoCoordinatesNSEW(double[] coordinates) {
         double fixedLon = coordinates[0];
         double fixedLat = coordinates[1];
-        String eo = fixedLon < 0 ? "W": "E";
+        String eo = fixedLon < 0 ? "W" : "E";
         String ns = fixedLat < 0 ? "S" : "N";
         double absLon = Math.abs(fixedLon);
         double absLat = Math.abs(fixedLat);

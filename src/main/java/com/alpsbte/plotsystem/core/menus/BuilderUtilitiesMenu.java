@@ -47,7 +47,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     public BuilderUtilitiesMenu(Player player) {
         super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
 
-        if(!PlotUtils.isPlotWorld(player.getWorld())) {
+        if (!PlotUtils.isPlotWorld(player.getWorld())) {
             player.closeInventory();
             player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_TO_BE_ON_PLOT)));
         }
@@ -67,7 +67,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                 .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
                         .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS), GOLD, BOLD))
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS)).build())
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS), true).build())
                         .build());
 
         // Set banner-maker menu item
@@ -75,7 +75,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                 .setItem(new ItemBuilder(Material.RED_BANNER, 1)
                         .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER), GOLD, BOLD))
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER)).build())
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER), true).build())
                         .build());
 
         // Set special-blocks menu item
@@ -114,7 +114,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
         return new ItemBuilder(Material.GOLDEN_AXE)
                 .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), AQUA, BOLD))
                 .setLore(new LoreBuilder()
-                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES)).build())
+                        .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES), true).build())
                 .build();
     }
 }

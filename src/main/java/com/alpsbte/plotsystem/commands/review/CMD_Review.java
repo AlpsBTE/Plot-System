@@ -46,8 +46,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class CMD_Review extends BaseCommand {
@@ -63,7 +63,7 @@ public class CMD_Review extends BaseCommand {
             return true;
         }
 
-        if(args.length > 0 && AlpsUtils.tryParseInt(args[0]) == null) {
+        if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) == null) {
             sendInfo(sender);
             return true;
         }
@@ -72,7 +72,7 @@ public class CMD_Review extends BaseCommand {
             Plot plot = null;
             if (args.length > 0) {
                 int plotId = Integer.parseInt(args[0]);
-                if(!PlotUtils.plotExists(plotId)) {
+                if (!PlotUtils.plotExists(plotId)) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender,
                             LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
@@ -130,7 +130,7 @@ public class CMD_Review extends BaseCommand {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
         return true;
@@ -138,7 +138,7 @@ public class CMD_Review extends BaseCommand {
 
     @Override
     public String[] getNames() {
-        return new String[] { "review" };
+        return new String[]{"review"};
     }
 
     @Override
@@ -148,7 +148,7 @@ public class CMD_Review extends BaseCommand {
 
     @Override
     public String[] getParameter() {
-        return new String[] { "ID" };
+        return new String[]{"ID"};
     }
 
     @Override

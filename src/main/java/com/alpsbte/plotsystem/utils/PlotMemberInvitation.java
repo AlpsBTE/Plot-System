@@ -33,17 +33,15 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_END;
-import static com.alpsbte.plotsystem.core.system.tutorial.TutorialUtils.TEXT_HIGHLIGHT_START;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -95,7 +93,7 @@ public class PlotMemberInvitation {
                 plot.getPlotOwner().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(AlpsUtils.deserialize(LangUtil.getInstance().get(plot.getPlotOwner().getPlayer(),
                         LangPaths.Message.Error.PLAYER_INVITE_TO_EXPIRED, TEXT_HIGHLIGHT_START + invitee.getName() + TEXT_HIGHLIGHT_END))));
             } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         }, 20 * 30);
     }

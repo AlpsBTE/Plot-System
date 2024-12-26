@@ -24,18 +24,20 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
-import com.alpsbte.alpslib.hologram.HolographicDisplay;
+import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import me.filoghost.holographicdisplays.api.Position;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
-import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
+import eu.decentsoftware.holograms.api.holograms.HologramLine;
+import eu.decentsoftware.holograms.event.HologramClickEvent;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class AbstractTutorialHologram extends HolographicDisplay {
+public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected static final String READ_EMOJI = "✅";
 
     /**
@@ -43,11 +45,12 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
      */
     @FunctionalInterface
     public interface ClickAction {
-        void onClick();
+        void onClick(@NotNull HologramClickEvent clickEvent);
     }
 
     private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
     private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
+    private final static String EMPTY_TAG = "&f";
 
     protected final Player player;
     protected final int holoId;
@@ -58,9 +61,10 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
 
     private final Vector vectorPos;
     private ClickAction markAsReadClickAction;
+    private boolean isMarkAsReadClicked = false;
 
-    public AbstractTutorialHologram(Player player, int holoId, String content, int readMoreId) {
-        super(String.valueOf(holoId), null, true);
+    public AbstractTutorialHologram(Player player, int tutorialId, int holoId, String content, int readMoreId) {
+        super("ps-tutorial-" + tutorialId + "-" + holoId, null, true);
         this.holoId = holoId;
         this.player = player;
         this.content = content;
@@ -72,12 +76,14 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
 
     /**
      * Gets the hologram title in the header
+     *
      * @return formatted title
      */
     protected abstract String getTitle();
 
     /**
      * The text which is displayed on the hologram to read more.
+     *
      * @return formatted read more text
      */
     protected abstract String getReadMoreActionText();
@@ -89,19 +95,21 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
 
     /**
      * The text which is displayed on the hologram to mark it as read.
+     *
      * @return formatted text
      */
     protected abstract String getMarkAsReadActionText();
 
     /**
      * The text which is displayed after the player marked the hologram as read.
+     *
      * @return formatted text
      */
-    protected abstract String getMarkAsReadActionDoneText();
+    protected abstract String getMarkAsReadClickedActionText();
 
     @Override
     public void create(Player player) {
-        setPosition(Position.of(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
+        setLocation(new Location(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
         super.create(player);
     }
 
@@ -138,35 +146,30 @@ public abstract class AbstractTutorialHologram extends HolographicDisplay {
         List<DataLine<?>> lines = new ArrayList<>();
         lines.add(new TextLine(EMPTY_TAG));
         if (readMoreId != -1) lines.add(new TextLine(getReadMoreActionText()));
-        if (markAsReadClickAction != null) {
-            if (readMoreId != -1) lines.add(new TextLine(EMPTY_TAG));
-            lines.add(new TextLine(getMarkAsReadActionText()));
-        }
+        if (markAsReadClickAction != null) lines.add(new TextLine(getMarkAsReadActionText()));
         return lines;
     }
 
-    public void setMarkAsReadClickAction(ClickAction action) {
-        markAsReadClickAction = action;
+    public void setMarkAsReadClickAction(ClickAction clickAction) {
+        markAsReadClickAction = clickAction;
     }
 
     @Override
     public void reload(UUID playerUUID) {
         super.reload(playerUUID);
 
-        // Set click listener
-        Hologram holo = getHologram(playerUUID);
-        if (holo == null) return;
-        if (readMoreId != -1) {
-            TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - (markAsReadClickAction == null ? 1 : 3));
-            line.setClickListener((clickEvent) -> handleReadMoreClickAction());
-        }
-        if (markAsReadClickAction != null) {
-            TextHologramLine line = (TextHologramLine) holo.getLines().get(holo.getLines().size() - 1);
-            line.setClickListener((clickEvent) -> {
-                line.setText(getMarkAsReadActionDoneText());
-                markAsReadClickAction.onClick();
-            });
-        }
+        // Add click event for tutorial hologram
+        if (readMoreId == -1 && markAsReadClickAction == null) return;
+        setClickListener(clickEvent -> {
+            if (!isMarkAsReadClicked && markAsReadClickAction != null) {
+                HologramLine line = clickEvent.getPage().getLines().get(clickEvent.getPage().getLines().size() - 1);
+                line.setText(getMarkAsReadClickedActionText());
+                clickEvent.getHologram().update(player);
+                markAsReadClickAction.onClick(clickEvent);
+                isMarkAsReadClicked = true;
+            }
+            if (readMoreId != -1) handleReadMoreClickAction();
+        });
     }
 
     protected String getReadMoreLink() {
