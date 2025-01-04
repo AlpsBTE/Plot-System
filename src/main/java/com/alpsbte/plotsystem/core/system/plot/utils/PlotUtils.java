@@ -66,12 +66,14 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -91,9 +93,11 @@ import java.util.concurrent.CompletionException;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public final class PlotUtils {
+    private PlotUtils() {}
+
+    private static final String MSG_LINE = "--------------------------";
 
     /**
      * Returns the plot that the player is currently standing on or next to.
@@ -113,19 +117,19 @@ public final class PlotUtils {
                 if (statuses == null) return plot;
                 for (Status status : statuses) if (status == plot.getStatus()) return plot;
                 return null;
-            } else if (CityPlotWorld.isCityPlotWorld(worldName)) {
+            } else if (PlotWorld.isCityPlotWorld(worldName)) {
                 int cityID = Integer.parseInt(worldName.substring(2));
                 List<Plot> plots = Plot.getPlots(cityID, statuses);
 
                 if (plots.isEmpty()) return null;
-                if (plots.size() == 1) return plots.get(0);
+                if (plots.size() == 1) return plots.getFirst();
 
                 // Find the plot in the city world that is closest to the player
                 Location playerLoc = builder.getPlayer().getLocation().clone();
                 Vector3 playerVector = Vector3.at(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
 
                 double distance = 100000000;
-                Plot chosenPlot = plots.get(0);
+                Plot chosenPlot = plots.getFirst();
                 for (Plot plot : plots)
                     if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
                         distance = plot.getCenter().distance(playerVector.toBlockPoint());
@@ -181,7 +185,7 @@ public final class PlotUtils {
     }
 
     public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (OnePlotWorld.isOnePlotWorld(world.getName()) || CityPlotWorld.isCityPlotWorld(world.getName()));
+        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
 
@@ -244,7 +248,7 @@ public final class PlotUtils {
                             try {
                                 return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
                             } catch (SQLException | URISyntaxException ex) {
-                                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                                Utils.logSqlException(ex);
                             }
                             return null;
                         });
@@ -312,9 +316,9 @@ public final class PlotUtils {
                     }
                 }
             } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                Utils.logSqlException(ex);
             }
-        }, 0L, 20 * 60 * 60); // Check every hour
+        }, 0L, 20 * 60 * 60L); // Check every hour
     }
 
     public static void syncPlotSchematicFiles() {
@@ -329,15 +333,15 @@ public final class PlotUtils {
                         plots.forEach(Plot::getOutlinesSchematic);
                     }
                 } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                    Utils.logSqlException(ex);
                 }
             }), 0L, 20 * interval);
         }
     }
 
-    public static boolean plotExists(int ID) {
+    public static boolean plotExists(int id) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
-                .setValue(ID).executeQuery()) {
+                .setValue(id).executeQuery()) {
 
             if (rs.next() && rs.getInt(1) > 0) {
                 DatabaseConnection.closeResultSet(rs);
@@ -346,12 +350,13 @@ public final class PlotUtils {
 
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            Utils.logSqlException(ex);
         }
         return false;
     }
 
     public static final class Actions {
+        private Actions() {}
         public static void submitPlot(Plot plot) throws SQLException {
             plot.setStatus(Status.unreviewed);
 
@@ -446,7 +451,7 @@ public final class PlotUtils {
                             dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                         }
                     } catch (SQLException ex) {
-                        PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                        Utils.logSqlException(ex);
                         throw new CompletionException(ex);
                     }
                 }).join();
@@ -457,20 +462,21 @@ public final class PlotUtils {
             return true;
         }
 
-        public static boolean deletePlot(Plot plot) throws SQLException {
+        public static boolean deletePlot(Plot plot) {
             if (abandonPlot(plot)) {
                 try {
                     CompletableFuture.runAsync(() -> {
                         try {
                             Server plotServer = plot.getCity().getCountry().getServer();
 
-                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                            String schemFileEnding = ".schematic";
+                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + schemFileEnding));
+                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + schemFileEnding));
                             Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + "-env.schematic"));
 
                             if (plotServer.getFTPConfiguration() != null) {
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic");
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + ".schematic");
+                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + schemFileEnding);
+                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + schemFileEnding);
                                 FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + "-env.schematic");
                             }
 
@@ -492,6 +498,7 @@ public final class PlotUtils {
     }
 
     public static final class Cache {
+        private Cache() {}
         private static final HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
         public static void clearCache() {
@@ -507,7 +514,7 @@ public final class PlotUtils {
                 try {
                     cachedInProgressPlots.put(builder.getUUID(), Plot.getPlots(builder, Status.unfinished));
                 } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                    Utils.logSqlException(ex);
                     return new ArrayList<>();
                 }
             }
@@ -515,20 +522,21 @@ public final class PlotUtils {
             return cachedInProgressPlots.get(builder.getUUID());
         }
 
-        public static HashMap<UUID, List<Plot>> getCachedInProgressPlots() {
+        public static Map<UUID, List<Plot>> getCachedInProgressPlots() {
             return cachedInProgressPlots;
         }
     }
 
     public static final class Effects {
+        private Effects() {}
         public static final int CACHE_UPDATE_TICKS = 20 * 60;
         private static int time;
 
-        private static boolean ParticleAPIEnabled = false;
+        private static boolean particleAPIEnabled = false;
         private static Particles_1_8 particles;
 
         public static void loadParticleNativeAPI() {
-            ParticleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
+            particleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
 
             // get API
             ParticleNativeAPI api = ParticleNativePlugin.getAPI();
@@ -567,19 +575,18 @@ public final class PlotUtils {
                     if (plots.isEmpty()) continue;
 
                     for (Plot plot : plots) {
-                        if (!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
+                        if ((!plot.getWorld().getWorldName().equals(player.getWorld().getName())) ||
+                                (!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)) {
                             continue;
-
-                        if (!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
-                            continue;
+                        }
 
                         List<BlockVector2> points = plot.getBlockOutline();
 
                         for (BlockVector2 point : points)
-                            if (point.distanceSq(playerPos2D) < 50 * 50)
-                                if (!ParticleAPIEnabled)
+                            if (point.distanceSq(playerPos2D) < 50 * 50) {
+                                if (!particleAPIEnabled) {
                                     player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
-                                else {
+                                } else {
                                     Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
                                     // create a particle packet
                                     Object packet = particles.FLAME().packet(true, loc);
@@ -587,54 +594,51 @@ public final class PlotUtils {
                                     // send this packet to player
                                     particles.sendPacket(player, packet);
                                 }
+                            }
                     }
                 }
             } catch (SQLException | IOException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                Utils.logSqlException(ex);
             }
         }
     }
 
     public static final class ChatFormatting {
+        private ChatFormatting() {}
         public static void sendLinkMessages(AbstractPlot plot, Player player) {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 Component[] tc = new Component[3];
 
+                String shortLinkGoogleMaps = null;
+                String shortLinkGoogleEarth = null;
+                String shortLinkOSM = null;
+                String googleMaps = "Google Maps";
+                String googleEarthWeb = "Google Earth Web";
+                String openStreetMap = "Open Street Map";
                 try {
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
-                                plot.getGoogleMapsLink(),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
-
-                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Earth Web", GREEN), text(ShortLink.generateShortLink(
-                                plot.getGoogleEarthLink(),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
-
-                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text("Google Maps", GREEN), text(ShortLink.generateShortLink(
-                                plot.getOSMMapsLink(),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY),
-                                PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST)), GREEN)));
+                        shortLinkGoogleMaps = ShortLink.generateShortLink(plot.getGoogleMapsLink());
+                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(googleMaps, GREEN), text(shortLinkGoogleMaps, GREEN)));
+                        shortLinkGoogleEarth = ShortLink.generateShortLink(plot.getGoogleEarthLink());
+                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(googleEarthWeb, GREEN), text(shortLinkGoogleEarth, GREEN)));
+                        shortLinkOSM = ShortLink.generateShortLink(plot.getOSMMapsLink());
+                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(openStreetMap, GREEN), text(shortLinkOSM, GREEN)));
                     } else {
-                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
-                                LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Google Maps ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
-                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
-                                LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Google Earth Web ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
-                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(),
-                                LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(" Open Street Map ", GREEN).decoration(BOLD, true)).decoration(BOLD, false));
+                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(googleMaps, GREEN)));
+                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(googleEarthWeb, GREEN)));
+                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(openStreetMap, GREEN)));
                     }
 
-                    tc[0] = tc[0].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getGoogleMapsLink()));
-                    tc[1] = tc[1].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getGoogleEarthLink()));
-                    tc[2] = tc[2].clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl(plot.getOSMMapsLink()));
+                    tc[0] = tc[0].clickEvent(ClickEvent.openUrl((shortLinkGoogleMaps != null) ? shortLinkGoogleMaps : plot.getGoogleMapsLink()));
+                    tc[1] = tc[1].clickEvent(ClickEvent.openUrl((shortLinkGoogleEarth != null) ? shortLinkGoogleEarth : plot.getGoogleEarthLink()));
+                    tc[2] = tc[2].clickEvent(ClickEvent.openUrl((shortLinkOSM != null) ? shortLinkOSM : plot.getOSMMapsLink()));
                 } catch (IOException | URISyntaxException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating short link!"), ex);
                 }
 
-                tc[0] = tc[0].hoverEvent(text("Google Maps"));
-                tc[1] = tc[1].hoverEvent(text("Google Earth Web"));
-                tc[2] = tc[2].hoverEvent(text("Open Street Map"));
+                tc[0] = tc[0].hoverEvent(text(googleMaps));
+                tc[1] = tc[1].hoverEvent(text(googleEarthWeb));
+                tc[2] = tc[2].hoverEvent(text(openStreetMap));
 
                 // Temporary fix for bedrock players
                 Component coords = null;
@@ -649,14 +653,14 @@ public final class PlotUtils {
                     PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
                 }
 
-                player.sendMessage(text("--------------------------", DARK_GRAY));
+                player.sendMessage(text(MSG_LINE, DARK_GRAY));
                 if (coords != null) player.sendMessage(text("Coords: ", GRAY).append(coords));
                 player.sendMessage(tc[0]);
                 player.sendMessage(tc[1]);
                 player.sendMessage(tc[2]);
-                player.sendMessage(text("--------------------------", DARK_GRAY));
+                player.sendMessage(text(MSG_LINE, DARK_GRAY));
 
-                if (plot instanceof Plot) sendGroupTipMessage((Plot) plot, player);
+                if (plot instanceof Plot p) sendGroupTipMessage(p, player);
             });
         }
 
@@ -669,15 +673,15 @@ public final class PlotUtils {
                             .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
 
                     player.sendMessage(tc);
-                    player.sendMessage(text("--------------------------", DARK_GRAY));
+                    player.sendMessage(text(MSG_LINE, DARK_GRAY));
                 }
             } catch (SQLException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
             }
         }
 
-        public static void sendFeedbackMessage(List<Plot> plots, Player player) throws SQLException {
-            player.sendMessage(text("--------------------------", DARK_GRAY));
+        public static void sendFeedbackMessage(@NotNull List<Plot> plots, @NotNull Player player) {
+            player.sendMessage(text(MSG_LINE, DARK_GRAY));
             for (Plot plot : plots) {
                 player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())), GREEN)));
 
@@ -690,7 +694,7 @@ public final class PlotUtils {
                     player.sendMessage(empty());
                 }
             }
-            player.sendMessage(text("--------------------------", DARK_GRAY));
+            player.sendMessage(text(MSG_LINE, DARK_GRAY));
             player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
         }
 

@@ -94,9 +94,9 @@ public class CMD_Review extends BaseCommand {
                 // Check if the reviewer is on the plot
                 AbstractPlot currentPlot = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
                 boolean teleportPlayer = false;
-                if (currentPlot instanceof Plot) {
+                if (currentPlot instanceof Plot cp) {
                     if (plot != null && plot.getID() != currentPlot.getID()) teleportPlayer = true;
-                    else plot = (Plot) currentPlot;
+                    else plot = cp;
                 } else if (plot == null) {
                     Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
                     return;
@@ -110,9 +110,9 @@ public class CMD_Review extends BaseCommand {
                 }
 
                 // Check if player is allowed to review this plot (cannot be the owner or a member of this plot)
-                if (plot.getPlotOwner().getUUID().toString().equals(player.getUniqueId().toString()) ||
+                if ((plot.getPlotOwner().getUUID().toString().equals(player.getUniqueId().toString()) ||
                         (!plot.getPlotMembers().isEmpty() && plot.getPlotMembers().stream()
-                                .anyMatch(b -> b.getUUID().toString().equals(player.getUniqueId().toString()))) &&
+                                .anyMatch(b -> b.getUUID().toString().equals(player.getUniqueId().toString())))) &&
                                 !PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
                     player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player,
                             LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
