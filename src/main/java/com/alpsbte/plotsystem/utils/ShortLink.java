@@ -24,6 +24,10 @@
 
 package com.alpsbte.plotsystem.utils;
 
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import org.jetbrains.annotations.NotNull;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,8 +38,12 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class ShortLink {
-    public static String generateShortLink(String linkToShorten, String apikey, String host) throws IOException, URISyntaxException {
-        String fullURL = URLEncoder.encode(linkToShorten, StandardCharsets.UTF_8.toString());
+    private ShortLink() {}
+
+    public static @NotNull String generateShortLink(String linkToShorten) throws IOException, URISyntaxException {
+        String apikey = PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_APIKEY);
+        String host = PlotSystem.getPlugin().getConfig().getString(ConfigPaths.SHORTLINK_HOST);
+        String fullURL = URLEncoder.encode(linkToShorten, StandardCharsets.UTF_8);
         URI uri = new URI(host + "/rest/v2/short-urls/shorten?apiKey=" + apikey + "&format=txt&longUrl=" + fullURL);
         HttpsURLConnection con = (HttpsURLConnection) uri.toURL().openConnection();
         con.setRequestMethod("GET");
