@@ -26,8 +26,7 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
@@ -75,24 +74,24 @@ public class Builder {
 
     public boolean isOnline() {return Bukkit.getPlayer(uuid) != null;}
 
-    public String getName() throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getName(uuid);
+    public String getName() throws SQLException {
+        return DataProvider.BUILDER.getName(uuid);
     }
 
-    public int getScore() throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getScore(uuid);
+    public int getScore() throws SQLException {
+        return DataProvider.BUILDER.getScore(uuid);
     }
 
-    public int getCompletedBuilds() throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getCompletedBuildsCount(uuid);
+    public int getCompletedBuilds() throws SQLException {
+        return DataProvider.BUILDER.getCompletedBuildsCount(uuid);
     }
 
-    public Slot getFreeSlot() throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getFreeSlot(uuid);
+    public Slot getFreeSlot() throws SQLException {
+        return DataProvider.BUILDER.getFreeSlot(uuid);
     }
 
-    public Plot getPlot(Slot slot) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getPlot(uuid, slot);
+    public Plot getPlot(Slot slot) throws SQLException {
+        return DataProvider.BUILDER.getPlot(uuid, slot);
     }
 
     public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
@@ -127,47 +126,47 @@ public class Builder {
                 .build();
     }
 
-    public void addScore(int score) throws DataException {
-        PlotSystem.getDataProvider().getBuilderProvider().addScore(uuid, score);
+    public void addScore(int score) throws SQLException {
+        DataProvider.BUILDER.addScore(uuid, score);
     }
 
-    public void addCompletedBuild(int amount) throws DataException {
-        PlotSystem.getDataProvider().getBuilderProvider().addCompletedBuild(uuid, amount);
+    public void addCompletedBuild(int amount) throws SQLException {
+        DataProvider.BUILDER.addCompletedBuild(uuid, amount);
     }
 
-    public void setPlot(int plotID, Slot slot) throws DataException {
-        PlotSystem.getDataProvider().getBuilderProvider().setPlot(uuid, plotID, slot);
+    public void setPlot(int plotID, Slot slot) throws SQLException {
+        DataProvider.BUILDER.setPlot(uuid, plotID, slot);
     }
 
-    public void removePlot(Slot slot) throws DataException {
-        PlotSystem.getDataProvider().getBuilderProvider().removePlot(uuid, slot);
+    public void removePlot(Slot slot) throws SQLException {
+        DataProvider.BUILDER.removePlot(uuid, slot);
     }
 
-    public static Builder getBuilderByName(String name) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getBuilderByName(name);
+    public static Builder getBuilderByName(String name) throws SQLException {
+        return DataProvider.BUILDER.getBuilderByName(name);
     }
 
-    public static int getBuilderScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getLeaderboardScore(uuid, sortBy);
+    public static int getBuilderScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        return DataProvider.BUILDER.getLeaderboardScore(uuid, sortBy);
     }
 
-    public static int getBuilderScorePosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getLeaderboardPosition(uuid, sortBy);
+    public static int getBuilderScorePosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        return DataProvider.BUILDER.getLeaderboardPosition(uuid, sortBy);
     }
 
-    public static int getBuildersInSort(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getLeaderboardEntryCount(sortBy);
+    public static int getBuildersInSort(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        return DataProvider.BUILDER.getLeaderboardEntryCount(sortBy);
     }
 
-    public static HashMap<String, Integer> getBuildersByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getLeaderboardEntriesByScore(sortBy);
+    public static HashMap<String, Integer> getBuildersByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
+        return DataProvider.BUILDER.getLeaderboardEntriesByScore(sortBy);
     }
 
-    public static HashMap<String, Integer> getBuildersByCompletedBuilds(int limit) throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().getLeaderboardEntriesByCompletedBuilds(limit);
+    public static HashMap<String, Integer> getBuildersByCompletedBuilds(int limit) throws SQLException {
+        return DataProvider.BUILDER.getLeaderboardEntriesByCompletedBuilds(limit);
     }
 
-    public Slot getSlot(Plot plot) throws DataException {
+    public Slot getSlot(Plot plot) throws SQLException {
         for (Slot slot : Slot.values()) {
             Plot slotPlot = getPlot(slot);
             if (slotPlot != null && slotPlot.getID() == plot.getID()) {
@@ -180,12 +179,12 @@ public class Builder {
     public PlotType getPlotTypeSetting() {
         if (plotType != null)
             return plotType;
-        this.plotType = PlotSystem.getDataProvider().getBuilderProvider().getPlotTypeSetting(uuid);
+        this.plotType = DataProvider.BUILDER.getPlotTypeSetting(uuid);
         return plotType;
     }
 
     public void setPlotTypeSetting(PlotType plotType) {
-        PlotSystem.getDataProvider().getBuilderProvider().setPlotTypeSetting(uuid, plotType);
+        DataProvider.BUILDER.setPlotTypeSetting(uuid, plotType);
         this.plotType = plotType;
     }
 
@@ -193,8 +192,8 @@ public class Builder {
         return new Reviewer(getUUID());
     }
 
-    public boolean isReviewer() throws DataException {
-        return PlotSystem.getDataProvider().getBuilderProvider().isReviewer(uuid);
+    public boolean isReviewer() throws SQLException {
+        return DataProvider.BUILDER.isReviewer(uuid);
     }
 
     public static class Reviewer {
@@ -204,7 +203,7 @@ public class Builder {
         }
 
         public List<Country> getCountries() {
-            return PlotSystem.getDataProvider().getBuilderProvider().getReviewerCountries(buildTeams);
+            return DataProvider.BUILDER.getReviewerCountries(buildTeams);
         }
     }
 }

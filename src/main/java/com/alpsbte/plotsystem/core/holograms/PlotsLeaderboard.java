@@ -26,12 +26,12 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +67,7 @@ public class PlotsLeaderboard extends DecentHologramDisplay implements HologramC
             }
 
             return lines;
-        } catch (DataException ex) {
+        } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();

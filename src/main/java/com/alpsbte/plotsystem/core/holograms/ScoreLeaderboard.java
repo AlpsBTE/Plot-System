@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -129,7 +128,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             }
 
             return lines;
-        } catch (DataException ex) {
+        } catch (SQLException ex) {
             PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
         }
         return new ArrayList<>();
@@ -141,7 +140,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             position = Builder.getBuilderScorePosition(player.getUniqueId(), sortByLeaderboard);
             rows = Builder.getBuildersInSort(sortByLeaderboard);
             myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
-        } catch (DataException ex) {
+        } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(Component.text("A SQL error occurred!"), ex);
             return Component.empty();
         }

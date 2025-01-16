@@ -24,8 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -37,7 +36,7 @@ public class BuildTeam {
 
     public BuildTeam(int ID) throws SQLException {
         this.ID = ID;
-        this.name = PlotSystem.getDataProvider().getBuildTeamProvider().getName(ID);
+        this.name = DataProvider.BUILD_TEAM.getName(ID);
     }
 
     public BuildTeam(int ID, String name) {
@@ -53,47 +52,47 @@ public class BuildTeam {
         return name;
     }
 
-    public List<Country> getCountries() throws DataException {
-        return PlotSystem.getDataProvider().getBuildTeamProvider().getCountries(ID);
+    public List<Country> getCountries() throws SQLException {
+        return DataProvider.BUILD_TEAM.getCountries(ID);
     }
 
-    public List<Builder> getReviewers() throws DataException {
-        return PlotSystem.getDataProvider().getBuildTeamProvider().getReviewers(ID);
+    public List<Builder> getReviewers() throws SQLException {
+        return DataProvider.BUILD_TEAM.getReviewers(ID);
     }
 
-    public static List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) throws DataException {
-        return PlotSystem.getDataProvider().getBuildTeamProvider().getBuildTeamsByReviewer(reviewerUUID);
+    public static List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) throws SQLException {
+        return DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(reviewerUUID);
     }
 
     public static List<BuildTeam> getBuildTeams() {
-        return PlotSystem.getDataProvider().getBuildTeamProvider().getBuildTeams();
+        return DataProvider.BUILD_TEAM.getBuildTeams();
     }
 
-    public static void addBuildTeam(String name) throws DataException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().addBuildTeam(name);
+    public static void addBuildTeam(String name) throws SQLException {
+        DataProvider.BUILD_TEAM.addBuildTeam(name);
     }
 
-    public static void removeBuildTeam(int serverID) throws DataException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().removeBuildTeam(serverID);
+    public static void removeBuildTeam(int serverID) throws SQLException {
+        DataProvider.BUILD_TEAM.removeBuildTeam(serverID);
     }
 
-    public static void setBuildTeamName(int id, String newName) throws DataException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().setBuildTeamName(id, newName);
+    public static void setBuildTeamName(int id, String newName) throws SQLException {
+        DataProvider.BUILD_TEAM.setBuildTeamName(id, newName);
     }
 
-    public static void addCountry(int id, int countryID) throws DataException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().addCountry(id, countryID);
+    public static void addCountry(int id, int countryID) throws SQLException {
+        DataProvider.BUILD_TEAM.addCountry(id, countryID);
     }
 
-    public static void removeCountry(int id, int countryID) throws DataException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().removeCountry(id, countryID);
+    public static void removeCountry(int id, int countryID) throws SQLException {
+        DataProvider.BUILD_TEAM.removeCountry(id, countryID);
     }
 
     public static void removeReviewer(int id, String reviewerUUID) throws SQLException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().removeReviewer(id, reviewerUUID);
+        DataProvider.BUILD_TEAM.removeReviewer(id, reviewerUUID);
     }
 
-    public static void addReviewer(int id, String reviewerUUID) throws DataException {
-        PlotSystem.getDataProvider().getBuildTeamProvider().addReviewer(id, reviewerUUID);
+    public static void addReviewer(int id, String reviewerUUID) throws SQLException {
+        DataProvider.BUILD_TEAM.addReviewer(id, reviewerUUID);
     }
 }

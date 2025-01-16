@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -89,7 +88,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                                             .append(text(builder.getCompletedBuilds(), WHITE)))
                                     .build())
                             .build());
-        } catch (DataException ex) {
+        } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);
             getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
         }

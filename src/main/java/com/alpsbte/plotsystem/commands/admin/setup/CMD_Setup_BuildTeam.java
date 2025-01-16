@@ -28,7 +28,6 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
-import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
@@ -104,9 +103,9 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                     StringJoiner countriesAsString = new StringJoiner(", ");
                     StringJoiner reviewersAsString = new StringJoiner(", ");
                     b.getCountries().forEach(c -> countriesAsString.add(String.valueOf(c.getID())));
-                    b.getReviewers().forEach(r -> {try {reviewersAsString.add(r.getName());} catch (DataException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);}});
+                    b.getReviewers().forEach(r -> {try {reviewersAsString.add(r.getName());} catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);}});
                     sender.sendMessage(" §6> §b" + b.getID() + " (" + b.getName() + ") §f- Country IDs: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString) + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString));
-                } catch (DataException ex) {
+                } catch (SQLException ex) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                     PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }

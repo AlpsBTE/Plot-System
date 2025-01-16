@@ -2,12 +2,10 @@ package com.alpsbte.plotsystem.core.database;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.holograms.PlotsLeaderboard;
 import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.data.BuilderProvider;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
@@ -22,9 +20,8 @@ import java.util.stream.Collectors;
 
 import static net.kyori.adventure.text.Component.text;
 
-public class BuilderProviderSql implements BuilderProvider {
-    @Override
-    public String getName(UUID uuid) throws DataException {
+public class BuilderProviderSql {
+    public String getName(UUID uuid) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
 
@@ -38,13 +35,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             Player p = Bukkit.getPlayer(uuid);
             return p != null ? p.getName() : "";
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public int getScore(UUID uuid) {
+    public int getScore(UUID uuid) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
 
@@ -56,13 +50,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return 0;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public int getCompletedBuildsCount(UUID uuid) {
+    public int getCompletedBuildsCount(UUID uuid) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT completed_plots FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
 
@@ -74,13 +65,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return 0;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public Slot getFreeSlot(UUID uuid) {
+    public Slot getFreeSlot(UUID uuid) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
 
@@ -95,13 +83,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return null;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public Plot getPlot(UUID uuid, Slot slot) throws DataException {
+    public Plot getPlot(UUID uuid, Slot slot) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT " + slot.name().toLowerCase() + " FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
 
@@ -112,65 +97,42 @@ public class BuilderProviderSql implements BuilderProvider {
             DatabaseConnection.closeResultSet(rs);
 
             return boo ? null : new Plot(plotID);
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public void addScore(UUID uuid, int score) throws DataException {
-        try {
-            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
-                    .setValue(getScore(uuid) + score).setValue(uuid.toString())
-                    .executeUpdate();
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
-        }
+    public void addScore(UUID uuid, int score) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET score = ? WHERE uuid = ?")
+                .setValue(getScore(uuid) + score).setValue(uuid.toString())
+                .executeUpdate();
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> DecentHologramDisplay.activeDisplays.stream()
                 .filter(leaderboard -> leaderboard instanceof ScoreLeaderboard).findFirst().ifPresent(DecentHologramDisplay::reloadAll));
     }
 
-    @Override
-    public void addCompletedBuild(UUID uuid, int amount) throws DataException {
-        try {
-            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET completed_plots = ? WHERE uuid = ?")
-                    .setValue(getCompletedBuildsCount(uuid) + amount).setValue(uuid.toString())
-                    .executeUpdate();
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
-        }
+    public void addCompletedBuild(UUID uuid, int amount) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET completed_plots = ? WHERE uuid = ?")
+                .setValue(getCompletedBuildsCount(uuid) + amount).setValue(uuid.toString())
+                .executeUpdate();
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> DecentHologramDisplay.activeDisplays.stream()
                 .filter(leaderboard -> leaderboard instanceof PlotsLeaderboard).findFirst().ifPresent(DecentHologramDisplay::reloadAll));
     }
 
-    @Override
-    public void setPlot(UUID uuid, int plotID, Slot slot) throws DataException {
-        try {
-            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = ? WHERE uuid = ?")
-                    .setValue(plotID).setValue(uuid.toString())
-                    .executeUpdate();
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
-        }
+    public void setPlot(UUID uuid, int plotID, Slot slot) throws SQLException {
+        DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = ? WHERE uuid = ?")
+                .setValue(plotID).setValue(uuid.toString())
+                .executeUpdate();
     }
 
-    @Override
-    public void removePlot(UUID uuid, Slot slot) throws DataException {
+    public void removePlot(UUID uuid, Slot slot) throws SQLException {
         if (slot != null) { // If not null, plot is already removed from player slot
-            try {
-                DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
-                        .setValue(uuid.toString())
-                        .executeUpdate();
-            } catch (SQLException e) {
-                throw new DataException(e.getMessage());
-            }
+            DatabaseConnection.createStatement("UPDATE plotsystem_builders SET " + slot.name().toLowerCase() + " = DEFAULT(first_slot) WHERE uuid = ?")
+                    .setValue(uuid.toString())
+                    .executeUpdate();
         }
     }
 
-    @Override
-    public Builder getBuilderByName(String name) throws DataException {
+    public Builder getBuilderByName(String name) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT uuid FROM plotsystem_builders WHERE name = ?")
                 .setValue(name).executeQuery()) {
 
@@ -182,12 +144,9 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return null;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
     public PlotType getPlotTypeSetting(UUID uuid) {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT setting_plot_type FROM plotsystem_builders WHERE uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
@@ -206,7 +165,6 @@ public class BuilderProviderSql implements BuilderProvider {
         return null;
     }
 
-    @Override
     public void setPlotTypeSetting(UUID uuid, PlotType plotType) {
         try {
             if (plotType == null) {
@@ -222,8 +180,7 @@ public class BuilderProviderSql implements BuilderProvider {
         }
     }
 
-    @Override
-    public boolean isReviewer(UUID uuid) throws DataException {
+    public boolean isReviewer(UUID uuid) throws SQLException{
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(builder_uuid) FROM plotsystem_builder_is_reviewer WHERE builder_uuid = ?")
                 .setValue(uuid.toString()).executeQuery()) {
 
@@ -231,18 +188,15 @@ public class BuilderProviderSql implements BuilderProvider {
             if (rs.next()) count = rs.getInt(1);
             DatabaseConnection.closeResultSet(rs);
             return count > 0;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
     public List<Country> getReviewerCountries(List<BuildTeam> buildTeams) {
         Set<Integer> countries = new HashSet<>();
         buildTeams.forEach(b -> {
             try {
                 countries.addAll(b.getCountries().stream().map(Country::getID).collect(Collectors.toList()));
-            } catch (DataException ex) {
+            } catch (SQLException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
         });
@@ -255,8 +209,7 @@ public class BuilderProviderSql implements BuilderProvider {
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public int getLeaderboardScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
+    public int getLeaderboardScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getLeaderboardScoreQuery(sortBy, 0);
 
         try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -273,13 +226,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return score;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public int getLeaderboardPosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
+    public int getLeaderboardPosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getLeaderboardScoreQuery(sortBy, 0);
 
         try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -296,13 +246,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return position;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public int getLeaderboardEntryCount(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
+    public int getLeaderboardEntryCount(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = "SELECT COUNT(*) FROM (" + getLeaderboardScoreQuery(sortBy, 0) + ") results";
 
         try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -311,13 +258,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return position;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public HashMap<String, Integer> getLeaderboardEntriesByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws DataException {
+    public HashMap<String, Integer> getLeaderboardEntriesByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
         String query = getLeaderboardScoreQuery(sortBy, 10);
 
         try (ResultSet rs = DatabaseConnection.createStatement(query).executeQuery()) {
@@ -329,13 +273,10 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return lines;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 
-    @Override
-    public HashMap<String, Integer> getLeaderboardEntriesByCompletedBuilds(int limit) throws DataException {
+    public HashMap<String, Integer> getLeaderboardEntriesByCompletedBuilds(int limit) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name, completed_plots FROM plotsystem_builders ORDER BY completed_plots DESC LIMIT ?")
                 .setValue(limit).executeQuery()) {
 
@@ -346,8 +287,6 @@ public class BuilderProviderSql implements BuilderProvider {
 
             DatabaseConnection.closeResultSet(rs);
             return results;
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage());
         }
     }
 

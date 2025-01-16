@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.data.DataException;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -95,7 +94,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 lines.add("");
                 lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
                 if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
-                    try {return m.getName();} catch (DataException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
+                    try {return m.getName();} catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
                             return "";
                         }).collect(Collectors.joining(", "))
                 );
