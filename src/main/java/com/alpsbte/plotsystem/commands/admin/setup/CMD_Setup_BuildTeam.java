@@ -383,7 +383,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             // Check if build team exits
             try {
                 if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
-                Builder builder = Builder.getBuilderByName(args[2]);
+                Builder builder = Builder.byName(args[2]);
                 if (builder == null || BuildTeam.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is already reviewer for this build team!"));
                     return;
@@ -430,7 +430,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             try {
                 if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
 
-                Builder builder = Builder.getBuilderByName(args[2]);
+                Builder builder = Builder.byName(args[2]);
                 if (builder == null || BuildTeam.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is not a reviewer for this build team!"));
                     return;

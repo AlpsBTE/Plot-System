@@ -22,11 +22,13 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.holograms;
+package com.alpsbte.plotsystem.core.holograms.leaderboards;
 
 import com.alpsbte.alpslib.hologram.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -49,6 +51,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -66,7 +69,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             public void run() {
                 for (Player player : getPlayersInRadiusForRanking()) {
                     if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
-                    player.sendActionBar(getRankingString(player));
+                    getPlayerRankingComponent(player).thenAccept(player::sendActionBar);
                 }
             }
         }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
@@ -114,76 +117,71 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
 
     @Override
     public List<DataLine<?>> getContent(UUID playerUUID) {
-        try {
-            ArrayList<DataLine<?>> lines = new ArrayList<>();
+        ArrayList<DataLine<?>> lines = new ArrayList<>();
 
-            for (int index = 0; index < 10; index++) {
-                lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
-            }
-
-            HashMap<String, Integer> leaderboardScores = Builder.getBuildersByScore(sortByLeaderboard);
-            for (int i = 0; i < leaderboardScores.size(); i++) {
-                String key = (String) leaderboardScores.keySet().toArray()[i];
-                lines.set(i, new LeaderboardPositionLineWithPayout(i + 1, key, leaderboardScores.get(key)));
-            }
-
-            return lines;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
+        for (int index = 0; index < 10; index++) {
+            lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
         }
-        return new ArrayList<>();
+
+        // TODO: Make #getContent as CompletableFuture to fetch data async
+        DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard)
+                .thenAccept((playerRankings) -> {
+                    if (playerRankings == null) return;
+                    for (int i = 0; i < playerRankings.size(); i++) {
+                        String key = (String) playerRankings.keySet().toArray()[i];
+                        lines.set(i, new LeaderboardPositionLineWithPayout(i + 1, key, playerRankings.get(key)));
+                    }
+                });
+        return lines;
     }
 
-    private Component getRankingString(Player player) {
-        int position, rows, myScore;
-        try {
-            position = Builder.getBuilderScorePosition(player.getUniqueId(), sortByLeaderboard);
-            rows = Builder.getBuildersInSort(sortByLeaderboard);
-            myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(Component.text("A SQL error occurred!"), ex);
-            return Component.empty();
-        }
+    private CompletableFuture<Component> getPlayerRankingComponent(Player player) {
+        return DataProvider.BUILDER.getLeaderboardEntryByUUID(player.getUniqueId(), sortByLeaderboard)
+                .thenCompose((leaderboardEntry -> CompletableFuture.supplyAsync(() -> {
+                    if (leaderboardEntry == null) return Component.empty();
 
-        // Start building the component
-        TextComponent.Builder builder = Component.text()
-                .append(Component.text("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
-                        .color(NamedTextColor.GOLD)
-                        .decorate(TextDecoration.BOLD)
-                )
-                .append(Component.text(" ➜ ")
-                        .color(NamedTextColor.DARK_GRAY)
-                        .decorate(TextDecoration.BOLD)
-                );
+                    // Start building the component
+                    TextComponent.Builder builder = Component.text()
+                            .append(Component.text("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
+                                    .color(NamedTextColor.GOLD)
+                                    .decorate(TextDecoration.BOLD)
+                            )
+                            .append(Component.text(" ➜ ")
+                                    .color(NamedTextColor.DARK_GRAY)
+                                    .decorate(TextDecoration.BOLD)
+                            );
 
-        if (position == -1) {
-            builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
-                    .color(NamedTextColor.RED)
-                    .decoration(TextDecoration.BOLD, false)
-            );
-        } else if (position < 50) {
-            builder.append(Component.text(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position)))
-                    .color(NamedTextColor.GREEN)
-                    .decoration(TextDecoration.BOLD, false)
-            );
-        } else {
-            String topPercentage = df.format(position * 1.0 / rows);
-            builder.append(Component.text(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
-                    .decoration(TextDecoration.BOLD, false)
-            );
-        }
+                    if (leaderboardEntry.getPosition() == -1) {
+                        builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                                .color(NamedTextColor.RED)
+                                .decoration(TextDecoration.BOLD, false)
+                        );
+                    } else if (leaderboardEntry.getPosition() < 50) {
+                        builder.append(Component.text(
+                                        LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION,
+                                                String.valueOf(leaderboardEntry.getPosition())))
+                                .color(NamedTextColor.GREEN)
+                                .decoration(TextDecoration.BOLD, false)
+                        );
+                    } else {
+                        String topPercentage = df.format(leaderboardEntry.getPosition() * 1.0 / leaderboardEntry.getTotalPosition());
+                        builder.append(Component.text(
+                                        LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
+                                .decoration(TextDecoration.BOLD, false)
+                        );
+                    }
 
-        if (myScore != -1) {
-            builder.append(
-                    Component.text(" (", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(myScore + " points", NamedTextColor.AQUA))
-                            .append(Component.text(")", NamedTextColor.DARK_GRAY))
-            );
-        }
+                    if (leaderboardEntry.getScore() != -1) {
+                        builder.append(
+                                Component.text(" (", NamedTextColor.DARK_GRAY)
+                                        .append(Component.text(leaderboardEntry.getScore() + " " +
+                                                LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_POINTS), NamedTextColor.AQUA))
+                                        .append(Component.text(")", NamedTextColor.DARK_GRAY))
+                        );
+                    }
 
-        return builder.build();
+                    return builder.build();
+                })));
     }
 
     private List<Player> getPlayersInRadiusForRanking() {
@@ -226,22 +224,6 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
     @Override
     public String getZPath() {
         return ConfigPaths.SCORE_LEADERBOARD_Z;
-    }
-
-    public enum LeaderboardTimeframe {
-        DAILY(ConfigPaths.DISPLAY_OPTIONS_SHOW_DAILY),
-        WEEKLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_WEEKLY),
-        MONTHLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_MONTHLY),
-        YEARLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_YEARLY),
-        LIFETIME(ConfigPaths.DISPLAY_OPTIONS_SHOW_LIFETIME);
-
-        public final String configPath;
-        public final String langPath;
-
-        LeaderboardTimeframe(String configPath) {
-            this.configPath = configPath;
-            this.langPath = LangPaths.Leaderboards.PAGES + name();
-        }
     }
 
     private class LeaderboardPositionLineWithPayout extends HologramRegister.LeaderboardPositionLine {

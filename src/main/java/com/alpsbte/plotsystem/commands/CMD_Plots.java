@@ -63,7 +63,7 @@ public class CMD_Plots extends BaseCommand {
                 return true;
             }
 
-            Builder builder = Builder.getBuilderByName(args[0]);
+            Builder builder = Builder.byName(args[0]);
             if (builder == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
                 return true;

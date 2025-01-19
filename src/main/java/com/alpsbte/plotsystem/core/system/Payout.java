@@ -25,26 +25,27 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
+import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
+import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Payout {
     private final int id;
-    private final ScoreLeaderboard.LeaderboardTimeframe timeframe;
+    private final LeaderboardTimeframe timeframe;
     private final int position;
     private final String payoutAmount;
 
-    private Payout(int id, ScoreLeaderboard.LeaderboardTimeframe timeframe, int position, String payoutAmount) {
+    private Payout(int id, LeaderboardTimeframe timeframe, int position, String payoutAmount) {
         this.id = id;
         this.timeframe = timeframe;
         this.position = position;
         this.payoutAmount = payoutAmount;
     }
 
-    public static Payout getPayout(ScoreLeaderboard.LeaderboardTimeframe timeframe, int position) throws SQLException {
-        if (timeframe == ScoreLeaderboard.LeaderboardTimeframe.LIFETIME) {
+    public static Payout getPayout(LeaderboardTimeframe timeframe, int position) throws SQLException {
+        if (timeframe == LeaderboardTimeframe.LIFETIME) {
             throw new IllegalArgumentException("Invalid option LIFETIME");
         }
         if (position < 1 || position > 10) {
@@ -56,7 +57,7 @@ public class Payout {
             Payout instance = null;
 
             if (rs.next()) {
-                instance = new Payout(rs.getInt(1), ScoreLeaderboard.LeaderboardTimeframe.valueOf(rs.getString(2)), rs.getInt(3), rs.getString(4));
+                instance = new Payout(rs.getInt(1), LeaderboardTimeframe.valueOf(rs.getString(2)), rs.getInt(3), rs.getString(4));
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -68,7 +69,7 @@ public class Payout {
         return id;
     }
 
-    public ScoreLeaderboard.LeaderboardTimeframe getTimeframe() {
+    public LeaderboardTimeframe getTimeframe() {
         return timeframe;
     }
 

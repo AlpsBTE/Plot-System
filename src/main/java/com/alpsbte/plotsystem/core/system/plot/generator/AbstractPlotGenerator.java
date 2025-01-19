@@ -95,7 +95,7 @@ public abstract class AbstractPlotGenerator {
      * @param builder - builder of the plot
      */
     public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
-        this(plot, builder, builder.getPlotTypeSetting());
+        this(plot, builder, builder.getPlotType());
     }
 
     /**

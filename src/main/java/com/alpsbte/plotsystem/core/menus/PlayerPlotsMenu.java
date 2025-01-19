@@ -85,7 +85,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
                                     .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ")
                                             .append(text(builder.getScore(), WHITE)))
                                     .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": ", GRAY)
-                                            .append(text(builder.getCompletedBuilds(), WHITE)))
+                                            .append(text(builder.getCompletedBuildsCount(), WHITE)))
                                     .build())
                             .build());
         } catch (SQLException ex) {

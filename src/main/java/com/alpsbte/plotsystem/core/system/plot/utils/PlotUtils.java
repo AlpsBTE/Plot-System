@@ -438,7 +438,7 @@ public final class PlotUtils {
 
                             if (plot.getPlotOwner() != null) {
                                 Cache.clearCache(plot.getPlotOwner().getUUID());
-                                plot.getPlotOwner().removePlot(dPlot.getSlot());
+                                plot.getPlotOwner().setSlot(-1, dPlot.getSlot());
                             }
 
                             dPlot.setPlotOwner(null);
@@ -572,7 +572,7 @@ public final class PlotUtils {
                         if (!plot.getWorld().getWorldName().equals(player.getWorld().getName()))
                             continue;
 
-                        if (!plot.getPlotOwner().getPlotTypeSetting().hasEnvironment() || plot.getVersion() <= 2)
+                        if (!plot.getPlotOwner().getPlotType().hasEnvironment() || plot.getVersion() <= 2)
                             continue;
 
                         List<BlockVector2> points = plot.getBlockOutline();

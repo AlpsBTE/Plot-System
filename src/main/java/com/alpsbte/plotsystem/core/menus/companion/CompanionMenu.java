@@ -44,12 +44,15 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
@@ -114,7 +117,7 @@ public class CompanionMenu {
                 final int i_ = i;
 
                 Plot plot = builder.getPlot(Slot.values()[i]);
-                items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
+                items.put(startingSlot + 1 + i, new FooterItem(getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
                     if (plot == null) return;
                     try {
                         new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
@@ -190,5 +193,37 @@ public class CompanionMenu {
         FooterItem(ItemStack item) {
             this.item = item;
         }
+    }
+
+    public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
+        String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
+        Component statusComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
+        Component slotDescriptionComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
+
+        Material itemMaterial = Material.MAP;
+        ArrayList<Component> lore = new LoreBuilder()
+                .addLines(slotDescriptionComp,
+                        Component.empty(),
+                        statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                .build();
+
+        if (plot != null) {
+            itemMaterial = Material.FILLED_MAP;
+            String plotIdText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID);
+            String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
+            String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
+            lore = new LoreBuilder()
+                    .addLines(Component.text(plotIdText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getID(), NamedTextColor.WHITE)),
+                            Component.text(plotCityText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getCity().getName(), NamedTextColor.WHITE)),
+                            Component.text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
+                            Component.empty(),
+                            statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                    .build();
+        }
+
+        return new ItemBuilder(itemMaterial, 1 + slotIndex)
+                .setName(Component.text(nameText, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                .setLore(lore)
+                .build();
     }
 }

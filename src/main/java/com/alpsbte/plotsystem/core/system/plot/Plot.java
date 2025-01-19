@@ -480,7 +480,7 @@ public class Plot extends AbstractPlot {
                 members.add(member);
                 setPlotMembers(members);
 
-                member.setPlot(this.ID, slot);
+                member.setSlot(this.ID, slot);
                 getPermissions().addBuilderPerms(member.getUUID());
             }
         }
@@ -494,7 +494,7 @@ public class Plot extends AbstractPlot {
 
             Slot slot = member.getSlot(this);
             if (slot != null) {
-                member.removePlot(slot);
+                member.setSlot(-1, slot);
             }
             if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
         }

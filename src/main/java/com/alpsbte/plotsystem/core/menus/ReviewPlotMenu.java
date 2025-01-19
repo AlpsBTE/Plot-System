@@ -223,10 +223,9 @@ public class ReviewPlotMenu extends AbstractMenu {
                     plot.setStatus(Status.completed);
                     plot.getReview().setFeedbackSent(false);
                     plot.getReview().setFeedback("No Feedback");
-                    plot.getPlotOwner().addCompletedBuild(1);
 
                     // Remove Plot from Owner
-                    plot.getPlotOwner().removePlot(plot.getSlot());
+                    plot.getPlotOwner().setSlot(-1, plot.getSlot());
 
                     if (plot.getPlotMembers().isEmpty()) {
                         // Plot was made alone
@@ -250,10 +249,9 @@ public class ReviewPlotMenu extends AbstractMenu {
                         for (Builder builder : plot.getPlotMembers()) {
                             // Score gets split between all participants
                             builder.addScore(plot.getSharedScore());
-                            builder.addCompletedBuild(1);
 
                             // Remove Slot from Member
-                            builder.removePlot(builder.getSlot(plot));
+                            builder.setSlot(-1, builder.getSlot(plot));
                         }
                     }
                 } else {

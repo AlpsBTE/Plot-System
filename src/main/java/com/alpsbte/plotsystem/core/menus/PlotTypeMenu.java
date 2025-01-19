@@ -67,7 +67,7 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE))
                                 .build())
-                        .setEnchanted(builder.getPlotTypeSetting().getId() == PlotType.FOCUS_MODE.getId())
+                        .setEnchanted(builder.getPlotType().getId() == PlotType.FOCUS_MODE.getId())
                         .build());
 
         getMenu().getSlot(13).setItem(
@@ -76,7 +76,7 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE))
                                 .build())
-                        .setEnchanted(builder.getPlotTypeSetting().getId() == PlotType.LOCAL_INSPIRATION_MODE.getId())
+                        .setEnchanted(builder.getPlotType().getId() == PlotType.LOCAL_INSPIRATION_MODE.getId())
                         .build());
 
         getMenu().getSlot(15).setItem(
@@ -86,14 +86,14 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE))
                                 .build())
-                        .setEnchanted(builder.getPlotTypeSetting().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
+                        .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
                         .build());
 
         // Set selected glass pane
         int selectedPlotTypeSlot = 13;
-        if (builder.getPlotTypeSetting() == PlotType.FOCUS_MODE)
+        if (builder.getPlotType() == PlotType.FOCUS_MODE)
             selectedPlotTypeSlot = 11;
-        if (builder.getPlotTypeSetting() == PlotType.CITY_INSPIRATION_MODE)
+        if (builder.getPlotType() == PlotType.CITY_INSPIRATION_MODE)
             selectedPlotTypeSlot = 15;
         getMenu().getSlot(selectedPlotTypeSlot - 9).setItem(new ItemBuilder(Material.LIME_STAINED_GLASS_PANE, 1).setName(empty()).build());
 

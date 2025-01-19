@@ -128,14 +128,14 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed, false);
 
         if (!failed) {
-            getBuilder().setPlot(plot.getID(), getBuilder().getFreeSlot());
+            getBuilder().setSlot(plot.getID(), getBuilder().getFreeSlot());
             plot.setStatus(Status.unfinished);
             ((Plot) plot).setPlotType(plotType);
             ((Plot) plot).setPlotOwner(getBuilder().getPlayer().getUniqueId().toString());
             PlotUtils.Cache.clearCache(getBuilder().getUUID());
 
             plot.getWorld().teleportPlayer(getBuilder().getPlayer());
-            LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, plot.getPlotOwner().getName());
+            LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getBuilder().getName());
         }
     }
 }

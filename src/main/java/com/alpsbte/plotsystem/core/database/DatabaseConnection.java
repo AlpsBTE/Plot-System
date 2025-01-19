@@ -74,18 +74,8 @@ public class DatabaseConnection {
         createTables();
     }
 
-    @Deprecated
-    public static Connection getConnection() {
-        int retries = 3;
-        while (retries > 0) {
-            try {
-                return dataSource.getConnection();
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Database connection failed!"), ex);
-            }
-            retries--;
-        }
-        return null;
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     public static StatementBuilder createStatement(String sql) {

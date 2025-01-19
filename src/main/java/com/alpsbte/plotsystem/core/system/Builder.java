@@ -24,180 +24,129 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
-import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.holograms.ScoreLeaderboard;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class Builder {
-    public static final HashMap<UUID, Builder> builders = new HashMap<>();
-
     private final UUID uuid;
-    public PlotType plotType;
+    private String name;
+    private int score;
+    private int firstSlot;
+    private int secondSlot;
+    private int thirdSlot;
+    private int plotType;
 
-    private Builder(UUID UUID) {
+    public Builder(UUID UUID, String name, int score, int first_slot, int second_slot, int third_slot, int plot_type) {
         this.uuid = UUID;
-    }
-
-    public static Builder byUUID(UUID uuid) {
-        if (builders.containsKey(uuid))
-            return builders.get(uuid);
-
-        Builder builder = new Builder(uuid);
-        builders.put(uuid, builder);
-
-        return builders.get(uuid);
-    }
-
-    public Player getPlayer() {
-        return Bukkit.getPlayer(uuid);
+        this.name = name;
+        this.score = score;
+        this.firstSlot = first_slot;
+        this.secondSlot = second_slot;
+        this.thirdSlot = third_slot;
+        this.plotType = plot_type;
     }
 
     public java.util.UUID getUUID() {
         return uuid;
     }
 
-    public boolean isOnline() {return Bukkit.getPlayer(uuid) != null;}
-
-    public String getName() throws SQLException {
-        return DataProvider.BUILDER.getName(uuid);
+    public String getName() {
+        return name;
     }
 
-    public int getScore() throws SQLException {
-        return DataProvider.BUILDER.getScore(uuid);
+    public CompletableFuture<Boolean> setName(String name) {
+        this.name = name;
+        return DataProvider.BUILDER.setName(uuid, name);
     }
 
-    public int getCompletedBuilds() throws SQLException {
-        return DataProvider.BUILDER.getCompletedBuildsCount(uuid);
+    public int getScore() {
+        return score;
     }
 
-    public Slot getFreeSlot() throws SQLException {
-        return DataProvider.BUILDER.getFreeSlot(uuid);
+    public CompletableFuture<Boolean> addScore(int score) {
+        return DataProvider.BUILDER.addScore(uuid, score)
+                .thenCompose(success-> {
+                    if (success) this.score = this.score + score;
+                    return CompletableFuture.completedFuture(success);
+                });
     }
 
-    public Plot getPlot(Slot slot) throws SQLException {
-        return DataProvider.BUILDER.getPlot(uuid, slot);
-    }
-
-    public ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) throws SQLException {
-        String nameText = LangUtil.getInstance().get(getPlayer(), LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        Component statusComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
-        Component slotDescriptionComp = Component.text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
-
-        Material itemMaterial = Material.MAP;
-        ArrayList<Component> lore = new LoreBuilder()
-                .addLines(slotDescriptionComp,
-                        Component.empty(),
-                        statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
-                .build();
-
-        if (plot != null) {
-            itemMaterial = Material.FILLED_MAP;
-            String plotIdText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID);
-            String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
-            String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
-            lore = new LoreBuilder()
-                    .addLines(Component.text(plotIdText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getID(), NamedTextColor.WHITE)),
-                            Component.text(plotCityText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getCity().getName(), NamedTextColor.WHITE)),
-                            Component.text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(Component.text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
-                            Component.empty(),
-                            statusComp.append(Component.text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
-                    .build();
-        }
-
-        return new ItemBuilder(itemMaterial, 1 + slotIndex)
-                .setName(Component.text(nameText, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
-                .setLore(lore)
-                .build();
-    }
-
-    public void addScore(int score) throws SQLException {
-        DataProvider.BUILDER.addScore(uuid, score);
-    }
-
-    public void addCompletedBuild(int amount) throws SQLException {
-        DataProvider.BUILDER.addCompletedBuild(uuid, amount);
-    }
-
-    public void setPlot(int plotID, Slot slot) throws SQLException {
-        DataProvider.BUILDER.setPlot(uuid, plotID, slot);
-    }
-
-    public void removePlot(Slot slot) throws SQLException {
-        DataProvider.BUILDER.removePlot(uuid, slot);
-    }
-
-    public static Builder getBuilderByName(String name) throws SQLException {
-        return DataProvider.BUILDER.getBuilderByName(name);
-    }
-
-    public static int getBuilderScore(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
-        return DataProvider.BUILDER.getLeaderboardScore(uuid, sortBy);
-    }
-
-    public static int getBuilderScorePosition(UUID uuid, ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
-        return DataProvider.BUILDER.getLeaderboardPosition(uuid, sortBy);
-    }
-
-    public static int getBuildersInSort(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
-        return DataProvider.BUILDER.getLeaderboardEntryCount(sortBy);
-    }
-
-    public static HashMap<String, Integer> getBuildersByScore(ScoreLeaderboard.LeaderboardTimeframe sortBy) throws SQLException {
-        return DataProvider.BUILDER.getLeaderboardEntriesByScore(sortBy);
-    }
-
-    public static HashMap<String, Integer> getBuildersByCompletedBuilds(int limit) throws SQLException {
-        return DataProvider.BUILDER.getLeaderboardEntriesByCompletedBuilds(limit);
-    }
-
-    public Slot getSlot(Plot plot) throws SQLException {
-        for (Slot slot : Slot.values()) {
-            Plot slotPlot = getPlot(slot);
-            if (slotPlot != null && slotPlot.getID() == plot.getID()) {
-                return slot;
-            }
+    public Plot getSlot(Slot slot) {
+        if (slot == Slot.first_slot && firstSlot != -1) {
+            return new Plot(firstSlot);
+        } else if (slot == Slot.second_slot && secondSlot != -1) {
+            return new Plot(secondSlot);
+        } else if (slot == Slot.third_slot && thirdSlot != -1) {
+            return new Plot(thirdSlot);
         }
         return null;
     }
 
-    public PlotType getPlotTypeSetting() {
-        if (plotType != null)
-            return plotType;
-        this.plotType = DataProvider.BUILDER.getPlotTypeSetting(uuid);
-        return plotType;
+    public CompletableFuture<Boolean> setSlot(Slot slot, int plotId) {
+        return DataProvider.BUILDER.setSlot(uuid, plotId, slot)
+                .thenCompose(success -> {
+                    if (success) {
+                        switch (slot) {
+                            case first_slot: firstSlot = plotId; break;
+                            case second_slot: secondSlot = plotId; break;
+                            case third_slot: thirdSlot = plotId; break;
+                        }
+                    }
+                    return CompletableFuture.completedFuture(success);
+                });
     }
 
-    public void setPlotTypeSetting(PlotType plotType) {
-        DataProvider.BUILDER.setPlotTypeSetting(uuid, plotType);
-        this.plotType = plotType;
+    public PlotType getPlotType() {
+        return PlotType.byId(plotType);
+    }
+
+    public CompletableFuture<Boolean> setPlotType(int plotType) {
+        return DataProvider.BUILDER.setPlotType(uuid, plotType)
+                .thenCompose(success -> {
+                    if (success) this.plotType = plotType;
+                    return CompletableFuture.completedFuture(success);
+                });
+    }
+
+    public Player getPlayer() {
+        return Bukkit.getPlayer(uuid);
+    }
+
+    public boolean isOnline() {
+        return getPlayer() != null;
+    }
+
+    public CompletableFuture<Integer> getCompletedBuildsCount() {
+        return DataProvider.BUILDER.getCompletedBuildsCount(uuid);
+    }
+
+    public CompletableFuture<Slot> getFreeSlot() {
+        return DataProvider.BUILDER.getFreeSlot(uuid);
+    }
+
+    public static CompletableFuture<Builder> byUUID(UUID uuid) {
+        return DataProvider.BUILDER.getBuilderByUUID(uuid);
+    }
+
+    public static CompletableFuture<Builder> byName(String name) {
+        return DataProvider.BUILDER.getBuilderByName(name);
     }
 
     public Reviewer getAsReviewer() throws SQLException {
         return new Reviewer(getUUID());
     }
 
-    public boolean isReviewer() throws SQLException {
-        return DataProvider.BUILDER.isReviewer(uuid);
-    }
-
     public static class Reviewer {
         private final List<BuildTeam> buildTeams;
+
         public Reviewer(UUID reviewerUUID) throws SQLException {
             this.buildTeams = BuildTeam.getBuildTeamsByReviewer(reviewerUUID);
         }

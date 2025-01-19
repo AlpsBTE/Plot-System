@@ -223,21 +223,19 @@ public class Review {
 
                 for (Builder member : plot.getPlotMembers()) {
                     member.addScore(-plot.getSharedScore());
-                    member.addCompletedBuild(-1);
 
                     if (member.getFreeSlot() != null) {
-                        member.setPlot(plot.getID(), member.getFreeSlot());
+                        member.setSlot(plot.getID(), member.getFreeSlot());
                     }
                 }
 
                 plot.getPlotOwner().addScore(-plot.getSharedScore());
-                plot.getPlotOwner().addCompletedBuild(-1);
                 plot.setTotalScore(-1);
                 plot.setStatus(Status.unreviewed);
                 plot.setPasted(false);
 
                 if (plot.getPlotOwner().getFreeSlot() != null) {
-                    plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
+                    plot.getPlotOwner().setSlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
                 }
 
                 int cityId = plot.getCity().getID();
