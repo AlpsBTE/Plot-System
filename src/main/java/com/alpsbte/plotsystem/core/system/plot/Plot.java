@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -53,7 +54,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -63,10 +63,12 @@ import static net.kyori.adventure.text.Component.text;
 public class Plot extends AbstractPlot {
     private CityProject city;
     private CityPlotWorld cityPlotWorld;
+    private Status status;
 
     public Plot(int id) {
         super(id);
     }
+
 
     public CityProject getCity() throws SQLException {
         if (this.city != null)
@@ -106,26 +108,11 @@ public class Plot extends AbstractPlot {
     }
 
     @Override
-    public Builder getPlotOwner() throws SQLException {
+    public Builder getPlotOwner() {
+        // TODO: implement
+
         if (plotOwner != null)
             return plotOwner;
-
-        if (getStatus() != Status.unclaimed) {
-            try (ResultSet rs = DatabaseConnection.createStatement("SELECT owner_uuid FROM plotsystem_plots WHERE id = ?")
-                    .setValue(this.ID).executeQuery()) {
-
-                if (rs.next()) {
-                    String s = rs.getString(1);
-                    DatabaseConnection.closeResultSet(rs);
-
-                    plotOwner = Builder.byUUID(UUID.fromString(s));
-
-                    return plotOwner;
-                }
-
-                DatabaseConnection.closeResultSet(rs);
-            }
-        }
         return null;
     }
 
@@ -141,26 +128,8 @@ public class Plot extends AbstractPlot {
         plotOwner = null;
     }
 
-    public List<Builder> getPlotMembers() throws SQLException {
-        List<Builder> builders = new ArrayList<>();
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT member_uuids FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                String members = rs.getString(1);
-                if (!rs.wasNull()) {
-                    String[] uuidMembers = members.split(",");
-
-                    for (String uuid : uuidMembers) {
-                        builders.add(Builder.byUUID(UUID.fromString(uuid)));
-                    }
-                }
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-        }
-        return builders;
+    public List<Builder> getPlotMembers() {
+        return DataProvider.PLOT.getPlotMembers(ID);
     }
 
     public void setPlotMembers(@NotNull List<Builder> plotMembers) throws SQLException {
@@ -239,19 +208,8 @@ public class Plot extends AbstractPlot {
     }
 
     @Override
-    public Status getStatus() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT status FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                String s = rs.getString(1);
-                DatabaseConnection.closeResultSet(rs);
-                return Status.valueOf(s);
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
+    public Status getStatus() {
+        return status;
     }
 
     @Override
@@ -450,21 +408,8 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    public Review getReview() throws SQLException {
-        if (getStatus() == Status.completed || isRejected()) {
-            try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                    .setValue(this.ID).executeQuery()) {
-
-                if (rs.next()) {
-                    int i = rs.getInt(1);
-                    DatabaseConnection.closeResultSet(rs);
-                    return new Review(i);
-                }
-
-                DatabaseConnection.closeResultSet(rs);
-            }
-        }
-        return null;
+    public Review getReview() {
+        return DataProvider.PLOT.getReview(ID);
     }
 
     public void setPasted(boolean pasted) throws SQLException {
@@ -498,7 +443,7 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    public boolean isReviewed() throws SQLException {
+    public boolean isReviewed() {
         return getReview() != null;
     }
 

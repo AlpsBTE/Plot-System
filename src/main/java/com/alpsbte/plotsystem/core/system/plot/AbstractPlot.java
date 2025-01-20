@@ -107,7 +107,7 @@ public abstract class AbstractPlot {
      */
     public abstract void setLastActivity(boolean setNull) throws SQLException;
 
-    public abstract Status getStatus() throws SQLException;
+    public abstract Status getStatus();
 
     public abstract void setStatus(@NotNull Status status) throws SQLException;
 

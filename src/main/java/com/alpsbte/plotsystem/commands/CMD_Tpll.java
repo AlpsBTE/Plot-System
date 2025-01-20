@@ -108,7 +108,7 @@ public class CMD_Tpll extends BaseCommand {
                 double[] terraCoords = CoordinateConversion.convertFromGeo(lon, lat);
 
                 // Get plot, that the player is in
-                AbstractPlot plot = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()).get(), Status.unfinished, Status.unreviewed, Status.completed);
+                AbstractPlot plot = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed, Status.completed);
 
                 // Convert terra coordinates to plot relative coordinates
                 CompletableFuture<double[]> plotCoordsFuture = plot != null ? PlotUtils.convertTerraToPlotXZ(plot, terraCoords) : null;

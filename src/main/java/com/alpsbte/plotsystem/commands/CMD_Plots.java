@@ -30,11 +30,15 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
 
 public class CMD_Plots extends BaseCommand {
     @Override
@@ -44,25 +48,30 @@ public class CMD_Plots extends BaseCommand {
             return true;
         }
 
-        if (getPlayer(sender) == null) {
-            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
+        Player player = getPlayer(sender);
+        if (player == null) {
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
         if (args.length < 1) {
-            Builder.byUUID(player.getUniqueId()).thenAccept(builder -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
-                    () -> new PlayerPlotsMenu(player, builder)));
-            return true;
+            CompletableFuture.runAsync(() -> {
+                Builder builder = Builder.byUUID(player.getUniqueId());
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new PlayerPlotsMenu(player, builder));
+            });
         }
 
-        Builder.byName(args[0]).thenAccept(builder -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            if (builder == null) {
-                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                return;
-            }
+        CompletableFuture.runAsync(() -> {
+           Builder builder = Builder.byName(args[0]);
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (builder == null) {
+                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                    return;
+                }
 
-            new PlayerPlotsMenu(player, builder);
-        }));
+                new PlayerPlotsMenu(player, builder);
+            });
+        });
         return true;
     }
 

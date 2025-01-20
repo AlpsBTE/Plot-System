@@ -25,9 +25,9 @@
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -37,8 +37,9 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -50,26 +51,35 @@ public class CMD_Plot_Links extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        try {
-            if (getPlayer(sender) != null) {
-                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                    int plotID = Integer.parseInt(args[0]);
-                    if (PlotUtils.plotExists(plotID)) {
-                        PlotUtils.ChatFormatting.sendLinkMessages(new Plot(plotID), getPlayer(sender));
-                    } else {
-                        sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    }
-                } else if (PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
-                    PlotUtils.ChatFormatting.sendLinkMessages(PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed), getPlayer(sender));
-                } else {
-                    sendInfo(sender);
-                }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
-            }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        Player player = getPlayer(sender);
+        if (player == null) {
+            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
+            return;
         }
+
+        CompletableFuture.runAsync(() -> {
+            Builder builder = Builder.byUUID(player.getUniqueId());
+            if (args.length == 0) {
+                if (!PlotUtils.isPlotWorld(player.getWorld())) {
+                    sendInfo(sender);
+                    return;
+                }
+                PlotUtils.ChatFormatting.sendLinkMessages(PlotUtils.getCurrentPlot(builder, Status.unfinished, Status.unreviewed), player);
+                return;
+            }
+
+            if (AlpsUtils.tryParseInt(args[0]) == null) {
+                sendInfo(sender);
+                return;
+            }
+            Plot plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
+            if (plot == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                return;
+            }
+
+            PlotUtils.ChatFormatting.sendLinkMessages(plot, player);
+        });
     }
 
     @Override

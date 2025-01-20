@@ -83,7 +83,6 @@ import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -107,7 +106,7 @@ public final class PlotUtils {
      * @return the current plot of the player
      */
     @Nullable
-    public static AbstractPlot getCurrentPlot(Builder builder, Status... statuses) throws SQLException {
+    public static AbstractPlot getCurrentPlot(Builder builder, Status... statuses) {
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
 
@@ -337,22 +336,6 @@ public final class PlotUtils {
                 }
             }), 0L, 20 * interval);
         }
-    }
-
-    public static boolean plotExists(int id) {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT COUNT(id) FROM plotsystem_plots WHERE id = ?")
-                .setValue(id).executeQuery()) {
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                DatabaseConnection.closeResultSet(rs);
-                return true;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
     }
 
     public static final class Actions {

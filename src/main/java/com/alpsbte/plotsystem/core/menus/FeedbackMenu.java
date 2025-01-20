@@ -54,7 +54,7 @@ public class FeedbackMenu extends AbstractMenu {
     private Review review = null;
     private final Plot plot;
 
-    public FeedbackMenu(Player player, int plotID) throws SQLException {
+    public FeedbackMenu(Player player, int plotID) {
         super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.FEEDBACK, String.valueOf(plotID)), player);
         this.plot = new Plot(plotID);
     }
