@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class Builder {
     private final UUID uuid;
@@ -62,58 +61,59 @@ public class Builder {
         return name;
     }
 
-    public CompletableFuture<Boolean> setName(String name) {
-        this.name = name;
-        return DataProvider.BUILDER.setName(uuid, name);
+    public boolean setName(String name) {
+        if (DataProvider.BUILDER.setName(this.uuid, name)) {
+            this.name = name;
+            return true;
+        }
+        return false;
     }
 
     public int getScore() {
         return score;
     }
 
-    public CompletableFuture<Boolean> addScore(int score) {
-        return DataProvider.BUILDER.addScore(uuid, score)
-                .thenCompose(success-> {
-                    if (success) this.score = this.score + score;
-                    return CompletableFuture.completedFuture(success);
-                });
+    public boolean addScore(int score) {
+        if (DataProvider.BUILDER.addScore(this.uuid, score)) {
+            this.score = this.score + score;
+            return true;
+        }
+        return false;
     }
 
     public Plot getSlot(Slot slot) {
-        if (slot == Slot.first_slot && firstSlot != -1) {
+        if (slot == Slot.FIRST && firstSlot != -1) {
             return new Plot(firstSlot);
-        } else if (slot == Slot.second_slot && secondSlot != -1) {
+        } else if (slot == Slot.SECOND && secondSlot != -1) {
             return new Plot(secondSlot);
-        } else if (slot == Slot.third_slot && thirdSlot != -1) {
+        } else if (slot == Slot.THIRD && thirdSlot != -1) {
             return new Plot(thirdSlot);
         }
         return null;
     }
 
-    public CompletableFuture<Boolean> setSlot(Slot slot, int plotId) {
-        return DataProvider.BUILDER.setSlot(uuid, plotId, slot)
-                .thenCompose(success -> {
-                    if (success) {
-                        switch (slot) {
-                            case first_slot: firstSlot = plotId; break;
-                            case second_slot: secondSlot = plotId; break;
-                            case third_slot: thirdSlot = plotId; break;
-                        }
-                    }
-                    return CompletableFuture.completedFuture(success);
-                });
+    public boolean setSlot(Slot slot, int plotId) {
+        if (DataProvider.BUILDER.setSlot(this.uuid, plotId, slot)) {
+            switch (slot) {
+                case FIRST: firstSlot = plotId; break;
+                case SECOND: secondSlot = plotId; break;
+                case THIRD: thirdSlot = plotId; break;
+            }
+            return true;
+        }
+        return false;
     }
 
     public PlotType getPlotType() {
         return PlotType.byId(plotType);
     }
 
-    public CompletableFuture<Boolean> setPlotType(int plotType) {
-        return DataProvider.BUILDER.setPlotType(uuid, plotType)
-                .thenCompose(success -> {
-                    if (success) this.plotType = plotType;
-                    return CompletableFuture.completedFuture(success);
-                });
+    public boolean setPlotType(int plotType) {
+        if (DataProvider.BUILDER.setPlotType(this.uuid, plotType)) {
+            this.plotType = plotType;
+            return true;
+        }
+        return false;
     }
 
     public Player getPlayer() {
@@ -124,19 +124,30 @@ public class Builder {
         return getPlayer() != null;
     }
 
-    public CompletableFuture<Integer> getCompletedBuildsCount() {
+    public int getCompletedBuildsCount() {
         return DataProvider.BUILDER.getCompletedBuildsCount(uuid);
     }
 
-    public CompletableFuture<Slot> getFreeSlot() {
+    public Slot getFreeSlot() {
         return DataProvider.BUILDER.getFreeSlot(uuid);
     }
 
-    public static CompletableFuture<Builder> byUUID(UUID uuid) {
+    public Slot getSlotByPlotId(int plotId) {
+        if (firstSlot == plotId) {
+            return Slot.FIRST;
+        } else if (secondSlot == plotId) {
+            return Slot.SECOND;
+        } else if (thirdSlot == plotId) {
+            return Slot.THIRD;
+        }
+        return null;
+    }
+
+    public static Builder byUUID(UUID uuid) {
         return DataProvider.BUILDER.getBuilderByUUID(uuid);
     }
 
-    public static CompletableFuture<Builder> byName(String name) {
+    public static Builder byName(String name) {
         return DataProvider.BUILDER.getBuilderByName(name);
     }
 

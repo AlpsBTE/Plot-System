@@ -480,7 +480,7 @@ public class Plot extends AbstractPlot {
                 members.add(member);
                 setPlotMembers(members);
 
-                member.setSlot(this.ID, slot);
+                member.setSlot(slot, ID);
                 getPermissions().addBuilderPerms(member.getUUID());
             }
         }
@@ -492,10 +492,8 @@ public class Plot extends AbstractPlot {
             members.remove(members.stream().filter(m -> m.getUUID().equals(member.getUUID())).findFirst().orElse(null));
             setPlotMembers(members);
 
-            Slot slot = member.getSlot(this);
-            if (slot != null) {
-                member.setSlot(-1, slot);
-            }
+            Slot slot = member.getSlotByPlotId(ID);
+            if (slot != null) member.setSlot(slot, -1);
             if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
         }
     }

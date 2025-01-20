@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -12,172 +36,150 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class BuilderProvider {
     public static final HashMap<UUID, Builder> builders = new HashMap<>();
 
-    public CompletableFuture<Builder> getBuilderByUUID(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> {
-            if (builders.containsKey(uuid)) return builders.get(uuid);
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("SELECT name, score, first_slot, second_slot, third_slot, plot_type " +
-                            "FROM builder WHERE uuid = ?;")) {
-                stmt.setString(1, uuid.toString());
+    public Builder getBuilderByUUID(UUID uuid) {
+        if (builders.containsKey(uuid)) return builders.get(uuid);
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT name, score, first_slot, second_slot, third_slot, plot_type " +
+                        "FROM builder WHERE uuid = ?;")) {
+            stmt.setString(1, uuid.toString());
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        return new Builder(uuid, rs.getString(1), rs.getInt(2), rs.getInt(3),
-                                rs.getInt(4), rs.getInt(5), rs.getInt(6));
-                    }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Builder(uuid, rs.getString(1), rs.getInt(2), rs.getInt(3),
+                            rs.getInt(4), rs.getInt(5), rs.getInt(6));
                 }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
             }
-            return null;
-        });
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
+        return null;
     }
 
-    public CompletableFuture<Builder> getBuilderByName(String name) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("SELECT uuid FROM builder WHERE name = ?;")) {
-                stmt.setString(1, name);
+    public Builder getBuilderByName(String name) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT uuid FROM builder WHERE name = ?;")) {
+            stmt.setString(1, name);
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    return rs.getString(1);
-                }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+            try (ResultSet rs = stmt.executeQuery()) {
+                String uuid = rs.getString(1);
+                if (uuid != null) return getBuilderByUUID(UUID.fromString(uuid));
             }
-            return null;
-        }).thenCompose(uuid -> {
-            if (uuid != null) return getBuilderByUUID(UUID.fromString(uuid));
-            return null;
-        });
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
+        return null;
     }
 
-    public CompletableFuture<Boolean> setName(UUID uuid, String name) {
-        CompletableFuture.supplyAsync(() -> {
+    public boolean setName(UUID uuid, String name) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("UPDATE builder SET name = ? WHERE uuid = ?;")) {
+            stmt.setString(1, name);
+            stmt.setString(2, uuid.toString());
+            stmt.executeUpdate();
+            if (builders.containsKey(uuid)) builders.get(uuid).setName(name);
+            return true;
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
+        return false;
+    }
+
+    public boolean addScore(UUID uuid, int score) {
+        try {
             try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("UPDATE builder SET name = ? WHERE uuid = ?;")) {
-                stmt.setString(1, name);
+                    .prepareStatement("UPDATE builder b SET score = (b.score + ?) WHERE uuid = ?;")) {
+                stmt.setInt(1, score);
                 stmt.setString(2, uuid.toString());
                 stmt.executeUpdate();
                 return true;
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
             }
-            return false;
-        });
-        return null;
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
+        return false;
     }
 
-    public CompletableFuture<Boolean> addScore(UUID uuid, int score) {
-        CompletableFuture.supplyAsync(() -> {
-            try {
+    public boolean setSlot(UUID uuid, int plotID, Slot slot) {
+        try {
+            if (plotID > 0) {
                 try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                        .prepareStatement("UPDATE builder b SET score = (b.score + ?) WHERE uuid = ?;")) {
-                    stmt.setInt(1, score);
+                        .prepareStatement("UPDATE builder b SET " + slot.name().toLowerCase() + " = ? " +
+                                "WHERE uuid = ?;")) {
+                    stmt.setInt(1, plotID);
                     stmt.setString(2, uuid.toString());
                     stmt.executeUpdate();
-                    return true;
                 }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+            } else {
+                try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                        .prepareStatement("UPDATE builder b SET " + slot.name().toLowerCase() + " = " +
+                                "DEFAULT(first_slot) WHERE uuid = ?;")) {
+                    stmt.setString(1, uuid.toString());
+                    stmt.executeUpdate();
+                }
             }
-            return false;
-        });
-        return null;
+            return true;
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
+        return false;
     }
 
-    public CompletableFuture<Boolean> setSlot(UUID uuid, int plotID, Slot slot) {
-        CompletableFuture.supplyAsync(() -> {
-            try {
-                if (plotID > 0) {
-                    try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                            .prepareStatement("UPDATE builder b SET " + slot.name().toLowerCase() + " = ? " +
-                                    "WHERE uuid = ?;")) {
-                        stmt.setInt(1, plotID);
-                        stmt.setString(2, uuid.toString());
-                        stmt.executeUpdate();
-                    }
-                } else {
-                    try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                            .prepareStatement("UPDATE builder b SET " + slot.name().toLowerCase() + " = " +
-                                    "DEFAULT(first_slot) WHERE uuid = ?;")) {
-                        stmt.setString(1, uuid.toString());
-                        stmt.executeUpdate();
-                    }
-                }
-                return true;
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-            }
-            return false;
-        });
-        return null;
-    }
-
-    public CompletableFuture<Boolean> setPlotType(UUID uuid, int plotTypeId) {
-        CompletableFuture.supplyAsync(() -> {
-           try {
-               if (plotTypeId > 0) {
-                   try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                           .prepareStatement("UPDATE builder b SET plot_type = ? WHERE uuid = ?;")) {
-                       stmt.setInt(1, plotTypeId);
-                       stmt.setString(2, uuid.toString());
-                       stmt.executeUpdate();
-                   }
-               } else {
-                   try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                           .prepareStatement("UPDATE builder b SET plot_type = DEFAULT(plot_type) WHERE uuid = ?;")) {
-                       stmt.setString(1, uuid.toString());
-                       stmt.executeUpdate();
-                   }
+    public boolean setPlotType(UUID uuid, int plotTypeId) {
+       try {
+           if (plotTypeId > 0) {
+               try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                       .prepareStatement("UPDATE builder b SET plot_type = ? WHERE uuid = ?;")) {
+                   stmt.setInt(1, plotTypeId);
+                   stmt.setString(2, uuid.toString());
+                   stmt.executeUpdate();
                }
-               return true;
-           } catch (SQLException ex) {
-               PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+           } else {
+               try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                       .prepareStatement("UPDATE builder b SET plot_type = DEFAULT(plot_type) WHERE uuid = ?;")) {
+                   stmt.setString(1, uuid.toString());
+                   stmt.executeUpdate();
+               }
            }
-           return false;
-        });
+           return true;
+       } catch (SQLException ex) {
+           PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+       }
+       return false;
+    }
+
+    public int getCompletedBuildsCount(UUID uuid) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT COUNT(*) AS completed_plots FROM plot p INNER JOIN builder_has_plot " +
+                        "bhp ON p.plot_id = bhp.plot_id WHERE p.status = 'completed' AND bhp.uuid = ?;")) {
+            stmt.setString(1, uuid.toString());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
+        return 0;
+    }
+
+    public Slot getFreeSlot(UUID uuid) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;")) {
+            stmt.setString(1, uuid.toString());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                for (int i = 1; i <= 3; i++) {
+                    if (rs.getString(i) == null) return Slot.values()[i - 1];
+                }
+            }
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
         return null;
-    }
-
-    public CompletableFuture<Integer> getCompletedBuildsCount(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("SELECT COUNT(*) AS completed_plots FROM plot p INNER JOIN builder_has_plot " +
-                            "bhp ON p.plot_id = bhp.plot_id WHERE p.status = 'completed' AND bhp.uuid = ?;")) {
-                stmt.setString(1, uuid.toString());
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) return rs.getInt(1);
-                }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-            }
-            return 0;
-        });
-    }
-
-    public CompletableFuture<Slot> getFreeSlot(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;")) {
-                stmt.setString(1, uuid.toString());
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    for (int i = 1; i <= 3; i++) {
-                        if (rs.getString(i) == null) return Slot.values()[i - 1];
-                    }
-                }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-            }
-            return null;
-        });
     }
 
     /**
@@ -188,22 +190,19 @@ public class BuilderProvider {
      * @param sortBy the timeframe used to filter leaderboard data (e.g., daily, weekly, etc.).
      * @return provides the leaderboard entry for the player, or null if not found.
      */
-    public CompletableFuture<LeaderboardEntry> getLeaderboardEntryByUUID(UUID uuid, LeaderboardTimeframe sortBy) {
-        CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement(getLeaderboardQuery(uuid, sortBy))) {
+    public LeaderboardEntry getLeaderboardEntryByUUID(UUID uuid, LeaderboardTimeframe sortBy) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement(getLeaderboardQuery(uuid, sortBy))) {
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        return new LeaderboardEntry(rs.getInt(2), rs.getInt(3), rs.getInt(4));
-                    }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new LeaderboardEntry(rs.getInt(2), rs.getInt(3), rs.getInt(4));
                 }
-
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
             }
-            return null;
-        });
+
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
         return null;
     }
 
@@ -213,22 +212,19 @@ public class BuilderProvider {
      * @param sortBy the timeframe used to filter leaderboard data (e.g., daily, weekly, etc.).
      * @return provides a map of player names and their scores, or null if no data is found.
      */
-    public CompletableFuture<Map<String, Integer>> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
-        CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement(getLeaderboardQuery(null, sortBy))) {
+    public Map<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement(getLeaderboardQuery(null, sortBy))) {
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    Map<String, Integer> playerEntries = new HashMap<>();
-                    while (rs.next()) playerEntries.put(rs.getString(1), rs.getInt(2));
-                    return playerEntries;
-                }
-
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+            try (ResultSet rs = stmt.executeQuery()) {
+                Map<String, Integer> playerEntries = new HashMap<>();
+                while (rs.next()) playerEntries.put(rs.getString(1), rs.getInt(2));
+                return playerEntries;
             }
-            return null;
-        });
+
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
+        }
         return null;
     }
 

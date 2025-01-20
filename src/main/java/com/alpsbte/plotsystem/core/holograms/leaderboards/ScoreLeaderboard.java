@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -69,7 +68,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             public void run() {
                 for (Player player : getPlayersInRadiusForRanking()) {
                     if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
-                    getPlayerRankingComponent(player).thenAccept(player::sendActionBar);
+                    player.sendActionBar(getPlayerRankingComponent(player));
                 }
             }
         }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
@@ -123,65 +122,61 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
         }
 
-        // TODO: Make #getContent as CompletableFuture to fetch data async
-        DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard)
-                .thenAccept((playerRankings) -> {
-                    if (playerRankings == null) return;
-                    for (int i = 0; i < playerRankings.size(); i++) {
-                        String key = (String) playerRankings.keySet().toArray()[i];
-                        lines.set(i, new LeaderboardPositionLineWithPayout(i + 1, key, playerRankings.get(key)));
-                    }
-                });
+        Map<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
+        if (playerRankings != null) {
+            for (int i = 0; i < playerRankings.size(); i++) {
+                String key = (String) playerRankings.keySet().toArray()[i];
+                lines.set(i, new LeaderboardPositionLineWithPayout(i + 1, key, playerRankings.get(key)));
+            }
+        }
         return lines;
     }
 
-    private CompletableFuture<Component> getPlayerRankingComponent(Player player) {
-        return DataProvider.BUILDER.getLeaderboardEntryByUUID(player.getUniqueId(), sortByLeaderboard)
-                .thenCompose((leaderboardEntry -> CompletableFuture.supplyAsync(() -> {
-                    if (leaderboardEntry == null) return Component.empty();
+    private Component getPlayerRankingComponent(Player player) {
+        LeaderboardEntry leaderboardEntry = DataProvider.BUILDER.getLeaderboardEntryByUUID(player.getUniqueId(), sortByLeaderboard);
+        if (leaderboardEntry == null) return Component.empty();
 
-                    // Start building the component
-                    TextComponent.Builder builder = Component.text()
-                            .append(Component.text("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
-                                    .color(NamedTextColor.GOLD)
-                                    .decorate(TextDecoration.BOLD)
-                            )
-                            .append(Component.text(" ➜ ")
-                                    .color(NamedTextColor.DARK_GRAY)
-                                    .decorate(TextDecoration.BOLD)
-                            );
+        // Start building the component
+        TextComponent.Builder builder = Component.text()
+                .append(Component.text("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
+                        .color(NamedTextColor.GOLD)
+                        .decorate(TextDecoration.BOLD)
+                )
+                .append(Component.text(" ➜ ")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .decorate(TextDecoration.BOLD)
+                );
 
-                    if (leaderboardEntry.getPosition() == -1) {
-                        builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
-                                .color(NamedTextColor.RED)
-                                .decoration(TextDecoration.BOLD, false)
-                        );
-                    } else if (leaderboardEntry.getPosition() < 50) {
-                        builder.append(Component.text(
-                                        LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION,
-                                                String.valueOf(leaderboardEntry.getPosition())))
-                                .color(NamedTextColor.GREEN)
-                                .decoration(TextDecoration.BOLD, false)
-                        );
-                    } else {
-                        String topPercentage = df.format(leaderboardEntry.getPosition() * 1.0 / leaderboardEntry.getTotalPosition());
-                        builder.append(Component.text(
-                                        LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
-                                .decoration(TextDecoration.BOLD, false)
-                        );
-                    }
+        if (leaderboardEntry.getPosition() == -1) {
+            builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
+                    .color(NamedTextColor.RED)
+                    .decoration(TextDecoration.BOLD, false)
+            );
+        } else if (leaderboardEntry.getPosition() < 50) {
+            builder.append(Component.text(
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION,
+                                    String.valueOf(leaderboardEntry.getPosition())))
+                    .color(NamedTextColor.GREEN)
+                    .decoration(TextDecoration.BOLD, false)
+            );
+        } else {
+            String topPercentage = df.format(leaderboardEntry.getPosition() * 1.0 / leaderboardEntry.getTotalPosition());
+            builder.append(Component.text(
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
+                    .decoration(TextDecoration.BOLD, false)
+            );
+        }
 
-                    if (leaderboardEntry.getScore() != -1) {
-                        builder.append(
-                                Component.text(" (", NamedTextColor.DARK_GRAY)
-                                        .append(Component.text(leaderboardEntry.getScore() + " " +
-                                                LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_POINTS), NamedTextColor.AQUA))
-                                        .append(Component.text(")", NamedTextColor.DARK_GRAY))
-                        );
-                    }
+        if (leaderboardEntry.getScore() != -1) {
+            builder.append(
+                    Component.text(" (", NamedTextColor.DARK_GRAY)
+                            .append(Component.text(leaderboardEntry.getScore() + " " +
+                                    LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_POINTS), NamedTextColor.AQUA))
+                            .append(Component.text(")", NamedTextColor.DARK_GRAY))
+            );
+        }
 
-                    return builder.build();
-                })));
+        return builder.build();
     }
 
     private List<Player> getPlayersInRadiusForRanking() {
