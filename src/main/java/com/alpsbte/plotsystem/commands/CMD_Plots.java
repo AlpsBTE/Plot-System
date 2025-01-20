@@ -38,10 +38,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
-
-import static net.kyori.adventure.text.Component.text;
-
 public class CMD_Plots extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
@@ -50,30 +46,26 @@ public class CMD_Plots extends BaseCommand {
             return true;
         }
 
-        if (getPlayer(sender) == null) {
+        Player player = getPlayer(sender);
+        if (player == null) {
             Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
-        Player player = (Player) sender;
+        if (args.length < 1) {
+            Builder.byUUID(player.getUniqueId()).thenAccept(builder -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                    () -> new PlayerPlotsMenu(player, builder)));
+            return true;
+        }
 
-        try {
-            if (args.length < 1) {
-                new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
-                return true;
-            }
-
-            Builder builder = Builder.byName(args[0]);
+        Builder.byName(args[0]).thenAccept(builder -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             if (builder == null) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                return true;
+                return;
             }
 
             new PlayerPlotsMenu(player, builder);
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        }));
         return true;
     }
 
