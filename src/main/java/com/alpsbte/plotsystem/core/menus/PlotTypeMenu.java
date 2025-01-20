@@ -65,7 +65,7 @@ public class PlotTypeMenu extends AbstractMenu {
                 new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.FOCUS_MODE_BUTTON.getId()))
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_FOCUS_MODE), GOLD, BOLD))
                         .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE))
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE), true)
                                 .build())
                         .setEnchanted(builder.getPlotType().getId() == PlotType.FOCUS_MODE.getId())
                         .build());
@@ -74,7 +74,7 @@ public class PlotTypeMenu extends AbstractMenu {
                 new ItemBuilder(Material.DARK_OAK_SAPLING, 1)
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_INSPIRATION_MODE), GOLD, BOLD))
                         .setLore(new LoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE))
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE), true)
                                 .build())
                         .setEnchanted(builder.getPlotType().getId() == PlotType.LOCAL_INSPIRATION_MODE.getId())
                         .build());
@@ -84,7 +84,7 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE), GOLD, BOLD)
                                 .append(text(" [", DARK_GRAY).append(text("BETA", RED).append(text("]", DARK_GRAY))))) // temporary BETA tag
                         .setLore(new LoreBuilder()
-                                .addLines(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE))
+                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
                                 .build())
                         .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
                         .build());

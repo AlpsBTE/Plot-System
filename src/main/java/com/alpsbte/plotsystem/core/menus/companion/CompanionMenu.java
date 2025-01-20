@@ -105,9 +105,9 @@ public class CompanionMenu {
         items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, clickInformation) -> clickPlayer.performCommand("plots " + clickPlayer.getName())));
 
         // Set player settings menu item
-        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(Material.COMPARATOR)
+        items.put(startingSlot + 7, new FooterItem(new ItemBuilder(BaseItems.SETTINGS_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), AQUA).decoration(BOLD, true))
-                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS)).build())
+                .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS), true).build())
                 .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
 
         for (int i = 0; i < 3; i++) {
@@ -176,7 +176,8 @@ public class CompanionMenu {
         return new ItemBuilder(BaseItems.COMPANION_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION), AQUA)
                         .decoration(BOLD, true)
-                        .append(text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")", NamedTextColor.GRAY)))
+                        .append(text(" (" + LangUtil.getInstance().get(player, LangPaths.Note.Action.RIGHT_CLICK) + ")",
+                                GRAY).decoration(BOLD, false)))
                 .setEnchanted(true)
                 .build();
     }

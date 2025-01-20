@@ -31,7 +31,9 @@ public enum BaseItems {
     REVIEW_POINT_FIVE("review-point-five"),
     REVIEW_SUBMIT("review-submit"),
     REVIEW_CANCEL("review-cancel"),
-    REVIEW_INFO_PLOT("review-info-plot");
+    REVIEW_INFO_PLOT("review-info-plot"),
+
+    SETTINGS_ITEM("settings-item");
 
     final ItemStack itemStack;
 
@@ -40,9 +42,7 @@ public enum BaseItems {
         Material material = Material.getMaterial(materialString == null ? "" : materialString, false);
         material = material == null ? Material.BARRIER : material;
 
-        int modelId = ConfigUtil.getInstance().configs[2].getInt(configPath + ".modelId");
-
-        itemStack = new ItemBuilder(material).setItemModel(modelId).build();
+        itemStack = new ItemBuilder(material).setItemModel(ConfigUtil.getInstance().configs[2].get(configPath + ".modelId")).build();
     }
 
     public ItemStack getItem() {

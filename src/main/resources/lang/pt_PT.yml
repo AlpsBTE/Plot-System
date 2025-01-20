@@ -125,7 +125,7 @@ menu-description:
   teleport-desc: "Clique para Teletransportar para o Terreno"
   abandon-desc: "Clique para Resetar seu Terreno e Entregá-lo a Outra Pessoa"
   undo-submit-desc: "Clique para desfazer seu envio"
-  manage-members-desc: "Clique para Abrir o Menu de Membros do Terreno, Onde Você Pode adicionar%newline%e Remover Outros Jogadores do Seu Terreno"
+  manage-members-desc: "Clique para Abrir o Menu de Membros do Terreno, Onde Você Pode adicionar e Remover Outros Jogadores do Seu Terreno"
   feedback-desc: "Clique para ver seu Feedback de Revisão do Terreno"
   custom-heads-desc: "Clique para Abrir o Menu de Cabeças para obter uma Variedade de Cabeças Personalizadas"
   banner-maker-desc: "Click to create and save your own banners"
@@ -141,9 +141,9 @@ menu-description:
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
   filter-desc: "Show All"
   information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth%newline%project and enhance your building skills%newline%with tutorials on various topics.'
+  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build%newline%for the BuildTheEarth project.'
+  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.0
+config-version: 2.1

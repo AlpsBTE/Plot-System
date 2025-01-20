@@ -1,73 +1,76 @@
 companion-item:
   material: NETHER_STAR
-  modelId: 0
+  modelId: ''
 
 leaderboard-plot:
   material: NETHER_STAR
-  modelId: 0
+  modelId: ''
 leaderboard-score:
   material: NETHER_STAR
-  modelId: 0
+  modelId: ''
 
 plot-unfinished:
   material: ORANGE_WOOL
-  modelId: 0
+  modelId: ''
 plot-unreviewed:
   material: FILLED_MAP
-  modelId: 0
+  modelId: ''
 plot-completed:
   material: GREEN_WOOL
-  modelId: 0
+  modelId: ''
 
 menu-error:
   material: BARRIER
-  modelId: 0
+  modelId: ''
 menu-close:
   material: BARRIER
-  modelId: 0
+  modelId: ''
 
 review-item:
-  material: KNOWLEDGE_BOOK
-  modelId: 0
+  material: BOOK
+  modelId: ''
 review-accuracy:
   material: ARROW
-  modelId: 0
+  modelId: ''
 review-block-palette:
   material: PAINTING
-  modelId: 0
+  modelId: ''
 review-detailing:
   material: ENDER_EYE
-  modelId: 0
+  modelId: ''
 review-technique:
   material: WOODEN_AXE
-  modelId: 0
+  modelId: ''
 review-point-zero:
   material: LIGHT_GRAY_WOOL
-  modelId: 0
+  modelId: ''
 review-point-one:
   material: RED_WOOL
-  modelId: 0
+  modelId: ''
 review-point-two:
   material: ORANGE_WOOL
-  modelId: 0
+  modelId: ''
 review-point-three:
   material: YELLOW_WOOL
-  modelId: 0
+  modelId: ''
 review-point-four:
   material: GREEN_WOOL
-  modelId: 0
+  modelId: ''
 review-point-five:
   material: LIME_WOOL
-  modelId: 0
+  modelId: ''
 review-submit:
   material: GREEN_CONCRETE
-  modelId: 0
+  modelId: ''
 review-cancel:
   material: RED_CONCRETE
-  modelId: 0
+  modelId: ''
 review-info-plot:
   material: MAP
-  modelId: 0
+  modelId: ''
 
+settings-item:
+  material: COMPARATOR
+  modelId: ''
 # NOTE: Do not change
-config-version: 1.0
+config-version: 1.1

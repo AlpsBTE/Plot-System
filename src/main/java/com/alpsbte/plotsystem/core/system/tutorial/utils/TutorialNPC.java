@@ -132,11 +132,9 @@ public class TutorialNPC {
     public void setInteractionPromptVisibility(UUID playerUUID, boolean isVisible, boolean enableGlow) {
         if (hologram != null && hologram.getHologram(playerUUID) != null && !hologram.getHologram(playerUUID).isDisabled())
             hologram.setInteractionPromptVisibility(playerUUID, isVisible);
-        if (npc != null) {
-            if (npc.getData().isGlowing() != enableGlow) {
+        if (npc != null && npc.getData().isGlowing() != enableGlow) {
                 npc.getData().setGlowing(enableGlow);
                 npc.updateForAll();
-            }
         }
     }
 

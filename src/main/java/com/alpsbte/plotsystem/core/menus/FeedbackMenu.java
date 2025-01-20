@@ -80,9 +80,9 @@ public class FeedbackMenu extends AbstractMenu {
         // Set score item
         try {
             getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
-                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), AQUA).decoration(BOLD, true))
+                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), AQUA, BOLD))
                     .setLore(new LoreBuilder()
-                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ").append(text(plot.getTotalScore(), WHITE)))
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(plot.getTotalScore(), WHITE)))
                             .emptyLine()
                             .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
                                     .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating(Category.ACCURACY))
@@ -102,8 +102,8 @@ public class FeedbackMenu extends AbstractMenu {
                                     .append(text("5", GREEN)))
                             .emptyLine()
                             .addLine(plot.isRejected()
-                                    ? text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED), RED).decoration(BOLD, true)
-                                    : text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED), GREEN).decoration(BOLD, true))
+                                    ? text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED), RED, BOLD)
+                                    : text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCEPTED), GREEN, BOLD))
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -114,9 +114,9 @@ public class FeedbackMenu extends AbstractMenu {
         // Set feedback text item
         try {
             getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
-                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
+                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA, BOLD))
                     .setLore(new LoreBuilder()
-                            .addLines(plot.getReview().getFeedback())
+                            .addLine(plot.getReview().getFeedback().replaceAll("//", " "), true)
                             .build())
                     .build());
         } catch (SQLException ex) {
@@ -127,9 +127,8 @@ public class FeedbackMenu extends AbstractMenu {
         // Set reviewer item
         try {
             getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewer().getUUID()))
-                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER), AQUA).decoration(BOLD, true))
-                    .setLore(new LoreBuilder()
-                            .addLine(text(review.getReviewer().getName())).build())
+                    .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER), AQUA, BOLD))
+                    .setLore(new LoreBuilder().addLine(review.getReviewer().getName()).build())
                     .build());
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);

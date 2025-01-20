@@ -115,7 +115,7 @@ public class CityProject {
             return new ItemBuilder(cpItem)
                     .setName(text(getName(), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
-                            .addLines(getDescriptionComponents())
+                            .addLines(true, getDescription())
                             .emptyLine()
                             .addLine(text(plotsOpen, GOLD)
                                     .append(text(" " + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_OPEN) + " ", GRAY))

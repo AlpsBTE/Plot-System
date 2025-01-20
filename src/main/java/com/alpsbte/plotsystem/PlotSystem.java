@@ -72,7 +72,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class PlotSystem extends JavaPlugin {
-    private static final String VERSION = "4.0";
+    private static final String VERSION = "4.1";
 
     private static PlotSystem plugin;
     private CommandManager commandManager;
@@ -319,7 +319,7 @@ public class PlotSystem extends JavaPlugin {
             }
 
             if (!pluginManager.isPluginEnabled("FancyNpcs")) {
-                missingDependencies.add("FancyNpcs (https://mvn.alps-bte.com/repository/fancyNpcs/de/oliver/FancyNpcs/2.0.5/FancyNpcs-2.0.5.jar)");
+                missingDependencies.add("FancyNpcs");
             }
 
             return missingDependencies.isEmpty();
