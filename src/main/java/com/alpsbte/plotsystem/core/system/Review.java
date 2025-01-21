@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Category;
@@ -203,7 +204,7 @@ public class Review {
     public static void undoReview(Review review) {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
-                Plot plot = new Plot(review.getPlotID());
+                Plot plot = DataProvider.PLOT.getPlotById(review.getPlotID());
 
                 for (Builder member : plot.getPlotMembers()) {
                     member.addScore(-plot.getSharedScore());

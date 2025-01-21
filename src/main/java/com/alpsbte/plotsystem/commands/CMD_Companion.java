@@ -54,16 +54,17 @@ public class CMD_Companion extends BaseCommand {
             return true;
         }
 
-        if (getPlayer(sender) == null) return true;
+        Player player = getPlayer(sender);
+        if (player == null) return true;
 
         try {
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
+            Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
             if (tutorial != null) {
-                new TutorialStagesMenu(getPlayer(sender), tutorial.getId());
+                new TutorialStagesMenu(player, tutorial.getId());
             } else if (config.getBoolean(ConfigPaths.TUTORIAL_ENABLE) && config.getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                    !TutorialPlot.isPlotCompleted(getPlayer(sender), TutorialCategory.BEGINNER.getId()) && getPlayer(sender).hasPermission("plotsystem.tutorial")) {
-                new TutorialsMenu(getPlayer(sender));
+                    !TutorialPlot.isPlotCompleted(player, TutorialCategory.BEGINNER.getId()) && player.hasPermission("plotsystem.tutorial")) {
+                new TutorialsMenu(player);
             } else CompanionMenu.open((Player) sender);
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);

@@ -83,11 +83,11 @@ public class Builder {
 
     public Plot getSlot(Slot slot) {
         if (slot == Slot.FIRST && firstSlot != -1) {
-            return new Plot(firstSlot);
+            return DataProvider.PLOT.getPlotById(firstSlot);
         } else if (slot == Slot.SECOND && secondSlot != -1) {
-            return new Plot(secondSlot);
+            return DataProvider.PLOT.getPlotById(secondSlot);
         } else if (slot == Slot.THIRD && thirdSlot != -1) {
-            return new Plot(thirdSlot);
+            return DataProvider.PLOT.getPlotById(thirdSlot);
         }
         return null;
     }

@@ -43,14 +43,14 @@ import java.util.concurrent.CompletableFuture;
 public class CMD_Plots extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-            return true;
-        }
-
         Player player = getPlayer(sender);
         if (player == null) {
             Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            return true;
+        }
+
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
@@ -62,7 +62,7 @@ public class CMD_Plots extends BaseCommand {
         }
 
         CompletableFuture.runAsync(() -> {
-           Builder builder = Builder.byName(args[0]);
+            Builder builder = Builder.byName(args[0]);
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 if (builder == null) {
                     player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));

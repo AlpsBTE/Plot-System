@@ -65,6 +65,7 @@ public class Plot extends AbstractPlot {
     private CityPlotWorld cityPlotWorld;
     private Status status;
 
+    // TODO: delete constructor
     public Plot(int id) {
         super(id);
     }
