@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 
 import javax.annotation.Nullable;
@@ -182,6 +183,17 @@ public class BuilderProvider {
         return null;
     }
 
+    public boolean canReviewPlot(Builder builder, Plot plot) {
+        // TODO: implement (check for build team)
+        // no need to check for plot owner / plot members as this is handled separately
+        return false;
+    }
+
+    public boolean isAnyReviewer(UUID uuid) {
+        // TODO: implement (check if builder is a reviewer of any build team)
+        return false;
+    }
+
     /**
      * Retrieves the leaderboard entry for a specific player based on their UUID and the specified timeframe.
      * The leaderboard entry includes the player's score, rank, and total number of players.
@@ -244,13 +256,13 @@ public class BuilderProvider {
      * @return the constructed SQL query as a {@code String}.
      */
     private static String getLeaderboardQuery(@Nullable UUID uuid, LeaderboardTimeframe sortBy) {
-        String minimumDate = null;
-        switch (sortBy) {
-            case DAILY: minimumDate = "(NOW() - INTERVAL 1 DAY)"; break;
-            case WEEKLY: minimumDate = "(NOW() - INTERVAL 1 WEEK)"; break;
-            case MONTHLY: minimumDate = "(NOW() - INTERVAL 1 MONTH)"; break;
-            case YEARLY: minimumDate = "(NOW() - INTERVAL 1 YEAR)"; break;
-        }
+        String minimumDate = switch (sortBy) {
+            case DAILY -> "(NOW() - INTERVAL 1 DAY)";
+            case WEEKLY -> "(NOW() - INTERVAL 1 WEEK)";
+            case MONTHLY -> "(NOW() - INTERVAL 1 MONTH)";
+            case YEARLY -> "(NOW() - INTERVAL 1 YEAR)";
+            default -> null;
+        };
 
         return "SELECT b.name, b.score" + (uuid != null ? ", ROW_NUMBER() OVER (ORDER BY b.score DESC) AS position" : "") +
                 (uuid != null ? ", (SELECT COUNT(*) FROM builder_has_plot bhp_sub " +

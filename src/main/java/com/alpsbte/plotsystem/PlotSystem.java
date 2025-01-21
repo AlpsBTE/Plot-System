@@ -64,7 +64,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -232,13 +231,9 @@ public class PlotSystem extends JavaPlugin {
         } else {
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
-                try {
-                    Builder builder = Builder.byUUID(player).get();
-                    for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(builder)) {
-                        if (plot != null) plot.getWorld().unloadWorld(true);
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
+                Builder builder = Builder.byUUID(player);
+                for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(builder)) {
+                    if (plot != null) plot.getWorld().unloadWorld(true);
                 }
             }
 

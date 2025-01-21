@@ -46,7 +46,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -63,15 +62,12 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
         setLocation(HologramRegister.getLocation(this));
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player player : getPlayersInRadiusForRanking()) {
-                    if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
-                    player.sendActionBar(getPlayerRankingComponent(player));
-                }
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+            for (Player player : getPlayersInRadiusForRanking()) {
+                if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
+                player.sendActionBar(getPlayerRankingComponent(player));
             }
-        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
+        }, 0L, 20L);
     }
 
     @Override
