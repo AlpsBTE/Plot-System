@@ -70,15 +70,11 @@ public class PlotMemberMenu extends AbstractMenu {
 
         // Set loading item for plot member items
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            try {
-                List<Builder> plotMembers = plot.getPlotMembers();
-                for (int i = 1; i <= 3; i++) {
-                    getMenu().getSlot(11 + i).setItem(plotMembers.size() >= i
-                            ? MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer())
-                            : emptyMemberSlotItem);
-                }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            List<Builder> plotMembers = plot.getPlotMembers();
+            for (int i = 1; i <= 3; i++) {
+                getMenu().getSlot(11 + i).setItem(plotMembers.size() >= i
+                        ? MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer())
+                        : emptyMemberSlotItem);
             }
         });
 
@@ -103,36 +99,28 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set plot owner item
-        try {
-            getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
-                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER), GOLD, BOLD))
-                            .setLore(new LoreBuilder()
-                                    .addLine(plot.getPlotOwner().getName()).build())
-                            .build());
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        getMenu().getSlot(10)
+                .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER), GOLD, BOLD))
+                        .setLore(new LoreBuilder()
+                                .addLine(plot.getPlotOwner().getName()).build())
+                        .build());
 
         // Set plot member items
-        try {
-            builders = plot.getPlotMembers();
-            for (int i = 12; i < 15; i++) {
-                if (builders.size() < (i - 11)) return;
+        builders = plot.getPlotMembers();
+        for (int i = 12; i < 15; i++) {
+            if (builders.size() < (i - 11)) return;
 
-                Builder builder = builders.get(i - 12);
-                getMenu().getSlot(i)
-                        .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
-                                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER), AQUA, BOLD))
-                                .setLore(new LoreBuilder()
-                                        .addLines(text(builder.getName()),
-                                                empty(),
-                                                text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER))))
-                                        .build())
-                                .build());
-            }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            Builder builder = builders.get(i - 12);
+            getMenu().getSlot(i)
+                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
+                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER), AQUA, BOLD))
+                            .setLore(new LoreBuilder()
+                                    .addLines(text(builder.getName()),
+                                            empty(),
+                                            text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER))))
+                                    .build())
+                            .build());
         }
     }
 
@@ -163,13 +151,8 @@ public class PlotMemberMenu extends AbstractMenu {
         });
 
         // Set click event for back item
-        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
-            try {
-                new PlotActionsMenu(clickPlayer, plot);
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
-        });
+        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation)
+                -> new PlotActionsMenu(clickPlayer, plot));
     }
 
     @Override

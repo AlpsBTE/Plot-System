@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -64,7 +65,12 @@ public class CMD_Review extends BaseCommand {
                 return;
             }
 
-            if (args.length < 1 || AlpsUtils.tryParseInt(args[0]) == null) {
+            if (args.length == 0) {
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
+                return;
+            }
+
+            if (AlpsUtils.tryParseInt(args[0]) == null) {
                 sendInfo(sender);
                 return;
             }
@@ -102,7 +108,7 @@ public class CMD_Review extends BaseCommand {
                 return;
             }
 
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewPlotMenu(player, plot));
         });
         return true;
     }
