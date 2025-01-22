@@ -126,7 +126,7 @@ public class EventListener implements Listener {
 
             // Informing player about new feedback
             try {
-                List<Plot> plots = Plot.getPlots(builder, Status.completed, Status.unfinished);
+                List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.completed, Status.unfinished);
                 List<Plot> reviewedPlots = new ArrayList<>();
 
                 for (Plot plot : plots) {
@@ -146,7 +146,7 @@ public class EventListener implements Listener {
 
             // Informing player about unfinished plots
             try {
-                List<Plot> plots = Plot.getPlots(builder, Status.unfinished);
+                List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.unfinished);
                 if (!plots.isEmpty()) {
                     PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
                     event.getPlayer().sendMessage("");

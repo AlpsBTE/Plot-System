@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
@@ -86,7 +87,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            List<Country> countries = Country.getCountries();
+            List<Country> countries = DataProvider.COUNTRY.getCountries();
             if (countries.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no countries registered in the database!"));
                 return;
@@ -96,7 +97,7 @@ public class CMD_Setup_Country extends SubCommand {
             sender.sendMessage("§8--------------------------");
             for (Country c : countries) {
                 try {
-                    sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Server: " + c.getServer().getID() + " (" + c.getServer().getName() + ")");
+                    sender.sendMessage(" §6> §b" + c.getCode() + " §f- Server: " + c.getServer().getID() + " (" + c.getServer().getName() + ")");
                 } catch (SQLException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                 }

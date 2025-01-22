@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
@@ -141,7 +142,7 @@ public final class PlotUtils {
         return null;
     }
 
-    public static boolean isPlayerOnPlot(AbstractPlot plot, Player player) throws SQLException {
+    public static boolean isPlayerOnPlot(AbstractPlot plot, Player player) {
         if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
             Location playerLoc = player.getLocation();
             return plot.getWorld().getProtectedRegion().contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
@@ -149,7 +150,7 @@ public final class PlotUtils {
         return false;
     }
 
-    public static CuboidRegion getPlotAsRegion(AbstractPlot plot) throws IOException, SQLException {
+    public static CuboidRegion getPlotAsRegion(AbstractPlot plot) throws IOException {
         Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
         if (clipboard != null) {
             if (plot.getVersion() >= 3) {
@@ -424,7 +425,7 @@ public final class PlotUtils {
 
                             if (plot.getPlotOwner() != null) {
                                 Cache.clearCache(plot.getPlotOwner().getUUID());
-                                plot.getPlotOwner().setSlot(-1, dPlot.getSlot());
+                                plot.getPlotOwner().setSlot(dPlot.getSlot(), -1);
                             }
 
                             dPlot.setPlotOwner(null);
@@ -494,12 +495,7 @@ public final class PlotUtils {
 
         public static List<Plot> getCachedInProgressPlots(Builder builder) {
             if (!cachedInProgressPlots.containsKey(builder.getUUID())) {
-                try {
-                    cachedInProgressPlots.put(builder.getUUID(), Plot.getPlots(builder, Status.unfinished));
-                } catch (SQLException ex) {
-                    Utils.logSqlException(ex);
-                    return new ArrayList<>();
-                }
+                cachedInProgressPlots.put(builder.getUUID(), DataProvider.PLOT.getPlots(builder, Status.unfinished));
             }
 
             return cachedInProgressPlots.get(builder.getUUID());
@@ -648,18 +644,14 @@ public final class PlotUtils {
         }
 
         public static void sendGroupTipMessage(Plot plot, Player player) {
-            try {
-                if (plot.getPlotMembers().isEmpty()) {
-                    Component tc = text("» ", DARK_GRAY)
-                            .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
-                            .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/plot members " + plot.getID()))
-                            .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
+            if (plot.getPlotMembers().isEmpty()) {
+                Component tc = text("» ", DARK_GRAY)
+                        .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
+                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getID()))
+                        .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
 
-                    player.sendMessage(tc);
-                    player.sendMessage(text(MSG_LINE, DARK_GRAY));
-                }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
+                player.sendMessage(tc);
+                player.sendMessage(text(MSG_LINE, DARK_GRAY));
             }
         }
 

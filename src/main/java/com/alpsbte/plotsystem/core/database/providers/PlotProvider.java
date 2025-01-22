@@ -36,6 +36,11 @@ public class PlotProvider {
         return List.of();
     }
 
+    public List<Plot> getPlots(Builder builder, Status... statuses) {
+        // TODO: get plots where builder is either owner or member and filter by status
+        return List.of();
+    }
+
     public List<Builder> getPlotMembers(int plotId) {
         // TODO: implement
         return null;
