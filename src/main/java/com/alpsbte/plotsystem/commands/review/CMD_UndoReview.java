@@ -56,8 +56,6 @@ public class CMD_UndoReview extends BaseCommand {
             return true;
         }
 
-        // TODO: clarify if separate permission node will be needed
-
         CompletableFuture.runAsync(() -> {
             if (!DataProvider.BUILDER.isAnyReviewer(player.getUniqueId()) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
@@ -70,7 +68,7 @@ public class CMD_UndoReview extends BaseCommand {
             }
 
             Plot plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-            if (plot == null || plot.getStatus() != Status.unreviewed) {
+            if (plot == null || plot.getStatus() != Status.completed) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender,
                         LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                 return;

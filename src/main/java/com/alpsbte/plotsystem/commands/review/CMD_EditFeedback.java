@@ -27,59 +27,72 @@ package com.alpsbte.plotsystem.commands.review;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class CMD_EditFeedback extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+        Player player = getPlayer(sender);
+        if (player == null) {
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", RED));
             return true;
         }
 
-        if (args.length <= 1 || AlpsUtils.tryParseInt(args[0]) == null) {sendInfo(sender); return true;}
-        int plotID = Integer.parseInt(args[0]);
+        CompletableFuture.runAsync(() -> {
+            if (!DataProvider.BUILDER.isAnyReviewer(player.getUniqueId()) && !sender.hasPermission("plotsystem.admin")) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                return;
+            }
 
-        if (!PlotUtils.plotExists(plotID)) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-            return true;
-        }
+            if (args.length < 1 || AlpsUtils.tryParseInt(args[0]) == null) {
+                sendInfo(sender);
+                return;
+            }
 
-        Plot plot = new Plot(plotID);
-        try {
+            Plot plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
+
             if (!plot.isReviewed() && !plot.isRejected()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
-                return true;
+                return;
             }
-            if (getPlayer(sender) != null && !sender.hasPermission("plotsystem.admin") && !plot.getReview().getReviewer().getUUID().equals(((Player) sender).getUniqueId())) {
+
+            Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
+            if (!DataProvider.BUILDER.canReviewPlot(builder, plot) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
-                return true;
+                return;
             }
 
             StringBuilder feedback = new StringBuilder();
             for (int i = 2; i <= args.length; i++) {
                 feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
             }
-            plot.getReview().setFeedback(feedback.toString());
+            try {
+                plot.getReview().setFeedback(feedback.toString());
+            } catch (SQLException e) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
+            }
 
             sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        });
         return true;
     }
 

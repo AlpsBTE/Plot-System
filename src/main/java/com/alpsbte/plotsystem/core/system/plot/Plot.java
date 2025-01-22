@@ -219,22 +219,9 @@ public class Plot extends AbstractPlot {
                 .setValue(status.name()).setValue(this.ID).executeUpdate();
     }
 
-    public int getTotalScore() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                int score = rs.getInt(1);
-                if (!rs.wasNull()) {
-                    DatabaseConnection.closeResultSet(rs);
-                    return score;
-                }
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-
-            return -1;
-        }
+    public int getTotalScore() {
+        // TODO: implement
+        return 0;
     }
 
     public void setTotalScore(int score) throws SQLException {
@@ -448,7 +435,7 @@ public class Plot extends AbstractPlot {
         return getReview() != null;
     }
 
-    public boolean isRejected() throws SQLException {
+    public boolean isRejected() {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
     }
 

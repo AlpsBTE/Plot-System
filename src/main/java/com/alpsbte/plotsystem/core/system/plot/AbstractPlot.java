@@ -86,7 +86,7 @@ public abstract class AbstractPlot {
     /**
      * @return plot world, can be one or city plot world
      */
-    public abstract <T extends PlotWorld> T getWorld() throws SQLException;
+    public abstract <T extends PlotWorld> T getWorld();
 
     /**
      * @return the outline of the plot which contains all corner points of the polygon
@@ -172,7 +172,7 @@ public abstract class AbstractPlot {
                 Vector3 clipboardCenter = clipboard.getRegion().getCenter();
                 return BlockVector3.at(clipboardCenter.x(), this.getWorld().getPlotHeightCentered(), clipboardCenter.z());
             }
-        } catch (IOException | SQLException ex) {
+        } catch (IOException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to load schematic file to clipboard!"), ex);
         }
         return null;
@@ -181,7 +181,7 @@ public abstract class AbstractPlot {
     /**
      * @return plot permission manager to add or remove build rights
      */
-    public PlotPermissions getPermissions() throws SQLException {
+    public PlotPermissions getPermissions() {
         if (plotPermissions == null) plotPermissions = new PlotPermissions(getWorld());
         return plotPermissions;
     }
