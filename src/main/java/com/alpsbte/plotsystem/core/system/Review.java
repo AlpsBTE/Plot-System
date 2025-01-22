@@ -210,7 +210,7 @@ public class Review {
                     member.addScore(-plot.getSharedScore());
 
                     if (member.getFreeSlot() != null) {
-                        member.setSlot(plot.getID(), member.getFreeSlot());
+                        member.setSlot(member.getFreeSlot(), plot.getID());
                     }
                 }
 
@@ -220,7 +220,7 @@ public class Review {
                 plot.setPasted(false);
 
                 if (plot.getPlotOwner().getFreeSlot() != null) {
-                    plot.getPlotOwner().setSlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
+                    plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID());
                 }
 
                 int cityId = plot.getCity().getID();

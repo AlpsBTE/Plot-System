@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -75,48 +76,39 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set player stats item
-        try {
-            getMenu().getSlot(4)
-                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
-                            .setName(text(builder.getName(), GOLD).decoration(BOLD, true))
-                            .setLore(new LoreBuilder()
-                                    .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ", GRAY)
-                                            .append(text(builder.getScore(), WHITE)))
-                                    .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": ", GRAY)
-                                            .append(text(builder.getCompletedBuildsCount(), WHITE)))
-                                    .build())
-                            .build());
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);
-            getMenu().getSlot(4).setItem(MenuItems.errorItem(getMenuPlayer()));
-        }
+        getMenu().getSlot(4)
+                .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
+                        .setName(text(builder.getName(), GOLD).decoration(BOLD, true))
+                        .setLore(new LoreBuilder()
+                                .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ", GRAY)
+                                        .append(text(builder.getScore(), WHITE)))
+                                .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COMPLETED_PLOTS) + ": ", GRAY)
+                                        .append(text(builder.getCompletedBuildsCount(), WHITE)))
+                                .build())
+                        .build());
 
         // Set player plot items
-        try {
-            plots = Plot.getPlots(builder);
+        plots = DataProvider.PLOT.getPlots(builder);
 
-            plotDisplayCount = Math.min(plots.size(), 36);
-            for (int i = 0; i < plotDisplayCount; i++) {
-                Plot plot = plots.get(i);
-                try {
-                    ItemStack item = switch (plot.getStatus()) {
-                        case unfinished -> BaseItems.PLOT_UNFINISHED.getItem();
-                        case unreviewed -> BaseItems.PLOT_UNREVIEWED.getItem();
-                        default -> BaseItems.PLOT_COMPLETED.getItem();
-                    };
+        plotDisplayCount = Math.min(plots.size(), 36);
+        for (int i = 0; i < plotDisplayCount; i++) {
+            Plot plot = plots.get(i);
+            try {
+                ItemStack item = switch (plot.getStatus()) {
+                    case unfinished -> BaseItems.PLOT_UNFINISHED.getItem();
+                    case unreviewed -> BaseItems.PLOT_UNREVIEWED.getItem();
+                    default -> BaseItems.PLOT_COMPLETED.getItem();
+                };
 
-                    getMenu().getSlot(9 + i)
-                            .setItem(new ItemBuilder(item)
-                                    .setName(text(plot.getCity().getName() + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), AQUA).decoration(BOLD, true))
-                                    .setLore(getLore(plot, getMenuPlayer()).build())
-                                    .build());
-                } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                    getMenu().getSlot(9 + i).setItem(MenuItems.errorItem(getMenuPlayer()));
-                }
+                getMenu().getSlot(9 + i)
+                        .setItem(new ItemBuilder(item)
+                                .setName(text(plot.getCity().getName() + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), AQUA).decoration(BOLD, true))
+                                .setLore(getLore(plot, getMenuPlayer()).build())
+                                .build());
+            } catch (SQLException ex) {
+                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                getMenu().getSlot(9 + i).setItem(MenuItems.errorItem(getMenuPlayer()));
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 
@@ -125,14 +117,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
         // Add click event for player plot items
         for (int i = 0; i < plotDisplayCount; i++) {
             int itemSlot = i;
-            getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
-                try {
-                    new PlotActionsMenu(clickPlayer, plots.get(itemSlot));
-                } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                    clickPlayer.closeInventory();
-                }
-            });
+            getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> new PlotActionsMenu(clickPlayer, plots.get(itemSlot)));
         }
 
         // Set click event for back item

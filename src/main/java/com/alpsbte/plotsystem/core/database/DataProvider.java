@@ -24,11 +24,13 @@
 
 package com.alpsbte.plotsystem.core.database;
 
-import com.alpsbte.plotsystem.core.database.providers.BuilderProvider;
-import com.alpsbte.plotsystem.core.database.providers.PlotProvider;
+import com.alpsbte.plotsystem.core.database.providers.*;
 
 public class DataProvider {
     public static BuilderProvider BUILDER = new BuilderProvider();
     public static BuildTeamProviderSql BUILD_TEAM = new BuildTeamProviderSql();
     public static PlotProvider PLOT = new PlotProvider();
+    public static DifficultyProvider DIFFICULTY = new DifficultyProvider();
+    public static CityProjectProvider CITY_PROJECT = new CityProjectProvider();
+    public static CountryProvider COUNTRY = new CountryProvider();
 }

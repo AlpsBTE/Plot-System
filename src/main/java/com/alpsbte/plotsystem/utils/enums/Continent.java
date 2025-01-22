@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.utils.enums;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -68,7 +69,7 @@ public enum Continent {
      * @return Menu item
      */
     public ItemStack getItem(Player player) {
-        List<Country> countries = Country.getCountries(this);
+        List<Country> countries = DataProvider.COUNTRY.getCountriesByContinent(this);
 
         return new ItemBuilder(Material.COMPASS)
                 .setName(text(LangUtil.getInstance().get(player, langPath), NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true))

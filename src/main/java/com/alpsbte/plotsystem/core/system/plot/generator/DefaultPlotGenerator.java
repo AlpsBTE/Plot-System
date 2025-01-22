@@ -68,28 +68,24 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected boolean init() {
-        try {
-            if (getBuilder().getFreeSlot() != null) {
-                if (DefaultPlotGenerator.playerPlotGenerationHistory.containsKey(getBuilder().getUUID())) {
-                    if (DefaultPlotGenerator.playerPlotGenerationHistory.get(getBuilder().getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
-                        DefaultPlotGenerator.playerPlotGenerationHistory.remove(getBuilder().getUUID());
-                    } else {
-                        getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
-                        getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        return false;
-                    }
+        if (getBuilder().getFreeSlot() != null) {
+            if (DefaultPlotGenerator.playerPlotGenerationHistory.containsKey(getBuilder().getUUID())) {
+                if (DefaultPlotGenerator.playerPlotGenerationHistory.get(getBuilder().getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
+                    DefaultPlotGenerator.playerPlotGenerationHistory.remove(getBuilder().getUUID());
+                } else {
+                    getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
+                    getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+                    return false;
                 }
-
-                DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
-                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
-                getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
-                return true;
-            } else {
-                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
-                getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);
+
+            DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
+            getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
+            getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
+            return true;
+        } else {
+            getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
+            getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
         }
         return false;
     }
@@ -128,7 +124,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed, false);
 
         if (!failed) {
-            getBuilder().setSlot(plot.getID(), getBuilder().getFreeSlot());
+            getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getID());
             plot.setStatus(Status.unfinished);
             ((Plot) plot).setPlotType(plotType);
             ((Plot) plot).setPlotOwner(getBuilder().getPlayer().getUniqueId().toString());

@@ -78,7 +78,7 @@ public class CityProject {
         return ID;
     }
 
-    public Country getCountry() throws SQLException {
+    public Country getCountry() {
         return new Country(countryID);
     }
 
@@ -100,7 +100,7 @@ public class CityProject {
         return visible;
     }
 
-    public ItemStack getItem(Player player, PlotDifficulty selectedPlotDifficulty) throws SQLException {
+    public ItemStack getItem(Player player, PlotDifficulty selectedPlotDifficulty) {
         ItemStack cpItem = getCountry().getHead();
         try {
             PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?

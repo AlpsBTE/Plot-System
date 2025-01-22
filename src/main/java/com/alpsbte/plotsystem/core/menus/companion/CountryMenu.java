@@ -27,11 +27,11 @@ package com.alpsbte.plotsystem.core.menus.companion;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -46,7 +46,6 @@ import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -89,12 +88,8 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set city project items
-        try {
-            countryProjects = Country.getCountries(selectedContinent);
-            setCountryItems();
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        countryProjects = DataProvider.COUNTRY.getCountriesByContinent(selectedContinent);
+        setCountryItems();
     }
 
     @Override
@@ -108,11 +103,7 @@ public class CountryMenu extends AbstractMenu {
             getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
 
-            try {
-                setCountryItems();
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            setCountryItems();
         }));
 
         // Set click event for tutorial item
@@ -154,7 +145,7 @@ public class CountryMenu extends AbstractMenu {
                 .build();
     }
 
-    private void setCountryItems() throws SQLException {
+    private void setCountryItems() {
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
             getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -163,16 +154,16 @@ public class CountryMenu extends AbstractMenu {
         }
 
         for (Country country : countryProjects) {
-            ItemStack item = country.getHead();
+            ItemStack item = country.getCountryItem(getMenuPlayer());
 
             List<CityProject> cities = country.getCityProjects();
-            int plotsOpen = Plot.getPlots(cities, Status.unclaimed).size();
-            int plotsInProgress = Plot.getPlots(cities, Status.unfinished, Status.unreviewed).size();
-            int plotsCompleted = Plot.getPlots(cities, Status.completed).size();
-            int plotsUnclaimed = Plot.getPlots(cities, Status.unclaimed).size();
+            int plotsOpen = DataProvider.PLOT.getPlots(cities, Status.unclaimed).size();
+            int plotsInProgress = DataProvider.PLOT.getPlots(cities, Status.unfinished, Status.unreviewed).size();
+            int plotsCompleted = DataProvider.PLOT.getPlots(cities, Status.completed).size();
+            int plotsUnclaimed = DataProvider.PLOT.getPlots(cities, Status.unclaimed).size();
 
             getMenu().getSlot(startingSlot + countryProjects.indexOf(country)).setItem(new ItemBuilder(item)
-                    .setName(text(country.getName(), AQUA).decoration(BOLD, true))
+                    .setName(text(country.getName(getMenuPlayer()), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
                             .addLine(text(cities.size(), GOLD).append(text(" " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.CityProject.CITIES), GRAY)))
                             .emptyLine()

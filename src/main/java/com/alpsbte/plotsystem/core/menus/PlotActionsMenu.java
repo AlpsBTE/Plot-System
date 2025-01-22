@@ -55,7 +55,7 @@ public class PlotActionsMenu extends AbstractMenu {
     private final Plot plot;
     private final boolean hasFeedback;
 
-    public PlotActionsMenu(Player menuPlayer, Plot plot) throws SQLException {
+    public PlotActionsMenu(Player menuPlayer, Plot plot) {
         super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
 
         this.plot = plot;

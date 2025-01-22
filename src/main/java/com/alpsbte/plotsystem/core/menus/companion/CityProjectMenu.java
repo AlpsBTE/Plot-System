@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -50,7 +51,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -60,7 +60,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     private PlotDifficulty selectedPlotDifficulty;
 
     CityProjectMenu(Player player, Country country, PlotDifficulty selectedPlotDifficulty) {
-        super(6, 4, country.getName() + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
+        super(6, 4, country.getName(player) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
         this.country = country;
         this.selectedPlotDifficulty = selectedPlotDifficulty;
     }
@@ -162,22 +162,17 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPaginatedMenuItemsAsync(List<?> source) {
-        List<CityProject> cities = source.stream().map(l -> (CityProject) l).collect(Collectors.toList());
+        List<CityProject> cities = source.stream().map(l -> (CityProject) l).toList();
         int slot = 9;
         for (CityProject city : cities) {
-            try {
-                getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), selectedPlotDifficulty));
-            } catch (SQLException e) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
-                getMenu().getSlot(slot).setItem(MenuItems.errorItem(getMenuPlayer()));
-            }
+            getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), selectedPlotDifficulty));
             slot++;
         }
     }
 
     @Override
     protected void setPaginatedItemClickEventsAsync(List<?> source) {
-        List<CityProject> cities = source.stream().map(l -> (CityProject) l).collect(Collectors.toList());
+        List<CityProject> cities = source.stream().map(l -> (CityProject) l).toList();
         int slot = 9;
         for (CityProject city : cities) {
             final int _slot = slot;
@@ -199,7 +194,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                         return;
                     }
 
-                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !Plot.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
+                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !DataProvider.DIFFICULTY.builderMeetsRequirements(builder, selectedPlotDifficulty)) {
                         clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         return;

@@ -57,7 +57,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
     private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard;
 
-    protected ScoreLeaderboard() {
+    public ScoreLeaderboard() {
         super("score-leaderboard", null, false, PlotSystem.getPlugin());
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
         setLocation(HologramRegister.getLocation(this));

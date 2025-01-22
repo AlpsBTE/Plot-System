@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
@@ -334,7 +335,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             // Check if build team and country exists
             try {
                 if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
-                if (Country.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
+                if (DataProvider.COUNTRY.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is not added to the build team!"));
                     return;
                 }

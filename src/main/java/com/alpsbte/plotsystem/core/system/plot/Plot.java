@@ -29,7 +29,6 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -71,41 +70,14 @@ public class Plot extends AbstractPlot {
     }
 
 
-    public CityProject getCity() throws SQLException {
-        if (this.city != null)
-            return this.city;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT city_project_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                int i = rs.getInt(1);
-                DatabaseConnection.closeResultSet(rs);
-                CityProject cityProject = new CityProject(i);
-
-                this.city = cityProject;
-
-                return cityProject;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
+    public CityProject getCity() {
+        // TODO: implement
+        return null;
     }
 
-    public PlotDifficulty getDifficulty() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT difficulty_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                int i = rs.getInt(1);
-                DatabaseConnection.closeResultSet(rs);
-                return PlotDifficulty.values()[i - 1];
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return null;
-        }
+    public PlotDifficulty getDifficulty() {
+        // TODO: implement
+        return null;
     }
 
     @Override
@@ -447,24 +419,6 @@ public class Plot extends AbstractPlot {
     public static List<Plot> getPlots(Status... statuses) throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery();
         return listPlots(rs);
-    }
-
-    public static List<Plot> getPlots(Builder builder) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE owner_uuid = '" + builder.getUUID() + "' ORDER BY CAST(status AS CHAR)").executeQuery());
-        plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
-        return plots;
-    }
-
-    public static List<Plot> getPlots(Builder builder, Status... statuses) throws SQLException {
-        List<Plot> plots = listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND owner_uuid = '" + builder.getUUID().toString() + "'", statuses)).executeQuery());
-        plots.addAll(getPlotsAsMember(builder, statuses));
-        return plots;
-    }
-
-    public static List<Plot> getPlots(List<Country> countries, Status status) throws SQLException {
-        List<CityProject> cities = new ArrayList<>();
-        countries.forEach(c -> cities.addAll(c.getCityProjects()));
-        return getPlots(cities, status);
     }
 
     // Temporary fix to receive plots of builder as member

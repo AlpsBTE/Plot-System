@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -63,8 +64,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         List<Plot> plots = new ArrayList<>();
         try {
             countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
-            plots.addAll(Plot.getPlots(countries, Status.unreviewed));
-            plots.addAll(Plot.getPlots(countries, Status.unfinished));
+            plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unreviewed));
+            plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unfinished));
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
@@ -87,29 +88,22 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         // Set unreviewed and unfinished plot items
         List<Plot> plots = getFilteredPlots(source);
         for (int i = 0; i < plots.size(); i++) {
-            try {
-                Plot plot = plots.get(i);
-                List<String> lines = new ArrayList<>();
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
-                lines.add("");
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
-                if (!plot.getPlotMembers().isEmpty()) lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(m -> {
-                    try {return m.getName();} catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
-                            return "";
-                        }).collect(Collectors.joining(", "))
-                );
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName());
-                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
-
-                getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
-                        .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
-                        .setLore(lines)
-                        .build());
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                getMenu().getSlot(i).setItem(MenuItems.errorItem(getMenuPlayer()));
+            Plot plot = plots.get(i);
+            List<String> lines = new ArrayList<>();
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
+            lines.add("");
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
+            if (!plot.getPlotMembers().isEmpty()) {
+                lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(Builder::getName).collect(Collectors.joining(", ")));
             }
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName());
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(getMenuPlayer()));
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
+
+            getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
+                    .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
+                    .setLore(lines)
+                    .build());
         }
     }
 
@@ -120,17 +114,12 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         for (int i = 0; i < plots.size(); i++) {
             Plot plot = plots.get(i);
             getMenu().getSlot(i + 9).setClickHandler((player, info) -> {
-                try {
-                    if (plot.getStatus() == Status.unfinished) {
-                        new PlotActionsMenu(getMenuPlayer(), plot);
-                        return;
-                    }
-
-                    player.performCommand("review " + plot.getID());
-                } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                    getMenuPlayer().closeInventory();
+                if (plot.getStatus() == Status.unfinished) {
+                    new PlotActionsMenu(getMenuPlayer(), plot);
+                    return;
                 }
+
+                player.performCommand("review " + plot.getID());
             });
         }
     }
@@ -152,7 +141,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             if (countries.isEmpty()) return;
 
             if (filteredCountry == null) {
-                filteredCountry = countries.get(0);
+                filteredCountry = countries.getFirst();
             } else {
                 int index = countries.indexOf(filteredCountry);
                 filteredCountry = index + 1 >= countries.size() ? null : countries.get(index + 1);
@@ -196,12 +185,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     private List<Plot> getFilteredPlots(List<?> plots) {
         List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).collect(Collectors.toList());
-        if (filteredCountry != null) filteredPlots = filteredPlots.stream().filter(p -> {
-            try {
-                return p.getCity().getCountry().getID() == filteredCountry.getID();
-            } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
-            return false;
-        }).collect(Collectors.toList());
+        if (filteredCountry != null)
+            filteredPlots = filteredPlots.stream().filter(p -> p.getCity().getCountry().getCode().equals(filteredCountry.getCode())).collect(Collectors.toList());
         return filteredPlots;
     }
 
@@ -211,9 +196,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         LegacyLoreBuilder.emptyLine();
 
         countries.forEach(c -> {
-            if (filteredCountry != null && filteredCountry.getID() == c.getID()) {
-                LegacyLoreBuilder.addLine("§b§l> §f§l" + filteredCountry.getName());
-            } else LegacyLoreBuilder.addLine("§7" + c.getName());
+            if (filteredCountry != null && filteredCountry.getCode().equals(c.getCode())) {
+                LegacyLoreBuilder.addLine("§b§l> §f§l" + filteredCountry.getName(langPlayer));
+            } else LegacyLoreBuilder.addLine("§7" + c.getName(langPlayer));
         });
 
         return new ItemBuilder(MenuItems.filterItem(getMenuPlayer()))
