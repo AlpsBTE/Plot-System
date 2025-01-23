@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
@@ -88,6 +89,21 @@ public class Utils {
         });
     }
 
+    // TODO: extract to alpsLibs?
+    public static ItemStack getConfiguredItem(String material, Object customModelData) {
+        ItemStack base;
+        if (material.startsWith("head(") && material.endsWith(")")) {
+            String headId = material.substring(material.indexOf("(") + 1, material.lastIndexOf(")"));
+            base = AlpsHeadUtils.getCustomHead(headId);
+        } else {
+            Material mat = Material.getMaterial(material);
+            base = new ItemStack(mat == null ? Material.BARRIER : mat);
+        }
+        ItemBuilder builder = new ItemBuilder(base);
+        if (customModelData != null) builder.setItemModel(customModelData);
+
+        return builder.build();
+    }
 
     public static class SoundUtils {
         private SoundUtils() {}

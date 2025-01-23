@@ -154,7 +154,7 @@ public class CountryMenu extends AbstractMenu {
         }
 
         for (Country country : countryProjects) {
-            ItemStack item = country.getCountryItem(getMenuPlayer());
+            ItemStack item = country.getCountryItem();
 
             List<CityProject> cities = country.getCityProjects();
             int plotsOpen = DataProvider.PLOT.getPlots(cities, Status.unclaimed).size();

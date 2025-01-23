@@ -101,7 +101,7 @@ public class CityProject {
     }
 
     public ItemStack getItem(Player player, PlotDifficulty selectedPlotDifficulty) {
-        ItemStack cpItem = getCountry().getHead();
+        ItemStack cpItem = getCountry().getCountryItem();
         try {
             PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
                     selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(getID(), Builder.byUUID(player.getUniqueId())).get();

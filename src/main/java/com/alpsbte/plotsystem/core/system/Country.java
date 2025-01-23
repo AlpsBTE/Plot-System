@@ -26,8 +26,8 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +48,6 @@ public class Country {
         this.continent = continent;
         this.material = material;
         this.customModelData = customModelData;
-
     }
 
     public String getCode() {return code;}
@@ -68,8 +67,8 @@ public class Country {
         return code;
     }
 
-    public ItemStack getCountryItem(Player player) {
-        return new ItemStack(Material.BARRIER);
+    public ItemStack getCountryItem() {
+        return Utils.getConfiguredItem(material, customModelData);
     }
 
     @Deprecated
