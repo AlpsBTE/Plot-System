@@ -107,11 +107,6 @@ public class EventListener implements Listener {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
 
-            // Inform player about update
-            if (event.getPlayer().hasPermission("plotsystem.admin") && PlotSystem.UpdateChecker.updateAvailable() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES)) {
-                event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-                event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
-            }
 
             // Check if player has changed his name
             Builder builder = Builder.byUUID(event.getPlayer().getUniqueId());
@@ -124,65 +119,7 @@ public class EventListener implements Listener {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
 
-            // Informing player about new feedback
-            try {
-                List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.completed, Status.unfinished);
-                List<Plot> reviewedPlots = new ArrayList<>();
-
-                for (Plot plot : plots) {
-                    if (plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
-                        reviewedPlots.add(plot);
-                        plot.getReview().setFeedbackSent(true);
-                    }
-                }
-
-                if (!reviewedPlots.isEmpty()) {
-                    PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, event.getPlayer());
-                    event.getPlayer().sendTitle("", "§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
-                }
-            } catch (Exception ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his plot feedback!"), ex);
-            }
-
-            // Informing player about unfinished plots
-            try {
-                List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.unfinished);
-                if (!plots.isEmpty()) {
-                    PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, event.getPlayer());
-                    event.getPlayer().sendMessage("");
-                }
-            } catch (Exception ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his unfinished plots!"), ex);
-            }
-
-            // Informing reviewer about new reviews
-            try {
-                if (event.getPlayer().hasPermission("plotsystem.review") && builder.isReviewer()) {
-                    List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
-
-                    if (!unreviewedPlots.isEmpty()) {
-                        PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, event.getPlayer());
-                    }
-                }
-            } catch (Exception ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about unreviewed plots!"), ex);
-            }
-
-            // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
-            try {
-                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                        !TutorialPlot.isPlotCompleted(event.getPlayer(), TutorialCategory.BEGINNER.getId())) {
-                    if (!event.getPlayer().hasPlayedBefore()) {
-                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
-                                () -> event.getPlayer().performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
-                    } else {
-                        AbstractPlotTutorial.sendTutorialRequiredMessage(event.getPlayer(), TutorialCategory.BEGINNER.getId());
-                        event.getPlayer().playSound(event.getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
-                    }
-                }
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            sendNotices(event.getPlayer(), builder);
         });
     }
 
@@ -223,7 +160,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) throws SQLException {
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked().getType().equals(EntityType.PLAYER) && event.getHand() == EquipmentSlot.HAND) {
             event.getPlayer().performCommand("plots " + Builder.byUUID(event.getRightClicked().getUniqueId()).getName());
         }
@@ -337,5 +274,74 @@ public class EventListener implements Listener {
     @EventHandler
     public void onLanguageChange(LanguageChangeEvent event) {
         Utils.updatePlayerInventorySlots(event.getPlayer());
+    }
+
+    private void sendNotices(Player player, Builder builder) {
+        // Inform player about update
+        if (player.hasPermission("plotsystem.admin") && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES) && PlotSystem.UpdateChecker.updateAvailable()) {
+            player.sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
+            player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
+        }
+
+        // Informing player about new feedback
+        try {
+            List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.completed, Status.unfinished);
+            List<Plot> reviewedPlots = new ArrayList<>();
+
+            for (Plot plot : plots) {
+                if (plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
+                    reviewedPlots.add(plot);
+                    plot.getReview().setFeedbackSent(true);
+                }
+            }
+
+            if (!reviewedPlots.isEmpty()) {
+                PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, player);
+                player.sendTitle("", "§6§l" + reviewedPlots.size() + " §a§lPlot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!", 20, 150, 20);
+            }
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his plot feedback!"), ex);
+        }
+
+        // Informing player about unfinished plots
+        try {
+            List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.unfinished);
+            if (!plots.isEmpty()) {
+                PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, player);
+                player.sendMessage("");
+            }
+        } catch (Exception ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his unfinished plots!"), ex);
+        }
+
+        // Informing reviewer about new reviews
+        try {
+            if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {
+                List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
+
+                if (!unreviewedPlots.isEmpty()) {
+                    PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, player);
+                }
+            }
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about unreviewed plots!"), ex);
+        }
+
+
+        // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
+        try {
+            if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
+                    !TutorialPlot.isPlotCompleted(player, TutorialCategory.BEGINNER.getId())) {
+                if (!player.hasPlayedBefore()) {
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                            () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
+                } else {
+                    AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
+                    player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
+                }
+            }
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        }
     }
 }
