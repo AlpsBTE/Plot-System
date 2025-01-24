@@ -26,7 +26,6 @@ plot:
   status: "Status"
   score: "Score"
   total-score: "Total Score"
-  effective-score: "Effective Score"
   completed-plots: "Completed Plots"
   group-system:
     empty-member-slot: "Empty Member Slot"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: 'Leave Plot'
   review-plots: 'Review Plots'
   review-plot: 'Review Plot #{0}'
-  enter-player-name: 'Enter player name'
   select-language: 'Select Language'
   select-plot-type: 'Select Plot Type'
   select-focus-mode: 'Select Focus Mode'

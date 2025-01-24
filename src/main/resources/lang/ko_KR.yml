@@ -26,7 +26,6 @@ plot:
   status: "상태"
   score: "점수"
   total-score: "총점"
-  effective-score: "유효 점수"
   completed-plots: "완성된 플롯들"
   group-system:
     empty-member-slot: "빈 멤버 슬롯"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: "플롯 떠나기"
   review-plots: "플롯 리뷰하기"
   review-plot: "플롯 리뷰 #{0}"
-  enter-player-name: "플레이어 이름 입력하기"
   select-language: "언어 설정"
   select-plot-type: 'Select Plot Type'
   select-focus-mode: "Select Focus Mode"

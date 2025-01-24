@@ -26,7 +26,6 @@ plot:
   status: "狀態"
   score: "積分"
   total-score: "總積分"
-  effective-score: "有效積分"
   completed-plots: "已完成建地"
   group-system:
     empty-member-slot: "成員空位"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: "離開建地"
   review-plots: "審核建地"
   review-plot: "審核建地 #{0}"
-  enter-player-name: "輸入玩家名稱"
   select-language: "選擇語言"
   select-plot-type: '選擇建地類型'
   select-focus-mode: "選擇聚焦模式"

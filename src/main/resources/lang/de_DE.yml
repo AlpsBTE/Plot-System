@@ -26,7 +26,6 @@ plot:
   status: "Status"
   score: "Punktestand"
   total-score: "Gesamtpunktestand"
-  effective-score: "Effektiver Punktestand"
   completed-plots: "Abgeschlossene Plots"
   group-system:
     empty-member-slot: "Leerer Mitglied-Slot"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: 'Plot Verlassen'
   review-plots: 'Plots Bewerten'
   review-plot: 'Plot #{0} Bewerten'
-  enter-player-name: 'Spielername Eingeben'
   select-language: 'Sprache Auswählen'
   select-plot-type: 'Plot Typ Auswählen'
   select-focus-mode: 'Focus-Mode Auswählen'
@@ -126,7 +124,7 @@ menu-description:
   teleport-desc: 'Klicke hier, um dich zum Plot zu teleportieren'
   abandon-desc: 'Klicke hier, um deinen Plot zurückzusetzen und ihn jemand anderem zu geben'
   undo-submit-desc: 'Klicke hier, um deine Eingabe rückgängig zu machen'
-  manage-members-desc: 'Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du andere Spieler zu deinem Plot hinzufügen oder entfernen kannst'
+  manage-members-desc: 'Klicke hier, um das Verwaltungsmenü für Mitglieder zu öffnen, in welchem du%newline%andere Spieler zu deinem Plot hinzufügen oder entfernen kannst'
   feedback-desc: 'Klicke hier, um das Feedback zu deinem Plot anzuzeigen'
   custom-heads-desc: 'Klicke hier, um eine Auswahl an benutzerdefinierten Köpfen zu erhalten'
   banner-maker-desc: 'Klicke hier, um deine eigenen Banner zu erstellen und zu speichern'
@@ -245,7 +243,7 @@ message:
     can-only-submit-unfinished-plots: "Du kannst nur unfertige Plots abgeben!"
     can-only-undo-submissions-unreviewed-plots: "Du kannst nur Einreichungen von unbewerteten Plots rückgängig machen!"
     can-only-manage-members-unfinished-plots: "Du kannst nur Mitglieder von unfertigen Plots verwalten!"
-    cannot-teleport-outside-plot: "Du kannst dich nicht ausserhalb des Plotes teleportieren!"
+    cannot-teleport-outside-plot: "Du kannst dich nicht ausserhalb des Plots teleportieren!"
     cannot-undo-review: "Du kannst eine Bewertung nicht rückgängig machen, wenn du sie nicht selbst erstellt hast!"
     cannot-send-feedback: "Du kannst auf einen Plot kein Feedback geben, wenn du ihn nicht selbst bewertet hast!"
     cannot-review-own-plot: "Du kannst deine eigenen Plots nicht bewerten!"

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
@@ -41,12 +42,14 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.*;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -116,19 +119,19 @@ public class Utils {
         private static Component infoPrefix;
         private static Component alertPrefix;
 
-        public static Component getInfoFormat(String info) {
+        public static @NotNull Component getInfoFormat(String info) {
             return infoPrefix.append(LegacyComponentSerializer.legacySection().deserialize(info).color(GREEN));
         }
 
-        public static Component getInfoFormat(Component infoComponent) {
+        public static @NotNull Component getInfoFormat(@NotNull Component infoComponent) {
             return infoPrefix.append(infoComponent.color(GREEN));
         }
 
-        public static Component getAlertFormat(String alert) {
+        public static @NotNull Component getAlertFormat(String alert) {
             return alertPrefix.append(LegacyComponentSerializer.legacySection().deserialize(alert).color(RED));
         }
 
-        public static Component getAlertFormat(Component alertComponent) {
+        public static @NotNull Component getAlertFormat(@NotNull Component alertComponent) {
             return alertPrefix.append(alertComponent.color(RED));
         }
 
@@ -160,13 +163,15 @@ public class Utils {
 
     public static class ItemUtils {
         private ItemUtils() {}
-        public static TextComponent getNoteFormat(String note) {
+
+        public static @NotNull TextComponent getNoteFormat(String note) {
             return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY).decoration(BOLD, false));
         }
 
-        public static String getActionFormat(String action) {return "§8§l> §c" + action;}
+        @Contract(pure = true)
+        public static @NotNull String getActionFormat(String action) {return "§8§l> §c" + action;}
 
-        public static Component getColoredPointsComponent(int points) {
+        public static @NotNull Component getColoredPointsComponent(int points) {
             return switch (points) {
                 case 0 -> text(points, GRAY);
                 case 1 -> text(points, DARK_RED);
@@ -177,7 +182,7 @@ public class Utils {
             };
         }
 
-        public static TextComponent getFormattedDifficulty(PlotDifficulty plotDifficulty) {
+        public static @NotNull TextComponent getFormattedDifficulty(@NotNull PlotDifficulty plotDifficulty) {
             return switch (plotDifficulty) {
                 case EASY -> text("Easy", GREEN).decoration(BOLD, true);
                 case MEDIUM -> text("Medium", GOLD).decoration(BOLD, true);
@@ -190,27 +195,7 @@ public class Utils {
         for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
 
-    public static Set<Vector> getLineBetweenPoints(Vector point1, Vector point2, int pointsInLine) {
-        double p1X = point1.getX();
-        double p1Y = point1.getY();
-        double p1Z = point1.getZ();
-        double p2X = point2.getX();
-        double p2Y = point2.getY();
-        double p2Z = point2.getZ();
-
-        double lineAveX = (p2X - p1X) / pointsInLine;
-        double lineAveY = (p2Y - p1Y) / pointsInLine;
-        double lineAveZ = (p2Z - p1Z) / pointsInLine;
-
-        HashSet<Vector> line = new HashSet<>();
-        for (int i = 0; i <= pointsInLine; i++) {
-            Vector vector = new Vector(p1X + lineAveX * i, p1Y + lineAveY * i, p1Z + lineAveZ * i);
-            line.add(vector);
-        }
-        return line;
-    }
-
-    public static Set<BlockVector2> getLineBetweenPoints(BlockVector2 point1, BlockVector2 point2, int pointsInLine) {
+    public static @NotNull Set<BlockVector2> getLineBetweenPoints(@NotNull BlockVector2 point1, @NotNull BlockVector2 point2, int pointsInLine) {
         double p1X = point1.x();
         double p1Z = point1.z();
         double p2X = point2.x();

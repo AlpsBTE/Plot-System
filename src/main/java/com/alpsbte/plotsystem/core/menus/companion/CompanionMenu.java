@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import com.alpsbte.plotsystem.core.menus.BuilderUtilitiesMenu;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.menus.SettingsMenu;
+import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -39,19 +40,20 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.ipvp.canvas.Menu;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -61,6 +63,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CompanionMenu {
+    private CompanionMenu() {}
     public static boolean hasContinentView() {
         return Arrays.stream(Continent.values()).map(continent -> Country.getCountries(continent).size()).filter(count -> count > 0).count() > 1;
     }
@@ -76,7 +79,7 @@ public class CompanionMenu {
         } else {
             Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !Country.getCountries(c).isEmpty()).findFirst();
 
-            if (!continent.isPresent()) {
+            if (continent.isEmpty()) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
                 return;
             }
@@ -93,7 +96,7 @@ public class CompanionMenu {
      * @param returnToMenu a lambda to call when needing to return to current menu
      * @return FooterItems indexed by slot number
      */
-    public static HashMap<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
+    public static Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
         HashMap<Integer, FooterItem> items = new HashMap<>();
         // Set builder utilities menu item
         items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer)));
@@ -179,9 +182,35 @@ public class CompanionMenu {
                 .build();
     }
 
+    public static PlotDifficulty clickEventPlotDifficulty(final PlotDifficulty selectedPlotDifficulty, Player clickPlayer, Menu menu) {
+        PlotDifficulty difficulty;
+        if (selectedPlotDifficulty == null) {
+            difficulty = PlotDifficulty.values()[0];
+        } else {
+            difficulty = selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ? PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null;
+        }
+
+        menu.getSlot(6).setItem(CompanionMenu.getDifficultyItem(clickPlayer, difficulty));
+        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
+        return difficulty;
+    }
+
+    public static void clickEventTutorialItem(Menu menu) {
+        // Set click event for tutorial item
+        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
+            menu.getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
+                if (!clickPlayer.hasPermission("plotsystem.tutorial")) {
+                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer.getUniqueId(),
+                            LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                    return;
+                }
+                new TutorialsMenu(clickPlayer);
+            });
+    }
+
     public static class FooterItem {
         public final ItemStack item;
-        public org.ipvp.canvas.slot.Slot.ClickHandler clickHandler = null;
+        public final org.ipvp.canvas.slot.Slot.ClickHandler clickHandler;
 
         FooterItem(ItemStack item, org.ipvp.canvas.slot.Slot.ClickHandler clickHandler) {
             this.item = item;
@@ -190,6 +219,7 @@ public class CompanionMenu {
 
         FooterItem(ItemStack item) {
             this.item = item;
+            this.clickHandler = null;
         }
     }
 }

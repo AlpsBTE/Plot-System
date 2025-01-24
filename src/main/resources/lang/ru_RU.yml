@@ -26,7 +26,6 @@ plot:
   status: "Статус"
   score: "Оценка"
   total-score: "Общая Оценка"
-  effective-score: "Фактическая Оценка"
   completed-plots: "Завершённые Участки"
   group-system:
     empty-member-slot: "Пустое место для участника"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: "Покинуть Участок"
   review-plots: "Оценить Участки"
   review-plot: "Оценить Участок #{0}"
-  enter-player-name: "Введите имя игрока"
   select-language: "Выберите Язык"
   select-plot-type: 'Select Plot Type'
   select-focus-mode: "Select Focus Mode"

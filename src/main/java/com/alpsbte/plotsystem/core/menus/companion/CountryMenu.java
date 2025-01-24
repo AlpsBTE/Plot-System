@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,11 @@ import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.utils.enums.Continent;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -62,7 +62,7 @@ public class CountryMenu extends AbstractMenu {
     private final Continent selectedContinent;
     private PlotDifficulty selectedPlotDifficulty = null;
 
-    CountryMenu(Player player, Continent continent) {
+    CountryMenu(Player player, @NotNull Continent continent) {
         super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY), player);
         selectedContinent = continent;
     }
@@ -96,9 +96,7 @@ public class CountryMenu extends AbstractMenu {
         try {
             countryProjects = Country.getCountries(selectedContinent);
             setCountryItems();
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
     }
 
     @Override
@@ -108,30 +106,13 @@ public class CountryMenu extends AbstractMenu {
 
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
-            selectedPlotDifficulty = (selectedPlotDifficulty == null ?
-                    PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
-                    PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
-
-            getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
-            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
-
+            selectedPlotDifficulty = CompanionMenu.clickEventPlotDifficulty(selectedPlotDifficulty, clickPlayer, getMenu());
             try {
                 setCountryItems();
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            } catch (SQLException ex) {Utils.logSqlException(ex);}
         }));
 
-        // Set click event for tutorial item
-        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
-            getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!clickPlayer.hasPermission("plotsystem.tutorial")) {
-                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer.getUniqueId(),
-                            LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-                    return;
-                }
-                new TutorialsMenu(clickPlayer);
-            });
+        CompanionMenu.clickEventTutorialItem(getMenu());
 
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
@@ -161,12 +142,11 @@ public class CountryMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
-                .pattern("101111001")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
                 .pattern("001111001")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("100010001")
                 .build();
     }
@@ -205,5 +185,4 @@ public class CountryMenu extends AbstractMenu {
                     .build());
         }
     }
-
 }

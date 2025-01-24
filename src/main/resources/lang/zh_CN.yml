@@ -27,7 +27,6 @@ plot:
   status: "状态"
   score: "积分"
   total-score: "总积分"
-  effective-score: "有效积分"
   completed-plots: "已完成建地"
   group-system:
     empty-member-slot: "成员空位"
@@ -100,7 +99,6 @@ menu-title:
   leave-plot: "离开建地"
   review-plots: "审核建地"
   review-plot: "审核建地 #{0}"
-  enter-player-name: "输入玩家名称"
   select-language: "选择语言"
   select-plot-type: 'Select Plot Type'
   select-focus-mode: "Select Focus Mode"

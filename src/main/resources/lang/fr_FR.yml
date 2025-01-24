@@ -26,7 +26,6 @@ plot:
   status: "Statut"
   score: "Score"
   total-score: "Score Total"
-  effective-score: "Score Effectif"
   completed-plots: "Plots complétés"
   group-system:
     empty-member-slot: "Slot de Membre Vide"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: 'Quitter Plot'
   review-plots: 'Évaluation de la Parcelle'
   review-plot: 'Évaluation de la Parcelle #{0}'
-  enter-player-name: 'Entrer nom du joueur'
   select-language: 'Choix de la langue'
   select-plot-type: 'Choisissez un type de Parcelle'
   select-focus-mode: 'Sélectionner le mode Focus'
