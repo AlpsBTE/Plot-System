@@ -5,6 +5,7 @@ import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 
 import java.util.ArrayList;
@@ -21,6 +22,11 @@ public class PlotProvider {
     }
 
     public List<Plot> getPlots(CityProject city, Status... statuses) {
+        // TODO: implement
+        return List.of();
+    }
+
+    public List<Plot> getPlots(CityProject city, PlotDifficulty plotDifficulty, Status status) {
         // TODO: implement
         return List.of();
     }

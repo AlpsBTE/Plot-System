@@ -358,7 +358,7 @@ public class ReviewPlotMenu extends AbstractMenu {
         Player plotOwnerPlayer;
 
         plotOwner = plot.getPlotOwner().getName();
-        city = plot.getCity().getName();
+        city = plot.getCity().getName(getMenuPlayer());
         country = plot.getCity().getCountry().getName(getMenuPlayer());
         difficulty = plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase();
 

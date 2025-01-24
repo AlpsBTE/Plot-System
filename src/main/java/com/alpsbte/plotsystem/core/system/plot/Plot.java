@@ -512,7 +512,7 @@ public class Plot extends AbstractPlot {
         return playerScore >= scoreRequirement;
     }
 
-    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(int cityID, Builder builder) throws SQLException {
+    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(String cityID, Builder builder) throws SQLException {
         // Check if plot difficulties are available
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
         if (!getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).isEmpty()) easyHasPlots = true;

@@ -28,8 +28,6 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.database.providers.CityProjectProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -41,7 +39,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -52,24 +49,36 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CityProject {
 
-    private final int ID;
-    private String countryCode;
+    private final String ID;
+    private final String countryCode;
     private String serverName;
     private boolean isVisible;
 
-    public CityProject(int id, String countryCode, String serverName, boolean isVisible) {
+    public CityProject(String id, String countryCode, String serverName, boolean isVisible) {
         this.ID = id;
         this.countryCode = countryCode;
         this.serverName = serverName;
         this.isVisible = isVisible;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
     public Country getCountry() {
         return DataProvider.COUNTRY.getCountryByCode(countryCode);
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public boolean setServer(String serverName) {
+        if (DataProvider.CITY_PROJECT.setCityProjectServer(ID, serverName)) {
+            this.serverName = serverName;
+            return true;
+        }
+        return false;
     }
 
     public String getName(Player player) {
@@ -92,17 +101,29 @@ public class CityProject {
         return isVisible;
     }
 
+    public boolean setVisible(boolean isVisible) {
+        if (DataProvider.CITY_PROJECT.setCityProjectVisibility(ID, isVisible)) {
+            this.isVisible = isVisible;
+            return true;
+        }
+        return false;
+    }
+
     public ItemStack getItem(Player player, PlotDifficulty selectedPlotDifficulty) {
         ItemStack cpItem = getCountry().getCountryItem();
         try {
-            PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
+            PlotDifficulty plotDifficulty = selectedPlotDifficulty != null ?
                     selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(getID(), Builder.byUUID(player.getUniqueId())).get();
 
             int plotsOpen = DataProvider.PLOT.getPlots(this, Status.unclaimed).size();
             int plotsInProgress = DataProvider.PLOT.getPlots(this, Status.unfinished, Status.unreviewed).size();
             int plotsCompleted = DataProvider.PLOT.getPlots(this, Status.completed).size();
-            int plotsUnclaimed = cpPlotDifficulty != null ? Plot.getPlots(getID(), cpPlotDifficulty, Status.unclaimed).size() : 0;
-            int plotsOpenForPlayer = cpPlotDifficulty != null && plotsUnclaimed != 0 ? getOpenPlotsForPlayer(getID(), cpPlotDifficulty) : 0;
+            int plotsUnclaimed = plotDifficulty != null
+                    ? DataProvider.PLOT.getPlots(this, plotDifficulty, Status.unclaimed).size()
+                    : 0;
+            int plotsOpenForPlayer = plotDifficulty != null && plotsUnclaimed != 0
+                    ? DataProvider.PLOT.getPlots(this, plotDifficulty, Status.unclaimed).size()
+                    : 0;
 
             return new ItemBuilder(cpItem)
                     .setName(text(getName(player), AQUA).decoration(BOLD, true))
@@ -120,7 +141,7 @@ public class CityProject {
                                     .append(text(" " + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_COMPLETED), GRAY)))
                             .emptyLine()
                             .addLine(plotsUnclaimed != 0
-                                    ? Utils.ItemUtils.getFormattedDifficulty(cpPlotDifficulty)
+                                    ? Utils.ItemUtils.getFormattedDifficulty(plotDifficulty)
                                     : text(LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE), WHITE).decoration(BOLD, true))
                             .build())
                     .build();
@@ -128,41 +149,5 @@ public class CityProject {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             return MenuItems.errorItem(player);
         }
-    }
-
-    private int getOpenPlotsForPlayer(int plotID, PlotDifficulty plotDifficulty) throws SQLException {
-        return Plot.getPlots(plotID, plotDifficulty, Status.unclaimed).size();
-    }
-
-    public static void addCityProject(Country country, String name) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description, visible) VALUES (?, ?, ?, ?, ?)")
-                .setValue(DatabaseConnection.getTableID("plotsystem_city_projects"))
-                .setValue(name)
-                .setValue(country.getID())
-                .setValue("")
-                .setValue(true).executeUpdate();
-    }
-
-    public static void removeCityProject(int id) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_city_projects WHERE id = ?")
-                .setValue(id).executeUpdate();
-    }
-
-    public static void setCityProjectName(int id, String newName) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET name = ? WHERE id = ?")
-                .setValue(newName)
-                .setValue(id).executeUpdate();
-    }
-
-    public static void setCityProjectDescription(int id, String description) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET description = ? WHERE id = ?")
-                .setValue(description)
-                .setValue(id).executeUpdate();
-    }
-
-    public static void setCityProjectVisibility(int id, boolean isEnabled) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET visible = ? WHERE id = ?")
-                .setValue(isEnabled ? 1 : 0)
-                .setValue(id).executeUpdate();
     }
 }
