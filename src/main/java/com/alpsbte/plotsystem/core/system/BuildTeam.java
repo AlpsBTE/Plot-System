@@ -52,20 +52,12 @@ public class BuildTeam {
         return name;
     }
 
-    public List<Country> getCountries() throws SQLException {
+    public List<Country> getCountries() {
         return DataProvider.BUILD_TEAM.getCountries(ID);
     }
 
-    public List<Builder> getReviewers() throws SQLException {
+    public List<Builder> getReviewers() {
         return DataProvider.BUILD_TEAM.getReviewers(ID);
-    }
-
-    public static List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) throws SQLException {
-        return DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(reviewerUUID);
-    }
-
-    public static List<BuildTeam> getBuildTeams() {
-        return DataProvider.BUILD_TEAM.getBuildTeams();
     }
 
     public static void addBuildTeam(String name) throws SQLException {

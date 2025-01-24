@@ -1,19 +1,39 @@
-package com.alpsbte.plotsystem.core.database;
+package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.utils.Utils;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
-public class BuildTeamProviderSql {
+public class BuildTeamProvider {
+    public static final List<BuildTeam> BUILD_TEAMS = new ArrayList<>();
+
+    public BuildTeam getBuildTeam(int id) {
+        Optional<BuildTeam> buildTeam = BUILD_TEAMS.stream().filter(b -> b.getID() == id).findFirst();
+        if (buildTeam.isPresent()) return buildTeam.get();
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT bt.name, bthc.country_code, bthcp.city_project_id, bthr.uuid FROM build_team bt " +
+                        "INNER JOIN build_team_has_country bthc ON bthc.build_team_id = bt.build_team_id " +
+                        "INNER JOIN build_team_has_city_project bthcp ON bthcp.build_team_id = bt.build_team_id " +
+                        "INNER JOIN build_team_has_reviewer bthr ON bthr.build_team_id = bt.build_team_id " +
+                        "WHERE bt.build_team_id = ?")) {
+
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
+        return null;
+    }
+
     public String getName(int id) throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_buildteams WHERE id = ?")
                 .setValue(id).executeQuery()) {
@@ -24,37 +44,19 @@ public class BuildTeamProviderSql {
         return null;
     }
 
-    public List<Country> getCountries(int id) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT country_id FROM plotsystem_buildteam_has_countries WHERE buildteam_id = ?")
-                .setValue(id).executeQuery()) {
-
-            List<Country> countries = new ArrayList<>();
-            while (rs.next()) countries.add(new Country(rs.getInt(1)));
-            DatabaseConnection.closeResultSet(rs);
-            return countries;
-        }
+    public List<Country> getCountries(int id) {
+        // TODO: implement
+        return List.of();
     }
 
-    public List<Builder> getReviewers(int id) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT builder_uuid FROM plotsystem_builder_is_reviewer WHERE buildteam_id = ?")
-                .setValue(id).executeQuery()) {
-
-            List<Builder> builders = new ArrayList<>();
-            while (rs.next()) builders.add(Builder.byUUID(UUID.fromString(rs.getString(1))));
-            DatabaseConnection.closeResultSet(rs);
-            return builders;
-        }
+    public List<Builder> getReviewers(int id) {
+        // TODO: implement
+        return List.of();
     }
 
-    public List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT buildteam_id FROM plotsystem_builder_is_reviewer WHERE builder_uuid = ?")
-                .setValue(reviewerUUID.toString()).executeQuery()) {
-
-            List<BuildTeam> buildTeams = new ArrayList<>();
-            while (rs.next()) buildTeams.add(new BuildTeam(rs.getInt(1)));
-            DatabaseConnection.closeResultSet(rs);
-            return buildTeams;
-        }
+    public List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) {
+        // TODO: implement
+        return List.of();
     }
 
     public List<BuildTeam> getBuildTeams() {

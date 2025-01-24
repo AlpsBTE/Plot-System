@@ -156,7 +156,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected List<?> getSource() {
-        if (projects == null) projects = CityProject.getCityProjects(country, true);
+        if (projects == null) projects = DataProvider.CITY_PROJECT.getCityProjects(country, true);
         return projects;
     }
 

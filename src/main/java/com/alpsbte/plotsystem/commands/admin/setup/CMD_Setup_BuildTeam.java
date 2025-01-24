@@ -91,7 +91,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            List<BuildTeam> buildTeams = BuildTeam.getBuildTeams();
+            List<BuildTeam> buildTeams = DataProvider.BUILD_TEAM.getBuildTeams();
             if (buildTeams.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no build teams registered in the database!"));
                 return;
@@ -100,16 +100,11 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + buildTeams.size() + " build teams registered in the database:"));
             sender.sendMessage("§8--------------------------");
             for (BuildTeam b : buildTeams) {
-                try {
-                    StringJoiner countriesAsString = new StringJoiner(", ");
-                    StringJoiner reviewersAsString = new StringJoiner(", ");
-                    b.getCountries().forEach(c -> countriesAsString.add(String.valueOf(c.getID())));
-                    b.getReviewers().forEach(r -> {try {reviewersAsString.add(r.getName());} catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A data error occurred!"), ex);}});
-                    sender.sendMessage(" §6> §b" + b.getID() + " (" + b.getName() + ") §f- Country IDs: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString) + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString));
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                }
+                StringJoiner countriesAsString = new StringJoiner(", ");
+                StringJoiner reviewersAsString = new StringJoiner(", ");
+                b.getCountries().forEach(c -> countriesAsString.add(c.getCode()));
+                b.getReviewers().forEach(r -> {reviewersAsString.add(r.getName());});
+                sender.sendMessage(" §6> §b" + b.getID() + " (" + b.getName() + ") §f- Country IDs: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString) + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString));
             }
             sender.sendMessage("§8--------------------------");
         }
@@ -190,7 +185,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if build team exists
             try {
-                if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
+                if (DataProvider.BUILD_TEAM.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any build team with ID " + args[1] + "!"));
                     sendInfo(sender);
                     return;
@@ -235,7 +230,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if build team exits
             try {
-                if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.BUILD_TEAM.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
                 String name = CMD_Setup.appendArgs(args, 2);
                 if (name.length() > 45) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team name cannot be longer than 45 characters!"));
@@ -285,14 +280,14 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if build team and country exists
             try {
-                if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
-                if (Country.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
+                if (DataProvider.BUILD_TEAM.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.COUNTRY.getCountries().stream().noneMatch(c -> c.getCode().equalsIgnoreCase(args[2]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is already added to the build team!"));
                     return;
                 }
-                Country country = new Country(Integer.parseInt(args[2]));
+                Country country = DataProvider.COUNTRY.getCountryByCode(args[2]);
                 BuildTeam.addCountry(Integer.parseInt(args[1]), country.getID());
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.getName() + "' to build team with ID " + args[1] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.getCode() + "' to build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
@@ -334,14 +329,14 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if build team and country exists
             try {
-                if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.BUILD_TEAM.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
                 if (DataProvider.COUNTRY.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[2]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is not added to the build team!"));
                     return;
                 }
-                Country country = new Country(Integer.parseInt(args[2]));
+                Country country = DataProvider.COUNTRY.getCountryByCode(args[2]);
                 BuildTeam.removeCountry(Integer.parseInt(args[1]), country.getID());
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.getName() + "' from build team with ID " + args[1] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.getCode() + "' from build team with ID " + args[1] + "!"));
             } catch (SQLException ex) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
@@ -383,9 +378,9 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if build team exits
             try {
-                if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.BUILD_TEAM.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
                 Builder builder = Builder.byName(args[2]);
-                if (builder == null || BuildTeam.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
+                if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is already reviewer for this build team!"));
                     return;
                 }
@@ -429,10 +424,10 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if build team exits
             try {
-                if (BuildTeam.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.BUILD_TEAM.getBuildTeams().stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) return;
 
                 Builder builder = Builder.byName(args[2]);
-                if (builder == null || BuildTeam.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
+                if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == Integer.parseInt(args[1]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is not a reviewer for this build team!"));
                     return;
                 }

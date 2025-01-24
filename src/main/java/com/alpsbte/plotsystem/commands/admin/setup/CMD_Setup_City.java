@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -87,7 +88,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            List<CityProject> cities = CityProject.getCityProjects(false);
+            List<CityProject> cities = DataProvider.CITY_PROJECT.getCityProjects(false);
             if (cities.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no City Projects registered in the database!"));
                 return;
@@ -96,12 +97,7 @@ public class CMD_Setup_City extends SubCommand {
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + cities.size() + " City Projects registered in the database:"));
             sender.sendMessage("§8--------------------------");
             for (CityProject c : cities) {
-                try {
-                    sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Description: " + c.getDescription() + " - Country: " + c.getCountry().getName() + " - Visible: " + c.isVisible());
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                }
+                sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Description: " + c.getDescription() + " - Country: " + c.getCountry().getCode() + " - Visible: " + c.isVisible());
             }
             sender.sendMessage("§8--------------------------");
         }
@@ -136,7 +132,7 @@ public class CMD_Setup_City extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
-            Country country = Country.getCountries().stream().filter(c -> c.getID() == Integer.parseInt(args[1])).findFirst().orElse(null);
+            Country country = DataProvider.COUNTRY.getCountryByCode(args[1]);
             if (country == null) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with ID " + args[1] + "!"));
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss country list> to see all countries!"));
@@ -189,7 +185,7 @@ public class CMD_Setup_City extends SubCommand {
 
             // Check if City Project exists
             try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
+                if (DataProvider.CITY_PROJECT.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any City Project with ID " + args[1] + "!"));
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss city list> to see all City Projects!"));
                     return;
@@ -234,7 +230,7 @@ public class CMD_Setup_City extends SubCommand {
 
             // Check if City Project exits
             try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.CITY_PROJECT.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
 
                 String name = CMD_Setup.appendArgs(args, 2);
                 if (name.length() > 45) {
@@ -283,7 +279,7 @@ public class CMD_Setup_City extends SubCommand {
 
             // Check if City Project exits
             try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.CITY_PROJECT.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
 
                 String description = CMD_Setup.appendArgs(args, 2);
                 if (description.length() > 255) {
@@ -330,7 +326,7 @@ public class CMD_Setup_City extends SubCommand {
 
             // Check if City Project exits
             try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+                if (DataProvider.CITY_PROJECT.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
                 if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) return;
 
                 CityProject.setCityProjectVisibility(Integer.parseInt(args[1]), args[2].equalsIgnoreCase("true"));

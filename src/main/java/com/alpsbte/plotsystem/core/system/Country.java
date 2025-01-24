@@ -59,7 +59,7 @@ public class Country {
     public Continent getContinent() {return continent;}
 
     public List<CityProject> getCityProjects() {
-        return DataProvider.CITY_PROJECT.getCityProjectByCountryCode(code);
+        return DataProvider.CITY_PROJECT.getCityProjectsByCountryCode(code);
     }
 
     public String getName(Player player) {

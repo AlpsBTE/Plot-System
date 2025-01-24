@@ -326,7 +326,7 @@ public final class PlotUtils {
         if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLE)) {
             long interval = config.getLong(ConfigPaths.SYNC_FTP_FILES_INTERVAL);
 
-            Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> CityProject.getCityProjects(false).forEach(c -> {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> DataProvider.CITY_PROJECT.getCityProjects(false).forEach(c -> {
                 try {
                     if (c.getCountry().getServer().getFTPConfiguration() != null) {
                         List<Plot> plots = Plot.getPlots(c.getID(), Status.unclaimed);

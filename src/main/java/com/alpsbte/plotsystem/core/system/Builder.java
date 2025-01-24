@@ -158,8 +158,8 @@ public class Builder {
     public static class Reviewer {
         private final List<BuildTeam> buildTeams;
 
-        public Reviewer(UUID reviewerUUID) throws SQLException {
-            this.buildTeams = BuildTeam.getBuildTeamsByReviewer(reviewerUUID);
+        public Reviewer(UUID reviewerUUID) {
+            this.buildTeams = DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(reviewerUUID);
         }
 
         public List<Country> getCountries() {

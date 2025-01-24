@@ -188,7 +188,7 @@ public class CMD_Setup_Country extends SubCommand {
 
             // Check if country exists
             try {
-                if (Country.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
+                if (DataProvider.COUNTRY.getCountryByCode(args[1]) == null) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with ID " + args[1] + "!"));
                     sendInfo(sender);
                     return;
@@ -236,7 +236,7 @@ public class CMD_Setup_Country extends SubCommand {
 
             // Check if country exists
             try {
-                if (Country.getCountries().stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
+                if (DataProvider.COUNTRY.getCountryByCode(args[1]) == null) {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with name " + args[1] + "!"));
                     sendInfo(sender);
                     return;

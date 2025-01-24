@@ -20,6 +20,11 @@ public class PlotProvider {
         return null;
     }
 
+    public List<Plot> getPlots(CityProject city, Status... statuses) {
+        // TODO: implement
+        return List.of();
+    }
+
     public List<Plot> getPlots(List<CityProject> cities, Status... statuses) {
         // TODO: implement
         return List.of();
