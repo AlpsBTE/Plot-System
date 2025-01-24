@@ -27,7 +27,6 @@ plot:
   status: "状态"
   score: "积分"
   total-score: "总积分"
-  effective-score: "有效积分"
   completed-plots: "已完成建地"
   group-system:
     empty-member-slot: "成员空位"
@@ -100,7 +99,6 @@ menu-title:
   leave-plot: "离开建地"
   review-plots: "审核建地"
   review-plot: "审核建地 #{0}"
-  enter-player-name: "输入玩家名称"
   select-language: "选择语言"
   select-plot-type: 'Select Plot Type'
   select-focus-mode: "Select Focus Mode"
@@ -112,6 +110,7 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
+  companion-random: '随机选择'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -145,6 +144,7 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  companion-random-desc: '点击随机选择。'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -390,4 +390,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.1
+config-version: 2.2

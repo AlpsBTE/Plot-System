@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import com.alpsbte.alpslib.io.config.ConfigurationUtil;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -36,6 +37,7 @@ import java.nio.file.Paths;
 import static net.kyori.adventure.text.Component.text;
 
 public class ConfigUtil {
+    private ConfigUtil() {}
     private static ConfigurationUtil configUtilInstance;
     private static TutorialConfigurationUtil tutorialConfigUtilInstance;
 
@@ -44,7 +46,7 @@ public class ConfigUtil {
             configUtilInstance = new ConfigurationUtil(new ConfigurationUtil.ConfigFile[]{
                     new ConfigurationUtil.ConfigFile(Paths.get("config.yml"), 3.0, true),
                     new ConfigurationUtil.ConfigFile(Paths.get("commands.yml"), 1.1, false),
-                    new ConfigurationUtil.ConfigFile(Paths.get("items.yml"), 1.1, false)
+                    new ConfigurationUtil.ConfigFile(Paths.get("items.yml"), 1.2, false)
             });
         }
 
@@ -69,7 +71,7 @@ public class ConfigUtil {
         }
 
         @Override
-        public void updateConfigFile(ConfigFile file) {
+        public void updateConfigFile(@NotNull ConfigFile file) {
             int tutorialId = file.getInt(TutorialUtils.Path.TUTORIAL_ID);
 
             File directory = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials").toFile();

@@ -26,7 +26,6 @@ plot:
   status: "Statut"
   score: "Score"
   total-score: "Score Total"
-  effective-score: "Score Effectif"
   completed-plots: "Plots complétés"
   group-system:
     empty-member-slot: "Slot de Membre Vide"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: 'Quitter Plot'
   review-plots: 'Évaluation de la Parcelle'
   review-plot: 'Évaluation de la Parcelle #{0}'
-  enter-player-name: 'Entrer nom du joueur'
   select-language: 'Choix de la langue'
   select-plot-type: 'Choisissez un type de Parcelle'
   select-focus-mode: 'Sélectionner le mode Focus'
@@ -111,6 +109,7 @@ menu-title:
   tutorial-stages: 'Étapes du Tutoriel'
   tutorial-end: 'Tutoriel de fin'
   tutorial-beginner: 'Débuter'
+  companion-random: 'Sélection aléatoire'
 #-----------------------------------------------------
 #| Menu Descriptions
 #-----------------------------------------------------
@@ -144,6 +143,7 @@ menu-description:
   tutorials-desc: 'Apprenez les bases de Build The Earth project et améliorez vos capacités de construction avec des tutoriels sur plusieurs sujets.'
   tutorial-end-desc: 'Vos progrès seront sauvegardés.'
   tutorial-beginner-desc: 'Apprenez les bases pour construire pour le projet Build The Earth.'
+  companion-random-desc: 'Cliquez sur pour sélectionner aléatoirement.'
 #-----------------------------------------------------
 #| Review
 #-----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Lisez tous les conseils sur les parcelles et marquez-les comme lus.'
 #NOTE: Do not change
-config-version: 2.2
+config-version: 2.3

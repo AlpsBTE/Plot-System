@@ -26,7 +26,6 @@ plot:
   status: "Status"
   score: "Pontuação"
   total-score: "Pontuação Total"
-  effective-score: "Pontuação Efetiva"
   completed-plots: "Terrenos concluídos"
   group-system:
     empty-member-slot: "Espaço de Membro Vazio"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: "Deixar Terreno"
   review-plots: "Avaliar Terrenos"
   review-plot: "Avaliar Terreno #{0}"
-  enter-player-name: "Insira o Nome do Jogador"
   select-language: "Selecionar Idioma"
   select-plot-type: "Select Plot Type"
   select-focus-mode: "Select Focus Mode"
@@ -111,6 +109,7 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
+  companion-random: 'Seleção aleatória'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -144,6 +143,7 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  companion-random-desc: 'Clique para selecionar aleatoriamente.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -243,7 +243,7 @@ message:
     can-only-submit-unfinished-plots: "Você só pode enviar terrenos inacabados!"
     can-only-undo-submissions-unreviewed-plots: "Você só pode desfazer envios de terrenos não avaliados!"
     can-only-manage-members-unfinished-plots: "Você só pode gerenciar membros de terrenos incompleto!"
-    can-only-tpll-to-plot: "Você só pode usar /tpll em um terreno!"
+    cannot-teleport-outside-plot: "Não se pode teletransportar para fora da trama!"
     cannot-undo-review: "Você não pode desfazer uma avaliação que você mesmo não avaliou!"
     cannot-send-feedback: "Você não pode enviar feedback para um lote que você mesmo não avaliou!"
     cannot-review-own-plot: "Você não pode revisar seu próprio terreno!"
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.1
+config-version: 2.2
