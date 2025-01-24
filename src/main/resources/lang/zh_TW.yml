@@ -111,6 +111,7 @@ menu-title:
   tutorial-stages: '教學階段'
   tutorial-end: '結束教學'
   tutorial-beginner: '新手教學'
+  companion-random: '隨機選擇'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -144,6 +145,7 @@ menu-description:
   tutorials-desc: '透過各種主題的教學來學習BuildTheEarth計畫的基礎知識並提升你的建築技巧。'
   tutorial-end-desc: '你的進度將被儲存。'
   tutorial-beginner-desc: '學習在BuildTheEarth計畫建築的基礎知識。'
+  companion-random-desc: '按一下隨機選擇。'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -389,4 +391,4 @@ tutorials:
       stage-10-tasks:
         - '閱讀建地上全部的提示並將其標記為已讀。'
 # NOTE: Do not change
-config-version: 2.2
+config-version: 2.3

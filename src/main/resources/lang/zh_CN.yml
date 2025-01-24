@@ -112,6 +112,7 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
+  companion-random: '随机选择'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -145,6 +146,7 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  companion-random-desc: '点击随机选择。'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -390,4 +392,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.1
+config-version: 2.2

@@ -34,8 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class MenuItems {
@@ -88,6 +87,16 @@ public class MenuItems {
     public static ItemStack filterItem(Player langPlayer) {
         return new ItemBuilder(Material.HOPPER, 1)
                 .setName(text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY), GOLD, BOLD))
+                .build();
+    }
+
+    public static ItemStack getRandomItem(Player player) {
+        return new ItemBuilder(BaseItems.RANDOM_PLOT_ITEM.getItem())
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_RANDOM), AQUA).decoration(BOLD, true))
+                .setLore(new LoreBuilder()
+                        .emptyLine()
+                        .addLine(text(LangUtil.getInstance().get(player, LangPaths.MenuDescription.COMPANION_RANDOM), GRAY))
+                        .build())
                 .build();
     }
 }

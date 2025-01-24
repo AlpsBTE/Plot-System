@@ -33,7 +33,8 @@ public enum BaseItems {
     REVIEW_CANCEL("review-cancel"),
     REVIEW_INFO_PLOT("review-info-plot"),
 
-    SETTINGS_ITEM("settings-item");
+    SETTINGS_ITEM("settings-item"),
+    RANDOM_PLOT_ITEM("random-plot-item");
 
     final ItemStack itemStack;
 

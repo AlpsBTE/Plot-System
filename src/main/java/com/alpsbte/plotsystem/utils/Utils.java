@@ -51,6 +51,7 @@ import org.bukkit.util.Vector;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
@@ -61,6 +62,9 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class Utils {
     private Utils() {}
+
+    private static Random random;
+    public static final String EMPTY_MASK = "000000000";
 
     // Spawn Location
     public static Location getSpawnLocation() {
@@ -225,5 +229,12 @@ public class Utils {
 
     public static void logSqlException(Exception ex) {
         PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+    }
+
+    public static Random getRandom() {
+        if (random == null) {
+            random = new Random();
+        }
+        return random;
     }
 }

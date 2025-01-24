@@ -45,6 +45,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -67,6 +68,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPreviewItems() {
+        getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
         getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
@@ -96,6 +98,9 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->
+                generateRandomPlot(clickPlayer, getValidCityProjects(selectedPlotDifficulty, clickPlayer, country), selectedPlotDifficulty));
+
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
 
         // Set click event for previous page item
@@ -141,15 +146,50 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         });
     }
 
+    public static boolean generateRandomPlot(Player player, @NotNull List<CityProject> items, PlotDifficulty selectedPlotDifficulty) {
+        PlotDifficulty difficulty = selectedPlotDifficulty;
+        if (items.isEmpty()) {
+            player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            return false;
+        }
+        var randomCity = items.get(Utils.getRandom().nextInt(items.size()));
+
+        Builder builder = Builder.byUUID(player.getUniqueId());
+        try {
+            if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity.getID(), Builder.byUUID(player.getUniqueId())).get();
+            if (difficulty == null) difficulty = PlotDifficulty.EASY;
+            new DefaultPlotGenerator(randomCity.getID(), difficulty, builder);
+        } catch (SQLException | InterruptedException | ExecutionException e) {
+            sqlError(player, e);
+            return false;
+        }
+        player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1);
+        return true;
+    }
+
+    public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
+        return CityProject.getCityProjects(country, true).stream().filter(test -> {
+            if (test instanceof CityProject project) {
+                var pd = selectedPlotDifficulty;
+                try {
+                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project.getID(), Builder.byUUID(player.getUniqueId())).get();
+                    if (pd == null) pd = PlotDifficulty.EASY;
+                    return project.isVisible() && project.getOpenPlotsForPlayer(project.getID(), pd) > 0;
+                } catch (SQLException | ExecutionException | InterruptedException e) {
+                    sqlError(player, e);
+                }
+            } else {
+                return false;
+            }
+            return false;
+        }).toList();
+    }
+
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
-                .pattern("101111001")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern("001111001")
                 .pattern("100010001")
                 .build();
     }
@@ -214,5 +254,12 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             });
             slot++;
         }
+    }
+
+    private static void sqlError(@NotNull Player clickPlayer, Exception ex) {
+        Utils.logSqlException(ex);
+        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        Thread.currentThread().interrupt();
     }
 }

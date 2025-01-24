@@ -45,8 +45,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +74,8 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
+        getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
+
         // Set plots difficulty item head
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
@@ -99,6 +103,9 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->  // Set click event for random selection item
+                generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty));
+
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
@@ -141,6 +148,15 @@ public class CountryMenu extends AbstractMenu {
         }
     }
 
+    public static boolean generateRandomPlot(Player clickPlayer, @NotNull List<Country> countryProjects, PlotDifficulty selectedPlotDifficulty) {
+        List<CityProject> cityProjects = new ArrayList<>();
+        for (Country curCountry : countryProjects) {
+            cityProjects.addAll(CityProjectMenu.getValidCityProjects(selectedPlotDifficulty, clickPlayer, curCountry));
+        }
+
+        return CityProjectMenu.generateRandomPlot(clickPlayer, cityProjects, selectedPlotDifficulty);
+    }
+
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
@@ -150,6 +166,7 @@ public class CountryMenu extends AbstractMenu {
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")
+                .pattern("001111001")
                 .pattern("100010001")
                 .build();
     }

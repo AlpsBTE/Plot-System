@@ -72,5 +72,8 @@ review-info-plot:
 settings-item:
   material: COMPARATOR
   modelId: ''
+random-plot-item:
+  material: COMPARATOR
+  modelId: ''
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.2

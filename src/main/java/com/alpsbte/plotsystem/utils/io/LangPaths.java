@@ -126,6 +126,7 @@ public abstract class LangPaths {
         public static final String TUTORIAL_STAGES = MENU_TITLES + "tutorial-stages";
         public static final String TUTORIAL_END = MENU_TITLES + "tutorial-end";
         public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
+        public static final String COMPANION_RANDOM = MENU_TITLES + "companion-random";
     }
 
     public static final class MenuDescription {
@@ -159,6 +160,7 @@ public abstract class LangPaths {
         public static final String TUTORIALS = MENU_DESCRIPTIONS + "tutorials-desc";
         public static final String TUTORIAL_END = MENU_DESCRIPTIONS + "tutorial-end-desc";
         public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
+        public static final String COMPANION_RANDOM = MENU_DESCRIPTIONS + "companion-random-desc";
     }
 
     public static final class Review {
