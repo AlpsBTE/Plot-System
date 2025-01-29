@@ -34,11 +34,6 @@ public class BuildTeamProvider {
         return null;
     }
 
-    public List<Builder> getReviewers(int id) {
-        // TODO: implement
-        return List.of();
-    }
-
     public List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) {
         // TODO: implement
         return List.of();

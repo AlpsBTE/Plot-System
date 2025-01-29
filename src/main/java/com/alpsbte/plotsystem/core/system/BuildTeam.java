@@ -57,7 +57,7 @@ public class BuildTeam {
     }
 
     public List<Builder> getReviewers() {
-        return DataProvider.BUILD_TEAM.getReviewers(ID);
+        return reviewers;
     }
 
     public boolean setName(String newName) {
