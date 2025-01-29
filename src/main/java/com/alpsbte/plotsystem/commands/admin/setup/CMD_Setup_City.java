@@ -35,8 +35,7 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class CMD_Setup_City extends SubCommand {
 
@@ -96,7 +95,7 @@ public class CMD_Setup_City extends SubCommand {
             sender.sendMessage(text("--------------------------", DARK_GRAY));
             for (CityProject c : cities) {
                 sender.sendMessage(text(" » ", DARK_GRAY)
-                        .append(text(c.getID()))
+                        .append(text(c.getID(), AQUA))
                         .append(text(" - Country: " + c.getCountry().getCode()
                                 + " - Server: " + c.getServerName()
                                 + " - Visible: " + c.isVisible(), WHITE)));

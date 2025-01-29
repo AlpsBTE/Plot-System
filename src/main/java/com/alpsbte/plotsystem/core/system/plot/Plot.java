@@ -411,72 +411,6 @@ public class Plot extends AbstractPlot {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
     }
 
-
-    public static List<Plot> getPlots() throws SQLException {
-        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots").executeQuery());
-    }
-
-    public static List<Plot> getPlots(Status... statuses) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement(getStatusQuery("", statuses)).executeQuery();
-        return listPlots(rs);
-    }
-
-    // Temporary fix to receive plots of builder as member
-    private static List<Plot> getPlotsAsMember(Builder builder, Status... status) throws SQLException {
-        List<Plot> plots = new ArrayList<>();
-        for (Status stat : status) {
-            plots.addAll(listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE status = '" + stat.name() + "' AND INSTR(member_uuids, '" + builder.getUUID() + "') > 0 ORDER BY CAST(status AS CHAR)").executeQuery()));
-        }
-        return plots;
-    }
-
-    public static List<Plot> getPlots(int cityID, Status... statuses) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement(getStatusQuery(" AND city_project_id = '" + cityID + "'", statuses)).executeQuery());
-    }
-
-    public static List<Plot> getPlots(List<CityProject> cities, Status... statuses) throws SQLException {
-        if (cities.isEmpty()) {
-            return new ArrayList<>();
-        }
-        StringBuilder query = new StringBuilder(" AND (city_project_id = ");
-
-        for (int i = 0; i < cities.size(); i++) {
-            query.append(cities.get(i).getID());
-            query.append((i != cities.size() - 1) ? " OR city_project_id = " : ")");
-        }
-
-        return listPlots(DatabaseConnection.createStatement(getStatusQuery(query.toString(), statuses)).executeQuery());
-    }
-
-    public static List<Plot> getPlots(int cityID, PlotDifficulty plotDifficulty, Status status) throws SQLException {
-        return listPlots(DatabaseConnection.createStatement("SELECT id FROM plotsystem_plots WHERE city_project_id = ? AND difficulty_id = ? AND status = ?")
-                .setValue(cityID)
-                .setValue(plotDifficulty.ordinal() + 1)
-                .setValue(status.name())
-                .executeQuery());
-    }
-
-    private static String getStatusQuery(String additionalQuery, Status... statuses) {
-        StringBuilder query = new StringBuilder("SELECT id FROM plotsystem_plots WHERE status = ");
-
-        for (int i = 0; i < statuses.length; i++) {
-            query.append("'").append(statuses[i].name()).append("'").append(additionalQuery);
-            query.append((i != statuses.length - 1) ? " OR status = " : "");
-        }
-        return query.toString();
-    }
-
-    private static List<Plot> listPlots(ResultSet rs) throws SQLException {
-        List<Plot> plots = new ArrayList<>();
-
-        while (rs.next()) {
-            plots.add(new Plot(rs.getInt(1)));
-        }
-
-        DatabaseConnection.closeResultSet(rs);
-        return plots;
-    }
-
     public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
         ResultSet rs = DatabaseConnection.createStatement("SELECT multiplier FROM plotsystem_difficulties WHERE id = ?")
                 .setValue(plotDifficulty.ordinal() + 1).executeQuery();
@@ -512,12 +446,12 @@ public class Plot extends AbstractPlot {
         return playerScore >= scoreRequirement;
     }
 
-    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(String cityID, Builder builder) throws SQLException {
+    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(CityProject city, Builder builder) throws SQLException {
         // Check if plot difficulties are available
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
-        if (!getPlots(cityID, PlotDifficulty.EASY, Status.unclaimed).isEmpty()) easyHasPlots = true;
-        if (!getPlots(cityID, PlotDifficulty.MEDIUM, Status.unclaimed).isEmpty()) mediumHasPlots = true;
-        if (!getPlots(cityID, PlotDifficulty.HARD, Status.unclaimed).isEmpty()) hardHasPlots = true;
+        if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.EASY, Status.unclaimed).isEmpty()) easyHasPlots = true;
+        if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.MEDIUM, Status.unclaimed).isEmpty()) mediumHasPlots = true;
+        if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.HARD, Status.unclaimed).isEmpty()) hardHasPlots = true;
 
         if (hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);

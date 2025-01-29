@@ -184,11 +184,12 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
                 clickPlayer.closeInventory();
                 Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
-                int cityID = city.getID();
+                String cityID = city.getID();
 
                 try {
-                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(cityID, builder).get();
-                    if (plotDifficultyForCity == null || Plot.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).isEmpty()) {
+                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();
+                    List<Plot> unclaimedPlots = DataProvider.PLOT.getPlots(city, plotDifficultyForCity, Status.unclaimed);
+                    if (plotDifficultyForCity == null || unclaimedPlots.isEmpty()) {
                         clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         return;
@@ -200,7 +201,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                         return;
                     }
 
-                    new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
+                    new DefaultPlotGenerator(city, plotDifficultyForCity, builder);
                 } catch (SQLException | ExecutionException | InterruptedException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
                     clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));

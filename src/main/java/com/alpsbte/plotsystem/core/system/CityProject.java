@@ -48,7 +48,6 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CityProject {
-
     private final String ID;
     private final String countryCode;
     private String serverName;
@@ -113,7 +112,7 @@ public class CityProject {
         ItemStack cpItem = getCountry().getCountryItem();
         try {
             PlotDifficulty plotDifficulty = selectedPlotDifficulty != null ?
-                    selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(getID(), Builder.byUUID(player.getUniqueId())).get();
+                    selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(this, Builder.byUUID(player.getUniqueId())).get();
 
             int plotsOpen = DataProvider.PLOT.getPlots(this, Status.unclaimed).size();
             int plotsInProgress = DataProvider.PLOT.getPlots(this, Status.unfinished, Status.unreviewed).size();

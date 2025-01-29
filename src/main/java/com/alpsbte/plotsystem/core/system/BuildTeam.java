@@ -28,20 +28,20 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class BuildTeam {
     private final int ID;
-    private final String name;
+    private String name;
+    private final List<Country> countries;
+    private final List<Builder> reviewers;
 
-    public BuildTeam(int ID) throws SQLException {
-        this.ID = ID;
-        this.name = DataProvider.BUILD_TEAM.getName(ID);
-    }
-
-    public BuildTeam(int ID, String name) {
+    public BuildTeam(int ID, String name, List<Country> countries, List<Builder> reviewers) {
         this.ID = ID;
         this.name = name;
+        this.countries = countries;
+        this.reviewers = reviewers;
     }
 
     public int getID() {
@@ -53,38 +53,54 @@ public class BuildTeam {
     }
 
     public List<Country> getCountries() {
-        return DataProvider.BUILD_TEAM.getCountries(ID);
+        return countries;
     }
 
     public List<Builder> getReviewers() {
         return DataProvider.BUILD_TEAM.getReviewers(ID);
     }
 
-    public static void addBuildTeam(String name) throws SQLException {
-        DataProvider.BUILD_TEAM.addBuildTeam(name);
+    public boolean setName(String newName) {
+        if (DataProvider.BUILD_TEAM.setBuildTeamName(ID, newName)) {
+            this.name = newName;
+            return true;
+        }
+        return false;
     }
 
-    public static void removeBuildTeam(int serverID) throws SQLException {
-        DataProvider.BUILD_TEAM.removeBuildTeam(serverID);
+    public boolean addCountry(Country country) {
+        if (DataProvider.BUILD_TEAM.addCountry(ID, country.getCode())) {
+            this.countries.add(country);
+            return true;
+        }
+        return false;
     }
 
-    public static void setBuildTeamName(int id, String newName) throws SQLException {
-        DataProvider.BUILD_TEAM.setBuildTeamName(id, newName);
+    public boolean removeCountry(String countryCode) {
+        Optional<Country> removeCountry = countries.stream().filter(c -> c.getCode().equalsIgnoreCase(countryCode)).findFirst();
+        if (removeCountry.isEmpty()) return false;
+        if (DataProvider.BUILD_TEAM.removeCountry(ID, countryCode)) {
+            this.countries.remove(removeCountry.get());
+            return true;
+        }
+        return false;
     }
 
-    public static void addCountry(int id, int countryID) throws SQLException {
-        DataProvider.BUILD_TEAM.addCountry(id, countryID);
+    public boolean removeReviewer(String reviewerUUID) {
+        Optional<Builder> removeReviewer = reviewers.stream().filter(r -> r.getUUID().toString().equals(reviewerUUID)).findFirst();
+        if (removeReviewer.isEmpty()) return false;
+        if (DataProvider.BUILD_TEAM.removeReviewer(ID, reviewerUUID)) {
+            this.reviewers.remove(removeReviewer.get());
+            return true;
+        }
+        return false;
     }
 
-    public static void removeCountry(int id, int countryID) throws SQLException {
-        DataProvider.BUILD_TEAM.removeCountry(id, countryID);
-    }
-
-    public static void removeReviewer(int id, String reviewerUUID) throws SQLException {
-        DataProvider.BUILD_TEAM.removeReviewer(id, reviewerUUID);
-    }
-
-    public static void addReviewer(int id, String reviewerUUID) throws SQLException {
-        DataProvider.BUILD_TEAM.addReviewer(id, reviewerUUID);
+    public boolean addReviewer(Builder reviewer) {
+        if (DataProvider.BUILD_TEAM.addReviewer(ID, reviewer.getUUID().toString())) {
+            this.reviewers.add(reviewer);
+            return true;
+        }
+        return false;
     }
 }

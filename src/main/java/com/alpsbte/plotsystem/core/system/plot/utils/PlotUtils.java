@@ -118,8 +118,9 @@ public final class PlotUtils {
                 for (Status status : statuses) if (status == plot.getStatus()) return plot;
                 return null;
             } else if (PlotWorld.isCityPlotWorld(worldName)) {
-                int cityID = Integer.parseInt(worldName.substring(2));
-                List<Plot> plots = Plot.getPlots(cityID, statuses);
+                String cityID = worldName.substring(2); // TODO: clarify if this should be intended behaviour
+                CityProject city = DataProvider.CITY_PROJECT.getCityProjectById(cityID);
+                List<Plot> plots = DataProvider.PLOT.getPlots(city, statuses);
 
                 if (plots.isEmpty()) return null;
                 if (plots.size() == 1) return plots.getFirst();
@@ -300,7 +301,7 @@ public final class PlotUtils {
     public static void checkPlotsForLastActivity() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
-                List<Plot> plots = Plot.getPlots(Status.unfinished);
+                List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
                 FileConfiguration config = PlotSystem.getPlugin().getConfig();
                 long millisInDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL) * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last x days
 
@@ -329,7 +330,7 @@ public final class PlotUtils {
             Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> DataProvider.CITY_PROJECT.getCityProjects(false).forEach(c -> {
                 try {
                     if (c.getCountry().getServer().getFTPConfiguration() != null) {
-                        List<Plot> plots = Plot.getPlots(c.getID(), Status.unclaimed);
+                        List<Plot> plots = DataProvider.PLOT.getPlots(c, Status.unclaimed);
                         plots.forEach(Plot::getOutlinesSchematic);
                     }
                 } catch (SQLException ex) {

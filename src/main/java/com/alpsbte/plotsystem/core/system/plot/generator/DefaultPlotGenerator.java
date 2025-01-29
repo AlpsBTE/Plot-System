@@ -25,7 +25,9 @@
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
@@ -54,8 +56,8 @@ import static net.kyori.adventure.text.Component.text;
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
     public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
-    public DefaultPlotGenerator(int cityID, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
-        this(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).get(new Random().nextInt(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
+    public DefaultPlotGenerator(CityProject city, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
+        this(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).get(new Random().nextInt(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
     public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {

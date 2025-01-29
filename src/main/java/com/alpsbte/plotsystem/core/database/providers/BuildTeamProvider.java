@@ -34,21 +34,6 @@ public class BuildTeamProvider {
         return null;
     }
 
-    public String getName(int id) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT name FROM plotsystem_buildteams WHERE id = ?")
-                .setValue(id).executeQuery()) {
-
-            if (rs.next()) return rs.getString(1);
-            DatabaseConnection.closeResultSet(rs);
-        }
-        return null;
-    }
-
-    public List<Country> getCountries(int id) {
-        // TODO: implement
-        return List.of();
-    }
-
     public List<Builder> getReviewers(int id) {
         // TODO: implement
         return List.of();
@@ -61,8 +46,11 @@ public class BuildTeamProvider {
 
     public List<BuildTeam> getBuildTeams() {
         List<BuildTeam> buildTeams = new ArrayList<>();
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id, name FROM plotsystem_buildteams").executeQuery()) {
-            while (rs.next()) buildTeams.add(new BuildTeam(rs.getInt(1), rs.getString(2)));
+        List<Country> countries = new ArrayList<>();
+        List<Builder> reviewers = new ArrayList<>();
+        // TODO: also get countries and reviewers (currently empty lists)
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT build_team_id, name FROM build_team").executeQuery()) {
+            while (rs.next()) buildTeams.add(new BuildTeam(rs.getInt(1), rs.getString(2), countries, reviewers));
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
@@ -70,45 +58,38 @@ public class BuildTeamProvider {
         return buildTeams;
     }
 
-    public void addBuildTeam(String name) throws SQLException {
-        int id = DatabaseConnection.getTableID("plotsystem_buildteams");
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_buildteams (id, name) VALUES (?, ?)")
-                .setValue(id)
-                .setValue(name).executeUpdate();
+    public boolean addBuildTeam(String name) {
+        // TODO: implement
+        return false;
     }
 
-    public void removeBuildTeam(int serverId) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_buildteams WHERE id = ?")
-                .setValue(serverId).executeUpdate();
+    public boolean removeBuildTeam(int id) {
+        // TODO: implement
+        return false;
     }
 
-    public void setBuildTeamName(int id, String newName) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_buildteams SET name = ? WHERE id = ?")
-                .setValue(newName)
-                .setValue(id).executeUpdate();
+    public boolean setBuildTeamName(int id, String newName) {
+        // TODO: implement
+        return false;
     }
 
-    public void addCountry(int id, int countryId) throws SQLException {
-        DatabaseConnection.createStatement("INSERT plotsystem_buildteam_has_countries SET country_id = ?, buildteam_id = ?")
-                .setValue(countryId)
-                .setValue(id).executeUpdate();
+    public boolean addCountry(int id, String countryCode) {
+        // TODO: implement
+        return false;
     }
 
-    public void removeCountry(int id, int countryId) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_buildteam_has_countries WHERE country_id = ? AND buildteam_id = ?")
-                .setValue(countryId)
-                .setValue(id).executeUpdate();
+    public boolean removeCountry(int id, String countryCode) {
+        // TODO: implement
+        return false;
     }
 
-    public void addReviewer(int id, String reviewerUUID) throws SQLException {
-        DatabaseConnection.createStatement("INSERT plotsystem_builder_is_reviewer SET builder_uuid = ?, buildteam_id = ?")
-                .setValue(reviewerUUID)
-                .setValue(id).executeUpdate();
+    public boolean addReviewer(int id, String reviewerUUID) {
+        // TODO: implement
+        return false;
     }
 
-    public void removeReviewer(int id, String reviewerUUID) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_builder_is_reviewer WHERE builder_uuid = ? AND buildteam_id = ?")
-                .setValue(reviewerUUID)
-                .setValue(id).executeUpdate();
+    public boolean removeReviewer(int id, String reviewerUUID) {
+        // TODO: implement
+        return false;
     }
 }
