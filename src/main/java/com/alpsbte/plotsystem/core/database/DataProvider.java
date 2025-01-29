@@ -33,4 +33,5 @@ public class DataProvider {
     public static DifficultyProvider DIFFICULTY = new DifficultyProvider();
     public static CityProjectProvider CITY_PROJECT = new CityProjectProvider();
     public static CountryProvider COUNTRY = new CountryProvider();
+    public static ServerProvider SERVER = new ServerProvider();
 }

@@ -146,7 +146,12 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 255 characters!"));
                 return;
             }
-            // TODO: verify if server exists
+            // Check if server exists
+            if (!DataProvider.SERVER.serverExists(serverName)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with ID " + serverName + "!"));
+                sendInfo(sender);
+                return;
+            }
 
             boolean added = DataProvider.CITY_PROJECT.addCityProject(cityProjectId, country.getCode(), serverName);
             if (added) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with ID '" + cityProjectId + "' under country with the code " + countryCode + "!"));
@@ -236,7 +241,12 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 255 characters!"));
                 return;
             }
-            // TODO: verify if server exists
+            // Check if server exists
+            if (!DataProvider.SERVER.serverExists(serverName)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with ID " + serverName + "!"));
+                sendInfo(sender);
+                return;
+            }
 
             boolean successful = cityProject.setServer(serverName);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed server of City Project with ID " + args[1] + " to '" + serverName + "'!"));
