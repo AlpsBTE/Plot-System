@@ -29,6 +29,7 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -45,12 +46,15 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -221,5 +225,13 @@ public class Utils {
             random = new Random();
         }
         return random;
+    }
+
+    public static boolean isOwnerOrReviewer(CommandSender sender, @Nullable Player player, Plot plot) throws SQLException {
+        boolean hasPermission = sender.hasPermission("plotsystem.review") || (player != null && Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(player.getUniqueId()));
+        if (!hasPermission) {
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+        }
+        return hasPermission;
     }
 }

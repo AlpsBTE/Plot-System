@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,8 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -50,6 +52,7 @@ public class CMD_Plot_Abandon extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
+        @Nullable Player player = getPlayer(sender);
         try {
             Plot plot;
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
@@ -60,8 +63,8 @@ public class CMD_Plot_Abandon extends SubCommand {
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                     return;
                 }
-            } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
-                AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished);
+            } else if (player != null && PlotUtils.isPlotWorld(player.getWorld())) {
+                AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished);
                 if (p instanceof Plot) {
                     plot = (Plot) p;
                 } else {
@@ -74,13 +77,9 @@ public class CMD_Plot_Abandon extends SubCommand {
             }
 
             if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
-                if (sender.hasPermission("plotsystem.review") || plot.getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId())) {
-                    if (PlotUtils.Actions.abandonPlot(plot)) {
-                        sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
-                        if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
-                    }
-                } else {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                if (Utils.isOwnerOrReviewer(sender, player, plot) && PlotUtils.Actions.abandonPlot(plot)) {
+                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
+                    if (player != null) player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
                 }
             } else {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));

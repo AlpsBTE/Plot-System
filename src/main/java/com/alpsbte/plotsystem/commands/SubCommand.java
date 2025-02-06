@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.commands;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,12 @@ public abstract class SubCommand implements ICommand {
     private final List<SubCommand> subCommands = new ArrayList<>();
     protected final LangUtil langUtil = LangUtil.getInstance();
 
-    public SubCommand(BaseCommand baseCommand) {
+    protected SubCommand(BaseCommand baseCommand) {
         this.baseCommand = baseCommand;
         this.subCommand = null;
     }
 
-    public SubCommand(BaseCommand baseCommand, SubCommand subCommand) {
+    protected SubCommand(BaseCommand baseCommand, SubCommand subCommand) {
         this.baseCommand = baseCommand;
         this.subCommand = subCommand;
     }
@@ -62,8 +63,8 @@ public abstract class SubCommand implements ICommand {
      * @param sender player
      * @return null if sender is not a player
      */
-    protected Player getPlayer(CommandSender sender) {
-        return sender instanceof Player ? (Player) sender : null;
+    protected @Nullable Player getPlayer(CommandSender sender) {
+        return sender instanceof Player player ? player : null;
     }
 
     /**
