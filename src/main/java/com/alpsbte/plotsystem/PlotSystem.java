@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,21 @@
 package com.alpsbte.plotsystem;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
-import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
-import com.alpsbte.plotsystem.commands.*;
+import com.alpsbte.plotsystem.commands.CommandManager;
+import com.alpsbte.plotsystem.core.EventListener;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
-import com.alpsbte.plotsystem.core.system.tutorial.*;
+import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
+import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.PacketListener;
@@ -47,8 +52,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.EventListener;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
 import org.apache.maven.artifact.versioning.ComparableVersion;
@@ -71,7 +74,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class PlotSystem extends JavaPlugin {
-    private static final String VERSION = "4.1";
+    private static final String VERSION = "4.1.1";
 
     private static PlotSystem plugin;
     private CommandManager commandManager;
@@ -276,7 +279,7 @@ public class PlotSystem extends JavaPlugin {
     public static class DependencyManager {
 
         // List with all missing dependencies
-        private final static List<String> missingDependencies = new ArrayList<>();
+        private static final List<String> missingDependencies = new ArrayList<>();
 
         /**
          * Check for all required dependencies and inform in console about missing dependencies
@@ -379,7 +382,7 @@ public class PlotSystem extends JavaPlugin {
     }
 
     public static class UpdateChecker {
-        private final static int RESOURCE_ID = 95757;
+        private static final int RESOURCE_ID = 95757;
         private static boolean isUpdateAvailable = false;
 
         /**
