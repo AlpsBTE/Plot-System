@@ -89,7 +89,7 @@ public class CMD_Setup_Server extends SubCommand {
             }
 
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + servers.size() + " Servers registered in the database:"));
-            sender.sendMessage(text("--------------------------", DARK_GRAY));
+
             for (String server : servers) {
                 sender.sendMessage(text(" » ", DARK_GRAY).append(text(server, AQUA)));
             }
