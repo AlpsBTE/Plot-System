@@ -29,7 +29,6 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
-import com.alpsbte.plotsystem.core.system.Payout;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -47,7 +46,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -115,14 +113,14 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
         ArrayList<DataLine<?>> lines = new ArrayList<>();
 
         for (int index = 0; index < 10; index++) {
-            lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
+            lines.add(new HologramRegister.LeaderboardPositionLine(index + 1, null, 0));
         }
 
         Map<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
         if (playerRankings != null) {
             for (int i = 0; i < playerRankings.size(); i++) {
                 String key = (String) playerRankings.keySet().toArray()[i];
-                lines.set(i, new LeaderboardPositionLineWithPayout(i + 1, key, playerRankings.get(key)));
+                lines.set(i, new HologramRegister.LeaderboardPositionLine(i + 1, key, playerRankings.get(key)));
             }
         }
         return lines;
@@ -215,33 +213,5 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
     @Override
     public String getZPath() {
         return ConfigPaths.SCORE_LEADERBOARD_Z;
-    }
-
-    private class LeaderboardPositionLineWithPayout extends HologramRegister.LeaderboardPositionLine {
-        private final int position;
-
-        public LeaderboardPositionLineWithPayout(int position, String username, int score) {
-            super(position, username, score);
-            this.position = position;
-        }
-
-        @Override
-        public String getLine() {
-            try {
-                String line = super.getLine();
-                Payout payout = sortByLeaderboard != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortByLeaderboard, position) : null;
-                if (payout == null) return line;
-                String payoutAmount = payout.getPayoutAmount();
-                try {
-                    // if payout amount can be number, prefix with dollar sign
-                    Integer.valueOf(payoutAmount);
-                    payoutAmount = "$" + payoutAmount;
-                } catch (NumberFormatException ignored) {}
-
-                return line + " §7- §e§l" + payoutAmount;
-            } catch (SQLException e) {
-                return super.getLine() + " §7- §cSQL ERR";
-            }
-        }
     }
 }
