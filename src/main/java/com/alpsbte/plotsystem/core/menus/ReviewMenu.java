@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
@@ -44,12 +43,9 @@ import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class ReviewMenu extends AbstractPaginatedMenu {
     private List<Country> countries = new ArrayList<>();
@@ -62,13 +58,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
-        try {
-            countries = Builder.byUUID(getMenuPlayer().getUniqueId()).getAsReviewer().getCountries();
-            plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unreviewed));
-            plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unfinished));
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        countries = DataProvider.BUILD_TEAM.getReviewerCountries(Builder.byUUID(getMenuPlayer().getUniqueId()));
+        plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unreviewed));
+        plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unfinished));
         return plots;
     }
 

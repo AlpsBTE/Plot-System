@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
@@ -315,16 +316,13 @@ public class EventListener implements Listener {
         }
 
         // Informing reviewer about new reviews
-        try {
-            if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {
-                List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(builder.getAsReviewer().getCountries(), Status.unreviewed);
+        if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {
+            List<Country> reviewerCountries = DataProvider.BUILD_TEAM.getReviewerCountries(builder);
+            List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(reviewerCountries, Status.unreviewed);
 
-                if (!unreviewedPlots.isEmpty()) {
-                    PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, player);
-                }
+            if (!unreviewedPlots.isEmpty()) {
+                PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, player);
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about unreviewed plots!"), ex);
         }
 
 

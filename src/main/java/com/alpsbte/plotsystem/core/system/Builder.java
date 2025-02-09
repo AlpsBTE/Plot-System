@@ -31,7 +31,6 @@ import com.alpsbte.plotsystem.utils.enums.Slot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.*;
 
 public class Builder {
@@ -149,21 +148,5 @@ public class Builder {
 
     public static Builder byName(String name) {
         return DataProvider.BUILDER.getBuilderByName(name);
-    }
-
-    public Reviewer getAsReviewer() throws SQLException {
-        return new Reviewer(getUUID());
-    }
-
-    public static class Reviewer {
-        private final List<BuildTeam> buildTeams;
-
-        public Reviewer(UUID reviewerUUID) {
-            this.buildTeams = DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(reviewerUUID);
-        }
-
-        public List<Country> getCountries() {
-            return DataProvider.BUILDER.getReviewerCountries(buildTeams);
-        }
     }
 }

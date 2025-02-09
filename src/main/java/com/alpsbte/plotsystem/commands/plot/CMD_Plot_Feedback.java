@@ -55,7 +55,7 @@ public class CMD_Plot_Feedback extends SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         Player player = getPlayer(sender);
-        if (getPlayer(sender) == null) {
+        if (player == null) {
             Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
             return;
         }
@@ -64,7 +64,7 @@ public class CMD_Plot_Feedback extends SubCommand {
             Plot plot;
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                 plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-            } else if (player != null && PlotUtils.isPlotWorld(player.getWorld())) {
+            } else if (PlotUtils.isPlotWorld(player.getWorld())) {
                 AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished);
                 if (!(p instanceof Plot)) {
                     sendInfo(sender);

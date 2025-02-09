@@ -275,12 +275,8 @@ public class ReviewPlotMenu extends AbstractMenu {
                     }
 
                     // Delete plot world after reviewing
-                    try {
-                        if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
-                            plot.getWorld().deleteWorld();
-                    } catch (SQLException ex) {
-                        PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                    }
+                    if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
+                        plot.getWorld().deleteWorld();
 
                     clickPlayer.sendMessage(reviewerConfirmationMessage);
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1f, 1f);

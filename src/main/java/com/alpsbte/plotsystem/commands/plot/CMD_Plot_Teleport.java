@@ -40,6 +40,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
@@ -54,7 +55,8 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        if (getPlayer(sender) == null) {
+        Player player = getPlayer(sender);
+        if (player == null) {
             Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return;
         }
@@ -71,7 +73,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
             if (plot == null || plot.getStatus() == Status.unclaimed) {
                 if (sender.hasPermission("plotsystem.admin") && plot != null) {
-                    Builder builder = Builder.byUUID(getPlayer(sender).getUniqueId());
+                    Builder builder = Builder.byUUID(player.getUniqueId());
                     if (builder == null) {
                         sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         return;
@@ -91,7 +93,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                 return;
             }
 
-            plot.getWorld().teleportPlayer(getPlayer(sender));
+            plot.getWorld().teleportPlayer(player);
         });
     }
 
