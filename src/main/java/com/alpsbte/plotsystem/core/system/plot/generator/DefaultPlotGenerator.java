@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -46,16 +46,15 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
-    public final static Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
+    public static final Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
     public DefaultPlotGenerator(CityProject city, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
-        this(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).get(new Random().nextInt(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).size())), builder);
+        this(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).get(Utils.getRandom().nextInt(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
     public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class CountryMenu extends AbstractMenu {
     private final Continent selectedContinent;
     private PlotDifficulty selectedPlotDifficulty = null;
 
-    CountryMenu(Player player, Continent continent) {
+    CountryMenu(Player player, @NotNull Continent continent) {
         super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY), player);
         selectedContinent = continent;
     }
@@ -71,6 +72,8 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
+        getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
+
         // Set plots difficulty item head
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
@@ -94,6 +97,9 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->  // Set click event for random selection item
+                generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty));
+
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
@@ -106,16 +112,7 @@ public class CountryMenu extends AbstractMenu {
             setCountryItems();
         }));
 
-        // Set click event for tutorial item
-        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
-            getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!clickPlayer.hasPermission("plotsystem.tutorial")) {
-                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer.getUniqueId(),
-                            LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-                    return;
-                }
-                new TutorialsMenu(clickPlayer);
-            });
+        CompanionMenu.clickEventTutorialItem(getMenu());
 
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
@@ -130,6 +127,15 @@ public class CountryMenu extends AbstractMenu {
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
             getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
         }
+    }
+
+    public static boolean generateRandomPlot(Player clickPlayer, @NotNull List<Country> countryProjects, PlotDifficulty selectedPlotDifficulty) {
+        List<CityProject> cityProjects = new ArrayList<>();
+        for (Country curCountry : countryProjects) {
+            cityProjects.addAll(CityProjectMenu.getValidCityProjects(selectedPlotDifficulty, clickPlayer, curCountry));
+        }
+
+        return CityProjectMenu.generateRandomPlot(clickPlayer, cityProjects, selectedPlotDifficulty);
     }
 
     @Override
@@ -179,5 +185,4 @@ public class CountryMenu extends AbstractMenu {
                     .build());
         }
     }
-
 }

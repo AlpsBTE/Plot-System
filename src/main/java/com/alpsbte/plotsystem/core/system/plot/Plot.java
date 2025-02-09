@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,33 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -139,7 +147,7 @@ public class Plot extends AbstractPlot {
                 if (cityPlotWorld == null) cityPlotWorld = new CityPlotWorld(this);
                 return (T) cityPlotWorld;
             }
-        } catch (SQLException ex) {PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);}
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return null;
     }
 
@@ -230,23 +238,7 @@ public class Plot extends AbstractPlot {
         return DataProvider.PLOT.getCompletedSchematic(ID);
     }
 
-    @Deprecated
-    public BlockVector3 getMinecraftCoordinates() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                String[] mcLocation = rs.getString(1).split(",");
-                DatabaseConnection.closeResultSet(rs);
-                return BlockVector3.at(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-
-            return null;
-        }
-    }
-
+    @Override
     public BlockVector3 getCenter() {
         try {
             if (getVersion() >= 3) {
@@ -350,7 +342,7 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    public static boolean hasPlotDifficultyScoreRequirement(Builder builder, PlotDifficulty plotDifficulty) throws SQLException {
+    public static boolean hasPlotDifficultyScoreRequirement(@NotNull Builder builder, PlotDifficulty plotDifficulty) throws SQLException {
         int playerScore = builder.getScore();
         int scoreRequirement = Plot.getScoreRequirementByDifficulty(plotDifficulty);
         return playerScore >= scoreRequirement;

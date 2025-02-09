@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -67,6 +68,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setPreviewItems() {
+        getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
         getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
@@ -96,6 +98,9 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->
+                generateRandomPlot(clickPlayer, getValidCityProjects(selectedPlotDifficulty, clickPlayer, country), selectedPlotDifficulty));
+
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
 
         // Set click event for previous page item
@@ -119,26 +124,50 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
-            selectedPlotDifficulty = (selectedPlotDifficulty == null ?
-                    PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
-                    PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
-
-            getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
-            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
-
-            // reload displayed cities
-            reloadMenuAsync();
+            selectedPlotDifficulty = CompanionMenu.clickEventPlotDifficulty(selectedPlotDifficulty, clickPlayer, getMenu());
+            reloadMenuAsync(); // reload displayed cities
         }));
 
-        // Set click event for tutorial item
-        getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
-            if (!clickPlayer.hasPermission("plotsystem.tutorial")) {
-                clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer.getUniqueId(),
-                        LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-                return;
+        CompanionMenu.clickEventTutorialItem(getMenu());
+    }
+
+    public static boolean generateRandomPlot(Player player, @NotNull List<CityProject> items, PlotDifficulty selectedPlotDifficulty) {
+        PlotDifficulty difficulty = selectedPlotDifficulty;
+        if (items.isEmpty()) {
+            player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            return false;
+        }
+        var randomCity = items.get(Utils.getRandom().nextInt(items.size()));
+
+        Builder builder = Builder.byUUID(player.getUniqueId());
+        try {
+            if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity.getID(), Builder.byUUID(player.getUniqueId())).get();
+            if (difficulty == null) difficulty = PlotDifficulty.EASY;
+            new DefaultPlotGenerator(randomCity.getID(), difficulty, builder);
+        } catch (SQLException | InterruptedException | ExecutionException e) {
+            sqlError(player, e);
+            return false;
+        }
+        player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1);
+        return true;
+    }
+
+    public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
+        return CityProject.getCityProjects(country, true).stream().filter(test -> {
+            if (test instanceof CityProject project) {
+                var pd = selectedPlotDifficulty;
+                try {
+                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project.getID(), Builder.byUUID(player.getUniqueId())).get();
+                    if (pd == null) pd = PlotDifficulty.EASY;
+                    return project.isVisible() && project.getOpenPlotsForPlayer(project.getID(), pd) > 0;
+                } catch (SQLException | ExecutionException | InterruptedException e) {
+                    sqlError(player, e);
+                }
+            } else {
+                return false;
             }
-            new TutorialsMenu(clickPlayer);
-        });
+            return false;
+        }).toList();
     }
 
     @Override
@@ -203,12 +232,17 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
                     new DefaultPlotGenerator(city, plotDifficultyForCity, builder);
                 } catch (SQLException | ExecutionException | InterruptedException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-                    clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+                    sqlError(clickPlayer, ex);
                 }
             });
             slot++;
         }
+    }
+
+    private static void sqlError(@NotNull Player clickPlayer, Exception ex) {
+        Utils.logSqlException(ex);
+        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        Thread.currentThread().interrupt();
     }
 }

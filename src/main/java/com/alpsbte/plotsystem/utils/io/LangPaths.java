@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,30 +25,36 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class LangPaths {
+    private LangPaths() {}
+
     public static final class Plot {
-        private static final String PLOT = "plot.";
-        public static final String PLOT_NAME = PLOT + "plot-name";
-        public static final String ID = PLOT + "id";
-        public static final String OWNER = PLOT + "owner";
-        public static final String MEMBERS = PLOT + "members";
-        public static final String MEMBER = PLOT + "member";
-        public static final String CITY = PLOT + "city";
-        public static final String COUNTRY = PLOT + "country";
-        public static final String DIFFICULTY = PLOT + "difficulty";
-        public static final String STATUS = PLOT + "status";
-        public static final String SCORE = PLOT + "score";
-        public static final String TOTAL_SCORE = PLOT + "total-score";
-        public static final String EFFECTIVE_SCORE = PLOT + "effective-score";
-        public static final String COMPLETED_PLOTS = PLOT + "completed-plots";
+        private Plot() {}
+
+        private static final String PLOT_PREFIX = "plot.";
+        public static final String PLOT_NAME = PLOT_PREFIX + "plot-name";
+        public static final String ID = PLOT_PREFIX + "id";
+        public static final String OWNER = PLOT_PREFIX + "owner";
+        public static final String MEMBERS = PLOT_PREFIX + "members";
+        public static final String MEMBER = PLOT_PREFIX + "member";
+        public static final String CITY = PLOT_PREFIX + "city";
+        public static final String COUNTRY = PLOT_PREFIX + "country";
+        public static final String DIFFICULTY = PLOT_PREFIX + "difficulty";
+        public static final String STATUS = PLOT_PREFIX + "status";
+        public static final String SCORE = PLOT_PREFIX + "score";
+        public static final String TOTAL_SCORE = PLOT_PREFIX + "total-score";
+        public static final String COMPLETED_PLOTS = PLOT_PREFIX + "completed-plots";
 
         public static final class GroupSystem {
-            private static final String GROUP_SYSTEM = PLOT + "group-system.";
+            private GroupSystem() {}
+
+            private static final String GROUP_SYSTEM = PLOT_PREFIX + "group-system.";
             public static final String EMPTY_MEMBER_SLOTS = GROUP_SYSTEM + "empty-member-slot";
             public static final String SHARED_BY_MEMBERS = GROUP_SYSTEM + "shared-by-members";
         }
     }
 
     public static final class CityProject {
+        private CityProject() {}
         private static final String CITY_PROJECT = "city-project.";
         public static final String CITIES = CITY_PROJECT + "cities";
         public static final String PROJECT_OPEN = CITY_PROJECT + "open";
@@ -60,27 +66,34 @@ public abstract class LangPaths {
     }
 
     public static final class Country {
-        private static final String COUNTRY = "country.";
-        public static final String COUNTRIES = COUNTRY + "countries";
+        private Country() {}
+
+        private static final String COUNTRY_PREFIX = "country.";
+        public static final String COUNTRIES = COUNTRY_PREFIX + "countries";
     }
 
     public static final class Continent {
-        private static final String CONTINENT = "continent.";
-        public static final String EUROPE = CONTINENT + "europe";
-        public static final String ASIA = CONTINENT + "asia";
-        public static final String AFRICA = CONTINENT + "africa";
-        public static final String OCEANIA = CONTINENT + "oceania";
-        public static final String SOUTH_AMERICA = CONTINENT + "south-america";
-        public static final String NORTH_AMERICA = CONTINENT + "north-america";
+        private Continent() {}
+
+        private static final String CONTINENT_PREFIX = "continent.";
+        public static final String EUROPE = CONTINENT_PREFIX + "europe";
+        public static final String ASIA = CONTINENT_PREFIX + "asia";
+        public static final String AFRICA = CONTINENT_PREFIX + "africa";
+        public static final String OCEANIA = CONTINENT_PREFIX + "oceania";
+        public static final String SOUTH_AMERICA = CONTINENT_PREFIX + "south-america";
+        public static final String NORTH_AMERICA = CONTINENT_PREFIX + "north-america";
     }
 
     public static final class Difficulty {
-        private static final String DIFFICULTY = "difficulty.";
-        public static final String AUTOMATIC = DIFFICULTY + "automatic";
-        public static final String SCORE_MULTIPLIER = DIFFICULTY + "score-multiplier";
+        private Difficulty() {}
+
+        private static final String DIFFICULTY_PREFIX = "difficulty.";
+        public static final String AUTOMATIC = DIFFICULTY_PREFIX + "automatic";
+        public static final String SCORE_MULTIPLIER = DIFFICULTY_PREFIX + "score-multiplier";
     }
 
     public static final class MenuTitle {
+        private MenuTitle() {}
         private static final String MENU_TITLES = "menu-title.";
         public static final String CLOSE = MENU_TITLES + "close";
         public static final String BACK = MENU_TITLES + "back";
@@ -114,7 +127,6 @@ public abstract class LangPaths {
         public static final String LEAVE_PLOT = MENU_TITLES + "leave-plot";
         public static final String REVIEW_PLOTS = MENU_TITLES + "review-plots";
         public static final String REVIEW_PLOT = MENU_TITLES + "review-plot";
-        public static final String ENTER_PLAYER_NAME = MENU_TITLES + "enter-player-name";
         public static final String SELECT_LANGUAGE = MENU_TITLES + "select-language";
         public static final String SELECT_PLOT_TYPE = MENU_TITLES + "select-plot-type";
         public static final String SELECT_FOCUS_MODE = MENU_TITLES + "select-focus-mode";
@@ -126,9 +138,11 @@ public abstract class LangPaths {
         public static final String TUTORIAL_STAGES = MENU_TITLES + "tutorial-stages";
         public static final String TUTORIAL_END = MENU_TITLES + "tutorial-end";
         public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
+        public static final String COMPANION_RANDOM = MENU_TITLES + "companion-random";
     }
 
     public static final class MenuDescription {
+        private MenuDescription() {}
         private static final String MENU_DESCRIPTIONS = "menu-description.";
         public static final String ERROR = MENU_DESCRIPTIONS + "error-desc";
         public static final String PLOT_DIFFICULTY = MENU_DESCRIPTIONS + "plot-difficulty-desc";
@@ -159,34 +173,40 @@ public abstract class LangPaths {
         public static final String TUTORIALS = MENU_DESCRIPTIONS + "tutorials-desc";
         public static final String TUTORIAL_END = MENU_DESCRIPTIONS + "tutorial-end-desc";
         public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
+        public static final String COMPANION_RANDOM = MENU_DESCRIPTIONS + "companion-random-desc";
     }
 
     public static final class Review {
-        private static final String REVIEW = "review.";
-        public static final String MANAGE_AND_REVIEW_PLOTS = REVIEW + "manage-and-review-plots";
-        public static final String REVIEW_PLOT = REVIEW + "review-plot";
-        public static final String MANAGE_PLOT = REVIEW + "manage-plot";
-        public static final String ACCEPTED = REVIEW + "accepted";
-        public static final String ABANDONED = REVIEW + "abandoned";
-        public static final String REJECTED = REVIEW + "rejected";
-        public static final String FEEDBACK = REVIEW + "feedback";
-        public static final String REVIEWER = REVIEW + "reviewer";
-        public static final String PLAYER_LANGUAGE = REVIEW + "player-language";
+        private Review() {}
+
+        private static final String REVIEW_PREFIX = "review.";
+        public static final String MANAGE_AND_REVIEW_PLOTS = REVIEW_PREFIX + "manage-and-review-plots";
+        public static final String REVIEW_PLOT = REVIEW_PREFIX + "review-plot";
+        public static final String MANAGE_PLOT = REVIEW_PREFIX + "manage-plot";
+        public static final String ACCEPTED = REVIEW_PREFIX + "accepted";
+        public static final String ABANDONED = REVIEW_PREFIX + "abandoned";
+        public static final String REJECTED = REVIEW_PREFIX + "rejected";
+        public static final String FEEDBACK = REVIEW_PREFIX + "feedback";
+        public static final String REVIEWER = REVIEW_PREFIX + "reviewer";
+        public static final String PLAYER_LANGUAGE = REVIEW_PREFIX + "player-language";
 
         public static final class Criteria {
-            private static final String CRITERIA = REVIEW + "criteria.";
-            public static final String ACCURACY = CRITERIA + "accuracy";
-            public static final String ACCURACY_DESC = CRITERIA + "accuracy-desc";
-            public static final String BLOCK_PALETTE = CRITERIA + "block-palette";
-            public static final String BLOCK_PALETTE_DESC = CRITERIA + "block-palette-desc";
-            public static final String DETAILING = CRITERIA + "detailing";
-            public static final String DETAILING_DESC = CRITERIA + "detailing-desc";
-            public static final String TECHNIQUE = CRITERIA + "technique";
-            public static final String TECHNIQUE_DESC = CRITERIA + "technique-desc";
+            private Criteria() {}
+
+            private static final String CRITERIA_PREFIX = REVIEW_PREFIX + "criteria.";
+            public static final String ACCURACY = CRITERIA_PREFIX + "accuracy";
+            public static final String ACCURACY_DESC = CRITERIA_PREFIX + "accuracy-desc";
+            public static final String BLOCK_PALETTE = CRITERIA_PREFIX + "block-palette";
+            public static final String BLOCK_PALETTE_DESC = CRITERIA_PREFIX + "block-palette-desc";
+            public static final String DETAILING = CRITERIA_PREFIX + "detailing";
+            public static final String DETAILING_DESC = CRITERIA_PREFIX + "detailing-desc";
+            public static final String TECHNIQUE = CRITERIA_PREFIX + "technique";
+            public static final String TECHNIQUE_DESC = CRITERIA_PREFIX + "technique-desc";
         }
     }
 
     public static final class Note {
+        private Note() {}
         private static final String NOTES = "note.";
         public static final String TIP = NOTES + "tip";
         public static final String UNDER_CONSTRUCTION = NOTES + "under-construction";
@@ -195,112 +215,121 @@ public abstract class LangPaths {
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
 
         public static final class Action {
-            private static final String ACTION = NOTES + "action.";
-            public static final String READ = ACTION + "read";
-            public static final String READ_MORE = ACTION + "read-more";
-            public static final String MARK_AS_READ = ACTION + "mark-as-read";
-            public static final String START = ACTION + "start";
-            public static final String CONTINUE = ACTION + "continue";
-            public static final String CONTINUE_TUTORIAL = ACTION + "continue-tutorial";
-            public static final String CREATE_PLOT = ACTION + "create-plot";
-            public static final String RIGHT_CLICK = ACTION + "right-click";
-            public static final String LEFT_CLICK = ACTION + "left-click";
-            public static final String ACCEPT = ACTION + "accept";
-            public static final String REJECT = ACTION + "reject";
-            public static final String CLICK_TO_CREATE = ACTION + "click-to-create-plot";
-            public static final String CLICK_TO_PROCEED = ACTION + "click-to-proceed";
-            public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION + "click-to-remove-plot-member";
-            public static final String CLICK_TO_OPEN_LINK = ACTION + "click-to-open-link";
-            public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION + "click-to-open-link-with-shortlink";
-            public static final String CLICK_TO_SHOW_FEEDBACK = ACTION + "click-to-show-feedback";
-            public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION + "click-to-show-open-reviews";
-            public static final String CLICK_TO_SHOW_PLOTS = ACTION + "click-to-show-plots";
-            public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION + "click-to-play-with-friends";
-            public static final String TUTORIAL_SHOW_STAGES = ACTION + "tutorial-show-stages";
+            private Action() {}
+
+            private static final String ACTION_PREFIX = NOTES + "action.";
+            public static final String READ = ACTION_PREFIX + "read";
+            public static final String READ_MORE = ACTION_PREFIX + "read-more";
+            public static final String MARK_AS_READ = ACTION_PREFIX + "mark-as-read";
+            public static final String START = ACTION_PREFIX + "start";
+            public static final String CONTINUE = ACTION_PREFIX + "continue";
+            public static final String CONTINUE_TUTORIAL = ACTION_PREFIX + "continue-tutorial";
+            public static final String CREATE_PLOT = ACTION_PREFIX + "create-plot";
+            public static final String RIGHT_CLICK = ACTION_PREFIX + "right-click";
+            public static final String LEFT_CLICK = ACTION_PREFIX + "left-click";
+            public static final String ACCEPT = ACTION_PREFIX + "accept";
+            public static final String REJECT = ACTION_PREFIX + "reject";
+            public static final String CLICK_TO_CREATE = ACTION_PREFIX + "click-to-create-plot";
+            public static final String CLICK_TO_PROCEED = ACTION_PREFIX + "click-to-proceed";
+            public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION_PREFIX + "click-to-remove-plot-member";
+            public static final String CLICK_TO_OPEN_LINK = ACTION_PREFIX + "click-to-open-link";
+            public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION_PREFIX + "click-to-open-link-with-shortlink";
+            public static final String CLICK_TO_SHOW_FEEDBACK = ACTION_PREFIX + "click-to-show-feedback";
+            public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION_PREFIX + "click-to-show-open-reviews";
+            public static final String CLICK_TO_SHOW_PLOTS = ACTION_PREFIX + "click-to-show-plots";
+            public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION_PREFIX + "click-to-play-with-friends";
+            public static final String TUTORIAL_SHOW_STAGES = ACTION_PREFIX + "tutorial-show-stages";
         }
     }
 
     public static final class Message {
-        private static final String MESSAGE = "message.";
+        private Message() {}
+
+        private static final String MESSAGE_PREFIX = "message.";
 
         public static final class Info {
-            private static final String INFO = MESSAGE + "info.";
-            public static final String TELEPORTING_PLOT = INFO + "teleporting-plot";
-            public static final String TELEPORTING_TPLL = INFO + "teleporting-tpll";
-            public static final String ABANDONED_PLOT = INFO + "abandoned-plot";
-            public static final String FINISHED_PLOT = INFO + "finished-plot";
-            public static final String PLOT_MARKED_REVIEWED = INFO + "plot-marked-as-reviewed";
-            public static final String PLOT_REJECTED = INFO + "plot-rejected";
-            public static final String UNDID_SUBMISSION = INFO + "undid-submission";
-            public static final String UNDID_REVIEW = INFO + "undid-review";
-            public static final String REVIEWED_PLOT = INFO + "reviewed-plot";
-            public static final String UNREVIEWED_PLOT = INFO + "unreviewed-plot";
-            public static final String UNREVIEWED_PLOTS = INFO + "unreviewed-plots";
-            public static final String UNFINISHED_PLOT = INFO + "unfinished-plot";
-            public static final String UNFINISHED_PLOTS = INFO + "unfinished-plots";
-            public static final String ENABLED_PLOT_PERMISSIONS = INFO + "enabled-build-permissions";
-            public static final String DISABLED_PLOT_PERMISSIONS = INFO + "disabled-build-permissions";
-            public static final String UPDATED_PLOT_FEEDBACK = INFO + "updated-plot-feedback";
-            public static final String REMOVED_PLOT_MEMBER = INFO + "removed-plot-member";
-            public static final String LEFT_PLOT = INFO + "left-plot";
-            public static final String PLOT_WILL_GET_ABANDONED = INFO + "plot-will-get-abandoned-warning";
-            public static final String PLOT_WILL_GET_REJECTED = INFO + "plot-will-get-rejected-warning";
-            public static final String SAVING_PLOT = INFO + "saving-plot";
-            public static final String CREATING_PLOT = INFO + "creating-plot";
-            public static final String CREATED_NEW_PLOT = INFO + "created-new-plot";
-            public static final String CHAT_ENTER_PLAYER = INFO + "chat-enter-player";
-            public static final String CHAT_ENTER_FEEDBACK = INFO + "chat-enter-feedback";
-            public static final String CHAT_INPUT_EXPIRES_AFTER = INFO + "chat-input-expires-after";
-            public static final String BEGINNER_TUTORIAL_REQUIRED = INFO + "beginner-tutorial-required";
-            public static final String BEGINNER_TUTORIAL_COMPLETED = INFO + "beginner-tutorial-completed";
-            public static final String PLAYER_INVITE_SENT = INFO + "player-invite-sent";
-            public static final String PLAYER_INVITE_TO_SENT = INFO + "player-invite-to-sent";
-            public static final String PLAYER_INVITE_ACCEPTED = INFO + "player-invite-accepted";
-            public static final String PLAYER_INVITE_TO_ACCEPTED = INFO + "player-invite-to-accepted";
-            public static final String PLAYER_INVITE_REJECTED = INFO + "player-invite-rejected";
+            private Info() {}
+
+            private static final String INFO_PREFIX = MESSAGE_PREFIX + "info.";
+            public static final String TELEPORTING_PLOT = INFO_PREFIX + "teleporting-plot";
+            public static final String TELEPORTING_TPLL = INFO_PREFIX + "teleporting-tpll";
+            public static final String ABANDONED_PLOT = INFO_PREFIX + "abandoned-plot";
+            public static final String FINISHED_PLOT = INFO_PREFIX + "finished-plot";
+            public static final String PLOT_MARKED_REVIEWED = INFO_PREFIX + "plot-marked-as-reviewed";
+            public static final String PLOT_REJECTED = INFO_PREFIX + "plot-rejected";
+            public static final String UNDID_SUBMISSION = INFO_PREFIX + "undid-submission";
+            public static final String UNDID_REVIEW = INFO_PREFIX + "undid-review";
+            public static final String REVIEWED_PLOT = INFO_PREFIX + "reviewed-plot";
+            public static final String UNREVIEWED_PLOT = INFO_PREFIX + "unreviewed-plot";
+            public static final String UNREVIEWED_PLOTS = INFO_PREFIX + "unreviewed-plots";
+            public static final String UNFINISHED_PLOT = INFO_PREFIX + "unfinished-plot";
+            public static final String UNFINISHED_PLOTS = INFO_PREFIX + "unfinished-plots";
+            public static final String ENABLED_PLOT_PERMISSIONS = INFO_PREFIX + "enabled-build-permissions";
+            public static final String DISABLED_PLOT_PERMISSIONS = INFO_PREFIX + "disabled-build-permissions";
+            public static final String UPDATED_PLOT_FEEDBACK = INFO_PREFIX + "updated-plot-feedback";
+            public static final String REMOVED_PLOT_MEMBER = INFO_PREFIX + "removed-plot-member";
+            public static final String LEFT_PLOT = INFO_PREFIX + "left-plot";
+            public static final String PLOT_WILL_GET_ABANDONED = INFO_PREFIX + "plot-will-get-abandoned-warning";
+            public static final String PLOT_WILL_GET_REJECTED = INFO_PREFIX + "plot-will-get-rejected-warning";
+            public static final String SAVING_PLOT = INFO_PREFIX + "saving-plot";
+            public static final String CREATING_PLOT = INFO_PREFIX + "creating-plot";
+            public static final String CREATED_NEW_PLOT = INFO_PREFIX + "created-new-plot";
+            public static final String CHAT_ENTER_PLAYER = INFO_PREFIX + "chat-enter-player";
+            public static final String CHAT_ENTER_FEEDBACK = INFO_PREFIX + "chat-enter-feedback";
+            public static final String CHAT_INPUT_EXPIRES_AFTER = INFO_PREFIX + "chat-input-expires-after";
+            public static final String BEGINNER_TUTORIAL_REQUIRED = INFO_PREFIX + "beginner-tutorial-required";
+            public static final String BEGINNER_TUTORIAL_COMPLETED = INFO_PREFIX + "beginner-tutorial-completed";
+            public static final String PLAYER_INVITE_SENT = INFO_PREFIX + "player-invite-sent";
+            public static final String PLAYER_INVITE_TO_SENT = INFO_PREFIX + "player-invite-to-sent";
+            public static final String PLAYER_INVITE_ACCEPTED = INFO_PREFIX + "player-invite-accepted";
+            public static final String PLAYER_INVITE_TO_ACCEPTED = INFO_PREFIX + "player-invite-to-accepted";
+            public static final String PLAYER_INVITE_REJECTED = INFO_PREFIX + "player-invite-rejected";
         }
 
         public static final class Error {
-            private static final String ERROR = MESSAGE + "error.";
-            public static final String PLOT_DOES_NOT_EXIST = ERROR + "plot-does-not-exist";
-            public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR + "plot-either-unclaimed-or-unreviewed";
-            public static final String PLOT_HAS_NOT_YET_REVIEWED = ERROR + "plot-has-not-yet-reviewed";
+            private Error() {}
 
-            public static final String CAN_ONLY_ABANDON_UNFINISHED_PLOTS = ERROR + "can-only-abandon-unfinished-plots";
-            public static final String CAN_ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR + "can-only-submit-unfinished-plots";
-            public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR + "can-only-undo-submissions-unreviewed-plots";
-            public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR + "can-only-manage-members-unfinished-plots";
-            public static final String CANNOT_TELEPORT_OUTSIDE_PLOT = ERROR + "cannot-teleport-outside-plot";
-            public static final String CANNOT_UNDO_REVIEW = ERROR + "cannot-undo-review";
-            public static final String CANNOT_SEND_FEEDBACK = ERROR + "cannot-send-feedback";
-            public static final String CANNOT_REVIEW_OWN_PLOT = ERROR + "cannot-review-own-plot";
+            private static final String ERROR_PREFIX = MESSAGE_PREFIX + "error.";
+            public static final String PLOT_DOES_NOT_EXIST = ERROR_PREFIX + "plot-does-not-exist";
+            public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR_PREFIX + "plot-either-unclaimed-or-unreviewed";
+            public static final String PLOT_HAS_NOT_YET_REVIEWED = ERROR_PREFIX + "plot-has-not-yet-reviewed";
 
-            public static final String PLAYER_HAS_NO_PERMISSIONS = ERROR + "player-has-no-permissions";
-            public static final String PLAYER_HAS_NO_INVITATIONS = ERROR + "player-has-no-invitations";
-            public static final String PLAYER_IS_NOT_ALLOWED = ERROR + "player-is-not-allowed";
-            public static final String PLAYER_IS_PLOT_OWNER = ERROR + "player-is-plot-owner";
-            public static final String PLAYER_IS_PLOT_MEMBER = ERROR + "player-is-plot-member";
-            public static final String PLAYER_IS_NOT_ONLINE = ERROR + "player-is-not-online";
-            public static final String PLAYER_NOT_FOUND = ERROR + "player-not-found";
-            public static final String PLAYER_ALREADY_INVITED = ERROR + "player-already-invited";
-            public static final String PLAYER_INVITE_EXPIRED = ERROR + "player-invite-expired";
-            public static final String PLAYER_INVITE_TO_EXPIRED = ERROR + "player-invite-to-expired";
-            public static final String PLAYER_INVITE_TO_REJECTED = ERROR + "player-invite-to-rejected";
-            public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR + "player-needs-to-be-on-plot";
-            public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR + "player-needs-higher-score";
+            public static final String CAN_ONLY_ABANDON_UNFINISHED_PLOTS = ERROR_PREFIX + "can-only-abandon-unfinished-plots";
+            public static final String CAN_ONLY_SUBMIT_UNFINISHED_PLOTS = ERROR_PREFIX + "can-only-submit-unfinished-plots";
+            public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR_PREFIX + "can-only-undo-submissions-unreviewed-plots";
+            public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR_PREFIX + "can-only-manage-members-unfinished-plots";
+            public static final String CANNOT_TELEPORT_OUTSIDE_PLOT = ERROR_PREFIX + "cannot-teleport-outside-plot";
+            public static final String CANNOT_UNDO_REVIEW = ERROR_PREFIX + "cannot-undo-review";
+            public static final String CANNOT_SEND_FEEDBACK = ERROR_PREFIX + "cannot-send-feedback";
+            public static final String CANNOT_REVIEW_OWN_PLOT = ERROR_PREFIX + "cannot-review-own-plot";
 
-            public static final String ERROR_OCCURRED = ERROR + "error-occurred";
-            public static final String COMMAND_DISABLED = ERROR + "command-disabled";
-            public static final String NO_PLOTS_LEFT = ERROR + "no-plots-left";
-            public static final String PLEASE_WAIT = ERROR + "please-wait";
-            public static final String ALL_SLOTS_OCCUPIED = ERROR + "all-slots-occupied";
-            public static final String CHAT_INPUT_EXPIRED = ERROR + "chat-input-expired";
-            public static final String TUTORIAL_DISABLED = ERROR + "tutorial-disabled";
-            public static final String TUTORIAL_ALREADY_RUNNING = ERROR + "tutorial-already-running";
+            public static final String PLAYER_HAS_NO_PERMISSIONS = ERROR_PREFIX + "player-has-no-permissions";
+            public static final String PLAYER_HAS_NO_INVITATIONS = ERROR_PREFIX + "player-has-no-invitations";
+            public static final String PLAYER_IS_NOT_ALLOWED = ERROR_PREFIX + "player-is-not-allowed";
+            public static final String PLAYER_IS_PLOT_OWNER = ERROR_PREFIX + "player-is-plot-owner";
+            public static final String PLAYER_IS_PLOT_MEMBER = ERROR_PREFIX + "player-is-plot-member";
+            public static final String PLAYER_IS_NOT_ONLINE = ERROR_PREFIX + "player-is-not-online";
+            public static final String PLAYER_NOT_FOUND = ERROR_PREFIX + "player-not-found";
+            public static final String PLAYER_ALREADY_INVITED = ERROR_PREFIX + "player-already-invited";
+            public static final String PLAYER_INVITE_EXPIRED = ERROR_PREFIX + "player-invite-expired";
+            public static final String PLAYER_INVITE_TO_EXPIRED = ERROR_PREFIX + "player-invite-to-expired";
+            public static final String PLAYER_INVITE_TO_REJECTED = ERROR_PREFIX + "player-invite-to-rejected";
+            public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR_PREFIX + "player-needs-to-be-on-plot";
+            public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR_PREFIX + "player-needs-higher-score";
+
+            public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
+            public static final String COMMAND_DISABLED = ERROR_PREFIX + "command-disabled";
+            public static final String NO_PLOTS_LEFT = ERROR_PREFIX + "no-plots-left";
+            public static final String PLEASE_WAIT = ERROR_PREFIX + "please-wait";
+            public static final String ALL_SLOTS_OCCUPIED = ERROR_PREFIX + "all-slots-occupied";
+            public static final String CHAT_INPUT_EXPIRED = ERROR_PREFIX + "chat-input-expired";
+            public static final String TUTORIAL_DISABLED = ERROR_PREFIX + "tutorial-disabled";
+            public static final String TUTORIAL_ALREADY_RUNNING = ERROR_PREFIX + "tutorial-already-running";
         }
     }
 
     public static final class Leaderboards {
+        private Leaderboards() {}
         private static final String LBS = "leaderboards.";
         public static final String PAGES = LBS + "pages.";
         public static final String ACTIONBAR_POSITION = LBS + "actionbar-position";
@@ -309,13 +338,17 @@ public abstract class LangPaths {
     }
 
     public static final class Tutorials {
-        public static final String TUTORIALS = "tutorials.";
-        public static final String STAGE = TUTORIALS + "stage";
-        public static final String NEW_STAGE_UNLOCKED = TUTORIALS + "new-stage-unlocked";
-        public static final String TUTORIAL_COMPLETED = TUTORIALS + "tutorial-completed";
+        private Tutorials() {}
+
+        public static final String TUTORIALS_PREFIX = "tutorials.";
+        public static final String STAGE = TUTORIALS_PREFIX + "stage";
+        public static final String NEW_STAGE_UNLOCKED = TUTORIALS_PREFIX + "new-stage-unlocked";
+        public static final String TUTORIAL_COMPLETED = TUTORIALS_PREFIX + "tutorial-completed";
 
         public static class Beginner {
-            private static final String TUTORIALS_BEGINNER = TUTORIALS + "beginner.";
+            private Beginner() {}
+
+            private static final String TUTORIALS_BEGINNER = TUTORIALS_PREFIX + "beginner.";
 
             private static final String STAGE1 = TUTORIALS_BEGINNER + "stage-1.";
             public static final String STAGE1_TITLE = STAGE1 + "stage-1-title";

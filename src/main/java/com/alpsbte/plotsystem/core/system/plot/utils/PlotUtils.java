@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -96,8 +96,8 @@ public final class PlotUtils {
 
     /**
      * Returns the plot that the player is currently standing on or next to.
-     * If he is standing in a single plot world it returns the plot of this world.
-     * If he is standing in a multi plot world it returns the closest plot of all unfinished plots of this city
+     * If he is standing in a single-plot world, it returns the plot of this world.
+     * If he is standing in a multi-plot world, it returns the closest plot of all unfinished plots in this city
      *
      * @return the current plot of the player
      */
@@ -300,7 +300,8 @@ public final class PlotUtils {
 
     public static final class Actions {
         private Actions() {}
-        public static void submitPlot(Plot plot) throws SQLException {
+
+        public static void submitPlot(@NotNull Plot plot) throws SQLException {
             plot.setStatus(Status.unreviewed);
 
             if (plot.getWorld().isWorldLoaded()) {
@@ -317,7 +318,7 @@ public final class PlotUtils {
             }
         }
 
-        public static void undoSubmit(Plot plot) throws SQLException {
+        public static void undoSubmit(@NotNull Plot plot) throws SQLException {
             plot.setStatus(Status.unfinished);
 
             plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
@@ -328,7 +329,7 @@ public final class PlotUtils {
             }
         }
 
-        public static boolean abandonPlot(AbstractPlot plot) {
+        public static boolean abandonPlot(@NotNull AbstractPlot plot) {
             try {
                 if (plot.getWorld() instanceof OnePlotWorld) {
                     if (plot.getWorld().isWorldGenerated()) {
@@ -428,7 +429,7 @@ public final class PlotUtils {
             cachedInProgressPlots.remove(builderUUID);
         }
 
-        public static List<Plot> getCachedInProgressPlots(Builder builder) {
+        public static List<Plot> getCachedInProgressPlots(@NotNull Builder builder) {
             if (!cachedInProgressPlots.containsKey(builder.getUUID())) {
                 cachedInProgressPlots.put(builder.getUUID(), DataProvider.PLOT.getPlots(builder, Status.unfinished));
             }
@@ -455,7 +456,7 @@ public final class PlotUtils {
             // get API
             ParticleNativeAPI api = ParticleNativePlugin.getAPI();
 
-            // choose particles lists you want to use
+            // choose particle list you want to use
             particles = api.getParticles_1_8();
         }
 
@@ -596,7 +597,7 @@ public final class PlotUtils {
                 player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/plot feedback " + plot.getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + plot.getID()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 
@@ -608,22 +609,22 @@ public final class PlotUtils {
             player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
         }
 
-        public static void sendUnfinishedPlotReminderMessage(List<Plot> plots, Player player) {
+        public static void sendUnfinishedPlotReminderMessage(@NotNull List<Plot> plots, @NotNull Player player) {
             player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, plots.size() <= 1 ? LangPaths.Message.Info.UNFINISHED_PLOT : LangPaths.Message.Info.UNFINISHED_PLOTS, String.valueOf(plots.size())), GREEN)));
 
             Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_PLOTS), GOLD)
-                    .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/plots"))
+                    .clickEvent(ClickEvent.runCommand("/plots"))
                     .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)));
             player.sendMessage(tc);
         }
 
-        public static void sendUnreviewedPlotsReminderMessage(List<Plot> plots, Player player) {
+        public static void sendUnreviewedPlotsReminderMessage(@NotNull List<Plot> plots, @NotNull Player player) {
             player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, plots.size() <= 1 ?
                     LangPaths.Message.Info.UNREVIEWED_PLOT :
                     LangPaths.Message.Info.UNREVIEWED_PLOTS, String.valueOf(plots.size())), GREEN)));
 
             Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS), GOLD)
-                    .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/review"))
+                    .clickEvent(ClickEvent.runCommand("/review"))
                     .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)));
             player.sendMessage(tc);
         }

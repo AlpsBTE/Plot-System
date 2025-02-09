@@ -26,7 +26,6 @@ plot:
   status: "상태"
   score: "점수"
   total-score: "총점"
-  effective-score: "유효 점수"
   completed-plots: "완성된 플롯들"
   group-system:
     empty-member-slot: "빈 멤버 슬롯"
@@ -99,7 +98,6 @@ menu-title:
   leave-plot: "플롯 떠나기"
   review-plots: "플롯 리뷰하기"
   review-plot: "플롯 리뷰 #{0}"
-  enter-player-name: "플레이어 이름 입력하기"
   select-language: "언어 설정"
   select-plot-type: 'Select Plot Type'
   select-focus-mode: "Select Focus Mode"
@@ -111,6 +109,7 @@ menu-title:
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
   tutorial-beginner: 'Get Started'
+  companion-random: '무작위 선택'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
@@ -144,6 +143,7 @@ menu-description:
   tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
   tutorial-end-desc: 'Your progress will be saved.'
   tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  companion-random-desc: '클릭하여 무작위로 선택합니다.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.1
+config-version: 2.2
