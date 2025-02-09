@@ -44,7 +44,7 @@ import java.util.List;
 import static net.kyori.adventure.text.Component.text;
 
 public class CityPlotWorld extends PlotWorld {
-    public CityPlotWorld(@NotNull Plot plot) throws SQLException {
+    public CityPlotWorld(@NotNull Plot plot) {
         super("C-" + plot.getCity().getID(), plot);
     }
 

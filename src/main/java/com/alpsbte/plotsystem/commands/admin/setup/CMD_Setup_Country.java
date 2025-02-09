@@ -97,14 +97,7 @@ public class CMD_Setup_Country extends SubCommand {
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + countries.size() + " Countries registered in the database:"));
             sender.sendMessage(text("--------------------------", DARK_GRAY));
             for (Country c : countries) {
-                try {
-                    sender.sendMessage(" §6> §b" + c.getCode() + " §f- Server: " + c.getServer().getID() + " (" + c.getServer().getName() + ")");
-                    sender.sendMessage(text(" » ", DARK_GRAY)
-                            .append(text(c.getCode(), AQUA))
-                            .append(text(" - Server: " + c.getServer().getID(), WHITE)));
-                } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                }
+                sender.sendMessage(text(" » ", DARK_GRAY).append(text(c.getCode(), AQUA)));
             }
             sender.sendMessage(text("--------------------------", DARK_GRAY));
         }

@@ -30,12 +30,8 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.FTPManager;
 import org.bukkit.Bukkit;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -223,26 +219,9 @@ public class Review {
                     plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID());
                 }
 
-                int cityId = plot.getCity().getID();
-                Server plotServer = plot.getCity().getCountry().getServer();
-                boolean hasFTPConfiguration = plotServer.getFTPConfiguration() != null;
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    plot.getWorld().loadWorld();
+                DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
 
-                    try {
-                        Files.deleteIfExists(plot.getCompletedSchematic().toPath());
-
-                        if (hasFTPConfiguration) {
-                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schem");
-                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schematic");
-                        }
-                    } catch (IOException | SQLException | URISyntaxException ex) {
-                        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while undoing review!"), ex);
-                    }
-
-                    plot.getWorld().unloadWorld(true);
-                });
-
+                // TODO: extract sql to data provider
                 DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                         .setValue(review.getPlotID()).executeUpdate();
 

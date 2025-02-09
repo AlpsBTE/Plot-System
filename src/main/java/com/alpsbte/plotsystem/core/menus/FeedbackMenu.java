@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -56,7 +57,7 @@ public class FeedbackMenu extends AbstractMenu {
 
     public FeedbackMenu(Player player, int plotID) {
         super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.FEEDBACK, String.valueOf(plotID)), player);
-        this.plot = new Plot(plotID);
+        this.plot = DataProvider.PLOT.getPlotById(plotID);
     }
 
     @Override

@@ -46,7 +46,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -129,9 +128,6 @@ public class CMD_Tpll extends BaseCommand {
                     df.setRoundingMode(RoundingMode.FLOOR);
                     player.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.TELEPORTING_TPLL, df.format(lat), df.format(lon))));
                 });
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
             } catch (IOException | OutOfProjectionBoundsException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A coordinate conversion error occurred!"), ex);
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));

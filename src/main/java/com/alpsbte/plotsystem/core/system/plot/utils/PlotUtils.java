@@ -40,10 +40,8 @@ import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.FTPManager;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
@@ -52,7 +50,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -76,15 +74,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -112,12 +108,14 @@ public final class PlotUtils {
 
             if (PlotWorld.isOnePlotWorld(worldName)) {
                 int id = Integer.parseInt(worldName.substring(2));
-                AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-") ? new Plot(id) : new TutorialPlot(id);
+                AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
+                        ? DataProvider.PLOT.getPlotById(id)
+                        : DataProvider.PLOT.getTutorialPlotById(id);
                 if (statuses == null) return plot;
                 for (Status status : statuses) if (status == plot.getStatus()) return plot;
                 return null;
             } else if (PlotWorld.isCityPlotWorld(worldName)) {
-                String cityID = worldName.substring(2); // TODO: clarify if this should be intended behaviour
+                String cityID = worldName.substring(2);
                 CityProject city = DataProvider.CITY_PROJECT.getCityProjectById(cityID);
                 List<Plot> plots = DataProvider.PLOT.getPlots(city, statuses);
 
@@ -130,11 +128,14 @@ public final class PlotUtils {
 
                 double distance = 100000000;
                 Plot chosenPlot = plots.getFirst();
-                for (Plot plot : plots)
-                    if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE && plot.getCenter().withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
-                        distance = plot.getCenter().distance(playerVector.toBlockPoint());
+                for (Plot plot : plots) {
+                    if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) continue;
+                    BlockVector3 plotCenter = plot.getCenter();
+                    if (plotCenter.withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
+                        distance = plotCenter.distance(playerVector.toBlockPoint());
                         chosenPlot = plot;
                     }
+                }
 
                 return chosenPlot;
             }
@@ -151,147 +152,126 @@ public final class PlotUtils {
     }
 
     public static CuboidRegion getPlotAsRegion(AbstractPlot plot) throws IOException {
-        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
-        if (clipboard != null) {
-            if (plot.getVersion() >= 3) {
-                return new CuboidRegion(
-                        clipboard.getMinimumPoint().withY(plot.getWorld().getPlotHeight()),
-                        clipboard.getMaximumPoint().withY(PlotWorld.MAX_WORLD_HEIGHT));
-            } else {
-                BlockVector3 plotCenter = plot.getCenter();
-
-                // Calculate min and max points of schematic
-                int regionCenterModX = clipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0;
-                int regionCenterModZ = clipboard.getRegion().getLength() % 2 == 0 ? 1 : 0;
-                int outlinesClipboardCenterX = (int) Math.floor(clipboard.getRegion().getWidth() / 2d);
-                int outlinesClipboardCenterZ = (int) Math.floor(clipboard.getRegion().getLength() / 2d);
-
-                BlockVector3 schematicMinPoint = BlockVector3.at(
-                        plotCenter.x() - (outlinesClipboardCenterX - regionCenterModX),
-                        PlotWorld.MIN_WORLD_HEIGHT,
-                        plotCenter.z() - (outlinesClipboardCenterZ - regionCenterModZ)
-                );
-
-                BlockVector3 schematicMaxPoint = BlockVector3.at(
-                        plotCenter.x() + outlinesClipboardCenterX,
-                        PlotWorld.MAX_WORLD_HEIGHT,
-                        plotCenter.z() + outlinesClipboardCenterZ
-                );
-
-                return new CuboidRegion(schematicMinPoint, schematicMaxPoint);
-            }
+        Clipboard clipboard;
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(plot.getInitialSchematicBytes()))) {
+            clipboard = reader.read();
         }
-        return null;
+        if (clipboard == null) return null;
+
+        // No longer supported!
+        if (plot.getVersion() < 3) return null;
+
+        return new CuboidRegion(
+                clipboard.getMinimumPoint().withY(plot.getWorld().getPlotHeight()),
+                clipboard.getMaximumPoint().withY(PlotWorld.MAX_WORLD_HEIGHT));
     }
 
     public static boolean isPlotWorld(World world) {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
+    public static byte[] getOutlinesSchematicBytes(AbstractPlot plot, World world) throws IOException {
+        Clipboard clipboard;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+            clipboard = reader.read();
+        }
+
+        Polygonal2DRegion region = new Polygonal2DRegion(BukkitAdapter.adapt(world), plot.getOutline(), clipboard.getMinimumPoint().y(), clipboard.getMaximumPoint().y());
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+            writer.write(new BlockArrayClipboard(region));
+        }
+        return null;
+    }
 
     public static String getDefaultSchematicPath() {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 
     public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
-        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
-        if (clipboard != null) {
-            CuboidRegion cuboidRegion = getPlotAsRegion(plot);
-
-            if (cuboidRegion != null) {
-                BlockVector3 plotCenter = plot.getCenter();
-
-                // Get plot outline
-                List<BlockVector2> plotOutlines = plot.getOutline();
-
-                // Load finished plot region as cuboid region
-                if (plot.getWorld().loadWorld()) {
-                    com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-                    Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
-
-                    // Copy and write finished plot clipboard to schematic file
-                    File finishedSchematicFile = Paths.get(PlotUtils.getDefaultSchematicPath(),
-                            String.valueOf(plot.getCity().getCountry().getServer().getID()),
-                            "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schem").toFile();
-
-                    if (!finishedSchematicFile.exists()) {
-                        boolean createdDirs = finishedSchematicFile.getParentFile().mkdirs();
-                        boolean createdFile = finishedSchematicFile.createNewFile();
-                        if ((!finishedSchematicFile.getParentFile().exists() && !createdDirs) || (!finishedSchematicFile.exists() && !createdFile)) {
-                            return false;
-                        }
-                    }
-
-                    Clipboard cb = new BlockArrayClipboard(region);
-                    if (plot.getVersion() >= 3) {
-                        cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
-                    } else {
-                        BlockVector3 terraCenter = plot.getMinecraftCoordinates();
-                        plotCenter = BlockVector3.at(
-                                (double) terraCenter.x() - (double) clipboard.getMinimumPoint().x() + cuboidRegion.getMinimumPoint().x(),
-                                (double) terraCenter.y() - (double) clipboard.getMinimumPoint().y() + cuboidRegion.getMinimumPoint().y(),
-                                (double) terraCenter.z() - (double) clipboard.getMinimumPoint().z() + cuboidRegion.getMinimumPoint().z()
-                        );
-                        cb.setOrigin(plotCenter);
-                    }
-
-                    ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, clipboard, region.getMinimumPoint());
-                    Operations.complete(forwardExtentCopy);
-
-                    try (ClipboardWriter writer = BuiltInClipboardFormat.FAST_V2.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
-                        writer.write(clipboard);
-                    }
-
-                    // Upload to FTP server
-                    if (plot.getCity().getCountry().getServer().getFTPConfiguration() != null) {
-                        CompletableFuture.supplyAsync(() -> {
-                            try {
-                                return FTPManager.uploadSchematic(FTPManager.getFTPUrl(plot.getCity().getCountry().getServer(), plot.getCity().getID()), finishedSchematicFile);
-                            } catch (SQLException | URISyntaxException ex) {
-                                Utils.logSqlException(ex);
-                            }
-                            return null;
-                        });
-                    }
-
-                    // If plot was created in a void world, copy the result to the city world
-                    if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE && plot.getVersion() >= 3) {
-                        AbstractPlotGenerator.pasteSchematic(null, plot.getCompletedSchematic(), new CityPlotWorld(plot), false);
-                    }
-                    return true;
-                }
-            }
+        if (plot.getVersion() < 3) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
+            return false;
         }
-        return false;
+
+        Clipboard clipboard;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+            clipboard = reader.read();
+        }
+        if (clipboard == null) return false;
+
+        CuboidRegion cuboidRegion = getPlotAsRegion(plot);
+        if (cuboidRegion == null) return false;
+
+        BlockVector3 plotCenter = plot.getCenter();
+
+        // Get plot outline
+        List<BlockVector2> plotOutlines = plot.getOutline();
+
+        // Load finished plot region as cuboid region
+        if (!plot.getWorld().loadWorld()) return false;
+        com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
+        Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
+
+
+
+        // Copy and write finished plot clipboard to schematic
+        try (Clipboard cb = new BlockArrayClipboard(region)) {
+            cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
+        }
+
+        ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, clipboard, region.getMinimumPoint());
+        Operations.complete(forwardExtentCopy);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+            writer.write(clipboard);
+        }
+
+        // Set Completed Schematic
+        DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+
+        // If plot was created in a void world, copy the result to the city world
+        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE && plot.getVersion() >= 3) {
+            AbstractPlotGenerator.pasteSchematic(null, outputStream.toByteArray(), new CityPlotWorld(plot), false);
+        }
+        return true;
     }
 
-    public static CompletableFuture<double[]> convertTerraToPlotXZ(AbstractPlot plot, double[] terraCoords) throws IOException, SQLException {
+    public static CompletableFuture<double[]> convertTerraToPlotXZ(AbstractPlot plot, double[] terraCoords) throws IOException {
         // Load plot outlines schematic as clipboard
-        Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
+        Clipboard clipboard;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+            clipboard = reader.read();
+        }
+        if (clipboard == null) return null;
 
-        if (clipboard != null) {
-            // Calculate min and max points of schematic
-            CuboidRegion plotRegion = getPlotAsRegion(plot);
+        // Calculate min and max points of schematic
+        CuboidRegion plotRegion = getPlotAsRegion(plot);
+        if (plotRegion == null) return null;
 
-            if (plotRegion != null) {
-                // Convert terra schematic coordinates into relative plot schematic coordinates
-                double[] schematicCoords = {
-                        terraCoords[0] - clipboard.getMinimumPoint().x(),
-                        terraCoords[1] - clipboard.getMinimumPoint().z()
-                };
+        // Convert terra schematic coordinates into relative plot schematic coordinates
+        double[] schematicCoords = {
+                terraCoords[0] - clipboard.getMinimumPoint().x(),
+                terraCoords[1] - clipboard.getMinimumPoint().z()
+        };
 
-                // Add additional plot sizes to relative plot schematic coordinates
-                double[] plotCoords = {
-                        schematicCoords[0] + plotRegion.getMinimumPoint().x(),
-                        schematicCoords[1] + plotRegion.getMinimumPoint().z()
-                };
+        // Add additional plot sizes to relative plot schematic coordinates
+        double[] plotCoords = {
+                schematicCoords[0] + plotRegion.getMinimumPoint().x(),
+                schematicCoords[1] + plotRegion.getMinimumPoint().z()
+        };
 
-                // Return coordinates if they are in the schematic plot region
-                ProtectedRegion protectedPlotRegion = plot.getWorld().getProtectedRegion() != null ? plot.getWorld().getProtectedRegion() : plot.getWorld().getProtectedBuildRegion();
-                if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
-                    return CompletableFuture.completedFuture(plotCoords);
-                }
-            }
+        // Return coordinates if they are in the schematic plot region
+        ProtectedRegion protectedPlotRegion = plot.getWorld().getProtectedRegion() != null
+                ? plot.getWorld().getProtectedRegion()
+                : plot.getWorld().getProtectedBuildRegion();
+        if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
+            return CompletableFuture.completedFuture(plotCoords);
         }
 
         return null;
@@ -299,44 +279,23 @@ public final class PlotUtils {
 
     public static void checkPlotsForLastActivity() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            try {
-                List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
-                FileConfiguration config = PlotSystem.getPlugin().getConfig();
-                long millisInDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL) * 24 * 60 * 60 * 1000; // Remove all plots which have no activity for the last x days
+            List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
+            FileConfiguration config = PlotSystem.getPlugin().getConfig();
+            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
+            for (Plot plot : plots) {
+                LocalDate lastActivity = plot.getLastActivity();
+                if (lastActivity == null) continue;
+                if (lastActivity.plusDays(inactivityIntervalDays).isAfter(LocalDate.now())) continue;
 
-                for (Plot plot : plots) {
-                    if (plot.getLastActivity() != null && plot.getLastActivity().getTime() < (new Date().getTime() - millisInDays)) {
-                        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                            if (Actions.abandonPlot(plot)) {
-                                PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
-                            } else {
-                                PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
-                            }
-                        });
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                    if (Actions.abandonPlot(plot)) {
+                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
+                    } else {
+                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
                     }
-                }
-            } catch (SQLException ex) {
-                Utils.logSqlException(ex);
+                });
             }
         }, 0L, 20 * 60 * 60L); // Check every hour
-    }
-
-    public static void syncPlotSchematicFiles() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        if (config.getBoolean(ConfigPaths.SYNC_FTP_FILES_ENABLE)) {
-            long interval = config.getLong(ConfigPaths.SYNC_FTP_FILES_INTERVAL);
-
-            Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> DataProvider.CITY_PROJECT.getCityProjects(false).forEach(c -> {
-                try {
-                    if (c.getCountry().getServer().getFTPConfiguration() != null) {
-                        List<Plot> plots = DataProvider.PLOT.getPlots(c, Status.unclaimed);
-                        plots.forEach(Plot::getOutlinesSchematic);
-                    }
-                } catch (SQLException ex) {
-                    Utils.logSqlException(ex);
-                }
-            }), 0L, 20 * interval);
-        }
     }
 
     public static final class Actions {
@@ -396,7 +355,7 @@ public final class PlotUtils {
                             if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                             if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
-                            AbstractPlotGenerator.pasteSchematic(null, plot.getOutlinesSchematic(), world, true);
+                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
                         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
 
                         playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
@@ -414,6 +373,7 @@ public final class PlotUtils {
                         if (plot.getPlotType() != PlotType.TUTORIAL) {
                             Plot dPlot = (Plot) plot;
                             if (dPlot.isReviewed()) {
+                                // TODO: extract to data provider
                                 DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                                         .setValue(plot.getID()).executeUpdate();
 
@@ -448,32 +408,7 @@ public final class PlotUtils {
 
         public static boolean deletePlot(Plot plot) {
             if (abandonPlot(plot)) {
-                try {
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            Server plotServer = plot.getCity().getCountry().getServer();
-
-                            String schemFileEnding = ".schematic";
-                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + schemFileEnding));
-                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + schemFileEnding));
-                            Files.deleteIfExists(Paths.get(PlotUtils.getDefaultSchematicPath(), String.valueOf(plotServer.getID()), String.valueOf(plot.getCity().getID()), plot.getID() + "-env.schematic"));
-
-                            if (plotServer.getFTPConfiguration() != null) {
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + schemFileEnding);
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + schemFileEnding);
-                                FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()).replaceFirst("finishedSchematics/", ""), plot.getID() + "-env.schematic");
-                            }
-
-                            DatabaseConnection.createStatement("DELETE FROM plotsystem_plots WHERE id = ?")
-                                    .setValue(plot.getID()).executeUpdate();
-                        } catch (IOException | SQLException | URISyntaxException ex) {
-                            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
-                            throw new CompletionException(ex);
-                        }
-                    });
-                } catch (CompletionException ex) {
-                    return false;
-                }
+                CompletableFuture.runAsync(() -> DataProvider.PLOT.deletePlot(plot.getID()));
                 return true;
             }
             PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + "!"));
@@ -576,7 +511,7 @@ public final class PlotUtils {
                             }
                     }
                 }
-            } catch (SQLException | IOException ex) {
+            } catch (IOException ex) {
                 Utils.logSqlException(ex);
             }
         }

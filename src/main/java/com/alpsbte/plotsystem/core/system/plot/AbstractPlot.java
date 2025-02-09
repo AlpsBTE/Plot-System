@@ -28,40 +28,39 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotPermissions;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
 
 public abstract class AbstractPlot {
     public static final double PLOT_VERSION = 3;
-
+    public static final ClipboardFormat CLIPBOARD_FORMAT = BuiltInClipboardFormat.FAST_V2;
 
     protected final int ID;
     protected Builder plotOwner;
     protected OnePlotWorld onePlotWorld;
     protected PlotPermissions plotPermissions;
     protected PlotType plotType;
-    protected double plotVersion = -1;
+    protected double plotVersion;
 
     protected List<BlockVector2> outline;
     protected List<BlockVector2> blockOutline;
@@ -79,9 +78,8 @@ public abstract class AbstractPlot {
 
     /**
      * @return builder who has claimed the plot
-     * @throws SQLException SQL database exception
      */
-    public abstract Builder getPlotOwner() throws SQLException;
+    public abstract Builder getPlotOwner();
 
     /**
      * @return plot world, can be one or city plot world
@@ -91,48 +89,37 @@ public abstract class AbstractPlot {
     /**
      * @return the outline of the plot which contains all corner points of the polygon
      */
-    public abstract List<BlockVector2> getOutline() throws SQLException, IOException;
+    public abstract List<BlockVector2> getOutline() throws IOException;
 
     /**
      * @return last date on which the plot owner teleported to the plot
-     * @throws SQLException SQL database exception
      */
-    public abstract Date getLastActivity() throws SQLException;
+    public abstract LocalDate getLastActivity();
 
     /**
      * Sets the last activity to the current date and time
      *
      * @param setNull if true, set last activity to null
-     * @throws SQLException SQL database exception
      */
-    public abstract void setLastActivity(boolean setNull) throws SQLException;
+    public abstract boolean setLastActivity(boolean setNull);
 
     public abstract Status getStatus();
 
-    public abstract void setStatus(@NotNull Status status) throws SQLException;
+    public abstract boolean setStatus(@NotNull Status status);
 
     /**
      * Returns the plot type the player has selected when creating the plot
      *
      * @return the plot type
-     * @throws SQLException SQL database exception
      */
-    public abstract PlotType getPlotType() throws SQLException;
+    public abstract PlotType getPlotType();
 
     public abstract double getVersion();
-
-    protected abstract File getSchematicFile(String fileName);
 
     /**
      * @return schematic file with outlines only
      */
-    public abstract File getOutlinesSchematic();
-
-    /**
-     * @return schematic file with environment only
-     */
-    public abstract File getEnvironmentSchematic();
-
+    public abstract byte[] getInitialSchematicBytes();
 
     /**
      * Returns geographic coordinates in numeric format
@@ -160,14 +147,18 @@ public abstract class AbstractPlot {
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
      */
     public BlockVector3 getCoordinates() throws IOException {
-        Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
-        if (clipboard != null) return clipboard.getOrigin();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(getInitialSchematicBytes());
+        try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(inputStream)) {
+            Clipboard clipboard = reader.read();
+            if (clipboard != null) return clipboard.getOrigin();
+        }
         return null;
     }
 
     public BlockVector3 getCenter() {
-        try {
-            Clipboard clipboard = FaweAPI.load(getOutlinesSchematic());
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(getInitialSchematicBytes());
+        try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(inputStream)){
+            Clipboard clipboard = reader.read();
             if (clipboard != null) {
                 Vector3 clipboardCenter = clipboard.getRegion().getCenter();
                 return BlockVector3.at(clipboardCenter.x(), this.getWorld().getPlotHeightCentered(), clipboardCenter.z());
@@ -198,18 +189,13 @@ public abstract class AbstractPlot {
         return "https://earth.google.com/web/@" + getGeoCoordinates() + ",0a,1000d,20y,-0h,0t,0r";
     }
 
-    protected List<BlockVector2> getOutlinePoints(String outlinePoints) throws SQLException, IOException {
+    protected List<BlockVector2> getOutlinePoints(String outlinePoints) {
         List<BlockVector2> locations = new ArrayList<>();
-        if (outlinePoints == null) {
-            CuboidRegion plotRegion = PlotUtils.getPlotAsRegion(this);
-            if (plotRegion != null) locations.addAll(plotRegion.polygonize(4));
-        } else {
-            String[] list = outlinePoints.split("\\|");
+        String[] list = outlinePoints.split("\\|");
 
-            for (String s : list) {
-                String[] locs = s.split(",");
-                locations.add(BlockVector2.at(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
-            }
+        for (String s : list) {
+            String[] locs = s.split(",");
+            locations.add(BlockVector2.at(Double.parseDouble(locs[0]), Double.parseDouble(locs[1])));
         }
         this.outline = locations;
         return locations;
@@ -218,7 +204,7 @@ public abstract class AbstractPlot {
     /**
      * @return the outline of the polygon with one point per Block
      */
-    public final List<BlockVector2> getBlockOutline() throws SQLException, IOException {
+    public final List<BlockVector2> getBlockOutline() throws IOException {
         if (this.blockOutline != null)
             return this.blockOutline;
 
@@ -233,8 +219,8 @@ public abstract class AbstractPlot {
             points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
         }
 
-        BlockVector2 first = outline.get(0);
-        BlockVector2 last = outline.get(outline.size() - 1);
+        BlockVector2 first = outline.getFirst();
+        BlockVector2 last = outline.getLast();
         points.addAll(Utils.getLineBetweenPoints(last, first, (int) first.distance(last)));
 
         this.blockOutline = points;

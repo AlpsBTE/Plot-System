@@ -188,7 +188,6 @@ public class PlotSystem extends JavaPlugin {
         DecentHologramDisplay.registerPlugin(this);
         HologramRegister.init();
         PlotUtils.checkPlotsForLastActivity();
-        PlotUtils.syncPlotSchematicFiles();
         Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
 

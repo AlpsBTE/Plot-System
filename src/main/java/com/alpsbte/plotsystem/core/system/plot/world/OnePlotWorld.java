@@ -51,7 +51,7 @@ import static net.kyori.adventure.text.Component.text;
 public class OnePlotWorld extends PlotWorld {
     private final Builder plotOwner;
 
-    public OnePlotWorld(@NotNull AbstractPlot plot) throws SQLException {
+    public OnePlotWorld(@NotNull AbstractPlot plot) {
         super((plot instanceof TutorialPlot ? "T-" : "P-") + plot.getID(), plot);
         this.plotOwner = plot.getPlotOwner();
     }

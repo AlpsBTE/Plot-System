@@ -40,9 +40,7 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -64,7 +62,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super(plot, builder);
     }
 
-    public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, PlotType plotType) throws SQLException {
+    public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, PlotType plotType) {
         super(plot, builder, plotType);
     }
 
@@ -93,8 +91,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void generateOutlines(@NotNull File plotSchematic, @Nullable File environmentSchematic) throws IOException, WorldEditException, SQLException {
-        super.generateOutlines(plotSchematic, environmentSchematic);
+    protected void generateOutlines() throws IOException, WorldEditException {
+        super.generateOutlines();
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
@@ -129,7 +127,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
             getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getID());
             plot.setStatus(Status.unfinished);
             ((Plot) plot).setPlotType(plotType);
-            ((Plot) plot).setPlotOwner(getBuilder().getPlayer().getUniqueId().toString());
+            ((Plot) plot).setPlotOwner(getBuilder());
             PlotUtils.Cache.clearCache(getBuilder().getUUID());
 
             plot.getWorld().teleportPlayer(getBuilder().getPlayer());

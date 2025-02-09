@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
@@ -246,7 +247,7 @@ public class PlotWorld implements IWorld {
         if (isOnePlotWorld(worldName) || isCityPlotWorld(worldName)) {
             int id = Integer.parseInt(worldName.substring(2));
             try {
-                return worldName.toLowerCase().startsWith("t-") ? new TutorialPlot(id).getWorld() : new Plot(id).getWorld();
+                return worldName.toLowerCase().startsWith("t-") ? new TutorialPlot(id).getWorld() : DataProvider.PLOT.getPlotById(id).getWorld();
             } catch (SQLException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
