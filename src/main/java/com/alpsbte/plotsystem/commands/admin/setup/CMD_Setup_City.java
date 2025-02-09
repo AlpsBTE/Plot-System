@@ -85,7 +85,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            List<CityProject> cities = DataProvider.CITY_PROJECT.getCityProjects(false);
+            List<CityProject> cities = DataProvider.CITY_PROJECT.get(false);
             if (cities.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no City Projects registered in the database!"));
                 return;
@@ -153,7 +153,7 @@ public class CMD_Setup_City extends SubCommand {
                 return;
             }
 
-            boolean added = DataProvider.CITY_PROJECT.addCityProject(cityProjectId, country.getCode(), serverName);
+            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, country.getCode(), serverName);
             if (added) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with ID '" + cityProjectId + "' under country with the code " + countryCode + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
         }
@@ -190,14 +190,14 @@ public class CMD_Setup_City extends SubCommand {
             String cityProjectId = args[1];
 
             // Check if City Project exists
-            CityProject cityProject = DataProvider.CITY_PROJECT.getCityProjectById(cityProjectId);
+            CityProject cityProject = DataProvider.CITY_PROJECT.getById(cityProjectId);
             if (cityProject == null) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any City Project with ID " + cityProjectId + "!"));
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss city list> to see all City Projects!"));
                 return;
             }
 
-            boolean removed = DataProvider.CITY_PROJECT.removeCityProject(cityProjectId);
+            boolean removed = DataProvider.CITY_PROJECT.remove(cityProjectId);
             if (removed) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed City Project with ID " + cityProjectId + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while removing city project!"));
         }
@@ -233,7 +233,7 @@ public class CMD_Setup_City extends SubCommand {
             if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            CityProject cityProject = DataProvider.CITY_PROJECT.getCityProjectById(args[1]);
+            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
             if (cityProject == null) return;
 
             String serverName = args[2];
@@ -284,7 +284,7 @@ public class CMD_Setup_City extends SubCommand {
             if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            CityProject cityProject = DataProvider.CITY_PROJECT.getCityProjectById(args[1]);
+            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
             if (cityProject == null) return;
             if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) return;
 

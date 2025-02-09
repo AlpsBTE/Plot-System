@@ -151,7 +151,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     }
 
     public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
-        return DataProvider.CITY_PROJECT.getCityProjects(country, true).stream().filter(test -> {
+        return DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true).stream().filter(test -> {
             if (test instanceof CityProject project) {
                 var pd = selectedPlotDifficulty;
                 try {
@@ -184,7 +184,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected List<?> getSource() {
-        if (projects == null) projects = DataProvider.CITY_PROJECT.getCityProjects(country, true);
+        if (projects == null) projects = DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true);
         return projects;
     }
 

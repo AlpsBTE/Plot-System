@@ -24,11 +24,11 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 
@@ -39,7 +39,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class BuilderProvider {
-    public static final HashMap<UUID, Builder> builders = new HashMap<>();
+    public static final Map<UUID, Builder> builders = new HashMap<>();
 
     public Builder getBuilderByUUID(UUID uuid) {
         if (builders.containsKey(uuid)) return builders.get(uuid);
@@ -54,9 +54,7 @@ public class BuilderProvider {
                             rs.getInt(4), rs.getInt(5), rs.getInt(6));
                 }
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return null;
     }
 
@@ -69,9 +67,7 @@ public class BuilderProvider {
                 String uuid = rs.getString(1);
                 if (uuid != null) return getBuilderByUUID(UUID.fromString(uuid));
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return null;
     }
 
@@ -91,9 +87,7 @@ public class BuilderProvider {
             stmt.executeUpdate();
             if (builders.containsKey(uuid)) builders.get(uuid).setName(name);
             return true;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return false;
     }
 
@@ -106,9 +100,7 @@ public class BuilderProvider {
                 stmt.executeUpdate();
                 return true;
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return false;
     }
 
@@ -131,9 +123,7 @@ public class BuilderProvider {
                 }
             }
             return true;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return false;
     }
 
@@ -154,9 +144,7 @@ public class BuilderProvider {
                }
            }
            return true;
-       } catch (SQLException ex) {
-           PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-       }
+       } catch (SQLException ex) { Utils.logSqlException(ex); }
        return false;
     }
 
@@ -169,9 +157,7 @@ public class BuilderProvider {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return 0;
     }
 
@@ -185,9 +171,7 @@ public class BuilderProvider {
                     if (rs.getString(i) == null) return Slot.values()[i - 1];
                 }
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return null;
     }
 
@@ -220,9 +204,7 @@ public class BuilderProvider {
                 }
             }
 
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return null;
     }
 
@@ -242,9 +224,7 @@ public class BuilderProvider {
                 return playerEntries;
             }
 
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(ex.getMessage());
-        }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return null;
     }
 
