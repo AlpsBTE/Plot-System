@@ -40,7 +40,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
@@ -55,8 +54,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        Player player = getPlayer(sender);
-        if (getPlayer(sender) == null) {
+        if (!(sender instanceof Player player)) {
             Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
             return;
         }
@@ -65,7 +63,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
             Plot plot;
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                 plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-            } else if (player != null && PlotUtils.isPlotWorld(player.getWorld())) {
+            } else if (PlotUtils.isPlotWorld(player.getWorld())) {
                 AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished);
                 if (!(p instanceof Plot)) {
                     sendInfo(sender);

@@ -40,10 +40,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
@@ -82,7 +82,7 @@ public class CMD_Plot_Submit extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
                 return;
             }
-            if (!sender.hasPermission("plotsystem.review") && !Utils.isOwnerOrReviewer(sender, player, plot)) {
+            if (!Utils.isOwnerOrReviewer(sender, player, plot)) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                 return;
             }
@@ -116,7 +116,7 @@ public class CMD_Plot_Submit extends SubCommand {
                     langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), sb.toString());
                 }
 
-                player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
+                Objects.requireNonNull(player).playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
             });
         });
     }

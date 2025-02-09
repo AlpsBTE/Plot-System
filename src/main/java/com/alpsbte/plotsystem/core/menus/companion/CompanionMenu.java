@@ -57,7 +57,6 @@ import org.ipvp.canvas.Menu;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 

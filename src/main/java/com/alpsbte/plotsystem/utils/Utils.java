@@ -46,6 +46,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,7 +56,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -243,7 +243,8 @@ public class Utils {
         return random;
     }
 
-    public static boolean isOwnerOrReviewer(CommandSender sender, @Nullable Player player, Plot plot) throws SQLException {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isOwnerOrReviewer(CommandSender sender, @Nullable Player player, Plot plot) {
         boolean hasPermission = sender.hasPermission("plotsystem.review") || (player != null && Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(player.getUniqueId()));
         if (!hasPermission) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));

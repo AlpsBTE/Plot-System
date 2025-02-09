@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static net.kyori.adventure.text.Component.text;
-
 public class CityProjectMenu extends AbstractPaginatedMenu {
     final Country country;
     List<CityProject> projects;
@@ -137,13 +135,13 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1);
             return false;
         }
-        var randomCity = items.get(Utils.getRandom().nextInt(items.size()));
+        CityProject randomCity = items.get(Utils.getRandom().nextInt(items.size()));
 
         Builder builder = Builder.byUUID(player.getUniqueId());
         try {
-            if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity.getID(), Builder.byUUID(player.getUniqueId())).get();
+            if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity, Builder.byUUID(player.getUniqueId())).get();
             if (difficulty == null) difficulty = PlotDifficulty.EASY;
-            new DefaultPlotGenerator(randomCity.getID(), difficulty, builder);
+            new DefaultPlotGenerator(randomCity, difficulty, builder);
         } catch (SQLException | InterruptedException | ExecutionException e) {
             sqlError(player, e);
             return false;
@@ -153,13 +151,14 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     }
 
     public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
-        return CityProject.getCityProjects(country, true).stream().filter(test -> {
+        return DataProvider.CITY_PROJECT.getCityProjects(country, true).stream().filter(test -> {
             if (test instanceof CityProject project) {
                 var pd = selectedPlotDifficulty;
                 try {
-                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project.getID(), Builder.byUUID(player.getUniqueId())).get();
+                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project, Builder.byUUID(player.getUniqueId())).get();
                     if (pd == null) pd = PlotDifficulty.EASY;
-                    return project.isVisible() && project.getOpenPlotsForPlayer(project.getID(), pd) > 0;
+
+                    return project.isVisible() && !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
                 } catch (SQLException | ExecutionException | InterruptedException e) {
                     sqlError(player, e);
                 }
@@ -213,7 +212,6 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
                 clickPlayer.closeInventory();
                 Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
-                String cityID = city.getID();
 
                 try {
                     PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();

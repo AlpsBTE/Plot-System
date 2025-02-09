@@ -39,7 +39,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -53,10 +52,15 @@ public class CMD_Plot_Abandon extends SubCommand {
     public void onCommand(CommandSender sender, String[] args) {
         CompletableFuture.runAsync(() -> {
             Plot plot;
+            if (!(sender instanceof Player player)) {
+                sendInfo(sender);
+                return;
+            }
+
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
                 plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-            } else if (getPlayer(sender) != null && PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
-                AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished);
+            } else if (PlotUtils.isPlotWorld(player.getWorld())) {
+                AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished);
                 if (!(p instanceof Plot)) {
                     sendInfo(sender);
                     return;
@@ -75,7 +79,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
                 return;
             }
-            if (!sender.hasPermission("plotsystem.review") && !Utils.isOwnerOrReviewer(sender, player, plot)) {
+            if (!Utils.isOwnerOrReviewer(sender, player, plot)) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
                 return;
             }
@@ -83,7 +87,7 @@ public class CMD_Plot_Abandon extends SubCommand {
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 if (PlotUtils.Actions.abandonPlot(plot)) {
                     sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
-                    if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
+                    player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
                 }
             });
         });

@@ -54,7 +54,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     public static final Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
     public DefaultPlotGenerator(CityProject city, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
-        this(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).get(Utils.getRandom().nextInt(Plot.getPlots(cityID, plotDifficulty, Status.unclaimed).size())), builder);
+        this(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).get(Utils.getRandom().nextInt(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
     public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
