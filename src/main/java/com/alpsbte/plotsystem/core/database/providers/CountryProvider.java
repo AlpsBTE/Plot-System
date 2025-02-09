@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.enums.Continent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,5 +22,20 @@ public class CountryProvider {
         //Continent continent = Continent.fromDatabase()
 
         return null;
+    }
+
+    public boolean setMaterialAndCustomModelData(String material, @Nullable String customModelData) {
+        // TODO: implement
+        return false;
+    }
+
+    public boolean addCountry(String code, Continent continent, String material, @Nullable String customModelData) {
+        // TODO: implement
+        return false;
+    }
+
+    public boolean removeCountry(String code) {
+        // TODO: implement
+        return false;
     }
 }

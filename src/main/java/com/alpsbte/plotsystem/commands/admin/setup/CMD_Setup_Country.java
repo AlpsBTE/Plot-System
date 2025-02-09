@@ -52,7 +52,7 @@ public class CMD_Setup_Country extends SubCommand {
         registerSubCommand(new CMD_Setup_Country_List(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_Country_Add(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_Country_Remove(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_Country_SetHead(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_Country_SetMaterial(getBaseCommand(), this));
     }
 
     @Override
@@ -132,25 +132,26 @@ public class CMD_Setup_Country extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 3 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
-            if (args[2].length() > 45) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country name cannot be longer than 45 characters!"));
+            String code = args[1];
+            if (code.length() > 2) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country code cannot be longer than 2 characters!"));
                 return;
             }
 
             Continent continent;
             try {
-                continent = Continent.valueOf(args[3].toUpperCase());
+                continent = Continent.valueOf(args[2].toUpperCase());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
                 return;
             }
-            try {
-                Country.addCountry(Integer.parseInt(args[1]), args[2], continent);
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+
+            String material = args[3];
+            String customModelData = args.length > 4 ? args[4] : null;
+
+            boolean successful = DataProvider.COUNTRY.addCountry(code, continent, material, customModelData);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
         @Override
@@ -165,7 +166,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"Server-ID", "Name", "Continent"};
+            return new String[]{"Code", "Continent", "Material", "CustomModelData?"};
         }
 
         @Override
@@ -181,21 +182,18 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 1) {sendInfo(sender); return;}
+            String code = args[1];
 
             // Check if country exists
-            try {
-                if (DataProvider.COUNTRY.getCountryByCode(args[1]) == null) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with ID " + args[1] + "!"));
-                    sendInfo(sender);
-                    return;
-                }
-                Country.removeCountry(Integer.parseInt(args[1]));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            if (DataProvider.COUNTRY.getCountryByCode(code) == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with code " + code + "!"));
+                sendInfo(sender);
+                return;
             }
+            boolean successful = DataProvider.COUNTRY.removeCountry(code);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
         @Override
@@ -210,7 +208,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"Country-ID"};
+            return new String[]{"Country-Code"};
         }
 
         @Override
@@ -219,36 +217,38 @@ public class CMD_Setup_Country extends SubCommand {
         }
     }
 
-    public static class CMD_Setup_Country_SetHead extends SubCommand {
-        public CMD_Setup_Country_SetHead(BaseCommand baseCommand, SubCommand subCommand) {
+    public static class CMD_Setup_Country_SetMaterial extends SubCommand {
+        public CMD_Setup_Country_SetMaterial(BaseCommand baseCommand, SubCommand subCommand) {
             super(baseCommand, subCommand);
         }
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null || AlpsUtils.tryParseInt(args[2]) == null) {
+            if (args.length <= 2) {
                 sendInfo(sender);
                 return;
             }
 
+            String code = args[1];
+            String material = args[2];
+            String customModelData = args.length > 3 ? args[3] : null;
+
             // Check if country exists
-            try {
-                if (DataProvider.COUNTRY.getCountryByCode(args[1]) == null) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with name " + args[1] + "!"));
-                    sendInfo(sender);
-                    return;
-                }
-                Country.setHeadID(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set head id of country " + args[1] + " to " + args[2] + "!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            Country country = DataProvider.COUNTRY.getCountryByCode(code);
+            if (country == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with name " + args[1] + "!"));
+                sendInfo(sender);
+                return;
             }
+
+            boolean successful = country.setMaterialAndModelData(material, customModelData);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated country with code " + country + "! Material: " + material + " CustomModelData: " + (customModelData == null ? "NULL" : customModelData)));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
         @Override
         public String[] getNames() {
-            return new String[]{"sethead"};
+            return new String[]{"setmaterial"};
         }
 
         @Override
@@ -258,12 +258,12 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"Country-ID", "Head-ID"};
+            return new String[]{"Country-Code", "Material", "CustomModelData?"};
         }
 
         @Override
         public String getPermission() {
-            return "plotsystem.admin.pss.country.sethead";
+            return "plotsystem.admin.pss.country.setmaterial";
         }
     }
 }

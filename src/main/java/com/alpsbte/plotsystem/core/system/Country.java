@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Country {
     private String material;
     private String customModelData;
 
-    private Continent continent;
+    private final Continent continent;
 
     public Country(String code, Continent continent, String material, String customModelData) {
         this.code = code;
@@ -67,28 +68,16 @@ public class Country {
         return code;
     }
 
+    public boolean setMaterialAndModelData(String material, @Nullable String customModelData) {
+        if (DataProvider.COUNTRY.setMaterialAndCustomModelData(material, customModelData)) {
+            this.material = material;
+            this.customModelData = customModelData;
+            return true;
+        }
+        return false;
+    }
+
     public ItemStack getCountryItem() {
         return Utils.getConfiguredItem(material, customModelData);
-    }
-
-    @Deprecated
-    public static void addCountry(int serverID, String name, Continent continent) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_countries (id, name, server_id, continent) VALUES (?, ?, ?, ?)")
-                .setValue(DatabaseConnection.getTableID("plotsystem_countries"))
-                .setValue(name)
-                .setValue(serverID).setValue(continent.databaseEnum).executeUpdate();
-    }
-
-    @Deprecated()
-    public static void removeCountry(int countryID) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_countries WHERE id = ?")
-                .setValue(countryID).executeUpdate();
-    }
-
-    @Deprecated
-    public static void setHeadID(int countryID, int headID) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_countries SET head_id = ? WHERE id = ?")
-                .setValue(headID)
-                .setValue(countryID).executeUpdate();
     }
 }
