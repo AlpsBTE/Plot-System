@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -62,22 +62,17 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
-    public BeginnerTutorial(Player player, int stageId) throws SQLException {
+    public BeginnerTutorial(Player player, int stageId) {
         super(player, TutorialCategory.BEGINNER.getId(), stageId);
     }
 
     @Override
     protected List<TutorialWorld> initWorlds() {
-        try {
-            return Arrays.asList(
-                    new TutorialWorld(getId(), 0, Utils.getSpawnLocation().getWorld().getName()),
-                    new TutorialWorld(getId(), 1, plot.getWorld().getWorldName()),
-                    new TutorialWorld(getId(), 2, Utils.getSpawnLocation().getWorld().getName())
-            );
-        } catch (SQLException ex) {
-            onException(ex);
-        }
-        return null;
+        return Arrays.asList(
+                new TutorialWorld(getId(), 0, Utils.getSpawnLocation().getWorld().getName()),
+                new TutorialWorld(getId(), 1, tutorialPlot.getWorld().getWorldName()),
+                new TutorialWorld(getId(), 2, Utils.getSpawnLocation().getWorld().getName())
+        );
     }
 
     @Override

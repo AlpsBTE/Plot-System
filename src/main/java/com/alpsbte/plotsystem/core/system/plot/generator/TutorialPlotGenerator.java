@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,8 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     }
 
     public void generateOutlines(int schematicId) throws SQLException, IOException, WorldEditException {
-        generateOutlines(((TutorialPlot) plot).getOutlinesSchematic(schematicId), null);
+        ((TutorialPlot) plot).setTutorialSchematic(schematicId);
+        generateOutlines();
     }
 
     @Override

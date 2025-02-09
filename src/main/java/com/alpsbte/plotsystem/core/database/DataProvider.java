@@ -24,6 +24,9 @@
 
 package com.alpsbte.plotsystem.core.database;
 
+import com.alpsbte.plotsystem.core.database.providers.BuildTeamProvider;
+import com.alpsbte.plotsystem.core.database.providers.BuilderProvider;
+import com.alpsbte.plotsystem.core.database.providers.PlotProvider;
 import com.alpsbte.plotsystem.core.database.providers.*;
 
 public class DataProvider {
@@ -34,4 +37,5 @@ public class DataProvider {
     public static CityProjectProvider CITY_PROJECT = new CityProjectProvider();
     public static CountryProvider COUNTRY = new CountryProvider();
     public static ServerProvider SERVER = new ServerProvider();
+    public static TutorialPlotProvider TUTORIAL_PLOT = new TutorialPlotProvider();
 }

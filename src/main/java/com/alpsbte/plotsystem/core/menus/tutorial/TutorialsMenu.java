@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -92,9 +93,8 @@ public class TutorialsMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set tutorial items
         try {
-            plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), TutorialCategory.BEGINNER.getId());
-            // TutorialPlot beginnerTutorial = getPlotById(TutorialCategory.BEGINNER.getId());
-            if (plot != null) isBeginnerTutorialCompleted = plot.isCompleted();
+            plot = DataProvider.TUTORIAL_PLOT.getById(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString());
+            if (plot != null) isBeginnerTutorialCompleted = plot.isComplete();
 
             // Set beginner tutorial item
             getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
@@ -151,7 +151,7 @@ public class TutorialsMenu extends AbstractMenu {
             if (clickType == ClickType.LEFT) {
                 // TutorialPlot plot = getPlotById(tutorialId);
                 try {
-                    if (plot == null || !plot.isCompleted()) {
+                    if (plot == null || !plot.isComplete()) {
                         getMenuPlayer().closeInventory();
                         if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId)) {
                             if (AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId()) != null) {
@@ -184,7 +184,7 @@ public class TutorialsMenu extends AbstractMenu {
     private static ItemStack constructTutorialItem(Player player, int tutorialId, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
         // Create tutorial item lore
         int highestPlotStage = plot != null ? plot.getStageID() : 0;
-        boolean isPlotCompleted = plot != null && plot.isCompleted();
+        boolean isPlotCompleted = plot != null && plot.isComplete();
         LoreBuilder loreBuilder = new LoreBuilder()
                 .addLine(text(desc, GRAY), true)
                 .emptyLine()

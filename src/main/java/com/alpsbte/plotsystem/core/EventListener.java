@@ -218,7 +218,7 @@ public class EventListener implements Listener {
                 if (player == null) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                } else if (!player.isOnline() || !TutorialPlot.isPlotCompleted(player, TutorialCategory.BEGINNER.getId())) {
+                } else if (!player.isOnline() || TutorialPlot.isInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
                 } else if (inviteeInput.getPlot().getPlotMembers().contains(Builder.byUUID(player.getUniqueId()))) {
@@ -321,19 +321,15 @@ public class EventListener implements Listener {
 
 
         // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
-        try {
-            if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                    !TutorialPlot.isPlotCompleted(player, TutorialCategory.BEGINNER.getId())) {
-                if (!player.hasPlayedBefore()) {
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
-                            () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
-                } else {
-                    AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
-                    player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
-                }
+        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
+                TutorialPlot.isInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
+            if (!player.hasPlayedBefore()) {
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                        () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
+            } else {
+                AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
+                player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
             }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
     }
 }

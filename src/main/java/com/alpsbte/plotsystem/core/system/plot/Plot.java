@@ -221,7 +221,9 @@ public class Plot extends AbstractPlot {
     }
 
     @Override
-    public byte[] getInitialSchematicBytes() {return DataProvider.PLOT.getInitialSchematic(ID);}
+    public byte[] getInitialSchematicBytes() {
+        return DataProvider.PLOT.getInitialSchematic(ID);
+    }
 
     public byte[] getCompletedSchematic() {
         return DataProvider.PLOT.getCompletedSchematic(ID);
