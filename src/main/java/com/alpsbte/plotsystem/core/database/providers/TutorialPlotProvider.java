@@ -40,7 +40,12 @@ public class TutorialPlotProvider {
     public static final List<TutorialPlot> tutorialPlots = new ArrayList<>();
     public static final LinkedList<Integer> freeTutorialPlotIds = new LinkedList<>();
 
-    public TutorialPlot getById(int tutorialId, String playerUUID) {
+    public TutorialPlot getById(int id) {
+        // TODO: implement
+        return null;
+    }
+
+    public TutorialPlot getByTutorialId(int tutorialId, String playerUUID) {
         return tutorialPlots.stream().filter(t -> t.getTutorialID() == tutorialId && t.getUUID().toString()
                 .equals(playerUUID)).findFirst()
                 .orElseGet(() -> {
@@ -63,7 +68,7 @@ public class TutorialPlotProvider {
     }
 
     public boolean add(int tutorialId, String playerUUID) {
-        if (getById(tutorialId, playerUUID) != null) return false;
+        if (getByTutorialId(tutorialId, playerUUID) != null) return false;
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("INSERT INTO tutorial (tutorial_id, uuid) VALUES (?, ?);")) {
             stmt.setInt(1, tutorialId);

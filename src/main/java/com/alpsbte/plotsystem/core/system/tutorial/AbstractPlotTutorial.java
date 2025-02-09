@@ -68,9 +68,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
         CompletableFuture.runAsync(() -> {
             String playerUUID = player.getUniqueId().toString();
-            TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getById(tutorialId, playerUUID);
+            TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
             if (plot == null && DataProvider.TUTORIAL_PLOT.add(tutorialId, playerUUID))
-                tutorialPlot = DataProvider.TUTORIAL_PLOT.getById(tutorialId, playerUUID);
+                tutorialPlot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
 
             // Check if tutorial plot is null
             if (tutorialPlot == null) {

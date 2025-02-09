@@ -56,8 +56,7 @@ public class ChatEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof AsyncChatEvent) {
-            AsyncChatEvent chatEvent = (AsyncChatEvent) event;
+        if (event instanceof AsyncChatEvent chatEvent) {
             chatEvent.setCancelled(true);
 
             TextComponent message = (TextComponent) chatEvent.message();

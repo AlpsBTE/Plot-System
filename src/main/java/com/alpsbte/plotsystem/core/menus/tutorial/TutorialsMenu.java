@@ -93,7 +93,7 @@ public class TutorialsMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set tutorial items
         try {
-            plot = DataProvider.TUTORIAL_PLOT.getById(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString());
+            plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString());
             if (plot != null) isBeginnerTutorialCompleted = plot.isComplete();
 
             // Set beginner tutorial item
@@ -181,7 +181,7 @@ public class TutorialsMenu extends AbstractMenu {
                 constructTutorialItem(getMenuPlayer(), tutorialId, plot, new ItemStack(Material.valueOf(itemName)), title, desc);
     }
 
-    private static ItemStack constructTutorialItem(Player player, int tutorialId, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
+    private static ItemStack constructTutorialItem(Player player, int tutorialId, TutorialPlot plot, ItemStack itemStack, String title, String desc) {
         // Create tutorial item lore
         int highestPlotStage = plot != null ? plot.getStageID() : 0;
         boolean isPlotCompleted = plot != null && plot.isComplete();

@@ -24,24 +24,23 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
-import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.google.common.annotations.Beta;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) {
@@ -51,26 +50,22 @@ public class CityPlotWorld extends PlotWorld {
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
         if (super.teleportPlayer(player)) {
-            try {
-                player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND, 1, 1);
-                player.setAllowFlight(true);
-                player.setFlying(true);
+            player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND, 1, 1);
+            player.setAllowFlight(true);
+            player.setFlying(true);
 
-                if (getPlot() != null) {
-                    player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+            if (getPlot() != null) {
+                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
-                    Utils.updatePlayerInventorySlots(player);
-                    PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
+                Utils.updatePlayerInventorySlots(player);
+                PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
 
-                    if (getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                        getPlot().setLastActivity(false);
-                    }
+                if (getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
+                    getPlot().setLastActivity(false);
                 }
-
-                return true;
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
             }
+
+            return true;
         }
         return false;
     }
@@ -101,7 +96,12 @@ public class CityPlotWorld extends PlotWorld {
      */
     @Beta
     public int getWorldHeight() throws IOException {
-        Clipboard clipboard = FaweAPI.load(getPlot().getOutlinesSchematic());
+        Clipboard clipboard;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(getPlot().getInitialSchematicBytes());
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+            clipboard = reader.read();
+        }
+
         int plotHeight = clipboard != null ? clipboard.getMinimumPoint().y() : MIN_WORLD_HEIGHT;
 
         // Plots created below min world height are not supported

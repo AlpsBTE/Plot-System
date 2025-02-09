@@ -27,14 +27,13 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -48,9 +47,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
@@ -160,7 +159,11 @@ public class PlotWorld implements IWorld {
     @Override
     public int getPlotHeightCentered() throws IOException {
         if (plot != null) {
-            Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
+            Clipboard clipboard;
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+            try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+                clipboard = reader.read();
+            }
             if (clipboard != null) {
                 return (int) clipboard.getRegion().getCenter().y() - clipboard.getMinimumPoint().y();
             }
@@ -246,11 +249,8 @@ public class PlotWorld implements IWorld {
     public static <T extends PlotWorld> T getPlotWorldByName(String worldName) {
         if (isOnePlotWorld(worldName) || isCityPlotWorld(worldName)) {
             int id = Integer.parseInt(worldName.substring(2));
-            try {
-                return worldName.toLowerCase().startsWith("t-") ? new TutorialPlot(id).getWorld() : DataProvider.PLOT.getPlotById(id).getWorld();
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            AbstractPlot plot = worldName.toLowerCase().startsWith("t-") ? DataProvider.TUTORIAL_PLOT.getById(id) : DataProvider.PLOT.getPlotById(id);
+            return plot == null ? null : plot.getWorld();
         }
         return null;
     }

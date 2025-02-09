@@ -162,7 +162,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
         if (readMoreId == -1 && markAsReadClickAction == null) return;
         setClickListener(clickEvent -> {
             if (!isMarkAsReadClicked && markAsReadClickAction != null) {
-                HologramLine line = clickEvent.getPage().getLines().get(clickEvent.getPage().getLines().size() - 1);
+                HologramLine line = clickEvent.getPage().getLines().getLast();
                 line.setText(getMarkAsReadClickedActionText());
                 clickEvent.getHologram().update(player);
                 markAsReadClickAction.onClick(clickEvent);

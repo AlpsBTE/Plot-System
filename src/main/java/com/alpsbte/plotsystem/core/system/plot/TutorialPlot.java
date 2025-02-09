@@ -180,7 +180,7 @@ public class TutorialPlot extends AbstractPlot {
     }
 
     public static boolean isInProgress(int tutorialId, UUID playerUUID) {
-        TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getById(tutorialId, playerUUID.toString());
+        TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID.toString());
         return plot == null || !plot.isComplete();
     }
 }

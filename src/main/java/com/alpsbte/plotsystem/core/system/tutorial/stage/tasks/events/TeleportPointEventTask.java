@@ -69,9 +69,7 @@ public class TeleportPointEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof PlayerTeleportEvent) {
-            PlayerTeleportEvent teleportEvent = (PlayerTeleportEvent) event;
-
+        if (event instanceof PlayerTeleportEvent teleportEvent) {
             if (teleportPoints.isEmpty()) return;
 
             Location teleportLoc = teleportEvent.getTo();

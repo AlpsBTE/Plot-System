@@ -39,6 +39,10 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.mask.BlockTypeMask;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -91,7 +95,13 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected void generateOutlines() throws IOException, WorldEditException {
-        super.generateOutlines();
+        if (plot instanceof Plot) {
+            byte[] completedSchematic = ((Plot) plot).getCompletedSchematic();
+            if (completedSchematic != null) {
+                Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
+                pasteSchematic(airMask, completedSchematic, world, true);
+            } else super.generateOutlines();
+        } else super.generateOutlines();
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
