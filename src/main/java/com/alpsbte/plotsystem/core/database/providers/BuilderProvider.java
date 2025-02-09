@@ -75,6 +75,14 @@ public class BuilderProvider {
         return null;
     }
 
+    public boolean addBuilderIfNotExists(UUID uuid, String name) {
+        // TODO: implement
+        // check if builder already exists, if so return TRUE!!
+        // if successfully added -> TRUE
+        // else -> FALSE
+        return false;
+    }
+
     public boolean setName(UUID uuid, String name) {
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("UPDATE builder SET name = ? WHERE uuid = ?;")) {

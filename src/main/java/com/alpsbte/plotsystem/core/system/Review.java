@@ -106,20 +106,13 @@ public class Review {
                 String[] scoreAsString = rs.getString("rating").split(",");
                 DatabaseConnection.closeResultSet(rs);
 
-                switch (category) {
-                    case ACCURACY:
-                        return Integer.parseInt(scoreAsString[0]);
-                    case BLOCKPALETTE:
-                        return Integer.parseInt(scoreAsString[1]);
-                    case DETAILING:
-                        return Integer.parseInt(scoreAsString[2]);
-                    case TECHNIQUE:
-                        return Integer.parseInt(scoreAsString[3]);
-                    case ALL:
-                        return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
-                    default:
-                        return 0;
-                }
+                return switch (category) {
+                    case ACCURACY -> Integer.parseInt(scoreAsString[0]);
+                    case BLOCKPALETTE -> Integer.parseInt(scoreAsString[1]);
+                    case DETAILING -> Integer.parseInt(scoreAsString[2]);
+                    case TECHNIQUE -> Integer.parseInt(scoreAsString[3]);
+                    case ALL -> Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
+                };
             }
 
             DatabaseConnection.closeResultSet(rs);

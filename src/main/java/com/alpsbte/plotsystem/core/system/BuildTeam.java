@@ -26,10 +26,8 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class BuildTeam {
     private final int ID;

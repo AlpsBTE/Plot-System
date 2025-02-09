@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
 
 import java.sql.ResultSet;

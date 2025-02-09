@@ -40,9 +40,9 @@ public class Builder {
     private int firstSlot;
     private int secondSlot;
     private int thirdSlot;
-    private int plotType;
+    private PlotType plotType;
 
-    public Builder(UUID UUID, String name, int score, int first_slot, int second_slot, int third_slot, int plot_type) {
+    public Builder(UUID UUID, String name, int score, int first_slot, int second_slot, int third_slot, PlotType plot_type) {
         this.uuid = UUID;
         this.name = name;
         this.score = score;
@@ -104,11 +104,11 @@ public class Builder {
     }
 
     public PlotType getPlotType() {
-        return PlotType.byId(plotType);
+        return plotType;
     }
 
-    public boolean setPlotType(int plotType) {
-        if (DataProvider.BUILDER.setPlotType(this.uuid, plotType)) {
+    public boolean setPlotType(PlotType plotType) {
+        if (DataProvider.BUILDER.setPlotType(this.uuid, plotType.getId())) {
             this.plotType = plotType;
             return true;
         }
