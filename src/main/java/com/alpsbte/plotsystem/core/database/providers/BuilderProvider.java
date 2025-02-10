@@ -175,6 +175,7 @@ public class BuilderProvider {
         return null;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canReviewPlot(Builder builder, Plot plot) {
         // TODO: implement (check for build team)
         // no need to check for plot owner / plot members as this is handled separately

@@ -29,7 +29,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 public abstract class AbstractStage {
@@ -87,7 +86,7 @@ public abstract class AbstractStage {
      *
      * @return timeline
      */
-    public abstract StageTimeline getTimeline() throws IOException, SQLException;
+    public abstract StageTimeline getTimeline() throws IOException;
 
     public Player getPlayer() {
         return player;

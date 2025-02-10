@@ -41,7 +41,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -95,12 +94,7 @@ public class CMD_Plot_Submit extends SubCommand {
 
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
 
-                try {
-                    PlotUtils.Actions.submitPlot(plot);
-                } catch (SQLException e) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
-                }
+                PlotUtils.Actions.submitPlot(plot);
                 if (plotMembers.isEmpty()) {
                     // Plot was made alone
                     langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), plot.getPlotOwner().getName());

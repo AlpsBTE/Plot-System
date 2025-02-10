@@ -41,7 +41,7 @@ import java.util.Objects;
 
 public class CommandManager {
 
-    public final List<BaseCommand> baseCommands = new ArrayList<BaseCommand>() {{
+    public final List<BaseCommand> baseCommands = new ArrayList<>() {{
         // Default Commands
         add(new CMD_CancelChat());
         add(new CMD_Companion());

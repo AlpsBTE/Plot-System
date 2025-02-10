@@ -1,4 +1,5 @@
 <!-- PROJECT DESCRIPTION -->
+<!--suppress HtmlDeprecatedAttribute -->
 <br />
 
 <p align="Center">

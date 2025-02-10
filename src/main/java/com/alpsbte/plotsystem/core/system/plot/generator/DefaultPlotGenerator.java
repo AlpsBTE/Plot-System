@@ -57,11 +57,11 @@ import static net.kyori.adventure.text.Component.text;
 public class DefaultPlotGenerator extends AbstractPlotGenerator {
     public static final Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
 
-    public DefaultPlotGenerator(CityProject city, PlotDifficulty plotDifficulty, Builder builder) throws SQLException {
+    public DefaultPlotGenerator(CityProject city, PlotDifficulty plotDifficulty, Builder builder) {
         this(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).get(Utils.getRandom().nextInt(DataProvider.PLOT.getPlots(city, plotDifficulty, Status.unclaimed).size())), builder);
     }
 
-    public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
+    public DefaultPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
         super(plot, builder);
     }
 

@@ -171,7 +171,7 @@ public abstract class AbstractPlotGenerator {
     /**
      * Creates plot protection
      */
-    protected void createPlotProtection() throws StorageException, IOException {
+    protected void createPlotProtection() throws StorageException {
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
 

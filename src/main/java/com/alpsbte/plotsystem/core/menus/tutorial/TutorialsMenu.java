@@ -50,8 +50,6 @@ import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.SQLException;
-
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -92,22 +90,18 @@ public class TutorialsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set tutorial items
-        try {
-            plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString());
-            if (plot != null) isBeginnerTutorialCompleted = plot.isComplete();
+        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString());
+        if (plot != null) isBeginnerTutorialCompleted = plot.isComplete();
 
-            // Set beginner tutorial item
-            getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
-                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
-                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
-            );
+        // Set beginner tutorial item
+        getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
+                LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
+                LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
+        );
 
-            // Set back item
-            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
-                getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        // Set back item
+        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
+            getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override
@@ -176,7 +170,7 @@ public class TutorialsMenu extends AbstractMenu {
         getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.8f, 0.8f);
     }
 
-    private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
+    private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) {
         return (tutorialId != TutorialCategory.BEGINNER.getId()) ? getAdvancedTutorialItem(getMenuPlayer()) :
                 constructTutorialItem(getMenuPlayer(), tutorialId, plot, new ItemStack(Material.valueOf(itemName)), title, desc);
     }

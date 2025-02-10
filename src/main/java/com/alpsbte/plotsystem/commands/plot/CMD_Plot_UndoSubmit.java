@@ -41,7 +41,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
@@ -85,12 +84,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
             }
 
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                try {
-                    PlotUtils.Actions.undoSubmit(plot);
-                } catch (SQLException e) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
-                }
+                PlotUtils.Actions.undoSubmit(plot);
 
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
                 player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);

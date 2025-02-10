@@ -194,7 +194,7 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    public int getSharedScore() throws SQLException {
+    public int getSharedScore() {
         int score = getTotalScore();
         if (score != -1 && !getPlotMembers().isEmpty()) {
             return (int) Math.floor(score / (getPlotMembers().size() + 1d));
@@ -284,7 +284,7 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    public void removePlotMember(Builder member) throws SQLException {
+    public void removePlotMember(Builder member) {
         List<Builder> members = getPlotMembers();
         if (!members.isEmpty() && members.stream().anyMatch(m -> m.getUUID().equals(member.getUUID()))) {
             members.remove(members.stream().filter(m -> m.getUUID().equals(member.getUUID())).findFirst().orElse(null));

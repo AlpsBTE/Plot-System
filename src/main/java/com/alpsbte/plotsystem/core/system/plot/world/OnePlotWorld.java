@@ -57,17 +57,12 @@ public class OnePlotWorld extends PlotWorld {
     public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
         if (isWorldGenerated()) return false;
 
-        try {
-            if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-                new DefaultPlotGenerator(getPlot(), plotOwner);
-            } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
-                new TutorialPlotGenerator(getPlot(), plotOwner);
-            } else return false;
-            return true;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
-        return false;
+        if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
+            new DefaultPlotGenerator(getPlot(), plotOwner);
+        } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
+            new TutorialPlotGenerator(getPlot(), plotOwner);
+        } else return false;
+        return true;
     }
 
     @Override

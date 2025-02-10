@@ -211,7 +211,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
                             return;
                         }
-                    } catch (IOException | SQLException | WorldEditException ex) {
+                    } catch (IOException | WorldEditException ex) {
                         PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
                     }
 

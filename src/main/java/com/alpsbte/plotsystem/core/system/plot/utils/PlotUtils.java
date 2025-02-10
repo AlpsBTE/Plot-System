@@ -190,7 +190,7 @@ public final class PlotUtils {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 
-    public static boolean savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
+    public static boolean savePlotAsSchematic(Plot plot) throws IOException, WorldEditException {
         if (plot.getVersion() < 3) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
             return false;
@@ -301,7 +301,7 @@ public final class PlotUtils {
     public static final class Actions {
         private Actions() {}
 
-        public static void submitPlot(@NotNull Plot plot) throws SQLException {
+        public static void submitPlot(@NotNull Plot plot) {
             plot.setStatus(Status.unreviewed);
 
             if (plot.getWorld().isWorldLoaded()) {
@@ -318,7 +318,7 @@ public final class PlotUtils {
             }
         }
 
-        public static void undoSubmit(@NotNull Plot plot) throws SQLException {
+        public static void undoSubmit(@NotNull Plot plot) {
             plot.setStatus(Status.unfinished);
 
             plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
@@ -363,7 +363,7 @@ public final class PlotUtils {
                         if (plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(false);
                     }
                 }
-            } catch (SQLException | IOException | WorldEditException ex) {
+            } catch (IOException | WorldEditException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
                 return false;
             }
@@ -480,40 +480,36 @@ public final class PlotUtils {
         }
 
         public static void showOutlines() {
-            try {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Builder builder = Builder.byUUID(player.getUniqueId());
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                Builder builder = Builder.byUUID(player.getUniqueId());
 
-                    List<Plot> plots = Cache.getCachedInProgressPlots(builder);
-                    BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
+                List<Plot> plots = Cache.getCachedInProgressPlots(builder);
+                BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
 
-                    if (plots.isEmpty()) continue;
+                if (plots.isEmpty()) continue;
 
-                    for (Plot plot : plots) {
-                        if ((!plot.getWorld().getWorldName().equals(player.getWorld().getName())) ||
-                                (!plot.getPlotOwner().getPlotType().hasEnvironment() || plot.getVersion() <= 2)) {
-                            continue;
-                        }
-
-                        List<BlockVector2> points = plot.getBlockOutline();
-
-                        for (BlockVector2 point : points)
-                            if (point.distanceSq(playerPos2D) < 50 * 50) {
-                                if (!particleAPIEnabled) {
-                                    player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
-                                } else {
-                                    Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
-                                    // create a particle packet
-                                    Object packet = particles.FLAME().packet(true, loc);
-
-                                    // send this packet to player
-                                    particles.sendPacket(player, packet);
-                                }
-                            }
+                for (Plot plot : plots) {
+                    if ((!plot.getWorld().getWorldName().equals(player.getWorld().getName())) ||
+                            (!plot.getPlotOwner().getPlotType().hasEnvironment() || plot.getVersion() <= 2)) {
+                        continue;
                     }
+
+                    List<BlockVector2> points = plot.getBlockOutline();
+
+                    for (BlockVector2 point : points)
+                        if (point.distanceSq(playerPos2D) < 50 * 50) {
+                            if (!particleAPIEnabled) {
+                                player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
+                            } else {
+                                Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
+                                // create a particle packet
+                                Object packet = particles.FLAME().packet(true, loc);
+
+                                // send this packet to player
+                                particles.sendPacket(player, packet);
+                            }
+                        }
                 }
-            } catch (IOException ex) {
-                Utils.logSqlException(ex);
             }
         }
     }

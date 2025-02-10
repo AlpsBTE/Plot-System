@@ -89,7 +89,7 @@ public abstract class AbstractPlot {
     /**
      * @return the outline of the plot which contains all corner points of the polygon
      */
-    public abstract List<BlockVector2> getOutline() throws IOException;
+    public abstract List<BlockVector2> getOutline();
 
     /**
      * @return last date on which the plot owner teleported to the plot
@@ -204,7 +204,7 @@ public abstract class AbstractPlot {
     /**
      * @return the outline of the polygon with one point per Block
      */
-    public final List<BlockVector2> getBlockOutline() throws IOException {
+    public final List<BlockVector2> getBlockOutline() {
         if (this.blockOutline != null)
             return this.blockOutline;
 

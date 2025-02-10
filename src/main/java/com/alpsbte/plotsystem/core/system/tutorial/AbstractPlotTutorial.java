@@ -49,7 +49,6 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -114,7 +113,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
                 plotGenerator.generateOutlines(schematicId);
             }
-        } catch (SQLException | IOException | WorldEditException ex) {
+        } catch (IOException | WorldEditException ex) {
             onException(ex);
         }
     }
@@ -161,15 +160,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
-        try {
-            if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
-                plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
-                onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
-            }
-            super.onSwitchWorld(playerUUID, tutorialWorldIndex);
-        } catch (SQLException ex) {
-            onException(ex);
+        if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
+            plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
+            onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
         }
+        super.onSwitchWorld(playerUUID, tutorialWorldIndex);
     }
 
     @Override

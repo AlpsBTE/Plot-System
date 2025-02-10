@@ -44,7 +44,6 @@ import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -132,13 +131,9 @@ public class PlotMemberMenu extends AbstractMenu {
             getMenu().getSlot(i).setClickHandler((clickPlayer, clickInformation) -> {
                 if (getMenu().getSlot(itemSlot).getItem(clickPlayer).equals(emptyMemberSlotItem)) return;
                 Builder builder = builders.get(itemSlot - 12);
-                try {
-                    plot.removePlotMember(builder);
-                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
-                            LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
-                } catch (SQLException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                }
+                plot.removePlotMember(builder);
+                clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
+                        LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
                 reloadMenuAsync();
             });
         }

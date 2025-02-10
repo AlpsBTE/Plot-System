@@ -42,10 +42,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
@@ -78,14 +75,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                         sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
                         return;
                     }
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                        try {
-                            new DefaultPlotGenerator(plot, builder);
-                        } catch (SQLException e) {
-                            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
-                        }
-                    });
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new DefaultPlotGenerator(plot, builder));
                     return;
                 }
 

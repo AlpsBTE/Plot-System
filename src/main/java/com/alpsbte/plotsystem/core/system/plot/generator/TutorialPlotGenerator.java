@@ -49,7 +49,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     private boolean buildingEnabled = false;
     private boolean worldEditEnabled = false;
 
-    public TutorialPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
+    public TutorialPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
         super(plot, builder, PlotType.TUTORIAL);
     }
 
@@ -58,7 +58,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
         return true;
     }
 
-    public void generateOutlines(int schematicId) throws SQLException, IOException, WorldEditException {
+    public void generateOutlines(int schematicId) throws IOException, WorldEditException {
         ((TutorialPlot) plot).setTutorialSchematic(schematicId);
         generateOutlines();
     }

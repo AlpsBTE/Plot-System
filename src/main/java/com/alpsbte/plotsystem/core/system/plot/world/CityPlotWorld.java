@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +118,7 @@ public class CityPlotWorld extends PlotWorld {
      *
      * @return a list of players located on the plot
      */
-    public List<Player> getPlayersOnPlot() throws SQLException {
+    public List<Player> getPlayersOnPlot() {
         List<Player> players = new ArrayList<>();
         if (getPlot() != null && getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {
             for (Player player : getPlot().getWorld().getBukkitWorld().getPlayers()) {
