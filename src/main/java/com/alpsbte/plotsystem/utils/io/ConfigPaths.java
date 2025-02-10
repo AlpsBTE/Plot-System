@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class ConfigPaths {
+    private ConfigPaths() {throw new IllegalStateException("Utility class");}
 
     // General Behaviour
     public static final String SPAWN_WORLD = "spawn-world";
@@ -32,12 +33,8 @@ public abstract class ConfigPaths {
     public static final String ENABLE_SCORE_REQUIREMENT = "enable-score-requirement";
     public static final String DEV_MODE = "dev-mode";
     public static final String INACTIVITY_INTERVAL = "inactivity-interval";
+    public static final String REJECTED_INACTIVITY_INTERVAL = "rejected-inactivity-interval";
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
-
-    private static final String SYNC_FTP_FILES = "sync-ftp-files.";
-    public static final String SYNC_FTP_FILES_ENABLE = SYNC_FTP_FILES + "sff-enable";
-    public static final String SYNC_FTP_FILES_INTERVAL = SYNC_FTP_FILES + "sync-interval";
-
 
     // Database
     private static final String DATABASE = "database.";
@@ -45,7 +42,6 @@ public abstract class ConfigPaths {
     public static final String DATABASE_NAME = DATABASE + "dbname";
     public static final String DATABASE_USERNAME = DATABASE + "username";
     public static final String DATABASE_PASSWORD = DATABASE + "password";
-
 
     // Leaderboards
     private static final String HOLOGRAMS = "holograms.";
@@ -60,7 +56,6 @@ public abstract class ConfigPaths {
     public static final String PLOTS_LEADERBOARD_Y = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-y";
     public static final String PLOTS_LEADERBOARD_Z = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-z";
 
-
     private static final String DISPLAY_OPTIONS = "display-options.";
     public static final String DISPLAY_OPTIONS_INTERVAL = DISPLAY_OPTIONS + "interval";
     public static final String DISPLAY_OPTIONS_SHOW_DAILY = DISPLAY_OPTIONS + "show-daily";
@@ -71,25 +66,21 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLE = DISPLAY_OPTIONS + "action-bar-enable";
     public static final String DISPLAY_OPTIONS_ACTION_BAR_RADIUS = DISPLAY_OPTIONS + "action-bar-radius";
 
-
     // FORMATTING
     private static final String CHAT_FORMAT = "chat-format.";
     public static final String CHAT_FORMAT_INFO_PREFIX = CHAT_FORMAT + "info-prefix";
     public static final String CHAT_FORMAT_ALERT_PREFIX = CHAT_FORMAT + "alert-prefix";
-
 
     // COMMANDS
     public static final String EDITPLOT_ENABLED = "editplot-enabled";
     public static final String BLOCKED_COMMANDS_BUILDERS = "blocked-commands-builders";
     public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
 
-
     // SHORTLINKS
     private static final String SHORTLINK = "shortlink.";
     public static final String SHORTLINK_ENABLE = SHORTLINK + "enable";
     public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
     public static final String SHORTLINK_HOST = SHORTLINK + "host";
-
 
     // TUTORIALS
     private static final String TUTORIALS = "tutorials.";

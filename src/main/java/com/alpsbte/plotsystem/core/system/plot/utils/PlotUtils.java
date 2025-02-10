@@ -74,7 +74,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -102,7 +105,7 @@ public final class PlotUtils {
      * @return the current plot of the player
      */
     @Nullable
-    public static AbstractPlot getCurrentPlot(Builder builder, Status... statuses) {
+    public static AbstractPlot getCurrentPlot(@NotNull Builder builder, Status... statuses) {
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
 
@@ -143,7 +146,7 @@ public final class PlotUtils {
         return null;
     }
 
-    public static boolean isPlayerOnPlot(AbstractPlot plot, Player player) {
+    public static boolean isPlayerOnPlot(@NotNull AbstractPlot plot, Player player) {
         if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
             Location playerLoc = player.getLocation();
             return plot.getWorld().getProtectedRegion().contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
@@ -151,7 +154,7 @@ public final class PlotUtils {
         return false;
     }
 
-    public static CuboidRegion getPlotAsRegion(AbstractPlot plot) throws IOException {
+    public static @Nullable CuboidRegion getPlotAsRegion(@NotNull AbstractPlot plot) throws IOException {
         Clipboard clipboard;
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(plot.getInitialSchematicBytes()))) {
             clipboard = reader.read();
@@ -186,11 +189,11 @@ public final class PlotUtils {
         return null;
     }
 
-    public static String getDefaultSchematicPath() {
+    public static @NotNull String getDefaultSchematicPath() {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
     }
 
-    public static boolean savePlotAsSchematic(Plot plot) throws IOException, WorldEditException {
+    public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException {
         if (plot.getVersion() < 3) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
             return false;
@@ -241,7 +244,7 @@ public final class PlotUtils {
         return true;
     }
 
-    public static CompletableFuture<double[]> convertTerraToPlotXZ(AbstractPlot plot, double[] terraCoords) throws IOException {
+    public static @Nullable CompletableFuture<double[]> convertTerraToPlotXZ(@NotNull AbstractPlot plot, double[] terraCoords) throws IOException {
         // Load plot outlines schematic as clipboard
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
@@ -282,10 +285,11 @@ public final class PlotUtils {
             List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
             long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
+            long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
-                if (lastActivity == null) continue;
-                if (lastActivity.plusDays(inactivityIntervalDays).isAfter(LocalDate.now())) continue;
+                long interval = (plot.isRejected()) ? rejectedInactivityIntervalDays : inactivityIntervalDays;
+                if (lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     if (Actions.abandonPlot(plot)) {
@@ -575,7 +579,7 @@ public final class PlotUtils {
             });
         }
 
-        public static void sendGroupTipMessage(Plot plot, Player player) {
+        public static void sendGroupTipMessage(@NotNull Plot plot, Player player) {
             if (plot.getPlotMembers().isEmpty()) {
                 Component tc = text("» ", DARK_GRAY)
                         .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
