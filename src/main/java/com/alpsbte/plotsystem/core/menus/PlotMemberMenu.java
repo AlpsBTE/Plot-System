@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,11 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class PlotMemberMenu extends AbstractMenu {
     private final ItemStack emptyMemberSlotItem = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE, 1).setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.GroupSystem.EMPTY_MEMBER_SLOTS), DARK_GREEN).decoration(BOLD, true)).build();
     private List<Builder> builders;
 
-    public PlotMemberMenu(Plot plot, Player menuPlayer) {
+    public PlotMemberMenu(@NotNull Plot plot, Player menuPlayer) {
         super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
         this.plot = plot;
     }
@@ -102,7 +104,10 @@ public class PlotMemberMenu extends AbstractMenu {
                 .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER), GOLD, BOLD))
                         .setLore(new LoreBuilder()
-                                .addLine(plot.getPlotOwner().getName()).build())
+                                .addLines(text(plot.getPlotOwner().getName()),
+                                        empty(),
+                                        text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_PLOTS_MENUE))))
+                                .build())
                         .build());
 
         // Set plot member items
@@ -125,6 +130,12 @@ public class PlotMemberMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
+        // Set click event for owner slot
+        getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory(InventoryCloseEvent.Reason.OPEN_NEW);
+            new PlayerPlotsMenu(clickPlayer, plot.getPlotOwner());
+        });
+
         // Set click event for member slots
         for (int i = 12; i < 15; i++) {
             int itemSlot = i;

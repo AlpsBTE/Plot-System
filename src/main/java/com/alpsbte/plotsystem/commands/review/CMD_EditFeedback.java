@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,6 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,7 +51,7 @@ public class CMD_EditFeedback extends BaseCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         Player player = getPlayer(sender);
         if (player == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", RED));
+            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", RED));
             return true;
         }
 

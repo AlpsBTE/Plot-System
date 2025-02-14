@@ -173,7 +173,7 @@ public final class PlotUtils {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
-    public static byte[] getOutlinesSchematicBytes(AbstractPlot plot, World world) throws IOException {
+    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, World world) throws IOException {
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
@@ -286,10 +286,11 @@ public final class PlotUtils {
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
             long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
             long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
+            if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
                 long interval = (plot.isRejected()) ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-                if (lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
+                if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     if (Actions.abandonPlot(plot)) {

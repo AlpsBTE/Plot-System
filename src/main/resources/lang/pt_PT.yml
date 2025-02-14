@@ -197,6 +197,7 @@ note:
     click-to-show-plots: "§6Clique aqui §apara mostrar seus terrenos..."
     click-to-play-with-friends: "§7Quer jogar com seus amigos? §6Clique aqui..."
     tutorial-show-stages: 'Show Stages'
+    click-to-open-plots-menu: 'Clique para abrir o menu de parcelas...'
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -260,6 +261,7 @@ message:
     player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "Você precisa estar em um terreno para usar isso!"
     player-needs-higher-score: "Você precisa de uma pontuação mais alta para construir neste nível de dificuldade."
+    player-missing-tutorial: "O jogador tem de completar o tutorial primeiro, para ser adicionado ao enredo!"
     error-occurred: "Um erro ocorreu! Por favor, tente novamente!"
     command-disabled: "Este comando está desabilitado!"
     no-plots-left: "Este projeto da cidade não tem mais terrenos. Por favor, Selecione outro projeto."
@@ -389,4 +391,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.2
+config-version: 2.3

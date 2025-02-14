@@ -27,11 +27,11 @@ sync-ftp-files:
   sff-enable: false
   sync-interval: 3600
 
-# How many days of inactivity it will take before a claimed plot is automatically abandoned, 0 disables it
+# How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
 
 # How many days of inactivity it will take before a rejected plots are automatically abandoned
-# Use -1 to use the normal inactivity-interval, 0 disables it
+# Use -1 to use the normal inactivity-interval, -2 disables it
 rejected-inactivity-interval: -1
 
 # Enable or disable the Group System, that allows users to invite other Builders as members of their plot,

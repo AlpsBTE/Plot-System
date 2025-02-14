@@ -47,17 +47,14 @@ import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -66,6 +63,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CompanionMenu {
+    private CompanionMenu() {throw new IllegalStateException("Utility class");}
+
     public static boolean hasContinentView() {
         // TODO: make this run async
         return Arrays.stream(Continent.values()).map(continent -> DataProvider.COUNTRY.getCountriesByContinent(continent).size()).filter(count -> count > 0).count() > 1;
@@ -100,7 +99,7 @@ public class CompanionMenu {
      * @param returnToMenu a lambda to call when needing to return to current menu
      * @return FooterItems indexed by slot number
      */
-    public static HashMap<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
+    public static @NotNull Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
         HashMap<Integer, FooterItem> items = new HashMap<>();
         // Set builder utilities menu item
         items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer)));
@@ -218,8 +217,8 @@ public class CompanionMenu {
 
     public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) {
         String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
-        TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), NamedTextColor.GRAY);
+        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), GOLD).decoration(TextDecoration.BOLD, true);
+        TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);
 
         Material itemMaterial = Material.MAP;
         ArrayList<TextComponent> lore = new LoreBuilder()
@@ -234,16 +233,16 @@ public class CompanionMenu {
             String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
             String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
             lore = new LoreBuilder()
-                    .addLines(text(plotIdText + ": ", NamedTextColor.GRAY).append(text(plot.getID(), NamedTextColor.WHITE)),
-                            text(plotCityText + ": ", NamedTextColor.GRAY).append(text(plot.getCity().getName(langPlayer), NamedTextColor.WHITE)),
-                            text(plotDifficultyText + ": ", NamedTextColor.GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), NamedTextColor.WHITE)),
+                    .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getID(), WHITE)),
+                            text(plotCityText + ": ", GRAY).append(text(plot.getCity().getName(langPlayer), WHITE)),
+                            text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
                             empty(),
-                            statusComp.append(text(": Unassigned", NamedTextColor.GRAY)).decoration(TextDecoration.BOLD, true))
+                            statusComp.append(text(": Unassigned", GRAY)).decoration(TextDecoration.BOLD, true))
                     .build();
         }
 
         return new ItemBuilder(itemMaterial, 1 + slotIndex)
-                .setName(text(nameText, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                .setName(text(nameText, GOLD).decoration(TextDecoration.BOLD, true))
                 .setLore(lore)
                 .build();
     }

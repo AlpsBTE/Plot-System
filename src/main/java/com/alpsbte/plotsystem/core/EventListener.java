@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,13 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
+import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
@@ -36,18 +40,14 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
-import com.alpsbte.plotsystem.utils.chat.PlayerInviteeChatInput;
 import com.alpsbte.plotsystem.utils.chat.PlayerFeedbackChatInput;
+import com.alpsbte.plotsystem.utils.chat.PlayerInviteeChatInput;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -73,6 +73,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.Duration;
@@ -113,7 +114,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+    public void onPlayerInteractEvent(@NotNull PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
             if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))) {
                 event.getPlayer().performCommand("companion");
@@ -127,14 +128,14 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+    public void onPlayerInteractAtEntity(@NotNull PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked().getType().equals(EntityType.PLAYER) && event.getHand() == EquipmentSlot.HAND) {
             event.getPlayer().performCommand("plots " + Builder.byUUID(event.getRightClicked().getUniqueId()).getName());
         }
     }
 
     @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+    public void onPlayerQuitEvent(@NotNull PlayerQuitEvent event) {
         final World w = event.getPlayer().getWorld();
 
         DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
@@ -157,7 +158,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
+    public void onPlayerChangedWorldEvent(@NotNull PlayerChangedWorldEvent event) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             PlotWorld plotWorld = PlotWorld.getPlotWorldByName(event.getFrom().getName());
             if (plotWorld != null) plotWorld.unloadWorld(false);
@@ -167,24 +168,21 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClickEvent(InventoryClickEvent event) {
-        if (event.getCurrentItem() != null && event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked()))) {
-            event.setCancelled(true);
-        } else if (event.getCurrentItem() != null && event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()).getPlayer()))) {
+    public void onInventoryClickEvent(@NotNull InventoryClickEvent event) {
+        if (event.getCurrentItem() != null && (event.getCurrentItem().equals(CompanionMenu.getMenuItem((Player) event.getWhoClicked())) || event.getCurrentItem().equals(ReviewMenu.getMenuItem(((Player) event.getWhoClicked()))))) {
             event.setCancelled(true);
         }
 
-        if (event.getWhoClicked().getGameMode() == GameMode.CREATIVE) {
-            if (event.getCursor().isSimilar(CompanionMenu.getMenuItem((Player) event.getWhoClicked())) ||
-                    event.getCursor().isSimilar(ReviewMenu.getMenuItem((Player) event.getWhoClicked()))) {
+        if (event.getWhoClicked().getGameMode() == GameMode.CREATIVE && (event.getCursor().isSimilar(CompanionMenu.getMenuItem((Player) event.getWhoClicked())) ||
+                event.getCursor().isSimilar(ReviewMenu.getMenuItem((Player) event.getWhoClicked())))) {
                 event.getView().setCursor(ItemStack.empty());
                 event.setCancelled(true);
             }
-        }
+
     }
 
     @EventHandler
-    public void onlPlayerItemDropEvent(PlayerDropItemEvent event) {
+    public void onlPlayerItemDropEvent(@NotNull PlayerDropItemEvent event) {
         if (event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
                 event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);
@@ -192,7 +190,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerSwapHandItemsEvent(PlayerSwapHandItemsEvent event) {
+    public void onPlayerSwapHandItemsEvent(@NotNull PlayerSwapHandItemsEvent event) {
         if (event.getMainHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
                 event.getMainHandItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) event.setCancelled(true);
         if (event.getOffHandItem().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
@@ -200,7 +198,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerChatEvent(AsyncChatEvent event) throws SQLException {
+    public void onPlayerChatEvent(@NotNull AsyncChatEvent event) throws SQLException {
         UUID playerUUID = event.getPlayer().getUniqueId();
         if (ChatInput.awaitChatInput.containsKey(playerUUID)) {
             event.setCancelled(true);
@@ -218,7 +216,7 @@ public class EventListener implements Listener {
                 if (player == null) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                } else if (!player.isOnline() || TutorialPlot.isInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
+                } else if (!player.isOnline()) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_NOT_ONLINE)));
                 } else if (inviteeInput.getPlot().getPlotMembers().contains(Builder.byUUID(player.getUniqueId()))) {
@@ -227,6 +225,9 @@ public class EventListener implements Listener {
                 } else if (inviteeInput.getPlot().getPlotOwner().getUUID().toString().equals(player.getUniqueId().toString())) {
                     event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
                             .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_IS_PLOT_OWNER)));
+                } else if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
+                    event.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance()
+                            .get(event.getPlayer(), LangPaths.Message.Error.PLAYER_MISSING_TUTORIAL)));
                 } else {
                     new PlotMemberInvitation(Bukkit.getPlayer(messageComp.content()), inviteeInput.getPlot());
                     ChatInput.awaitChatInput.remove(playerUUID);
@@ -239,11 +240,11 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onLanguageChange(LanguageChangeEvent event) {
+    public void onLanguageChange(@NotNull LanguageChangeEvent event) {
         Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 
-    private void handleIronTrapdoorClick(PlayerInteractEvent event) {
+    private void handleIronTrapdoorClick(@NotNull PlayerInteractEvent event) {
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
         if (event.getPlayer().isSneaking()) return;
@@ -266,7 +267,7 @@ public class EventListener implements Listener {
         state.update();
     }
 
-    private void sendNotices(Player player, Builder builder) {
+    private void sendNotices(@NotNull Player player, Builder builder) {
         // Inform player about update
         if (player.hasPermission("plotsystem.admin") && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES) && PlotSystem.UpdateChecker.updateAvailable()) {
             player.sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
@@ -321,8 +322,7 @@ public class EventListener implements Listener {
 
 
         // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
-        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                TutorialPlot.isInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
+        if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
             if (!player.hasPlayedBefore()) {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
                         () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));

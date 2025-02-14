@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialStagesMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
@@ -33,12 +32,10 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,12 +50,10 @@ public class CMD_Companion extends BaseCommand {
         Player player = getPlayer(sender);
         if (player == null) return true;
 
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
         Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
         if (tutorial != null) {
             new TutorialStagesMenu(player, tutorial.getId());
-        } else if (config.getBoolean(ConfigPaths.TUTORIAL_ENABLE) && config.getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                TutorialPlot.isInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId()) && player.hasPermission("plotsystem.tutorial")) {
+        } else if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId()) && player.hasPermission("plotsystem.tutorial")) {
             new TutorialsMenu(player);
         } else CompanionMenu.open((Player) sender);
 

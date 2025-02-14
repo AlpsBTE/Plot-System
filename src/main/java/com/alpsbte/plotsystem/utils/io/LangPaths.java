@@ -216,7 +216,6 @@ public abstract class LangPaths {
 
         public static final class Action {
             private Action() {}
-
             private static final String ACTION_PREFIX = NOTES + "action.";
             public static final String READ = ACTION_PREFIX + "read";
             public static final String READ_MORE = ACTION_PREFIX + "read-more";
@@ -239,6 +238,7 @@ public abstract class LangPaths {
             public static final String CLICK_TO_SHOW_PLOTS = ACTION_PREFIX + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION_PREFIX + "click-to-play-with-friends";
             public static final String TUTORIAL_SHOW_STAGES = ACTION_PREFIX + "tutorial-show-stages";
+            public static final String CLICK_TO_OPEN_PLOTS_MENUE = ACTION_PREFIX + "click-to-open-plots-menu";
         }
     }
 
@@ -288,7 +288,6 @@ public abstract class LangPaths {
 
         public static final class Error {
             private Error() {}
-
             private static final String ERROR_PREFIX = MESSAGE_PREFIX + "error.";
             public static final String PLOT_DOES_NOT_EXIST = ERROR_PREFIX + "plot-does-not-exist";
             public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR_PREFIX + "plot-either-unclaimed-or-unreviewed";
@@ -316,6 +315,7 @@ public abstract class LangPaths {
             public static final String PLAYER_INVITE_TO_REJECTED = ERROR_PREFIX + "player-invite-to-rejected";
             public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR_PREFIX + "player-needs-to-be-on-plot";
             public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR_PREFIX + "player-needs-higher-score";
+            public static final String PLAYER_MISSING_TUTORIAL = MESSAGE_PREFIX + "player-missing-tutorial";
 
             public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR_PREFIX + "command-disabled";

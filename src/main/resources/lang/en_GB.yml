@@ -197,6 +197,7 @@ note:
     click-to-show-plots: "§6Click Here §ato show your plots..."
     click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
     tutorial-show-stages: 'Show Stages'
+    click-to-open-plots-menu: 'Click to open the plots menu...'
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -260,6 +261,7 @@ message:
     player-invite-to-rejected: '{0} has rejected your invitation.'
     player-needs-to-be-on-plot: "You need to be on a plot in order to use this!"
     player-needs-higher-score: "You need a higher score to build in this difficulty level."
+    player-missing-tutorial: "The player must first complete the tutorial to be added to the plot!"
     error-occurred: "An error occurred! Please try again!"
     command-disabled: "This command is disabled!"
     no-plots-left: "This city project does not have any more plots left. Please select another project."
@@ -389,4 +391,4 @@ tutorials:
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
 # NOTE: Do not change
-config-version: 2.2
+config-version: 2.3

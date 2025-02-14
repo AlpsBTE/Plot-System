@@ -197,6 +197,7 @@ note:
     click-to-show-plots: "§6Cliquez ici §apour afficher vos tracés..."
     click-to-play-with-friends: "§7Vous voulez jouer avec vos amis? §6Cliquez ici..."
     tutorial-show-stages: 'Montrer les étapes'
+    click-to-open-plots-menu: 'Cliquez pour ouvrir le menu des parcelles...'
 #-----------------------------------------------------
 #| Messages
 #-----------------------------------------------------
@@ -260,6 +261,7 @@ message:
     player-invite-to-rejected: '{0} a rejeté votre invitation.'
     player-needs-to-be-on-plot: "Vous devez être sur un terrain pour pouvoir l'utiliser!"
     player-needs-higher-score: "Vous avez besoin d'un score plus élevé pour intégrer ce niveau de difficulté."
+    player-missing-tutorial: "Le joueur doit d'abord terminer le tutoriel pour être intégré à l'intrigue!"
     error-occurred: "Une erreur s'est produite! Veuillez réessayer!"
     command-disabled: "Cette commande est désactivée!"
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."

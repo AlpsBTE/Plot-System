@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -40,11 +41,14 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -179,8 +183,12 @@ public class TutorialPlot extends AbstractPlot {
         currentSchematicId = schematicId;
     }
 
-    public static boolean isInProgress(int tutorialId, UUID playerUUID) {
+    public static boolean isInProgress(int tutorialId, @NotNull UUID playerUUID) {
         TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID.toString());
         return plot == null || !plot.isComplete();
+    }
+
+    public static boolean isRequiredAndInProgress(int tutorialId, UUID playerUUID) {
+        return PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) && isInProgress(tutorialId, playerUUID);
     }
 }
