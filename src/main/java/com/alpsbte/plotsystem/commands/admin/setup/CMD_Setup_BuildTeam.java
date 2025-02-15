@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 import static net.kyori.adventure.text.Component.text;
@@ -278,22 +279,20 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-
             BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            Country country = DataProvider.COUNTRY.getCountryByCode(args[2]);
-
+            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(args[2]);
 
             // Check if build team and country exists
             if (buildTeam == null) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
-            if (country == null) {
+            if (country.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is already added to the build team!"));
                 return;
             }
-            boolean successful = buildTeam.addCountry(country);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.getCode() + "' to build team with ID " + args[1] + "!"));
+            boolean successful = buildTeam.addCountry(country.get());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.get().getCode() + "' to build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
@@ -331,20 +330,20 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            Country country = DataProvider.COUNTRY.getCountryByCode(args[2]);
+            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(args[2]);
 
             // Check if build team and country exists
             if (buildTeam == null) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
-            if (country == null) {
+            if (country.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is not added to the build team!"));
                 return;
             }
 
-            boolean successful = buildTeam.removeCountry(country.getCode());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.getCode() + "' from build team with ID " + args[1] + "!"));
+            boolean successful = buildTeam.removeCountry(country.get().getCode());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.get().getCode() + "' from build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 

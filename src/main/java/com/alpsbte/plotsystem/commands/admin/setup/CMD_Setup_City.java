@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -135,8 +136,8 @@ public class CMD_Setup_City extends SubCommand {
 
             String cityProjectId = args[1];
             String countryCode = args[2];
-            Country country = DataProvider.COUNTRY.getCountryByCode(countryCode);
-            if (country == null) {
+            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(countryCode);
+            if (country.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with code " + countryCode + "!"));
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss country list> to see all countries!"));
                 return;
@@ -153,7 +154,7 @@ public class CMD_Setup_City extends SubCommand {
                 return;
             }
 
-            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, country.getCode(), serverName);
+            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, country.get().getCode(), serverName);
             if (added) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with ID '" + cityProjectId + "' under country with the code " + countryCode + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
         }

@@ -94,9 +94,9 @@ public class Builder {
     public boolean setSlot(Slot slot, int plotId) {
         if (DataProvider.BUILDER.setSlot(this.uuid, plotId, slot)) {
             switch (slot) {
-                case FIRST: firstSlot = plotId; break;
-                case SECOND: secondSlot = plotId; break;
-                case THIRD: thirdSlot = plotId; break;
+                case FIRST -> firstSlot = plotId;
+                case SECOND -> secondSlot = plotId;
+                case THIRD -> thirdSlot = plotId;
             }
             return true;
         }

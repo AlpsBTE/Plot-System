@@ -47,7 +47,6 @@ import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -217,7 +216,7 @@ public class CompanionMenu {
 
     public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) {
         String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), GOLD).decoration(TextDecoration.BOLD, true);
+        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), GOLD).decoration(BOLD, true);
         TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);
 
         Material itemMaterial = Material.MAP;
@@ -237,12 +236,12 @@ public class CompanionMenu {
                             text(plotCityText + ": ", GRAY).append(text(plot.getCity().getName(langPlayer), WHITE)),
                             text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
                             empty(),
-                            statusComp.append(text(": Unassigned", GRAY)).decoration(TextDecoration.BOLD, true))
+                            statusComp.append(text(": Unassigned", GRAY)).decoration(BOLD, true))
                     .build();
         }
 
         return new ItemBuilder(itemMaterial, 1 + slotIndex)
-                .setName(text(nameText, GOLD).decoration(TextDecoration.BOLD, true))
+                .setName(text(nameText, GOLD).decoration(BOLD, true))
                 .setLore(lore)
                 .build();
     }

@@ -67,7 +67,8 @@ public class CityProject {
     }
 
     public Country getCountry() {
-        return DataProvider.COUNTRY.getCountryByCode(countryCode);
+        // city project objects will never be created with an id of a country that does not exist as this would throw a sql exception first
+        return DataProvider.COUNTRY.getCountryByCode(countryCode).orElseThrow();
     }
 
     public String getServerName() {

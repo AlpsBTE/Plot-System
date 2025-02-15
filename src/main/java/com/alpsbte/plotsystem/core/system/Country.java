@@ -64,7 +64,7 @@ public class Country {
     }
 
     public boolean setMaterialAndModelData(String material, @Nullable String customModelData) {
-        if (DataProvider.COUNTRY.setMaterialAndCustomModelData(material, customModelData)) {
+        if (DataProvider.COUNTRY.setMaterialAndCustomModelData(code, material, customModelData)) {
             this.material = material;
             this.customModelData = customModelData;
             return true;

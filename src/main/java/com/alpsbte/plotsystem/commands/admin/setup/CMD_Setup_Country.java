@@ -35,6 +35,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -184,7 +185,7 @@ public class CMD_Setup_Country extends SubCommand {
             String code = args[1];
 
             // Check if country exists
-            if (DataProvider.COUNTRY.getCountryByCode(code) == null) {
+            if (DataProvider.COUNTRY.getCountryByCode(code).isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with code " + code + "!"));
                 sendInfo(sender);
                 return;
@@ -232,14 +233,14 @@ public class CMD_Setup_Country extends SubCommand {
             String customModelData = args.length > 3 ? args[3] : null;
 
             // Check if country exists
-            Country country = DataProvider.COUNTRY.getCountryByCode(code);
-            if (country == null) {
+            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(code);
+            if (country.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with name " + args[1] + "!"));
                 sendInfo(sender);
                 return;
             }
 
-            boolean successful = country.setMaterialAndModelData(material, customModelData);
+            boolean successful = country.get().setMaterialAndModelData(material, customModelData);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated country with code " + country + "! Material: " + material + " CustomModelData: " + (customModelData == null ? "NULL" : customModelData)));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
