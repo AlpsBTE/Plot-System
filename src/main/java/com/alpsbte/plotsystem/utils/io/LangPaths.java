@@ -409,5 +409,15 @@ public abstract class LangPaths {
             public static final String STAGE10_MESSAGES = STAGE10 + "stage-10-messages";
             public static final String STAGE10_TASKS = STAGE10 + "stage-10-tasks";
         }
+
+    }
+
+    public static final class Database {
+        private Database() {}
+
+        private static final String DATABASE_PREFIX = "database.";
+        public static final String CITY_PROJECT = DATABASE_PREFIX + "city-project";
+        public static final String COUNTRY = DATABASE_PREFIX + "country";
+        public static final String DIFFICULTY = DATABASE_PREFIX + "difficulty";
     }
 }

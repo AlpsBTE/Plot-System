@@ -27,6 +27,8 @@ package com.alpsbte.plotsystem.core.system;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -51,10 +53,6 @@ public class Country {
 
     public String getCode() {return code;}
 
-    public String getMaterial() {return material;}
-
-    public String getCustomModelData() {return customModelData;}
-
     public Continent getContinent() {return continent;}
 
     public List<CityProject> getCityProjects() {
@@ -62,8 +60,7 @@ public class Country {
     }
 
     public String getName(Player player) {
-        // TODO: get name from new language file
-        return code;
+        return LangUtil.getInstance().get(player, LangPaths.Database.COUNTRY + "." + code + ".name");
     }
 
     public boolean setMaterialAndModelData(String material, @Nullable String customModelData) {

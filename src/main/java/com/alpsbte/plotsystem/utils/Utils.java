@@ -202,11 +202,11 @@ public class Utils {
             };
         }
 
-        public static @NotNull TextComponent getFormattedDifficulty(@NotNull PlotDifficulty plotDifficulty) {
+        public static @NotNull TextComponent getFormattedDifficulty(@NotNull PlotDifficulty plotDifficulty, Player player) {
             return switch (plotDifficulty) {
-                case EASY -> text("Easy", GREEN).decoration(BOLD, true);
-                case MEDIUM -> text("Medium", GOLD).decoration(BOLD, true);
-                case HARD -> text("Hard", RED).decoration(BOLD, true);
+                case EASY -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".easy.name"), GREEN).decoration(BOLD, true);
+                case MEDIUM -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".medium.name"), GOLD).decoration(BOLD, true);
+                case HARD -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".hard.name"), RED).decoration(BOLD, true);
             };
         }
     }

@@ -35,12 +35,13 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
@@ -94,17 +95,15 @@ public class CityProject {
     }
 
     public String getName(Player player) {
-        // TODO: implement (get from language file)
-        return "CityProject WIP";
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".name");
     }
 
     public String getDescription(Player player) {
-        // TODO: implement (get from language file)
-        return "Description WIP";
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".description");
     }
 
-    public ArrayList<Component> getDescriptionComponents(Player player) {
-        ArrayList<Component> descriptionLines = new ArrayList<>();
+    public List<TextComponent> getDescriptionComponents(Player player) {
+        ArrayList<TextComponent> descriptionLines = new ArrayList<>();
         for (String line : getDescription(player).split("%newline%")) descriptionLines.add(text(line));
         return descriptionLines;
     }
@@ -128,7 +127,7 @@ public class CityProject {
             return new ItemBuilder(cpItem)
                     .setName(text(getName(player), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
-                            .addLines(true, getDescription(player))
+                            .addLines(getDescriptionComponents(player))
                             .emptyLine()
                             .addLine(text(plotsOpen, GOLD)
                                     .append(text(" " + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_OPEN) + " ", GRAY))
@@ -141,7 +140,7 @@ public class CityProject {
                                     .append(text(" " + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_COMPLETED), GRAY)))
                             .emptyLine()
                             .addLine(plotsUnclaimed != 0
-                                    ? Utils.ItemUtils.getFormattedDifficulty(plotDifficulty)
+                                    ? Utils.ItemUtils.getFormattedDifficulty(plotDifficulty, player)
                                     : text(LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE), WHITE).decoration(BOLD, true))
                             .build())
                     .build();

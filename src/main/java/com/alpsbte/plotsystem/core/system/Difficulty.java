@@ -26,6 +26,9 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import org.bukkit.entity.Player;
 
 public class Difficulty {
     private final String ID;
@@ -43,6 +46,10 @@ public class Difficulty {
 
     public String getID() {
         return ID;
+    }
+
+    public String getName(Player player) {
+        return LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + "." + ID + ".name");
     }
 
     public PlotDifficulty getDifficulty() {

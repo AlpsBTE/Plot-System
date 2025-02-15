@@ -390,5 +390,27 @@ tutorials:
         - 'Frohes Bauen! ☺'
       stage-10-tasks:
         - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Beispiel Stadt'
+      description: 'Eine Beschreibung'
+  country:
+    AT:
+      name: 'Österreich'
+    CH:
+      name: 'Schweiz'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Easy'
+    medium:
+      name: 'Medium'
+    hard:
+      name: 'Hard'
 #NOTE: Do not change
-config-version: 2.3
+config-version: 2.4
