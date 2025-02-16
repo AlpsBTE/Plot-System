@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -124,14 +125,21 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1) {sendInfo(sender); return;}
-            if (args[1].length() > 255) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[2]) == null) {sendInfo(sender); return;}
+
+            String serverName = args[1];
+            if (serverName.length() > 255) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 255 characters!"));
                 sendInfo(sender);
                 return;
             }
 
-            boolean successful = DataProvider.SERVER.addServer(args[1]);
+            int buildTeamId = AlpsUtils.tryParseInt(args[2]);
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId) == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team with id " + buildTeamId + " could not be found!"));
+            }
+
+            boolean successful = DataProvider.SERVER.addServer(serverName, buildTeamId);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added server!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -148,7 +156,7 @@ public class CMD_Setup_Server extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"Name"};
+            return new String[]{"Name", "BuildTeamId"};
         }
 
         @Override

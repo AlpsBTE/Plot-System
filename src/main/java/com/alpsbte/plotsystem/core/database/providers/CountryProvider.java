@@ -21,9 +21,11 @@ public class CountryProvider {
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("SELECT country_code, continent, material, custom_model_data FROM country;")) {
             try (ResultSet rs = stmt.executeQuery()) {
-                Continent continent = Continent.fromDatabase(rs.getString(2));
-                Country country = new Country(rs.getString(1), continent, rs.getString(3), rs.getString(4));
-                cachedCountries.add(country);
+                while (rs.next()) {
+                    Continent continent = Continent.fromDatabase(rs.getString(2));
+                    Country country = new Country(rs.getString(1), continent, rs.getString(3), rs.getString(4));
+                    cachedCountries.add(country);
+                }
             }
         } catch (SQLException ex) {Utils.logSqlException(ex);}
     }
