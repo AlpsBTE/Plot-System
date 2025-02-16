@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -128,10 +129,10 @@ public class CMD_Setup_Difficulty extends SubCommand {
             }
 
             // Check if difficulty exists
-            Difficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(args[1]);
-            if (difficulty == null) return;
+            Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyById(args[1]);
+            if (difficulty.isEmpty()) return;
 
-            boolean successful = difficulty.setMultiplier(Double.parseDouble(args[2]));
+            boolean successful = difficulty.get().setMultiplier(Double.parseDouble(args[2]));
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -170,10 +171,10 @@ public class CMD_Setup_Difficulty extends SubCommand {
             }
 
             // Check if difficulty exists
-            Difficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(args[1]);
-            if (difficulty == null) return;
+            Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyById(args[1]);
+            if (difficulty.isEmpty()) return;
 
-            boolean successful = difficulty.setScoreRequirement(Integer.parseInt(args[2]));
+            boolean successful = difficulty.get().setScoreRequirement(Integer.parseInt(args[2]));
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }

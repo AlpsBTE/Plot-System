@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.menus.SettingsMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.Difficulty;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
@@ -148,12 +149,18 @@ public class CompanionMenu {
             }
         } else item = AlpsHeadUtils.getCustomHead(CustomHeads.WHITE_CONCRETE.getId());
 
+        Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyByEnum(selectedPlotDifficulty);
+        if (difficulty.isEmpty()) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("No database entry for difficulty " + selectedPlotDifficulty + " was found!"));
+        }
+        double scoreMultiplier = difficulty.map(Difficulty::getMultiplier).orElse(0.0);
+
         return new ItemBuilder(item)
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY), AQUA).decoration(BOLD, true))
                 .setLore(new LoreBuilder()
                         .emptyLine()
                         .addLines(selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty, player) : text(LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC), WHITE).decoration(BOLD, true),
-                                selectedPlotDifficulty != null ? text(LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": ", GRAY).append(text("x" + DataProvider.DIFFICULTY.getMultiplier(selectedPlotDifficulty), WHITE)) : empty())
+                                selectedPlotDifficulty != null ? text(LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": ", GRAY).append(text("x" + scoreMultiplier, WHITE)) : empty())
                         .emptyLine()
                         .addLine(text(LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY), GRAY))
                         .build())
