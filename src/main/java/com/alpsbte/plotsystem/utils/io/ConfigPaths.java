@@ -35,6 +35,7 @@ public abstract class ConfigPaths {
     public static final String INACTIVITY_INTERVAL = "inactivity-interval";
     public static final String REJECTED_INACTIVITY_INTERVAL = "rejected-inactivity-interval";
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
+    public static final String UNFINISHED_REMINDER_INTERVAL = "unfinished-reminder-interval";
 
     // Database
     private static final String DATABASE = "database.";
@@ -50,11 +51,6 @@ public abstract class ConfigPaths {
     public static final String SCORE_LEADERBOARD_X = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-x";
     public static final String SCORE_LEADERBOARD_Y = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-y";
     public static final String SCORE_LEADERBOARD_Z = HOLOGRAMS + SCORE_LEADERBOARD + ".sl-z";
-    public static final String PLOTS_LEADERBOARD = "plots-leaderboard";
-    public static final String PLOTS_LEADERBOARD_ENABLE = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-enable";
-    public static final String PLOTS_LEADERBOARD_X = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-x";
-    public static final String PLOTS_LEADERBOARD_Y = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-y";
-    public static final String PLOTS_LEADERBOARD_Z = HOLOGRAMS + PLOTS_LEADERBOARD + ".pl-z";
 
     private static final String DISPLAY_OPTIONS = "display-options.";
     public static final String DISPLAY_OPTIONS_INTERVAL = DISPLAY_OPTIONS + "interval";
@@ -74,7 +70,6 @@ public abstract class ConfigPaths {
     // COMMANDS
     public static final String EDITPLOT_ENABLED = "editplot-enabled";
     public static final String BLOCKED_COMMANDS_BUILDERS = "blocked-commands-builders";
-    public static final String ALLOWED_COMMANDS_NON_BUILDERS = "allowed-commands-non-builders";
 
     // SHORTLINKS
     private static final String SHORTLINK = "shortlink.";

@@ -299,16 +299,8 @@ public class EventListener implements Listener {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his plot feedback!"), ex);
         }
 
-        // Informing player about unfinished plots
-        try {
-            List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.unfinished);
-            if (!plots.isEmpty()) {
-                PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, player);
-                player.sendMessage("");
-            }
-        } catch (Exception ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his unfinished plots!"), ex);
-        }
+        PlotUtils.informPlayerAboutUnfinishedPlots(player, builder);
+        PlotUtils.startUnfinishedPlotReminderTimer(player);
 
         // Informing reviewer about new reviews
         if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {

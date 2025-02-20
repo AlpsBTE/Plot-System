@@ -303,6 +303,23 @@ public final class PlotUtils {
         }, 0L, 20 * 60 * 60L); // Check every hour
     }
 
+    public static void informPlayerAboutUnfinishedPlots(@NotNull Player player, Builder builder) {
+        try {
+            List<Plot> plots = Cache.getCachedInProgressPlots(builder);
+            if (!plots.isEmpty()) {
+                PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, player);
+            }
+        } catch (Exception ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his unfinished plots!"), ex);
+        }
+    }
+
+    public static void startUnfinishedPlotReminderTimer(Player player) {
+        int interval = PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.UNFINISHED_REMINDER_INTERVAL);
+        if (interval == -1) return;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())), 0L, 20L * 60 * interval);
+    }
+
     public static final class Actions {
         private Actions() {}
 
@@ -626,7 +643,8 @@ public final class PlotUtils {
 
             Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_OPEN_REVIEWS), GOLD)
                     .clickEvent(ClickEvent.runCommand("/review"))
-                    .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)));
+                    .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SHOW_PLOTS)))
+                    .appendNewline();
             player.sendMessage(tc);
         }
     }
