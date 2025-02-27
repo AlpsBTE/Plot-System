@@ -119,9 +119,10 @@ public final class PlotUtils {
                 return null;
             } else if (PlotWorld.isCityPlotWorld(worldName)) {
                 String cityID = worldName.substring(2);
-                CityProject city = DataProvider.CITY_PROJECT.getById(cityID);
-                List<Plot> plots = DataProvider.PLOT.getPlots(city, statuses);
+                Optional<CityProject> city = DataProvider.CITY_PROJECT.getById(cityID);
+                if (city.isEmpty()) return null;
 
+                List<Plot> plots = DataProvider.PLOT.getPlots(city.get(), statuses);
                 if (plots.isEmpty()) return null;
                 if (plots.size() == 1) return plots.getFirst();
 

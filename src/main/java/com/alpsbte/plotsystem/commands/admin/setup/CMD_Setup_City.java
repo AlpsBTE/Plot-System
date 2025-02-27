@@ -191,8 +191,8 @@ public class CMD_Setup_City extends SubCommand {
             String cityProjectId = args[1];
 
             // Check if City Project exists
-            CityProject cityProject = DataProvider.CITY_PROJECT.getById(cityProjectId);
-            if (cityProject == null) {
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(cityProjectId);
+            if (cityProject.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any City Project with ID " + cityProjectId + "!"));
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss city list> to see all City Projects!"));
                 return;
@@ -234,8 +234,8 @@ public class CMD_Setup_City extends SubCommand {
             if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
-            if (cityProject == null) return;
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            if (cityProject.isEmpty()) return;
 
             String serverName = args[2];
             if (serverName.length() > 255) {
@@ -249,7 +249,7 @@ public class CMD_Setup_City extends SubCommand {
                 return;
             }
 
-            boolean successful = cityProject.setServer(serverName);
+            boolean successful = cityProject.get().setServer(serverName);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed server of City Project with ID " + args[1] + " to '" + serverName + "'!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project server!"));
         }
@@ -285,12 +285,12 @@ public class CMD_Setup_City extends SubCommand {
             if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
-            if (cityProject == null) return;
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            if (cityProject.isEmpty()) return;
             if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) return;
 
             boolean isVisible = args[2].equalsIgnoreCase("true");
-            boolean successful = cityProject.setVisible(isVisible);
+            boolean successful = cityProject.get().setVisible(isVisible);
 
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set visibility of City Project with ID " + args[1] + " to " + args[2].toUpperCase() + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project visibility!"));

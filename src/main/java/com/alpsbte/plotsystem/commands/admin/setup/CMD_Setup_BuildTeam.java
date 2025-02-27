@@ -280,19 +280,19 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
 
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
-            if (cityProject == null) {
+            if (cityProject.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project could not be found!"));
                 return;
             }
 
-            boolean successful = buildTeam.get().addCityProject(cityProject);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added city project '" + cityProject.getID() + "' to build team with ID " + args[1] + "!"));
+            boolean successful = buildTeam.get().addCityProject(cityProject.get());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added city project '" + cityProject.get().getID() + "' to build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
@@ -330,19 +330,19 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
 
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
-            if (cityProject == null) {
+            if (cityProject.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("City project could not be found!"));
                 return;
             }
 
-            boolean successful = buildTeam.get().removeCityProject(cityProject.getID());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed city project '" + cityProject.getID() + "' from build team with ID " + args[1] + "!"));
+            boolean successful = buildTeam.get().removeCityProject(cityProject.get().getID());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed city project '" + cityProject.get().getID() + "' from build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 

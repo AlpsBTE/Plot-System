@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.system;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.providers.CityProjectProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -59,7 +58,6 @@ public class CityProject {
         this.countryCode = countryCode;
         this.serverName = serverName;
         this.isVisible = isVisible;
-        CityProjectProvider.cityProjects.add(this);
     }
 
     public String getID() {

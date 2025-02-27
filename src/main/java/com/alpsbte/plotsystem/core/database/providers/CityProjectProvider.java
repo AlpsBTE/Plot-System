@@ -33,57 +33,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CityProjectProvider {
-    public static final List<CityProject> cityProjects = new ArrayList<>();
+    public static final List<CityProject> cachedCityProjects = new ArrayList<>();
 
-    public CityProject getById(String id) {
-        return cityProjects.stream().filter(c -> c.getID().equals(id)).findFirst()
-                .orElseGet(() -> {
-                    try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                            .prepareStatement("SELECT country_code, server_name, is_visible FROM city_project " +
-                                    "WHERE city_project_id = ?;")) {
-                        stmt.setString(1, id);
+    public CityProjectProvider() {
+        // cache all city projects
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT city_project_id, country_code, server_name, is_visible FROM city_project;")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) cachedCityProjects.add(new CityProject(
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getBoolean(4)
+                ));
+            }
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
+    }
 
-                        try (ResultSet rs = stmt.executeQuery()) {
-                            if (rs.next()) {
-                                return new CityProject(id, rs.getString(1), rs.getString(2),
-                                        rs.getBoolean(3));
-                            }
-                        }
-                    } catch (SQLException ex) { Utils.logSqlException(ex); }
-                    return null;
-                });
+    public Optional<CityProject> getById(String id) {
+        return cachedCityProjects.stream().filter(c -> c.getID().equals(id)).findFirst();
     }
 
     public List<CityProject> getByCountryCode(String countryCode, boolean onlyVisible) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT city_project_id FROM city_project WHERE country_code = ? " +
-                        "AND is_visible = ?;")) {
-            stmt.setString(1, countryCode);
-            stmt.setBoolean(2, onlyVisible);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<CityProject> cityProjects = new ArrayList<>();
-                while (rs.next()) cityProjects.add(getById(rs.getString(1)));
-                return cityProjects;
-            }
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
-        return null;
+        return cachedCityProjects.stream().filter(c -> (!onlyVisible || c.isVisible()) && c.getCountry().getCode().equals(countryCode)).toList();
     }
 
     public List<CityProject> get(boolean onlyVisible) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT city_project_id FROM city_project WHERE is_visible = ?;")) {
-            stmt.setBoolean(1, onlyVisible);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<CityProject> cityProjects = new ArrayList<>();
-                while (rs.next()) cityProjects.add(getById(rs.getString(1)));
-                return cityProjects;
-            }
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
-        return null;
+        return cachedCityProjects.stream().filter(c -> !onlyVisible || c.isVisible()).toList();
     }
 
     public List<CityProject> getCityProjectsByBuildTeam(int id) {
@@ -93,8 +72,8 @@ public class CityProjectProvider {
             try (ResultSet rs = stmt.executeQuery()) {
                 stmt.setInt(1, id);
                 while (rs.next()) {
-                    CityProject city = getById(rs.getString(1));
-                    if(city != null) cityProjects.add(city);
+                    Optional<CityProject> city = getById(rs.getString(1));
+                    city.ifPresent(cityProjects::add);
                 }
             }
         } catch (SQLException ex) {Utils.logSqlException(ex);}
@@ -102,7 +81,7 @@ public class CityProjectProvider {
     }
 
     public boolean add(String id, String countryCode, String serverName) {
-        if (getById(id) != null) return true;
+        if (getById(id).isPresent()) return true;
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("INSERT INTO city_project (city_project_id, country_code, server_name) " +
                         "VALUES (?, ?, ?);")) {
@@ -115,14 +94,14 @@ public class CityProjectProvider {
     }
 
     public boolean remove(String id) {
-        CityProject cityProject = getById(id);
-        if (cityProject == null) return false;
+        Optional<CityProject> cityProject = getById(id);
+        if (cityProject.isEmpty()) return false;
 
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("DELETE FROM city_project WHERE city_project_id = ?;")) {
             stmt.setString(1, id);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cityProjects.remove(cityProject);
+            if (result) cachedCityProjects.remove(cityProject.get());
             return result;
         } catch (SQLException ex) { Utils.logSqlException(ex); }
         return false;
