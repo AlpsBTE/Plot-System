@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
@@ -304,8 +305,8 @@ public class EventListener implements Listener {
 
         // Informing reviewer about new reviews
         if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {
-            List<Country> reviewerCountries = DataProvider.BUILD_TEAM.getReviewerCountries(builder);
-            List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(reviewerCountries, Status.unreviewed);
+            List<CityProject> reviewerCityProjects = DataProvider.BUILD_TEAM.getReviewerCities(builder);
+            List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(reviewerCityProjects, Status.unreviewed);
 
             if (!unreviewedPlots.isEmpty()) {
                 PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, player);

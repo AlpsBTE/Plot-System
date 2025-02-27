@@ -5,7 +5,6 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 
 import java.sql.PreparedStatement;
@@ -20,8 +19,11 @@ import static net.kyori.adventure.text.Component.text;
 
 public class BuildTeamProvider {
     public static final List<BuildTeam> BUILD_TEAMS = new ArrayList<>();
+    private final CityProjectProvider cityProjectProvider;
 
     public BuildTeamProvider(BuilderProvider builderProvider, CityProjectProvider cityProjectProvider) {
+        this.cityProjectProvider = cityProjectProvider;
+
         // cache all build teams
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT build_team_id, name FROM build_team").executeQuery()) {
             while (rs.next()) {
@@ -153,8 +155,15 @@ public class BuildTeamProvider {
         return false;
     }
 
-    public List<Country> getReviewerCountries(Builder builder) {
-        // TODO: implement
-        return List.of();
+    public List<CityProject> getReviewerCities(Builder builder) {
+        List<BuildTeam> buildTeams = BUILD_TEAMS.stream().filter(b
+                -> b.getReviewers().stream().anyMatch(r -> r.getUUID() == builder.getUUID())).toList();
+        List<CityProject> cities = new ArrayList<>();
+
+        for (BuildTeam buildTeam : buildTeams) {
+            cities.addAll(cityProjectProvider.getCityProjectsByBuildTeam(buildTeam.getID()));
+        }
+
+        return cities;
     }
 }

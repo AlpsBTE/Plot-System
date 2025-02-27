@@ -28,7 +28,7 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReviewMenu extends AbstractPaginatedMenu {
-    private List<Country> countries = new ArrayList<>();
-    private Country filteredCountry = null;
+    private List<CityProject> cityProjects = new ArrayList<>();
+    private CityProject filteredCityProject = null;
 
     public ReviewMenu(Player player) {
         super(6, 4, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
@@ -58,9 +58,9 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
-        countries = DataProvider.BUILD_TEAM.getReviewerCountries(Builder.byUUID(getMenuPlayer().getUniqueId()));
-        plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unreviewed));
-        plots.addAll(DataProvider.PLOT.getPlots(countries, Status.unfinished));
+        cityProjects = DataProvider.BUILD_TEAM.getReviewerCities(Builder.byUUID(getMenuPlayer().getUniqueId()));
+        plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unreviewed));
+        plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unfinished));
         return plots;
     }
 
@@ -130,13 +130,13 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         // Set click event for filter item
         getMenu().getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-            if (countries.isEmpty()) return;
+            if (cityProjects.isEmpty()) return;
 
-            if (filteredCountry == null) {
-                filteredCountry = countries.getFirst();
+            if (filteredCityProject == null) {
+                filteredCityProject = cityProjects.getFirst();
             } else {
-                int index = countries.indexOf(filteredCountry);
-                filteredCountry = index + 1 >= countries.size() ? null : countries.get(index + 1);
+                int index = cityProjects.indexOf(filteredCityProject);
+                filteredCityProject = index + 1 >= cityProjects.size() ? null : cityProjects.get(index + 1);
             }
 
             reloadMenuAsync(false);
@@ -177,25 +177,25 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
     private List<Plot> getFilteredPlots(List<?> plots) {
         List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).collect(Collectors.toList());
-        if (filteredCountry != null)
-            filteredPlots = filteredPlots.stream().filter(p -> p.getCity().getCountry().getCode().equals(filteredCountry.getCode())).collect(Collectors.toList());
+        if (filteredCityProject != null)
+            filteredPlots = filteredPlots.stream().filter(p -> p.getCity().getID().equals(filteredCityProject.getID())).collect(Collectors.toList());
         return filteredPlots;
     }
 
     private ItemStack getFilterItem(Player langPlayer) {
         LegacyLoreBuilder LegacyLoreBuilder = new LegacyLoreBuilder();
-        LegacyLoreBuilder.addLine((filteredCountry == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.FILTER));
+        LegacyLoreBuilder.addLine((filteredCityProject == null ? "§b§l> §f§l" : "§7") + LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.FILTER));
         LegacyLoreBuilder.emptyLine();
 
-        countries.forEach(c -> {
-            if (filteredCountry != null && filteredCountry.getCode().equals(c.getCode())) {
-                LegacyLoreBuilder.addLine("§b§l> §f§l" + filteredCountry.getName(langPlayer));
+        cityProjects.forEach(c -> {
+            if (filteredCityProject != null && filteredCityProject.getID().equals(c.getID())) {
+                LegacyLoreBuilder.addLine("§b§l> §f§l" + filteredCityProject.getName(langPlayer));
             } else LegacyLoreBuilder.addLine("§7" + c.getName(langPlayer));
         });
 
         return new ItemBuilder(MenuItems.filterItem(getMenuPlayer()))
                 .setLore(LegacyLoreBuilder.build())
-                .setEnchanted(filteredCountry != null)
+                .setEnchanted(filteredCityProject != null)
                 .build();
     }
 
