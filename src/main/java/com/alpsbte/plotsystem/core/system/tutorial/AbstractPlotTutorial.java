@@ -49,6 +49,7 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -67,9 +68,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
         CompletableFuture.runAsync(() -> {
             String playerUUID = player.getUniqueId().toString();
-            TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
-            if (plot == null && DataProvider.TUTORIAL_PLOT.add(tutorialId, playerUUID))
-                tutorialPlot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
+            Optional<TutorialPlot> plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
+            if (plot.isEmpty() && DataProvider.TUTORIAL_PLOT.add(tutorialId, playerUUID))
+                tutorialPlot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID).orElse(null);
 
             // Check if tutorial plot is null
             if (tutorialPlot == null) {
@@ -181,7 +182,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         super.onTutorialStop(playerUUID);
         if (tutorialPlot != null) tutorialPlot.getWorld().deleteWorld();
-        int index = TutorialPlotProvider.tutorialPlots.indexOf(tutorialPlot);
+        int index = TutorialPlotProvider.tutorialPlots.get(tutorialPlot);
         TutorialPlotProvider.tutorialPlots.remove(tutorialPlot);
         TutorialPlotProvider.freeTutorialPlotIds.add(index);
     }

@@ -32,49 +32,50 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class TutorialPlotProvider {
-    public static final List<TutorialPlot> tutorialPlots = new ArrayList<>();
+    public static final HashMap<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
     public static final LinkedList<Integer> freeTutorialPlotIds = new LinkedList<>();
 
-    public TutorialPlot getById(int id) {
-        // TODO: implement
-        return null;
+    public Optional<TutorialPlot> getById(int id) {
+        return tutorialPlots.keySet().stream().filter(t -> tutorialPlots.get(t) == id).findFirst();
     }
 
-    public TutorialPlot getByTutorialId(int tutorialId, String playerUUID) {
-        return tutorialPlots.stream().filter(t -> t.getTutorialID() == tutorialId && t.getUUID().toString()
-                .equals(playerUUID)).findFirst()
-                .orElseGet(() -> {
-                    try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                            .prepareStatement("SELECT stage_id, is_complete, last_stage_complete_date FROM " +
-                                    "tutorial WHERE tutorial_id = ? AND uuid = ?;")) {
-                        stmt.setInt(1, tutorialId);
-                        stmt.setString(2, playerUUID);
+    public Optional<TutorialPlot> getByTutorialId(int tutorialId, String playerUUID) {
+        Optional<TutorialPlot> tutorialPlot = tutorialPlots.keySet().stream()
+                .filter(t -> t.getTutorialID() == tutorialId && t.getUUID().toString().equals(playerUUID)).findFirst();
 
-                        try (ResultSet rs = stmt.executeQuery()) {
-                            if (rs.next()) {
-                                int plotId = freeTutorialPlotIds.isEmpty() ? 0 : freeTutorialPlotIds.poll();
-                                return new TutorialPlot(plotId, tutorialId, playerUUID, rs.getInt(1),
-                                        rs.getBoolean(2), rs.getDate(3).toLocalDate());
-                            }
-                        }
-                    } catch (SQLException ex) { Utils.logSqlException(ex); }
-                    return null;
-                });
+        if (tutorialPlot.isEmpty()) {
+            try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                    .prepareStatement("SELECT stage_id, is_complete, last_stage_complete_date FROM " +
+                            "tutorial WHERE tutorial_id = ? AND uuid = ?;")) {
+                stmt.setInt(1, tutorialId);
+                stmt.setString(2, playerUUID);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        int plotId = freeTutorialPlotIds.isEmpty() ? 0 : freeTutorialPlotIds.poll();
+                        TutorialPlot newTutorialPlot = new TutorialPlot(plotId, tutorialId, playerUUID, rs.getInt(1),
+                                rs.getBoolean(2), rs.getDate(3).toLocalDate());
+                        tutorialPlots.put(newTutorialPlot, plotId);
+
+                        return Optional.of(newTutorialPlot);
+                    }
+                }
+            } catch (SQLException ex) {Utils.logSqlException(ex);}
+        }
+        return tutorialPlot;
     }
 
     public boolean add(int tutorialId, String playerUUID) {
-        if (getByTutorialId(tutorialId, playerUUID) != null) return false;
+        if (getByTutorialId(tutorialId, playerUUID).isPresent()) return false;
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("INSERT INTO tutorial (tutorial_id, uuid) VALUES (?, ?);")) {
             stmt.setInt(1, tutorialId);
             stmt.setString(2, playerUUID);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
@@ -87,7 +88,7 @@ public class TutorialPlotProvider {
             stmt.setInt(3, tutorialId);
             stmt.setString(4, playerUUID);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
@@ -100,7 +101,7 @@ public class TutorialPlotProvider {
             stmt.setInt(3, tutorialId);
             stmt.setString(4, playerUUID);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 }

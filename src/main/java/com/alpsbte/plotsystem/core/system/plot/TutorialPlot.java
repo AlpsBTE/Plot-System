@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.providers.TutorialPlotProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -71,7 +70,6 @@ public class TutorialPlot extends AbstractPlot {
         this.lastStageActivity = lastStageActivity;
 
         tutorialConfig = ConfigUtil.getTutorialInstance().configs[tutorialId];
-        TutorialPlotProvider.tutorialPlots.add(plotId, this);
     }
 
     public int getTutorialID() {
@@ -184,7 +182,7 @@ public class TutorialPlot extends AbstractPlot {
     }
 
     public static boolean isInProgress(int tutorialId, @NotNull UUID playerUUID) {
-        TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID.toString());
+        TutorialPlot plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID.toString()).orElse(null);
         return plot == null || !plot.isComplete();
     }
 

@@ -124,7 +124,7 @@ public class TutorialStagesMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, getMenuPlayer().getUniqueId().toString());
+        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, getMenuPlayer().getUniqueId().toString()).orElse(null);
         if (plot != null) {
             playerHighestStage = plot.getStageID();
             isTutorialCompleted = plot.isComplete();

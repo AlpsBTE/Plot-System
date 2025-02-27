@@ -90,7 +90,7 @@ public class TutorialsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set tutorial items
-        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString());
+        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString()).orElse(null);
         if (plot != null) isBeginnerTutorialCompleted = plot.isComplete();
 
         // Set beginner tutorial item
