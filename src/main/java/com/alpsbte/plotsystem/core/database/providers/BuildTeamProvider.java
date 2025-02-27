@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -20,71 +21,135 @@ import static net.kyori.adventure.text.Component.text;
 public class BuildTeamProvider {
     public static final List<BuildTeam> BUILD_TEAMS = new ArrayList<>();
 
-    public BuildTeam getBuildTeam(int id) {
-        Optional<BuildTeam> buildTeam = BUILD_TEAMS.stream().filter(b -> b.getID() == id).findFirst();
-        if (buildTeam.isPresent()) return buildTeam.get();
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT bt.name, bthc.country_code, bthcp.city_project_id, bthr.uuid FROM build_team bt " +
-                        "INNER JOIN build_team_has_country bthc ON bthc.build_team_id = bt.build_team_id " +
-                        "INNER JOIN build_team_has_city_project bthcp ON bthcp.build_team_id = bt.build_team_id " +
-                        "INNER JOIN build_team_has_reviewer bthr ON bthr.build_team_id = bt.build_team_id " +
-                        "WHERE bt.build_team_id = ?")) {
+    public BuildTeamProvider(BuilderProvider builderProvider, CountryProvider countryProvider) {
+        // cache all build teams
+        try (ResultSet rs = DatabaseConnection.createStatement("SELECT build_team_id, name FROM build_team").executeQuery()) {
+            while (rs.next()) {
+                int buildTeamId = rs.getInt(1);
 
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
-        return null;
+                List<Country> countries = countryProvider.getCountriesByBuildTeam(buildTeamId);
+                List<Builder> reviewers = builderProvider.getReviewersByBuildTeam(buildTeamId);
+                BUILD_TEAMS.add(new BuildTeam(buildTeamId, rs.getString(2), countries, reviewers));
+            }
+            DatabaseConnection.closeResultSet(rs);
+        } catch (SQLException ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        }
+    }
+
+    public Optional<BuildTeam> getBuildTeam(int id) {
+        return BUILD_TEAMS.stream().filter(b -> b.getID() == id).findFirst();
     }
 
     public List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) {
-        // TODO: implement
-        return List.of();
-    }
-
-    public List<BuildTeam> getBuildTeams() {
         List<BuildTeam> buildTeams = new ArrayList<>();
-        List<Country> countries = new ArrayList<>();
-        List<Builder> reviewers = new ArrayList<>();
-        // TODO: also get countries and reviewers (currently empty lists)
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT build_team_id, name FROM build_team").executeQuery()) {
-            while (rs.next()) buildTeams.add(new BuildTeam(rs.getInt(1), rs.getString(2), countries, reviewers));
-            DatabaseConnection.closeResultSet(rs);
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?")) {
+            stmt.setString(1, reviewerUUID.toString());
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Optional<BuildTeam> buildTeam = getBuildTeam(rs.getInt(1));
+                    if (buildTeam.isEmpty()) continue;
+                    buildTeams.add(buildTeam.get());
+                }
+                DatabaseConnection.closeResultSet(rs);
+            }
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
         }
         return buildTeams;
     }
 
+    public List<BuildTeam> getBuildTeams() {
+        return BUILD_TEAMS;
+    }
+
     public boolean addBuildTeam(String name) {
-        // TODO: implement
-        return false;
+        boolean result = false;
+        if (BUILD_TEAMS.stream().anyMatch(b -> b.getName().equals(name))) return false;
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("INSERT INTO build_team (name) VALUES (?);")) {
+            stmt.setString(1, name);
+            result = stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
+
+        if (result) {
+            try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                    .prepareStatement("SELECT build_team_id FROM build_team WHERE name = ?;")) {
+                stmt.setString(1, name);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name, List.of(), List.of()));
+                }
+            } catch (SQLException ex) {Utils.logSqlException(ex);}
+        }
+        return result;
     }
 
     public boolean removeBuildTeam(int id) {
-        // TODO: implement
+        Optional<BuildTeam> cachedBuildTeam = getBuildTeam(id);
+        if (cachedBuildTeam.isEmpty()) return false;
+
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("DELETE FROM build_team WHERE build_team_id = ?;")) {
+            stmt.setInt(1, id);
+            boolean result = stmt.executeUpdate() > 0;
+            if (result) BUILD_TEAMS.remove(cachedBuildTeam.get());
+            return result;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
     public boolean setBuildTeamName(int id, String newName) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("UPDATE build_team SET name = ? WHERE build_team_id = ?;")) {
+            stmt.setString(1, newName);
+            stmt.setInt(2, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) { Utils.logSqlException(ex); }
         return false;
     }
 
     public boolean addCountry(int id, String countryCode) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("INSERT INTO build_team_has_country (build_team_id, country_code) " +
+                        "VALUES (?, ?);")) {
+            stmt.setInt(1, id);
+            stmt.setString(2, countryCode);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
     public boolean removeCountry(int id, String countryCode) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("DELETE FROM build_team_has_country " +
+                        "WHERE build_team_id = ? AND country_code = ?;")) {
+            stmt.setInt(1, id);
+            stmt.setString(2, countryCode);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
     public boolean addReviewer(int id, String reviewerUUID) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("INSERT INTO build_team_has_reviewer (build_team_id, uuid) " +
+                        "VALUES (?, ?);")) {
+            stmt.setInt(1, id);
+            stmt.setString(2, reviewerUUID);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
     public boolean removeReviewer(int id, String reviewerUUID) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("DELETE FROM build_team_has_reviewer " +
+                        "WHERE build_team_id = ? AND uuid = ?;")) {
+            stmt.setInt(1, id);
+            stmt.setString(2, reviewerUUID);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 

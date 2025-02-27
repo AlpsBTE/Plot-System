@@ -197,8 +197,9 @@ public class BuilderProvider {
             stmt.setString(1, builder.getUUID().toString());
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    BuildTeam team = DataProvider.BUILD_TEAM.getBuildTeam(rs.getInt(1));
-                    if (team.getReviewers().stream().anyMatch(b -> b.getUUID() == builder.getUUID()))
+                    Optional<BuildTeam> team = DataProvider.BUILD_TEAM.getBuildTeam(rs.getInt(1));
+                    if (team.isEmpty()) continue;
+                    if (team.get().getCountries().stream().anyMatch(c -> Objects.equals(c.getCode(), plot.getCity().getCountry().getCode())))
                         return true;
                 }
             }
@@ -215,6 +216,21 @@ public class BuilderProvider {
             }
         } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
+    }
+
+    public List<Builder> getReviewersByBuildTeam(int buildTeamId) {
+        List<Builder> builders = new ArrayList<>();
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT uuid FROM build_team_has_reviewer WHERE build_team_id = ?;")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                stmt.setInt(1, buildTeamId);
+                while (rs.next()) {
+                    Builder builder = getBuilderByUUID(UUID.fromString(rs.getString(1)));
+                    if (builder != null) builders.add(builder);
+                }
+            }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        return builders;
     }
 
     /**

@@ -183,16 +183,16 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
-            BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
 
             // Check if build team exists
-            if (buildTeam == null) {
+            if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any build team with ID " + args[1] + "!"));
                 sendInfo(sender);
                 return;
             }
 
-            boolean successful = DataProvider.BUILD_TEAM.removeBuildTeam(buildTeam.getID());
+            boolean successful = DataProvider.BUILD_TEAM.removeBuildTeam(buildTeam.get().getID());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -227,10 +227,10 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
-            BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
 
             // Check if build team exits
-            if (buildTeam == null) {
+            if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
             }
@@ -241,7 +241,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-            boolean successful = buildTeam.setName(name);
+            boolean successful = buildTeam.get().setName(name);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed name of build team with ID " + args[1] + " to '" + name + "'!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -279,11 +279,11 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-            BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
             Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(args[2]);
 
             // Check if build team and country exists
-            if (buildTeam == null) {
+            if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
@@ -291,7 +291,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is already added to the build team!"));
                 return;
             }
-            boolean successful = buildTeam.addCountry(country.get());
+            boolean successful = buildTeam.get().addCountry(country.get());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.get().getCode() + "' to build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -329,11 +329,11 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-            BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
             Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(args[2]);
 
             // Check if build team and country exists
-            if (buildTeam == null) {
+            if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
@@ -342,7 +342,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-            boolean successful = buildTeam.removeCountry(country.get().getCode());
+            boolean successful = buildTeam.get().removeCountry(country.get().getCode());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.get().getCode() + "' from build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -381,19 +381,19 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             // Check if build team exits
-            BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            if (buildTeam == null) {
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
             }
 
             Builder builder = Builder.byName(args[2]);
-            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == buildTeam.getID())) {
+            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == buildTeam.get().getID())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is already reviewer for this build team!"));
                 return;
             }
-            boolean successful = buildTeam.addReviewer(builder);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + buildTeam.getName() + "!"));
+            boolean successful = buildTeam.get().addReviewer(builder);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + buildTeam.get().getName() + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
@@ -428,20 +428,20 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
             // Check if build team exits
-            BuildTeam buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
 
-            if (buildTeam == null) {
+            if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
             }
 
             Builder builder = Builder.byName(args[2]);
-            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == buildTeam.getID())) {
+            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == buildTeam.get().getID())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is not a reviewer for this build team!"));
                 return;
             }
 
-            boolean successful = buildTeam.removeReviewer(builder.getUUID().toString());
+            boolean successful = buildTeam.get().removeReviewer(builder.getUUID().toString());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed '" + builder.getName() + "' as reviewer from build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
