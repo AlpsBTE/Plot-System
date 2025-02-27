@@ -32,13 +32,13 @@ import java.util.Optional;
 public class BuildTeam {
     private final int ID;
     private String name;
-    private final List<Country> countries;
+    private final List<CityProject> cityProjects;
     private final List<Builder> reviewers;
 
-    public BuildTeam(int ID, String name, List<Country> countries, List<Builder> reviewers) {
+    public BuildTeam(int ID, String name, List<CityProject> cities, List<Builder> reviewers) {
         this.ID = ID;
         this.name = name;
-        this.countries = countries;
+        this.cityProjects = cities;
         this.reviewers = reviewers;
     }
 
@@ -50,8 +50,8 @@ public class BuildTeam {
         return name;
     }
 
-    public List<Country> getCountries() {
-        return countries;
+    public List<CityProject> getCityProjects() {
+        return cityProjects;
     }
 
     public List<Builder> getReviewers() {
@@ -66,19 +66,19 @@ public class BuildTeam {
         return false;
     }
 
-    public boolean addCountry(Country country) {
-        if (DataProvider.BUILD_TEAM.addCountry(ID, country.getCode())) {
-            this.countries.add(country);
+    public boolean addCityProject(CityProject city) {
+        if (DataProvider.BUILD_TEAM.addCityProject(ID, city.getID())) {
+            this.cityProjects.add(city);
             return true;
         }
         return false;
     }
 
-    public boolean removeCountry(String countryCode) {
-        Optional<Country> removeCountry = countries.stream().filter(c -> c.getCode().equalsIgnoreCase(countryCode)).findFirst();
-        if (removeCountry.isEmpty()) return false;
-        if (DataProvider.BUILD_TEAM.removeCountry(ID, countryCode)) {
-            this.countries.remove(removeCountry.get());
+    public boolean removeCityProject(String cityId) {
+        Optional<CityProject> removeCity = cityProjects.stream().filter(c -> c.getID().equalsIgnoreCase(cityId)).findFirst();
+        if (removeCity.isEmpty()) return false;
+        if (DataProvider.BUILD_TEAM.removeCityProject(ID, cityId)) {
+            this.cityProjects.remove(removeCity.get());
             return true;
         }
         return false;

@@ -30,7 +30,7 @@ import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.CommandSender;
 
@@ -52,8 +52,8 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         registerSubCommand(new CMD_Setup_BuildTeam_Add(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_Remove(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_SetName(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_BuildTeam_AddCountry(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_BuildTeam_RemoveCountry(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_BuildTeam_AddCityProject(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_BuildTeam_RemoveCityProject(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_AddReviewer(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_RemoveReviewer(getBaseCommand(), this));
     }
@@ -100,13 +100,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + buildTeams.size() + " build teams registered in the database:"));
             sender.sendMessage(text("--------------------------", DARK_GRAY));
             for (BuildTeam b : buildTeams) {
-                StringJoiner countriesAsString = new StringJoiner(", ");
+                StringJoiner citiesAsString = new StringJoiner(", ");
                 StringJoiner reviewersAsString = new StringJoiner(", ");
-                b.getCountries().forEach(c -> countriesAsString.add(c.getCode()));
+                b.getCityProjects().forEach(c -> citiesAsString.add(c.getID()));
                 b.getReviewers().forEach(r -> reviewersAsString.add(r.getName()));
                 sender.sendMessage(text(" » ", DARK_GRAY)
                         .append(text(b.getID() + " (" + b.getName() + ") ", AQUA))
-                        .append(text("- Country Codes: " + (countriesAsString.length() == 0 ? "No Countries" : countriesAsString)
+                        .append(text("- City Project IDs: " + (citiesAsString.length() == 0 ? "No City Projects" : citiesAsString)
                                 + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString), WHITE)));
             }
             sender.sendMessage(text("--------------------------", DARK_GRAY));
@@ -267,58 +267,8 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         }
     }
 
-    public static class CMD_Setup_BuildTeam_AddCountry extends SubCommand {
-        public CMD_Setup_BuildTeam_AddCountry(BaseCommand baseCommand, SubCommand subCommand) {
-            super(baseCommand, subCommand);
-        }
-
-        @Override
-        public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null || AlpsUtils.tryParseInt(args[2]) == null) {
-                sendInfo(sender);
-                return;
-            }
-
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(args[2]);
-
-            // Check if build team and country exists
-            if (buildTeam.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
-                return;
-            }
-            if (country.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is already added to the build team!"));
-                return;
-            }
-            boolean successful = buildTeam.get().addCountry(country.get());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country '" + country.get().getCode() + "' to build team with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-        }
-
-        @Override
-        public String[] getNames() {
-            return new String[]{"addcountry"};
-        }
-
-        @Override
-        public String getDescription() {
-            return null;
-        }
-
-        @Override
-        public String[] getParameter() {
-            return new String[]{"BuildTeam-ID", "Country-Code"};
-        }
-
-        @Override
-        public String getPermission() {
-            return "plotsystem.admin.pss.buildteam.addcountry";
-        }
-    }
-
-    public static class CMD_Setup_BuildTeam_RemoveCountry extends SubCommand {
-        public CMD_Setup_BuildTeam_RemoveCountry(BaseCommand baseCommand, SubCommand subCommand) {
+    public static class CMD_Setup_BuildTeam_AddCityProject extends SubCommand {
+        public CMD_Setup_BuildTeam_AddCityProject(BaseCommand baseCommand, SubCommand subCommand) {
             super(baseCommand, subCommand);
         }
 
@@ -330,26 +280,25 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(args[2]);
+            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
 
-            // Check if build team and country exists
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
                 return;
             }
-            if (country.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Country could not be found or is not added to the build team!"));
+            if (cityProject == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project could not be found!"));
                 return;
             }
 
-            boolean successful = buildTeam.get().removeCountry(country.get().getCode());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country '" + country.get().getCode() + "' from build team with ID " + args[1] + "!"));
+            boolean successful = buildTeam.get().addCityProject(cityProject);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added city project '" + cityProject.getID() + "' to build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
         @Override
         public String[] getNames() {
-            return new String[]{"removecountry"};
+            return new String[]{"addcityproject"};
         }
 
         @Override
@@ -359,12 +308,62 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"BuildTeam-ID", "Country-Code"};
+            return new String[]{"BuildTeam-ID", "CityProject-ID"};
         }
 
         @Override
         public String getPermission() {
-            return "plotsystem.admin.pss.buildteam.removecountry";
+            return "plotsystem.admin.pss.buildteam.addcityproject";
+        }
+    }
+
+    public static class CMD_Setup_BuildTeam_RemoveCityProject extends SubCommand {
+        public CMD_Setup_BuildTeam_RemoveCityProject(BaseCommand baseCommand, SubCommand subCommand) {
+            super(baseCommand, subCommand);
+        }
+
+        @Override
+        public void onCommand(CommandSender sender, String[] args) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {
+                sendInfo(sender);
+                return;
+            }
+
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            CityProject cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
+
+            if (buildTeam.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
+                return;
+            }
+            if (cityProject == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("City project could not be found!"));
+                return;
+            }
+
+            boolean successful = buildTeam.get().removeCityProject(cityProject.getID());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed city project '" + cityProject.getID() + "' from build team with ID " + args[1] + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+        }
+
+        @Override
+        public String[] getNames() {
+            return new String[]{"removecityproject"};
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public String[] getParameter() {
+            return new String[]{"BuildTeam-ID", "CityProject-ID"};
+        }
+
+        @Override
+        public String getPermission() {
+            return "plotsystem.admin.pss.buildteam.removecityproject";
         }
     }
 

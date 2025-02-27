@@ -34,5 +34,5 @@ public class DataProvider {
     public static final CountryProvider COUNTRY = new CountryProvider();
     public static final ServerProvider SERVER = new ServerProvider();
     public static final TutorialPlotProvider TUTORIAL_PLOT = new TutorialPlotProvider();
-    public static final BuildTeamProvider BUILD_TEAM = new BuildTeamProvider(BUILDER, COUNTRY); // has to be initialized after builder and country providers
+    public static final BuildTeamProvider BUILD_TEAM = new BuildTeamProvider(BUILDER, CITY_PROJECT); // has to be initialized after builder and city project providers
 }

@@ -199,7 +199,7 @@ public class BuilderProvider {
                 while (rs.next()) {
                     Optional<BuildTeam> team = DataProvider.BUILD_TEAM.getBuildTeam(rs.getInt(1));
                     if (team.isEmpty()) continue;
-                    if (team.get().getCountries().stream().anyMatch(c -> Objects.equals(c.getCode(), plot.getCity().getCountry().getCode())))
+                    if (team.get().getCityProjects().stream().anyMatch(c -> Objects.equals(c.getID(), plot.getCity().getID())))
                         return true;
                 }
             }

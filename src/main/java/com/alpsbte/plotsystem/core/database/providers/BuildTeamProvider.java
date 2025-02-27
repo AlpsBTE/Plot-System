@@ -1,10 +1,10 @@
 package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 
@@ -21,15 +21,15 @@ import static net.kyori.adventure.text.Component.text;
 public class BuildTeamProvider {
     public static final List<BuildTeam> BUILD_TEAMS = new ArrayList<>();
 
-    public BuildTeamProvider(BuilderProvider builderProvider, CountryProvider countryProvider) {
+    public BuildTeamProvider(BuilderProvider builderProvider, CityProjectProvider cityProjectProvider) {
         // cache all build teams
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT build_team_id, name FROM build_team").executeQuery()) {
             while (rs.next()) {
                 int buildTeamId = rs.getInt(1);
 
-                List<Country> countries = countryProvider.getCountriesByBuildTeam(buildTeamId);
+                List<CityProject> cityProjects = cityProjectProvider.getCityProjectsByBuildTeam(buildTeamId);
                 List<Builder> reviewers = builderProvider.getReviewersByBuildTeam(buildTeamId);
-                BUILD_TEAMS.add(new BuildTeam(buildTeamId, rs.getString(2), countries, reviewers));
+                BUILD_TEAMS.add(new BuildTeam(buildTeamId, rs.getString(2), cityProjects, reviewers));
             }
             DatabaseConnection.closeResultSet(rs);
         } catch (SQLException ex) {
@@ -109,23 +109,23 @@ public class BuildTeamProvider {
         return false;
     }
 
-    public boolean addCountry(int id, String countryCode) {
+    public boolean addCityProject(int id, String cityId) {
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("INSERT INTO build_team_has_country (build_team_id, country_code) " +
+                .prepareStatement("INSERT INTO build_team_has_city_project (build_team_id, city_project_id) " +
                         "VALUES (?, ?);")) {
             stmt.setInt(1, id);
-            stmt.setString(2, countryCode);
+            stmt.setString(2, cityId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
-    public boolean removeCountry(int id, String countryCode) {
+    public boolean removeCityProject(int id, String cityId) {
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("DELETE FROM build_team_has_country " +
-                        "WHERE build_team_id = ? AND country_code = ?;")) {
+                .prepareStatement("DELETE FROM build_team_has_city_project " +
+                        "WHERE build_team_id = ? AND city_project_id = ?;")) {
             stmt.setInt(1, id);
-            stmt.setString(2, countryCode);
+            stmt.setString(2, cityId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;

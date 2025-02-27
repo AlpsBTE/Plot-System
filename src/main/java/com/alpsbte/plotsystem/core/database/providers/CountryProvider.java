@@ -42,21 +42,6 @@ public class CountryProvider {
         return cachedCountries.stream().filter(c -> c.getCode().equals(code)).findFirst();
     }
 
-    public List<Country> getCountriesByBuildTeam(int id) {
-        List<Country> countries = new ArrayList<>();
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT country_code FROM build_team_has_country WHERE build_team_id = ?;")) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                stmt.setInt(1, id);
-                while (rs.next()) {
-                    Optional<Country> country = getCountryByCode(rs.getString(1));
-                    country.ifPresent(countries::add);
-                }
-            }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
-        return countries;
-    }
-
     public boolean setMaterialAndCustomModelData(String code, String material, @Nullable String customModelData) {
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("UPDATE country SET material = ?, custom_model_data = ? WHERE country_code = ?;")) {

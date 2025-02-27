@@ -86,6 +86,21 @@ public class CityProjectProvider {
         return null;
     }
 
+    public List<CityProject> getCityProjectsByBuildTeam(int id) {
+        List<CityProject> cityProjects = new ArrayList<>();
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT city_project_id FROM build_team_has_city_project WHERE build_team_id = ?;")) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                stmt.setInt(1, id);
+                while (rs.next()) {
+                    CityProject city = getById(rs.getString(1));
+                    if(city != null) cityProjects.add(city);
+                }
+            }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        return cityProjects;
+    }
+
     public boolean add(String id, String countryCode, String serverName) {
         if (getById(id) != null) return true;
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
