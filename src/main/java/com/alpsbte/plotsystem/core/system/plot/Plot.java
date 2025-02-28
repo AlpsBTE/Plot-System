@@ -79,6 +79,7 @@ public class Plot extends AbstractPlot {
             double plotVersion,
             String outline,
             LocalDate lastActivity,
+            Builder owner,
             List<Builder> members,
             PlotType type
     ) {
@@ -91,6 +92,7 @@ public class Plot extends AbstractPlot {
         this.plotVersion = plotVersion;
         this.outlineString = outline;
         this.lastActivity = lastActivity;
+        this.plotOwner = owner;
         this.plotMembers = members;
         this.plotType = type;
     }

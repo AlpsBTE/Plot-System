@@ -1,21 +1,18 @@
 package com.alpsbte.plotsystem.core.database.providers;
 
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.*;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.ibm.icu.impl.Pair;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +50,33 @@ public class PlotProvider {
                 }
             }
         } catch (SQLException ex) { Utils.logSqlException(ex); }
+
+
+
+
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT status, city_project_id, difficulty_id, created_by, create_date, plot_version, outline_bounds, last_activity_date, plot_type "
+                        + "FROM plot WHERE plot_id = ?;")) {
+            stmt.setInt(1, plotId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return null;
+                Status status = Status.valueOf(rs.getString(1));
+                CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString(2)).orElseThrow();
+                PlotDifficulty plotDifficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString(3)).orElseThrow().getDifficulty();
+                Builder plotCreator = DataProvider.BUILDER.getBuilderByUUID(UUID.fromString(rs.getString(4)));
+                java.util.Date createdDate = rs.getDate(5);
+                double plotVersion = rs.getDouble(6);
+                String outline = rs.getString(7);
+                LocalDate lastActivity = rs.getDate(8).toLocalDate();
+                PlotType plotType = PlotType.valueOf(rs.getString(9));
+
+                Builder owner = getPlotOwner(plotId);
+                List<Builder> members = getPlotMembers(plotId);
+
+                Plot plot = new Plot(plotId, status, cityProject, plotDifficulty, plotCreator, createdDate, plotVersion, outline, lastActivity, owner, members, plotType);
+                return plot;
+            }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return null;
     }
 
@@ -92,6 +116,11 @@ public class PlotProvider {
         return List.of();
     }
 
+    public Builder getPlotOwner(int plotId) {
+        // TODO: implement
+        return null;
+    }
+
     public List<Builder> getPlotMembers(int plotId) {
         // TODO: implement
         return null;
@@ -103,18 +132,36 @@ public class PlotProvider {
     }
 
     public byte[] getInitialSchematic(int plotId) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT initial_schematic FROM plot WHERE plot_id = ?;")) {
+            stmt.setInt(1, plotId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return null;
+                return rs.getBytes(1);
+            }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return null;
     }
 
     public byte[] getCompletedSchematic(int plotId) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("SELECT complete_schematic FROM plot WHERE plot_id = ?;")) {
+            stmt.setInt(1, plotId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return null;
+                return rs.getBytes(1);
+            }
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return null;
     }
 
     public boolean setCompletedSchematic(int plotId, byte[] completedSchematic) {
-        // TODO: implement
-        // set to default if completedSchematic is null (for undoing review)
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("UPDATE plot SET complete_schematic = ? WHERE plot_id = ?;")) {
+            stmt.setBytes(1, completedSchematic);
+            stmt.setInt(2, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
@@ -125,13 +172,22 @@ public class PlotProvider {
     }
 
     public boolean setLastActivity(int plotId, LocalDate activityDate) {
-        // TODO: implement
-        // set last_activity to null if activityDate is null
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("UPDATE plot SET last_activity_date = ? WHERE plot_id = ?;")) {
+            stmt.setDate(1, activityDate == null ? null : Date.valueOf(activityDate));
+            stmt.setInt(2, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
     public boolean setStatus(int plotId, Status status) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("UPDATE plot SET status = ? WHERE plot_id = ?;")) {
+            stmt.setString(1, status.name());
+            stmt.setInt(2, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
@@ -141,12 +197,20 @@ public class PlotProvider {
     }
 
     public boolean setPlotType(int plotId, PlotType type) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection()
+                .prepareStatement("UPDATE plot SET plot_type = ? WHERE plot_id = ?;")) {
+            stmt.setInt(1, type.getId());
+            stmt.setInt(2, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
     public boolean deletePlot(int plotId) {
-        // TODO: implement
+        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement("DELETE FROM plot WHERE plot_id = ?;")) {
+            stmt.setInt(1, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
