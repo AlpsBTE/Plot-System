@@ -43,7 +43,7 @@ import java.util.List;
 
 public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) {
-        super("C-" + plot.getCity().getID(), plot);
+        super("C-" + plot.getCityProject().getID(), plot);
     }
 
     @Override

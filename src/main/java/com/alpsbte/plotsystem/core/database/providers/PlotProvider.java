@@ -16,100 +16,160 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlotProvider {
+    private static final String PLOT_SQL_COLUMNS = "plot.plot_id, plot.city_project_id, plot.difficulty_id, " +
+            "plot.owner_uuid, plot.status, plot.score, plot.outline_bounds, plot.last_activity_date, " +
+            "plot.plot_version, plot.plot_type";
+
     public Plot getPlotById(int plotId) {
-        try (Connection con = DatabaseConnection.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement("SELECT city_project_id, difficulty_id, status," +
-                    " score, outline_bounds, last_activity_date, plot_version FROM plot WHERE plot_id = ?")) {
-                stmt.setInt(1, plotId);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        Status status = Status.valueOf(rs.getString(3));
-                        if (status != Status.unclaimed) {
-                            try (PreparedStatement stmt2 = con.prepareStatement("SELECT uuid, 'owner' AS role FROM " +
-                                    "builder_is_plot_owner WHERE plot_id = ? UNION SELECT uuid, 'member' AS role FROM " +
-                                    "builder_is_plot_member WHERE plot_id = ?;")) {
-                                stmt2.setInt(1, plotId);
-                                stmt2.setInt(2, plotId);
-                                UUID plotOwner;
-                                List<UUID> memberUUIDs = new ArrayList<>();
-                                try (ResultSet rs2 = stmt2.executeQuery()) {
-                                    while (rs2.next()) {
-                                        UUID uuid = UUID.fromString(rs2.getString(1));
-                                        String role = rs2.getString(2);
-                                        if (role.equals("owner")) plotOwner = uuid;
-                                        else memberUUIDs.add(uuid);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (SQLException ex) { Utils.logSqlException(ex); }
-
-
-
-
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT status, city_project_id, difficulty_id, created_by, create_date, plot_version, outline_bounds, last_activity_date, plot_type "
-                        + "FROM plot WHERE plot_id = ?;")) {
+        String query = "SELECT city_project_id, difficulty_id, owner_uuid, status, score, " +
+                "outline_bounds, last_activity_date, plot_version, plot_type FROM plot WHERE plot_id = ?;";
+        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(query)) {
             stmt.setInt(1, plotId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (!rs.next()) return null;
-                Status status = Status.valueOf(rs.getString(1));
-                CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString(2)).orElseThrow();
-                PlotDifficulty plotDifficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString(3)).orElseThrow().getDifficulty();
-                Builder plotCreator = DataProvider.BUILDER.getBuilderByUUID(UUID.fromString(rs.getString(4)));
-                java.util.Date createdDate = rs.getDate(5);
-                double plotVersion = rs.getDouble(6);
-                String outline = rs.getString(7);
-                LocalDate lastActivity = rs.getDate(8).toLocalDate();
-                PlotType plotType = PlotType.valueOf(rs.getString(9));
+                CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString(1)).orElseThrow();
+                PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString(2)).orElseThrow().getDifficulty();
+                UUID ownerUUID = UUID.fromString(rs.getString(3));
+                Status status = Status.valueOf(rs.getString(4));
+                int score = rs.getInt(5);
+                String outlineBounds = rs.getString(6);
+                LocalDate lastActivity = rs.getDate(7).toLocalDate();
+                double version = rs.getDouble(8);
+                PlotType type = PlotType.byId(rs.getInt(9));
 
-                Builder owner = getPlotOwner(plotId);
-                List<Builder> members = getPlotMembers(plotId);
-
-                Plot plot = new Plot(plotId, status, cityProject, plotDifficulty, plotCreator, createdDate, plotVersion, outline, lastActivity, owner, members, plotType);
-                return plot;
+                return new Plot(plotId, cityProject, difficulty, ownerUUID, status, score, outlineBounds,
+                        lastActivity, version, type, getPlotMembers(plotId));
             }
         } catch (SQLException ex) {Utils.logSqlException(ex);}
         return null;
     }
 
     public List<Plot> getPlots(Status status) {
-        // TODO: implement
+        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE status = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, status.name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Plot> plots = new ArrayList<>();
+                while (rs.next()) {
+                    plots.add(extractPlot(rs));
+                }
+                return plots;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return List.of();
     }
 
     public List<Plot> getPlots(CityProject city, Status... statuses) {
-        // TODO: implement
+        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id = ?";
+        query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, city.getID());
+            for (int i = 0; i < statuses.length; i++) stmt.setString(i + 2, statuses[i].name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Plot> plots = new ArrayList<>();
+                while (rs.next()) plots.add(extractPlot(rs));
+                return plots;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return List.of();
     }
 
     public List<Plot> getPlots(CityProject city, PlotDifficulty plotDifficulty, Status status) {
-        // TODO: implement
+        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id = ? AND difficulty_id = ? " +
+                "AND status = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, city.getID());
+            stmt.setString(2, plotDifficulty.name());
+            stmt.setString(3, status.name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Plot> plots = new ArrayList<>();
+                while (rs.next()) plots.add(extractPlot(rs));
+                return plots;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return List.of();
     }
 
     public List<Plot> getPlots(List<CityProject> cities, Status... statuses) {
-        // TODO: implement
-        return List.of();
-    }
+        if (cities.isEmpty()) return List.of();
 
-    public List<Plot> getPlots(Builder builder) {
-        // TODO: get plots where builder is either owner or member
+        String cityPlaceholders = "?,".repeat(cities.size() - 1) + "?";
+        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id IN (" + cityPlaceholders + ")";
+        query += statuses.length > 0 ? " AND status IN (?,".repeat(statuses.length - 1) + "?);" : ";";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            int index = 1;
+            for (CityProject city : cities) stmt.setString(index++, city.getID());
+            for (Status status : statuses) stmt.setString(index++, status.name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Plot> plots = new ArrayList<>();
+                while (rs.next()) plots.add(extractPlot(rs));
+                return plots;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return List.of();
     }
 
     public List<Plot> getPlots(Builder builder, Status... statuses) {
-        // TODO: get plots where builder is either owner or member and filter by status
+        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot LEFT JOIN builder_is_plot_member pm ON " +
+                "plot.plot_id = pm.plot_id WHERE (plot.owner_uuid = ? OR pm.uuid = ?)";
+        query += statuses.length > 0 ? "AND plot.status IN (?,".repeat(statuses.length - 1) + "?);" : ";";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            String builderUUID = builder.getUUID().toString();
+            stmt.setString(1, builderUUID);
+            stmt.setString(2, builderUUID);
+            for (int i = 0; i < statuses.length; i++) stmt.setString(i + 3, statuses[i].name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Plot> plots = new ArrayList<>();
+                while (rs.next()) plots.add(extractPlot(rs));
+                return plots;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return List.of();
     }
 
-    public Builder getPlotOwner(int plotId) {
-        // TODO: implement
-        return null;
+    private Plot extractPlot(ResultSet rs) throws SQLException {
+        int plotId = rs.getInt("plot_id");
+        CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString("city_project_id")).orElseThrow();
+        PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString("difficulty_id")).orElseThrow().getDifficulty();
+        UUID ownerUUID = UUID.fromString(rs.getString("owner_uuid"));
+        Status status = Status.valueOf(rs.getString("status"));
+        int score = rs.getInt("score");
+        String outlineBounds = rs.getString("outline_bounds");
+        LocalDate lastActivity = rs.getDate("last_activity_date").toLocalDate();
+        double version = rs.getDouble("plot_version");
+        PlotType type = PlotType.byId(rs.getInt("plot_type"));
+
+        return new Plot(plotId, cityProject, difficulty, ownerUUID, status, score, outlineBounds, lastActivity, version, type, getPlotMembers(plotId));
     }
 
     public List<Builder> getPlotMembers(int plotId) {
@@ -123,8 +183,9 @@ public class PlotProvider {
     }
 
     public byte[] getInitialSchematic(int plotId) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT initial_schematic FROM plot WHERE plot_id = ?;")) {
+        String query = "SELECT initial_schematic FROM plot WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plotId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (!rs.next()) return null;
@@ -135,8 +196,9 @@ public class PlotProvider {
     }
 
     public byte[] getCompletedSchematic(int plotId) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT complete_schematic FROM plot WHERE plot_id = ?;")) {
+        String query = "SELECT complete_schematic FROM plot WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plotId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (!rs.next()) return null;
@@ -147,8 +209,9 @@ public class PlotProvider {
     }
 
     public boolean setCompletedSchematic(int plotId, byte[] completedSchematic) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("UPDATE plot SET complete_schematic = ? WHERE plot_id = ?;")) {
+        String query = "UPDATE plot SET complete_schematic = ? WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBytes(1, completedSchematic);
             stmt.setInt(2, plotId);
             return stmt.executeUpdate() > 0;
@@ -157,8 +220,18 @@ public class PlotProvider {
     }
 
     public boolean setPlotOwner(int plotId, UUID ownerUUID) {
-        // TODO: implement
-        // (should also be able to be set to null in case a plot gets abandoned)
+        String query = "UPDATE plot SET owner_uuid = ? WHERE plot_id = ?;";
+        String query2 = "UPDATE plot SET owner_uuid = DEFAULT(owner_uuid) WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(ownerUUID == null ? query2 : query)) {
+            if (ownerUUID == null) {
+                stmt.setInt(1, plotId);
+            } else {
+                stmt.setString(1, ownerUUID.toString());
+                stmt.setInt(2, plotId);
+            }
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
     }
 
@@ -191,6 +264,18 @@ public class PlotProvider {
         try (PreparedStatement stmt = DatabaseConnection.getConnection()
                 .prepareStatement("UPDATE plot SET plot_type = ? WHERE plot_id = ?;")) {
             stmt.setInt(1, type.getId());
+            stmt.setInt(2, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        return false;
+    }
+
+    public boolean setPasted(int plotId, boolean pasted) {
+        String query = "UPDATE plot SET is_pasted = ? WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setBoolean(1, pasted);
             stmt.setInt(2, plotId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException ex) {Utils.logSqlException(ex);}

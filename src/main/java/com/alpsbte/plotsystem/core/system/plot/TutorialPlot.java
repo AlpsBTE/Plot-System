@@ -62,7 +62,7 @@ public class TutorialPlot extends AbstractPlot {
     private final FileConfiguration tutorialConfig;
 
     public TutorialPlot(int plotId, int tutorialId, String uuid, int stageId, boolean isComplete, LocalDate lastStageActivity) {
-        super(plotId);
+        super(plotId, UUID.fromString(uuid));
         this.tutorialId = tutorialId;
         this.uuid = UUID.fromString(uuid);
         this.stageId = stageId;

@@ -240,7 +240,7 @@ public class CompanionMenu {
             String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
             lore = new LoreBuilder()
                     .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getID(), WHITE)),
-                            text(plotCityText + ": ", GRAY).append(text(plot.getCity().getName(langPlayer), WHITE)),
+                            text(plotCityText + ": ", GRAY).append(text(plot.getCityProject().getName(langPlayer), WHITE)),
                             text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
                             empty(),
                             statusComp.append(text(": Unassigned", GRAY)).decoration(BOLD, true))

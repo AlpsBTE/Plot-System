@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotPermissions;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
@@ -42,12 +43,14 @@ import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -55,7 +58,8 @@ public abstract class AbstractPlot {
     public static final double PLOT_VERSION = 3;
     public static final ClipboardFormat CLIPBOARD_FORMAT = BuiltInClipboardFormat.FAST_V2;
 
-    protected final int ID;
+    private final int ID;
+
     protected Builder plotOwner;
     protected OnePlotWorld onePlotWorld;
     protected PlotPermissions plotPermissions;
@@ -65,8 +69,9 @@ public abstract class AbstractPlot {
     protected List<BlockVector2> outline;
     protected List<BlockVector2> blockOutline;
 
-    public AbstractPlot(int id) {
+    public AbstractPlot(int id, UUID plotOwnerUUID) {
         this.ID = id;
+        this.plotOwner = plotOwnerUUID != null ? DataProvider.BUILDER.getBuilderByUUID(plotOwnerUUID) : null;
     }
 
     /**
@@ -79,7 +84,16 @@ public abstract class AbstractPlot {
     /**
      * @return builder who has claimed the plot
      */
-    public abstract Builder getPlotOwner();
+    public Builder getPlotOwner() {
+        return plotOwner;
+    }
+
+    /**
+     * sets the plot owner of the current plot
+     * @param plotOwner uuid of player
+     * @return if true, the execution was successful
+     */
+    public abstract boolean setPlotOwner(@Nullable Builder plotOwner);
 
     /**
      * @return plot world, can be one or city plot world

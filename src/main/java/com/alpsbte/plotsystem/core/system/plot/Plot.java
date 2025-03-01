@@ -44,61 +44,59 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
 public class Plot extends AbstractPlot {
-    private final CityProject city;
+    private final CityProject cityProject;
     private final PlotDifficulty difficulty;
-    private final Builder plotCreator;
-    private final Date createdDate;
-    private final String outlineString;
+    private Status status;
+    private final int score;
+    private String outlineBounds;
+    private LocalDate lastActivity;
+    private final List<Builder> members;
 
     private CityPlotWorld cityPlotWorld;
-    private Status status;
-    private LocalDate lastActivity;
-    private List<Builder> plotMembers;
 
-    // missing:
-    // outlineBounds
-    // initialSchem
-    // is_pasted
     public Plot(
-            int id,
-            Status status,
-            CityProject city,
-            PlotDifficulty difficulty,
-            Builder createdBy,
-            Date createdDate,
-            double plotVersion,
-            String outline,
-            LocalDate lastActivity,
-            Builder owner,
-            List<Builder> members,
-            PlotType type
-    ) {
-        super(id);
-        this.status = status;
-        this.city = city;
+            int id, CityProject cityProject, PlotDifficulty difficulty, UUID ownerUUID, Status status, int score,
+            String outlineBounds, LocalDate lastActivity, double version, PlotType type, List<Builder> members) {
+        super(id, ownerUUID);
+        this.cityProject = cityProject;
         this.difficulty = difficulty;
-        this.plotCreator = createdBy;
-        this.createdDate = createdDate;
-        this.plotVersion = plotVersion;
-        this.outlineString = outline;
+        this.status = status;
+        this.score = score;
+        this.outlineBounds = outlineBounds;
         this.lastActivity = lastActivity;
-        this.plotOwner = owner;
-        this.plotMembers = members;
+        this.plotVersion = version;
         this.plotType = type;
+        this.members = members;
     }
 
-    public CityProject getCity() {
-        return city;
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
+    public boolean setStatus(@NotNull Status status) {
+        if (DataProvider.PLOT.setStatus(getID(), status)) {
+            this.status = status;
+            return true;
+        }
+        return false;
+    }
+
+    public CityProject getCityProject() {
+        return cityProject;
     }
 
     public PlotDifficulty getDifficulty() {
@@ -106,25 +104,56 @@ public class Plot extends AbstractPlot {
     }
 
     @Override
-    public Builder getPlotOwner() {
-        return plotOwner;
+    public boolean setPlotOwner(@Nullable Builder plotOwner) {
+        if (DataProvider.PLOT.setPlotOwner(getID(), plotOwner == null ? null : plotOwner.getUUID())) {
+            this.plotOwner = plotOwner;
+            return true;
+        }
+        return false;
     }
 
-    public boolean setPlotOwner(@Nullable Builder newPlotOwner) {
-        if (DataProvider.PLOT.setPlotOwner(ID, newPlotOwner == null ? null : newPlotOwner.getUUID())) {
-            plotOwner = newPlotOwner;
+    @Override
+    public double getVersion() {
+        return plotVersion;
+    }
+
+    @Override
+    public List<BlockVector2> getOutline() {
+        if (outline != null)
+            return this.outline;
+
+        List<BlockVector2> pointVectors;
+        pointVectors = getOutlinePoints((outlineBounds.isEmpty() || getVersion() <= 2) ? "" : outlineBounds);
+        return pointVectors;
+    }
+
+    @Override
+    public LocalDate getLastActivity() {
+        return lastActivity;
+    }
+
+    @Override
+    public boolean setLastActivity(boolean setNull) {
+        LocalDate activityDate = setNull ? null : LocalDate.now();
+        if (DataProvider.PLOT.setLastActivity(getID(), activityDate)) {
+            this.lastActivity = activityDate;
             return true;
         }
         return false;
     }
 
     public List<Builder> getPlotMembers() {
-        return plotMembers;
+        return members;
     }
 
-    public boolean setPlotMembers(@NotNull List<Builder> plotMembers) {
-        if (DataProvider.PLOT.setPlotMembers(ID, plotMembers)) {
-            this.plotMembers = plotMembers;
+    @Override
+    public PlotType getPlotType() {
+        return plotType;
+    }
+
+    public boolean setPlotType(PlotType type) {
+        if (DataProvider.PLOT.setPlotType(getID(), type)) {
+            this.plotType = type;
             return true;
         }
         return false;
@@ -142,93 +171,35 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    @Override
-    public List<BlockVector2> getOutline() {
-        if (outline != null)
-            return this.outline;
-
-        List<BlockVector2> pointVectors;
-        pointVectors = getOutlinePoints((outlineString.isEmpty() || getVersion() <= 2) ? null : outlineString);
-        return pointVectors;
-    }
-
-    @Override
-    public LocalDate getLastActivity() {
-        return lastActivity;
-    }
-
-    @Override
-    public boolean setLastActivity(boolean setNull) {
-        LocalDate activityDate = setNull ? null : LocalDate.now();
-        if (DataProvider.PLOT.setLastActivity(ID, activityDate)) {
-            this.lastActivity = activityDate;
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Status getStatus() {
-        return status;
-    }
-
-    @Override
-    public boolean setStatus(@NotNull Status status) {
-        if (DataProvider.PLOT.setStatus(ID, status)) {
-            this.status = status;
-            return true;
-        }
-        return false;
-    }
-
     public int getTotalScore() {
-        // TODO: implement
-        return 0;
+        return score;
     }
 
     public void setTotalScore(int score) throws SQLException {
         if (score == -1) {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?")
-                    .setValue(this.ID).executeUpdate();
+                    .setValue(getID()).executeUpdate();
         } else {
             DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?")
-                    .setValue(score).setValue(this.ID).executeUpdate();
+                    .setValue(score).setValue(getID()).executeUpdate();
         }
     }
 
     public int getSharedScore() {
         int score = getTotalScore();
         if (score != -1 && !getPlotMembers().isEmpty()) {
-            return (int) Math.floor(score / (getPlotMembers().size() + 1d));
+            return (int) Math.floor(score / (members.size() + 1d));
         }
         return score;
     }
 
     @Override
-    public PlotType getPlotType() {
-        return plotType;
-    }
-
-    public boolean setPlotType(PlotType type) {
-        if (DataProvider.PLOT.setPlotType(ID, type)) {
-            this.plotType = type;
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public double getVersion() {
-        return plotVersion;
-    }
-
-    @Override
     public byte[] getInitialSchematicBytes() {
-        return DataProvider.PLOT.getInitialSchematic(ID);
+        return DataProvider.PLOT.getInitialSchematic(getID());
     }
 
     public byte[] getCompletedSchematic() {
-        return DataProvider.PLOT.getCompletedSchematic(ID);
+        return DataProvider.PLOT.getCompletedSchematic(getID());
     }
 
     @Override
@@ -243,59 +214,62 @@ public class Plot extends AbstractPlot {
         return null;
     }
 
-    public Slot getSlot() throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT first_slot, second_slot, third_slot FROM plotsystem_builders WHERE uuid = ?")
-                .setValue(this.getPlotOwner().getUUID().toString()).executeQuery()) {
+    public Slot getSlot() {
+        String query = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?";
+        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(query)) {
 
-            if (rs.next()) {
-                for (int i = 1; i <= 3; i++) {
-                    int slot = rs.getInt(i);
-                    if (!rs.wasNull() && slot == getID()) {
-                        DatabaseConnection.closeResultSet(rs);
-                        return Slot.values()[i - 1];
+            stmt.setString(1, this.getPlotOwner().getUUID().toString());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    for (int i = 1; i <= 3; i++) {
+                        int slot = rs.getInt(i);
+                        if (!rs.wasNull() && slot == getID()) {
+                            return Slot.values()[i - 1];
+                        }
                     }
                 }
             }
-
-            DatabaseConnection.closeResultSet(rs);
-
-            return null;
         }
+        return null;
     }
 
     public Review getReview() {
-        return DataProvider.PLOT.getReview(ID);
+        return DataProvider.PLOT.getReview(getID());
     }
 
-    public void setPasted(boolean pasted) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_plots SET pasted = ? WHERE id = ?")
-                .setValue(pasted).setValue(this.ID).executeUpdate();
+    public boolean setPasted(boolean pasted) throws SQLException {
+        return DataProvider.PLOT.setPasted(getID(), pasted);
     }
 
-    public void addPlotMember(Builder member) {
+    public boolean addPlotMember(Builder member) {
         List<Builder> members = getPlotMembers();
         if (members.size() < 3 && members.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
             Slot slot = member.getFreeSlot();
             if (slot != null) {
                 members.add(member);
-                setPlotMembers(members);
-
-                member.setSlot(slot, ID);
-                getPermissions().addBuilderPerms(member.getUUID());
+                if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
+                    member.setSlot(slot, getID());
+                    getPermissions().addBuilderPerms(member.getUUID());
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    public void removePlotMember(Builder member) {
+    public boolean removePlotMember(Builder member) {
         List<Builder> members = getPlotMembers();
-        if (!members.isEmpty() && members.stream().anyMatch(m -> m.getUUID().equals(member.getUUID()))) {
-            members.remove(members.stream().filter(m -> m.getUUID().equals(member.getUUID())).findFirst().orElse(null));
-            setPlotMembers(members);
-
-            Slot slot = member.getSlotByPlotId(ID);
-            if (slot != null) member.setSlot(slot, -1);
-            if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
+        if (!members.isEmpty() && members.contains(member)) {
+            members.remove(member);
+            if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
+                Slot slot = member.getSlotByPlotId(getID());
+                if (slot != null) member.setSlot(slot, -1);
+                if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
+                return true;
+            }
         }
+        return false;
     }
 
     public boolean isReviewed() {

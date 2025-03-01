@@ -88,8 +88,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             if (!plot.getPlotMembers().isEmpty()) {
                 lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBERS) + ": §f" + plot.getPlotMembers().stream().map(Builder::getName).collect(Collectors.joining(", ")));
             }
-            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCity().getName(getMenuPlayer()));
-            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCity().getCountry().getName(getMenuPlayer()));
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.CITY) + ": §f" + plot.getCityProject().getName(getMenuPlayer()));
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.COUNTRY) + ": §f" + plot.getCityProject().getCountry().getName(getMenuPlayer()));
             lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
             getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
@@ -178,7 +178,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     private List<Plot> getFilteredPlots(List<?> plots) {
         List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).collect(Collectors.toList());
         if (filteredCityProject != null)
-            filteredPlots = filteredPlots.stream().filter(p -> p.getCity().getID().equals(filteredCityProject.getID())).collect(Collectors.toList());
+            filteredPlots = filteredPlots.stream().filter(p -> p.getCityProject().getID().equals(filteredCityProject.getID())).collect(Collectors.toList());
         return filteredPlots;
     }
 
