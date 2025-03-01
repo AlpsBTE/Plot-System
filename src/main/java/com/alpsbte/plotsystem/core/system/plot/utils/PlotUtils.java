@@ -113,7 +113,7 @@ public final class PlotUtils {
                 int id = Integer.parseInt(worldName.substring(2));
                 AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
                         ? DataProvider.PLOT.getPlotById(id)
-                        : DataProvider.PLOT.getTutorialPlotById(id);
+                        : DataProvider.TUTORIAL_PLOT.getById(id).orElseThrow();
                 if (statuses == null) return plot;
                 for (Status status : statuses) if (status == plot.getStatus()) return plot;
                 return null;

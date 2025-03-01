@@ -5,12 +5,9 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.*;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import com.ibm.icu.impl.Pair;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -98,12 +95,6 @@ public class PlotProvider {
     public List<Plot> getPlots(List<CityProject> cities, Status... statuses) {
         // TODO: implement
         return List.of();
-    }
-
-    public List<Plot> getPlots(List<Country> countries, Status status) {
-        List<CityProject> cities = new ArrayList<>();
-        countries.forEach(c -> cities.addAll(c.getCityProjects()));
-        return getPlots(cities, status);
     }
 
     public List<Plot> getPlots(Builder builder) {
@@ -212,10 +203,5 @@ public class PlotProvider {
             return stmt.executeUpdate() > 0;
         } catch (SQLException ex) {Utils.logSqlException(ex);}
         return false;
-    }
-
-    public TutorialPlot getTutorialPlotById(int tutorialPlotId) {
-        // TODO: implement
-        return null;
     }
 }
