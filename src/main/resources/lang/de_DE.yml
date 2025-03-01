@@ -197,6 +197,7 @@ note:
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
     tutorial-show-stages: 'Stages Anzeigen'
+    click-to-open-plots-menu: 'Klicke hier, um das Plot Menü zu öffnen...'
 #-----------------------------------------------------
 #| Messages
 #-----------------------------------------------------
@@ -260,6 +261,7 @@ message:
     player-invite-to-rejected: '{0} hat deine Einladung abgelehnt.'
     player-needs-to-be-on-plot: "Um dies zu nutzen musst du auf einem Plot sein!"
     player-needs-higher-score: "Du benötigst einen höheren Punktestand, um in diesem Schwierigkeitsgrad zu bauen."
+    player-missing-tutorial: "Der Spieler muss zuerst das Tutorial abschließen, um hinzugefügt zu werden!"
     error-occurred: "Ein Fehler ist aufgetreten! Bitte versuche es erneut!"
     command-disabled: "Dieser Befehl ist deaktiviert!"
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
@@ -388,5 +390,27 @@ tutorials:
         - 'Frohes Bauen! ☺'
       stage-10-tasks:
         - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Beispiel Stadt'
+      description: 'Eine Beschreibung'
+  country:
+    AT:
+      name: 'Österreich'
+    CH:
+      name: 'Schweiz'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Easy'
+    medium:
+      name: 'Medium'
+    hard:
+      name: 'Hard'
 #NOTE: Do not change
-config-version: 2.2
+config-version: 2.4

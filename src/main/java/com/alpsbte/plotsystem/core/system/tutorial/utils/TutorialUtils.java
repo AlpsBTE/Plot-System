@@ -38,10 +38,10 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class TutorialUtils {
-    public static String TEXT_HIGHLIGHT_START = "<gold>", TEXT_HIGHLIGHT_END = "</gold>";
-    public static String TEXT_CLICK_HIGHLIGHT = "<underlined>";
+    public static final String TEXT_HIGHLIGHT_START = "<gold>", TEXT_HIGHLIGHT_END = "</gold>";
+    public static final String TEXT_CLICK_HIGHLIGHT = "<underlined>";
 
-    public static Component CHAT_PREFIX_COMPONENT = text("»", DARK_GRAY)
+    public static final Component CHAT_PREFIX_COMPONENT = text("»", DARK_GRAY)
             .append(text(" ", GRAY));
     public static Component CHAT_TASK_PREFIX_COMPONENT = text("[", DARK_GRAY)
             .append(text("Tutorial", GOLD).append(text("] ", DARK_GRAY)));

@@ -29,7 +29,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import org.bukkit.Location;
 
 public class TutorialNPCTurnTracker implements Runnable {
-    public static int turnToPlayerDistance = FancyNpcsPlugin.get().getFancyNpcConfig().getTurnToPlayerDistance();;
+    public static final int turnToPlayerDistance = FancyNpcsPlugin.get().getFancyNpcConfig().getTurnToPlayerDistance();
 
     @Override
     public void run() {

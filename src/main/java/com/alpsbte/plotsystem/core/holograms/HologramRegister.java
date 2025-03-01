@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.core.holograms;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.holograms.leaderboards.ScoreLeaderboard;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Bukkit;
@@ -13,12 +14,11 @@ import java.util.Objects;
 
 public final class HologramRegister {
     /**
-     * Registers the {@link ScoreLeaderboard}, {@link PlotsLeaderboard} and adds
+     * Registers the {@link ScoreLeaderboard} and adds
      * them to {@link DecentHologramDisplay#activeDisplays}.
      */
     public static void init() {
         new ScoreLeaderboard();
-        new PlotsLeaderboard();
     }
 
     public static void reload() {

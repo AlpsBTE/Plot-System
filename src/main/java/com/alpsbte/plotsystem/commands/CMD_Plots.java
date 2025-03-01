@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -37,42 +38,40 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
-
-import static net.kyori.adventure.text.Component.text;
+import java.util.concurrent.CompletableFuture;
 
 public class CMD_Plots extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        Player player = getPlayer(sender);
+        if (player == null) {
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            return true;
+        }
+
         if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
             return true;
         }
 
-        if (getPlayer(sender) == null) {
-            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
-            return true;
+        if (args.length < 1) {
+            CompletableFuture.runAsync(() -> {
+                Builder builder = Builder.byUUID(player.getUniqueId());
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new PlayerPlotsMenu(player, builder));
+            });
         }
 
-        Player player = (Player) sender;
+        CompletableFuture.runAsync(() -> {
+            Builder builder = Builder.byName(args[0]);
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (builder == null) {
+                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                    return;
+                }
 
-        try {
-            if (args.length < 1) {
-                new PlayerPlotsMenu(player, Builder.byUUID(player.getUniqueId()));
-                return true;
-            }
-
-            Builder builder = Builder.getBuilderByName(args[0]);
-            if (builder == null) {
-                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                return true;
-            }
-
-            new PlayerPlotsMenu(player, builder);
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+                new PlayerPlotsMenu(player, builder);
+            });
+        });
         return true;
     }
 

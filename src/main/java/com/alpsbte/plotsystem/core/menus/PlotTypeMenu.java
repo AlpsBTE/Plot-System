@@ -67,7 +67,7 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE), true)
                                 .build())
-                        .setEnchanted(builder.getPlotTypeSetting().getId() == PlotType.FOCUS_MODE.getId())
+                        .setEnchanted(builder.getPlotType().getId() == PlotType.FOCUS_MODE.getId())
                         .build());
 
         getMenu().getSlot(13).setItem(
@@ -76,7 +76,7 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_INSPIRATION_MODE), true)
                                 .build())
-                        .setEnchanted(builder.getPlotTypeSetting().getId() == PlotType.LOCAL_INSPIRATION_MODE.getId())
+                        .setEnchanted(builder.getPlotType().getId() == PlotType.LOCAL_INSPIRATION_MODE.getId())
                         .build());
 
         getMenu().getSlot(15).setItem(
@@ -86,14 +86,14 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
                                 .build())
-                        .setEnchanted(builder.getPlotTypeSetting().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
+                        .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
                         .build());
 
         // Set selected glass pane
         int selectedPlotTypeSlot = 13;
-        if (builder.getPlotTypeSetting() == PlotType.FOCUS_MODE)
+        if (builder.getPlotType() == PlotType.FOCUS_MODE)
             selectedPlotTypeSlot = 11;
-        if (builder.getPlotTypeSetting() == PlotType.CITY_INSPIRATION_MODE)
+        if (builder.getPlotType() == PlotType.CITY_INSPIRATION_MODE)
             selectedPlotTypeSlot = 15;
         getMenu().getSlot(selectedPlotTypeSlot - 9).setItem(new ItemBuilder(Material.LIME_STAINED_GLASS_PANE, 1).setName(empty()).build());
 
@@ -106,19 +106,19 @@ public class PlotTypeMenu extends AbstractMenu {
     protected void setItemClickEventsAsync() {
         // Set click event for plot type items
         getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
-            builder.setPlotTypeSetting(PlotType.FOCUS_MODE);
+            builder.setPlotType(PlotType.FOCUS_MODE);
             getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             reloadMenuAsync();
         }));
 
         getMenu().getSlot(13).setClickHandler(((clickPlayer, clickInformation) -> {
-            builder.setPlotTypeSetting(PlotType.LOCAL_INSPIRATION_MODE);
+            builder.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
             getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             reloadMenuAsync();
         }));
 
         getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
-            builder.setPlotTypeSetting(PlotType.CITY_INSPIRATION_MODE);
+            builder.setPlotType(PlotType.CITY_INSPIRATION_MODE);
             getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             reloadMenuAsync();
         }));

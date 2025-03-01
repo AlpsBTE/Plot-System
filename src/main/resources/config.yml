@@ -27,13 +27,21 @@ sync-ftp-files:
   sff-enable: false
   sync-interval: 3600
 
-# How many days of inactivity it will take before a claimed plot is automatically abandoned
+# How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
+
+# How many days of inactivity it will take before a rejected plots are automatically abandoned
+# Use -1 to use the normal inactivity-interval, -2 disables it
+rejected-inactivity-interval: -1
 
 # Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
 # allowing them to build together.
 # NOTE: Score will be split by all participating members
 enable-group-support: true
+
+# After how many minutes a player receives a reminder to finish his plot.
+# Will be repeated every x minutes; It uses the unfinished-plots string, set it to -1 to disable
+unfinished-reminder-interval: 20
 
 # -----------------------------------------------------
 # | Supported databases: MariaDB & MySQL
@@ -56,12 +64,6 @@ holograms:
     sl-x: 0
     sl-y: 0
     sl-z: 0
-  # Displays the top 10 players with the most completed plots
-  plots-leaderboard:
-    pl-enable: false
-    pl-x: 0
-    pl-y: 0
-    pl-z: 0
 
 # Switch score-leaderboard between different time stamps
 # [interval] -> default: 15 seconds

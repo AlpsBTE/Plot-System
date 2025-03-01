@@ -47,29 +47,30 @@ public class CMD_Tutorial extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (sender.hasPermission(getPermission())) {
-            if (getPlayer(sender) != null) {
-                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
-                    if (args.length == 0) {
-                        Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
-                        if (tutorial != null) {
-                            new TutorialStagesMenu(tutorial.getPlayer(), tutorial.getId());
-                        } else {
-                            new TutorialsMenu(getPlayer(sender));
-                        }
-                    } else if (args.length == 1 && AlpsUtils.tryParseInt(args[0]) != null) {
-                        int tutorialId = Integer.parseInt(args[0]);
-                        if (TutorialCategory.byId(tutorialId) == null) return true;
-                        AbstractTutorial.loadTutorial(getPlayer(sender), tutorialId);
-                    }
-                } else {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.TUTORIAL_DISABLED)));
-                }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
-            }
-        } else {
+        if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+            return true;
+        }
+        if (getPlayer(sender) == null) {
+            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            return true;
+        }
+        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.TUTORIAL_DISABLED)));
+            return true;
+        }
+
+        if (args.length == 0) {
+            Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
+            if (tutorial != null) {
+                new TutorialStagesMenu(tutorial.getPlayer(), tutorial.getId());
+            } else {
+                new TutorialsMenu(getPlayer(sender));
+            }
+        } else if (args.length == 1 && AlpsUtils.tryParseInt(args[0]) != null) {
+            int tutorialId = Integer.parseInt(args[0]);
+            if (TutorialCategory.byId(tutorialId) == null) return true;
+            AbstractTutorial.loadTutorial(getPlayer(sender), tutorialId);
         }
         return true;
     }

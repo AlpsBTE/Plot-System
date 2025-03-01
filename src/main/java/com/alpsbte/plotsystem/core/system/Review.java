@@ -25,16 +25,13 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.FTPManager;
 import org.bukkit.Bukkit;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -109,20 +106,13 @@ public class Review {
                 String[] scoreAsString = rs.getString("rating").split(",");
                 DatabaseConnection.closeResultSet(rs);
 
-                switch (category) {
-                    case ACCURACY:
-                        return Integer.parseInt(scoreAsString[0]);
-                    case BLOCKPALETTE:
-                        return Integer.parseInt(scoreAsString[1]);
-                    case DETAILING:
-                        return Integer.parseInt(scoreAsString[2]);
-                    case TECHNIQUE:
-                        return Integer.parseInt(scoreAsString[3]);
-                    case ALL:
-                        return Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
-                    default:
-                        return 0;
-                }
+                return switch (category) {
+                    case ACCURACY -> Integer.parseInt(scoreAsString[0]);
+                    case BLOCKPALETTE -> Integer.parseInt(scoreAsString[1]);
+                    case DETAILING -> Integer.parseInt(scoreAsString[2]);
+                    case TECHNIQUE -> Integer.parseInt(scoreAsString[3]);
+                    case ALL -> Integer.parseInt(scoreAsString[0]) + Integer.parseInt(scoreAsString[1]) + Integer.parseInt(scoreAsString[2]) + Integer.parseInt(scoreAsString[3]);
+                };
             }
 
             DatabaseConnection.closeResultSet(rs);
@@ -203,47 +193,28 @@ public class Review {
     public static void undoReview(Review review) {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             try {
-                Plot plot = new Plot(review.getPlotID());
+                Plot plot = DataProvider.PLOT.getPlotById(review.getPlotID());
 
                 for (Builder member : plot.getPlotMembers()) {
                     member.addScore(-plot.getSharedScore());
-                    member.addCompletedBuild(-1);
 
                     if (member.getFreeSlot() != null) {
-                        member.setPlot(plot.getID(), member.getFreeSlot());
+                        member.setSlot(member.getFreeSlot(), plot.getID());
                     }
                 }
 
                 plot.getPlotOwner().addScore(-plot.getSharedScore());
-                plot.getPlotOwner().addCompletedBuild(-1);
                 plot.setTotalScore(-1);
                 plot.setStatus(Status.unreviewed);
                 plot.setPasted(false);
 
                 if (plot.getPlotOwner().getFreeSlot() != null) {
-                    plot.getPlotOwner().setPlot(plot.getID(), plot.getPlotOwner().getFreeSlot());
+                    plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID());
                 }
 
-                int cityId = plot.getCity().getID();
-                Server plotServer = plot.getCity().getCountry().getServer();
-                boolean hasFTPConfiguration = plotServer.getFTPConfiguration() != null;
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    plot.getWorld().loadWorld();
+                DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
 
-                    try {
-                        Files.deleteIfExists(plot.getCompletedSchematic().toPath());
-
-                        if (hasFTPConfiguration) {
-                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schem");
-                            FTPManager.deleteSchematic(FTPManager.getFTPUrl(plotServer, cityId), plot.getID() + ".schematic");
-                        }
-                    } catch (IOException | SQLException | URISyntaxException ex) {
-                        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while undoing review!"), ex);
-                    }
-
-                    plot.getWorld().unloadWorld(true);
-                });
-
+                // TODO: extract sql to data provider
                 DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
                         .setValue(review.getPlotID()).executeUpdate();
 

@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -57,8 +58,8 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     List<CityProject> projects;
     private PlotDifficulty selectedPlotDifficulty;
 
-    CityProjectMenu(Player player, @NotNull Country country, PlotDifficulty selectedPlotDifficulty) {
-        super(6, 4, country.getName() + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
+    CityProjectMenu(Player player, Country country, PlotDifficulty selectedPlotDifficulty) {
+        super(6, 4, country.getName(player) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
         this.country = country;
         this.selectedPlotDifficulty = selectedPlotDifficulty;
     }
@@ -134,13 +135,13 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1);
             return false;
         }
-        var randomCity = items.get(Utils.getRandom().nextInt(items.size()));
+        CityProject randomCity = items.get(Utils.getRandom().nextInt(items.size()));
 
         Builder builder = Builder.byUUID(player.getUniqueId());
         try {
-            if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity.getID(), Builder.byUUID(player.getUniqueId())).get();
+            if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity, Builder.byUUID(player.getUniqueId())).get();
             if (difficulty == null) difficulty = PlotDifficulty.EASY;
-            new DefaultPlotGenerator(randomCity.getID(), difficulty, builder);
+            new DefaultPlotGenerator(randomCity, difficulty, builder);
         } catch (SQLException | InterruptedException | ExecutionException e) {
             sqlError(player, e);
             return false;
@@ -150,13 +151,14 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     }
 
     public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
-        return CityProject.getCityProjects(country, true).stream().filter(test -> {
+        return DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true).stream().filter(test -> {
             if (test instanceof CityProject project) {
                 var pd = selectedPlotDifficulty;
                 try {
-                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project.getID(), Builder.byUUID(player.getUniqueId())).get();
+                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project, Builder.byUUID(player.getUniqueId())).get();
                     if (pd == null) pd = PlotDifficulty.EASY;
-                    return project.isVisible() && project.getOpenPlotsForPlayer(project.getID(), pd) > 0;
+
+                    return project.isVisible() && !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
                 } catch (SQLException | ExecutionException | InterruptedException e) {
                     sqlError(player, e);
                 }
@@ -171,39 +173,33 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
-                .pattern("001111001")
-                .pattern(Utils.EMPTY_MASK)
-                .pattern(Utils.EMPTY_MASK)
-                .pattern(Utils.EMPTY_MASK)
-                .pattern(Utils.EMPTY_MASK)
-                .pattern("001111001")
+                .pattern("101111001")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
                 .pattern("100010001")
                 .build();
     }
 
     @Override
     protected List<?> getSource() {
-        if (projects == null) projects = CityProject.getCityProjects(country, true);
+        if (projects == null) projects = DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true);
         return projects;
     }
 
     @Override
-    protected void setPaginatedMenuItemsAsync(@NotNull List<?> source) {
+    protected void setPaginatedMenuItemsAsync(List<?> source) {
         List<CityProject> cities = source.stream().map(l -> (CityProject) l).toList();
         int slot = 9;
         for (CityProject city : cities) {
-            try {
-                getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), selectedPlotDifficulty));
-            } catch (SQLException e) {
-                Utils.logSqlException(e);
-                getMenu().getSlot(slot).setItem(MenuItems.errorItem(getMenuPlayer()));
-            }
+            getMenu().getSlot(slot).setItem(city.getItem(getMenuPlayer(), selectedPlotDifficulty));
             slot++;
         }
     }
 
     @Override
-    protected void setPaginatedItemClickEventsAsync(@NotNull List<?> source) {
+    protected void setPaginatedItemClickEventsAsync(List<?> source) {
         List<CityProject> cities = source.stream().map(l -> (CityProject) l).toList();
         int slot = 9;
         for (CityProject city : cities) {
@@ -216,23 +212,23 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
                 clickPlayer.closeInventory();
                 Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
-                int cityID = city.getID();
 
                 try {
-                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(cityID, builder).get();
-                    if (plotDifficultyForCity == null || Plot.getPlots(cityID, plotDifficultyForCity, Status.unclaimed).isEmpty()) {
+                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();
+                    List<Plot> unclaimedPlots = DataProvider.PLOT.getPlots(city, plotDifficultyForCity, Status.unclaimed);
+                    if (plotDifficultyForCity == null || unclaimedPlots.isEmpty()) {
                         clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         return;
                     }
 
-                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !Plot.hasPlotDifficultyScoreRequirement(builder, selectedPlotDifficulty)) {
+                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !DataProvider.DIFFICULTY.builderMeetsRequirements(builder, selectedPlotDifficulty)) {
                         clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
                         clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                         return;
                     }
 
-                    new DefaultPlotGenerator(cityID, plotDifficultyForCity, builder);
+                    new DefaultPlotGenerator(city, plotDifficultyForCity, builder);
                 } catch (SQLException | ExecutionException | InterruptedException ex) {
                     sqlError(clickPlayer, ex);
                 }
