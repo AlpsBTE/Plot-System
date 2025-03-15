@@ -105,12 +105,12 @@ public class CountryMenu extends AbstractMenu {
                 generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty));
 
         // Set click event for plots difficulty item
-        getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(6).setClickHandler((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = CompanionMenu.clickEventPlotDifficulty(selectedPlotDifficulty, clickPlayer, getMenu());
             try {
                 setCountryItems();
             } catch (SQLException ex) {Utils.logSqlException(ex);}
-        }));
+        });
 
         CompanionMenu.clickEventTutorialItem(getMenu());
 

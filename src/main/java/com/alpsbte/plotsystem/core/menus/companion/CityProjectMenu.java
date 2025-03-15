@@ -176,7 +176,6 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
-                .pattern("001111001")
                 .pattern("100010001")
                 .build();
     }

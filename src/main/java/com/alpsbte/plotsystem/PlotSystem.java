@@ -74,7 +74,7 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class PlotSystem extends JavaPlugin {
-    private static final String VERSION = "4.1.1";
+    private static final String VERSION = "4.1.2";
 
     private static PlotSystem plugin;
     private CommandManager commandManager;
