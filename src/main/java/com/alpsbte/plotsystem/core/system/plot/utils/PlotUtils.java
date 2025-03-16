@@ -264,13 +264,13 @@ public final class PlotUtils {
                         (double) terraCenter.z() - (double) clipboard.getMinimumPoint().z() + cuboidRegion.getMinimumPoint().z()
                 ));
             }
-        }
 
-        ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, clipboard, region.getMinimumPoint());
-        Operations.complete(forwardExtentCopy);
+            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
+            Operations.complete(forwardExtentCopy);
 
-        try (ClipboardWriter writer = BuiltInClipboardFormat.FAST_V2.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
-            writer.write(clipboard);
+            try (ClipboardWriter writer = BuiltInClipboardFormat.FAST_V2.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+                writer.write(cb);
+            }
         }
         return finishedSchematicFile;
     }
