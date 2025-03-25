@@ -215,22 +215,7 @@ public class Plot extends AbstractPlot {
     }
 
     public Slot getSlot() {
-        String query = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?";
-        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(query)) {
-
-            stmt.setString(1, this.getPlotOwner().getUUID().toString());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    for (int i = 1; i <= 3; i++) {
-                        int slot = rs.getInt(i);
-                        if (!rs.wasNull() && slot == getID()) {
-                            return Slot.values()[i - 1];
-                        }
-                    }
-                }
-            }
-        }
+        // TODO: Implement
         return null;
     }
 

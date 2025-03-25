@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.utils.Utils;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,9 +48,10 @@ public class TutorialPlotProvider {
                 .filter(t -> t.getTutorialID() == tutorialId && t.getUUID().toString().equals(playerUUID)).findFirst();
 
         if (tutorialPlot.isEmpty()) {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("SELECT stage_id, is_complete, last_stage_complete_date FROM " +
-                            "tutorial WHERE tutorial_id = ? AND uuid = ?;")) {
+            String query = "SELECT stage_id, is_complete, last_stage_complete_date FROM " +
+                    "tutorial WHERE tutorial_id = ? AND uuid = ?;";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setInt(1, tutorialId);
                 stmt.setString(2, playerUUID);
 
@@ -63,45 +65,55 @@ public class TutorialPlotProvider {
                         return Optional.of(newTutorialPlot);
                     }
                 }
-            } catch (SQLException ex) {Utils.logSqlException(ex);}
+            } catch (SQLException ex) {
+                Utils.logSqlException(ex);
+            }
         }
         return tutorialPlot;
     }
 
     public boolean add(int tutorialId, String playerUUID) {
         if (getByTutorialId(tutorialId, playerUUID).isPresent()) return false;
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("INSERT INTO tutorial (tutorial_id, uuid) VALUES (?, ?);")) {
+
+        String query = "INSERT INTO tutorial (tutorial_id, uuid) VALUES (?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, tutorialId);
             stmt.setString(2, playerUUID);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean setStageId(int tutorialId, String playerUUID, int stageId) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("UPDATE tutorial SET stage_id = ?, last_stage_complete_date = ? WHERE " +
-                        "tutorial_id = ? AND uuid = ?;")) {
+        String query = "UPDATE tutorial SET stage_id = ?, last_stage_complete_date = ? WHERE tutorial_id = ? AND uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, stageId);
             stmt.setObject(2, LocalDate.now());
             stmt.setInt(3, tutorialId);
             stmt.setString(4, playerUUID);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean setComplete(int tutorialId, String playerUUID) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("UPDATE tutorial SET is_complete = ?, last_stage_complete_date = ? WHERE " +
-                        "tutorial_id = ? AND uuid = ?;")) {
+        String query = "UPDATE tutorial SET is_complete = ?, last_stage_complete_date = ? WHERE tutorial_id = ? AND uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBoolean(1, true);
             stmt.setObject(2, LocalDate.now());
             stmt.setInt(3, tutorialId);
             stmt.setString(4, playerUUID);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 }
