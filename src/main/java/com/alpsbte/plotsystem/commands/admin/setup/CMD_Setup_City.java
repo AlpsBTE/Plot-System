@@ -154,7 +154,8 @@ public class CMD_Setup_City extends SubCommand {
                 return;
             }
 
-            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, country.get().getCode(), serverName);
+            // TODO: Add build team id to parameter
+            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, -1, country.get().getCode(), serverName);
             if (added) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with ID '" + cityProjectId + "' under country with the code " + countryCode + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
         }

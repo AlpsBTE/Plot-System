@@ -39,6 +39,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,6 +117,12 @@ public class TutorialPlot extends AbstractPlot {
     @Override
     public Builder getPlotOwner() {
         return Builder.byUUID(uuid);
+    }
+
+    @Override
+    public boolean setPlotOwner(@Nullable Builder plotOwner) {
+        // TODO: Implement
+        return false;
     }
 
     @Override

@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 
 import javax.annotation.Nullable;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,9 +46,10 @@ public class BuilderProvider {
 
     public Builder getBuilderByUUID(UUID uuid) {
         if (builders.containsKey(uuid)) return builders.get(uuid);
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT name, score, first_slot, second_slot, third_slot, plot_type " +
-                        "FROM builder WHERE uuid = ?;")) {
+
+        String query = "SELECT name, score, first_slot, second_slot, third_slot, plot_type FROM builder WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -56,129 +58,132 @@ public class BuilderProvider {
                             rs.getInt(4), rs.getInt(5), rs.getInt(6));
                 }
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return null;
     }
 
     public Builder getBuilderByName(String name) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT uuid FROM builder WHERE name = ?;")) {
+        String query = "SELECT uuid FROM builder WHERE name = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, name);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 String uuid = rs.getString(1);
                 if (uuid != null) return getBuilderByUUID(UUID.fromString(uuid));
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return null;
     }
 
     public boolean addBuilderIfNotExists(UUID uuid, String name) {
-        // check if builder already exists, if so return TRUE!!
         if (builders.containsKey(uuid)) return true;
-        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement("SELECT name FROM builder WHERE uuid = ?;")) {
-            stmt.setString(1, uuid.toString());
-            try (ResultSet rs = stmt.executeQuery()) {
+
+        String selectQuery = "SELECT 1 FROM builder WHERE uuid = ?;";
+        String insertQuery = "INSERT INTO builder (uuid, name) VALUES (?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement selectStmt = conn.prepareStatement(selectQuery)) {
+            selectStmt.setString(1, uuid.toString());
+            try (ResultSet rs = selectStmt.executeQuery()) {
                 if (rs.next()) return true;
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
 
-        // add builder to database
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("INSERT INTO builder (uuid, name) " +
-                        "VALUES (?, ?);")) {
-            stmt.setString(1, uuid.toString());
-            stmt.setString(2, name);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                insertStmt.setString(1, uuid.toString());
+                insertStmt.setString(2, name);
+                return insertStmt.executeUpdate() > 0;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean setName(UUID uuid, String name) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("UPDATE builder SET name = ? WHERE uuid = ?;")) {
+        String query = "UPDATE builder SET name = ? WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, name);
             stmt.setString(2, uuid.toString());
             stmt.executeUpdate();
             if (builders.containsKey(uuid)) builders.get(uuid).setName(name);
             return true;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean addScore(UUID uuid, int score) {
-        try {
-            try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                    .prepareStatement("UPDATE builder b SET score = (b.score + ?) WHERE uuid = ?;")) {
-                stmt.setInt(1, score);
-                stmt.setString(2, uuid.toString());
-                stmt.executeUpdate();
-                return true;
-            }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        String query = "UPDATE builder b SET score = (b.score + ?) WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, score);
+            stmt.setString(2, uuid.toString());
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean setSlot(UUID uuid, int plotID, Slot slot) {
-        try {
-            if (plotID > 0) {
-                try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                        .prepareStatement("UPDATE builder b SET " + slot.name().toLowerCase() + " = ? " +
-                                "WHERE uuid = ?;")) {
-                    stmt.setInt(1, plotID);
-                    stmt.setString(2, uuid.toString());
-                    stmt.executeUpdate();
-                }
-            } else {
-                try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                        .prepareStatement("UPDATE builder b SET " + slot.name().toLowerCase() + " = " +
-                                "DEFAULT(first_slot) WHERE uuid = ?;")) {
-                    stmt.setString(1, uuid.toString());
-                    stmt.executeUpdate();
-                }
-            }
+        String query = "UPDATE builder b SET " + slot.name().toLowerCase() + " = " +
+                (plotID > 0 ? "?" : "DEFAULT(first_slot)") + " WHERE uuid = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            if (plotID > 0) stmt.setInt(1, plotID);
+            stmt.setString(plotID > 0 ? 2 : 1, uuid.toString());
+            stmt.executeUpdate();
             return true;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean setPlotType(UUID uuid, int plotTypeId) {
-        try {
-            if (plotTypeId > 0) {
-                try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                        .prepareStatement("UPDATE builder b SET plot_type = ? WHERE uuid = ?;")) {
-                    stmt.setInt(1, plotTypeId);
-                    stmt.setString(2, uuid.toString());
-                    stmt.executeUpdate();
-                }
-            } else {
-                try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                        .prepareStatement("UPDATE builder b SET plot_type = DEFAULT(plot_type) WHERE uuid = ?;")) {
-                    stmt.setString(1, uuid.toString());
-                    stmt.executeUpdate();
-                }
-            }
+        String query = "UPDATE builder b SET plot_type = " +
+                (plotTypeId > 0 ? "?" : "DEFAULT(plot_type)") + " WHERE uuid = ?;";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            if (plotTypeId > 0) stmt.setInt(1, plotTypeId);
+            stmt.setString(plotTypeId > 0 ? 2 : 1, uuid.toString());
+            stmt.executeUpdate();
             return true;
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public int getCompletedBuildsCount(UUID uuid) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT COUNT(*) AS completed_plots FROM plot p INNER JOIN builder_has_plot " +
-                        "bhp ON p.plot_id = bhp.plot_id WHERE p.status = 'completed' AND bhp.uuid = ?;")) {
+        String query = "SELECT COUNT(*) AS completed_plots FROM plot p INNER JOIN builder_is_plot_member " +
+                "bipm ON p.plot_id = bipm.plot_id WHERE p.status = 'completed' AND bhp.uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return 0;
     }
 
     public Slot getFreeSlot(UUID uuid) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;")) {
+        String query = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -186,15 +191,20 @@ public class BuilderProvider {
                     if (rs.getString(i) == null) return Slot.values()[i - 1];
                 }
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return null;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canReviewPlot(Builder builder, Plot plot) {
         // TODO: cache
-        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement("SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;")) {
+        String query = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, builder.getUUID().toString());
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Optional<BuildTeam> team = DataProvider.BUILD_TEAM.getBuildTeam(rs.getInt(1));
@@ -203,33 +213,44 @@ public class BuilderProvider {
                         return true;
                 }
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public boolean isAnyReviewer(UUID uuid) {
         // TODO: cache
-        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement("SELECT uuid FROM build_team_has_reviewer WHERE uuid = ?;")) {
+        String query = "SELECT uuid FROM build_team_has_reviewer WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, uuid.toString());
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return true;
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
     public List<Builder> getReviewersByBuildTeam(int buildTeamId) {
         List<Builder> builders = new ArrayList<>();
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement("SELECT uuid FROM build_team_has_reviewer WHERE build_team_id = ?;")) {
+        String query = "SELECT uuid FROM build_team_has_reviewer WHERE build_team_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 stmt.setInt(1, buildTeamId);
+
                 while (rs.next()) {
                     Builder builder = getBuilderByUUID(UUID.fromString(rs.getString(1)));
                     if (builder != null) builders.add(builder);
                 }
             }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return builders;
     }
 
@@ -242,16 +263,17 @@ public class BuilderProvider {
      * @return provides the leaderboard entry for the player, or null if not found.
      */
     public LeaderboardEntry getLeaderboardEntryByUUID(UUID uuid, LeaderboardTimeframe sortBy) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement(getLeaderboardQuery(uuid, sortBy))) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(uuid, sortBy))) {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new LeaderboardEntry(rs.getInt(2), rs.getInt(3), rs.getInt(4));
                 }
             }
-
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return null;
     }
 
@@ -262,16 +284,17 @@ public class BuilderProvider {
      * @return provides a map of player names and their scores, or null if no data is found.
      */
     public Map<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
-        try (PreparedStatement stmt = DatabaseConnection.getConnection()
-                .prepareStatement(getLeaderboardQuery(null, sortBy))) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(null, sortBy))) {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 Map<String, Integer> playerEntries = new HashMap<>();
                 while (rs.next()) playerEntries.put(rs.getString(1), rs.getInt(2));
                 return playerEntries;
             }
-
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return null;
     }
 
