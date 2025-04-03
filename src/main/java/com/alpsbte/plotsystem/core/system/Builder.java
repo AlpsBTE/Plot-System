@@ -91,6 +91,10 @@ public class Builder {
         return null;
     }
 
+    public Slot getSlot(Plot plot) {
+        return DataProvider.BUILDER.getSlot(this.uuid, plot.getID());
+    }
+
     public boolean setSlot(Slot slot, int plotId) {
         if (DataProvider.BUILDER.setSlot(this.uuid, plotId, slot)) {
             switch (slot) {

@@ -29,7 +29,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewPlotMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -83,7 +83,7 @@ public class CMD_Review extends BaseCommand {
             }
 
             Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
-            if (!DataProvider.BUILDER.canReviewPlot(builder, plot) && !sender.hasPermission("plotsystem.admin")) {
+            if (!DataProvider.BUILDER.canReviewPlot(builder.getUUID(), plot) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 return;
             }

@@ -34,6 +34,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -44,12 +45,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -59,21 +59,19 @@ public class Plot extends AbstractPlot {
     private final CityProject cityProject;
     private final PlotDifficulty difficulty;
     private Status status;
-    private final int score;
-    private String outlineBounds;
+    private final String outlineBounds;
     private LocalDate lastActivity;
     private final List<Builder> members;
 
     private CityPlotWorld cityPlotWorld;
 
     public Plot(
-            int id, CityProject cityProject, PlotDifficulty difficulty, UUID ownerUUID, Status status, int score,
+            int id, CityProject cityProject, PlotDifficulty difficulty, UUID ownerUUID, Status status,
             String outlineBounds, LocalDate lastActivity, double version, PlotType type, List<Builder> members) {
         super(id, ownerUUID);
         this.cityProject = cityProject;
         this.difficulty = difficulty;
         this.status = status;
-        this.score = score;
         this.outlineBounds = outlineBounds;
         this.lastActivity = lastActivity;
         this.plotVersion = version;
@@ -172,7 +170,8 @@ public class Plot extends AbstractPlot {
     }
 
     public int getTotalScore() {
-        return score;
+        Optional<PlotReview> review = getLatestReview();
+        return review.map(PlotReview::getScore).orElse(-1);
     }
 
     public void setTotalScore(int score) throws SQLException {
@@ -214,13 +213,18 @@ public class Plot extends AbstractPlot {
         return null;
     }
 
-    public Slot getSlot() {
-        // TODO: Implement
-        return null;
+    public List<PlotReview> getReviewHistory() {
+        return DataProvider.REVIEW.getPlotReviewHistory(getID());
+    }
+
+    public Optional<PlotReview> getLatestReview() {
+        return DataProvider.REVIEW.getLatestReview(getID());
     }
 
     public Review getReview() {
-        return DataProvider.PLOT.getReview(getID());
+        // TODO: to be deleted
+        return null;
+        //return DataProvider.REVIEW.getReview(getID());
     }
 
     public boolean setPasted(boolean pasted) throws SQLException {

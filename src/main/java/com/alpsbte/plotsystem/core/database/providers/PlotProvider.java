@@ -41,11 +41,11 @@ import java.util.UUID;
 
 public class PlotProvider {
     private static final String PLOT_SQL_COLUMNS = "plot.plot_id, plot.city_project_id, plot.difficulty_id, " +
-            "plot.owner_uuid, plot.status, plot.score, plot.outline_bounds, plot.last_activity_date, " +
+            "plot.owner_uuid, plot.status, plot.outline_bounds, plot.last_activity_date, " +
             "plot.plot_version, plot.plot_type";
 
     public Plot getPlotById(int plotId) {
-        String query = "SELECT city_project_id, difficulty_id, owner_uuid, status, score, " +
+        String query = "SELECT city_project_id, difficulty_id, owner_uuid, status, " +
                 "outline_bounds, last_activity_date, plot_version, plot_type FROM plot WHERE plot_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -56,13 +56,12 @@ public class PlotProvider {
                 PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString(2)).orElseThrow().getDifficulty();
                 UUID ownerUUID = UUID.fromString(rs.getString(3));
                 Status status = Status.valueOf(rs.getString(4));
-                int score = rs.getInt(5);
-                String outlineBounds = rs.getString(6);
-                LocalDate lastActivity = rs.getDate(7).toLocalDate();
-                double version = rs.getDouble(8);
-                PlotType type = PlotType.byId(rs.getInt(9));
+                String outlineBounds = rs.getString(5);
+                LocalDate lastActivity = rs.getDate(6).toLocalDate();
+                double version = rs.getDouble(7);
+                PlotType type = PlotType.byId(rs.getInt(8));
 
-                return new Plot(plotId, cityProject, difficulty, ownerUUID, status, score, outlineBounds,
+                return new Plot(plotId, cityProject, difficulty, ownerUUID, status, outlineBounds,
                         lastActivity, version, type, getPlotMembers(plotId));
             }
         } catch (SQLException ex) {
@@ -181,13 +180,12 @@ public class PlotProvider {
         PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString("difficulty_id")).orElseThrow().getDifficulty();
         UUID ownerUUID = UUID.fromString(rs.getString("owner_uuid"));
         Status status = Status.valueOf(rs.getString("status"));
-        int score = rs.getInt("score");
         String outlineBounds = rs.getString("outline_bounds");
         LocalDate lastActivity = rs.getDate("last_activity_date").toLocalDate();
         double version = rs.getDouble("plot_version");
         PlotType type = PlotType.byId(rs.getInt("plot_type"));
 
-        return new Plot(plotId, cityProject, difficulty, ownerUUID, status, score, outlineBounds, lastActivity, version, type, getPlotMembers(plotId));
+        return new Plot(plotId, cityProject, difficulty, ownerUUID, status, outlineBounds, lastActivity, version, type, getPlotMembers(plotId));
     }
 
     public List<Builder> getPlotMembers(int plotId) {

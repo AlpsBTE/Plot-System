@@ -409,7 +409,7 @@ public final class PlotUtils {
 
                             if (plot.getPlotOwner() != null) {
                                 Cache.clearCache(plot.getPlotOwner().getUUID());
-                                plot.getPlotOwner().setSlot(dPlot.getSlot(), -1);
+                                plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
                             }
 
                             dPlot.setPlotOwner(null);

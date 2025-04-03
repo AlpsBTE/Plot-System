@@ -52,12 +52,14 @@ public class CityProject {
     private final String countryCode;
     private String serverName;
     private boolean isVisible;
+    private int buildTeamId;
 
-    public CityProject(String id, String countryCode, String serverName, boolean isVisible) {
+    public CityProject(String id, String countryCode, String serverName, boolean isVisible, int buildTeamId) {
         this.ID = id;
         this.countryCode = countryCode;
         this.serverName = serverName;
         this.isVisible = isVisible;
+        this.buildTeamId = buildTeamId;
     }
 
     public String getID() {
@@ -99,6 +101,10 @@ public class CityProject {
 
     public String getDescription(Player player) {
         return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".description");
+    }
+
+    public BuildTeam getBuildTeam() {
+        return DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).orElseThrow();
     }
 
     public List<TextComponent> getDescriptionComponents(Player player) {

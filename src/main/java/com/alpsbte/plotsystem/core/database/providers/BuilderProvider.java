@@ -197,13 +197,19 @@ public class BuilderProvider {
         return null;
     }
 
+    public Slot getSlot(UUID uuid, int plotId) {
+        // TODO: implement
+        // get the slot in which the given plot is allocated
+        return null;
+    }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean canReviewPlot(Builder builder, Plot plot) {
+    public boolean canReviewPlot(UUID uuid, Plot plot) {
         // TODO: cache
         String query = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, builder.getUUID().toString());
+            stmt.setString(1, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {

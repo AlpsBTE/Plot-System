@@ -40,13 +40,13 @@ public class CityProjectProvider {
     public static final List<CityProject> cachedCityProjects = new ArrayList<>();
 
     public CityProjectProvider() {
-        String query = "SELECT city_project_id, country_code, server_name, is_visible FROM city_project;";
+        String query = "SELECT city_project_id, country_code, server_name, is_visible, build_team_id FROM city_project;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     cachedCityProjects.add(new CityProject(rs.getString(1), // cache all city projects
-                            rs.getString(2), rs.getString(3), rs.getBoolean(4)));
+                            rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));
                 }
             }
         } catch (SQLException ex) {

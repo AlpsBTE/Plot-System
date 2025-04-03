@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -39,7 +40,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
@@ -74,7 +75,7 @@ public class CMD_EditFeedback extends BaseCommand {
             }
 
             Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
-            if (!DataProvider.BUILDER.canReviewPlot(builder, plot) && !sender.hasPermission("plotsystem.admin")) {
+            if (!DataProvider.BUILDER.canReviewPlot(builder.getUUID(), plot) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_SEND_FEEDBACK)));
                 return;
             }
@@ -83,14 +84,16 @@ public class CMD_EditFeedback extends BaseCommand {
             for (int i = 2; i <= args.length; i++) {
                 feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
             }
-            try {
-                plot.getReview().setFeedback(feedback.toString());
-            } catch (SQLException e) {
+            Optional<PlotReview> review = plot.getLatestReview();
+            if (review.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), e);
+                PlotSystem.getPlugin().getComponentLogger().error("Could not retrieve latest review!");
+                return;
             }
 
-            sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
+            boolean successful = review.get().updateFeedback(feedback.toString());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
         });
         return true;
     }

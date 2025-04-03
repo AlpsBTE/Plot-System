@@ -97,7 +97,7 @@ public class CMD_EditPlot extends BaseCommand {
 
 
             Builder builder = Builder.byUUID(player.getUniqueId());
-            if (!DataProvider.BUILDER.canReviewPlot(builder, plot) && !sender.hasPermission("plotsystem.admin")) {
+            if (!DataProvider.BUILDER.canReviewPlot(builder.getUUID(), plot) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 return;
             }

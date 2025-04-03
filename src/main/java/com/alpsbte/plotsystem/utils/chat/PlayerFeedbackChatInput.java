@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.utils.chat;
 
-import com.alpsbte.plotsystem.core.system.Review;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -39,9 +39,9 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class PlayerFeedbackChatInput implements ChatInput {
     private final LocalDateTime dateTime;
-    private final Review review;
+    private final PlotReview review;
 
-    public PlayerFeedbackChatInput(UUID playerUUID, Review review) {
+    public PlayerFeedbackChatInput(UUID playerUUID, PlotReview review) {
         this.dateTime = LocalDateTime.now();
         this.review = review;
         awaitChatInput.put(playerUUID, this);
@@ -52,7 +52,7 @@ public class PlayerFeedbackChatInput implements ChatInput {
         return dateTime;
     }
 
-    public Review getReview() {
+    public PlotReview getReview() {
         return review;
     }
 

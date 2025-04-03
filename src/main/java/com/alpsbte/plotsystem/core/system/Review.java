@@ -43,10 +43,6 @@ import static net.kyori.adventure.text.Component.text;
 public class Review {
     private final int reviewID;
 
-    public Review(int reviewID) {
-        this.reviewID = reviewID;
-    }
-
     public Review(int plotID, UUID reviewer, String rating) throws SQLException {
         this.reviewID = DatabaseConnection.getTableID("plotsystem_reviews");
 

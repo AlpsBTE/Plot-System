@@ -30,7 +30,6 @@ import com.alpsbte.plotsystem.core.menus.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
@@ -199,7 +198,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerChatEvent(@NotNull AsyncChatEvent event) throws SQLException {
+    public void onPlayerChatEvent(@NotNull AsyncChatEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
         if (ChatInput.awaitChatInput.containsKey(playerUUID)) {
             event.setCancelled(true);
@@ -207,10 +206,10 @@ public class EventListener implements Listener {
 
             ChatInput input = ChatInput.awaitChatInput.get(playerUUID);
             if (input instanceof PlayerFeedbackChatInput feedbackInput) {
-                feedbackInput.getReview().setFeedback(messageComp.content());
+                feedbackInput.getReview().updateFeedback(messageComp.content());
                 ChatInput.awaitChatInput.remove(playerUUID);
                 event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(),
-                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlotID()))));
+                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlotId()))));
             } else if (input instanceof PlayerInviteeChatInput inviteeInput) {
                 Player player = Bukkit.getPlayer(messageComp.content());
 
