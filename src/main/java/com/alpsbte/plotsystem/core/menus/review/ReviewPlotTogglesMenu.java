@@ -98,7 +98,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         double totalRatingWithMultiplier = totalRating * scoreMultiplier;
         int score = (int) Math.floor(totalRatingWithMultiplier);
 
-        boolean successful = DataProvider.REVIEW.createReview(rating, score, getMenuPlayer().getUniqueId(), isRejected);
+        boolean successful = DataProvider.REVIEW.createReview(plot, rating, score, getMenuPlayer().getUniqueId());
         if (!successful) {
             getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
             return;
@@ -186,16 +186,5 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                     new PlayerFeedbackChatInput(getMenuPlayer().getUniqueId(), plot.getLatestReview().orElseThrow()));
             PlayerFeedbackChatInput.sendChatInputMessage(getMenuPlayer());
         });
-
-        // TODO: send feedback messages to owner and members
-        /*for (Builder member : plot.getPlotMembers()) {
-            if (member.isOnline()) PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), member.getPlayer());
-        }
-
-        if (plot.getPlotOwner().isOnline()) {
-            PlotUtils.ChatFormatting.sendFeedbackMessage(Collections.singletonList(plot), plot.getPlotOwner().getPlayer());
-            plot.getReview().setFeedbackSent(true);
-        }*/
-
     }
 }

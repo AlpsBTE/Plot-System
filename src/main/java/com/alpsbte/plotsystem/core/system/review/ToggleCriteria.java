@@ -1,8 +1,8 @@
 package com.alpsbte.plotsystem.core.system.review;
 
 public class ToggleCriteria {
-    private String criteriaName;
-    private boolean isOptional;
+    private final String criteriaName;
+    private final boolean isOptional;
 
     public ToggleCriteria(String criteriaName, boolean isOptional) {
         this.criteriaName = criteriaName;

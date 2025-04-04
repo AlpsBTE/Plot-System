@@ -1,7 +1,6 @@
 package com.alpsbte.plotsystem.core.system.review;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ReviewRating {
     private int accuracyPoints;
@@ -36,5 +35,9 @@ public class ReviewRating {
 
     public void setCheckedToggles(List<ToggleCriteria> checkedToggles) {
         this.checkedToggles = checkedToggles;
+    }
+
+    public String getRatingDatabaseString() {
+        return accuracyPoints + "," + blockPalettePoints;
     }
 }

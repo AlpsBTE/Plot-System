@@ -16,16 +16,18 @@ public class PlotReview {
     private final int plotId;
     private final ReviewRating rating;
     private final int score;
+    private final UUID reviewedBy;
     @Nullable
     private String feedback;
-    private UUID reviewedBy;
 
-    public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, @Nullable String feedback) {
+
+    public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, @Nullable String feedback, UUID reviewedBy) {
         this.reviewId = reviewId;
         this.plotId = plotId;
         this.rating = rating;
         this.score = score;
         this.feedback = feedback;
+        this.reviewedBy = reviewedBy;
     }
 
     public int getReviewId() {

@@ -1,8 +1,13 @@
 package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.review.*;
 import com.alpsbte.plotsystem.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,6 +75,7 @@ public class ReviewProvider {
                 int plotId = rs.getInt(1);
                 String feedback = rs.getString(3);
                 int score = rs.getInt(4);
+                UUID reviewedBy = UUID.fromString(rs.getString(5));
 
                 String ratingString = rs.getString(2);
                 int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
@@ -77,7 +83,7 @@ public class ReviewProvider {
                 List<ToggleCriteria> checkedCriteria = getCheckedToggleCriteria(reviewId);
                 ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, checkedCriteria);
 
-                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback));
+                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -86,24 +92,100 @@ public class ReviewProvider {
     }
 
     public Optional<PlotReview> getLatestReview(int plotId) {
-        // TODO: implement
-        return null;
+        String query = "SELECT review_id, rating, feedback, score, reviewed_by, review_date FROM plot_review WHERE plot_id = ? ORDER BY review_date DESC LIMIT 1;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, plotId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return Optional.empty();
+
+                int reviewId = rs.getInt(1);
+                String feedback = rs.getString(3);
+                int score = rs.getInt(4);
+                UUID reviewedBy = UUID.fromString(rs.getString(5));
+
+                String ratingString = rs.getString(2);
+                int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
+                int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
+                List<ToggleCriteria> checkedCriteria = getCheckedToggleCriteria(reviewId);
+                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, checkedCriteria);
+
+                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return Optional.empty();
     }
 
     public List<PlotReview> getPlotReviewHistory(int plotId) {
-        // TODO: implement
-        return List.of();
+        List<PlotReview> reviews = new ArrayList<>();
+        String query = "SELECT review_id, rating, feedback, score, reviewed_by, review_date FROM plot_review WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, plotId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int reviewId = rs.getInt(1);
+                    String feedback = rs.getString(3);
+                    int score = rs.getInt(4);
+                    UUID reviewedBy = UUID.fromString(rs.getString(5));
+
+                    String ratingString = rs.getString(2);
+                    int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
+                    int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
+                    List<ToggleCriteria> checkedCriteria = getCheckedToggleCriteria(reviewId);
+                    ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, checkedCriteria);
+
+                    reviews.add(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
+                }
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return reviews;
     }
 
     public boolean updateFeedback(int reviewId, String newFeedback) {
-        // TODO: implement
+        String query = "UPDATE plot_review SET feedback = ? WHERE review_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newFeedback);
+            stmt.setInt(2, reviewId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return false;
     }
 
-    public boolean createReview(ReviewRating rating, int score, UUID reviewerUUID, boolean isRejected) {
-        // TODO: implement
-        // also create feedback notification
-        return false;
+    public boolean createReview(Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
+        boolean result = false;
+        String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by, is_rejected) " +
+                "VALUES (?, ?, ?, ?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, plot.getID());
+            stmt.setString(2, rating.getRatingDatabaseString());
+            stmt.setInt(3, score);
+            stmt.setString(4, reviewerUUID.toString());
+            result = stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+
+        if (!result) return false;
+
+        // create feedback notifications
+        PlotReview review = plot.getLatestReview().orElseThrow();
+
+        createReviewNotification(review.getReviewId(), plot.getPlotOwner().getUUID());
+        for (Builder builder : plot.getPlotMembers()) {
+            createReviewNotification(review.getReviewId(), builder.getUUID());
+        }
+        return true;
     }
 
     public boolean removeReview(int reviewId) {
@@ -217,5 +299,24 @@ public class ReviewProvider {
             Utils.logSqlException(ex);
         }
         return false;
+    }
+
+    public void createReviewNotification(int reviewId, UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null && player.isOnline()) {
+            PlotUtils.ChatFormatting.sendFeedbackMessage(List.of(new ReviewNotification(reviewId, uuid)), player);
+            return;
+        }
+
+        String query = "INSERT INTO builder_has_review_notification (review_id, uuid) VALUES (?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, reviewId);
+            stmt.setString(2, uuid.toString());
+            boolean result = stmt.executeUpdate() > 0;
+            if (result) cachedNotifications.add(new ReviewNotification(reviewId, uuid));
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
     }
 }
