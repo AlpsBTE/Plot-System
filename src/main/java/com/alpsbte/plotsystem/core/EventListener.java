@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
@@ -75,9 +76,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -275,28 +274,16 @@ public class EventListener implements Listener {
         }
 
         // Informing player about new feedback
-        try {
-            List<Plot> plots = DataProvider.PLOT.getPlots(builder, Status.completed, Status.unfinished);
-            List<Plot> reviewedPlots = new ArrayList<>();
+        List<ReviewNotification> notifications = DataProvider.REVIEW.getReviewNotifications(player.getUniqueId());
 
-            for (Plot plot : plots) {
-                if (plot.isReviewed() && !plot.getReview().isFeedbackSent()) {
-                    reviewedPlots.add(plot);
-                    plot.getReview().setFeedbackSent(true);
-                }
-            }
-
-            if (!reviewedPlots.isEmpty()) {
-                PlotUtils.ChatFormatting.sendFeedbackMessage(reviewedPlots, player);
-                String subtitleText = " Plot" + (reviewedPlots.size() == 1 ? " " : "s ") + (reviewedPlots.size() == 1 ? "has" : "have") + " been reviewed!";
-                player.showTitle(Title.title(
-                        empty(),
-                        text(reviewedPlots.size(), GOLD).decoration(BOLD, true).append(text(subtitleText, GREEN).decoration(BOLD, true)),
-                        Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(8), Duration.ofSeconds(1)))
-                );
-            }
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his plot feedback!"), ex);
+        if (!notifications.isEmpty()) {
+            PlotUtils.ChatFormatting.sendFeedbackMessage(notifications, player);
+            String subtitleText = " Plot" + (notifications.size() == 1 ? " " : "s ") + (notifications.size() == 1 ? "has" : "have") + " been reviewed!";
+            player.showTitle(Title.title(
+                    empty(),
+                    text(notifications.size(), GOLD).decoration(BOLD, true).append(text(subtitleText, GREEN).decoration(BOLD, true)),
+                    Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(8), Duration.ofSeconds(1)))
+            );
         }
 
         PlotUtils.informPlayerAboutUnfinishedPlots(player, builder);

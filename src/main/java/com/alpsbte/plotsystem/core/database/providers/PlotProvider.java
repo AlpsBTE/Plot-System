@@ -28,6 +28,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.*;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
@@ -37,6 +38,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class PlotProvider {
@@ -206,9 +208,9 @@ public class PlotProvider {
         return new ArrayList<>();
     }
 
-    public Review getReview(int plotId) {
+    public Optional<PlotReview> getReview(int plotId) {
         // TODO: implement
-        return null;
+        return Optional.empty();
     }
 
     public byte[] getInitialSchematic(int plotId) {

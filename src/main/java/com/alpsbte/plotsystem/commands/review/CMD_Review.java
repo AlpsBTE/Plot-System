@@ -88,10 +88,9 @@ public class CMD_Review extends BaseCommand {
                 return;
             }
 
-            // TODO: clarify if plot members will include owner as well
             // Players cannot review their own plots
-            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)
-                    && plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId())) {
+            boolean isParticipant = plot.getPlotOwner().getUUID() == player.getUniqueId() || plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
+            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE) && isParticipant) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
             }
 

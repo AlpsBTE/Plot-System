@@ -31,8 +31,8 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -45,6 +45,7 @@ import org.ipvp.canvas.mask.Mask;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -162,25 +163,21 @@ public class PlayerPlotsMenu extends AbstractMenu {
                     .append(text(LangUtil.getInstance().get(p, LangPaths.Plot.GroupSystem.SHARED_BY_MEMBERS, Integer.toString(plot.getPlotMembers().size() + 1)), DARK_GRAY)));
         }
 
-        if (plot.isReviewed() || plot.isRejected()) {
+        Optional<PlotReview> review = plot.getLatestReview();
+        if (review.isPresent()) {
             builder.emptyLine();
             builder.addLines(
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.ACCURACY)))
+                            .append(Utils.ItemUtils.getColoredPointsComponent(review.get().getRating().getAccuracyPoints()))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.BLOCKPALETTE)))
-                            .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
-                    text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.DETAILING) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.DETAILING)))
-                            .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
-                    text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.TECHNIQUE) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(plot.getReview().getRating(Category.TECHNIQUE)))
+                            .append(Utils.ItemUtils.getColoredPointsComponent(review.get().getRating().getBlockPalettePoints()))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN))
             );
             builder.emptyLine();
             builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
-            builder.addLine(text(plot.getReview().getFeedback().replaceAll("//", " "), WHITE), true);
+            String feedback = review.get().getFeedback() == null ? "No Feedback" : review.get().getFeedback().replaceAll("//", " "); // TODO: translate
+            builder.addLine(text(feedback, WHITE), true);
         }
 
         builder.emptyLine();

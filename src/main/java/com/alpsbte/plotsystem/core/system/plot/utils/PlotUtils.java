@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.system.plot.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
@@ -36,6 +35,8 @@ import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
+import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -81,7 +82,6 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
@@ -393,34 +393,20 @@ public final class PlotUtils {
 
             try {
                 CompletableFuture.runAsync(() -> {
-                    try {
-                        if (plot.getPlotType() != PlotType.TUTORIAL) {
-                            Plot dPlot = (Plot) plot;
-                            if (dPlot.isReviewed()) {
-                                // TODO: extract to data provider
-                                DatabaseConnection.createStatement("UPDATE plotsystem_plots SET review_id = DEFAULT(review_id) WHERE id = ?")
-                                        .setValue(plot.getID()).executeUpdate();
+                    if (plot.getPlotType() != PlotType.TUTORIAL) {
+                        Plot dPlot = (Plot) plot;
+                        DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
+                        for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
 
-                                DatabaseConnection.createStatement("DELETE FROM plotsystem_reviews WHERE id = ?")
-                                        .setValue(dPlot.getReview().getReviewID()).executeUpdate();
-                            }
-
-                            for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
-
-                            if (plot.getPlotOwner() != null) {
-                                Cache.clearCache(plot.getPlotOwner().getUUID());
-                                plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
-                            }
-
-                            dPlot.setPlotOwner(null);
-                            dPlot.setLastActivity(true);
-                            dPlot.setTotalScore(-1);
-                            dPlot.setStatus(Status.unclaimed);
-                            dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+                        if (plot.getPlotOwner() != null) {
+                            Cache.clearCache(plot.getPlotOwner().getUUID());
+                            plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
                         }
-                    } catch (SQLException ex) {
-                        Utils.logSqlException(ex);
-                        throw new CompletionException(ex);
+
+                        dPlot.setPlotOwner(null);
+                        dPlot.setLastActivity(true);
+                        dPlot.setStatus(Status.unclaimed);
+                        dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                     }
                 }).join();
             } catch (CompletionException ex) {
@@ -610,17 +596,20 @@ public final class PlotUtils {
             }
         }
 
-        public static void sendFeedbackMessage(@NotNull List<Plot> plots, @NotNull Player player) {
+        public static void sendFeedbackMessage(@NotNull List<ReviewNotification> notifications, @NotNull Player player) {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
-            for (Plot plot : plots) {
-                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(plot.getID())), GREEN)));
+            for (ReviewNotification notification : notifications) {
+                PlotReview review = DataProvider.REVIEW.getReview(notification.getReviewId()).orElseThrow();
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlotId())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(ClickEvent.runCommand("/plot feedback " + plot.getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlotId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 
-                if (plots.size() != plots.indexOf(plot) + 1) {
+                DataProvider.REVIEW.removeReviewNotification(notification.getReviewId(), notification.getUuid());
+
+                if (notifications.size() != notifications.indexOf(notification) + 1) {
                     player.sendMessage(empty());
                 }
             }

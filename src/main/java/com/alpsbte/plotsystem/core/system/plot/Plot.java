@@ -26,10 +26,8 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
@@ -45,8 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -174,16 +170,6 @@ public class Plot extends AbstractPlot {
         return review.map(PlotReview::getScore).orElse(-1);
     }
 
-    public void setTotalScore(int score) throws SQLException {
-        if (score == -1) {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = DEFAULT(score) WHERE id = ?")
-                    .setValue(getID()).executeUpdate();
-        } else {
-            DatabaseConnection.createStatement("UPDATE plotsystem_plots SET score = ? WHERE id = ?")
-                    .setValue(score).setValue(getID()).executeUpdate();
-        }
-    }
-
     public int getSharedScore() {
         int score = getTotalScore();
         if (score != -1 && !getPlotMembers().isEmpty()) {
@@ -221,13 +207,7 @@ public class Plot extends AbstractPlot {
         return DataProvider.REVIEW.getLatestReview(getID());
     }
 
-    public Review getReview() {
-        // TODO: to be deleted
-        return null;
-        //return DataProvider.REVIEW.getReview(getID());
-    }
-
-    public boolean setPasted(boolean pasted) throws SQLException {
+    public boolean setPasted(boolean pasted) {
         return DataProvider.PLOT.setPasted(getID(), pasted);
     }
 
@@ -262,64 +242,35 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean isReviewed() {
-        return getReview() != null;
+        return getLatestReview().isPresent();
     }
 
     public boolean isRejected() {
         return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
     }
 
-    public static double getMultiplierByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        ResultSet rs = DatabaseConnection.createStatement("SELECT multiplier FROM plotsystem_difficulties WHERE id = ?")
-                .setValue(plotDifficulty.ordinal() + 1).executeQuery();
-
-        if (rs.next()) {
-            double d = rs.getDouble(1);
-            DatabaseConnection.closeResultSet(rs);
-            return d;
-        }
-
-        DatabaseConnection.closeResultSet(rs);
-        return 1;
-    }
-
-    public static int getScoreRequirementByDifficulty(PlotDifficulty plotDifficulty) throws SQLException {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT score_requirment FROM plotsystem_difficulties WHERE id = ?")
-                .setValue(plotDifficulty.ordinal() + 1).executeQuery()) {
-
-            if (rs.next()) {
-                int i = rs.getInt(1);
-                DatabaseConnection.closeResultSet(rs);
-                return i;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return 0;
-        }
-    }
-
-    public static boolean hasPlotDifficultyScoreRequirement(@NotNull Builder builder, PlotDifficulty plotDifficulty) throws SQLException {
+    public static boolean meetsPlotDifficultyScoreRequirement(@NotNull Builder builder, PlotDifficulty plotDifficulty) {
         int playerScore = builder.getScore();
-        int scoreRequirement = Plot.getScoreRequirementByDifficulty(plotDifficulty);
+        int scoreRequirement = DataProvider.DIFFICULTY.getDifficultyByEnum(plotDifficulty).orElseThrow().getScoreRequirement();
         return playerScore >= scoreRequirement;
     }
 
-    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(CityProject city, Builder builder) throws SQLException {
+    public static CompletableFuture<PlotDifficulty> getPlotDifficultyForBuilder(CityProject city, Builder builder) {
         // Check if plot difficulties are available
         boolean easyHasPlots = false, mediumHasPlots = false, hardHasPlots = false;
         if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.EASY, Status.unclaimed).isEmpty()) easyHasPlots = true;
         if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.MEDIUM, Status.unclaimed).isEmpty()) mediumHasPlots = true;
         if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.HARD, Status.unclaimed).isEmpty()) hardHasPlots = true;
 
-        if (hardHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
+        if (hardHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);
-        } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
+        } else if (mediumHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
-        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return easy
+        } else if (easyHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return easy
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
-        } else if (mediumHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
+        } else if (mediumHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
-        } else if (easyHasPlots && hasPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
+        } else if (easyHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
         } else if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) { // If score requirement is disabled get plot from any available difficulty
             if (easyHasPlots) {

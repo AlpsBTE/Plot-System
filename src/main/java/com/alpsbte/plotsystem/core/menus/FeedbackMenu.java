@@ -27,9 +27,7 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -40,9 +38,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -68,16 +63,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Get review id from plot
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT review_id FROM plotsystem_plots WHERE id = ?")
-                .setValue(plot.getID()).executeQuery()) {
-
-            if (rs.next()) {
-                DataProvider.REVIEW.getReview(rs.getInt(1)).ifPresent(value -> this.review = value);
-            }
-            DatabaseConnection.closeResultSet(rs);
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        DataProvider.PLOT.getReview(plot.getID()).ifPresent(value -> this.review = value);
 
         // Set score item
         getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)

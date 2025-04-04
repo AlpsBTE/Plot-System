@@ -29,8 +29,8 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -43,6 +43,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
@@ -80,15 +81,22 @@ public class CMD_UndoReview extends BaseCommand {
                 return;
             }
 
-            // TODO: clarify if plot members will include owner as well
             // Players cannot review their own plots
-            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)
-                    && plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId())) {
+            boolean isParticipant = plot.getPlotOwner().getUUID() == player.getUniqueId() || plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
+            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE) && isParticipant) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+                return;
             }
 
-            Review.undoReview(plot.getReview());
-            sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UNDID_REVIEW, plot.getID() + "", plot.getPlotOwner().getName())));
+            Optional<PlotReview> review = plot.getLatestReview();
+            if (review.isEmpty()) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat("Review could not be found!")); // TODO: translate text
+                return;
+            }
+
+            boolean successful = review.get().undoReview();
+            if (successful) player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.UNDID_REVIEW, plot.getID() + "", plot.getPlotOwner().getName())));
+            else player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
         });
         return true;
     }

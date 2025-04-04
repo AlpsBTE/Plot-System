@@ -48,7 +48,6 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -142,7 +141,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity, Builder.byUUID(player.getUniqueId())).get();
             if (difficulty == null) difficulty = PlotDifficulty.EASY;
             new DefaultPlotGenerator(randomCity, difficulty, builder);
-        } catch (SQLException | InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             sqlError(player, e);
             return false;
         }
@@ -159,7 +158,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                     if (pd == null) pd = PlotDifficulty.EASY;
 
                     return project.isVisible() && !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
-                } catch (SQLException | ExecutionException | InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     sqlError(player, e);
                 }
             } else {
@@ -229,7 +228,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                     }
 
                     new DefaultPlotGenerator(city, plotDifficultyForCity, builder);
-                } catch (SQLException | ExecutionException | InterruptedException ex) {
+                } catch (ExecutionException | InterruptedException ex) {
                     sqlError(clickPlayer, ex);
                 }
             });

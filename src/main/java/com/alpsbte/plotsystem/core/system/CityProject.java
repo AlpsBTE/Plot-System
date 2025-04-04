@@ -38,7 +38,6 @@ import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -52,7 +51,7 @@ public class CityProject {
     private final String countryCode;
     private String serverName;
     private boolean isVisible;
-    private int buildTeamId;
+    private final int buildTeamId;
 
     public CityProject(String id, String countryCode, String serverName, boolean isVisible, int buildTeamId) {
         this.ID = id;
@@ -149,7 +148,7 @@ public class CityProject {
                                     : text(LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE), WHITE).decoration(BOLD, true))
                             .build())
                     .build();
-        } catch (SQLException | ExecutionException | InterruptedException ex) {
+        } catch (ExecutionException | InterruptedException ex) {
             Utils.logSqlException(ex);
             Thread.currentThread().interrupt();
             return MenuItems.errorItem(player);
