@@ -100,7 +100,7 @@ public class Builder {
             switch (slot) {
                 case FIRST -> firstSlot = plotId;
                 case SECOND -> secondSlot = plotId;
-                case THIRD -> thirdSlot = plotId;
+                default -> thirdSlot = plotId;
             }
             return true;
         }

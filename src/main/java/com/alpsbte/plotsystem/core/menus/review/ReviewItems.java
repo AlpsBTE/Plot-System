@@ -32,7 +32,10 @@ public class ReviewItems {
     }
 
     public static ItemStack getPlotInfoItem(Player player, Plot plot) {
-        String plotOwner, city, country, difficulty;
+        String plotOwner;
+        String city;
+        String country;
+        String difficulty;
         Player plotOwnerPlayer;
 
         plotOwner = plot.getPlotOwner().getName();
@@ -41,8 +44,7 @@ public class ReviewItems {
         difficulty = plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase();
 
         plotOwnerPlayer = plot.getPlotOwner().getPlayer();
-
-
+        
         return new ItemBuilder(BaseItems.REVIEW_INFO_PLOT.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.Review.REVIEW_PLOT))
                         .color(AQUA)
