@@ -110,7 +110,6 @@ public class BuilderProvider {
             stmt.setString(1, name);
             stmt.setString(2, uuid.toString());
             stmt.executeUpdate();
-            if (builders.containsKey(uuid)) builders.get(uuid).setName(name);
             return true;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);

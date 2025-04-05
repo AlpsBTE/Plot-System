@@ -83,8 +83,7 @@ import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class EventListener implements Listener {
@@ -100,12 +99,13 @@ public class EventListener implements Listener {
 
             // Create builder if it does not exist in database.
             boolean successful = DataProvider.BUILDER.addBuilderIfNotExists(player.getUniqueId(), player.getName());
-            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("BUILDER COULD NOT BE CREATED!!"));
+            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("BUILDER COULD NOT BE CREATED!!", RED));
 
             // Check if player has changed their name
             Builder builder = Builder.byUUID(player.getUniqueId());
             if (!builder.getName().equals(player.getName())) {
-                builder.setName(player.getName());
+                successful = builder.setName(player.getName());
+                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Builder name could not be updated!", RED));
             }
 
             sendNotices(event.getPlayer(), builder);

@@ -125,14 +125,14 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             plot.setStatus(Status.completed);
 
             // Remove Plot from Owner
-            plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(plot), -1);
+            if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(plot), -1)) return;
 
             if (plot.getPlotMembers().isEmpty()) {
                 // Plot was made alone
                 reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), plot.getPlotOwner().getName()));
 
                 // Builder gets 100% of score
-                plot.getPlotOwner().addScore(totalRating);
+                if (!plot.getPlotOwner().addScore(totalRating)) return;
             } else {
                 // Plot was made in a group
                 StringBuilder sb = new StringBuilder();
@@ -144,14 +144,14 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), sb.toString()));
 
                 // Score gets split between all participants
-                plot.getPlotOwner().addScore(plot.getSharedScore());
+                if (!plot.getPlotOwner().addScore(plot.getSharedScore())) return;
 
                 for (Builder builder : plot.getPlotMembers()) {
                     // Score gets split between all participants
-                    builder.addScore(plot.getSharedScore());
+                    if (!builder.addScore(plot.getSharedScore())) return;
 
                     // Remove Slot from Member
-                    builder.setSlot(builder.getSlot(plot), -1);
+                    if (!builder.setSlot(builder.getSlot(plot), -1)) return;
                 }
             }
         } else {

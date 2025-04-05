@@ -72,6 +72,7 @@ public class Builder {
         return score;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean addScore(int score) {
         if (DataProvider.BUILDER.addScore(this.uuid, score)) {
             this.score = this.score + score;
@@ -95,6 +96,7 @@ public class Builder {
         return DataProvider.BUILDER.getSlot(this.uuid, plot.getID());
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean setSlot(Slot slot, int plotId) {
         if (DataProvider.BUILDER.setSlot(this.uuid, plotId, slot)) {
             switch (slot) {

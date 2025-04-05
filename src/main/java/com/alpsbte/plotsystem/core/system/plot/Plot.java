@@ -218,7 +218,7 @@ public class Plot extends AbstractPlot {
             if (slot != null) {
                 members.add(member);
                 if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
-                    member.setSlot(slot, getID());
+                    if (!member.setSlot(slot, getID())) return false;
                     getPermissions().addBuilderPerms(member.getUUID());
                     return true;
                 }
@@ -233,7 +233,7 @@ public class Plot extends AbstractPlot {
             members.remove(member);
             if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
                 Slot slot = member.getSlotByPlotId(getID());
-                if (slot != null) member.setSlot(slot, -1);
+                if (slot != null && !member.setSlot(slot, -1)) return false;
                 if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
                 return true;
             }

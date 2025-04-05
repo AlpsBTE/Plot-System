@@ -131,16 +131,15 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     @Override
     protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
         super.onComplete(failed, false);
+        if (failed) return;
 
-        if (!failed) {
-            getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getID());
-            plot.setStatus(Status.unfinished);
-            ((Plot) plot).setPlotType(plotType);
-            ((Plot) plot).setPlotOwner(getBuilder());
-            PlotUtils.Cache.clearCache(getBuilder().getUUID());
+        if (!getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getID())) return;
+        if (!plot.setStatus(Status.unfinished)) return;
+        if (!((Plot) plot).setPlotType(plotType)) return;
+        if (!plot.setPlotOwner(getBuilder())) return;
 
-            plot.getWorld().teleportPlayer(getBuilder().getPlayer());
-            LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getBuilder().getName());
-        }
+        PlotUtils.Cache.clearCache(getBuilder().getUUID());
+        plot.getWorld().teleportPlayer(getBuilder().getPlayer());
+        LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getBuilder().getName());
     }
 }

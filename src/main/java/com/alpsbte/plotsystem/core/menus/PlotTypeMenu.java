@@ -106,19 +106,22 @@ public class PlotTypeMenu extends AbstractMenu {
     protected void setItemClickEventsAsync() {
         // Set click event for plot type items
         getMenu().getSlot(11).setClickHandler(((clickPlayer, clickInformation) -> {
-            builder.setPlotType(PlotType.FOCUS_MODE);
+            boolean successful = builder.setPlotType(PlotType.FOCUS_MODE);
+            if (!successful) return;
             getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             reloadMenuAsync();
         }));
 
         getMenu().getSlot(13).setClickHandler(((clickPlayer, clickInformation) -> {
-            builder.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+            boolean successful = builder.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+            if (!successful) return;
             getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             reloadMenuAsync();
         }));
 
         getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
-            builder.setPlotType(PlotType.CITY_INSPIRATION_MODE);
+            boolean successful = builder.setPlotType(PlotType.CITY_INSPIRATION_MODE);
+            if (!successful) return;
             getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             reloadMenuAsync();
         }));

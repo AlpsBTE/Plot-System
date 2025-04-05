@@ -78,17 +78,17 @@ public class PlotReview {
         }
 
         // remove owner score and remove plot from slot
-        plot.getPlotOwner().addScore(-plot.getSharedScore());
+        if (!plot.getPlotOwner().addScore(-plot.getSharedScore())) return false;
         if (plot.getPlotOwner().getFreeSlot() != null) {
-            plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID());
+            if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID())) return false;
         }
 
         // remove members score and remove plot from slot
         for (Builder member : plot.getPlotMembers()) {
-            member.addScore(-plot.getSharedScore());
+            if (!member.addScore(-plot.getSharedScore())) return false;
 
             if (member.getFreeSlot() != null) {
-                member.setSlot(member.getFreeSlot(), plot.getID());
+                if(!member.setSlot(member.getFreeSlot(), plot.getID())) return false;
             }
         }
 
