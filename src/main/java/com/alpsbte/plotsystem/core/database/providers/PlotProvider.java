@@ -207,12 +207,7 @@ public class PlotProvider {
         }
         return new ArrayList<>();
     }
-
-    public Optional<PlotReview> getReview(int plotId) {
-        // TODO: implement
-        return Optional.empty();
-    }
-
+    
     public byte[] getInitialSchematic(int plotId) {
         return getSchematic(plotId, "initial_schematic");
     }

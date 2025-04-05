@@ -32,7 +32,6 @@ import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class ReviewPlotTogglesMenu extends AbstractMenu {
-
     private final Plot plot;
     private final ReviewRating rating;
 
@@ -52,6 +51,12 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
 
         // Set review information item
         getMenu().getSlot(7).setItem(ReviewItems.getReviewInfoItem(getMenuPlayer()));
+
+        // Set submit item
+        getMenu().getSlot(49);
+
+        // Set cancel item
+        getMenu().getSlot(51);
     }
 
     @Override

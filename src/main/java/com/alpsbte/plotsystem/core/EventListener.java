@@ -278,7 +278,7 @@ public class EventListener implements Listener {
 
         if (!notifications.isEmpty()) {
             PlotUtils.ChatFormatting.sendFeedbackMessage(notifications, player);
-            String subtitleText = " Plot" + (notifications.size() == 1 ? " " : "s ") + (notifications.size() == 1 ? "has" : "have") + " been reviewed!";
+            String subtitleText = " Plot" + (notifications.size() == 1 ? " " : "s ") + (notifications.size() == 1 ? "has" : "have") + " been reviewed!"; // TODO: translate
             player.showTitle(Title.title(
                     empty(),
                     text(notifications.size(), GOLD).decoration(BOLD, true).append(text(subtitleText, GREEN).decoration(BOLD, true)),

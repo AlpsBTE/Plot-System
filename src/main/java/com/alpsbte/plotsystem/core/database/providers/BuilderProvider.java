@@ -198,8 +198,19 @@ public class BuilderProvider {
     }
 
     public Slot getSlot(UUID uuid, int plotId) {
-        // TODO: implement
-        // get the slot in which the given plot is allocated
+        String query = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, uuid.toString());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.getInt(1) == plotId) return Slot.FIRST;
+                if (rs.getInt(2) == plotId) return Slot.SECOND;
+                if (rs.getInt(3) == plotId) return Slot.THIRD;
+            }
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
         return null;
     }
 

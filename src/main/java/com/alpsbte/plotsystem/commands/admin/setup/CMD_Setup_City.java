@@ -50,6 +50,7 @@ public class CMD_Setup_City extends SubCommand {
         registerSubCommand(new CMD_Setup_City_Add(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_City_Remove(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_City_SetServer(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_City_SetBuildTeam(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_City_SetVisible(getBaseCommand(), this));
     }
 
@@ -99,6 +100,7 @@ public class CMD_Setup_City extends SubCommand {
                         .append(text(c.getID(), AQUA))
                         .append(text(" - Country: " + c.getCountry().getCode()
                                 + " - Server: " + c.getServerName()
+                                + " - Build Team: " + c.getBuildTeam().getName()
                                 + " - Visible: " + c.isVisible(), WHITE)));
             }
             sender.sendMessage(text("--------------------------", DARK_GRAY));
@@ -132,7 +134,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 3) {sendInfo(sender); return;}
+            if (args.length <= 4) {sendInfo(sender); return;}
 
             String cityProjectId = args[1];
             String countryCode = args[2];
@@ -154,8 +156,14 @@ public class CMD_Setup_City extends SubCommand {
                 return;
             }
 
-            // TODO: Add build team id to parameter
-            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, -1, country.get().getCode(), serverName);
+            int buildTeamId = Integer.parseInt(args[4]);
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any build team with ID " + buildTeamId + "!"));
+                sendInfo(sender);
+                return;
+            }
+
+            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, buildTeamId, country.get().getCode(), serverName);
             if (added) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with ID '" + cityProjectId + "' under country with the code " + countryCode + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
         }
@@ -172,7 +180,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"City-Project-ID", "Country-Code", "Server-Name"};
+            return new String[]{"City-Project-ID", "Country-Code", "Server-Name", "Build-Team-ID"};
         }
 
         @Override
@@ -273,6 +281,50 @@ public class CMD_Setup_City extends SubCommand {
         @Override
         public String getPermission() {
             return "plotsystem.admin.pss.city.setserver";
+        }
+    }
+
+    public static class CMD_Setup_City_SetBuildTeam extends SubCommand {
+        public CMD_Setup_City_SetBuildTeam(BaseCommand baseCommand, SubCommand subCommand) {
+            super(baseCommand, subCommand);
+        }
+
+        @Override
+        public void onCommand(CommandSender sender, String[] args) {
+            if (args.length <= 2) {sendInfo(sender); return;}
+
+            // Check if City Project exits
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            if (cityProject.isEmpty()) return;
+
+            // Check if Build Team exists
+            int buildTeamId = Integer.parseInt(args[2]);
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).isEmpty()) return;
+
+            boolean successful = cityProject.get().setBuildTeam(buildTeamId);
+
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set Build Team of City Project with ID " + args[1] + " to " + buildTeamId + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project build team!"));
+        }
+
+        @Override
+        public String[] getNames() {
+            return new String[]{"setbuildteam"};
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public String[] getParameter() {
+            return new String[]{"City-ID", "Build-Team-ID"};
+        }
+
+        @Override
+        public String getPermission() {
+            return "plotsystem.admin.pss.city.setbuildteam";
         }
     }
 

@@ -63,7 +63,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Get review id from plot
-        DataProvider.PLOT.getReview(plot.getID()).ifPresent(value -> this.review = value);
+        plot.getLatestReview().ifPresent(value -> this.review = value);
 
         // Set score item
         getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)

@@ -52,8 +52,6 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         registerSubCommand(new CMD_Setup_BuildTeam_Add(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_Remove(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_SetName(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_BuildTeam_AddCityProject(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_BuildTeam_RemoveCityProject(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_AddReviewer(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_RemoveReviewer(getBaseCommand(), this));
     }
@@ -264,106 +262,6 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         @Override
         public String getPermission() {
             return "plotsystem.admin.pss.buildteam.setname";
-        }
-    }
-
-    public static class CMD_Setup_BuildTeam_AddCityProject extends SubCommand {
-        public CMD_Setup_BuildTeam_AddCityProject(BaseCommand baseCommand, SubCommand subCommand) {
-            super(baseCommand, subCommand);
-        }
-
-        @Override
-        public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {
-                sendInfo(sender);
-                return;
-            }
-
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
-
-            if (buildTeam.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
-                return;
-            }
-            if (cityProject.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project could not be found!"));
-                return;
-            }
-
-            boolean successful = buildTeam.get().addCityProject(cityProject.get());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added city project '" + cityProject.get().getID() + "' to build team with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-        }
-
-        @Override
-        public String[] getNames() {
-            return new String[]{"addcityproject"};
-        }
-
-        @Override
-        public String getDescription() {
-            return null;
-        }
-
-        @Override
-        public String[] getParameter() {
-            return new String[]{"BuildTeam-ID", "CityProject-ID"};
-        }
-
-        @Override
-        public String getPermission() {
-            return "plotsystem.admin.pss.buildteam.addcityproject";
-        }
-    }
-
-    public static class CMD_Setup_BuildTeam_RemoveCityProject extends SubCommand {
-        public CMD_Setup_BuildTeam_RemoveCityProject(BaseCommand baseCommand, SubCommand subCommand) {
-            super(baseCommand, subCommand);
-        }
-
-        @Override
-        public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {
-                sendInfo(sender);
-                return;
-            }
-
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
-            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[2]);
-
-            if (buildTeam.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team could not be found!"));
-                return;
-            }
-            if (cityProject.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("City project could not be found!"));
-                return;
-            }
-
-            boolean successful = buildTeam.get().removeCityProject(cityProject.get().getID());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed city project '" + cityProject.get().getID() + "' from build team with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-        }
-
-        @Override
-        public String[] getNames() {
-            return new String[]{"removecityproject"};
-        }
-
-        @Override
-        public String getDescription() {
-            return null;
-        }
-
-        @Override
-        public String[] getParameter() {
-            return new String[]{"BuildTeam-ID", "CityProject-ID"};
-        }
-
-        @Override
-        public String getPermission() {
-            return "plotsystem.admin.pss.buildteam.removecityproject";
         }
     }
 

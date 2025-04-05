@@ -147,4 +147,17 @@ public class CityProjectProvider {
         }
         return false;
     }
+
+    public boolean setBuildTeam(String id, int buildTeamId) {
+        String query = "UPDATE city_project SET build_team_id = ? WHERE city_project_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, buildTeamId);
+            stmt.setString(2, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
+    }
 }

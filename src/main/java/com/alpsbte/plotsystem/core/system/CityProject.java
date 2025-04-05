@@ -51,7 +51,7 @@ public class CityProject {
     private final String countryCode;
     private String serverName;
     private boolean isVisible;
-    private final int buildTeamId;
+    private int buildTeamId;
 
     public CityProject(String id, String countryCode, String serverName, boolean isVisible, int buildTeamId) {
         this.ID = id;
@@ -104,6 +104,14 @@ public class CityProject {
 
     public BuildTeam getBuildTeam() {
         return DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).orElseThrow();
+    }
+
+    public boolean setBuildTeam(int buildTeamId) {
+        if (DataProvider.CITY_PROJECT.setBuildTeam(ID, buildTeamId)) {
+            this.buildTeamId = buildTeamId;
+            return true;
+        }
+        return false;
     }
 
     public List<TextComponent> getDescriptionComponents(Player player) {

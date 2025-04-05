@@ -66,26 +66,6 @@ public class BuildTeam {
         return false;
     }
 
-    public boolean addCityProject(CityProject city) {
-        /*if (DataProvider.CITY_PROJECT.addCityProject(ID, city.getID())) {
-            this.cityProjects.add(city);
-            return true;
-        }*/
-        // TODO: Implement
-        return false;
-    }
-
-    public boolean removeCityProject(String cityId) {
-        Optional<CityProject> removeCity = cityProjects.stream().filter(c -> c.getID().equalsIgnoreCase(cityId)).findFirst();
-        if (removeCity.isEmpty()) return false;
-        /*if (DataProvider.BUILD_TEAM.removeCityProject(ID, cityId)) {
-            this.cityProjects.remove(removeCity.get());
-            return true;
-        }*/
-        // TODO: Implement
-        return false;
-    }
-
     public boolean removeReviewer(String reviewerUUID) {
         Optional<Builder> removeReviewer = reviewers.stream().filter(r -> r.getUUID().toString().equals(reviewerUUID)).findFirst();
         if (removeReviewer.isEmpty()) return false;
