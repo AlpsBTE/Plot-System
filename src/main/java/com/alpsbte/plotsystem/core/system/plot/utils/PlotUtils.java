@@ -225,10 +225,10 @@ public final class PlotUtils {
         // Copy and write finished plot clipboard to schematic
         try (Clipboard cb = new BlockArrayClipboard(region)) {
             cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
-        }
 
             ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
             Operations.complete(forwardExtentCopy);
+        }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {

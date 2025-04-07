@@ -112,15 +112,17 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         Component reviewerConfirmationMessage;
         if (!isRejected) {
             getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
-            try {
-                if (!PlotUtils.savePlotAsSchematic(plot)) {
-                    getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
-                    return;
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                try {
+                    if (!PlotUtils.savePlotAsSchematic(plot)) {
+                        getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                        PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
+                        return;
+                    }
+                } catch (IOException | WorldEditException ex) {
+                    PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
                 }
-            } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
-            }
+            });
 
             plot.setStatus(Status.completed);
 

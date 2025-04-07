@@ -101,7 +101,7 @@ public class CityPlotWorld extends PlotWorld {
             clipboard = reader.read();
         }
         if (clipboard != null) {
-            int plotHeight = clipboard != null ? clipboard.getMinimumPoint().y() : MIN_WORLD_HEIGHT;
+            int plotHeight = clipboard.getMinimumPoint().y();
 
             /// Minimum building height for a plot (this should be configurable depending on minecraft build limit)
             /// This is in the case that a plot is created at y level 300 where the max build limit is 318,
@@ -118,6 +118,7 @@ public class CityPlotWorld extends PlotWorld {
                 return 0; // throw new IOException("Plot height is out of range.");
             return plotHeight;
         }
+        throw new IOException("A Plot's Outline schematic fails to load, cannot get clipboard.");
     }
 
     /**
