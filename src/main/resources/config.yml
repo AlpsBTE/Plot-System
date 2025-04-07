@@ -43,6 +43,9 @@ enable-group-support: true
 # Will be repeated every x minutes; It uses the unfinished-plots string, set it to -1 to disable
 unfinished-reminder-interval: 20
 
+# Disable the City Inspiration Mode (Beta) CIM completely for new plots (Temporary Config Setting)
+disable-city-inspiration-mode: false
+
 # -----------------------------------------------------
 # | Supported databases: MariaDB & MySQL
 # -----------------------------------------------------

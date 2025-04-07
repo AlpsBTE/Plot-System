@@ -27,9 +27,11 @@ package com.alpsbte.plotsystem.core.menus;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
@@ -79,15 +81,19 @@ public class PlotTypeMenu extends AbstractMenu {
                         .setEnchanted(builder.getPlotType().getId() == PlotType.LOCAL_INSPIRATION_MODE.getId())
                         .build());
 
-        getMenu().getSlot(15).setItem(
-                new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.CITY_INSPIRATION_MODE_BUTTON.getId()))
-                        .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE), GOLD, BOLD)
-                                .append(text(" [", DARK_GRAY).append(text("BETA", RED).append(text("]", DARK_GRAY))))) // temporary BETA tag
-                        .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
-                                .build())
-                        .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
-                        .build());
+        boolean inspirationModeDisabled = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE); // TODO remove or enhance as soon CIM is working again
+        if (!inspirationModeDisabled) {
+            getMenu().getSlot(15).setItem(
+                    new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.CITY_INSPIRATION_MODE_BUTTON.getId()))
+                            .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE), GOLD, BOLD)
+                                    .append(text(" [", DARK_GRAY).append(text("BETA", RED).append(text("]", DARK_GRAY))))) // temporary BETA tag
+                            .setLore(new LoreBuilder()
+                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
+                                    .build())
+                            .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
+                            .build());
+        }
+
 
         // Set selected glass pane
         int selectedPlotTypeSlot = 13;
@@ -119,12 +125,15 @@ public class PlotTypeMenu extends AbstractMenu {
             reloadMenuAsync();
         }));
 
-        getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
-            boolean successful = builder.setPlotType(PlotType.CITY_INSPIRATION_MODE);
-            if (!successful) return;
-            getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
-            reloadMenuAsync();
-        }));
+        boolean inspirationModeDisabled = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE); // TODO improve or remove when CIM ist working again
+        if (!inspirationModeDisabled) {
+            getMenu().getSlot(15).setClickHandler(((clickPlayer, clickInformation) -> {
+                boolean successful = builder.setPlotType(PlotType.CITY_INSPIRATION_MODE);
+                if (!successful) return;
+                getMenuPlayer().playSound(getMenuPlayer().getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
+                reloadMenuAsync();
+            }));
+        }
 
         // Set click event for back item
         getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer));

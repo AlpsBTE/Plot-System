@@ -36,6 +36,7 @@ public abstract class ConfigPaths {
     public static final String REJECTED_INACTIVITY_INTERVAL = "rejected-inactivity-interval";
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
     public static final String UNFINISHED_REMINDER_INTERVAL = "unfinished-reminder-interval";
+    public static final String DISABLE_CITY_INSPIRATION_MODE = "disable-city-inspiration-mode";
 
     // Database
     private static final String DATABASE = "database.";

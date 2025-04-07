@@ -24,10 +24,12 @@
 
 package com.alpsbte.plotsystem.core.system;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -42,14 +44,17 @@ public class Builder {
     private int thirdSlot;
     private int plotType;
 
-    public Builder(UUID UUID, String name, int score, int first_slot, int second_slot, int third_slot, int plotType) {
+    public Builder(UUID UUID, String name, int score, int firstSlot, int secondSlot, int thirdSlot, int plotType) {
         this.uuid = UUID;
         this.name = name;
         this.score = score;
-        this.firstSlot = first_slot;
-        this.secondSlot = second_slot;
-        this.thirdSlot = third_slot;
+        this.firstSlot = firstSlot;
+        this.secondSlot = secondSlot;
+        this.thirdSlot = thirdSlot;
         this.plotType = plotType;
+
+        boolean inspirationModeDisabled = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE); // TODO remove or improve when CIM is working again
+        if (inspirationModeDisabled && plotType == 2) this.plotType = 1;
     }
 
     public java.util.UUID getUUID() {
