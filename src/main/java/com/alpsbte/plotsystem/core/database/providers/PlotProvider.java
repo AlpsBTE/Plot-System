@@ -183,14 +183,28 @@ public class PlotProvider {
         int plotId = rs.getInt("plot_id");
         CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString("city_project_id")).orElseThrow();
         PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString("difficulty_id")).orElseThrow().getDifficulty();
-        UUID ownerUUID = UUID.fromString(rs.getString("owner_uuid"));
+
+        String ownerUUIDString = rs.getString("owner_uuid");
+        UUID ownerUUID = ownerUUIDString != null ? UUID.fromString(ownerUUIDString) : null;
+
         Status status = Status.valueOf(rs.getString("status"));
         String outlineBounds = rs.getString("outline_bounds");
-        LocalDate lastActivity = rs.getDate("last_activity_date").toLocalDate();
+        Date lastActivity = rs.getDate("last_activity_date");
+
         double version = rs.getDouble("plot_version");
         PlotType type = PlotType.byId(rs.getInt("plot_type"));
 
-        return new Plot(plotId, cityProject, difficulty, ownerUUID, status, outlineBounds, lastActivity, version, type, getPlotMembers(plotId));
+        return new Plot(
+                plotId,
+                cityProject,
+                difficulty,
+                ownerUUID,
+                status,
+                outlineBounds,
+                lastActivity != null ? lastActivity.toLocalDate() : null,
+                version,
+                type,
+                getPlotMembers(plotId));
     }
 
     public List<Builder> getPlotMembers(int plotId) {
