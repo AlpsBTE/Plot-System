@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
@@ -33,6 +34,8 @@ import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -71,6 +74,7 @@ public class BuilderProvider {
             stmt.setString(1, name);
 
             try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return null;
                 String uuid = rs.getString(1);
                 if (uuid != null) return getBuilderByUUID(UUID.fromString(uuid));
             }
@@ -84,7 +88,7 @@ public class BuilderProvider {
         if (builders.containsKey(uuid)) return true;
 
         String selectQuery = "SELECT 1 FROM builder WHERE uuid = ?;";
-        String insertQuery = "INSERT INTO builder (uuid, name) VALUES (?, ?);";
+        String insertQuery = "INSERT INTO builder (uuid, name, plot_type) VALUES (?, ?, 1);";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement selectStmt = conn.prepareStatement(selectQuery)) {
             selectStmt.setString(1, uuid.toString());
@@ -164,11 +168,12 @@ public class BuilderProvider {
     }
 
     public int getCompletedBuildsCount(UUID uuid) {
-        String query = "SELECT COUNT(*) AS completed_plots FROM plot p INNER JOIN builder_is_plot_member " +
-                "bipm ON p.plot_id = bipm.plot_id WHERE p.status = 'completed' AND bhp.uuid = ?;";
+        String query = "SELECT COUNT(p.plot_id) AS completed_plots FROM plot p INNER JOIN builder_is_plot_member " +
+                "bipm ON p.plot_id = bipm.plot_id WHERE p.status = 'completed' AND (p.owner_uuid = ? OR bipm.uuid = ?);";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, uuid.toString());
+            stmt.setString(2, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
@@ -256,6 +261,7 @@ public class BuilderProvider {
         String query = "SELECT uuid FROM build_team_has_reviewer WHERE build_team_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, buildTeamId);
             try (ResultSet rs = stmt.executeQuery()) {
                 stmt.setInt(1, buildTeamId);
 
@@ -279,9 +285,11 @@ public class BuilderProvider {
      * @return provides the leaderboard entry for the player, or null if not found.
      */
     public LeaderboardEntry getLeaderboardEntryByUUID(UUID uuid, LeaderboardTimeframe sortBy) {
+        return null; // TODO: fix leaderboard query
+        /*
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(uuid, sortBy))) {
-
+            stmt.setString(1, uuid.toString());
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new LeaderboardEntry(rs.getInt(2), rs.getInt(3), rs.getInt(4));
@@ -290,7 +298,7 @@ public class BuilderProvider {
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
-        return null;
+        return null;*/
     }
 
     /**
@@ -300,6 +308,8 @@ public class BuilderProvider {
      * @return provides a map of player names and their scores, or null if no data is found.
      */
     public Map<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
+        return null; // TODO: fix leaderboard query
+        /*
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(null, sortBy))) {
 
@@ -311,7 +321,7 @@ public class BuilderProvider {
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
-        return null;
+        return null;*/
     }
 
     /**
@@ -330,6 +340,7 @@ public class BuilderProvider {
      * @return the constructed SQL query as a {@code String}.
      */
     private static String getLeaderboardQuery(@Nullable UUID uuid, LeaderboardTimeframe sortBy) {
+        // TODO: fix leaderboard query
         String minimumDate = switch (sortBy) {
             case DAILY -> "(NOW() - INTERVAL 1 DAY)";
             case WEEKLY -> "(NOW() - INTERVAL 1 WEEK)";
@@ -344,9 +355,9 @@ public class BuilderProvider {
                         "INNER JOIN plot_review r_sub ON r_sub.plot_id = bhp_sub.plot_id " +
                         (minimumDate != null ? "WHERE r.review_date BETWEEN " + minimumDate + " AND NOW()" : "") + ") " +
                         "AS total_positions" : "") +
-                " FROM builder_has_plot bhp" +
-                "INNER JOIN builder b ON b.uuid = bhp.uuid" +
-                "INNER JOIN plot_review r ON r.plot_id = bhp.plot_id" +
+                " FROM builder_has_plot bhp " +
+                "INNER JOIN builder b ON b.uuid = bhp.uuid " +
+                "INNER JOIN plot_review r ON r.plot_id = bhp.plot_id " +
                 (minimumDate != null
                         ? "WHERE r.review_date BETWEEN " + minimumDate + " AND NOW()"
                         : "") +

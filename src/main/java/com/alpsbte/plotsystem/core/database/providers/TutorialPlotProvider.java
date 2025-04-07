@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.utils.Utils;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,8 +59,11 @@ public class TutorialPlotProvider {
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
                         int plotId = freeTutorialPlotIds.isEmpty() ? 0 : freeTutorialPlotIds.poll();
-                        TutorialPlot newTutorialPlot = new TutorialPlot(plotId, tutorialId, playerUUID, rs.getInt(1),
-                                rs.getBoolean(2), rs.getDate(3).toLocalDate());
+                        int stageId = rs.getInt(1);
+                        boolean isComplete = rs.getBoolean(2);
+                        Date lastStageCompleteDate = rs.getDate(3);
+                        TutorialPlot newTutorialPlot = new TutorialPlot(plotId, tutorialId, playerUUID, stageId,
+                                isComplete, lastStageCompleteDate != null ? lastStageCompleteDate.toLocalDate() : null);
                         tutorialPlots.put(newTutorialPlot, plotId);
 
                         return Optional.of(newTutorialPlot);

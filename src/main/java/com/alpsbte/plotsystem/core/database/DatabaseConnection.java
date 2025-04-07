@@ -71,7 +71,7 @@ public class DatabaseConnection {
 
         dataSource = new HikariDataSource(config);
 
-        createTables();
+        //createTables();
     }
 
     public static Connection getConnection() throws SQLException {
@@ -202,28 +202,25 @@ public class DatabaseConnection {
 
         static {
             tables = Arrays.asList(
-                    // FTP Configurations
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_ftp_configurations`" +
+                    // System Info
+                    "CREATE TABLE IF NOT EXISTS system_info" +
                             "(" +
-                            " `id`              int NOT NULL AUTO_INCREMENT ," +
-                            " `address`         varchar(255) NOT NULL ," +
-                            " `port`            int NOT NULL ," +
-                            " `isSFTP`          tinyint NOT NULL DEFAULT 1 ," +
-                            " `username`        varchar(255) NOT NULL ," +
-                            " `password`        varchar(255) NOT NULL ," +
-                            " `schematics_path` varchar(255) NULL ," +
-                            "PRIMARY KEY (`id`)" +
+                            "    system_id            INT    NOT NULL AUTO_INCREMENT," +
+                            "    db_version           DOUBLE NOT NULL," +
+                            "    current_plot_version DOUBLE NOT NULL," +
+                            "    last_update          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+                            "    description          TEXT   NULL," +
+                            "    PRIMARY KEY (system_id)" +
                             ");",
 
-                    // Servers
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_servers`" +
+                    // Build Team
+                    "CREATE TABLE IF NOT EXISTS build_team" +
                             "(" +
-                            " `id`                   int NOT NULL AUTO_INCREMENT ," +
-                            " `ftp_configuration_id` int NULL ," +
-                            " `name`                 varchar(45) NOT NULL ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `fkIdx_30` (`ftp_configuration_id`)," +
-                            "CONSTRAINT `FK_29` FOREIGN KEY `fkIdx_30` (`ftp_configuration_id`) REFERENCES `plotsystem_ftp_configurations` (`id`)" +
+                            "    build_team_id   INT          NOT NULL AUTO_INCREMENT," +
+                            "    name            VARCHAR(255) NOT NULL," +
+                            "    api_key         VARCHAR(255) NULL UNIQUE," +
+                            "    api_create_date DATETIME     NULL," +
+                            "    PRIMARY KEY (build_team_id)" +
                             ");",
 
                     // Countries

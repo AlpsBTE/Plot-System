@@ -42,12 +42,12 @@ import java.util.List;
 import static net.kyori.adventure.text.Component.*;
 
 public enum Continent {
-    EUROPE("europe", LangPaths.Continent.EUROPE),
-    ASIA("asia", LangPaths.Continent.ASIA),
-    AFRICA("africa", LangPaths.Continent.AFRICA),
-    OCEANIA("oceania", LangPaths.Continent.OCEANIA),
-    SOUTH_AMERICA("south america", LangPaths.Continent.SOUTH_AMERICA),
-    NORTH_AMERICA("north america", LangPaths.Continent.NORTH_AMERICA);
+    EUROPE("EU", LangPaths.Continent.EUROPE),
+    ASIA("AS", LangPaths.Continent.ASIA),
+    AFRICA("AF", LangPaths.Continent.AFRICA),
+    OCEANIA("OC", LangPaths.Continent.OCEANIA),
+    SOUTH_AMERICA("SA", LangPaths.Continent.SOUTH_AMERICA),
+    NORTH_AMERICA("NA", LangPaths.Continent.NORTH_AMERICA);
 
     public final String databaseEnum;
     public final String langPath;

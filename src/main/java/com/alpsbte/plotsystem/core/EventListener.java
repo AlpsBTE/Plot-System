@@ -89,25 +89,26 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        // Add Items
+        Utils.updatePlayerInventorySlots(player);
+
         // User has joined for the first time
         // Adding user to the database
+
+        // Create builder if it does not exist in database.
+        boolean successful = DataProvider.BUILDER.addBuilderIfNotExists(player.getUniqueId(), player.getName());
+        if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("BUILDER COULD NOT BE CREATED!!", RED));
+
+        // Check if player has changed their name
+        Builder builder = Builder.byUUID(player.getUniqueId());
+        if (!builder.getName().equals(player.getName())) {
+            successful = builder.setName(player.getName());
+            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Builder name could not be updated!", RED));
+        }
+
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            Player player = event.getPlayer();
-
-            // Add Items
-            Utils.updatePlayerInventorySlots(player);
-
-            // Create builder if it does not exist in database.
-            boolean successful = DataProvider.BUILDER.addBuilderIfNotExists(player.getUniqueId(), player.getName());
-            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("BUILDER COULD NOT BE CREATED!!", RED));
-
-            // Check if player has changed their name
-            Builder builder = Builder.byUUID(player.getUniqueId());
-            if (!builder.getName().equals(player.getName())) {
-                successful = builder.setName(player.getName());
-                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Builder name could not be updated!", RED));
-            }
-
             sendNotices(event.getPlayer(), builder);
         });
     }

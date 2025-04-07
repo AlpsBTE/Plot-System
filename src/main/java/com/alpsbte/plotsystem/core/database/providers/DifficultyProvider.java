@@ -70,11 +70,12 @@ public class DifficultyProvider {
     }
 
     public Optional<Difficulty> getDifficultyById(String id) {
-        return cachedDifficulties.stream().filter(d -> d.getID().equals(id)).findAny();
+        return cachedDifficulties.stream().filter(d -> d.getID().equalsIgnoreCase(id)).findAny();
     }
 
     public Optional<Difficulty> getDifficultyByEnum(PlotDifficulty difficulty) {
-        return cachedDifficulties.stream().filter(d -> d.getID().equals(difficulty.name())).findFirst();
+        if (difficulty == null) return Optional.empty();
+        return cachedDifficulties.stream().filter(d -> d.getID().equalsIgnoreCase(difficulty.name())).findFirst();
     }
 
     public boolean setMultiplier(String id, double multiplier) {
@@ -107,7 +108,7 @@ public class DifficultyProvider {
         Optional<Difficulty> cachedDifficulty = getDifficultyByEnum(plotDifficulty);
         if (cachedDifficulty.isEmpty()) {
             PlotSystem.getPlugin().getComponentLogger().error(text("No database entry for difficulty "
-                    + plotDifficulty.name() + " was found!"));
+                    + plotDifficulty.toString() + " was found!"));
             return false;
         }
 

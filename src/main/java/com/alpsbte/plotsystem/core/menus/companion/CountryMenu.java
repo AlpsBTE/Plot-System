@@ -59,7 +59,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public class CountryMenu extends AbstractMenu {
     private List<Country> countryProjects;
     private final Continent selectedContinent;
-    private PlotDifficulty selectedPlotDifficulty = null;
+    private PlotDifficulty selectedPlotDifficulty = PlotDifficulty.EASY;
 
     CountryMenu(Player player, @NotNull Continent continent) {
         super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY), player);

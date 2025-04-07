@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.*;
@@ -33,6 +34,8 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -136,7 +139,7 @@ public class PlotProvider {
 
         String cityPlaceholders = "?,".repeat(cities.size() - 1) + "?";
         String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id IN (" + cityPlaceholders + ")";
-        query += statuses.length > 0 ? " AND status IN (?,".repeat(statuses.length - 1) + "?);" : ";";
+        query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             int index = 1;
@@ -157,7 +160,7 @@ public class PlotProvider {
     public List<Plot> getPlots(Builder builder, Status... statuses) {
         String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot LEFT JOIN builder_is_plot_member pm ON " +
                 "plot.plot_id = pm.plot_id WHERE (plot.owner_uuid = ? OR pm.uuid = ?)";
-        query += statuses.length > 0 ? "AND plot.status IN (?,".repeat(statuses.length - 1) + "?);" : ";";
+        query += statuses.length > 0 ? "AND plot.status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             String builderUUID = builder.getUUID().toString();
