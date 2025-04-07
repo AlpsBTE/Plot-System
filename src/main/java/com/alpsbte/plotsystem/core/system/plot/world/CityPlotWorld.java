@@ -90,7 +90,7 @@ public class CityPlotWorld extends PlotWorld {
     /**
      * Calculate additional height for the plot
      *
-     * @return additional height
+     * @return The origin plot height from schematic if it is in plot world boundary, else 0
      * @throws IOException if the outline schematic fails to load
      */
     @Beta
@@ -100,17 +100,24 @@ public class CityPlotWorld extends PlotWorld {
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
             clipboard = reader.read();
         }
+        if (clipboard != null) {
+            int plotHeight = clipboard != null ? clipboard.getMinimumPoint().y() : MIN_WORLD_HEIGHT;
 
-        int plotHeight = clipboard != null ? clipboard.getMinimumPoint().y() : MIN_WORLD_HEIGHT;
+            /// Minimum building height for a plot (this should be configurable depending on minecraft build limit)
+            /// This is in the case that a plot is created at y level 300 where the max build limit is 318,
+            /// so you don't want builder to only be able to build for 18 blocks
+            int minBuildingHeight = 128;
 
-        // Plots created below min world height are not supported
-        if (plotHeight < MIN_WORLD_HEIGHT) throw new IOException("Plot height is not supported");
+            /// Negative y level of the current minecraft version (1.21)
+            /// Additional ground layer the plot use to save as schematic need to be included for plot's y-level
+            int groundLayer = 64;
 
-        // Move Y height to a usable value below 256 blocks
-        while (plotHeight >= 150) {
-            plotHeight -= 150;
+            // Plots created outside of vanilla build limit or the build-able height is too small
+            if (plotHeight + groundLayer < MIN_WORLD_HEIGHT + groundLayer
+                    | plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
+                return 0; // throw new IOException("Plot height is out of range.");
+            return plotHeight;
         }
-        return plotHeight;
     }
 
     /**

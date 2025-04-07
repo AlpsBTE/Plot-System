@@ -227,8 +227,8 @@ public final class PlotUtils {
             cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
         }
 
-        ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, clipboard, region.getMinimumPoint());
-        Operations.complete(forwardExtentCopy);
+            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
+            Operations.complete(forwardExtentCopy);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {

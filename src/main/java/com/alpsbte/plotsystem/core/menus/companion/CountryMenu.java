@@ -102,7 +102,7 @@ public class CountryMenu extends AbstractMenu {
                 generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty));
 
         // Set click event for plots difficulty item
-        getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(6).setClickHandler((clickPlayer, clickInformation) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
                     PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
                     PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
@@ -111,7 +111,7 @@ public class CountryMenu extends AbstractMenu {
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
 
             setCountryItems();
-        }));
+        });
 
         CompanionMenu.clickEventTutorialItem(getMenu());
 
