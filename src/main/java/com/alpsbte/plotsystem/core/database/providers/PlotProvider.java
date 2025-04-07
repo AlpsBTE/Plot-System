@@ -24,24 +24,19 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.*;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class PlotProvider {
@@ -59,10 +54,12 @@ public class PlotProvider {
                 if (!rs.next()) return null;
                 CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString(1)).orElseThrow();
                 PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString(2)).orElseThrow().getDifficulty();
-                UUID ownerUUID = UUID.fromString(rs.getString(3));
+                String ownerUUIDString = rs.getString(3);
+                UUID ownerUUID = ownerUUIDString != null ? UUID.fromString(ownerUUIDString) : null;
                 Status status = Status.valueOf(rs.getString(4));
                 String outlineBounds = rs.getString(5);
-                LocalDate lastActivity = rs.getDate(6).toLocalDate();
+                Date lastActivityDate = rs.getDate(6);
+                LocalDate lastActivity = lastActivityDate != null ? lastActivityDate.toLocalDate() : null;
                 double version = rs.getDouble(7);
                 PlotType type = PlotType.byId(rs.getInt(8));
 
@@ -234,11 +231,10 @@ public class PlotProvider {
     }
 
     private byte[] getSchematic(int plotId, String name) {
-        String query = "SELECT ? FROM plot WHERE plot_id = ?;";
+        String query = "SELECT " + name + " FROM plot WHERE plot_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, name);
-            stmt.setInt(2, plotId);
+            stmt.setInt(1, plotId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (!rs.next()) return null;
                 return rs.getBytes(1);

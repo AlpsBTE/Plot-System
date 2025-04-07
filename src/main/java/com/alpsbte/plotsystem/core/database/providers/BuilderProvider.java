@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
@@ -34,8 +33,6 @@ import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -136,7 +133,7 @@ public class BuilderProvider {
     }
 
     public boolean setSlot(UUID uuid, int plotID, Slot slot) {
-        String query = "UPDATE builder b SET " + slot.name().toLowerCase() + " = " +
+        String query = "UPDATE builder b SET " + slot.name().toLowerCase() + "_slot = " +
                 (plotID > 0 ? "?" : "DEFAULT(first_slot)") + " WHERE uuid = ?;";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -191,6 +188,7 @@ public class BuilderProvider {
             stmt.setString(1, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return null;
                 for (int i = 1; i <= 3; i++) {
                     if (rs.getString(i) == null) return Slot.values()[i - 1];
                 }
@@ -208,6 +206,7 @@ public class BuilderProvider {
             stmt.setString(1, uuid.toString());
 
             try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) return null;
                 if (rs.getInt(1) == plotId) return Slot.FIRST;
                 if (rs.getInt(2) == plotId) return Slot.SECOND;
                 if (rs.getInt(3) == plotId) return Slot.THIRD;

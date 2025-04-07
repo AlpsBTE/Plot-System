@@ -30,7 +30,6 @@ import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.CommandSender;
 
