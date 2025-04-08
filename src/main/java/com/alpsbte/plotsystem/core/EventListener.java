@@ -108,9 +108,7 @@ public class EventListener implements Listener {
             if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Builder name could not be updated!", RED));
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            sendNotices(event.getPlayer(), builder);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> sendNotices(event.getPlayer(), builder));
     }
 
     @EventHandler
@@ -268,15 +266,32 @@ public class EventListener implements Listener {
     }
 
     private void sendNotices(@NotNull Player player, Builder builder) {
+        sendAdminNotices(player);
+        sendReviewNotices(player, builder);
+
+        // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
+        if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
+            if (!player.hasPlayedBefore()) {
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                        () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
+            } else {
+                AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
+                player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
+            }
+        }
+    }
+
+    private void sendAdminNotices(@NotNull Player player) {
         // Inform player about update
         if (player.hasPermission("plotsystem.admin") && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES) && PlotSystem.UpdateChecker.updateAvailable()) {
             player.sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
             player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
         }
+    }
 
+    private void sendReviewNotices(@NotNull Player player, Builder builder) {
         // Informing player about new feedback
         List<ReviewNotification> notifications = DataProvider.REVIEW.getReviewNotifications(player.getUniqueId());
-
         if (!notifications.isEmpty()) {
             PlotUtils.ChatFormatting.sendFeedbackMessage(notifications, player);
             String subtitleText = " Plot" + (notifications.size() == 1 ? " " : "s ") + (notifications.size() == 1 ? "has" : "have") + " been reviewed!"; // TODO: translate
@@ -286,7 +301,6 @@ public class EventListener implements Listener {
                     Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(8), Duration.ofSeconds(1)))
             );
         }
-
         PlotUtils.informPlayerAboutUnfinishedPlots(player, builder);
         PlotUtils.startUnfinishedPlotReminderTimer(player);
 
@@ -297,18 +311,6 @@ public class EventListener implements Listener {
 
             if (!unreviewedPlots.isEmpty()) {
                 PlotUtils.ChatFormatting.sendUnreviewedPlotsReminderMessage(unreviewedPlots, player);
-            }
-        }
-
-
-        // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
-        if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
-            if (!player.hasPlayedBefore()) {
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
-                        () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
-            } else {
-                AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
-                player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
             }
         }
     }

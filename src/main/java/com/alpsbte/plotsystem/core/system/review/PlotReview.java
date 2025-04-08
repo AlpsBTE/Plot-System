@@ -79,17 +79,15 @@ public class PlotReview {
 
         // remove owner score and remove plot from slot
         if (!plot.getPlotOwner().addScore(-plot.getSharedScore())) return false;
-        if (plot.getPlotOwner().getFreeSlot() != null) {
-            if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID())) return false;
-        }
+        if (plot.getPlotOwner().getFreeSlot() != null
+                && !plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID()))
+            return false;
 
         // remove members score and remove plot from slot
         for (Builder member : plot.getPlotMembers()) {
             if (!member.addScore(-plot.getSharedScore())) return false;
-
-            if (member.getFreeSlot() != null) {
-                if(!member.setSlot(member.getFreeSlot(), plot.getID())) return false;
-            }
+            if (member.getFreeSlot() != null && !member.setSlot(member.getFreeSlot(), plot.getID()))
+                return false;
         }
 
         plot.setStatus(Status.unreviewed);
