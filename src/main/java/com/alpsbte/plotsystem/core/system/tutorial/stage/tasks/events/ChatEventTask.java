@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -32,6 +31,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
 
 public class ChatEventTask extends AbstractTask implements EventTask {
     private final int expectedValue;
@@ -56,14 +56,13 @@ public class ChatEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof AsyncChatEvent) {
-            AsyncChatEvent chatEvent = (AsyncChatEvent) event;
+        if (event instanceof AsyncChatEvent chatEvent) {
             chatEvent.setCancelled(true);
 
-            TextComponent message = (TextComponent) chatEvent.message();
-            if (AlpsUtils.tryParseInt(message.content()) != null) {
-                int value = Integer.parseInt(message.content());
-                if (value >= expectedValue - offset && value <= expectedValue + offset) {
+            int inputNum = getStartDigits(((TextComponent) chatEvent.message()).content());
+
+            if (inputNum != -1) {
+                if (inputNum >= expectedValue - offset && inputNum <= expectedValue + offset) {
                     onChatAction.performAction(true, attemptsLeft);
                     attemptsLeft = 0;
                 } else {
@@ -77,5 +76,21 @@ public class ChatEventTask extends AbstractTask implements EventTask {
                 setTaskDone();
             }
         }
+    }
+
+    private int getStartDigits(@NotNull String message) {
+        int i = 0;
+        StringBuilder digits = new StringBuilder("0");
+        while (i < message.length()) {
+            if (Character.isDigit(message.charAt(i))) {
+                digits.append(message.charAt(i));
+            } else if (i == 0) {
+                return -1;
+            } else {
+                break;
+            }
+            i++;
+        }
+        return Integer.parseInt(digits.toString());
     }
 }

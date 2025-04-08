@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.utils.items;
 
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -64,10 +64,9 @@ public enum BaseItems {
 
     BaseItems(String configPath) {
         String materialString = ConfigUtil.getInstance().configs[2].getString(configPath + ".material");
-        Material material = Material.getMaterial(materialString == null ? "" : materialString, false);
-        material = material == null ? Material.BARRIER : material;
-
-        itemStack = new ItemBuilder(material).setItemModel(ConfigUtil.getInstance().configs[2].get(configPath + ".modelId")).build();
+        materialString = materialString == null ? Material.BARRIER.name() : materialString;
+        Object customModelData = ConfigUtil.getInstance().configs[2].get(configPath + ".modelId");
+        itemStack = Utils.getConfiguredItem(materialString, customModelData);
     }
 
     public ItemStack getItem() {

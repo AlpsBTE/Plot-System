@@ -26,8 +26,7 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -35,12 +34,10 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -50,67 +47,99 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CityProject {
+    private final String ID;
+    private final String countryCode;
+    private String serverName;
+    private boolean isVisible;
+    private int buildTeamId;
 
-    private final int ID;
-    private int countryID;
-
-    private String name;
-    private String description;
-    private boolean visible;
-
-    public CityProject(int ID) throws SQLException {
-        this.ID = ID;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT country_id, name, description, visible FROM plotsystem_city_projects WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                this.countryID = rs.getInt(1);
-                this.name = rs.getString(2);
-                this.description = rs.getString(3);
-                this.visible = rs.getInt(4) == 1;
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-        }
+    public CityProject(String id, String countryCode, String serverName, boolean isVisible, int buildTeamId) {
+        this.ID = id;
+        this.countryCode = countryCode;
+        this.serverName = serverName;
+        this.isVisible = isVisible;
+        this.buildTeamId = buildTeamId;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
-    public Country getCountry() throws SQLException {
-        return new Country(countryID);
+    public Country getCountry() {
+        // city project objects will never be created with an id of a country that does not exist as this would throw a sql exception first
+        return DataProvider.COUNTRY.getCountryByCode(countryCode).orElseThrow();
     }
 
-    public String getName() {
-        return name;
+    public String getServerName() {
+        return serverName;
     }
 
-    public String getDescription() {
-        return description;
+    public boolean setServer(String serverName) {
+        if (DataProvider.CITY_PROJECT.setServer(ID, serverName)) {
+            this.serverName = serverName;
+            return true;
+        }
+        return false;
     }
 
     public boolean isVisible() {
-        return visible;
+        return isVisible;
     }
 
-    public ItemStack getItem(Player player, PlotDifficulty selectedPlotDifficulty) throws SQLException {
-        ItemStack cpItem = getCountry().getHead();
-        try {
-            PlotDifficulty cpPlotDifficulty = selectedPlotDifficulty != null ?
-                    selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(getID(), Builder.byUUID(player.getUniqueId())).get();
+    public boolean setVisible(boolean isVisible) {
+        if (DataProvider.CITY_PROJECT.setVisibility(ID, isVisible)) {
+            this.isVisible = isVisible;
+            return true;
+        }
+        return false;
+    }
 
-            int plotsOpen = Plot.getPlots(getID(), Status.unclaimed).size();
-            int plotsInProgress = Plot.getPlots(getID(), Status.unfinished, Status.unreviewed).size();
-            int plotsCompleted = Plot.getPlots(getID(), Status.completed).size();
-            int plotsUnclaimed = cpPlotDifficulty != null ? Plot.getPlots(getID(), cpPlotDifficulty, Status.unclaimed).size() : 0;
-            int plotsOpenForPlayer = cpPlotDifficulty != null && plotsUnclaimed != 0 ? getOpenPlotsForPlayer(getID(), cpPlotDifficulty) : 0;
+    public String getName(Player player) {
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".name");
+    }
+
+    public String getDescription(Player player) {
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".description");
+    }
+
+    public BuildTeam getBuildTeam() {
+        return DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).orElseThrow();
+    }
+
+    public boolean setBuildTeam(int buildTeamId) {
+        if (DataProvider.CITY_PROJECT.setBuildTeam(ID, buildTeamId)) {
+            this.buildTeamId = buildTeamId;
+            return true;
+        }
+        return false;
+    }
+
+    public List<TextComponent> getDescriptionComponents(Player player) {
+        ArrayList<TextComponent> descriptionLines = new ArrayList<>();
+        for (String line : getDescription(player).split("%newline%")) descriptionLines.add(text(line));
+        return descriptionLines;
+    }
+
+    public ItemStack getItem(Player player, PlotDifficulty selectedPlotDifficulty) {
+        ItemStack cpItem = getCountry().getCountryItem();
+        try {
+            PlotDifficulty plotDifficulty = selectedPlotDifficulty != null ?
+                    selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(this, Builder.byUUID(player.getUniqueId())).get();
+
+            int plotsOpen = DataProvider.PLOT.getPlots(this, Status.unclaimed).size();
+            int plotsInProgress = DataProvider.PLOT.getPlots(this, Status.unfinished, Status.unreviewed).size();
+            int plotsCompleted = DataProvider.PLOT.getPlots(this, Status.completed).size();
+            int plotsUnclaimed = plotDifficulty != null
+                    ? DataProvider.PLOT.getPlots(this, plotDifficulty, Status.unclaimed).size()
+                    : 0;
+            int plotsOpenForPlayer = plotDifficulty != null && plotsUnclaimed != 0
+                    ? DataProvider.PLOT.getPlots(this, plotDifficulty, Status.unclaimed).size()
+                    : 0;
 
             return new ItemBuilder(cpItem)
-                    .setName(text(getName(), AQUA).decoration(BOLD, true))
+                    .setName(text(getName(player), AQUA).decoration(BOLD, true))
                     .setLore(new LoreBuilder()
-                            .addLines(true, getDescription())
+                            .addLines(getDescriptionComponents(player))
                             .emptyLine()
                             .addLine(text(plotsOpen, GOLD)
                                     .append(text(" " + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_OPEN) + " ", GRAY))
@@ -123,75 +152,14 @@ public class CityProject {
                                     .append(text(" " + LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_COMPLETED), GRAY)))
                             .emptyLine()
                             .addLine(plotsUnclaimed != 0
-                                    ? Utils.ItemUtils.getFormattedDifficulty(cpPlotDifficulty)
+                                    ? Utils.ItemUtils.getFormattedDifficulty(plotDifficulty, player)
                                     : text(LangUtil.getInstance().get(player, LangPaths.CityProject.PROJECT_NO_PLOTS_AVAILABLE), WHITE).decoration(BOLD, true))
                             .build())
                     .build();
-        } catch (SQLException | ExecutionException | InterruptedException ex) {
+        } catch (ExecutionException | InterruptedException ex) {
             Utils.logSqlException(ex);
             Thread.currentThread().interrupt();
             return MenuItems.errorItem(player);
         }
-    }
-
-    public static @NotNull List<CityProject> getCityProjects(Country country, boolean onlyVisible) {
-        // if country is not null, only get country's city projects, otherwise load all
-        DatabaseConnection.StatementBuilder statement = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects " + (country == null ? "" : "WHERE country_id = ?") + " ORDER BY country_id");
-        if (country != null) statement.setValue(country.getID());
-
-        try (ResultSet rs = statement.executeQuery()) {
-            List<CityProject> cityProjects = new ArrayList<>();
-            while (rs.next()) {
-                CityProject city = new CityProject(rs.getInt(1));
-                if (city.isVisible() || !onlyVisible) cityProjects.add(city);
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return cityProjects;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
-        return new ArrayList<>();
-    }
-
-    public int getOpenPlotsForPlayer(int plotID, PlotDifficulty plotDifficulty) throws SQLException {
-        return Plot.getPlots(plotID, plotDifficulty, Status.unclaimed).size();
-    }
-
-
-    public static @NotNull List<CityProject> getCityProjects(boolean onlyVisible) {
-        return getCityProjects(null, onlyVisible);
-    }
-
-    public static void addCityProject(@NotNull Country country, String name) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_city_projects (id, name, country_id, description, visible) VALUES (?, ?, ?, ?, ?)")
-                .setValue(DatabaseConnection.getTableID("plotsystem_city_projects"))
-                .setValue(name)
-                .setValue(country.getID())
-                .setValue("")
-                .setValue(true).executeUpdate();
-    }
-
-    public static void removeCityProject(int id) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_city_projects WHERE id = ?")
-                .setValue(id).executeUpdate();
-    }
-
-    public static void setCityProjectName(int id, String newName) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET name = ? WHERE id = ?")
-                .setValue(newName)
-                .setValue(id).executeUpdate();
-    }
-
-    public static void setCityProjectDescription(int id, String description) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET description = ? WHERE id = ?")
-                .setValue(description)
-                .setValue(id).executeUpdate();
-    }
-
-    public static void setCityProjectVisibility(int id, boolean isEnabled) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_city_projects SET visible = ? WHERE id = ?")
-                .setValue(isEnabled ? 1 : 0)
-                .setValue(id).executeUpdate();
     }
 }

@@ -191,7 +191,6 @@ public class PlotSystem extends JavaPlugin {
         DecentHologramDisplay.registerPlugin(this);
         HologramRegister.init();
         PlotUtils.checkPlotsForLastActivity();
-        PlotUtils.syncPlotSchematicFiles();
         Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
 
@@ -234,7 +233,8 @@ public class PlotSystem extends JavaPlugin {
         } else {
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
-                for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(Builder.byUUID(player))) {
+                Builder builder = Builder.byUUID(player);
+                for (Plot plot : PlotUtils.Cache.getCachedInProgressPlots(builder)) {
                     if (plot != null) plot.getWorld().unloadWorld(true);
                 }
             }
@@ -270,7 +270,6 @@ public class PlotSystem extends JavaPlugin {
     public static PlotSystem getPlugin() {
         return plugin;
     }
-
     public CommandManager getCommandManager() {
         return commandManager;
     }

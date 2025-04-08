@@ -24,133 +24,55 @@
 
 package com.alpsbte.plotsystem.core.system;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class Country {
 
-    private final int ID;
-    private int serverID;
+    private final String code;
 
-    private String name;
-    private String headID;
+    private String material;
+    private String customModelData;
 
-    private String continent;
+    private final Continent continent;
 
-    public Country(int ID) throws SQLException {
-        this.ID = ID;
-
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT server_id, name, head_id, continent FROM plotsystem_countries WHERE id = ?")
-                .setValue(this.ID).executeQuery()) {
-
-            if (rs.next()) {
-                this.serverID = rs.getInt(1);
-                this.name = rs.getString(2);
-                this.headID = rs.getString(3);
-                this.continent = rs.getString(4);
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-        }
+    public Country(String code, Continent continent, String material, String customModelData) {
+        this.code = code;
+        this.continent = continent;
+        this.material = material;
+        this.customModelData = customModelData;
     }
 
-    public int getID() {
-        return ID;
-    }
+    public String getCode() {return code;}
 
-    public Server getServer() throws SQLException {
-        return new Server(serverID);
-    }
+    public Continent getContinent() {return continent;}
 
-    public String getName() {
-        return name;
-    }
-
-    public ItemStack getHead() {
-        return AlpsHeadUtils.getCustomHead(headID);
-    }
-
-    /**
-     * Get city projects that are inside this country
-     * <p>
-     * Might be a good idea to put this in CityProject but could work in both classes
-     *
-     * @return CityProjects inside this country
-     */
     public List<CityProject> getCityProjects() {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_city_projects WHERE country_id = ?").setValue(getID()).executeQuery()) {
-            List<CityProject> cityProjects = new ArrayList<>();
-            while (rs.next()) {
-                cityProjects.add(new CityProject(rs.getInt(1)));
-            }
+        return DataProvider.CITY_PROJECT.getByCountryCode(code, true);
+    }
 
-            DatabaseConnection.closeResultSet(rs);
-            return cityProjects;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+    public String getName(Player player) {
+        return LangUtil.getInstance().get(player, LangPaths.Database.COUNTRY + "." + code + ".name");
+    }
+
+    public boolean setMaterialAndModelData(String material, @Nullable String customModelData) {
+        if (DataProvider.COUNTRY.setMaterialAndCustomModelData(code, material, customModelData)) {
+            this.material = material;
+            this.customModelData = customModelData;
+            return true;
         }
-        return new ArrayList<>();
+        return false;
     }
 
-    public Continent getContinent() {
-        return Continent.fromDatabase(continent);
-    }
-
-    public static List<Country> getCountries() {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries ORDER BY server_id").executeQuery()) {
-            List<Country> countries = new ArrayList<>();
-            while (rs.next()) {
-                countries.add(new Country(rs.getInt(1)));
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return countries;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
-        return new ArrayList<>();
-    }
-
-    public static List<Country> getCountries(Continent continent) {
-        try (ResultSet rs = DatabaseConnection.createStatement("SELECT id FROM plotsystem_countries WHERE continent = ? ORDER BY server_id").setValue(continent.databaseEnum).executeQuery()) {
-            List<Country> countries = new ArrayList<>();
-            while (rs.next()) {
-                countries.add(new Country(rs.getInt(1)));
-            }
-
-            DatabaseConnection.closeResultSet(rs);
-            return countries;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
-        return new ArrayList<>();
-    }
-
-    public static void addCountry(int serverID, String name, Continent continent) throws SQLException {
-        DatabaseConnection.createStatement("INSERT INTO plotsystem_countries (id, name, server_id, continent) VALUES (?, ?, ?, ?)")
-                .setValue(DatabaseConnection.getTableID("plotsystem_countries"))
-                .setValue(name)
-                .setValue(serverID).setValue(continent.databaseEnum).executeUpdate();
-    }
-
-    public static void removeCountry(int countryID) throws SQLException {
-        DatabaseConnection.createStatement("DELETE FROM plotsystem_countries WHERE id = ?")
-                .setValue(countryID).executeUpdate();
-    }
-
-    public static void setHeadID(int countryID, int headID) throws SQLException {
-        DatabaseConnection.createStatement("UPDATE plotsystem_countries SET head_id = ? WHERE id = ?")
-                .setValue(headID)
-                .setValue(countryID).executeUpdate();
+    public ItemStack getCountryItem() {
+        return Utils.getConfiguredItem(material, customModelData);
     }
 }

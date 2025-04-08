@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -35,14 +36,11 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
-import java.util.Objects;
-
-import static net.kyori.adventure.text.Component.text;
+import java.util.concurrent.CompletableFuture;
 
 public class CMD_Plot_Abandon extends SubCommand {
 
@@ -52,42 +50,47 @@ public class CMD_Plot_Abandon extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        @Nullable Player player = getPlayer(sender);
-        try {
+        CompletableFuture.runAsync(() -> {
             Plot plot;
+            if (!(sender instanceof Player player)) {
+                sendInfo(sender);
+                return;
+            }
+
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                int plotID = Integer.parseInt(args[0]);
-                if (PlotUtils.plotExists(plotID)) {
-                    plot = new Plot(plotID);
-                } else {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    return;
-                }
-            } else if (player != null && PlotUtils.isPlotWorld(player.getWorld())) {
+                plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
+            } else if (PlotUtils.isPlotWorld(player.getWorld())) {
                 AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished);
-                if (p instanceof Plot) {
-                    plot = (Plot) p;
-                } else {
+                if (!(p instanceof Plot)) {
                     sendInfo(sender);
                     return;
                 }
+                plot = (Plot) p;
             } else {
                 sendInfo(sender);
                 return;
             }
 
-            if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
-                if (Utils.isOwnerOrReviewer(sender, player, plot) && PlotUtils.Actions.abandonPlot(plot)) {
-                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
-                    if (player != null) player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
-                }
-            } else {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
+            if (plot == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                return;
             }
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+            if (plot.getStatus() != Status.unfinished) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
+                return;
+            }
+            if (!Utils.isOwnerOrReviewer(sender, player, plot)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (PlotUtils.Actions.abandonPlot(plot)) {
+                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
+                    player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
+                }
+            });
+        });
     }
 
     @Override

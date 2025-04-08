@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,13 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.holograms;
+package com.alpsbte.plotsystem.core.holograms.leaderboards;
 
 import com.alpsbte.alpslib.hologram.DecentHologramPagedDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Payout;
+import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
+import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -44,14 +45,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -59,20 +55,17 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
     private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard;
 
-    protected ScoreLeaderboard() {
+    public ScoreLeaderboard() {
         super("score-leaderboard", null, false, PlotSystem.getPlugin());
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
         setLocation(HologramRegister.getLocation(this));
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player player : getPlayersInRadiusForRanking()) {
-                    if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
-                    player.sendActionBar(getRankingString(player));
-                }
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
+            for (Player player : getPlayersInRadiusForRanking()) {
+                if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
+                player.sendActionBar(getPlayerRankingComponent(player));
             }
-        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0L, 20L);
+        }, 0L, 20L);
     }
 
     @Override
@@ -117,36 +110,25 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
 
     @Override
     public List<DataLine<?>> getContent(UUID playerUUID) {
-        try {
-            ArrayList<DataLine<?>> lines = new ArrayList<>();
+        ArrayList<DataLine<?>> lines = new ArrayList<>();
 
-            for (int index = 0; index < 10; index++) {
-                lines.add(new LeaderboardPositionLineWithPayout(index + 1, null, 0));
-            }
-
-            int index = 0;
-            for (Builder.DatabaseEntry<String, Integer> entry : Builder.getBuildersByScore(sortByLeaderboard)) {
-                lines.set(index, new LeaderboardPositionLineWithPayout(index + 1, entry.getKey(), entry.getValue()));
-                index++;
-            }
-
-            return lines;
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getLogger().log(Level.SEVERE, "An error occurred while reading leaderboard content", ex);
+        for (int index = 0; index < 10; index++) {
+            lines.add(new HologramRegister.LeaderboardPositionLine(index + 1, null, 0));
         }
-        return new ArrayList<>();
+
+        Map<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
+        if (playerRankings != null) {
+            for (int i = 0; i < playerRankings.size(); i++) {
+                String key = (String) playerRankings.keySet().toArray()[i];
+                lines.set(i, new HologramRegister.LeaderboardPositionLine(i + 1, key, playerRankings.get(key)));
+            }
+        }
+        return lines;
     }
 
-    private Component getRankingString(Player player) {
-        int position, rows, myScore;
-        try {
-            position = Builder.getBuilderScorePosition(player.getUniqueId(), sortByLeaderboard);
-            rows = Builder.getBuildersInSort(sortByLeaderboard);
-            myScore = Builder.getBuilderScore(player.getUniqueId(), sortByLeaderboard);
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(Component.text("A SQL error occurred!"), ex);
-            return Component.empty();
-        }
+    private Component getPlayerRankingComponent(Player player) {
+        LeaderboardEntry leaderboardEntry = DataProvider.BUILDER.getLeaderboardEntryByUUID(player.getUniqueId(), sortByLeaderboard);
+        if (leaderboardEntry == null) return Component.empty();
 
         // Start building the component
         TextComponent.Builder builder = Component.text()
@@ -159,29 +141,31 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
                         .decorate(TextDecoration.BOLD)
                 );
 
-        if (position == -1) {
+        if (leaderboardEntry.getPosition() == -1) {
             builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
                     .color(NamedTextColor.RED)
                     .decoration(TextDecoration.BOLD, false)
             );
-        } else if (position < 50) {
+        } else if (leaderboardEntry.getPosition() < 50) {
             builder.append(Component.text(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION, String.valueOf(position)))
+                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION,
+                                    String.valueOf(leaderboardEntry.getPosition())))
                     .color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.BOLD, false)
             );
         } else {
-            String topPercentage = df.format(position * 1.0 / rows);
+            String topPercentage = df.format(leaderboardEntry.getPosition() * 1.0 / leaderboardEntry.getTotalPosition());
             builder.append(Component.text(
                             LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
                     .decoration(TextDecoration.BOLD, false)
             );
         }
 
-        if (myScore != -1) {
+        if (leaderboardEntry.getScore() != -1) {
             builder.append(
                     Component.text(" (", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(myScore + " points", NamedTextColor.AQUA))
+                            .append(Component.text(leaderboardEntry.getScore() + " " +
+                                    LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_POINTS), NamedTextColor.AQUA))
                             .append(Component.text(")", NamedTextColor.DARK_GRAY))
             );
         }
@@ -229,49 +213,5 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
     @Override
     public String getZPath() {
         return ConfigPaths.SCORE_LEADERBOARD_Z;
-    }
-
-    public enum LeaderboardTimeframe {
-        DAILY(ConfigPaths.DISPLAY_OPTIONS_SHOW_DAILY),
-        WEEKLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_WEEKLY),
-        MONTHLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_MONTHLY),
-        YEARLY(ConfigPaths.DISPLAY_OPTIONS_SHOW_YEARLY),
-        LIFETIME(ConfigPaths.DISPLAY_OPTIONS_SHOW_LIFETIME);
-
-        public final String configPath;
-        public final String langPath;
-
-        LeaderboardTimeframe(String configPath) {
-            this.configPath = configPath;
-            this.langPath = LangPaths.Leaderboards.PAGES + name();
-        }
-    }
-
-    private class LeaderboardPositionLineWithPayout extends HologramRegister.LeaderboardPositionLine {
-        private final int position;
-
-        public LeaderboardPositionLineWithPayout(int position, String username, int score) {
-            super(position, username, score);
-            this.position = position;
-        }
-
-        @Override
-        public String getLine() {
-            try {
-                String line = super.getLine();
-                Payout payout = sortByLeaderboard != LeaderboardTimeframe.LIFETIME ? Payout.getPayout(sortByLeaderboard, position) : null;
-                if (payout == null) return line;
-                String payoutAmount = payout.getPayoutAmount();
-                try {
-                    // if payout amount can be number, prefix with dollar sign
-                    Integer.valueOf(payoutAmount);
-                    payoutAmount = "$" + payoutAmount;
-                } catch (NumberFormatException ignored) {}
-
-                return line + " §7- §e§l" + payoutAmount;
-            } catch (SQLException e) {
-                return super.getLine() + " §7- §cSQL ERR";
-            }
-        }
     }
 }
