@@ -40,7 +40,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Objects;
 
 import static net.kyori.adventure.text.Component.text;
@@ -79,7 +78,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+    protected void onComplete(boolean failed, boolean unloadWorld) {
         super.onComplete(failed, false);
     }
 

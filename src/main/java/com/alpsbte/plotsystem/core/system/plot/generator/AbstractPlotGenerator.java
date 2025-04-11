@@ -74,7 +74,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -134,12 +133,7 @@ public abstract class AbstractPlotGenerator {
             } catch (Exception ex) {
                 exception = ex;
             }
-
-            try {
-                this.onComplete(exception != null, false);
-            } catch (SQLException ex) {
-                exception = ex;
-            }
+            this.onComplete(exception != null, false);
 
             if (exception != null) {
                 PlotUtils.Actions.abandonPlot(plot);
@@ -252,9 +246,8 @@ public abstract class AbstractPlotGenerator {
      *
      * @param failed      - true if generation has failed
      * @param unloadWorld - try to unload world after generation
-     * @throws SQLException - caused by a database exception
      */
-    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+    protected void onComplete(boolean failed, boolean unloadWorld) {
         // Unload plot world if it is not needed anymore
         if (unloadWorld) world.unloadWorld(false);
     }

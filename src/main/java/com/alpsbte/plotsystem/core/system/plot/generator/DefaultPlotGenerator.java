@@ -46,7 +46,6 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,7 +115,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                 protected void createPlotProtection() {}
 
                 @Override
-                protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+                protected void onComplete(boolean failed, boolean unloadWorld) {
                     super.onComplete(true, true);
                 }
 
@@ -129,7 +128,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+    protected void onComplete(boolean failed, boolean unloadWorld) {
         super.onComplete(failed, false);
         if (failed) return;
 

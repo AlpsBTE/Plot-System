@@ -41,7 +41,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -80,7 +79,7 @@ public class OnePlotWorld extends PlotWorld {
             }
 
             @Override
-            protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+            protected void onComplete(boolean failed, boolean unloadWorld) {
                 getPlot().getPermissions().clearAllPerms();
                 super.onComplete(true, false);
             }
