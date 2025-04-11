@@ -39,7 +39,6 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -69,8 +68,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         CompletableFuture.runAsync(() -> {
             String playerUUID = player.getUniqueId().toString();
             Optional<TutorialPlot> plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
-            if (plot.isEmpty() && DataProvider.TUTORIAL_PLOT.add(tutorialId, playerUUID))
+            if (plot.isEmpty() && DataProvider.TUTORIAL_PLOT.add(tutorialId, playerUUID)) {
                 tutorialPlot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID).orElse(null);
+            } else {
+                tutorialPlot = plot.orElse(null);
+            }
 
             // Check if tutorial plot is null
             if (tutorialPlot == null) {
@@ -108,14 +110,10 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) {
+    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws IOException {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
-        try {
-            if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
-                plotGenerator.generateOutlines(schematicId);
-            }
-        } catch (IOException | WorldEditException ex) {
-            onException(ex);
+        if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
+            plotGenerator.generateOutlines(schematicId);
         }
     }
 
@@ -137,7 +135,14 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     protected void prepareStage(PrepareStageAction action) {
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
             // paste initial schematic outlines of stage
-            if (isPasteSchematic) onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+            if (isPasteSchematic) {
+                try {
+                    onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+                } catch (IOException ex) {
+                    onException(ex);
+                    return;
+                }
+            }
             isPasteSchematic = false;
 
             // Send a new stage unlocked message to the player
@@ -163,7 +168,12 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
             plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
-            onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
+            try {
+                onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
+            } catch (IOException ex) {
+                onException(ex);
+                return;
+            }
         }
         super.onSwitchWorld(playerUUID, tutorialWorldIndex);
     }

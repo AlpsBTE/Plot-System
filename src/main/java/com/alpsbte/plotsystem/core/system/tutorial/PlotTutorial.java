@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.tutorial;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public interface PlotTutorial extends Tutorial {
@@ -34,7 +35,7 @@ public interface PlotTutorial extends Tutorial {
      * @param playerUUID  uuid of the player
      * @param schematicId The schematic id
      */
-    void onPlotSchematicPaste(UUID playerUUID, int schematicId);
+    void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws IOException;
 
     /**
      * This method is called when the building and WorldEdit permissions on the plot need to be changed.

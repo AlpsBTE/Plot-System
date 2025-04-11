@@ -246,6 +246,7 @@ public abstract class AbstractTutorial implements Tutorial {
         currentWorldIndex = tutorialWorldIndex;
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
+        if (world == null) return;
         player.teleport(world.getPlayerSpawnLocation());
         if (npc.getNpc() != null) {
             npc.move(player, world.getNpcSpawnLocation());

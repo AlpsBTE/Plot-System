@@ -154,7 +154,7 @@ public abstract class AbstractPlotGenerator {
     /**
      * Generates plot schematic and outlines
      */
-    protected void generateOutlines() throws IOException, WorldEditException {
+    protected void generateOutlines() throws IOException {
         Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
         if (plotVersion >= 3 && plotType.hasEnvironment()) {
             pasteSchematic(airMask, plot.getInitialSchematicBytes(), world, false);
@@ -289,7 +289,7 @@ public abstract class AbstractPlotGenerator {
      * @param world         - world to paste in
      * @param clearArea     - clears the plot area with air before pasting
      */
-    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, PlotWorld world, boolean clearArea) throws IOException, WorldEditException {
+    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, PlotWorld world, boolean clearArea) throws IOException {
         // load world
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());

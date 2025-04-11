@@ -121,8 +121,8 @@ public class TutorialPlot extends AbstractPlot {
 
     @Override
     public boolean setPlotOwner(@Nullable Builder plotOwner) {
-        // TODO: Implement
-        return false;
+        // Not needed for tutorial plots, as the value is initialized during database entry creation.
+        return true;
     }
 
     @Override
@@ -176,7 +176,7 @@ public class TutorialPlot extends AbstractPlot {
         schematic = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials", fileName).toFile();
         try {
             if (!schematic.exists()) FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin()
-                    .getResource("tutorial/schematics/" + fileName + ".schem.gz")), schematic);
+                    .getResource("tutorial/schematics/" + fileName + ".gz")), schematic);
             return Files.readAllBytes(schematic.toPath());
         } catch (IOException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while copying the schematic file!"), ex);
