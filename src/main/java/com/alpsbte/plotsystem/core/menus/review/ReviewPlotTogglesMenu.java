@@ -22,6 +22,7 @@ import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.google.common.collect.Multimap;
 import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -128,8 +129,6 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         boolean isRejected = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0;
 
         int totalRating = rating.getAccuracyPoints() + rating.getBlockPalettePoints();
-        BuildTeam bt = plot.getCityProject().getBuildTeam();
-        List<ToggleCriteria> buildTeamCriteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(bt.getID());
         int checkedCounter = 0;
         for (ToggleCriteria criteria : buildTeamCriteria) {
             boolean checked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
@@ -241,11 +240,16 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     private ItemStack getToggleItem(ToggleCriteria criteria, boolean checked) {
         ItemStack baseItem = checked
                 ? BaseItems.REVIEW_TOGGLE_CHECKED.getItem()
-                : BaseItems.REVIEW_TOGGLE_DISABLED.getItem();
+                : criteria.isOptional() ? BaseItems.REVIEW_TOGGLE_DISABLED.getItem() : new ItemStack(Material.FIRE_CHARGE);
+        // TODO: translate
         return new ItemBuilder(baseItem)
                 .setName(text(criteria.getCriteriaName()))
                 .setLore(new LoreBuilder()
-                        .addLine("Optional? " + criteria.isOptional())
+                        .addLine(criteria.isOptional()
+                                ? text("OPTIONAL", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, true)
+                                : text("REQUIRED", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                        .emptyLine()
+                        .addLine(text("Click to toggle the criteria", NamedTextColor.GRAY))
                         .build())
                 .build();
     }
@@ -263,9 +267,26 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         String togglesPointsText = "Toggle Points";
         String totalPointsText = "Total Points";
 
+        boolean willReject = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0 || totalPoints <= 8;
+        for (ToggleCriteria criteria : buildTeamCriteria) {
+            boolean checked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
+            if (!checked && !criteria.isOptional()) {
+                willReject = true; // a plot is also rejected if any of the required toggles are not checked
+            }
+        }
+
+        TextComponent resultNotice;
+        if (willReject) {
+            resultNotice = text("Plot will be rejected!", NamedTextColor.YELLOW);
+        } else {
+            resultNotice = text("Plot will be accepted", NamedTextColor.GREEN);
+        }
+
         return new ItemBuilder(BaseItems.REVIEW_SUBMIT.getItem())
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT), NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
                 .setLore(new LoreBuilder()
+                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW), NamedTextColor.GRAY), true)
+                        .emptyLine()
                         .addLine(text( accuracyPointsText + ": ", NamedTextColor.GRAY)
                                 .append(text(rating.getAccuracyPoints(), NamedTextColor.WHITE)))
                         .addLine(text( blockPalettePointsText + ": ", NamedTextColor.GRAY)
@@ -277,7 +298,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                         .addLine(text(totalPointsText + ": ", NamedTextColor.GRAY)
                                 .append(text(totalPoints, NamedTextColor.GOLD)))
                         .emptyLine()
-                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW), NamedTextColor.GRAY), true)
+                        .addLine(resultNotice)
                         .build())
                 .build();
     }

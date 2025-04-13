@@ -193,6 +193,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                     ItemStack newItem = getMenu().getSlot(slot).getItem(clickPlayer);
                     newItem.setItemMeta(meta);
+                    newItem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     getMenu().getSlot(slot).setItem(newItem);
                     sentWarning = false;
 
