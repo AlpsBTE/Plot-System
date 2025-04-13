@@ -126,8 +126,8 @@ public class OnePlotWorld extends PlotWorld {
     }
 
     @Override
-    public int getPlotHeight() throws IOException {
-        return getPlot().getVersion() >= 3 ? MIN_WORLD_HEIGHT : getPlotHeightCentered();
+    public int getPlotHeight() {
+        return MIN_WORLD_HEIGHT;
     }
 
     @Override

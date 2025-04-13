@@ -117,7 +117,7 @@ public class Plot extends AbstractPlot {
             return this.outline;
 
         List<BlockVector2> pointVectors;
-        pointVectors = getOutlinePoints((outlineBounds.isEmpty() || getVersion() <= 2) ? "" : outlineBounds);
+        pointVectors = getOutlinePoints(outlineBounds.isEmpty() ? "" : outlineBounds);
         return pointVectors;
     }
 
@@ -189,14 +189,7 @@ public class Plot extends AbstractPlot {
 
     @Override
     public BlockVector3 getCenter() {
-        try {
-            if (getVersion() >= 3) {
-                return super.getCenter();
-            } else return BlockVector3.at(PlotWorld.PLOT_SIZE / 2d, this.getWorld().getPlotHeightCentered(), PlotWorld.PLOT_SIZE / 2d);
-        } catch (IOException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to load schematic file to clipboard!"), ex);
-        }
-        return null;
+        return super.getCenter();
     }
 
     public List<PlotReview> getReviewHistory() {

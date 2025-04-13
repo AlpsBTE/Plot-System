@@ -138,7 +138,7 @@ public class ReviewPlotMenu extends AbstractMenu {
             new PlotActionsMenu(clickPlayer, plot);
         });
 
-        /* Set click event for submit item */
+        // Set click event for submit item
         getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation)
                 -> Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             int totalRating = rating.getAccuracyPoints() + rating.getBlockPalettePoints();

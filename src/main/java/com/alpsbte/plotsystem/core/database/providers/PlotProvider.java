@@ -32,6 +32,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -294,6 +295,19 @@ public class PlotProvider {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, status.name());
+            stmt.setInt(2, plotId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
+    }
+
+    public boolean setMcVersion(int plotId) {
+        String query = "UPDATE plot SET mc_version = ? WHERE plot_id = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, Bukkit.getMinecraftVersion());
             stmt.setInt(2, plotId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException ex) {

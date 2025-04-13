@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.database.providers;
 
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -162,9 +163,11 @@ public class ReviewProvider {
     }
 
     public boolean createReview(Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
-        boolean result = false;
-        String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by, is_rejected) " +
-                "VALUES (?, ?, ?, ?, ?);";
+        boolean result = DataProvider.PLOT.setMcVersion(plot.getID());
+        if (!result) return false;
+
+        String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) " +
+                "VALUES (?, ?, ?, ?);";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plot.getID());

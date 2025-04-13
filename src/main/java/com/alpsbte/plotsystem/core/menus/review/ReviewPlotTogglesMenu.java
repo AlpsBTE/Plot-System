@@ -249,7 +249,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                                 ? text("OPTIONAL", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, true)
                                 : text("REQUIRED", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                         .emptyLine()
-                        .addLine(text("Click to toggle the criteria", NamedTextColor.GRAY))
+                        .addLine(text("Click to toggle", NamedTextColor.GRAY))
                         .build())
                 .build();
     }

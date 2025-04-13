@@ -58,6 +58,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.WorldGuard;
@@ -220,19 +221,19 @@ public final class PlotUtils {
         com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
         Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
 
-
-
         // Copy and write finished plot clipboard to schematic
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (Clipboard cb = new BlockArrayClipboard(region)) {
             cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
 
             ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
             Operations.complete(forwardExtentCopy);
-        }
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-            writer.write(clipboard);
+            try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+                double initialY = clipboard.getRegion().getMinimumY();
+                double offset = initialY - cuboidRegion.getMinimumY();
+                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0,offset,0))));
+            }
         }
 
         // Set Completed Schematic
