@@ -97,6 +97,7 @@ public abstract class LangPaths {
         private static final String MENU_TITLES = "menu-title.";
         public static final String CLOSE = MENU_TITLES + "close";
         public static final String BACK = MENU_TITLES + "back";
+        public static final String CONTINUE = MENU_TITLES + "continue";
         public static final String NEXT_PAGE = MENU_TITLES + "next-page";
         public static final String PREVIOUS_PAGE = MENU_TITLES + "previous-page";
         public static final String ERROR = MENU_TITLES + "error";

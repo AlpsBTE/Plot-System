@@ -42,6 +42,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -61,73 +62,84 @@ public class ReviewPlotMenu extends AbstractMenu {
 
     boolean sentWarning = false;
 
-    public ReviewPlotMenu(Player player, Plot plot) {
+    public ReviewPlotMenu(Player player, Plot plot, ReviewRating rating) {
         super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
         this.plot = plot;
-        this.rating = new ReviewRating(0, 0, List.of());
+        this.rating = rating;
+    }
+
+    public ReviewPlotMenu(Player player, Plot plot) {
+        this(player, plot, new ReviewRating(0, 0, List.of()));
     }
 
     @Override
     protected void setPreviewItems() {
-        for (int col = 0; col < 6; col++) {
-            for (int row = 0; row < 2; row++) {
-                ItemStack item;
-                switch (col) {
-                    case 0 -> {
-                        item = getZeroPointItem();
-                        ItemMeta itemMeta = item.getItemMeta();
-                        Objects.requireNonNull(itemMeta).addEnchant(Enchantment.POWER, 1, true);
-                        item.setItemMeta(itemMeta);
-                    }
-                    case 1 -> item = getOnePointItem();
-                    case 2 -> item = getTwoPointItem();
-                    case 3 -> item = getThreePointItem();
-                    case 4 -> item = getFourPointItem();
-                    default -> item = getFivePointItem();
-                }
-                getMenu().getSlot(29 + col + (9 * row)).setItem(item);
-            }
-        }
-
         getMenu().getSlot(4).setItem(MenuItems.loadingItem(Material.MAP, getMenuPlayer()));
 
-        getMenu().getSlot(28).setItem(getAccuracyItem());
-        getMenu().getSlot(37).setItem(getBlockPaletteItem());
-
-        getMenu().getSlot(48).setItem(getSubmitItem());
-        getMenu().getSlot(50).setItem(getCancelItem());
+        getMenu().getSlot(19).setItem(getAccuracyItem());
+        getMenu().getSlot(28).setItem(getBlockPaletteItem());
 
         super.setPreviewItems();
     }
 
     @Override
     protected void setMenuItemsAsync() {
-        // Set back item
-        getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
-
         // Set plot information item
         getMenu().getSlot(4).setItem(ReviewItems.getPlotInfoItem(getMenuPlayer(), plot));
 
         // Set review information item
         getMenu().getSlot(7).setItem(ReviewItems.getReviewInfoItem(getMenuPlayer()));
+
+        // Set back item
+        getMenu().getSlot(48).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+
+        // Set next item
+        getMenu().getSlot(50).setItem(MenuItems.continueMenuItem(getMenuPlayer()));
+
+        // Set point items
+        for (int row = 0; row < 2; row++) {
+            int selectedPoints = row == 0 ? rating.getAccuracyPoints() : rating.getBlockPalettePoints();
+            for (int col = 0; col < 6; col++) {
+                ItemStack item;
+                switch (col) {
+                    case 0 -> item = getZeroPointItem();
+                    case 1 -> item = getOnePointItem();
+                    case 2 -> item = getTwoPointItem();
+                    case 3 -> item = getThreePointItem();
+                    case 4 -> item = getFourPointItem();
+                    default -> item = getFivePointItem();
+                }
+
+                if (selectedPoints == col) {
+                    ItemMeta itemMeta = item.getItemMeta();
+                    Objects.requireNonNull(itemMeta).addEnchant(Enchantment.POWER, 1, true);
+                    item.setItemMeta(itemMeta);
+                    item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                } else {
+                    item.removeEnchantment(Enchantment.POWER);
+                }
+
+                getMenu().getSlot(20 + col + (9 * row)).setItem(item);
+            }
+        }
     }
 
     @Override
     protected void setItemClickEventsAsync() {
         // Set click event for back item
-        getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation)
-                -> new ReviewMenu(getMenuPlayer()));
-
-        // Set click event for close item
-        getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation)
-                -> clickPlayer.closeInventory());
+        getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            new ReviewMenu(clickPlayer);
+        });
 
         // Set click event for plot info item
-        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation)
-                -> new PlotActionsMenu(clickPlayer, plot));
+        getMenu().getSlot(4).setClickHandler((clickPlayer, clickInformation) -> {
+            clickPlayer.closeInventory();
+            new PlotActionsMenu(clickPlayer, plot);
+        });
 
         /* Set click event for submit item */
-        getMenu().getSlot(48).setClickHandler((clickPlayer, clickInformation)
+        getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation)
                 -> Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             int totalRating = rating.getAccuracyPoints() + rating.getBlockPalettePoints();
             boolean isRejected = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0;
@@ -159,20 +171,20 @@ public class ReviewPlotMenu extends AbstractMenu {
         // Set click event for point selection items
         for (int col = 0; col < 6; col++) {
             for (int row = 0; row < 2; row++) {
-                int slot = 29 + col + (9 * row);
+                int slot = 20 + col + (9 * row);
                 int captureRow = row; // need to assign separate variables so that they can be captured by the lambda
                 int points = col;
                 ItemMeta meta = getMenu().getSlot(slot).getItem(getMenuPlayer()).getItemMeta();
                 getMenu().getSlot(slot).setClickHandler((clickPlayer, clickInformation) -> {
                     for (int j = 0; j < 6; j++) {
-                        ItemStack previousItem = getMenu().getSlot(29 + j + (9 * captureRow)).getItem(clickPlayer);
+                        ItemStack previousItem = getMenu().getSlot(20 + j + (9 * captureRow)).getItem(clickPlayer);
                         if (previousItem == null || !previousItem.getItemMeta().hasEnchant(Enchantment.POWER)) continue;
 
                         ItemMeta metaPrevious = previousItem.getItemMeta();
                         assert metaPrevious != null;
                         metaPrevious.removeEnchant(Enchantment.POWER);
                         previousItem.setItemMeta(metaPrevious);
-                        getMenu().getSlot(29 + j + (9 * captureRow)).setItem(previousItem);
+                        getMenu().getSlot(20 + j + (9 * captureRow)).setItem(previousItem);
                     }
 
                     assert meta != null;
@@ -195,11 +207,11 @@ public class ReviewPlotMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
-                .pattern("101101101")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
+                .pattern("111101111")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
                 .pattern("111010111")
                 .build();
     }
@@ -224,26 +236,6 @@ public class ReviewPlotMenu extends AbstractMenu {
                 .setLore(new LoreBuilder()
                         .addLines(true, LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE_DESC))
                         .build())
-                .build();
-    }
-
-    // --- Button Items ---
-    private ItemStack getSubmitItem() {
-        return new ItemBuilder(BaseItems.REVIEW_SUBMIT.getItem())
-                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT))
-                        .color(GREEN)
-                        .decoration(BOLD, true))
-                .setLore(new LoreBuilder()
-                        .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW), true)
-                        .build())
-                .build();
-    }
-
-    private ItemStack getCancelItem() {
-        return new ItemBuilder(BaseItems.REVIEW_CANCEL.getItem())
-                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.CANCEL))
-                        .color(RED)
-                        .decoration(BOLD, true))
                 .build();
     }
 

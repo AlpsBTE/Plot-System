@@ -47,8 +47,14 @@ public class MenuItems {
     }
 
     public static ItemStack backMenuItem(Player player) {
-        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.BACK_BUTTON.getId()))
+        return new ItemBuilder(BaseItems.MENU_BACK.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.BACK), GOLD, BOLD))
+                .build();
+    }
+
+    public static ItemStack continueMenuItem(Player player) {
+        return new ItemBuilder(BaseItems.MENU_NEXT.getItem())
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.CONTINUE), GOLD, BOLD))
                 .build();
     }
 

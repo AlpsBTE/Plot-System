@@ -25,6 +25,12 @@ menu-error:
 menu-close:
   material: BARRIER
   modelId: ''
+menu-back:
+  material: head(9226)
+  modelId: ''
+menu-next:
+  material: head(9223)
+  modelId: ''
 
 review-item:
   material: BOOK
@@ -35,11 +41,11 @@ review-accuracy:
 review-block-palette:
   material: PAINTING
   modelId: ''
-review-detailing:
-  material: ENDER_EYE
+review-toggle-disabled:
+  material: FIREWORK_STAR
   modelId: ''
-review-technique:
-  material: WOODEN_AXE
+review-toggle-checked:
+  material: SLIME_BALL
   modelId: ''
 review-point-zero:
   material: LIGHT_GRAY_WOOL
@@ -60,7 +66,7 @@ review-point-five:
   material: LIME_WOOL
   modelId: ''
 review-submit:
-  material: GREEN_CONCRETE
+  material: FIREWORK_ROCKET
   modelId: ''
 review-cancel:
   material: RED_CONCRETE

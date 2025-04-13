@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.core.menus.review;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
@@ -16,16 +17,25 @@ import com.alpsbte.plotsystem.utils.chat.PlayerFeedbackChatInput;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import com.google.common.collect.Multimap;
 import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -34,6 +44,7 @@ import static net.kyori.adventure.text.Component.text;
 public class ReviewPlotTogglesMenu extends AbstractMenu {
     private final Plot plot;
     private final ReviewRating rating;
+    private List<ToggleCriteria> buildTeamCriteria = new ArrayList<>();
 
     public ReviewPlotTogglesMenu(Player player, Plot plot, ReviewRating rating) {
         super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
@@ -43,25 +54,60 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Set back item
-        getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
-
         // Set plot information item
         getMenu().getSlot(4).setItem(ReviewItems.getPlotInfoItem(getMenuPlayer(), plot));
 
         // Set review information item
         getMenu().getSlot(7).setItem(ReviewItems.getReviewInfoItem(getMenuPlayer()));
 
-        // Set submit item
-        getMenu().getSlot(49);
+        // Set toggle items
+        buildTeamCriteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getID());
+        for (int i = 0; i < Math.min(buildTeamCriteria.size(), 36); i++) {
+            ToggleCriteria criteria = buildTeamCriteria.get(i);
+            boolean isChecked = rating.getCheckedToggles().stream()
+                    .anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
+            getMenu().getSlot(9 + i).setItem(getToggleItem(criteria, isChecked));
+        }
 
-        // Set cancel item
-        getMenu().getSlot(51);
+        // Set back item
+        getMenu().getSlot(48).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+
+        // Set submit item
+        getMenu().getSlot(50).setItem(getSubmitItem());
     }
 
     @Override
     protected void setItemClickEventsAsync() {
+        // Set click event for back item
+        getMenu().getSlot(48).setClickHandler(((player, clickInformation) -> {
+            player.closeInventory();
+            new ReviewPlotMenu(player, plot, rating);
+        }));
 
+        // Set click event for submit item
+        getMenu().getSlot(50).setClickHandler(((player, clickInformation) -> submitReview()));
+
+        // Set click event for toggle items
+        for (int i = 0; i < Math.min(buildTeamCriteria.size(), 36); i++) {
+            int finalI = i;
+            getMenu().getSlot(9 + i).setClickHandler(((player, clickInformation) -> {
+                ToggleCriteria clickedCriteria = buildTeamCriteria.get(finalI);
+                List<ToggleCriteria> checked = new ArrayList<>(rating.getCheckedToggles());
+
+                boolean isChecked = checked.stream().anyMatch(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName()));
+                if (isChecked) {
+                    checked.remove(checked.stream().filter(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName())).findFirst().orElseThrow());
+                } else {
+                    checked.add(clickedCriteria);
+                }
+
+                rating.setCheckedToggles(checked);
+                getMenu().getSlot(9 + finalI).setItem(getToggleItem(clickedCriteria, !isChecked));
+                getMenu().getSlot(50).setItem(getSubmitItem()); // update submit item
+
+                player.playSound(player.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
+            }));
+        }
     }
 
     @Override
@@ -69,15 +115,13 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111101111")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
-                .pattern("100000001")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
+                .pattern("000000000")
                 .pattern("111010111")
                 .build();
     }
-
-
 
     private void submitReview() {
         // a plot is rejected if either of the point sliders are 0
@@ -94,7 +138,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 isRejected = true; // a plot is also rejected if any of the required toggles are not checked
             }
         }
-        int checkedPoints = (int) Math.floor(((double)checkedCounter / buildTeamCriteria.size())*10);
+        int checkedPoints = (int) Math.floor(((double) checkedCounter / buildTeamCriteria.size()) * 10);
         totalRating += checkedPoints;
 
         if (totalRating <= 8) isRejected = true; // a plot is also rejected if the total rating is less than or equal to 8
@@ -117,7 +161,6 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                     if (!PlotUtils.savePlotAsSchematic(plot)) {
                         getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                         PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
-                        return;
                     }
                 } catch (IOException | WorldEditException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
@@ -193,5 +236,49 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                     new PlayerFeedbackChatInput(getMenuPlayer().getUniqueId(), plot.getLatestReview().orElseThrow()));
             PlayerFeedbackChatInput.sendChatInputMessage(getMenuPlayer());
         });
+    }
+
+    private ItemStack getToggleItem(ToggleCriteria criteria, boolean checked) {
+        ItemStack baseItem = checked
+                ? BaseItems.REVIEW_TOGGLE_CHECKED.getItem()
+                : BaseItems.REVIEW_TOGGLE_DISABLED.getItem();
+        return new ItemBuilder(baseItem)
+                .setName(text(criteria.getCriteriaName()))
+                .setLore(new LoreBuilder()
+                        .addLine("Optional? " + criteria.isOptional())
+                        .build())
+                .build();
+    }
+
+    private ItemStack getSubmitItem() {
+        int totalToggles = buildTeamCriteria.size();
+        int checkedToggles = rating.getCheckedToggles().size();
+        double togglePercentage = (double) checkedToggles / totalToggles * 100;
+        int togglePoints = (int) Math.floor(togglePercentage / 10.0);
+        int totalPoints = rating.getAccuracyPoints() + rating.getBlockPalettePoints() + togglePoints;
+
+        //TODO: translate
+        String accuracyPointsText = "Accuracy Points";
+        String blockPalettePointsText = "Block Palette Points";
+        String togglesPointsText = "Toggle Points";
+        String totalPointsText = "Total Points";
+
+        return new ItemBuilder(BaseItems.REVIEW_SUBMIT.getItem())
+                .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT), NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true))
+                .setLore(new LoreBuilder()
+                        .addLine(text( accuracyPointsText + ": ", NamedTextColor.GRAY)
+                                .append(text(rating.getAccuracyPoints(), NamedTextColor.WHITE)))
+                        .addLine(text( blockPalettePointsText + ": ", NamedTextColor.GRAY)
+                                .append(text(rating.getBlockPalettePoints(), NamedTextColor.WHITE)))
+                        .addLine(text( togglesPointsText + ": ", NamedTextColor.GRAY)
+                                .append(text(togglePoints, NamedTextColor.WHITE))
+                                .append(text(" (" + checkedToggles + "/" + totalToggles + " → " + String.format("%.02f", togglePercentage) + "%)", NamedTextColor.DARK_GRAY)))
+                        .addLine(text("-----", NamedTextColor.DARK_GRAY))
+                        .addLine(text(totalPointsText + ": ", NamedTextColor.GRAY)
+                                .append(text(totalPoints, NamedTextColor.GOLD)))
+                        .emptyLine()
+                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW), NamedTextColor.GRAY), true)
+                        .build())
+                .build();
     }
 }

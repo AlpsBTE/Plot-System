@@ -68,6 +68,7 @@ difficulty:
 menu-title:
   close: 'Schließen'
   back: 'Zurück'
+  continue: 'Weiter'
   next-page: 'Nächste Seite'
   previous-page: 'Vorherige Seite'
   error: 'Fehler'

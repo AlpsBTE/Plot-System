@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.utils.items;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 public enum BaseItems {
@@ -41,12 +42,12 @@ public enum BaseItems {
 
     MENU_ERROR("menu-error"),
     MENU_CLOSE("menu-close"),
+    MENU_BACK("menu-back"),
+    MENU_NEXT("menu-next"),
 
     REVIEW_ITEM("review-item"),
     REVIEW_ACCURACY("review-accuracy"),
     REVIEW_BLOCK_PALETTE("review-block-palette"),
-    REVIEW_DETAILING("review-detailing"),
-    REVIEW_TECHNIQUE("review-technique"),
     REVIEW_POINT_ZERO("review-point-zero"),
     REVIEW_POINT_ONE("review-point-one"),
     REVIEW_POINT_TWO("review-point-two"),
@@ -56,7 +57,8 @@ public enum BaseItems {
     REVIEW_SUBMIT("review-submit"),
     REVIEW_CANCEL("review-cancel"),
     REVIEW_INFO_PLOT("review-info-plot"),
-
+    REVIEW_TOGGLE_DISABLED("review-toggle-disabled"),
+    REVIEW_TOGGLE_CHECKED("review-toggle-checked"),
     SETTINGS_ITEM("settings-item"),
     RANDOM_PLOT_ITEM("random-plot-item");
 
@@ -67,6 +69,9 @@ public enum BaseItems {
         materialString = materialString == null ? Material.BARRIER.name() : materialString;
         Object customModelData = ConfigUtil.getInstance().configs[2].get(configPath + ".modelId");
         itemStack = Utils.getConfiguredItem(materialString, customModelData);
+
+        itemStack.getItemMeta().setAttributeModifiers(null);
+        itemStack.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS);
     }
 
     public ItemStack getItem() {
