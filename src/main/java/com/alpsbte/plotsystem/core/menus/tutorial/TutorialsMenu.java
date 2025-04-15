@@ -39,7 +39,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -209,7 +209,7 @@ public class TutorialsMenu extends AbstractMenu {
     }
 
     public static ItemStack getTutorialItem(Player player) {
-        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.WORKBENCH.getId()))
+        return new ItemBuilder(BaseItems.TUTORIAL_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.TUTORIALS), AQUA, BOLD))
                 .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.TUTORIALS), true).build())
                 .build();

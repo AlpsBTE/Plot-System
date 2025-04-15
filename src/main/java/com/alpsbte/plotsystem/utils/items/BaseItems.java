@@ -39,11 +39,16 @@ public enum BaseItems {
     PLOT_UNFINISHED("plot-unfinished"),
     PLOT_UNREVIEWED("plot-unreviewed"),
     PLOT_COMPLETED("plot-completed"),
+    PLOT_TYPE("plot-type"),
+    PLOT_FOCUS_MODE("plot-focus-mode"),
+    PLOT_CITY_INSPIRATION_MODE("plot-city-inspiration-mode"),
 
     MENU_ERROR("menu-error"),
     MENU_CLOSE("menu-close"),
     MENU_BACK("menu-back"),
     MENU_NEXT("menu-next"),
+    MENU_ADD("menu-add"),
+    MENU_REMOVE("menu-remove"),
 
     REVIEW_ITEM("review-item"),
     REVIEW_ACCURACY("review-accuracy"),
@@ -56,11 +61,22 @@ public enum BaseItems {
     REVIEW_POINT_FIVE("review-point-five"),
     REVIEW_SUBMIT("review-submit"),
     REVIEW_CANCEL("review-cancel"),
+    REVIEW_INFO("review-info"),
     REVIEW_INFO_PLOT("review-info-plot"),
     REVIEW_TOGGLE_DISABLED("review-toggle-disabled"),
     REVIEW_TOGGLE_CHECKED("review-toggle-checked"),
+
     SETTINGS_ITEM("settings-item"),
-    RANDOM_PLOT_ITEM("random-plot-item");
+    RANDOM_PLOT_ITEM("random-plot-item"),
+
+    DIFFICULTY_AUTOMATIC("difficulty-automatic"),
+    DIFFICULTY_EASY("difficulty-easy"),
+    DIFFICULTY_MEDIUM("difficulty-medium"),
+    DIFFICULTY_HARD("difficulty-hard"),
+
+    TUTORIAL_ITEM("tutorial-item"),
+
+    LANGUAGE_ITEM("language-item");
 
     final ItemStack itemStack;
 

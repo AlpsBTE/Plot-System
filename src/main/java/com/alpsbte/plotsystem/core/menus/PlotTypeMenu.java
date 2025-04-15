@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -34,7 +33,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -64,7 +63,7 @@ public class PlotTypeMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set plot type items
         getMenu().getSlot(11).setItem(
-                new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.FOCUS_MODE_BUTTON.getId()))
+                new ItemBuilder(BaseItems.PLOT_FOCUS_MODE.getItem())
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_FOCUS_MODE), GOLD, BOLD))
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_FOCUS_MODE), true)
@@ -84,7 +83,7 @@ public class PlotTypeMenu extends AbstractMenu {
         boolean inspirationModeDisabled = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE); // TODO remove or enhance as soon CIM is working again
         if (!inspirationModeDisabled) {
             getMenu().getSlot(15).setItem(
-                    new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.CITY_INSPIRATION_MODE_BUTTON.getId()))
+                    new ItemBuilder(BaseItems.PLOT_CITY_INSPIRATION_MODE.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE), GOLD, BOLD)
                                     .append(text(" [", DARK_GRAY).append(text("BETA", RED).append(text("]", DARK_GRAY))))) // temporary BETA tag
                             .setLore(new LoreBuilder()

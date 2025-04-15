@@ -18,6 +18,15 @@ plot-unreviewed:
 plot-completed:
   material: GREEN_WOOL
   modelId: ''
+plot-type:
+  material: head(4159)
+  modelId: ''
+plot-focus-mode:
+  material: head(38199)
+  modelId: ''
+plot-city-inspiration-mode:
+  material: head(38094)
+  modelId: ''
 
 menu-error:
   material: BARRIER
@@ -30,6 +39,12 @@ menu-back:
   modelId: ''
 menu-next:
   material: head(9223)
+  modelId: ''
+menu-add:
+  material: head(9237)
+  modelId: ''
+menu-remove:
+  material: head(9243)
   modelId: ''
 
 review-item:
@@ -71,6 +86,9 @@ review-submit:
 review-cancel:
   material: RED_CONCRETE
   modelId: ''
+review-info:
+  material: head(46488)
+  modelId: ''
 review-info-plot:
   material: MAP
   modelId: ''
@@ -81,5 +99,27 @@ settings-item:
 random-plot-item:
   material: COMPARATOR
   modelId: ''
+
+difficulty-automatic:
+  material: head(8614)
+  modelId: ''
+difficulty-easy:
+  material: head(8621)
+  modelId: ''
+difficulty-medium:
+  material: head(8613)
+  modelId: ''
+difficulty-hard:
+  material: head(8616)
+  modelId: ''
+
+tutorial-item:
+  material: head(24180)
+  modelId: ''
+
+language-item:
+  material: head(49973)
+  modelId: ''
+
 # NOTE: Do not change
 config-version: 1.2

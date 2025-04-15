@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.utils.items;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -59,13 +58,13 @@ public class MenuItems {
     }
 
     public static ItemStack nextPageItem(Player player) {
-        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.NEXT_BUTTON.getId()))
+        return new ItemBuilder(BaseItems.MENU_NEXT.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.NEXT_PAGE), GOLD, BOLD))
                 .build();
     }
 
     public static ItemStack previousPageItem(Player player) {
-        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.PREVIOUS_BUTTON.getId()))
+        return new ItemBuilder(BaseItems.MENU_BACK.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PREVIOUS_PAGE), GOLD, BOLD))
                 .build();
     }

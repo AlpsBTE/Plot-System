@@ -201,9 +201,6 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage(text("Could not find Protocol-Lib! Consider installing it to avoid issues.", RED));
         }
 
-        // Cache and register custom heads
-        Bukkit.getScheduler().runTaskAsynchronously(this, Utils::registerCustomHeads);
-
         // Register tutorials
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
             AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));

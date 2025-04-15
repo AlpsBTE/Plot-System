@@ -35,7 +35,7 @@ import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.chat.PlayerInviteeChatInput;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -80,9 +80,9 @@ public class PlotMemberMenu extends AbstractMenu {
         });
 
         // Set add plot member item
-        ItemStack whitePlus = AlpsHeadUtils.getCustomHead(CustomHeads.ADD_BUTTON.getId());
+        ItemStack addItem = BaseItems.MENU_ADD.getItem();
         getMenu().getSlot(16)
-                .setItem(new ItemBuilder(whitePlus)
+                .setItem(new ItemBuilder(addItem)
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ADD_MEMBER_TO_PLOT), GOLD, BOLD))
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ADD_MEMBER_TO_PLOT), true)

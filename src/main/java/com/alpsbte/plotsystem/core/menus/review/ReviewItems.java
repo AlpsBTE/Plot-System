@@ -1,13 +1,11 @@
 package com.alpsbte.plotsystem.core.menus.review;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,7 +17,7 @@ public class ReviewItems {
     public static ItemStack getReviewInfoItem(Player player) {
         String points = LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_POINTS);
 
-        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.INFO_BUTTON.getId()))
+        return new ItemBuilder(BaseItems.REVIEW_INFO.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.INFORMATION), AQUA).decoration(BOLD, true))
                 .setLore(new LoreBuilder()
                         .addLines(true, LangUtil.getInstance().get(player, LangPaths.MenuDescription.INFORMATION))

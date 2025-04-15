@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
@@ -209,10 +208,6 @@ public class Utils {
                 case HARD -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".hard.name"), RED).decoration(BOLD, true);
             };
         }
-    }
-
-    public static void registerCustomHeads() {
-        for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
 
     public static @NotNull Set<BlockVector2> getLineBetweenPoints(@NotNull BlockVector2 point1, @NotNull BlockVector2 point2, int pointsInLine) {
