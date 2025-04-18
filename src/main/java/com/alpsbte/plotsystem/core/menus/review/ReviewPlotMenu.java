@@ -142,15 +142,8 @@ public class ReviewPlotMenu extends AbstractMenu {
         getMenu().getSlot(50).setClickHandler((clickPlayer, clickInformation)
                 -> Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             int totalRating = rating.getAccuracyPoints() + rating.getBlockPalettePoints();
-            boolean isRejected = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0;
-
             if (totalRating == 0 && !sentWarning) {
                 clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_ABANDONED)));
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
-                sentWarning = true;
-                return;
-            } else if (isRejected && !sentWarning) {
-                clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_GET_REJECTED)));
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
                 sentWarning = true;
                 return;

@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -66,7 +67,7 @@ public class FeedbackMenu extends AbstractMenu {
         plot.getLatestReview().ifPresent(value -> this.review = value);
 
         // Set score item
-        getMenu().getSlot(10).setItem(new ItemBuilder(Material.NETHER_STAR)
+        getMenu().getSlot(10).setItem(new ItemBuilder(BaseItems.REVIEW_SCORE.getItem())
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), AQUA, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(plot.getTotalScore(), WHITE)))
@@ -87,8 +88,8 @@ public class FeedbackMenu extends AbstractMenu {
                 .build());
 
         // Set feedback text item
-        String feedbackText = review.getFeedback() == null ? "No Feedback" : review.getFeedback(); // TODO: translate no feedback text
-        getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
+        String feedbackText = review.getFeedback() == null ? LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.NO_FEEDBACK) : review.getFeedback();
+        getMenu().getSlot(13).setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(feedbackText.replaceAll("//", " "), true)

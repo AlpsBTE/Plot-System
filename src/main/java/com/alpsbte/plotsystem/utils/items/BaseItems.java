@@ -42,6 +42,12 @@ public enum BaseItems {
     PLOT_TYPE("plot-type"),
     PLOT_FOCUS_MODE("plot-focus-mode"),
     PLOT_CITY_INSPIRATION_MODE("plot-city-inspiration-mode"),
+    PLOT_SLOT_EMPTY("plot-slot-empty"),
+    PLOT_SLOT_FILLED("plot-slot-filled"),
+    PLOT_SUBMIT("plot-submit"),
+    PLOT_UNDO_SUBMIT("plot-undo-submit"),
+    PLOT_ABANDON("plot-abandon"),
+    PLOT_TELEPORT("plot-teleport"),
 
     MENU_ERROR("menu-error"),
     MENU_CLOSE("menu-close"),
@@ -63,9 +69,14 @@ public enum BaseItems {
     REVIEW_CANCEL("review-cancel"),
     REVIEW_INFO("review-info"),
     REVIEW_INFO_PLOT("review-info-plot"),
-    REVIEW_TOGGLE_DISABLED("review-toggle-disabled"),
+    REVIEW_TOGGLE_OPTIONAL("review-toggle-optional"),
+    REVIEW_TOGGLE_REQUIRED("review-toggle-required"),
     REVIEW_TOGGLE_CHECKED("review-toggle-checked"),
+    REVIEW_FEEDBACK("review-feedback"),
+    REVIEW_SCORE("review-score"),
 
+    BUILDER_UTILITIES("builder-utilities"),
+    FILTER_ITEM("filter-item"),
     SETTINGS_ITEM("settings-item"),
     RANDOM_PLOT_ITEM("random-plot-item"),
 

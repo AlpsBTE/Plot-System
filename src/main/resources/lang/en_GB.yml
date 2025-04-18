@@ -158,15 +158,16 @@ review:
   feedback: "Feedback"
   reviewer: "Reviewer"
   player-language: "Player Language"
+  no-feedback: "No feedback"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: "Toggle points"
+  total-points: "Total points"
   criteria:
     accuracy: "Accuracy"
     accuracy-desc: "How accurate is the building?%newline%%newline%- Looks like in RL%newline%- Correct outlines%newline%- Correct height%newline%- Is completed"
     block-palette: "Block Palette"
     block-palette-desc: "How many different blocks are used and how creative are they?%newline%%newline%- Choice of blocks colours/textures%newline%- Random blocks"
-    detailing: "Detailing"
-    detailing-desc: "How much detail does the building have?%newline%%newline%- Roof details%newline%- Details on the facades%newline%- Heads and Banners"
-    technique: "Technique"
-    technique-desc: "What building techniques have been used and how creative are they?%newline%%newline%- World-Edit%newline%- Special Blocks"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -176,6 +177,8 @@ note:
   wont-be-able-continue-building: "You wont be able to continue building on this plot!"
   score-will-be-split: "Score will be split between all members when reviewed!"
   player-has-to-be-online: "The player has to be online!"
+  optional: "Optional"
+  required: "Required"
   action:
     read: 'Read'
     read-more: 'Read More'
@@ -199,6 +202,7 @@ note:
     click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
     tutorial-show-stages: 'Show Stages'
     click-to-open-plots-menu: 'Click to open the plots menu...'
+    click-to-toggle: "Click to toggle..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -223,7 +227,10 @@ message:
     removed-plot-member: "§aRemoved §6{0}§a from plot §6#{1}§a!"
     left-plot: "§aLeft plot §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lWARNING: §cThis plot will automatically get abandoned!"
-    plot-will-get-rejected-warning: "§c§lWARNING: §cThis plot will get rejected!"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "§aSaving plot..."
     creating-plot: "§aCreating new plot..."
     created-new-plot: "§aCreated new plot§a for §6{0}§a!"
@@ -271,6 +278,7 @@ message:
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -413,5 +421,15 @@ database:
       name: 'Medium'
     hard:
       name: 'Hard'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+
 # NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

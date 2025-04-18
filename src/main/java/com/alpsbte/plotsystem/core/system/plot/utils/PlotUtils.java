@@ -308,9 +308,8 @@ public final class PlotUtils {
     public static void informPlayerAboutUnfinishedPlots(@NotNull Player player, Builder builder) {
         try {
             List<Plot> plots = Cache.getCachedInProgressPlots(builder);
-            if (!plots.isEmpty()) {
-                PlotUtils.ChatFormatting.sendUnfinishedPlotReminderMessage(plots, player);
-            }
+            if (plots.isEmpty()) return;
+            ChatFormatting.sendUnfinishedPlotReminderMessage(plots, player);
         } catch (Exception ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while trying to inform the player about his unfinished plots!"), ex);
         }
@@ -394,21 +393,20 @@ public final class PlotUtils {
 
             try {
                 CompletableFuture.runAsync(() -> {
-                    if (plot.getPlotType() != PlotType.TUTORIAL) {
-                        Plot dPlot = (Plot) plot;
-                        DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
-                        for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
+                    if (plot.getPlotType() == PlotType.TUTORIAL) return;
+                    Plot dPlot = (Plot) plot;
+                    DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
+                    for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
 
-                        if (plot.getPlotOwner() != null) {
-                            Cache.clearCache(plot.getPlotOwner().getUUID());
-                            if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1)) return;
-                        }
-
-                        dPlot.setPlotOwner(null);
-                        dPlot.setLastActivity(true);
-                        dPlot.setStatus(Status.unclaimed);
-                        dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+                    if (plot.getPlotOwner() != null) {
+                        Cache.clearCache(plot.getPlotOwner().getUUID());
+                        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1)) return;
                     }
+
+                    dPlot.setPlotOwner(null);
+                    dPlot.setLastActivity(true);
+                    dPlot.setStatus(Status.unclaimed);
+                    dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                 }).join();
             } catch (CompletionException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);

@@ -62,14 +62,14 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set plot submit or undo submit item
         if (plot.getStatus().equals(Status.unreviewed)) {
             getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(Material.FIRE_CHARGE, 1)
+                    .setItem(new ItemBuilder(BaseItems.PLOT_UNDO_SUBMIT.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.UNDO_SUBMIT), RED).decoration(BOLD, true))
                             .setLore(new LoreBuilder()
                                     .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.UNDO_SUBMIT), true).build())
                             .build());
         } else {
             getMenu().getSlot(10)
-                    .setItem(new ItemBuilder(Material.NAME_TAG, 1)
+                    .setItem(new ItemBuilder(BaseItems.PLOT_SUBMIT.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SUBMIT), GREEN).decoration(BOLD, true))
                             .setLore(new LoreBuilder()
                                     .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_PLOT)).color(GRAY), true)
@@ -81,14 +81,14 @@ public class PlotActionsMenu extends AbstractMenu {
 
         // Set teleport to plot item
         getMenu().getSlot(hasFeedback ? 12 : 13)
-                .setItem(new ItemBuilder(Material.COMPASS, 1)
+                .setItem(new ItemBuilder(BaseItems.PLOT_TELEPORT.getItem())
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT), GOLD).decoration(BOLD, true))
                         .setLore(new LoreBuilder().addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).color(GRAY), true).build())
                         .build());
 
         // Set plot abandon item
         getMenu().getSlot(hasFeedback ? 14 : 16)
-                .setItem(new ItemBuilder(Material.BARRIER, 1)
+                .setItem(new ItemBuilder(BaseItems.PLOT_ABANDON.getItem())
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON), RED).decoration(BOLD, true))
                         .setLore(new LoreBuilder()
                                 .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.ABANDON), true)
@@ -100,7 +100,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set plot feedback item
         if (hasFeedback) {
             getMenu().getSlot(16)
-                    .setItem(new ItemBuilder(Material.WRITABLE_BOOK)
+                    .setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
                             .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK), true).build())
                             .build());

@@ -169,7 +169,9 @@ public class PlayerPlotsMenu extends AbstractMenu {
             );
             builder.emptyLine();
             builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
-            String feedback = review.get().getFeedback() == null ? "No Feedback" : review.get().getFeedback().replaceAll("//", " "); // TODO: translate
+            String feedback = review.get().getFeedback() == null
+                    ? LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.NO_FEEDBACK)
+                    : review.get().getFeedback().replaceAll("//", " ");
             builder.addLine(text(feedback, WHITE), true);
         }
 

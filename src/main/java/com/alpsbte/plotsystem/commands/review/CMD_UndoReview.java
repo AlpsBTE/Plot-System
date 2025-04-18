@@ -90,7 +90,7 @@ public class CMD_UndoReview extends BaseCommand {
 
             Optional<PlotReview> review = plot.getLatestReview();
             if (review.isEmpty()) {
-                player.sendMessage(Utils.ChatUtils.getAlertFormat("Review could not be found!")); // TODO: translate text
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.REVIEW_NOT_FOUND)));
                 return;
             }
 

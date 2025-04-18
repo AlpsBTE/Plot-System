@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -111,7 +112,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(Player player) {
-        return new ItemBuilder(Material.GOLDEN_AXE)
+        return new ItemBuilder(BaseItems.BUILDER_UTILITIES.getItem())
                 .setName(Component.text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), AQUA, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES), true).build())

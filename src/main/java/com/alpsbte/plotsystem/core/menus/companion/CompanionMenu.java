@@ -46,7 +46,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
@@ -148,8 +147,8 @@ public class CompanionMenu {
         } else item = BaseItems.DIFFICULTY_AUTOMATIC.getItem();
 
         Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyByEnum(selectedPlotDifficulty);
-        if (difficulty.isEmpty()) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("No database entry for difficulty " + selectedPlotDifficulty + " was found!"));
+        if (difficulty.isEmpty() && selectedPlotDifficulty != null) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("No database entry for difficulty " + selectedPlotDifficulty.name() + " was found!"));
         }
         double scoreMultiplier = difficulty.map(Difficulty::getMultiplier).orElse(0.0);
 
@@ -221,31 +220,34 @@ public class CompanionMenu {
 
     public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) {
         String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS), GOLD).decoration(BOLD, true);
-        TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);
+        ItemStack baseItem = plot == null ? BaseItems.PLOT_SLOT_EMPTY.getItem() : BaseItems.PLOT_SLOT_FILLED.getItem();
+        baseItem.setAmount(1 + slotIndex);
+        ArrayList<TextComponent> lore;
 
-        Material itemMaterial = Material.MAP;
-        ArrayList<TextComponent> lore = new LoreBuilder()
-                .addLines(slotDescriptionComp,
-                        empty(),
-                        statusComp.append(text(": Unassigned", GRAY)).decoration(BOLD, true))
-                .build();
-
-        if (plot != null) {
-            itemMaterial = Material.FILLED_MAP;
+        if (plot == null) {
+            TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);
+            lore = new LoreBuilder()
+                    .addLine(slotDescriptionComp)
+                    .build();
+        } else {
             String plotIdText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID);
             String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
             String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
+            String statusText = LangUtil.getInstance().get(langPlayer, LangPaths.Database.STATUS + "." + plot.getStatus().name() + ".name");
+
+            TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": ", GOLD)
+                    .decoration(BOLD, true)
+                    .append(text(statusText, GRAY));
             lore = new LoreBuilder()
                     .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getID(), WHITE)),
                             text(plotCityText + ": ", GRAY).append(text(plot.getCityProject().getName(langPlayer), WHITE)),
                             text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
                             empty(),
-                            statusComp.append(text(": Unassigned", GRAY)).decoration(BOLD, true))
+                            statusComp)
                     .build();
         }
 
-        return new ItemBuilder(itemMaterial, 1 + slotIndex)
+        return new ItemBuilder(baseItem)
                 .setName(text(nameText, GOLD).decoration(BOLD, true))
                 .setLore(lore)
                 .build();

@@ -143,7 +143,7 @@ public class CountryMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
-                .pattern("101111001")
+                .pattern("001111001")
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")

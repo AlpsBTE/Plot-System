@@ -56,6 +56,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import li.cinnazeyy.langlibs.core.event.LanguageChangeEvent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -173,9 +174,9 @@ public class EventListener implements Listener {
 
         if (event.getWhoClicked().getGameMode() == GameMode.CREATIVE && (event.getCursor().isSimilar(CompanionMenu.getMenuItem((Player) event.getWhoClicked())) ||
                 event.getCursor().isSimilar(ReviewMenu.getMenuItem((Player) event.getWhoClicked())))) {
-                event.getView().setCursor(ItemStack.empty());
-                event.setCancelled(true);
-            }
+            event.getView().setCursor(ItemStack.empty());
+            event.setCancelled(true);
+        }
 
     }
 
@@ -294,10 +295,14 @@ public class EventListener implements Listener {
         List<ReviewNotification> notifications = DataProvider.REVIEW.getReviewNotifications(player.getUniqueId());
         if (!notifications.isEmpty()) {
             PlotUtils.ChatFormatting.sendFeedbackMessage(notifications, player);
-            String subtitleText = " Plot" + (notifications.size() == 1 ? " " : "s ") + (notifications.size() == 1 ? "has" : "have") + " been reviewed!"; // TODO: translate
+            Component subtitleComp = LangUtil.getInstance().getComponent(player.getUniqueId(),
+                    notifications.size() == 1
+                            ? LangPaths.Message.Info.PLOTS_REVIEWED_SINGULAR
+                            : LangPaths.Message.Info.PLOTS_REVIEWED_PLURAL,
+                    GREEN, text(notifications.size(), GOLD).decoration(BOLD, true));
             player.showTitle(Title.title(
                     empty(),
-                    text(notifications.size(), GOLD).decoration(BOLD, true).append(text(subtitleText, GREEN).decoration(BOLD, true)),
+                    subtitleComp,
                     Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(8), Duration.ofSeconds(1)))
             );
         }

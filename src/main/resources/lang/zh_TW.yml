@@ -162,10 +162,6 @@ review:
     accuracy-desc: "建築的精確度如何？%newline%%newline%- 看起來像在真實世界%newline%- 正確的輪廓%newline%- 正確的高度%newline%- 完成了"
     block-palette: "方塊用色"
     block-palette-desc: "使用了多少個不同的方塊，它們的創意如何？%newline%%newline%- 方塊顏色/紋理的選擇%newline%- 隨機方塊"
-    detailing: "細節"
-    detailing-desc: "建築有多少細節？%newline%%newline%- 屋頂細節%newline%- 立面上的細節%newline%- 頭顱和旗幟"
-    technique: "技巧"
-    technique-desc: "使用了什麼建築技巧，它們的創意如何？%newline%%newline%- World-Edit%newline%- 特殊方塊"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -222,7 +218,6 @@ message:
     removed-plot-member: "§a將§6{0}§a從建地§6#{1}§a中移除！"
     left-plot: "§a離開建地§6#{0}§a！"
     plot-will-get-abandoned-warning: "§c§l警告：§c此建地將自動被廢棄！"
-    plot-will-get-rejected-warning: "§c§l警告：§c此建地將被否決！"
     saving-plot: "§a儲存建地..."
     creating-plot: "§a建立新建地..."
     created-new-plot: "§a為§6{0}§a建立了新建地§a！"
@@ -413,4 +408,4 @@ database:
     hard:
       name: 'Hard'
 # NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

@@ -54,7 +54,7 @@ public enum Continent {
 
     Continent(String databaseEnum, String langPath) {
         this.databaseEnum = databaseEnum;
-        // although LangPath.Continent keys match the enum name, you cannot get the value without reflection
+        // you cannot get the value from the database enum without reflection
         this.langPath = langPath;
     }
 

@@ -5,7 +5,6 @@ import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
-import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -19,7 +18,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.google.common.collect.Multimap;
 import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -27,10 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -238,18 +233,18 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     }
 
     private ItemStack getToggleItem(ToggleCriteria criteria, boolean checked) {
+        Player p = getMenuPlayer();
         ItemStack baseItem = checked
                 ? BaseItems.REVIEW_TOGGLE_CHECKED.getItem()
-                : criteria.isOptional() ? BaseItems.REVIEW_TOGGLE_DISABLED.getItem() : new ItemStack(Material.FIRE_CHARGE);
-        // TODO: translate
+                : criteria.isOptional() ? BaseItems.REVIEW_TOGGLE_OPTIONAL.getItem() : BaseItems.REVIEW_TOGGLE_REQUIRED.getItem();
         return new ItemBuilder(baseItem)
                 .setName(text(criteria.getCriteriaName()))
                 .setLore(new LoreBuilder()
                         .addLine(criteria.isOptional()
-                                ? text("OPTIONAL", NamedTextColor.GRAY).decoration(TextDecoration.BOLD, true)
-                                : text("REQUIRED", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                                ? text(LangUtil.getInstance().get(p, LangPaths.Note.OPTIONAL), NamedTextColor.GRAY).decoration(TextDecoration.BOLD, true)
+                                : text(LangUtil.getInstance().get(p, LangPaths.Note.REQUIRED), NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
                         .emptyLine()
-                        .addLine(text("Click to toggle", NamedTextColor.GRAY))
+                        .addLine(text(LangUtil.getInstance().get(p, LangPaths.Note.Action.CLICK_TO_TOGGLE), NamedTextColor.GRAY))
                         .build())
                 .build();
     }
@@ -261,25 +256,25 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         int togglePoints = (int) Math.floor(togglePercentage / 10.0);
         int totalPoints = rating.getAccuracyPoints() + rating.getBlockPalettePoints() + togglePoints;
 
-        //TODO: translate
-        String accuracyPointsText = "Accuracy Points";
-        String blockPalettePointsText = "Block Palette Points";
-        String togglesPointsText = "Toggle Points";
-        String totalPointsText = "Total Points";
+        String accuracyPointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCURACY_POINTS);
+        String blockPalettePointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.BLOCK_PALETTE_POINTS);
+        String togglesPointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.TOGGLE_POINTS);
+        String totalPointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.TOTAL_POINTS);
 
         boolean willReject = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0 || totalPoints <= 8;
         for (ToggleCriteria criteria : buildTeamCriteria) {
             boolean checked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
             if (!checked && !criteria.isOptional()) {
                 willReject = true; // a plot is also rejected if any of the required toggles are not checked
+                break;
             }
         }
 
         TextComponent resultNotice;
         if (willReject) {
-            resultNotice = text("Plot will be rejected!", NamedTextColor.YELLOW);
+            resultNotice = text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_BE_REJECTED), NamedTextColor.YELLOW);
         } else {
-            resultNotice = text("Plot will be accepted", NamedTextColor.GREEN);
+            resultNotice = text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_WILL_BE_ACCEPTED), NamedTextColor.GREEN);
         }
 
         return new ItemBuilder(BaseItems.REVIEW_SUBMIT.getItem())

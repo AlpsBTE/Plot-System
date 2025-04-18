@@ -163,10 +163,6 @@ review:
     accuracy-desc: "Wie akkurat ist das Gebäude?%newline%%newline%- Sieht aus wie in RL%newline%- Korrekte Umrisse%newline%- Korrekte Höhen%newline%- Ist vollständig"
     block-palette: "Block-Palette"
     block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?%newline%%newline%- Wahl der Blockfarben/Texturen%newline%- Randomisierte Blöcke"
-    detailing: "Detaillierung"
-    detailing-desc: "Wie viele Details hat das Gebäude?%newline%%newline%- Dachdetails%newline%- Details an den Fassaden%newline%- Köpfe und Banner"
-    technique: "Technik"
-    technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?%newline%%newline%- World-Edit%newline%- Spezialblöcke"
 #-----------------------------------------------------
 #| Notes
 #-----------------------------------------------------
@@ -223,7 +219,6 @@ message:
     removed-plot-member: "§a§6{0}§a wurde vom Plot entfernt §6#{1}§a!"
     left-plot: "§aVerlasse Plot §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lWARNING: §cDieser Plot wird automatisch aufgelassen werden!"
-    plot-will-get-rejected-warning: "§c§lWARNING: §cDieser Plot wird abgelehnt werden!"
     saving-plot: "§aSpeichere Plot..."
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
@@ -414,4 +409,4 @@ database:
     hard:
       name: 'Hard'
 #NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

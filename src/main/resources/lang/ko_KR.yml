@@ -162,10 +162,6 @@ review:
     accuracy-desc: "얼마나 정확하게 건축되었나요?%newline%%newline%- 현실과의 유사성%newline%- 올바른 외곽선%newline%- 올바른 높이%newline%- 완성도"
     block-palette: "블록 선정"
     block-palette-desc: "사용된 블록이 얼마나 다양하고 창의적인가요?%newline%%newline%- 사용된 블록의 색깔/질감%newline%- 블록의 무작위성"
-    detailing: "디테일"
-    detailing-desc: "건물의 디테일이 얼마나 잘 구현되어있나요?%newline%%newline%- 지붕 디테일%newline%- 건물 정면 디테일%newline%- 머리와 현수막의 사용"
-    technique: "기법"
-    technique-desc: "사용된 건축 기법들은 무엇이고 얼마나 창의적인가요?%newline%%newline%- 월드에딧%newline%- 특수 블록"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -222,7 +218,6 @@ message:
     removed-plot-member: "§6{0}§a님을 플롯 §6#{1}§a에서 제외하였습니다!"
     left-plot: "§a플롯 §6#{0}§a을 나갔습니다!"
     plot-will-get-abandoned-warning: "§c§l경고: §c이 플롯은 자동으로 버려질 것입니다!"
-    plot-will-get-rejected-warning: "§c§l경고: §c이 플롯은 거절될 것입니다!"
     saving-plot: "§a플롯 저장 중..."
     creating-plot: "§a새로운 플롯 생성 중..."
     created-new-plot: "§6{0}§a님의 플롯을 생성하였습니다!"
@@ -413,4 +408,4 @@ database:
     hard:
       name: 'Hard'
 # NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

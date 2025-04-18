@@ -27,6 +27,25 @@ plot-focus-mode:
 plot-city-inspiration-mode:
   material: head(38094)
   modelId: ''
+plot-slot-empty:
+  material: MAP
+  modelId: ''
+plot-slot-filled:
+  material: MAP_FILLED
+  modelId: ''
+plot-submit:
+  material: NAME_TAG
+  modelId: ''
+plot-undo-submit:
+  material: FIRE_CHARGE
+  modelId: ''
+plot-abandon:
+  material: BARRIER
+  modelId: ''
+plot-teleport:
+  material: COMPASS
+  modelId: ''
+
 
 menu-error:
   material: BARRIER
@@ -56,8 +75,11 @@ review-accuracy:
 review-block-palette:
   material: PAINTING
   modelId: ''
-review-toggle-disabled:
+review-toggle-optional:
   material: FIREWORK_STAR
+  modelId: ''
+review-toggle-required:
+  material: FIRE_CHARGE
   modelId: ''
 review-toggle-checked:
   material: SLIME_BALL
@@ -92,12 +114,24 @@ review-info:
 review-info-plot:
   material: MAP
   modelId: ''
+review-feedback:
+  material: WRITABLE_BOOK
+  modelId: ''
+review-score:
+  material: NETHER_STAR
+  modelId: ''
 
+builder-utilities:
+  material: GOLDEN_AXE
+  modelId: ''
+filter-item:
+  material: HOPPER
+  modelId: ''
 settings-item:
   material: COMPARATOR
   modelId: ''
 random-plot-item:
-  material: COMPARATOR
+  material: MAGMA_CREAM
   modelId: ''
 
 difficulty-automatic:
@@ -122,4 +156,4 @@ language-item:
   modelId: ''
 
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

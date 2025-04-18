@@ -162,10 +162,6 @@ review:
     accuracy-desc: "Насколько точно исполнено здание?%newline%%newline%- Выглядит как в настоящей жизни%newline%- Правильные контуры%newline%- Правильная высота%newline%- Полностью завершен"
     block-palette: "Палитра Блоков"
     block-palette-desc: "Сколько различных блоков использовано и насколько они креативны??%newline%%newline%- Выбор цвета/текстуры блоков%newline%- Случайные блоки’"
-    detailing: "Детализация"
-    detailing-desc: "Насколько детализировано здание?%newline%%newline%- Детали крыши%newline%- Детали фасада%newline%- Головы и Баннеры"
-    technique: "Техника"
-    technique-desc: "Какие строительные техники были применены и насколько они креативны?%newline%%newline%- World-Edit%newline%- Специальные Блоки"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -222,7 +218,6 @@ message:
     removed-plot-member: "§6{0}§a §aудалён из участка§6#{1}§a!"
     left-plot: "§aПокинул участок §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lВНИМАНИЕ: §cЭтот участок будет автоматически сброшен!"
-    plot-will-get-rejected-warning: "§c§lВНИМАНИЕ: §cЭтот участок будет отклонён!!"
     saving-plot: "§aСохранение участка..."
     creating-plot: "§aСоздание нового участка..."
     created-new-plot: "§aСоздан новый участок§a для §6{0}§a!"
@@ -413,4 +408,4 @@ database:
     hard:
       name: 'Hard'
 # NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

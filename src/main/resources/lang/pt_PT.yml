@@ -162,10 +162,6 @@ review:
     accuracy-desc: "Quão precisa é a construção?%newline%%newline%- Pare como na vida real%newline%- MArcação correta%newline%- Altura correta%newline%- Completa"
     block-palette: "Paleta de Blocos"
     block-palette-desc: "Quantos blocos diferentes são usados e quão criativos eles são?%newline%%newline%- Escolha de cores/texturas de blocos%newline%- Blocos aleatórios"
-    detailing: "Detalhamento"
-    detailing-desc: "Quão detalhada é a construção?%newline%%newline%- Detalhes do telhado%newline%- Detalhes na Fachada%newline%- Cabeças e estandartes"
-    technique: "Técnica"
-    technique-desc: "Quais técnicas de construção foram utilizadas e quão criativas elas são?%newline%%newline%- World-Edit%newline%- Blocos especiais"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -222,7 +218,6 @@ message:
     removed-plot-member: "§aRemovido §6{0}§a do terreno §6#{1}§a!"
     left-plot: "§aDeixou o terreno §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lAVISO: §cEsse terreno vai ser abandonado automaticamente!"
-    plot-will-get-rejected-warning: "§c§lAVISO: §cEsse terreno vai ser rejeitado!"
     saving-plot: "§aSalvando terreno..."
     creating-plot: "§aCriando um novo terreno..."
     created-new-plot: "§aCriou novo terreno para §6{0}§a!"
@@ -413,4 +408,4 @@ database:
     hard:
       name: 'Hard'
 # NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

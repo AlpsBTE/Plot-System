@@ -91,7 +91,7 @@ public class MenuItems {
     }
 
     public static ItemStack filterItem(Player langPlayer) {
-        return new ItemBuilder(Material.HOPPER, 1)
+        return new ItemBuilder(BaseItems.FILTER_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.FILTER_BY_COUNTRY), GOLD, BOLD))
                 .build();
     }

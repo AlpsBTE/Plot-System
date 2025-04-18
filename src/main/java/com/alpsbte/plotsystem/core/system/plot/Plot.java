@@ -42,14 +42,11 @@ import com.sk89q.worldedit.math.BlockVector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class Plot extends AbstractPlot {
     private final CityProject cityProject;

@@ -162,10 +162,6 @@ review:
     accuracy-desc: "Quelle est la précision du bâtiment?%newline%%newline%- Ressemble à RL%newline%- Contours corrects%newline%- Hauteur correcte%newline%- Est terminé"
     block-palette: "palette de blocs"
     block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?%newline%%newline%- Choix des couleurs/textures des blocs%newline%- Blocs aléatoires"
-    detailing: "Détail"
-    detailing-desc: "Combien de détails le bâtiment a-t-il?%newline%%newline%- Détails du toit%newline%- Détails sur les façades%newline%- Têtes et bannières"
-    technique: "Technique"
-    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?%newline%%newline%- World-Edit%newline%- Blocs spéciaux"
 #-----------------------------------------------------
 #| Notes
 #-----------------------------------------------------
@@ -222,7 +218,7 @@ message:
     removed-plot-member: "§aSupprimé §6{0}§a du tracé §6#{1}§a!"
     left-plot: "§aTracé de gauche §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lATTENTION: §cCette parcelle sera automatiquement abandonnée!"
-    plot-will-get-rejected-warning: "§c§lATTENTION: §cCette parcelle sera rejetée!"
+
     saving-plot: "§aEnregistrement de l'intrigue..."
     creating-plot: "§aCréation d'un nouveau tracé..."
     created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
@@ -413,4 +409,4 @@ database:
     hard:
       name: 'Hard'
 #NOTE: Do not change
-config-version: 2.4
+config-version: 2.5

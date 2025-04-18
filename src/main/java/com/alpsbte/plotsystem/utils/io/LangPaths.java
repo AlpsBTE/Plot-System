@@ -190,6 +190,11 @@ public abstract class LangPaths {
         public static final String FEEDBACK = REVIEW_PREFIX + "feedback";
         public static final String REVIEWER = REVIEW_PREFIX + "reviewer";
         public static final String PLAYER_LANGUAGE = REVIEW_PREFIX + "player-language";
+        public static final String NO_FEEDBACK = "no-feedback";
+        public static final String ACCURACY_POINTS = "accuracy-points";
+        public static final String BLOCK_PALETTE_POINTS = "block-palette-points";
+        public static final String TOGGLE_POINTS = "toggle-points";
+        public static final String TOTAL_POINTS = "total-points";
 
         public static final class Criteria {
             private Criteria() {}
@@ -199,10 +204,6 @@ public abstract class LangPaths {
             public static final String ACCURACY_DESC = CRITERIA_PREFIX + "accuracy-desc";
             public static final String BLOCK_PALETTE = CRITERIA_PREFIX + "block-palette";
             public static final String BLOCK_PALETTE_DESC = CRITERIA_PREFIX + "block-palette-desc";
-            public static final String DETAILING = CRITERIA_PREFIX + "detailing";
-            public static final String DETAILING_DESC = CRITERIA_PREFIX + "detailing-desc";
-            public static final String TECHNIQUE = CRITERIA_PREFIX + "technique";
-            public static final String TECHNIQUE_DESC = CRITERIA_PREFIX + "technique-desc";
         }
     }
 
@@ -214,6 +215,8 @@ public abstract class LangPaths {
         public static final String WONT_BE_ABLE_CONTINUE_BUILDING = NOTES + "wont-be-able-continue-building";
         public static final String SCORE_WILL_BE_SPLIT = NOTES + "score-will-be-split";
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
+        public static final String OPTIONAL = NOTES + "optional";
+        public static final String REQUIRED = NOTES + "required";
 
         public static final class Action {
             private Action() {}
@@ -240,6 +243,7 @@ public abstract class LangPaths {
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION_PREFIX + "click-to-play-with-friends";
             public static final String TUTORIAL_SHOW_STAGES = ACTION_PREFIX + "tutorial-show-stages";
             public static final String CLICK_TO_OPEN_PLOTS_MENUE = ACTION_PREFIX + "click-to-open-plots-menu";
+            public static final String CLICK_TO_TOGGLE = ACTION_PREFIX + "click-to-toggle";
         }
     }
 
@@ -271,7 +275,10 @@ public abstract class LangPaths {
             public static final String REMOVED_PLOT_MEMBER = INFO_PREFIX + "removed-plot-member";
             public static final String LEFT_PLOT = INFO_PREFIX + "left-plot";
             public static final String PLOT_WILL_GET_ABANDONED = INFO_PREFIX + "plot-will-get-abandoned-warning";
-            public static final String PLOT_WILL_GET_REJECTED = INFO_PREFIX + "plot-will-get-rejected-warning";
+            public static final String PLOT_WILL_BE_REJECTED = INFO_PREFIX + "plot-will-be-rejected";
+            public static final String PLOT_WILL_BE_ACCEPTED = INFO_PREFIX + "plot-will-be-accepted";
+            public static final String PLOTS_REVIEWED_SINGULAR = INFO_PREFIX + "plots-reviewed-singular";
+            public static final String PLOTS_REVIEWED_PLURAL = INFO_PREFIX + "plots-reviewed-plural";
             public static final String SAVING_PLOT = INFO_PREFIX + "saving-plot";
             public static final String CREATING_PLOT = INFO_PREFIX + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO_PREFIX + "created-new-plot";
@@ -326,6 +333,7 @@ public abstract class LangPaths {
             public static final String CHAT_INPUT_EXPIRED = ERROR_PREFIX + "chat-input-expired";
             public static final String TUTORIAL_DISABLED = ERROR_PREFIX + "tutorial-disabled";
             public static final String TUTORIAL_ALREADY_RUNNING = ERROR_PREFIX + "tutorial-already-running";
+            public static final String REVIEW_NOT_FOUND = ERROR_PREFIX + "review-not-found";
         }
     }
 
@@ -420,5 +428,6 @@ public abstract class LangPaths {
         public static final String CITY_PROJECT = DATABASE_PREFIX + "city-project";
         public static final String COUNTRY = DATABASE_PREFIX + "country";
         public static final String DIFFICULTY = DATABASE_PREFIX + "difficulty";
+        public static final String STATUS = DATABASE_PREFIX + "status";
     }
 }
