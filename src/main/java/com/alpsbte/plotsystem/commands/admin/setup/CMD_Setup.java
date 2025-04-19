@@ -33,7 +33,6 @@ public class CMD_Setup extends BaseCommand {
 
     public CMD_Setup() {
         registerSubCommand(new CMD_Setup_BuildTeam(this));
-        registerSubCommand(new CMD_Setup_FTP(this));
         registerSubCommand(new CMD_Setup_Server(this));
         registerSubCommand(new CMD_Setup_Country(this));
         registerSubCommand(new CMD_Setup_City(this));
@@ -67,17 +66,5 @@ public class CMD_Setup extends BaseCommand {
     @Override
     public String getPermission() {
         return null;
-    }
-
-    public static String appendArgs(String[] args, int startIndex) {
-        StringBuilder name = new StringBuilder();
-        for (int i = startIndex; i < args.length; i++) {
-            name.append(args[i]);
-            // Add space between words
-            if (i != args.length - 1) {
-                name.append(" ");
-            }
-        }
-        return name.toString();
     }
 }

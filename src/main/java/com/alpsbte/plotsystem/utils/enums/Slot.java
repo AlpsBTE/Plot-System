@@ -25,5 +25,5 @@
 package com.alpsbte.plotsystem.utils.enums;
 
 public enum Slot {
-    first_slot, second_slot, third_slot
+    FIRST, SECOND, THIRD
 }

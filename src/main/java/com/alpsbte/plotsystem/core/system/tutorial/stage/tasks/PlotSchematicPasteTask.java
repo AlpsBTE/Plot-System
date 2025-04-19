@@ -28,6 +28,8 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
+
 public class PlotSchematicPasteTask extends AbstractTask {
     private final int schematicId;
 
@@ -39,7 +41,14 @@ public class PlotSchematicPasteTask extends AbstractTask {
     @Override
     public void performTask() {
         PlotTutorial tutorial = (PlotTutorial) AbstractTutorial.getActiveTutorial(player.getUniqueId());
-        if (tutorial != null) tutorial.onPlotSchematicPaste(player.getUniqueId(), schematicId);
+        if (tutorial != null) {
+            try {
+                tutorial.onPlotSchematicPaste(player.getUniqueId(), schematicId);
+            } catch (IOException ex) {
+                tutorial.onException(ex);
+                return;
+            }
+        }
         setTaskDone();
     }
 }

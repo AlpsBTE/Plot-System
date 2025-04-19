@@ -39,14 +39,14 @@ public class LangUtil extends LanguageUtil {
     public static void init() {
         if (langUtilInstance != null) return;
         LangLibAPI.register(PlotSystem.getPlugin(), new LanguageFile[]{
-                new LanguageFile(Language.en_GB, 2.2),
-                new LanguageFile(Language.de_DE, 2.2, "de_AT", "de_CH"),
-                new LanguageFile(Language.fr_FR, 2.3, "fr_CA"),
-                new LanguageFile(Language.pt_PT, 2.2, "pt_BR"),
-                new LanguageFile(Language.ko_KR, 2.2),
-                new LanguageFile(Language.ru_RU, 2.2, "ba_RU", "tt_RU"),
-                new LanguageFile(Language.zh_CN, 2.2),
-                new LanguageFile(Language.zh_TW, 2.3, "zh_HK"),
+                new LanguageFile(Language.en_GB, 2.5),
+                new LanguageFile(Language.de_DE, 2.5, "de_AT", "de_CH"),
+                new LanguageFile(Language.fr_FR, 2.5, "fr_CA"),
+                new LanguageFile(Language.pt_PT, 2.5, "pt_BR"),
+                new LanguageFile(Language.ko_KR, 2.5),
+                new LanguageFile(Language.ru_RU, 2.5, "ba_RU", "tt_RU"),
+                new LanguageFile(Language.zh_CN, 2.5),
+                new LanguageFile(Language.zh_TW, 2.5, "zh_HK"),
         });
         langUtilInstance = new LangUtil();
     }

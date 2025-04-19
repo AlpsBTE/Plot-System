@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,28 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.utils.items;
+package com.alpsbte.plotsystem.core.holograms.leaderboards;
 
-public enum CustomHeads {
-    WHITE_CONCRETE("8614"),
-    GREEN_CONCRETE("8621"),
-    YELLOW_CONCRETE("8613"),
-    RED_CONCRETE("8616"),
-    WORKBENCH("24180"),
-    ADD_BUTTON("9237"),
-    REMOVE_BUTTON("9243"),
-    BACK_BUTTON("9226"),
-    NEXT_BUTTON("9223"),
-    PREVIOUS_BUTTON("9226"),
-    INFO_BUTTON("46488"),
-    GLOBE_HEAD("49973"),
-    PLOT_TYPE_BUTTON("4159"),
-    FOCUS_MODE_BUTTON("38199"),
-    CITY_INSPIRATION_MODE_BUTTON("38094");
+public class LeaderboardEntry {
+    private final int score;
+    private final int position;
+    private final int totalPositions;
 
-    final String id;
-
-    CustomHeads(String id) {
-        this.id = id;
+    public LeaderboardEntry(int score, int position, int totalPositions) {
+        this.score = score;
+        this.position = position;
+        this.totalPositions = totalPositions;
     }
 
-    public String getId() {
-        return id;
+    public int getScore() {
+        return score;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public int getTotalPosition() {
+        return totalPositions;
     }
 }

@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.utils.enums;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -41,19 +42,19 @@ import java.util.List;
 import static net.kyori.adventure.text.Component.*;
 
 public enum Continent {
-    EUROPE("europe", LangPaths.Continent.EUROPE),
-    ASIA("asia", LangPaths.Continent.ASIA),
-    AFRICA("africa", LangPaths.Continent.AFRICA),
-    OCEANIA("oceania", LangPaths.Continent.OCEANIA),
-    SOUTH_AMERICA("south america", LangPaths.Continent.SOUTH_AMERICA),
-    NORTH_AMERICA("north america", LangPaths.Continent.NORTH_AMERICA);
+    EUROPE("EU", LangPaths.Continent.EUROPE),
+    ASIA("AS", LangPaths.Continent.ASIA),
+    AFRICA("AF", LangPaths.Continent.AFRICA),
+    OCEANIA("OC", LangPaths.Continent.OCEANIA),
+    SOUTH_AMERICA("SA", LangPaths.Continent.SOUTH_AMERICA),
+    NORTH_AMERICA("NA", LangPaths.Continent.NORTH_AMERICA);
 
     public final String databaseEnum;
     public final String langPath;
 
     Continent(String databaseEnum, String langPath) {
         this.databaseEnum = databaseEnum;
-        // although LangPath.Continent keys match the enum name, you cannot get the value without reflection
+        // you cannot get the value from the database enum without reflection
         this.langPath = langPath;
     }
 
@@ -68,7 +69,7 @@ public enum Continent {
      * @return Menu item
      */
     public ItemStack getItem(Player player) {
-        List<Country> countries = Country.getCountries(this);
+        List<Country> countries = DataProvider.COUNTRY.getCountriesByContinent(this);
 
         return new ItemBuilder(Material.COMPASS)
                 .setName(text(LangUtil.getInstance().get(player, langPath), NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true))
