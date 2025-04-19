@@ -140,6 +140,8 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         try {
             if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity, Builder.byUUID(player.getUniqueId())).get();
             if (difficulty == null) difficulty = PlotDifficulty.EASY;
+
+            player.closeInventory();
             new DefaultPlotGenerator(randomCity, difficulty, builder);
         } catch (InterruptedException | ExecutionException e) {
             sqlError(player, e);
