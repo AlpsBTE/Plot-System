@@ -206,7 +206,7 @@ message:
     plot-marked-as-reviewed: "§aLe terrain §6#{0}§a par §6{1}§a a été marqué comme révisé!"
     plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté!"
     undid-submission: "§aUndid soumission du complot §6#{0}§a!"
-    undid-review: "§aChangement les commentaires de la parcelle§6#{0}§a par §6#{1}§a!"
+    undid-review: "§aChangement les commentaires de la parcelle§6#{0}§a par §6{1}§a!"
     reviewed-plot: "§aVotre parcelle §6#{0}§a a été revue!"
     unreviewed-plot: "§aIl y a §6{0}§a un complot non révisé!"
     unreviewed-plots: "§aIl y a §6{0}§a des parcelles non revues!"

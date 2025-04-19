@@ -207,7 +207,7 @@ message:
     plot-marked-as-reviewed: "§a §6{1}§a 的建地 §6#{0}§a 已标记供审核！ "
     plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被驳回！"
     undid-submission: "§a尚未提交的建地 §6#{0}§a！ "
-    undid-review: "§a尚未审核的建地 §6#{0}§a by §6#{1}§a！ "
+    undid-review: "§a尚未审核的建地 §6#{0}§a by §6{1}§a！ "
     reviewed-plot: "§a你的建地 §6#{0}§a 已被审核！ "
     unreviewed-plot: "§a有 §6{0}§a 处尚未审核的建地！ "
     unreviewed-plots: "§a有 §6{0}§a 处尚未审核的建地！ "

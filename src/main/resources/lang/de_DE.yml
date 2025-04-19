@@ -207,7 +207,7 @@ message:
     plot-marked-as-reviewed: "§aPlot §6#{0}§a von §6{1}§a wurde als geprüft markiert!"
     plot-rejected: "§aPlot §6#{0}§a von §6{1}§a wurde abgelehnt!"
     undid-submission: "§aDie Einreichung des Plots §6#{0}§a wurde rückgängig gemacht!"
-    undid-review: "§aDie Bewertung des Plots §6#{0}§a von §6#{1}§a wurde rückgängig gemacht!"
+    undid-review: "§aDie Bewertung des Plots §6#{0}§a von §6{1}§a wurde rückgängig gemacht!"
     reviewed-plot: "§aDein Plot §6#{0}§a wurde bewertet!"
     unreviewed-plot: "§aEs gibt §6{0}§a unbewerteten Plot!"
     unreviewed-plots: "§aEs gibt §6{0}§a unbewertete Plots!"

@@ -215,7 +215,7 @@ message:
     plot-marked-as-reviewed: "§aPlot §6#{0}§a by §6{1}§a has been marked as reviewed!"
     plot-rejected: "§aPlot §6#{0}§a by §6{1}§a has been rejected!"
     undid-submission: "§aUndid submission of plot §6#{0}§a!"
-    undid-review: "§aUndid review of plot §6#{0}§a by §6#{1}§a!"
+    undid-review: "§aUndid review of plot §6#{0}§a by §6{1}§a!"
     reviewed-plot: "§aYour plot §6#{0}§a has been reviewed!"
     unreviewed-plot: "§aThere is §6{0}§a unreviewed plot!"
     unreviewed-plots: "§aThere are §6{0}§a unreviewed plots!"

@@ -206,7 +206,7 @@ message:
     plot-marked-as-reviewed: "§aTerreno §6#{0}§a por §6{1}§a foi marcado como avaliado!"
     plot-rejected: "§aTerreno §6#{0}§a por §6{1}§a foi rejeitado!Envie feedback usando §6/sendFeedback <ID> <TEXT>§a!"
     undid-submission: "§aEnvio do Terreno Desfeito §6#{0}§a!"
-    undid-review: "§aAvaliação do Terreno Desfeita §6#{0}§a por §6#{1}§a!"
+    undid-review: "§aAvaliação do Terreno Desfeita §6#{0}§a por §6{1}§a!"
     reviewed-plot: "§aSeu terreno §6#{0}§a foi avaliado!"
     unreviewed-plot: "§aExiste um §6{0}§a terreno não avaliado!"
     unreviewed-plots: "§aExistem §6{0}§a terrenos não avaliados!"

@@ -153,18 +153,15 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
         return DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true).stream().filter(test -> {
-            if (test instanceof CityProject project) {
-                var pd = selectedPlotDifficulty;
-                try {
-                    if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project, Builder.byUUID(player.getUniqueId())).get();
-                    if (pd == null) pd = PlotDifficulty.EASY;
+            if (!(test instanceof CityProject project)) return false;
+            var pd = selectedPlotDifficulty;
+            try {
+                if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project, Builder.byUUID(player.getUniqueId())).get();
+                if (pd == null) pd = PlotDifficulty.EASY;
 
-                    return project.isVisible() && !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
-                } catch (ExecutionException | InterruptedException e) {
-                    sqlError(player, e);
-                }
-            } else {
-                return false;
+                return project.isVisible() && !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
+            } catch (ExecutionException | InterruptedException e) {
+                sqlError(player, e);
             }
             return false;
         }).toList();
