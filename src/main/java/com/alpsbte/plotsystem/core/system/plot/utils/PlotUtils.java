@@ -237,7 +237,8 @@ public final class PlotUtils {
         }
 
         // Set Completed Schematic
-        DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+        if (!successful) return false;
 
         // If plot was created in a void world, copy the result to the city world
         if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE && plot.getVersion() >= 3) {
