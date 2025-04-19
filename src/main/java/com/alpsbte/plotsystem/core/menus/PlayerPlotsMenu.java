@@ -28,9 +28,11 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
+import com.alpsbte.plotsystem.core.system.review.ReviewRating;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -111,7 +113,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
         // Add click event for player plot items
         for (int i = 0; i < plotDisplayCount; i++) {
             int itemSlot = i;
-            getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> new PlotActionsMenu(clickPlayer, plots.get(itemSlot)));
+            getMenu().getSlot(9 + i).setClickHandler((clickPlayer, clickInformation) -> {
+                if (plots.get(itemSlot).getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) return;
+                new PlotActionsMenu(clickPlayer, plots.get(itemSlot));
+            });
         }
 
         // Set click event for back item
@@ -158,13 +163,14 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         Optional<PlotReview> review = plot.getLatestReview();
         if (review.isPresent()) {
+            ReviewRating rating = review.get().getRating();
             builder.emptyLine();
             builder.addLines(
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(review.get().getRating().getAccuracyPoints()))
+                            .append(Utils.ItemUtils.getColoredPointsComponent(rating.getAccuracyPoints()))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(review.get().getRating().getBlockPalettePoints()))
+                            .append(Utils.ItemUtils.getColoredPointsComponent(rating.getBlockPalettePoints()))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN))
             );
             builder.emptyLine();
@@ -180,6 +186,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
         builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.STATUS) + ": ", GRAY)
                 .append(text(plot.getStatus().name().substring(0, 1).toUpperCase() +
                         plot.getStatus().name().substring(1), WHITE)));
+
+        if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Note.LEGACY), RED).decoration(BOLD, true));
+        }
         return builder;
     }
 

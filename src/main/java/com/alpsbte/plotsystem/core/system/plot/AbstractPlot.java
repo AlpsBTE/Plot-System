@@ -55,8 +55,9 @@ import java.util.UUID;
 import static net.kyori.adventure.text.Component.text;
 
 public abstract class AbstractPlot {
-    public static final double PLOT_VERSION = 3;
+    public static final double PLOT_VERSION = 4;
     public static final ClipboardFormat CLIPBOARD_FORMAT = BuiltInClipboardFormat.FAST_V2;
+    public static final double LEGACY_VERSION_THRESHOLD = 3;
 
     private final int ID;
 

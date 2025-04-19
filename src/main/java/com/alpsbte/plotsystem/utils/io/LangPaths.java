@@ -217,6 +217,7 @@ public abstract class LangPaths {
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
         public static final String OPTIONAL = NOTES + "optional";
         public static final String REQUIRED = NOTES + "required";
+        public static final String LEGACY = NOTES + "legacy";
 
         public static final class Action {
             private Action() {}
@@ -309,6 +310,8 @@ public abstract class LangPaths {
             public static final String CANNOT_UNDO_REVIEW = ERROR_PREFIX + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR_PREFIX + "cannot-send-feedback";
             public static final String CANNOT_REVIEW_OWN_PLOT = ERROR_PREFIX + "cannot-review-own-plot";
+            public static final String CANNOT_MODIFY_LEGACY_PLOT = ERROR_PREFIX + "cannot-modify-legacy-plot";
+            public static final String CANNOT_LOAD_LEGACY_PLOT = ERROR_PREFIX + "cannot-load-legacy-plot";
 
             public static final String PLAYER_HAS_NO_PERMISSIONS = ERROR_PREFIX + "player-has-no-permissions";
             public static final String PLAYER_HAS_NO_INVITATIONS = ERROR_PREFIX + "player-has-no-invitations";

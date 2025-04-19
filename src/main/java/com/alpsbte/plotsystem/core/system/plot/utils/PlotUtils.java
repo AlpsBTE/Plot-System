@@ -164,7 +164,7 @@ public final class PlotUtils {
         if (clipboard == null) return null;
 
         // No longer supported!
-        if (plot.getVersion() < 3) return null;
+        if (plot.getVersion() < 4) return null;
 
         return new CuboidRegion(
                 clipboard.getMinimumPoint().withY(plot.getWorld().getPlotHeight()),
@@ -196,7 +196,7 @@ public final class PlotUtils {
     }
 
     public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException {
-        if (plot.getVersion() < 3) {
+        if (plot.getVersion() < 4) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
             return false;
         }
@@ -241,7 +241,7 @@ public final class PlotUtils {
         if (!successful) return false;
 
         // If plot was created in a void world, copy the result to the city world
-        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE && plot.getVersion() >= 3) {
+        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
             AbstractPlotGenerator.pasteSchematic(null, outputStream.toByteArray(), new CityPlotWorld(plot), false);
         }
         return true;
