@@ -31,7 +31,7 @@ plot-slot-empty:
   material: MAP
   modelId: ''
 plot-slot-filled:
-  material: MAP_FILLED
+  material: FILLED_MAP
   modelId: ''
 plot-submit:
   material: NAME_TAG

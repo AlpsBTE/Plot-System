@@ -98,6 +98,8 @@ public class PlotWorldGenerator {
         bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
         bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        bukkitWorld.setGameRule(GameRule.DO_TILE_DROPS, false);
+        bukkitWorld.setGameRule(GameRule.DO_MOB_LOOT, false);
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);
