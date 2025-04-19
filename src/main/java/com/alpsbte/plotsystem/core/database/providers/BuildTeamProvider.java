@@ -179,7 +179,7 @@ public class BuildTeamProvider {
 
     public List<CityProject> getReviewerCities(Builder builder) {
         List<BuildTeam> buildTeams = BUILD_TEAMS.stream().filter(b
-                -> b.getReviewers().stream().anyMatch(r -> r.getUUID() == builder.getUUID())).toList();
+                -> b.getReviewers().stream().anyMatch(r -> r.getUUID().equals(builder.getUUID()))).toList();
         List<CityProject> cities = new ArrayList<>();
 
         for (BuildTeam buildTeam : buildTeams) {
