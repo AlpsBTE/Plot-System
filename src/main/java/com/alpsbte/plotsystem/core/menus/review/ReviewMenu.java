@@ -22,11 +22,13 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.core.menus;
+package com.alpsbte.plotsystem.core.menus.review;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
+import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
