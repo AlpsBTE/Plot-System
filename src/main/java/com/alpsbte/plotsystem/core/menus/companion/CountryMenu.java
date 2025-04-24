@@ -82,9 +82,8 @@ public class CountryMenu extends AbstractMenu {
         getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
                 TutorialsMenu.getTutorialItem(getMenuPlayer()) : new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build());
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
-            getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
-        }
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
 
         super.setPreviewItems();
     }
@@ -125,9 +124,8 @@ public class CountryMenu extends AbstractMenu {
             getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, clickInformation) -> new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty));
         }
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent)).entrySet()) {
-            getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
-        }
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
     }
 
     public static boolean generateRandomPlot(Player clickPlayer, @NotNull List<Country> countryProjects, PlotDifficulty selectedPlotDifficulty) {

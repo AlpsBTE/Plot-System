@@ -102,6 +102,6 @@ public enum BaseItems {
     }
 
     public ItemStack getItem() {
-        return itemStack;
+        return itemStack.clone();
     }
 }

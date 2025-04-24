@@ -117,7 +117,8 @@ public class CompanionMenu {
                 final int i_ = i;
 
                 Plot plot = builder.getSlot(Slot.values()[i]);
-                items.put(startingSlot + 1 + i, new FooterItem(getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
+                ItemStack slotItem = getPlotMenuItem(plot, i, player);
+                items.put(startingSlot + 1 + i, new FooterItem(slotItem, (clickPlayer, clickInformation) -> {
                     if (plot == null) return;
                     new PlotActionsMenu(clickPlayer, builder.getSlot(Slot.values()[i_]));
                 }));
@@ -203,24 +204,9 @@ public class CompanionMenu {
             });
     }
 
-    public static class FooterItem {
-        public final ItemStack item;
-        public final org.ipvp.canvas.slot.Slot.ClickHandler clickHandler;
-
-        FooterItem(ItemStack item, org.ipvp.canvas.slot.Slot.ClickHandler clickHandler) {
-            this.item = item;
-            this.clickHandler = clickHandler;
-        }
-
-        FooterItem(ItemStack item) {
-            this.item = item;
-            this.clickHandler = null;
-        }
-    }
-
     public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) {
         String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
-        ItemStack baseItem = plot == null ? BaseItems.PLOT_SLOT_EMPTY.getItem() : BaseItems.PLOT_SLOT_FILLED.getItem();
+        ItemStack baseItem = plot == null ? BaseItems.PLOT_SLOT_EMPTY.getItem().clone() : BaseItems.PLOT_SLOT_FILLED.getItem().clone();
         baseItem.setAmount(1 + slotIndex);
         ArrayList<TextComponent> lore;
 

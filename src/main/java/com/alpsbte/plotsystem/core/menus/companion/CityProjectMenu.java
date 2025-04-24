@@ -68,9 +68,8 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
         getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
-            getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
-        }
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent()));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
 
         // Set loading item for plots difficulty item
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
@@ -115,9 +114,8 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
         });
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent())).entrySet()) {
-            getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
-        }
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent()));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
 
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
