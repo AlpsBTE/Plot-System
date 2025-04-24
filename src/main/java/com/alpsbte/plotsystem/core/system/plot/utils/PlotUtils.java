@@ -532,9 +532,9 @@ public final class PlotUtils {
                 String shortLinkGoogleMaps = null;
                 String shortLinkGoogleEarth = null;
                 String shortLinkOSM = null;
-                String googleMaps = "Google Maps";
-                String googleEarthWeb = "Google Earth Web";
-                String openStreetMap = "Open Street Map";
+                String googleMaps = " Google Maps ";
+                String googleEarthWeb = " Google Earth Web ";
+                String openStreetMap = " Open Street Map ";
                 try {
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
                         shortLinkGoogleMaps = ShortLink.generateShortLink(plot.getGoogleMapsLink());
