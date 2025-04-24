@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.menus.review;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
@@ -69,7 +70,8 @@ public class ReviewPlotMenu extends AbstractMenu {
     }
 
     public ReviewPlotMenu(Player player, Plot plot) {
-        this(player, plot, new ReviewRating(0, 0, List.of()));
+        this(player, plot,
+                new ReviewRating(0, 0, List.of(), DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getID())));
     }
 
     @Override

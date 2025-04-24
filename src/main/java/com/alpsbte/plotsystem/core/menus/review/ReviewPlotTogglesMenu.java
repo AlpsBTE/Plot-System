@@ -88,16 +88,9 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             int finalI = i;
             getMenu().getSlot(9 + i).setClickHandler(((player, clickInformation) -> {
                 ToggleCriteria clickedCriteria = buildTeamCriteria.get(finalI);
-                List<ToggleCriteria> checked = new ArrayList<>(rating.getCheckedToggles());
+                boolean isChecked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName()));
+                rating.setToggleCriteria(clickedCriteria, !isChecked);
 
-                boolean isChecked = checked.stream().anyMatch(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName()));
-                if (isChecked) {
-                    checked.remove(checked.stream().filter(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName())).findFirst().orElseThrow());
-                } else {
-                    checked.add(clickedCriteria);
-                }
-
-                rating.setCheckedToggles(checked);
                 getMenu().getSlot(9 + finalI).setItem(getToggleItem(clickedCriteria, !isChecked));
                 getMenu().getSlot(50).setItem(getSubmitItem()); // update submit item
 
@@ -120,22 +113,8 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     }
 
     private void submitReview() {
-        // a plot is rejected if either of the point sliders are 0
-        boolean isRejected = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0;
-
-        int totalRating = rating.getAccuracyPoints() + rating.getBlockPalettePoints();
-        int checkedCounter = 0;
-        for (ToggleCriteria criteria : buildTeamCriteria) {
-            boolean checked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
-            if (checked) checkedCounter++;
-            else if (!criteria.isOptional()) {
-                isRejected = true; // a plot is also rejected if any of the required toggles are not checked
-            }
-        }
-        int checkedPoints = (int) Math.floor(((double) checkedCounter / buildTeamCriteria.size()) * 10);
-        totalRating += checkedPoints;
-
-        if (totalRating <= 8) isRejected = true; // a plot is also rejected if the total rating is less than or equal to 8
+        boolean isRejected = rating.isRejected();
+        int totalRating = rating.getTotalRating();
 
         double scoreMultiplier = DataProvider.DIFFICULTY.getDifficultyByEnum(plot.getDifficulty()).orElseThrow().getMultiplier();
         double totalRatingWithMultiplier = totalRating * scoreMultiplier;
@@ -156,14 +135,13 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             PlotUtils.Actions.undoSubmit(plot);
         }
 
-        boolean finalIsRejected = isRejected;
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnLocation());
             }
 
             // Delete plot world after reviewing
-            if (!finalIsRejected && plot.getPlotType().hasOnePlotPerWorld())
+            if (!isRejected && plot.getPlotType().hasOnePlotPerWorld())
                 plot.getWorld().deleteWorld();
 
             getMenuPlayer().sendMessage(reviewerConfirmationMessage);
@@ -250,22 +228,15 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         int totalToggles = buildTeamCriteria.size();
         int checkedToggles = rating.getCheckedToggles().size();
         double togglePercentage = (double) checkedToggles / totalToggles * 100;
-        int togglePoints = (int) Math.floor(togglePercentage / 10.0);
-        int totalPoints = rating.getAccuracyPoints() + rating.getBlockPalettePoints() + togglePoints;
+        int togglePoints = rating.getTogglePoints();
+        int totalPoints = rating.getTotalRating();
 
         String accuracyPointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ACCURACY_POINTS);
         String blockPalettePointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.BLOCK_PALETTE_POINTS);
         String togglesPointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.TOGGLE_POINTS);
         String totalPointsText = LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.TOTAL_POINTS);
 
-        boolean willReject = rating.getAccuracyPoints() == 0 || rating.getBlockPalettePoints() == 0 || totalPoints <= 8;
-        for (ToggleCriteria criteria : buildTeamCriteria) {
-            boolean checked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
-            if (!checked && !criteria.isOptional()) {
-                willReject = true; // a plot is also rejected if any of the required toggles are not checked
-                break;
-            }
-        }
+        boolean willReject = rating.isRejected();
 
         TextComponent resultNotice;
         if (willReject) {

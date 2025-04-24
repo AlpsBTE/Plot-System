@@ -190,11 +190,11 @@ public abstract class LangPaths {
         public static final String FEEDBACK = REVIEW_PREFIX + "feedback";
         public static final String REVIEWER = REVIEW_PREFIX + "reviewer";
         public static final String PLAYER_LANGUAGE = REVIEW_PREFIX + "player-language";
-        public static final String NO_FEEDBACK = "no-feedback";
-        public static final String ACCURACY_POINTS = "accuracy-points";
-        public static final String BLOCK_PALETTE_POINTS = "block-palette-points";
-        public static final String TOGGLE_POINTS = "toggle-points";
-        public static final String TOTAL_POINTS = "total-points";
+        public static final String NO_FEEDBACK = REVIEW_PREFIX + "no-feedback";
+        public static final String ACCURACY_POINTS = REVIEW_PREFIX + "accuracy-points";
+        public static final String BLOCK_PALETTE_POINTS = REVIEW_PREFIX + "block-palette-points";
+        public static final String TOGGLE_POINTS = REVIEW_PREFIX + "toggle-points";
+        public static final String TOTAL_POINTS = REVIEW_PREFIX + "total-points";
 
         public static final class Criteria {
             private Criteria() {}

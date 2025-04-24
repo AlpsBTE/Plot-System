@@ -81,8 +81,8 @@ public class ReviewProvider {
                 String ratingString = rs.getString(2);
                 int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
                 int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-                List<ToggleCriteria> checkedCriteria = getCheckedToggleCriteria(reviewId);
-                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, checkedCriteria);
+                HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
+                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
 
                 return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
@@ -109,8 +109,8 @@ public class ReviewProvider {
                 String ratingString = rs.getString(2);
                 int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
                 int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-                List<ToggleCriteria> checkedCriteria = getCheckedToggleCriteria(reviewId);
-                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, checkedCriteria);
+                HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
+                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
 
                 return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
@@ -137,8 +137,8 @@ public class ReviewProvider {
                     String ratingString = rs.getString(2);
                     int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
                     int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-                    List<ToggleCriteria> checkedCriteria = getCheckedToggleCriteria(reviewId);
-                    ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, checkedCriteria);
+                    HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
+                    ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
 
                     reviews.add(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
                 }
@@ -166,6 +166,7 @@ public class ReviewProvider {
         boolean result = DataProvider.PLOT.setMcVersion(plot.getID());
         if (!result) return false;
 
+        // Create Review
         String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) " +
                 "VALUES (?, ?, ?, ?);";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -181,9 +182,15 @@ public class ReviewProvider {
 
         if (!result) return false;
 
-        // create feedback notifications
         PlotReview review = plot.getLatestReview().orElseThrow();
+        HashMap<ToggleCriteria, Boolean> allToggles = rating.getAllToggles();
+        for (ToggleCriteria criteria : allToggles.keySet()) {
+            if (!addReviewToggleCriteria(review.getReviewId(), criteria, allToggles.get(criteria)))
+                return false;
+        }
 
+
+        // create feedback notifications
         createReviewNotification(review.getReviewId(), plot.getPlotOwner().getUUID());
         for (Builder builder : plot.getPlotMembers()) {
             createReviewNotification(review.getReviewId(), builder.getUUID());
@@ -239,17 +246,21 @@ public class ReviewProvider {
         return cachedToggleCriteria.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst();
     }
 
-    public List<ToggleCriteria> getCheckedToggleCriteria(int reviewId) {
-        List<ToggleCriteria> toggleCriteriaList = new ArrayList<>();
-        String query = "SELECT criteria_name FROM review_contains_toggle_criteria WHERE review_id = ?;";
+    public List<ToggleCriteria> getBuildTeamToggleCriteria(int buildTeamId) {
+        return cachedBuildTeamToggleCriteria.stream().filter(c -> c.getBuildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::getCriteria).toList();
+    }
+
+    public HashMap<ToggleCriteria, Boolean> getReviewToggleCriteria(int reviewId) {
+        HashMap<ToggleCriteria, Boolean> toggleCriteriaList = new HashMap<>();
+        String query = "SELECT is_checked FROM review_contains_toggle_criteria WHERE review_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, reviewId);
 
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    toggleCriteriaList.add(getToggleCriteria(rs.getString(1)).orElseThrow());
-                }
+                if (!rs.next()) return toggleCriteriaList;
+                boolean isChecked = rs.getBoolean(1);
+                toggleCriteriaList.put(getToggleCriteria(rs.getString(1)).orElseThrow(), isChecked);
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -257,8 +268,19 @@ public class ReviewProvider {
         return toggleCriteriaList;
     }
 
-    public List<ToggleCriteria> getBuildTeamToggleCriteria(int buildTeamId) {
-        return cachedBuildTeamToggleCriteria.stream().filter(c -> c.getBuildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::getCriteria).toList();
+    public boolean addReviewToggleCriteria(int reviewId, ToggleCriteria toggle, boolean isChecked) {
+        String query = "INSERT INTO review_contains_toggle_criteria (review_id, criteria_name, is_checked) " +
+                "VALUES (?, ?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, reviewId);
+            stmt.setString(2, toggle.getCriteriaName());
+            stmt.setBoolean(3, isChecked);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
     }
 
     public boolean removeCheckedToggleCriteria(int reviewId) {
