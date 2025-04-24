@@ -117,6 +117,7 @@ public class Utils {
 
     public static class SoundUtils {
         private SoundUtils() {}
+
         public static final Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
         public static final Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
         public static final Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
@@ -130,6 +131,7 @@ public class Utils {
 
     public static class ChatUtils {
         private ChatUtils() {}
+
         public static void setChatFormat(String infoPrefix, String alertPrefix) {
             ChatUtils.infoPrefix = AlpsUtils.deserialize(infoPrefix);
             ChatUtils.alertPrefix = AlpsUtils.deserialize(alertPrefix);
@@ -190,8 +192,8 @@ public class Utils {
         @Contract(pure = true)
         public static @NotNull String getActionFormat(String action) {return "§8§l> §c" + action;}
 
-        public static @NotNull Component getColoredPointsComponent(int points) {
-            return switch (points) {
+        public static @NotNull Component getColoredPointsComponent(int points, int maxPoints) {
+            return switch ((int) ((double) points / maxPoints * 5)) {
                 case 0 -> text(points, GRAY);
                 case 1 -> text(points, DARK_RED);
                 case 2 -> text(points, GOLD);

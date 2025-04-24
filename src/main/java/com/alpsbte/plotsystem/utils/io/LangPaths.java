@@ -217,6 +217,8 @@ public abstract class LangPaths {
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
         public static final String OPTIONAL = NOTES + "optional";
         public static final String REQUIRED = NOTES + "required";
+        public static final String CRITERIA_FULFILLED = NOTES + "criteria-fulfilled";
+        public static final String CRITERIA_NOT_FULFILLED = NOTES + "criteria-not-fulfilled";
         public static final String LEGACY = NOTES + "legacy";
 
         public static final class Action {
@@ -432,5 +434,6 @@ public abstract class LangPaths {
         public static final String COUNTRY = DATABASE_PREFIX + "country";
         public static final String DIFFICULTY = DATABASE_PREFIX + "difficulty";
         public static final String STATUS = DATABASE_PREFIX + "status";
+        public static final String TOGGLE_CRITERIA = DATABASE_PREFIX + "toggle-criteria";
     }
 }

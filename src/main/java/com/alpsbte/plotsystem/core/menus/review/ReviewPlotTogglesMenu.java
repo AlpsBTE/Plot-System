@@ -213,7 +213,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 ? BaseItems.REVIEW_TOGGLE_CHECKED.getItem()
                 : criteria.isOptional() ? BaseItems.REVIEW_TOGGLE_OPTIONAL.getItem() : BaseItems.REVIEW_TOGGLE_REQUIRED.getItem();
         return new ItemBuilder(baseItem)
-                .setName(text(criteria.getCriteriaName()))
+                .setName(text(criteria.getDisplayName(p)))
                 .setLore(new LoreBuilder()
                         .addLine(criteria.isOptional()
                                 ? text(LangUtil.getInstance().get(p, LangPaths.Note.OPTIONAL), NamedTextColor.GRAY).decoration(TextDecoration.BOLD, true)

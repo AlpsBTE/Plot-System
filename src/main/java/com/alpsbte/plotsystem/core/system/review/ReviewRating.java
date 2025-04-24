@@ -7,29 +7,24 @@ import java.util.List;
 public class ReviewRating {
     private int accuracyPoints;
     private int blockPalettePoints;
-    private final List<ToggleCriteria> checkedToggles;
-    private final List<ToggleCriteria> uncheckedToggles;
+    private final List<ToggleCriteria> checkedToggles = new ArrayList<>();
+    private final List<ToggleCriteria> uncheckedToggles = new ArrayList<>();
 
     public ReviewRating(int accuracyPoints, int blockPalettePoints, List<ToggleCriteria> checkedToggles, List<ToggleCriteria> uncheckedToggles) {
         this.accuracyPoints = accuracyPoints;
         this.blockPalettePoints = blockPalettePoints;
-        this.checkedToggles = checkedToggles;
-        this.uncheckedToggles = uncheckedToggles;
+        this.checkedToggles.addAll(checkedToggles);
+        this.uncheckedToggles.addAll(uncheckedToggles);
     }
 
     public ReviewRating(int accuracyPoints, int blockPalettePoints, HashMap<ToggleCriteria, Boolean> toggles) {
         this.accuracyPoints = accuracyPoints;
         this.blockPalettePoints = blockPalettePoints;
 
-        List<ToggleCriteria> checkedToggles = new ArrayList<>();
-        List<ToggleCriteria> uncheckedToggles = new ArrayList<>();
         for (ToggleCriteria criteria : toggles.keySet()) {
-            if (toggles.get(criteria)) checkedToggles.add(criteria);
-            else uncheckedToggles.add(criteria);
+            if (toggles.get(criteria)) this.checkedToggles.add(criteria);
+            else this.uncheckedToggles.add(criteria);
         }
-
-        this.checkedToggles = checkedToggles;
-        this.uncheckedToggles = uncheckedToggles;
     }
 
     public int getAccuracyPoints() {
@@ -51,6 +46,11 @@ public class ReviewRating {
     public List<ToggleCriteria> getCheckedToggles() {
         return checkedToggles;
     }
+
+    public List<ToggleCriteria> getUncheckedToggles() {
+        return uncheckedToggles;
+    }
+
     public HashMap<ToggleCriteria, Boolean> getAllToggles() {
         HashMap<ToggleCriteria, Boolean> allToggles = new HashMap<>();
         for (ToggleCriteria checked : checkedToggles) allToggles.put(checked, true);

@@ -179,6 +179,8 @@ note:
   player-has-to-be-online: "The player has to be online!"
   optional: "Optional"
   required: "Required"
+  criteria-fulfilled: "Fulfilled"
+  criteria-not-fulfilled: "Not fulfilled"
   legacy: "LEGACY"
   action:
     read: 'Read'
@@ -433,6 +435,15 @@ database:
       name: 'Unreviewed'
     completed:
       name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
 
 # NOTE: Do not change
 config-version: 2.5

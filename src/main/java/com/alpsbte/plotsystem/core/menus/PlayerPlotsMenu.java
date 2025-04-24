@@ -167,12 +167,17 @@ public class PlayerPlotsMenu extends AbstractMenu {
             builder.emptyLine();
             builder.addLines(
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(rating.getAccuracyPoints()))
+                            .append(Utils.ItemUtils.getColoredPointsComponent(rating.getAccuracyPoints(), 5))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
-                            .append(Utils.ItemUtils.getColoredPointsComponent(rating.getBlockPalettePoints()))
+                            .append(Utils.ItemUtils.getColoredPointsComponent(rating.getBlockPalettePoints(), 5))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN))
             );
+            if (plot.getVersion() > AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.TOGGLE_POINTS) + ": ", GRAY)
+                        .append(Utils.ItemUtils.getColoredPointsComponent(rating.getTogglePoints(), 10))
+                        .append(text("/", DARK_GRAY)).append(text("10", GREEN)));
+            }
             builder.emptyLine();
             builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
             String feedback = review.get().getFeedback() == null

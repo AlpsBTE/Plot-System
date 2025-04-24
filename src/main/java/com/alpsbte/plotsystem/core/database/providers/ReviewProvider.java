@@ -252,15 +252,16 @@ public class ReviewProvider {
 
     public HashMap<ToggleCriteria, Boolean> getReviewToggleCriteria(int reviewId) {
         HashMap<ToggleCriteria, Boolean> toggleCriteriaList = new HashMap<>();
-        String query = "SELECT is_checked FROM review_contains_toggle_criteria WHERE review_id = ?;";
+        String query = "SELECT criteria_name, is_checked FROM review_contains_toggle_criteria WHERE review_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, reviewId);
 
             try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) return toggleCriteriaList;
-                boolean isChecked = rs.getBoolean(1);
-                toggleCriteriaList.put(getToggleCriteria(rs.getString(1)).orElseThrow(), isChecked);
+                while (rs.next()) {
+                    boolean isChecked = rs.getBoolean(2);
+                    toggleCriteriaList.put(getToggleCriteria(rs.getString(1)).orElseThrow(), isChecked);
+                }
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);

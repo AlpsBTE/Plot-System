@@ -30,6 +30,7 @@ import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
+import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -37,6 +38,7 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
@@ -73,13 +75,17 @@ public class FeedbackMenu extends AbstractMenu {
                         .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(plot.getTotalScore(), WHITE)))
                         .emptyLine()
                         .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
-                                .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating().getAccuracyPoints())
+                                .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating().getAccuracyPoints(), 5)
                                         .append(text("/", DARK_GRAY))
                                         .append(text("5", GREEN))))
                         .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.BLOCK_PALETTE) + ": ", GRAY)
-                                .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating().getBlockPalettePoints()))
+                                .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating().getBlockPalettePoints(), 5))
                                 .append(text("/", DARK_GRAY))
                                 .append(text("5", GREEN)))
+                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.TOGGLE_POINTS) + ": ", GRAY)
+                                .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating().getTogglePoints(), 10))
+                                .append(text("/", DARK_GRAY))
+                                .append(text("10", GREEN)))
                         .emptyLine()
                         .addLine(plot.isRejected()
                                 ? text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REJECTED), RED, BOLD)
@@ -87,9 +93,12 @@ public class FeedbackMenu extends AbstractMenu {
                         .build())
                 .build());
 
+        // Set toggles item
+        getMenu().getSlot(12).setItem(getTogglesItem());
+
         // Set feedback text item
         String feedbackText = review.getFeedback() == null ? LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.NO_FEEDBACK) : review.getFeedback();
-        getMenu().getSlot(13).setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
+        getMenu().getSlot(14).setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(feedbackText.replaceAll("//", " "), true)
@@ -114,5 +123,37 @@ public class FeedbackMenu extends AbstractMenu {
                 .pattern("000000000")
                 .pattern("111111111")
                 .build();
+    }
+
+    private ItemStack getTogglesItem() {
+        ItemBuilder itemBuilder = new ItemBuilder(BaseItems.REVIEW_TOGGLE_CHECKED.getItem())
+                .setName(text("Toggle Criteria", AQUA, BOLD));
+
+
+        int totalCheckCriteriaCount = review.getRating().getAllToggles().size();
+        int checkedCount = review.getRating().getCheckedToggles().size();
+        LoreBuilder loreBuilder = new LoreBuilder()
+                .addLine(text(checkedCount + "/" + totalCheckCriteriaCount, GRAY));
+
+        if (!review.getRating().getUncheckedToggles().isEmpty()) {
+            loreBuilder.emptyLine();
+            loreBuilder.addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.CRITERIA_NOT_FULFILLED) + ":", RED, BOLD));
+            for (ToggleCriteria unchecked : review.getRating().getUncheckedToggles()) {
+                loreBuilder.addLine(text("• ", DARK_GRAY).append(text(unchecked.getDisplayName(getMenuPlayer()), GRAY)
+                        .append(unchecked.isOptional()
+                                ? empty()
+                                : text(" - ").append(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.REQUIRED), GOLD)))));
+            }
+        }
+
+        if (!review.getRating().getCheckedToggles().isEmpty()) {
+            loreBuilder.emptyLine();
+            loreBuilder.addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.CRITERIA_FULFILLED) + ":", GREEN, BOLD));
+            for (ToggleCriteria unchecked : review.getRating().getCheckedToggles()) {
+                loreBuilder.addLine(text("• ", DARK_GRAY).append(text(unchecked.getDisplayName(getMenuPlayer()), GRAY)));
+            }
+        }
+
+        return itemBuilder.setLore(loreBuilder.build()).build();
     }
 }
