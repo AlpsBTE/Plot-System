@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -154,10 +154,12 @@ public abstract class AbstractPlotGenerator {
      * Generates plot schematic and outlines
      */
     protected void generateOutlines() throws IOException {
-        Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
         if (plotVersion >= 3 && plotType.hasEnvironment()) {
-            pasteSchematic(airMask, plot.getInitialSchematicBytes(), world, false);
-        } else pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+            pasteSchematic(null, plot.getInitialSchematicBytes(), world, false);
+        } else {
+            Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
+            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+        }
     }
 
 
