@@ -71,7 +71,7 @@ public class DatabaseConnection {
 
         dataSource = new HikariDataSource(config);
 
-        //createTables();
+        createTables();
     }
 
     public static Connection getConnection() throws SQLException {
@@ -114,15 +114,18 @@ public class DatabaseConnection {
                 Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
             }
 
-            try (ResultSet rs = con.prepareStatement("SELECT COUNT(id) FROM plotsystem_difficulties").executeQuery()) {
+            try (ResultSet rs = con.prepareStatement("SELECT COUNT(difficulty_id) FROM plot_difficulty").executeQuery()) {
                 if (rs.next()) {
                     if (rs.getInt(1) == 0) {
-                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name) VALUES (1, 'EASY')").executeUpdate();
-                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (2, 'MEDIUM', 1.5)").executeUpdate();
-                        con.prepareStatement("INSERT INTO plotsystem_difficulties (id, name, multiplier) VALUES (3, 'HARD', 2)").executeUpdate();
+                        con.prepareStatement("INSERT INTO plot_difficulty (difficulty_id, multiplier)" +
+                                "VALUES ('EASY', 1.0)," +
+                                "       ('MEDIUM', 1.5)," +
+                                "       ('HARD', 2);").executeUpdate();
                     }
                 }
             }
+
+
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating á database table"), ex);
         }
@@ -223,182 +226,191 @@ public class DatabaseConnection {
                             "    PRIMARY KEY (build_team_id)" +
                             ");",
 
-                    // Countries
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_countries`" +
+                    // Server
+                    "CREATE TABLE IF NOT EXISTS server" +
                             "(" +
-                            " `id`        int NOT NULL AUTO_INCREMENT ," +
-                            " `server_id` int NOT NULL ," +
-                            " `name`      varchar(45) NOT NULL ," +
-                            " `head_id`   varchar(10) NULL ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `fkIdx_38` (`server_id`)," +
-                            "CONSTRAINT `FK_37` FOREIGN KEY `fkIdx_38` (`server_id`) REFERENCES `plotsystem_servers` (`id`)" +
+                            "    build_team_id INT          NOT NULL," +
+                            "    server_name   VARCHAR(255) NOT NULL UNIQUE," +
+                            "    PRIMARY KEY (build_team_id, server_name)," +
+                            "    FOREIGN KEY (build_team_id) REFERENCES build_team (build_team_id)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE" +
                             ");",
-                    "ALTER TABLE plotsystem_countries ADD COLUMN IF NOT EXISTS `continent` enum('europe', 'asia', 'africa', 'oceania', 'south america', 'north america') NOT NULL;",
+
+                    // Countries
+                    "CREATE TABLE IF NOT EXISTS country" +
+                            "(" +
+                            "    country_code      VARCHAR(2)                           NOT NULL," +
+                            "    continent         ENUM ('EU','AS','AF','OC','SA','NA') NOT NULL," +
+                            "    material          VARCHAR(255)                         NOT NULL," +
+                            "    custom_model_data VARCHAR(255)                         NULL," +
+                            "    PRIMARY KEY (country_code)" +
+                            ");",
 
                     // City Projects
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_city_projects`" +
+                    "CREATE TABLE IF NOT EXISTS city_project" +
                             "(" +
-                            " `id`          int NOT NULL AUTO_INCREMENT ," +
-                            " `country_id`  int NOT NULL ," +
-                            " `name`        varchar(45) NOT NULL ," +
-                            " `description` varchar(255) NOT NULL ," +
-                            " `visible`     tinyint DEFAULT 0 ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `fkIdx_44` (`country_id`)," +
-                            "CONSTRAINT `FK_43` FOREIGN KEY `fkIdx_44` (`country_id`) REFERENCES `plotsystem_countries` (`id`)" +
+                            "    city_project_id VARCHAR(255) NOT NULL," +
+                            "    build_team_id   INT          NOT NULL," +
+                            "    country_code    VARCHAR(2)   NOT NULL," +
+                            "    server_name     VARCHAR(255) NOT NULL," +
+                            "    is_visible      BOOLEAN      NOT NULL DEFAULT 1," +
+                            "    PRIMARY KEY (city_project_id)," +
+                            "    FOREIGN KEY (build_team_id) REFERENCES build_team (build_team_id)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (country_code) REFERENCES country (country_code)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (server_name) REFERENCES server (server_name)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE" +
                             ");",
 
                     // Builders
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_builders`" +
+                    "CREATE TABLE IF NOT EXISTS builder" +
                             "(" +
-                            " `uuid`            varchar(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            " `name`            varchar(16) NOT NULL ," +
-                            " `score`           int DEFAULT 0 ," +
-                            " `completed_plots` int DEFAULT 0 ," +
-                            " `first_slot`      int NULL ," +
-                            " `second_slot`     int NULL ," +
-                            " `third_slot`      int NULL ," +
-                            "PRIMARY KEY (`uuid`)" +
-                            ");",
-                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS lang varchar(5) NULL;",
-                    "ALTER TABLE plotsystem_builders ADD COLUMN IF NOT EXISTS setting_plot_type int DEFAULT 1;",
-
-                    // Reviews
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_reviews`" +
-                            "(" +
-                            " `id`            int NOT NULL AUTO_INCREMENT ," +
-                            " `reviewer_uuid` varchar(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            " `rating`        varchar(45) NOT NULL ," +
-                            " `feedback`      varchar(420) NOT NULL ," +
-                            " `review_date`   datetime NOT NULL ," +
-                            " `sent`          tinyint DEFAULT 0 ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `fkIdx_73` (`reviewer_uuid`)," +
-                            "CONSTRAINT `FK_72` FOREIGN KEY `fkIdx_73` (`reviewer_uuid`) REFERENCES `plotsystem_builders` (`uuid`)" +
+                            "    uuid        VARCHAR(36)  NOT NULL," +
+                            "    name        VARCHAR(255) NOT NULL UNIQUE," +
+                            "    score       INT          NOT NULL DEFAULT 0," +
+                            "    first_slot  INT          NULL," +
+                            "    second_slot INT          NULL," +
+                            "    third_slot  INT          NULL," +
+                            "    plot_type   INT          NOT NULL," +
+                            "    PRIMARY KEY (uuid)" +
                             ");",
 
-                    // Difficulties
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_difficulties`" +
+                    // Difficulty
+                    "CREATE TABLE IF NOT EXISTS plot_difficulty" +
                             "(" +
-                            " `id`               int NOT NULL AUTO_INCREMENT ," +
-                            " `name`             varchar(45) NOT NULL ," +
-                            " `multiplier`       double DEFAULT 1 ," +
-                            " `score_requirment` int DEFAULT 0 ," +
-                            "PRIMARY KEY (`id`)" +
+                            "    difficulty_id     VARCHAR(255) NOT NULL," +
+                            "    multiplier        DECIMAL(4, 2)         DEFAULT 1.00," +
+                            "    score_requirement INT          NOT NULL DEFAULT 0," +
+                            "    PRIMARY KEY (difficulty_id)," +
+                            "    CHECK ( multiplier > 0 )," +
+                            "    CHECK ( score_requirement >= 0 )" +
                             ");",
 
-                    // Plots
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_plots`" +
+                    // Plot
+                    "CREATE TABLE IF NOT EXISTS plot" +
                             "(" +
-                            " `id`              int NOT NULL AUTO_INCREMENT ," +
-                            " `city_project_id` int NOT NULL ," +
-                            " `difficulty_id`   int NOT NULL ," +
-                            " `review_id`       int NULL ," +
-                            " `owner_uuid`      varchar(36) NULL COLLATE 'utf8mb4_general_ci'," +
-                            " `member_uuids`    varchar(110) NULL ," +
-                            " `status`          enum ('unclaimed', 'unfinished', 'unreviewed', 'completed') NOT NULL DEFAULT 'unclaimed' ," +
-                            " `mc_coordinates`  varchar(255) NOT NULL ," +
-                            " `score`           int NULL ," +
-                            " `last_activity`   datetime NULL ," +
-                            " `create_date`     datetime NOT NULL ," +
-                            " `create_player`   varchar(36) NOT NULL ," +
-                            " `pasted`          tinyint DEFAULT 0 ," +
-                            "PRIMARY KEY (`id`)," +
-                            "KEY `fkIdx_57` (`city_project_id`)," +
-                            "CONSTRAINT `FK_56` FOREIGN KEY `fkIdx_57` (`city_project_id`) REFERENCES `plotsystem_city_projects` (`id`)," +
-                            "KEY `fkIdx_60` (`owner_uuid`)," +
-                            "CONSTRAINT `FK_59` FOREIGN KEY `fkIdx_60` (`owner_uuid`) REFERENCES `plotsystem_builders` (`uuid`)," +
-                            "KEY `fkIdx_70` (`review_id`)," +
-                            "CONSTRAINT `FK_69` FOREIGN KEY `fkIdx_70` (`review_id`) REFERENCES `plotsystem_reviews` (`id`)," +
-                            "KEY `fkIdx_82` (`difficulty_id`)," +
-                            "CONSTRAINT `FK_81` FOREIGN KEY `fkIdx_82` (`difficulty_id`) REFERENCES `plotsystem_difficulties` (`id`)" +
-                            ");",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS outline longtext NULL DEFAULT NULL;",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS type int NOT NULL DEFAULT 1;",
-                    "ALTER TABLE plotsystem_plots ADD COLUMN IF NOT EXISTS version DOUBLE NULL DEFAULT NULL;",
-
-                    // API Keys
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_api_keys`" +
-                            "(" +
-                            " `id`         int NOT NULL AUTO_INCREMENT ," +
-                            " `api_key`    varchar(32) NOT NULL ," +
-                            " `created_at` timestamp NOT NULL DEFAULT current_timestamp()," +
-                            "PRIMARY KEY (`id`)" +
+                            "    plot_id            INT                                                      NOT NULL AUTO_INCREMENT," +
+                            "    city_project_id    VARCHAR(255)                                             NOT NULL," +
+                            "    difficulty_id      VARCHAR(255)                                             NOT NULL," +
+                            "    owner_uuid         VARCHAR(36)                                              NULL," +
+                            "    status             ENUM ('unclaimed','unfinished','unreviewed','completed') NOT NULL DEFAULT 'unclaimed'," +
+                            "    outline_bounds     TEXT                                                     NOT NULL," +
+                            "    initial_schematic  MEDIUMBLOB                                               NOT NULL," +
+                            "    complete_schematic MEDIUMBLOB                                               NULL," +
+                            "    last_activity_date DATETIME                                                 NULL," +
+                            "    is_pasted          BOOLEAN                                                  NOT NULL DEFAULT 0," +
+                            "    mc_version         VARCHAR(8)                                               NULL," +
+                            "    plot_version       DOUBLE                                                   NOT NULL," +
+                            "    plot_type          INT                                                      NOT NULL," +
+                            "    created_by         VARCHAR(36)                                              NOT NULL," +
+                            "    create_date        DATETIME                                                 NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                            "    PRIMARY KEY (plot_id)," +
+                            "    FOREIGN KEY (city_project_id) REFERENCES city_project (city_project_id)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (difficulty_id) REFERENCES plot_difficulty (difficulty_id)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (owner_uuid) REFERENCES builder (uuid)" +
+                            "        ON DELETE RESTRICT ON UPDATE CASCADE" +
                             ");",
 
-                    // Build-Teams
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteams` (" +
-                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
-                            "`name` VARCHAR(45) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            "`api_key_id` INT(11) NULL DEFAULT NULL," +
-                            "PRIMARY KEY (`id`) USING BTREE," +
-                            "KEY `FK_132` (`api_key_id`)," +
-                            "CONSTRAINT `FK_130` FOREIGN KEY `FK_132` (`api_key_id`) REFERENCES `plotsystem_api_keys` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
-                            ")" +
-                            "COLLATE='utf8mb4_general_ci'" +
-                            "ENGINE=InnoDB" +
-                            ";",
+                    // Tutorial
+                    "CREATE TABLE IF NOT EXISTS tutorial" +
+                            "(" +
+                            "    tutorial_id              INT         NOT NULL," +
+                            "    uuid                     VARCHAR(36) NOT NULL," +
+                            "    stage_id                 INT         NOT NULL DEFAULT 0," +
+                            "    is_complete              BOOLEAN     NOT NULL DEFAULT 0," +
+                            "    first_stage_start_date   DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                            "    last_stage_complete_date DATETIME    NULL," +
+                            "    PRIMARY KEY (tutorial_id, uuid)" +
+                            ");",
 
-                    // Build-Team has Countries
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_buildteam_has_countries` (" +
-                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
-                            "`country_id` INT(11) NOT NULL," +
-                            "`buildteam_id` INT(11) NOT NULL," +
-                            "PRIMARY KEY (`id`) USING BTREE," +
-                            "KEY `FK_115` (`buildteam_id`)," +
-                            "KEY `FK_118` (`country_id`)," +
-                            "CONSTRAINT `FK_113` FOREIGN KEY `FK_115` (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
-                            "CONSTRAINT `FK_116` FOREIGN KEY `FK_118` (`country_id`) REFERENCES `plotsystem_countries` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
-                            ")" +
-                            "COLLATE='utf8mb4_general_ci'" +
-                            "ENGINE=InnoDB" +
-                            ";",
+                    // Review
+                    "CREATE TABLE IF NOT EXISTS plot_review" +
+                            "(" +
+                            "    review_id   INT          NOT NULL AUTO_INCREMENT," +
+                            "    plot_id     INT          NOT NULL," +
+                            "    rating      VARCHAR(7)   NOT NULL," +
+                            "    score       INT          NOT NULL DEFAULT 0," +
+                            "    feedback    VARCHAR(256) NULL," +
+                            "    reviewed_by VARCHAR(36)  NOT NULL," +
+                            "    review_date DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                            "    score       int          NOT NULL," +
+                            "    split_score int          NULL," +
+                            "    PRIMARY KEY (review_id)," +
+                            "    FOREIGN KEY (plot_id) REFERENCES plot (plot_id)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE" +
+                            ");",
 
-                    // Builder Is Reviewer
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_builder_is_reviewer` (" +
-                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
-                            "`builder_uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            "`buildteam_id` INT(11) NOT NULL," +
-                            "PRIMARY KEY (`id`) USING BTREE," +
-                            "INDEX `FK_138` (`builder_uuid`) USING BTREE," +
-                            "INDEX `FK_141` (`buildteam_id`) USING BTREE," +
-                            "CONSTRAINT `FK_136` FOREIGN KEY (`builder_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT," +
-                            "CONSTRAINT `FK_139` FOREIGN KEY (`buildteam_id`) REFERENCES `plotsystem_buildteams` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
-                            ")" +
-                            "COLLATE='utf8mb4_general_ci'" +
-                            "ENGINE=InnoDB" +
-                            ";",
+                    // Toggle Criteria
+                    "CREATE TABLE IF NOT EXISTS review_toggle_criteria" +
+                            "(" +
+                            "    criteria_name VARCHAR(255) NOT NULL," +
+                            "    is_optional   BOOLEAN      NOT NULL," +
+                            "    PRIMARY KEY (criteria_name)" +
+                            ");",
 
-                    // Payouts
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_payouts` (" +
-                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
-                            "`timeframe` ENUM('DAILY','WEEKLY','MONTHLY','YEARLY') NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            "`position` INT(11) NOT NULL COMMENT 'position on the leaderboard for this timeframe'," +
-                            "`payout_amount` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            "PRIMARY KEY (`id`) USING BTREE" +
-                            ")" +
-                            "COLLATE='utf8mb4_general_ci'" +
-                            "ENGINE=InnoDB" +
-                            ";",
+                    // Build team uses toggle criteria
+                    "CREATE TABLE IF NOT EXISTS build_team_uses_toggle_criteria" +
+                            "(" +
+                            "    build_team_id INT          NOT NULL," +
+                            "    criteria_name VARCHAR(255) NOT NULL," +
+                            "    PRIMARY KEY (build_team_id, criteria_name)," +
+                            "    FOREIGN KEY (build_team_id) REFERENCES build_team (build_team_id)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (criteria_name) REFERENCES review_toggle_criteria (criteria_name)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE" +
+                            ");",
 
-                    // Tutorial Plots
-                    "CREATE TABLE IF NOT EXISTS `plotsystem_plots_tutorial` (" +
-                            "`id` INT(11) NOT NULL AUTO_INCREMENT," +
-                            "`player_uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci'," +
-                            "`tutorial_id` INT(11) NOT NULL," +
-                            "`stage_id` INT(11) NOT NULL DEFAULT '0'," +
-                            "`is_completed` TINYINT(4) NOT NULL DEFAULT '0'," +
-                            "`create_date` DATETIME NOT NULL DEFAULT current_timestamp()," +
-                            "`last_stage_complete_date` DATETIME NULL DEFAULT NULL," +
-                            "`complete_date` DATETIME NULL DEFAULT NULL," +
-                            "PRIMARY KEY (`id`) USING BTREE," +
-                            "INDEX `FK_142` (`player_uuid`) USING BTREE," +
-                            "CONSTRAINT `FK_12` FOREIGN KEY (`player_uuid`) REFERENCES `plotsystem_builders` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT" +
-                            ")" +
-                            "COLLATE='utf8mb4_general_ci'" +
-                            "ENGINE=InnoDB" +
-                            ";"
+                    // Review contains toggle criteria
+                    "CREATE TABLE IF NOT EXISTS review_contains_toggle_criteria" +
+                            "(" +
+                            "    review_id     INT          NOT NULL," +
+                            "    criteria_name VARCHAR(255) NOT NULL," +
+                            "    is_checked    BOOLEAN      NOT NULL," +
+                            "    PRIMARY KEY (review_id, criteria_name)," +
+                            "    FOREIGN KEY (review_id) REFERENCES plot_review (review_id)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (criteria_name) REFERENCES review_toggle_criteria (criteria_name)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE" +
+                            ");",
+
+                    // Build team has reviewer
+                    "CREATE TABLE IF NOT EXISTS build_team_has_reviewer" +
+                            "(" +
+                            "    build_team_id INT         NOT NULL," +
+                            "    uuid          VARCHAR(36) NOT NULL," +
+                            "    PRIMARY KEY (build_team_id, uuid)," +
+                            "    FOREIGN KEY (build_team_id) REFERENCES build_team (build_team_id)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (uuid) REFERENCES builder (uuid)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE" +
+                            ");",
+
+                    // Builder is plot member
+                    "CREATE TABLE IF NOT EXISTS builder_is_plot_member" +
+                            "(" +
+                            "    plot_id INT         NOT NULL," +
+                            "    uuid    VARCHAR(36) NOT NULL," +
+                            "    PRIMARY KEY (plot_id, uuid)," +
+                            "    FOREIGN KEY (plot_id) REFERENCES plot (plot_id)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (uuid) REFERENCES builder (uuid)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE" +
+                            ");",
+
+                    // Builder has review notification
+                    "CREATE TABLE IF NOT EXISTS builder_has_review_notification" +
+                            "(" +
+                            "    review_id INT         NOT NULL," +
+                            "    uuid      VARCHAR(36) NOT NULL," +
+                            "    PRIMARY KEY (review_id, uuid)," +
+                            "    FOREIGN KEY (review_id) REFERENCES plot_review (review_id)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE," +
+                            "    FOREIGN KEY (uuid) REFERENCES builder (uuid)" +
+                            "        ON DELETE CASCADE ON UPDATE CASCADE" +
+                            ");"
             );
         }
     }
