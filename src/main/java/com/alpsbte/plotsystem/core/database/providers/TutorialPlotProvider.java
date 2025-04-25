@@ -28,12 +28,10 @@ import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.utils.Utils;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TutorialPlotProvider {
@@ -111,7 +109,7 @@ public class TutorialPlotProvider {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBoolean(1, true);
-            stmt.setObject(2, LocalDate.now());
+            stmt.setObject(2, Timestamp.valueOf(LocalDateTime.now()));
             stmt.setInt(3, tutorialId);
             stmt.setString(4, playerUUID);
             return stmt.executeUpdate() > 0;
