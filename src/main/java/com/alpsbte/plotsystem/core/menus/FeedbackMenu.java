@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -72,7 +72,7 @@ public class FeedbackMenu extends AbstractMenu {
         getMenu().getSlot(10).setItem(new ItemBuilder(BaseItems.REVIEW_SCORE.getItem())
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE), AQUA, BOLD))
                 .setLore(new LoreBuilder()
-                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(plot.getTotalScore(), WHITE)))
+                        .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY).append(text(review.getScore(), WHITE)))
                         .emptyLine()
                         .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
                                 .append(Utils.ItemUtils.getColoredPointsComponent(review.getRating().getAccuracyPoints(), 5)

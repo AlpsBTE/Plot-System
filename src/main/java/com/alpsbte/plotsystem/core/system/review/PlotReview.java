@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.system.review;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -16,16 +40,18 @@ public class PlotReview {
     private final int plotId;
     private final ReviewRating rating;
     private final int score;
+    private final int splitScore;
     private final UUID reviewedBy;
     @Nullable
     private String feedback;
 
 
-    public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, @Nullable String feedback, UUID reviewedBy) {
+    public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, int splitScore, @Nullable String feedback, UUID reviewedBy) {
         this.reviewId = reviewId;
         this.plotId = plotId;
         this.rating = rating;
         this.score = score;
+        this.splitScore = splitScore;
         this.feedback = feedback;
         this.reviewedBy = reviewedBy;
     }
@@ -37,6 +63,12 @@ public class PlotReview {
     public ReviewRating getRating() {
         return rating;
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getSplitScore() { return splitScore; }
 
     public @Nullable String getFeedback() {
         return feedback;
@@ -58,10 +90,6 @@ public class PlotReview {
         return reviewedBy;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public boolean updateFeedback(String feedback) {
         if (DataProvider.REVIEW.updateFeedback(reviewId, feedback)) {
             this.feedback = feedback;
@@ -71,22 +99,23 @@ public class PlotReview {
     }
 
     public boolean undoReview() {
-        Plot plot = DataProvider.PLOT.getPlotById(this.plotId);
+        Plot plot = getPlot();
         if (plot == null) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Plot of review could not be found!"));
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not undo review with the id (" +
+                    reviewId + "). Plot with the id (" + plotId + ") not found."));
             return false;
         }
 
         // remove owner score and remove plot from slot
-        if (!plot.getPlotOwner().addScore(-plot.getSharedScore())) return false;
-        if (plot.getPlotOwner().getFreeSlot() != null
-                && !plot.getPlotOwner().setSlot(plot.getPlotOwner().getFreeSlot(), plot.getID()))
+        if (!plot.getPlotOwner().addScore(splitScore == -1 ? -score : -splitScore)) return false;
+        if (plot.getPlotOwner().getSlotByPlotId(plotId) != null
+                && !plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plotId), plotId))
             return false;
 
         // remove members score and remove plot from slot
         for (Builder member : plot.getPlotMembers()) {
-            if (!member.addScore(-plot.getSharedScore())) return false;
-            if (member.getFreeSlot() != null && !member.setSlot(member.getFreeSlot(), plot.getID()))
+            if (!member.addScore(-splitScore)) return false;
+            if (member.getSlotByPlotId(plotId) != null && !member.setSlot(member.getSlotByPlotId(plotId), plotId))
                 return false;
         }
 
@@ -94,7 +123,6 @@ public class PlotReview {
         plot.setPasted(false);
 
         DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
-
         return DataProvider.REVIEW.removeReview(reviewId);
     }
 }

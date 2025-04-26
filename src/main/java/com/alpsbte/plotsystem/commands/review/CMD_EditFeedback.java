@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.commands.review;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -75,7 +74,8 @@ public class CMD_EditFeedback extends BaseCommand {
                 return;
             }
 
-            if (!plot.isReviewed() && !plot.isRejected()) {
+            Optional<PlotReview> review = plot.getLatestReview();
+            if (review.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED)));
                 return;
             }
@@ -89,12 +89,6 @@ public class CMD_EditFeedback extends BaseCommand {
             StringBuilder feedback = new StringBuilder();
             for (int i = 2; i <= args.length; i++) {
                 feedback.append(args.length == 2 ? "" : " ").append(args[i - 1]);
-            }
-            Optional<PlotReview> review = plot.getLatestReview();
-            if (review.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                PlotSystem.getPlugin().getComponentLogger().error("Could not retrieve latest review!");
-                return;
             }
 
             boolean successful = review.get().updateFeedback(feedback.toString());

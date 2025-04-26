@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.menus.review;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -117,10 +141,10 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         int totalRating = rating.getTotalRating();
 
         double scoreMultiplier = DataProvider.DIFFICULTY.getDifficultyByEnum(plot.getDifficulty()).orElseThrow().getMultiplier();
-        double totalRatingWithMultiplier = totalRating * scoreMultiplier;
-        int score = (int) Math.floor(totalRatingWithMultiplier);
+        int score = (int) Math.floor(totalRating * scoreMultiplier);
+        int splitScore = plot.getPlotMembers().isEmpty() ? -1 : (int) Math.floor(score / (plot.getPlotMembers().size() + 1d));
 
-        boolean successful = DataProvider.REVIEW.createReview(plot, rating, score, getMenuPlayer().getUniqueId());
+        boolean successful = DataProvider.REVIEW.createReview(plot, rating, score, splitScore, getMenuPlayer().getUniqueId());
         if (!successful) {
             getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
             return;
@@ -129,7 +153,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         Component reviewerConfirmationMessage;
         if (!isRejected) {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), getParticipantsString()));
-            if(!acceptPlot(totalRating)) return;
+            if(!acceptPlot(score, splitScore)) return;
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), getParticipantsString()));
             PlotUtils.Actions.undoSubmit(plot);
@@ -169,7 +193,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         }
     }
 
-    private boolean acceptPlot(int totalRating) {
+    private boolean acceptPlot(int score, int splitScore) {
         getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
@@ -185,23 +209,23 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         plot.setStatus(Status.completed);
 
         // Remove Plot from Owner
-        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(plot), -1)) return false;
+        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getID()), -1)) return false;
 
         if (plot.getPlotMembers().isEmpty()) {
             // Plot was made alone
             // Builder gets 100% of score
-            return plot.getPlotOwner().addScore(totalRating);
+            return plot.getPlotOwner().addScore(score);
         } else {
             // Plot was made in a group
             // Score gets split between all participants
-            if (!plot.getPlotOwner().addScore(plot.getSharedScore())) return false;
+            if (!plot.getPlotOwner().addScore(splitScore)) return false;
 
             for (Builder builder : plot.getPlotMembers()) {
                 // Score gets split between all participants
-                if (!builder.addScore(plot.getSharedScore())) return false;
+                if (!builder.addScore(splitScore)) return false;
 
                 // Remove Slot from Member
-                if (!builder.setSlot(builder.getSlot(plot), -1)) return false;
+                if (!builder.setSlot(builder.getSlotByPlotId(plot.getID()), -1)) return false;
             }
         }
         return true;

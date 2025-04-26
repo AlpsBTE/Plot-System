@@ -292,7 +292,7 @@ public final class PlotUtils {
             if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
-                long interval = (plot.isRejected()) ? rejectedInactivityIntervalDays : inactivityIntervalDays;
+                long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
                 if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
