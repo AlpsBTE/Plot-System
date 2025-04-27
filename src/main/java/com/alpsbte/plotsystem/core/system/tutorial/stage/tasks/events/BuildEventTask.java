@@ -67,8 +67,7 @@ public class BuildEventTask extends AbstractTask implements EventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof BlockPlaceEvent) {
-            BlockPlaceEvent buildEvent = (BlockPlaceEvent) event;
+        if (event instanceof BlockPlaceEvent buildEvent) {
             if (!buildEvent.canBuild()) return;
             Block placedBlock = buildEvent.getBlockPlaced();
             Vector placedBlockVector = new Vector(placedBlock.getX(), placedBlock.getY(), placedBlock.getZ());

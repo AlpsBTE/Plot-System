@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Objects;
 
 import static net.kyori.adventure.text.Component.text;
@@ -49,7 +48,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     private boolean buildingEnabled = false;
     private boolean worldEditEnabled = false;
 
-    public TutorialPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) throws SQLException {
+    public TutorialPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
         super(plot, builder, PlotType.TUTORIAL);
     }
 
@@ -58,8 +57,9 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
         return true;
     }
 
-    public void generateOutlines(int schematicId) throws SQLException, IOException, WorldEditException {
-        generateOutlines(((TutorialPlot) plot).getOutlinesSchematic(schematicId), null);
+    public void generateOutlines(int schematicId) throws IOException, WorldEditException {
+        ((TutorialPlot) plot).setTutorialSchematic(schematicId);
+        generateOutlines();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void onComplete(boolean failed, boolean unloadWorld) throws SQLException {
+    protected void onComplete(boolean failed, boolean unloadWorld) {
         super.onComplete(failed, false);
     }
 

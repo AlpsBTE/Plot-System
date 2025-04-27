@@ -97,6 +97,7 @@ public abstract class LangPaths {
         private static final String MENU_TITLES = "menu-title.";
         public static final String CLOSE = MENU_TITLES + "close";
         public static final String BACK = MENU_TITLES + "back";
+        public static final String CONTINUE = MENU_TITLES + "continue";
         public static final String NEXT_PAGE = MENU_TITLES + "next-page";
         public static final String PREVIOUS_PAGE = MENU_TITLES + "previous-page";
         public static final String ERROR = MENU_TITLES + "error";
@@ -189,6 +190,11 @@ public abstract class LangPaths {
         public static final String FEEDBACK = REVIEW_PREFIX + "feedback";
         public static final String REVIEWER = REVIEW_PREFIX + "reviewer";
         public static final String PLAYER_LANGUAGE = REVIEW_PREFIX + "player-language";
+        public static final String NO_FEEDBACK = REVIEW_PREFIX + "no-feedback";
+        public static final String ACCURACY_POINTS = REVIEW_PREFIX + "accuracy-points";
+        public static final String BLOCK_PALETTE_POINTS = REVIEW_PREFIX + "block-palette-points";
+        public static final String TOGGLE_POINTS = REVIEW_PREFIX + "toggle-points";
+        public static final String TOTAL_POINTS = REVIEW_PREFIX + "total-points";
 
         public static final class Criteria {
             private Criteria() {}
@@ -198,10 +204,6 @@ public abstract class LangPaths {
             public static final String ACCURACY_DESC = CRITERIA_PREFIX + "accuracy-desc";
             public static final String BLOCK_PALETTE = CRITERIA_PREFIX + "block-palette";
             public static final String BLOCK_PALETTE_DESC = CRITERIA_PREFIX + "block-palette-desc";
-            public static final String DETAILING = CRITERIA_PREFIX + "detailing";
-            public static final String DETAILING_DESC = CRITERIA_PREFIX + "detailing-desc";
-            public static final String TECHNIQUE = CRITERIA_PREFIX + "technique";
-            public static final String TECHNIQUE_DESC = CRITERIA_PREFIX + "technique-desc";
         }
     }
 
@@ -213,10 +215,14 @@ public abstract class LangPaths {
         public static final String WONT_BE_ABLE_CONTINUE_BUILDING = NOTES + "wont-be-able-continue-building";
         public static final String SCORE_WILL_BE_SPLIT = NOTES + "score-will-be-split";
         public static final String PLAYER_HAS_TO_BE_ONLINE = NOTES + "player-has-to-be-online";
+        public static final String OPTIONAL = NOTES + "optional";
+        public static final String REQUIRED = NOTES + "required";
+        public static final String CRITERIA_FULFILLED = NOTES + "criteria-fulfilled";
+        public static final String CRITERIA_NOT_FULFILLED = NOTES + "criteria-not-fulfilled";
+        public static final String LEGACY = NOTES + "legacy";
 
         public static final class Action {
             private Action() {}
-
             private static final String ACTION_PREFIX = NOTES + "action.";
             public static final String READ = ACTION_PREFIX + "read";
             public static final String READ_MORE = ACTION_PREFIX + "read-more";
@@ -239,6 +245,8 @@ public abstract class LangPaths {
             public static final String CLICK_TO_SHOW_PLOTS = ACTION_PREFIX + "click-to-show-plots";
             public static final String CLICK_TO_PLAY_WITH_FRIENDS = ACTION_PREFIX + "click-to-play-with-friends";
             public static final String TUTORIAL_SHOW_STAGES = ACTION_PREFIX + "tutorial-show-stages";
+            public static final String CLICK_TO_OPEN_PLOTS_MENUE = ACTION_PREFIX + "click-to-open-plots-menu";
+            public static final String CLICK_TO_TOGGLE = ACTION_PREFIX + "click-to-toggle";
         }
     }
 
@@ -270,7 +278,10 @@ public abstract class LangPaths {
             public static final String REMOVED_PLOT_MEMBER = INFO_PREFIX + "removed-plot-member";
             public static final String LEFT_PLOT = INFO_PREFIX + "left-plot";
             public static final String PLOT_WILL_GET_ABANDONED = INFO_PREFIX + "plot-will-get-abandoned-warning";
-            public static final String PLOT_WILL_GET_REJECTED = INFO_PREFIX + "plot-will-get-rejected-warning";
+            public static final String PLOT_WILL_BE_REJECTED = INFO_PREFIX + "plot-will-be-rejected";
+            public static final String PLOT_WILL_BE_ACCEPTED = INFO_PREFIX + "plot-will-be-accepted";
+            public static final String PLOTS_REVIEWED_SINGULAR = INFO_PREFIX + "plots-reviewed-singular";
+            public static final String PLOTS_REVIEWED_PLURAL = INFO_PREFIX + "plots-reviewed-plural";
             public static final String SAVING_PLOT = INFO_PREFIX + "saving-plot";
             public static final String CREATING_PLOT = INFO_PREFIX + "creating-plot";
             public static final String CREATED_NEW_PLOT = INFO_PREFIX + "created-new-plot";
@@ -288,7 +299,6 @@ public abstract class LangPaths {
 
         public static final class Error {
             private Error() {}
-
             private static final String ERROR_PREFIX = MESSAGE_PREFIX + "error.";
             public static final String PLOT_DOES_NOT_EXIST = ERROR_PREFIX + "plot-does-not-exist";
             public static final String PLOT_EITHER_UNCLAIMED_OR_UNREVIEWED = ERROR_PREFIX + "plot-either-unclaimed-or-unreviewed";
@@ -302,6 +312,8 @@ public abstract class LangPaths {
             public static final String CANNOT_UNDO_REVIEW = ERROR_PREFIX + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR_PREFIX + "cannot-send-feedback";
             public static final String CANNOT_REVIEW_OWN_PLOT = ERROR_PREFIX + "cannot-review-own-plot";
+            public static final String CANNOT_MODIFY_LEGACY_PLOT = ERROR_PREFIX + "cannot-modify-legacy-plot";
+            public static final String CANNOT_LOAD_LEGACY_PLOT = ERROR_PREFIX + "cannot-load-legacy-plot";
 
             public static final String PLAYER_HAS_NO_PERMISSIONS = ERROR_PREFIX + "player-has-no-permissions";
             public static final String PLAYER_HAS_NO_INVITATIONS = ERROR_PREFIX + "player-has-no-invitations";
@@ -316,6 +328,7 @@ public abstract class LangPaths {
             public static final String PLAYER_INVITE_TO_REJECTED = ERROR_PREFIX + "player-invite-to-rejected";
             public static final String PLAYER_NEEDS_TO_BE_ON_PLOT = ERROR_PREFIX + "player-needs-to-be-on-plot";
             public static final String PLAYER_NEEDS_HIGHER_SCORE = ERROR_PREFIX + "player-needs-higher-score";
+            public static final String PLAYER_MISSING_TUTORIAL = MESSAGE_PREFIX + "player-missing-tutorial";
 
             public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
             public static final String COMMAND_DISABLED = ERROR_PREFIX + "command-disabled";
@@ -325,6 +338,7 @@ public abstract class LangPaths {
             public static final String CHAT_INPUT_EXPIRED = ERROR_PREFIX + "chat-input-expired";
             public static final String TUTORIAL_DISABLED = ERROR_PREFIX + "tutorial-disabled";
             public static final String TUTORIAL_ALREADY_RUNNING = ERROR_PREFIX + "tutorial-already-running";
+            public static final String REVIEW_NOT_FOUND = ERROR_PREFIX + "review-not-found";
         }
     }
 
@@ -409,5 +423,17 @@ public abstract class LangPaths {
             public static final String STAGE10_MESSAGES = STAGE10 + "stage-10-messages";
             public static final String STAGE10_TASKS = STAGE10 + "stage-10-tasks";
         }
+
+    }
+
+    public static final class Database {
+        private Database() {}
+
+        private static final String DATABASE_PREFIX = "database.";
+        public static final String CITY_PROJECT = DATABASE_PREFIX + "city-project";
+        public static final String COUNTRY = DATABASE_PREFIX + "country";
+        public static final String DIFFICULTY = DATABASE_PREFIX + "difficulty";
+        public static final String STATUS = DATABASE_PREFIX + "status";
+        public static final String TOGGLE_CRITERIA = DATABASE_PREFIX + "toggle-criteria";
     }
 }

@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus.tutorial;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -45,8 +46,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
-import java.sql.SQLException;
 
 import static net.md_5.bungee.api.ChatColor.*;
 
@@ -125,13 +124,11 @@ public class TutorialStagesMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        try {
-            plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), tutorialId);
-            if (plot != null) {
-                playerHighestStage = plot.getStageID();
-                isTutorialCompleted = plot.isCompleted();
-            }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, getMenuPlayer().getUniqueId().toString()).orElse(null);
+        if (plot != null) {
+            playerHighestStage = plot.getStageID();
+            isTutorialCompleted = plot.isComplete();
+        }
 
         // Set tutorial stats item
         ItemBuilder tutorialItem = new ItemBuilder(Material.valueOf(tutorialItemName));
