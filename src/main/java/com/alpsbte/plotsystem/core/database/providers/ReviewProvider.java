@@ -86,7 +86,7 @@ public class ReviewProvider {
     }
 
     public Optional<PlotReview> getReview(int reviewId) {
-        String query = "SELECT plot_id, rating, score, split_score, feedback, reviewed_by FROM plot_review WHERE review_id = ?;";
+        String query = "SELECT plot_id, rating, score, feedback, reviewed_by FROM plot_review WHERE review_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, reviewId);
@@ -97,12 +97,10 @@ public class ReviewProvider {
                 int plotId = rs.getInt(1);
                 ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
                 int score = rs.getInt(3);
-                int splitScore = rs.getInt(4);
-                if (rs.wasNull()) splitScore = -1;
-                String feedback = rs.getString(5);
-                UUID reviewedBy = UUID.fromString(rs.getString(6));
+                String feedback = rs.getString(4);
+                UUID reviewedBy = UUID.fromString(rs.getString(5));
 
-                return Optional.of(new PlotReview(reviewId, plotId, rating, score, splitScore, feedback, reviewedBy));
+                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -111,7 +109,7 @@ public class ReviewProvider {
     }
 
     public Optional<PlotReview> getLatestReview(int plotId) {
-        String query = "SELECT review_id, rating, score, split_score, feedback, reviewed_by FROM plot_review " +
+        String query = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review " +
                 "WHERE plot_id = ? ORDER BY review_date DESC LIMIT 1;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -123,12 +121,10 @@ public class ReviewProvider {
                 int reviewId = rs.getInt(1);
                 ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
                 int score = rs.getInt(3);
-                int splitScore = rs.getInt(4);
-                if (rs.wasNull()) splitScore = -1;
-                String feedback = rs.getString(5);
-                UUID reviewedBy = UUID.fromString(rs.getString(6));
+                String feedback = rs.getString(4);
+                UUID reviewedBy = UUID.fromString(rs.getString(5));
 
-                return Optional.of(new PlotReview(reviewId, plotId, rating, score, splitScore, feedback, reviewedBy));
+                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -138,7 +134,7 @@ public class ReviewProvider {
 
     public List<PlotReview> getPlotReviewHistory(int plotId) {
         List<PlotReview> reviews = new ArrayList<>();
-        String query = "SELECT review_id, rating, score, split_score, feedback, reviewed_by FROM plot_review WHERE plot_id = ?;";
+        String query = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review WHERE plot_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plotId);
@@ -148,12 +144,10 @@ public class ReviewProvider {
                     int reviewId = rs.getInt(1);
                     ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
                     int score = rs.getInt(3);
-                    int splitScore = rs.getInt(4);
-                    if (rs.wasNull()) splitScore = -1;
-                    String feedback = rs.getString(5);
-                    UUID reviewedBy = UUID.fromString(rs.getString(6));
+                    String feedback = rs.getString(4);
+                    UUID reviewedBy = UUID.fromString(rs.getString(5));
 
-                    reviews.add(new PlotReview(reviewId, plotId, rating, score, splitScore, feedback, reviewedBy));
+                    reviews.add(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
                 }
             }
         } catch (SQLException ex) {
@@ -182,9 +176,9 @@ public class ReviewProvider {
         return false;
     }
 
-    public boolean createReview(Plot plot, ReviewRating rating, int score, int splitScore, UUID reviewerUUID) {
+    public PlotReview createReview(Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
         boolean result = DataProvider.PLOT.setMcVersion(plot.getID());
-        if (!result) return false;
+        if (!result) return null;
 
         // Create Review
         String query = "INSERT INTO plot_review (plot_id, rating, score, split_score, reviewed_by) " +
@@ -194,21 +188,19 @@ public class ReviewProvider {
             stmt.setInt(1, plot.getID());
             stmt.setString(2, rating.getRatingDatabaseString());
             stmt.setInt(3, score);
-            if (splitScore == -1) stmt.setNull(4, Types.INTEGER);
-            else stmt.setInt(4, splitScore);
-            stmt.setString(5, reviewerUUID.toString());
+            stmt.setString(4, reviewerUUID.toString());
             result = stmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
 
-        if (!result) return false;
+        if (!result) return null;
 
         PlotReview review = plot.getLatestReview().orElseThrow();
         HashMap<ToggleCriteria, Boolean> allToggles = rating.getAllToggles();
         for (ToggleCriteria criteria : allToggles.keySet()) {
             if (!addReviewToggleCriteria(review.getReviewId(), criteria, allToggles.get(criteria)))
-                return false;
+                return null;
         }
 
 
@@ -217,7 +209,7 @@ public class ReviewProvider {
         for (Builder builder : plot.getPlotMembers()) {
             createReviewNotification(review.getReviewId(), builder.getUUID());
         }
-        return true;
+        return review;
     }
 
     public boolean removeReview(int reviewId) {

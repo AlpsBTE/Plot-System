@@ -32,6 +32,7 @@ import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
 import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -142,10 +143,9 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
 
         double scoreMultiplier = DataProvider.DIFFICULTY.getDifficultyByEnum(plot.getDifficulty()).orElseThrow().getMultiplier();
         int score = (int) Math.floor(totalRating * scoreMultiplier);
-        int splitScore = plot.getPlotMembers().isEmpty() ? -1 : (int) Math.floor(score / (plot.getPlotMembers().size() + 1d));
 
-        boolean successful = DataProvider.REVIEW.createReview(plot, rating, score, splitScore, getMenuPlayer().getUniqueId());
-        if (!successful) {
+        PlotReview review = DataProvider.REVIEW.createReview(plot, rating, score, getMenuPlayer().getUniqueId());
+        if (review == null) {
             getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
             return;
         }
@@ -153,7 +153,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         Component reviewerConfirmationMessage;
         if (!isRejected) {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), getParticipantsString()));
-            if(!acceptPlot(score, splitScore)) return;
+            if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), getParticipantsString()));
             PlotUtils.Actions.undoSubmit(plot);

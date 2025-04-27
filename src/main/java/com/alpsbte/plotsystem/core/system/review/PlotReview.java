@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.system.review;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -33,25 +32,25 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import static net.kyori.adventure.text.Component.text;
-
 public class PlotReview {
     private final int reviewId;
-    private final int plotId;
+    private final Plot plot;
     private final ReviewRating rating;
     private final int score;
     private final int splitScore;
     private final UUID reviewedBy;
-    @Nullable
-    private String feedback;
+    @Nullable private String feedback;
 
+    public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, @Nullable String feedback, UUID reviewedBy) {
+        this(reviewId, DataProvider.PLOT.getPlotById(plotId), rating, score, feedback, reviewedBy);
+    }
 
-    public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, int splitScore, @Nullable String feedback, UUID reviewedBy) {
+    public PlotReview(int reviewId, Plot plot, ReviewRating rating, int score, @Nullable String feedback, UUID reviewedBy) {
         this.reviewId = reviewId;
-        this.plotId = plotId;
+        this.plot = plot;
         this.rating = rating;
         this.score = score;
-        this.splitScore = splitScore;
+        this.splitScore = plot.getPlotMembers().isEmpty() ? -1 : (int) Math.floor(score / (plot.getPlotMembers().size() + 1d));
         this.feedback = feedback;
         this.reviewedBy = reviewedBy;
     }
@@ -75,11 +74,7 @@ public class PlotReview {
     }
 
     public Plot getPlot() {
-        return DataProvider.PLOT.getPlotById(plotId);
-    }
-
-    public int getPlotId() {
-        return plotId;
+        return plot;
     }
 
     public Builder getReviewer() {
@@ -99,23 +94,16 @@ public class PlotReview {
     }
 
     public boolean undoReview() {
-        Plot plot = getPlot();
-        if (plot == null) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Could not undo review with the id (" +
-                    reviewId + "). Plot with the id (" + plotId + ") not found."));
-            return false;
-        }
-
         // remove owner score and remove plot from slot
         if (!plot.getPlotOwner().addScore(splitScore == -1 ? -score : -splitScore)) return false;
-        if (plot.getPlotOwner().getSlotByPlotId(plotId) != null
-                && !plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plotId), plotId))
+        if (plot.getPlotOwner().getSlotByPlotId(plot.getID()) != null
+                && !plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getID()), plot.getID()))
             return false;
 
         // remove members score and remove plot from slot
         for (Builder member : plot.getPlotMembers()) {
             if (!member.addScore(-splitScore)) return false;
-            if (member.getSlotByPlotId(plotId) != null && !member.setSlot(member.getSlotByPlotId(plotId), plotId))
+            if (member.getSlotByPlotId(plot.getID()) != null && !member.setSlot(member.getSlotByPlotId(plot.getID()), plot.getID()))
                 return false;
         }
 

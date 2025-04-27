@@ -29,19 +29,9 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
-import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
-import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import eu.decentsoftware.holograms.api.DHAPI;
-import eu.decentsoftware.holograms.api.holograms.Hologram;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,13 +49,6 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
         super("score-leaderboard", null, false, PlotSystem.getPlugin());
         setEnabled(PlotSystem.getPlugin().getConfig().getBoolean(getEnablePath()));
         setLocation(HologramRegister.getLocation(this));
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            for (Player player : getPlayersInRadiusForRanking()) {
-                if (AbstractTutorial.getActiveTutorial(player.getUniqueId()) != null) continue;
-                player.sendActionBar(getPlayerRankingComponent(player));
-            }
-        }, 0L, 20L);
     }
 
     @Override
@@ -116,78 +99,15 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             lines.add(new HologramRegister.LeaderboardPositionLine(index + 1, null, 0));
         }
 
-        Map<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
+        LinkedHashMap<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
         if (playerRankings != null) {
-            for (int i = 0; i < playerRankings.size(); i++) {
-                String key = (String) playerRankings.keySet().toArray()[i];
-                lines.set(i, new HologramRegister.LeaderboardPositionLine(i + 1, key, playerRankings.get(key)));
+            int i = 0;
+            for (Map.Entry<String, Integer> entry : playerRankings.entrySet()) {
+                lines.set(i, new HologramRegister.LeaderboardPositionLine(i + 1, entry.getKey(), entry.getValue()));
+                i++;
             }
         }
         return lines;
-    }
-
-    private Component getPlayerRankingComponent(Player player) {
-        LeaderboardEntry leaderboardEntry = DataProvider.BUILDER.getLeaderboardEntryByUUID(player.getUniqueId(), sortByLeaderboard);
-        if (leaderboardEntry == null) return Component.empty();
-
-        // Start building the component
-        TextComponent.Builder builder = Component.text()
-                .append(Component.text("  " + LangUtil.getInstance().get(player, sortByLeaderboard.langPath))
-                        .color(NamedTextColor.GOLD)
-                        .decorate(TextDecoration.BOLD)
-                )
-                .append(Component.text(" ➜ ")
-                        .color(NamedTextColor.DARK_GRAY)
-                        .decorate(TextDecoration.BOLD)
-                );
-
-        if (leaderboardEntry.getPosition() == -1) {
-            builder.append(Component.text(LangUtil.getInstance().get(player, LangPaths.Leaderboards.NOT_ON_LEADERBOARD))
-                    .color(NamedTextColor.RED)
-                    .decoration(TextDecoration.BOLD, false)
-            );
-        } else if (leaderboardEntry.getPosition() < 50) {
-            builder.append(Component.text(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_POSITION,
-                                    String.valueOf(leaderboardEntry.getPosition())))
-                    .color(NamedTextColor.GREEN)
-                    .decoration(TextDecoration.BOLD, false)
-            );
-        } else {
-            String topPercentage = df.format(leaderboardEntry.getPosition() * 1.0 / leaderboardEntry.getTotalPosition());
-            builder.append(Component.text(
-                            LangUtil.getInstance().get(player, LangPaths.Leaderboards.ACTIONBAR_PERCENTAGE, topPercentage))
-                    .decoration(TextDecoration.BOLD, false)
-            );
-        }
-
-        if (leaderboardEntry.getScore() != -1) {
-            builder.append(
-                    Component.text(" (", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(leaderboardEntry.getScore() + " " +
-                                    LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_POINTS), NamedTextColor.AQUA))
-                            .append(Component.text(")", NamedTextColor.DARK_GRAY))
-            );
-        }
-
-        return builder.build();
-    }
-
-    private List<Player> getPlayersInRadiusForRanking() {
-        FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        boolean actionBarEnabled = config.getBoolean(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_ENABLE, true);
-        int actionBarRadius = config.getInt(ConfigPaths.DISPLAY_OPTIONS_ACTION_BAR_RADIUS, 30);
-        List<Player> players = new ArrayList<>();
-        if (!actionBarEnabled) return players;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            Hologram holo = DHAPI.getHologram(player.getUniqueId() + "-" + getId());
-            if (holo == null) continue;
-            if (player.getWorld().getName().equals(holo.getLocation().getWorld().getName()) &&
-                    holo.getLocation().distance(player.getLocation()) <= actionBarRadius) {
-                players.add(player);
-            }
-        }
-        return players;
     }
 
     @Override

@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardEntry;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
@@ -34,7 +33,6 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 
-import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -276,70 +274,37 @@ public class BuilderProvider {
     }
 
     /**
-     * Retrieves the leaderboard entry for a specific player based on their UUID and the specified timeframe.
-     * The leaderboard entry includes the player's score, rank, and total number of players.
-     *
-     * @param uuid   the unique identifier of the player.
-     * @param sortBy the timeframe used to filter leaderboard data (e.g., daily, weekly, etc.).
-     * @return provides the leaderboard entry for the player, or null if not found.
-     */
-    public LeaderboardEntry getLeaderboardEntryByUUID(UUID uuid, LeaderboardTimeframe sortBy) {
-        return null; // TODO: fix leaderboard query
-        /*
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(uuid, sortBy))) {
-            stmt.setString(1, uuid.toString());
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return new LeaderboardEntry(rs.getInt(2), rs.getInt(3), rs.getInt(4));
-                }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return null;*/
-    }
-
-    /**
      * Retrieves the leaderboard entries for all players within a specified timeframe, including their names and scores.
      *
      * @param sortBy the timeframe used to filter leaderboard data (e.g., daily, weekly, etc.).
      * @return provides a map of player names and their scores, or null if no data is found.
      */
-    public Map<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
-        return null; // TODO: fix leaderboard query
-        /*
+    public LinkedHashMap<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(null, sortBy))) {
+             PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(sortBy))) {
 
             try (ResultSet rs = stmt.executeQuery()) {
-                Map<String, Integer> playerEntries = new HashMap<>();
+                LinkedHashMap<String, Integer> playerEntries = new LinkedHashMap<>();
                 while (rs.next()) playerEntries.put(rs.getString(1), rs.getInt(2));
                 return playerEntries;
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
-        return null;*/
+        return null;
     }
 
     /**
-     * Constructs an SQL query to retrieve leaderboard data, optionally filtering by a specific UUID
-     * and sorting based on a given timeframe.
+     * Constructs a SQL query to retrieve leaderboard data by sorting based on a given timeframe.
      *
-     * <p>If a UUID is provided, the query will calculate the leaderboard position for the specified
-     * UUID and include the total number of leaderboard entries matching the timeframe criteria.
-     * If no UUID is provided, the query will return the top leaderboard entries ordered by score
+     * <p>This query returns the top leaderboard entries ordered by the score
      * within the specified timeframe.</p>
      *
-     * @param uuid   the unique identifier of the builder for which to calculate the leaderboard position.
-     *               If {@code null}, the query retrieves the top entries instead of a specific position.
      * @param sortBy the timeframe used to filter entries. Determines the minimum date for reviews
      *               (e.g., daily, weekly, monthly, yearly).
      * @return the constructed SQL query as a {@code String}.
      */
-    private static String getLeaderboardQuery(@Nullable UUID uuid, LeaderboardTimeframe sortBy) {
-        // TODO: fix leaderboard query
+    private static String getLeaderboardQuery(LeaderboardTimeframe sortBy) {
         String minimumDate = switch (sortBy) {
             case DAILY -> "(NOW() - INTERVAL 1 DAY)";
             case WEEKLY -> "(NOW() - INTERVAL 1 WEEK)";
@@ -348,21 +313,44 @@ public class BuilderProvider {
             default -> null;
         };
 
-        return "SELECT b.name, b.score" + (uuid != null ? ", ROW_NUMBER() OVER (ORDER BY b.score DESC) AS position" : "") +
-                (uuid != null ? ", (SELECT COUNT(*) FROM builder_has_plot bhp_sub " +
-                        "INNER JOIN builder b_sub ON b_sub.uuid = bhp_sub.uuid " +
-                        "INNER JOIN plot_review r_sub ON r_sub.plot_id = bhp_sub.plot_id " +
-                        (minimumDate != null ? "WHERE r.review_date BETWEEN " + minimumDate + " AND NOW()" : "") + ") " +
-                        "AS total_positions" : "") +
-                " FROM builder_has_plot bhp " +
-                "INNER JOIN builder b ON b.uuid = bhp.uuid " +
-                "INNER JOIN plot_review r ON r.plot_id = bhp.plot_id " +
-                (minimumDate != null
-                        ? "WHERE r.review_date BETWEEN " + minimumDate + " AND NOW()"
-                        : "") +
-                (uuid != null
-                        ? "WHERE b.uuid = ?;"
-                        : "ORDER BY b.name, b.score DESC LIMIT 10;"
-                );
+        return "WITH latest_reviews AS ( "
+                + "    SELECT pr.* "
+                + "    FROM plot_review pr "
+                + "    INNER JOIN ( "
+                + "        SELECT plot_id, MAX(review_date) AS latest_review_date "
+                + "        FROM plot_review "
+                + "        GROUP BY plot_id "
+                + "    ) latest ON pr.plot_id = latest.plot_id AND pr.review_date = latest.latest_review_date "
+                + "), "
+                + "plot_member_counts AS ( "
+                + "    SELECT plot_id, COUNT(*) AS member_count "
+                + "    FROM builder_is_plot_member "
+                + "    GROUP BY plot_id "
+                + "), "
+                + "all_builders AS ( "
+                + "    SELECT "
+                + "        p.owner_uuid AS builder_uuid, "
+                + "        p.plot_id "
+                + "    FROM plot p "
+                + "    WHERE p.status = 'completed' "
+                + "    UNION ALL "
+                + "    SELECT "
+                + "        bipm.uuid AS builder_uuid, "
+                + "        bipm.plot_id "
+                + "    FROM builder_is_plot_member bipm "
+                + "    JOIN plot p ON p.plot_id = bipm.plot_id "
+                + "    WHERE p.status = 'completed' "
+                + ") "
+                + "SELECT b.name, SUM( "
+                + "    IF(pmc.member_count IS NULL OR pmc.member_count = 0, lr.score, FLOOR(lr.score / (pmc.member_count + 1))) "
+                + ") AS total_score "
+                + "FROM all_builders ab "
+                + "JOIN builder b ON b.uuid = ab.builder_uuid "
+                + "JOIN latest_reviews lr ON lr.plot_id = ab.plot_id "
+                + "LEFT JOIN plot_member_counts pmc ON pmc.plot_id = ab.plot_id "
+                + (minimumDate != null ? "WHERE lr.review_date BETWEEN " + minimumDate + " AND NOW() " : "")
+                + "GROUP BY b.name "
+                + "ORDER BY total_score DESC, b.name "
+                + "LIMIT 10;";
     }
 }
