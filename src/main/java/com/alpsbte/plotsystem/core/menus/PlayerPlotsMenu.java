@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -145,23 +145,25 @@ public class PlayerPlotsMenu extends AbstractMenu {
      */
     private LoreBuilder getLore(Plot plot, Player p) {
         LoreBuilder builder = new LoreBuilder();
+
+        Optional<PlotReview> review = plot.getLatestReview();
+        int score = (review.isEmpty() || plot.isRejected()) ? 0 : review.get().getScore();
         if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
             builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
-                    .append(text((plot.getTotalScore() == -1 ? 0 : plot.getTotalScore()), WHITE)));
+                    .append(text(score, WHITE)));
         } else {
             // Plot is multiplayer plot
             builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.OWNER) + ": ", GRAY)
                     .append(text(plot.getPlotOwner().getName(), WHITE)));
             builder.emptyLine();
 
-            int score = (plot.getTotalScore() == -1 ? 0 : plot.getTotalScore());
             builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
                     .append(text(score + " ", WHITE))
-                    .append(text(LangUtil.getInstance().get(p, LangPaths.Plot.GroupSystem.SHARED_BY_MEMBERS, Integer.toString(plot.getPlotMembers().size() + 1)), DARK_GRAY)));
+                    .append(text(LangUtil.getInstance().get(p, LangPaths.Plot.GroupSystem.SHARED_BY_MEMBERS,
+                            Integer.toString(plot.getPlotMembers().size() + 1)), DARK_GRAY)));
         }
 
-        Optional<PlotReview> review = plot.getLatestReview();
         if (review.isPresent()) {
             ReviewRating rating = review.get().getRating();
             builder.emptyLine();
@@ -187,7 +189,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
         }
 
         builder.emptyLine();
-        if (plot.isReviewed() && plot.isRejected()) builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.REJECTED), RED, BOLD));
+        if (plot.isRejected()) builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.REJECTED), RED, BOLD));
         builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.STATUS) + ": ", GRAY)
                 .append(text(plot.getStatus().name().substring(0, 1).toUpperCase() +
                         plot.getStatus().name().substring(1), WHITE)));

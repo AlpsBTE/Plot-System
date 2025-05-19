@@ -162,19 +162,6 @@ public class Plot extends AbstractPlot {
         }
     }
 
-    public int getTotalScore() {
-        Optional<PlotReview> review = getLatestReview();
-        return review.map(PlotReview::getScore).orElse(-1);
-    }
-
-    public int getSharedScore() {
-        int score = getTotalScore();
-        if (score != -1 && !getPlotMembers().isEmpty()) {
-            return (int) Math.floor(score / (members.size() + 1d));
-        }
-        return score;
-    }
-
     @Override
     public byte[] getInitialSchematicBytes() {
         return DataProvider.PLOT.getInitialSchematic(getID());
@@ -195,6 +182,14 @@ public class Plot extends AbstractPlot {
 
     public Optional<PlotReview> getLatestReview() {
         return DataProvider.REVIEW.getLatestReview(getID());
+    }
+
+    public boolean isReviewed() {
+        return getLatestReview().isPresent();
+    }
+
+    public boolean isRejected() {
+        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && isReviewed();
     }
 
     public boolean setPasted(boolean pasted) {
@@ -229,14 +224,6 @@ public class Plot extends AbstractPlot {
             }
         }
         return false;
-    }
-
-    public boolean isReviewed() {
-        return getLatestReview().isPresent();
-    }
-
-    public boolean isRejected() {
-        return (getStatus() == Status.unfinished || getStatus() == Status.unreviewed) && getTotalScore() != -1; // -1 == null
     }
 
     public static boolean meetsPlotDifficultyScoreRequirement(@NotNull Builder builder, PlotDifficulty plotDifficulty) {

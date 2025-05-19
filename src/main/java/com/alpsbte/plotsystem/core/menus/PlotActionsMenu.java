@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -48,13 +48,13 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class PlotActionsMenu extends AbstractMenu {
     private final Plot plot;
-    private final boolean hasFeedback;
+    private final boolean hasReview;
 
     public PlotActionsMenu(Player menuPlayer, Plot plot) {
         super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
 
         this.plot = plot;
-        hasFeedback = plot.isReviewed() || plot.isRejected();
+        hasReview = plot.getLatestReview().isPresent();
     }
 
     @Override
@@ -80,14 +80,14 @@ public class PlotActionsMenu extends AbstractMenu {
         }
 
         // Set teleport to plot item
-        getMenu().getSlot(hasFeedback ? 12 : 13)
+        getMenu().getSlot(hasReview ? 12 : 13)
                 .setItem(new ItemBuilder(BaseItems.PLOT_TELEPORT.getItem())
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TELEPORT), GOLD).decoration(BOLD, true))
                         .setLore(new LoreBuilder().addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TELEPORT)).color(GRAY), true).build())
                         .build());
 
         // Set plot abandon item
-        getMenu().getSlot(hasFeedback ? 14 : 16)
+        getMenu().getSlot(hasReview ? 14 : 16)
                 .setItem(new ItemBuilder(BaseItems.PLOT_ABANDON.getItem())
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.ABANDON), RED).decoration(BOLD, true))
                         .setLore(new LoreBuilder()
@@ -98,7 +98,7 @@ public class PlotActionsMenu extends AbstractMenu {
                         .build());
 
         // Set plot feedback item
-        if (hasFeedback) {
+        if (hasReview) {
             getMenu().getSlot(16)
                     .setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
@@ -142,19 +142,19 @@ public class PlotActionsMenu extends AbstractMenu {
         });
 
         // Set click event for teleport to plot item
-        getMenu().getSlot(hasFeedback ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(hasReview ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             plot.getWorld().teleportPlayer(clickPlayer);
         });
 
         // Set click event for abandon plot item
-        getMenu().getSlot(hasFeedback ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(hasReview ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
             clickPlayer.performCommand("plot abandon " + plot.getID());
         });
 
         // Set click event for feedback menu button
-        if (hasFeedback) {
+        if (hasReview) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
                 clickPlayer.performCommand("plot feedback " + plot.getID());

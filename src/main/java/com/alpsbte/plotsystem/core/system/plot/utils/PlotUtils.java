@@ -292,7 +292,7 @@ public final class PlotUtils {
             if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
-                long interval = (plot.isRejected()) ? rejectedInactivityIntervalDays : inactivityIntervalDays;
+                long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
                 if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -600,10 +600,10 @@ public final class PlotUtils {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
             for (ReviewNotification notification : notifications) {
                 PlotReview review = DataProvider.REVIEW.getReview(notification.getReviewId()).orElseThrow();
-                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlotId())), GREEN)));
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getID())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlotId()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getID()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 

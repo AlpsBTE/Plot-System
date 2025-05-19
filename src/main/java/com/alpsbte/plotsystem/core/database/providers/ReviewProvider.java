@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -10,10 +34,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class ReviewProvider {
@@ -65,7 +86,7 @@ public class ReviewProvider {
     }
 
     public Optional<PlotReview> getReview(int reviewId) {
-        String query = "SELECT plot_id, rating, feedback, score, reviewed_by, review_date FROM plot_review WHERE review_id = ?;";
+        String query = "SELECT plot_id, rating, score, feedback, reviewed_by FROM plot_review WHERE review_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, reviewId);
@@ -74,15 +95,10 @@ public class ReviewProvider {
                 if (!rs.next()) return Optional.empty();
 
                 int plotId = rs.getInt(1);
-                String feedback = rs.getString(3);
-                int score = rs.getInt(4);
+                ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
+                int score = rs.getInt(3);
+                String feedback = rs.getString(4);
                 UUID reviewedBy = UUID.fromString(rs.getString(5));
-
-                String ratingString = rs.getString(2);
-                int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
-                int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-                HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
-                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
 
                 return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
@@ -93,7 +109,8 @@ public class ReviewProvider {
     }
 
     public Optional<PlotReview> getLatestReview(int plotId) {
-        String query = "SELECT review_id, rating, feedback, score, reviewed_by, review_date FROM plot_review WHERE plot_id = ? ORDER BY review_date DESC LIMIT 1;";
+        String query = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review " +
+                "WHERE plot_id = ? ORDER BY review_date DESC LIMIT 1;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plotId);
@@ -102,15 +119,10 @@ public class ReviewProvider {
                 if (!rs.next()) return Optional.empty();
 
                 int reviewId = rs.getInt(1);
-                String feedback = rs.getString(3);
-                int score = rs.getInt(4);
+                ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
+                int score = rs.getInt(3);
+                String feedback = rs.getString(4);
                 UUID reviewedBy = UUID.fromString(rs.getString(5));
-
-                String ratingString = rs.getString(2);
-                int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
-                int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-                HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
-                ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
 
                 return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
@@ -122,7 +134,7 @@ public class ReviewProvider {
 
     public List<PlotReview> getPlotReviewHistory(int plotId) {
         List<PlotReview> reviews = new ArrayList<>();
-        String query = "SELECT review_id, rating, feedback, score, reviewed_by, review_date FROM plot_review WHERE plot_id = ?;";
+        String query = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review WHERE plot_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plotId);
@@ -130,15 +142,10 @@ public class ReviewProvider {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int reviewId = rs.getInt(1);
-                    String feedback = rs.getString(3);
-                    int score = rs.getInt(4);
+                    ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
+                    int score = rs.getInt(3);
+                    String feedback = rs.getString(4);
                     UUID reviewedBy = UUID.fromString(rs.getString(5));
-
-                    String ratingString = rs.getString(2);
-                    int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
-                    int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-                    HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
-                    ReviewRating rating = new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
 
                     reviews.add(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
                 }
@@ -147,6 +154,13 @@ public class ReviewProvider {
             Utils.logSqlException(ex);
         }
         return reviews;
+    }
+
+    private ReviewRating getReviewRating(int reviewId, String ratingString) {
+        int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
+        int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
+        HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
+        return new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
     }
 
     public boolean updateFeedback(int reviewId, String newFeedback) {
@@ -162,13 +176,13 @@ public class ReviewProvider {
         return false;
     }
 
-    public boolean createReview(Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
+    public PlotReview createReview(Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
         boolean result = DataProvider.PLOT.setMcVersion(plot.getID());
-        if (!result) return false;
+        if (!result) return null;
 
         // Create Review
-        String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) " +
-                "VALUES (?, ?, ?, ?);";
+        String query = "INSERT INTO plot_review (plot_id, rating, score, split_score, reviewed_by) " +
+                "VALUES (?, ?, ?, ?, ?);";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plot.getID());
@@ -180,13 +194,13 @@ public class ReviewProvider {
             Utils.logSqlException(ex);
         }
 
-        if (!result) return false;
+        if (!result) return null;
 
         PlotReview review = plot.getLatestReview().orElseThrow();
         HashMap<ToggleCriteria, Boolean> allToggles = rating.getAllToggles();
         for (ToggleCriteria criteria : allToggles.keySet()) {
             if (!addReviewToggleCriteria(review.getReviewId(), criteria, allToggles.get(criteria)))
-                return false;
+                return null;
         }
 
 
@@ -195,7 +209,7 @@ public class ReviewProvider {
         for (Builder builder : plot.getPlotMembers()) {
             createReviewNotification(review.getReviewId(), builder.getUUID());
         }
-        return true;
+        return review;
     }
 
     public boolean removeReview(int reviewId) {
