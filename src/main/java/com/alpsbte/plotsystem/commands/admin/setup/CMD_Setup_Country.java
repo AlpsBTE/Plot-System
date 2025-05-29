@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,15 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
@@ -129,7 +131,7 @@ public class CMD_Setup_Country extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 3 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 3) {sendInfo(sender); return;}
 
             String code = args[1];
             if (code.length() > 2) {
@@ -149,7 +151,19 @@ public class CMD_Setup_Country extends SubCommand {
             String customModelData = args.length > 4 ? args[4] : null;
 
             boolean successful = DataProvider.COUNTRY.addCountry(code, continent, material, customModelData);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            if (successful)
+            {
+                try {
+                    LangUtil.getInstance().languageFiles[0].set(LangPaths.Database.COUNTRY + "." + code + ".name", code);
+                    LangUtil.getInstance().languageFiles[0].save(LangUtil.getInstance().languageFiles[0].getFile()); // TODO Fix ugly config file
+                } catch (Exception e) {
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for country " + code + "!").color(RED), e);
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for country " + code + "!"));
+                }
+
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + code + " language config setting, otherwise the name will be the ID of the Country & no description will be present!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            }
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
