@@ -47,6 +47,8 @@ public class LangUtil extends LanguageUtil {
                 new LanguageFile(Language.ru_RU, 2.2, "ba_RU", "tt_RU"),
                 new LanguageFile(Language.zh_CN, 2.2),
                 new LanguageFile(Language.zh_TW, 2.3, "zh_HK"),
+                new LanguageFile(Language.he_IL, 1.0)
+            
         });
         langUtilInstance = new LangUtil();
     }
