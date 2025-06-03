@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -151,7 +151,8 @@ public final class PlotUtils {
     public static boolean isPlayerOnPlot(@NotNull AbstractPlot plot, Player player) {
         if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
             Location playerLoc = player.getLocation();
-            return plot.getWorld().getProtectedRegion().contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
+            ProtectedRegion protectedRegion = plot.getWorld().getProtectedRegion();
+            return protectedRegion == null || protectedRegion.contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
         }
         return false;
     }
@@ -188,7 +189,7 @@ public final class PlotUtils {
         try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
             writer.write(new BlockArrayClipboard(region));
         }
-        return null;
+        return outputStream.toByteArray();
     }
 
     public static @NotNull String getDefaultSchematicPath() {
