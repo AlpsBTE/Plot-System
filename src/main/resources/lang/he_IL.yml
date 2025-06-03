@@ -389,4 +389,4 @@ tutorials:
       stage-10-tasks:
         - 'קרא את כל הטיפים במגרש וסמן אותם כנקראו.'
 # NOTE: Do not change
-config-version: 2.2
+config-version: 1.0
