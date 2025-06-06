@@ -113,7 +113,7 @@ public class DatabaseConnection {
     private static void createDatabase() throws SQLException {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (Statement statement = con.createStatement()) {
-                statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+                statement.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + name + "`");
             }
         }
     }
