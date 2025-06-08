@@ -175,9 +175,8 @@ public class CMD_Setup_City extends SubCommand {
             boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, buildTeamId, country.get().getCode(), serverName);
             if (added) {
                 try {
-                    LangUtil.getInstance().languageFiles[0].set(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".name", cityProjectId);
-                    LangUtil.getInstance().languageFiles[0].set(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".description", "");
-                    LangUtil.getInstance().languageFiles[0].save(LangUtil.getInstance().languageFiles[0].getFile()); // TODO Fix ugly config file
+                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".name", cityProjectId);
+                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".description", "");
                 } catch (Exception e) {
                     PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for City Project " + cityProjectId + "!").color(RED), e);
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for City Project " + cityProjectId + "!"));

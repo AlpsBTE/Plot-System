@@ -154,8 +154,7 @@ public class CMD_Setup_Country extends SubCommand {
             if (successful)
             {
                 try {
-                    LangUtil.getInstance().languageFiles[0].set(LangPaths.Database.COUNTRY + "." + code + ".name", code);
-                    LangUtil.getInstance().languageFiles[0].save(LangUtil.getInstance().languageFiles[0].getFile()); // TODO Fix ugly config file
+                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.COUNTRY + "." + code + ".name", code);
                 } catch (Exception e) {
                     PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for country " + code + "!").color(RED), e);
                     sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for country " + code + "!"));
