@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,18 @@
  *  SOFTWARE.
  */
 
-package com.alpsbte.plotsystem.utils.items;
+package com.alpsbte.plotsystem.core.database;
 
-public enum CustomHeads {
-    WHITE_CONCRETE("8614"),
-    GREEN_CONCRETE("8621"),
-    YELLOW_CONCRETE("8613"),
-    RED_CONCRETE("8616"),
-    WORKBENCH("24180"),
-    ADD_BUTTON("9237"),
-    REMOVE_BUTTON("9243"),
-    BACK_BUTTON("9226"),
-    NEXT_BUTTON("9223"),
-    PREVIOUS_BUTTON("9226"),
-    INFO_BUTTON("46488"),
-    GLOBE_HEAD("49973"),
-    PLOT_TYPE_BUTTON("4159"),
-    FOCUS_MODE_BUTTON("38199"),
-    CITY_INSPIRATION_MODE_BUTTON("38094");
+import com.alpsbte.plotsystem.core.database.providers.*;
 
-    final String id;
-
-    CustomHeads(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
+public class DataProvider {
+    public static final BuilderProvider BUILDER = new BuilderProvider();
+    public static final PlotProvider PLOT = new PlotProvider();
+    public static final DifficultyProvider DIFFICULTY = new DifficultyProvider();
+    public static final CityProjectProvider CITY_PROJECT = new CityProjectProvider();
+    public static final CountryProvider COUNTRY = new CountryProvider();
+    public static final ServerProvider SERVER = new ServerProvider();
+    public static final TutorialPlotProvider TUTORIAL_PLOT = new TutorialPlotProvider();
+    public static final ReviewProvider REVIEW = new ReviewProvider();
+    public static final BuildTeamProvider BUILD_TEAM = new BuildTeamProvider(BUILDER, CITY_PROJECT); // has to be initialized after builder and city project providers
 }

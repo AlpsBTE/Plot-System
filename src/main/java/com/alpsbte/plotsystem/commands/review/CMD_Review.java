@@ -27,8 +27,9 @@ package com.alpsbte.plotsystem.commands.review;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.menus.ReviewPlotMenu;
+import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewPlotMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -45,93 +46,68 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
-import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class CMD_Review extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (getPlayer(sender) == null) {
+        Player player = getPlayer(sender);
+        if (player == null) {
             Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", RED));
             return true;
         }
 
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-            return true;
-        }
-
-        if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) == null) {
-            sendInfo(sender);
-            return true;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            Plot plot = null;
-            if (args.length > 0) {
-                int plotId = Integer.parseInt(args[0]);
-                if (!PlotUtils.plotExists(plotId)) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender,
-                            LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    return;
-                }
-                plot = new Plot(plotId);
+        CompletableFuture.runAsync(() -> {
+            if (!DataProvider.BUILDER.isAnyReviewer(player.getUniqueId()) && !sender.hasPermission("plotsystem.admin")) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                return;
             }
 
-            try {
-                Builder.Reviewer builder = Builder.byUUID(getPlayer(sender).getUniqueId()).getAsReviewer();
-                Player player = (Player) sender;
-
-                // Check if the given plot is valid
-                if (plot != null && plot.getStatus() != Status.unreviewed) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender,
-                            LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    return;
-                }
-
-                // Check if the reviewer is on the plot
-                AbstractPlot currentPlot = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unreviewed);
-                boolean teleportPlayer = false;
-                if (currentPlot instanceof Plot cp) {
-                    if (plot != null && plot.getID() != currentPlot.getID()) teleportPlayer = true;
-                    else plot = cp;
-                } else if (plot == null) {
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
-                    return;
-                } else teleportPlayer = true;
-
-                // If the reviewer is not on the plot, teleport the player
-                if (teleportPlayer) {
-                    Plot finalPlot = plot;
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> finalPlot.getWorld().teleportPlayer(player));
-                    return;
-                }
-
-                // Check if player is allowed to review this plot (cannot be the owner or a member of this plot)
-                if ((plot.getPlotOwner().getUUID().toString().equals(player.getUniqueId().toString()) ||
-                        (!plot.getPlotMembers().isEmpty() && plot.getPlotMembers().stream()
-                                .anyMatch(b -> b.getUUID().toString().equals(player.getUniqueId().toString())))) &&
-                                !PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player,
-                            LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
-                    return;
-                }
-
-                // Check if the reviewer is allowed to review this plot in this city project
-                int countryID = plot.getCity().getCountry().getID();
-                if (builder.getCountries().stream().anyMatch(c -> c.getID() == countryID)) {
-                    Plot finalPlot = plot;
-                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewPlotMenu(player, finalPlot));
-                    return;
-                }
-
+            if (args.length == 0) {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+                return;
             }
+
+            if (AlpsUtils.tryParseInt(args[0]) == null) {
+                sendInfo(sender);
+                return;
+            }
+
+            Plot plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
+            if (plot == null || plot.getStatus() != Status.unreviewed) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender,
+                        LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                return;
+            }
+
+            Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
+            if (!DataProvider.BUILDER.canReviewPlot(builder.getUUID(), plot) && !sender.hasPermission("plotsystem.admin")) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
+                return;
+            }
+
+            // Players cannot review their own plots
+            boolean isParticipant = plot.getPlotOwner().getUUID() == player.getUniqueId() || plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
+            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE) && isParticipant) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+            }
+
+            // Check if the reviewer is on the plot
+            AbstractPlot currentPlot = PlotUtils.getCurrentPlot(builder, Status.unreviewed);
+            boolean teleportPlayer = false;
+            if (currentPlot instanceof Plot) {
+                if (plot.getID() != currentPlot.getID()) teleportPlayer = true;
+            } else teleportPlayer = true;
+
+            // If the reviewer is not on the plot, teleport the player
+            if (teleportPlayer) {
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plot.getWorld().teleportPlayer(player));
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewPlotMenu(player, plot));
         });
         return true;
     }
@@ -153,6 +129,6 @@ public class CMD_Review extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.review";
+        return "";
     }
 }

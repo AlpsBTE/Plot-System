@@ -25,8 +25,8 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
-import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -60,9 +60,8 @@ public class ContinentMenu extends AbstractMenu {
     protected void setPreviewItems() {
         getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new).entrySet()) {
-            getMenu().getSlot(entry.getKey()).setItem(entry.getValue().item);
-        }
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
 
         super.setPreviewItems();
     }
@@ -79,7 +78,7 @@ public class ContinentMenu extends AbstractMenu {
             List<Continent> layout2 = new java.util.ArrayList<>(layout.values().stream().toList());
             while (!layout2.isEmpty()) {
                 var rndContinent = layout2.get(Utils.getRandom().nextInt(layout2.size()));
-                var successful = CountryMenu.generateRandomPlot(clickPlayer, Country.getCountries(rndContinent), null);
+                var successful = CountryMenu.generateRandomPlot(clickPlayer, DataProvider.COUNTRY.getCountriesByContinent(rndContinent), null);
                 if (successful) {
                     return;
                 } else {
@@ -92,9 +91,8 @@ public class ContinentMenu extends AbstractMenu {
             getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));
         }
 
-        for (Map.Entry<Integer, CompanionMenu.FooterItem> entry : CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new).entrySet()) {
-            getMenu().getSlot(entry.getKey()).setClickHandler(entry.getValue().clickHandler);
-        }
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
     }
 
     @Override

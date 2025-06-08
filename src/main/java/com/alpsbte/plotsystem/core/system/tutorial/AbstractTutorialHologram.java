@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -162,7 +162,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
         if (readMoreId == -1 && markAsReadClickAction == null) return;
         setClickListener(clickEvent -> {
             if (!isMarkAsReadClicked && markAsReadClickAction != null) {
-                HologramLine line = clickEvent.getPage().getLines().get(clickEvent.getPage().getLines().size() - 1);
+                HologramLine line = clickEvent.getPage().getLines().getLast();
                 line.setText(getMarkAsReadClickedActionText());
                 clickEvent.getHologram().update(player);
                 markAsReadClickAction.onClick(clickEvent);

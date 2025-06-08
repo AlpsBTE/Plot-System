@@ -60,8 +60,7 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof PlayerCommandPreprocessEvent) {
-            PlayerCommandPreprocessEvent cmdEvent = (PlayerCommandPreprocessEvent) event;
+        if (event instanceof PlayerCommandPreprocessEvent cmdEvent) {
             if (cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
                 if (isCancelCmdEvent) cmdEvent.setCancelled(true);
 

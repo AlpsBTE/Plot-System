@@ -26,8 +26,9 @@ package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.ReviewMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
@@ -35,7 +36,6 @@ import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
@@ -45,6 +45,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -54,7 +55,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -99,9 +99,25 @@ public class Utils {
         });
     }
 
+    // TODO: extract to alpsLibs?
+    public static ItemStack getConfiguredItem(String material, Object customModelData) {
+        ItemStack base;
+        if (material.startsWith("head(") && material.endsWith(")")) {
+            String headId = material.substring(material.indexOf("(") + 1, material.lastIndexOf(")"));
+            base = AlpsHeadUtils.getCustomHead(headId);
+        } else {
+            Material mat = Material.getMaterial(material);
+            base = new ItemStack(mat == null ? Material.BARRIER : mat);
+        }
+        ItemBuilder builder = new ItemBuilder(base);
+        if (customModelData != null) builder.setItemModel(customModelData);
+
+        return builder.build();
+    }
 
     public static class SoundUtils {
         private SoundUtils() {}
+
         public static final Sound TELEPORT_SOUND = Sound.ENTITY_ENDERMAN_TELEPORT;
         public static final Sound ERROR_SOUND = Sound.ENTITY_ITEM_BREAK;
         public static final Sound CREATE_PLOT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
@@ -115,6 +131,7 @@ public class Utils {
 
     public static class ChatUtils {
         private ChatUtils() {}
+
         public static void setChatFormat(String infoPrefix, String alertPrefix) {
             ChatUtils.infoPrefix = AlpsUtils.deserialize(infoPrefix);
             ChatUtils.alertPrefix = AlpsUtils.deserialize(alertPrefix);
@@ -175,8 +192,8 @@ public class Utils {
         @Contract(pure = true)
         public static @NotNull String getActionFormat(String action) {return "§8§l> §c" + action;}
 
-        public static @NotNull Component getColoredPointsComponent(int points) {
-            return switch (points) {
+        public static @NotNull Component getColoredPointsComponent(int points, int maxPoints) {
+            return switch ((int) ((double) points / maxPoints * 5)) {
                 case 0 -> text(points, GRAY);
                 case 1 -> text(points, DARK_RED);
                 case 2 -> text(points, GOLD);
@@ -186,17 +203,13 @@ public class Utils {
             };
         }
 
-        public static @NotNull TextComponent getFormattedDifficulty(@NotNull PlotDifficulty plotDifficulty) {
+        public static @NotNull TextComponent getFormattedDifficulty(@NotNull PlotDifficulty plotDifficulty, Player player) {
             return switch (plotDifficulty) {
-                case EASY -> text("Easy", GREEN).decoration(BOLD, true);
-                case MEDIUM -> text("Medium", GOLD).decoration(BOLD, true);
-                case HARD -> text("Hard", RED).decoration(BOLD, true);
+                case EASY -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".easy.name"), GREEN).decoration(BOLD, true);
+                case MEDIUM -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".medium.name"), GOLD).decoration(BOLD, true);
+                case HARD -> text(LangUtil.getInstance().get(player, LangPaths.Database.DIFFICULTY + ".hard.name"), RED).decoration(BOLD, true);
             };
         }
-    }
-
-    public static void registerCustomHeads() {
-        for (CustomHeads head : CustomHeads.values()) AlpsHeadUtils.registerCustomHead(head.getId());
     }
 
     public static @NotNull Set<BlockVector2> getLineBetweenPoints(@NotNull BlockVector2 point1, @NotNull BlockVector2 point2, int pointsInLine) {
@@ -227,7 +240,8 @@ public class Utils {
         return random;
     }
 
-    public static boolean isOwnerOrReviewer(CommandSender sender, @Nullable Player player, Plot plot) throws SQLException {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isOwnerOrReviewer(CommandSender sender, @Nullable Player player, Plot plot) {
         boolean hasPermission = sender.hasPermission("plotsystem.review") || (player != null && Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(player.getUniqueId()));
         if (!hasPermission) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));

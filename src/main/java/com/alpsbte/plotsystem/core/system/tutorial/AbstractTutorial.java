@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,6 @@ public abstract class AbstractTutorial implements Tutorial {
     private static final long PLAYER_INTERACTION_COOLDOWN = 1000; // The cooldown for player interactions in milliseconds
 
 
-    protected final TutorialDataModel tutorialDataModel;
     private final int tutorialId;
     private final UUID playerUUID;
     private final Player player;
@@ -135,11 +134,10 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     protected abstract void prepareStage(PrepareStageAction action);
 
-    protected AbstractTutorial(Player player, TutorialDataModel tutorialDataModel, int tutorialId, int stageId) {
+    protected AbstractTutorial(Player player, int tutorialId, int stageId) {
         this.tutorialId = tutorialId;
         this.playerUUID = player.getUniqueId();
         this.player = player;
-        this.tutorialDataModel = tutorialDataModel;
 
         if (stageId < 0) stageId = 0;
         currentStageIndex = stageId - 1;
@@ -248,6 +246,7 @@ public abstract class AbstractTutorial implements Tutorial {
         currentWorldIndex = tutorialWorldIndex;
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
+        if (world == null) return;
         player.teleport(world.getPlayerSpawnLocation());
         if (npc.getNpc() != null) {
             npc.move(player, world.getNpcSpawnLocation());
@@ -336,7 +335,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @return true if the tutorial was loaded successfully, otherwise false
      */
     public static boolean loadTutorial(Player player, int tutorialId) {
-        return loadTutorialByStage(player, tutorialId, -1);
+        return loadTutorialByStage(player, tutorialId, 0);
     }
 
     /**

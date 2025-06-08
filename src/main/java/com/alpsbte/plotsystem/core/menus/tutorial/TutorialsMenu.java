@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -38,7 +39,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -48,8 +49,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
-
-import java.sql.SQLException;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -91,23 +90,18 @@ public class TutorialsMenu extends AbstractMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set tutorial items
-        try {
-            plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), TutorialCategory.BEGINNER.getId());
-            // TutorialPlot beginnerTutorial = getPlotById(TutorialCategory.BEGINNER.getId());
-            if (plot != null) isBeginnerTutorialCompleted = plot.isCompleted();
+        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(TutorialCategory.BEGINNER.getId(), getMenuPlayer().getUniqueId().toString()).orElse(null);
+        if (plot != null) isBeginnerTutorialCompleted = plot.isComplete();
 
-            // Set beginner tutorial item
-            getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
-                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
-                    LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
-            );
+        // Set beginner tutorial item
+        getMenu().getSlot(22).setItem(getTutorialItem(TutorialCategory.BEGINNER.getId(), beginnerTutorialItemName,
+                LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER),
+                LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_BEGINNER))
+        );
 
-            // Set back item
-            if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
-                getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+        // Set back item
+        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
+            getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
     }
 
     @Override
@@ -151,7 +145,7 @@ public class TutorialsMenu extends AbstractMenu {
             if (clickType == ClickType.LEFT) {
                 // TutorialPlot plot = getPlotById(tutorialId);
                 try {
-                    if (plot == null || !plot.isCompleted()) {
+                    if (plot == null || !plot.isComplete()) {
                         getMenuPlayer().closeInventory();
                         if (!AbstractTutorial.loadTutorial(getMenuPlayer(), tutorialId)) {
                             if (AbstractTutorial.getActiveTutorial(getMenuPlayer().getUniqueId()) != null) {
@@ -176,15 +170,15 @@ public class TutorialsMenu extends AbstractMenu {
         getMenuPlayer().playSound(getMenuPlayer().getLocation(), Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 0.8f, 0.8f);
     }
 
-    private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) throws SQLException {
+    private ItemStack getTutorialItem(int tutorialId, String itemName, String title, String desc) {
         return (tutorialId != TutorialCategory.BEGINNER.getId()) ? getAdvancedTutorialItem(getMenuPlayer()) :
                 constructTutorialItem(getMenuPlayer(), tutorialId, plot, new ItemStack(Material.valueOf(itemName)), title, desc);
     }
 
-    private static ItemStack constructTutorialItem(Player player, int tutorialId, TutorialPlot plot, ItemStack itemStack, String title, String desc) throws SQLException {
+    private static ItemStack constructTutorialItem(Player player, int tutorialId, TutorialPlot plot, ItemStack itemStack, String title, String desc) {
         // Create tutorial item lore
         int highestPlotStage = plot != null ? plot.getStageID() : 0;
-        boolean isPlotCompleted = plot != null && plot.isCompleted();
+        boolean isPlotCompleted = plot != null && plot.isComplete();
         LoreBuilder loreBuilder = new LoreBuilder()
                 .addLine(text(desc, GRAY), true)
                 .emptyLine()
@@ -215,7 +209,7 @@ public class TutorialsMenu extends AbstractMenu {
     }
 
     public static ItemStack getTutorialItem(Player player) {
-        return new ItemBuilder(AlpsHeadUtils.getCustomHead(CustomHeads.WORKBENCH.getId()))
+        return new ItemBuilder(BaseItems.TUTORIAL_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.TUTORIALS), AQUA, BOLD))
                 .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.TUTORIALS), true).build())
                 .build();

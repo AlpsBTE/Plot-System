@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +28,19 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class CMD_Setup_City extends SubCommand {
 
@@ -49,8 +53,8 @@ public class CMD_Setup_City extends SubCommand {
         registerSubCommand(new CMD_Setup_City_List(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_City_Add(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_City_Remove(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_City_SetName(getBaseCommand(), this));
-        registerSubCommand(new CMD_Setup_City_SetDescription(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_City_SetServer(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_City_SetBuildTeam(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_City_SetVisible(getBaseCommand(), this));
     }
 
@@ -87,23 +91,23 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            List<CityProject> cities = CityProject.getCityProjects(false);
+            List<CityProject> cities = DataProvider.CITY_PROJECT.get(false);
             if (cities.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no City Projects registered in the database!"));
                 return;
             }
 
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + cities.size() + " City Projects registered in the database:"));
-            sender.sendMessage("§8--------------------------");
+            sender.sendMessage(text("--------------------------", DARK_GRAY));
             for (CityProject c : cities) {
-                try {
-                    sender.sendMessage(" §6> §b" + c.getID() + " (" + c.getName() + ") §f- Description: " + c.getDescription() + " - Country: " + c.getCountry().getName() + " - Visible: " + c.isVisible());
-                } catch (SQLException ex) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                    PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-                }
+                sender.sendMessage(text(" » ", DARK_GRAY)
+                        .append(text(c.getID(), AQUA))
+                        .append(text(" - Country: " + c.getCountry().getCode()
+                                + " - Server: " + c.getServerName()
+                                + " - Build Team: " + c.getBuildTeam().getName()
+                                + " - Visible: " + c.isVisible(), WHITE)));
             }
-            sender.sendMessage("§8--------------------------");
+            sender.sendMessage(text("--------------------------", DARK_GRAY));
         }
 
         @Override
@@ -134,27 +138,53 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 4) {sendInfo(sender); return;}
 
-            Country country = Country.getCountries().stream().filter(c -> c.getID() == Integer.parseInt(args[1])).findFirst().orElse(null);
-            if (country == null) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with ID " + args[1] + "!"));
+            String cityProjectId = args[1];
+            String countryCode = args[2];
+            Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(countryCode);
+            if (country.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with code " + countryCode + "!"));
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss country list> to see all countries!"));
                 return;
             }
-            String name = CMD_Setup.appendArgs(args, 2);
-            if (name.length() > 45) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project name cannot be longer than 45 characters!"));
+            String serverName = args[3];
+            if (serverName.length() > 255) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 255 characters!"));
+                return;
+            }
+            // Check if server exists
+            if (!DataProvider.SERVER.serverExists(serverName)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with Name " + serverName + "!"));
+                sendInfo(sender);
                 return;
             }
 
-            try {
-                CityProject.addCityProject(country, name);
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with name '" + name + "' in country with the ID " + args[1] + "!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            Integer buildTeamId = AlpsUtils.tryParseInt(args[4]);
+            if (buildTeamId == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build Team ID must be a number!"));
+                sendInfo(sender);
+                return;
             }
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any build team with ID " + buildTeamId + "!"));
+                sendInfo(sender);
+                return;
+            }
+
+            boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, buildTeamId, country.get().getCode(), serverName);
+            if (added) {
+                try {
+                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".name", cityProjectId);
+                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".description", "");
+                } catch (Exception e) {
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for City Project " + cityProjectId + "!").color(RED), e);
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for City Project " + cityProjectId + "!"));
+                }
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be the ID of the City & no description will be present!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
+            }
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
         }
 
         @Override
@@ -169,7 +199,7 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"Country-ID", "Name"};
+            return new String[]{"City-Project-Name", "Country-Code", "Server-Name", "Build-Team-ID"};
         }
 
         @Override
@@ -185,21 +215,20 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 1) {sendInfo(sender); return;}
+            String cityProjectId = args[1];
 
             // Check if City Project exists
-            try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any City Project with ID " + args[1] + "!"));
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss city list> to see all City Projects!"));
-                    return;
-                }
-                CityProject.removeCityProject(Integer.parseInt(args[1]));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed City Project with ID " + args[1] + "!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(cityProjectId);
+            if (cityProject.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any City Project with ID " + cityProjectId + "!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Type </pss city list> to see all City Projects!"));
+                return;
             }
+
+            boolean removed = DataProvider.CITY_PROJECT.remove(cityProjectId);
+            if (removed) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed City Project with ID " + cityProjectId + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while removing city project!"));
         }
 
         @Override
@@ -223,37 +252,39 @@ public class CMD_Setup_City extends SubCommand {
         }
     }
 
-    public static class CMD_Setup_City_SetName extends SubCommand {
-        public CMD_Setup_City_SetName(BaseCommand baseCommand, SubCommand subCommand) {
+    public static class CMD_Setup_City_SetServer extends SubCommand {
+        public CMD_Setup_City_SetServer(BaseCommand baseCommand, SubCommand subCommand) {
             super(baseCommand, subCommand);
         }
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            if (cityProject.isEmpty()) return;
 
-                String name = CMD_Setup.appendArgs(args, 2);
-                if (name.length() > 45) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project name cannot be longer than 45 characters!"));
-                    return;
-                }
-
-                CityProject.setCityProjectName(Integer.parseInt(args[1]), name);
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed name of City Project with ID " + args[1] + " to '" + name + "'!"));
-
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            String serverName = args[2];
+            if (serverName.length() > 255) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Server name cannot be longer than 255 characters!"));
+                return;
             }
+            // Check if server exists
+            if (!DataProvider.SERVER.serverExists(serverName)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with ID " + serverName + "!"));
+                sendInfo(sender);
+                return;
+            }
+
+            boolean successful = cityProject.get().setServer(serverName);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed server of City Project with ID " + args[1] + " to '" + serverName + "'!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project server!"));
         }
 
         @Override
         public String[] getNames() {
-            return new String[]{"setname"};
+            return new String[]{"setserver"};
         }
 
         @Override
@@ -263,44 +294,41 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"City-ID", "Name"};
+            return new String[]{"City-ID", "Server-Name"};
         }
 
         @Override
         public String getPermission() {
-            return "plotsystem.admin.pss.city.setname";
+            return "plotsystem.admin.pss.city.setserver";
         }
     }
 
-    public static class CMD_Setup_City_SetDescription extends SubCommand {
-        public CMD_Setup_City_SetDescription(BaseCommand baseCommand, SubCommand subCommand) {
+    public static class CMD_Setup_City_SetBuildTeam extends SubCommand {
+        public CMD_Setup_City_SetBuildTeam(BaseCommand baseCommand, SubCommand subCommand) {
             super(baseCommand, subCommand);
         }
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            if (cityProject.isEmpty()) return;
 
-                String description = CMD_Setup.appendArgs(args, 2);
-                if (description.length() > 255) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("City Project description cant be longer than 255 characters!"));
-                    return;
-                }
-                CityProject.setCityProjectDescription(Integer.parseInt(args[1]), description);
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set description of City Project with ID " + args[1] + " to '" + description + "'!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            // Check if Build Team exists
+            int buildTeamId = Integer.parseInt(args[2]);
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).isEmpty()) return;
+
+            boolean successful = cityProject.get().setBuildTeam(buildTeamId);
+
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set Build Team of City Project with ID " + args[1] + " to " + buildTeamId + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project build team!"));
         }
 
         @Override
         public String[] getNames() {
-            return new String[]{"setdescription"};
+            return new String[]{"setbuildteam"};
         }
 
         @Override
@@ -310,12 +338,12 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public String[] getParameter() {
-            return new String[]{"City-ID", "Description"};
+            return new String[]{"City-ID", "Build-Team-ID"};
         }
 
         @Override
         public String getPermission() {
-            return "plotsystem.admin.pss.city.setdescription";
+            return "plotsystem.admin.pss.city.setbuildteam";
         }
     }
 
@@ -326,19 +354,18 @@ public class CMD_Setup_City extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
 
             // Check if City Project exits
-            try {
-                if (CityProject.getCityProjects(false).stream().noneMatch(c -> c.getID() == Integer.parseInt(args[1]))) return;
-                if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) return;
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            if (cityProject.isEmpty()) return;
+            if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) return;
 
-                CityProject.setCityProjectVisibility(Integer.parseInt(args[1]), args[2].equalsIgnoreCase("true"));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set visibility of City Project with ID " + args[1] + " to " + args[2].toUpperCase() + "!"));
-            } catch (SQLException ex) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            boolean isVisible = args[2].equalsIgnoreCase("true");
+            boolean successful = cityProject.get().setVisible(isVisible);
+
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set visibility of City Project with ID " + args[1] + " to " + args[2].toUpperCase() + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project visibility!"));
         }
 
         @Override
