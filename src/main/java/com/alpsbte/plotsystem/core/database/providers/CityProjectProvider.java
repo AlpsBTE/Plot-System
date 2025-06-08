@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,9 @@ public class CityProjectProvider {
             stmt.setInt(2, buildTeamId);
             stmt.setString(3, countryCode);
             stmt.setString(4, serverName);
-            return stmt.executeUpdate() > 0;
+            boolean result = stmt.executeUpdate() > 0;
+            if (result) cachedCityProjects.add(new CityProject(id, countryCode, serverName, true, buildTeamId));
+            return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }

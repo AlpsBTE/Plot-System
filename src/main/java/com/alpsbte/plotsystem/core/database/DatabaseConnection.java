@@ -327,7 +327,7 @@ public class DatabaseConnection {
                             ");",
 
                     // Review
-                    "CREATE TABLE IF NOT EXISTS plotsystem_v2.plot_review" +
+                    "CREATE TABLE IF NOT EXISTS plot_review" +
                             "(" +
                             "    review_id   INT          NOT NULL AUTO_INCREMENT," +
                             "    plot_id     INT          NOT NULL," +
@@ -337,7 +337,7 @@ public class DatabaseConnection {
                             "    reviewed_by VARCHAR(36)  NOT NULL," +
                             "    review_date DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                             "    PRIMARY KEY (review_id)," +
-                            "    FOREIGN KEY (plot_id) REFERENCES plotsystem_v2.plot (plot_id)" +
+                            "    FOREIGN KEY (plot_id) REFERENCES plot (plot_id)" +
                             "        ON DELETE CASCADE ON UPDATE CASCADE" +
                             ");",
 
