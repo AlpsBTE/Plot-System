@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -135,7 +136,7 @@ public abstract class AbstractPlotGenerator {
             this.onComplete(exception != null, false);
 
             if (exception != null) {
-                PlotUtils.Actions.abandonPlot(plot);
+                PlotUtils.Actions.abandonPlot(plot, DiscordUtil.AbandonType.SYSTEM);
                 onException(exception);
             }
         }

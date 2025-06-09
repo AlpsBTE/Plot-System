@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.review;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +89,7 @@ public class PlotReview {
     public boolean updateFeedback(String feedback) {
         if (DataProvider.REVIEW.updateFeedback(reviewId, feedback)) {
             this.feedback = feedback;
+            DiscordUtil.getOpt(this.plot.getID()).ifPresent(event -> event.onPlotFeedback(feedback));
             return true;
         }
         return false;
@@ -111,6 +113,7 @@ public class PlotReview {
         plot.setPasted(false);
 
         DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
+        DiscordUtil.getOpt(this.plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotUndoReview);
         return DataProvider.REVIEW.removeReview(reviewId);
     }
 }
