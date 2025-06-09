@@ -4,7 +4,7 @@ api-version: "1.21"
 name: Plot-System
 author: R3tuxn & Cinnazeyy
 softdepend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit,
-              DecentHolograms, WorldGuard, WorldGuardExtraFlags, HeadDatabase, ProtocolLib, ParticleNativeAPI ]
+              DecentHolograms, WorldGuard, WorldGuardExtraFlags, HeadDatabase, ProtocolLib, ParticleNativeAPI, DiscordPlotSystem ]
 
 commands:
   cancelchat:

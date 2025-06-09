@@ -42,6 +42,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
+import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -61,6 +62,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -208,6 +210,12 @@ public class PlotSystem extends JavaPlugin {
             Bukkit.getScheduler().runTaskTimerAsynchronously(FancyNpcsPlugin.get().getPlugin(), new TutorialNPCTurnTracker(), 0, 1L);
         }
 
+        // Register discord Integration
+        org.bukkit.plugin.Plugin discordPlugin = PlotSystem.DependencyManager.getDiscordPlotSystemPlugin();
+        if(discordPlugin != null) {
+            DiscordUtil.init(discordPlugin);
+        }
+
         pluginEnabled = true;
         Bukkit.getConsoleSender().sendMessage(empty());
         Bukkit.getConsoleSender().sendMessage(text("Enabled Plot-System plugin.", DARK_GREEN));
@@ -335,6 +343,10 @@ public class PlotSystem extends JavaPlugin {
             return plugin.getServer().getPluginManager().isPluginEnabled("WorldGuardExtraFlags");
         }
 
+        public static @Nullable org.bukkit.plugin.Plugin getDiscordPlotSystemPlugin() {
+            return plugin.getServer().getPluginManager().getPlugin("DiscordPlotSystem");
+        }
+
         /**
          * @param worldName Name of the world
          * @return Config path for the world
@@ -375,7 +387,9 @@ public class PlotSystem extends JavaPlugin {
         /**
          * @return Protocol Lib Instance
          */
-        public static ProtocolManager getProtocolManager() {return ProtocolLibrary.getProtocolManager();}
+        public static ProtocolManager getProtocolManager() {
+            return ProtocolLibrary.getProtocolManager();
+        }
     }
 
     public static class UpdateChecker {
