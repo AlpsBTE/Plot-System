@@ -26,27 +26,30 @@ package com.alpsbte.plotsystem.utils.io;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.Utils.ChatUtils;
-import li.cinnazeyy.langlibs.core.Language;
+import li.cinnazeyy.langlibs.core.LangLibAPI;
+import li.cinnazeyy.langlibs.core.language.Language;
 import li.cinnazeyy.langlibs.core.file.LanguageFile;
-import li.cinnazeyy.langlibs.core.language.LangLibAPI;
 import li.cinnazeyy.langlibs.core.language.LanguageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public class LangUtil extends LanguageUtil {
     private static LangUtil langUtilInstance;
 
     public static void init() {
         if (langUtilInstance != null) return;
-        LangLibAPI.register(PlotSystem.getPlugin(), new LanguageFile[]{
-                new LanguageFile(Language.en_GB, 2.2),
-                new LanguageFile(Language.de_DE, 2.2, "de_AT", "de_CH"),
-                new LanguageFile(Language.fr_FR, 2.3, "fr_CA"),
-                new LanguageFile(Language.pt_PT, 2.2, "pt_BR"),
-                new LanguageFile(Language.ko_KR, 2.2),
-                new LanguageFile(Language.ru_RU, 2.2, "ba_RU", "tt_RU"),
-                new LanguageFile(Language.zh_CN, 2.2),
-                new LanguageFile(Language.zh_TW, 2.3, "zh_HK"),
+        Plugin plugin = PlotSystem.getPlugin();
+        LangLibAPI.register(plugin, new LanguageFile[]{
+                new LanguageFile(plugin, 2.2, Language.en_GB),
+                new LanguageFile(plugin, 2.2, Language.de_DE, "de_AT", "de_CH"),
+                new LanguageFile(plugin, 2.3, Language.fr_FR, "fr_CA"),
+                new LanguageFile(plugin, 2.2, Language.pt_PT, "pt_BR"),
+                new LanguageFile(plugin, 2.2, Language.ko_KR),
+                new LanguageFile(plugin, 2.2, Language.ru_RU, "ba_RU", "tt_RU"),
+                new LanguageFile(plugin, 2.2, Language.zh_CN),
+                new LanguageFile(plugin, 2.3, Language.zh_TW, "zh_HK"),
+                new LanguageFile(plugin, 1.0, Language.he_IL),
         });
         langUtilInstance = new LangUtil();
     }

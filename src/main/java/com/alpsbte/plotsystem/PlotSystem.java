@@ -85,7 +85,6 @@ public class PlotSystem extends JavaPlugin {
     public void onEnable() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog"); // Disable Logging
         YamlFileFactory.registerPlugin(this);
-        li.cinnazeyy.langlibs.core.file.YamlFileFactory.registerPlugin(this);
         plugin = this;
         Component successPrefix = text("[", DARK_GRAY).append(text("✔", DARK_GREEN)).append(text("]", DARK_GRAY)).append(text(" ", GRAY));
         Component errorPrefix = text("[", DARK_GRAY).append(text("X", RED)).append(text("]", DARK_GRAY)).append(text(" ", GRAY));
@@ -123,9 +122,7 @@ public class PlotSystem extends JavaPlugin {
             LangUtil.init();
             Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully loaded language files.")));
         } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not load language file.")));
-            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
-
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not load language file."), ex);
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
