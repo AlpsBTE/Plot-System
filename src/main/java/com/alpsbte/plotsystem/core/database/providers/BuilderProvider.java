@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,8 @@ import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,7 +104,7 @@ public class BuilderProvider {
         return false;
     }
 
-    public boolean setName(UUID uuid, String name) {
+    public boolean setName(@NotNull UUID uuid, String name) {
         String query = "UPDATE builder SET name = ? WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -116,7 +118,7 @@ public class BuilderProvider {
         return false;
     }
 
-    public boolean addScore(UUID uuid, int score) {
+    public boolean addScore(@NotNull UUID uuid, int score) {
         String query = "UPDATE builder b SET score = (b.score + ?) WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -130,7 +132,7 @@ public class BuilderProvider {
         return false;
     }
 
-    public boolean setSlot(UUID uuid, int plotID, Slot slot) {
+    public boolean setSlot(UUID uuid, int plotID, @NotNull Slot slot) {
         String query = "UPDATE builder b SET " + slot.name().toLowerCase() + "_slot = " +
                 (plotID > 0 ? "?" : "DEFAULT(first_slot)") + " WHERE uuid = ?;";
 
@@ -146,14 +148,13 @@ public class BuilderProvider {
         return false;
     }
 
-    public boolean setPlotType(UUID uuid, int plotTypeId) {
-        String query = "UPDATE builder b SET plot_type = " +
-                (plotTypeId > 0 ? "?" : "DEFAULT(plot_type)") + " WHERE uuid = ?;";
+    public boolean setPlotType(@NotNull UUID uuid, int plotTypeId) {
+        String query = "UPDATE builder b SET plot_type = ? WHERE uuid = ?;";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            if (plotTypeId > 0) stmt.setInt(1, plotTypeId);
-            stmt.setString(plotTypeId > 0 ? 2 : 1, uuid.toString());
+            stmt.setInt(1, plotTypeId);
+            stmt.setString(2, uuid.toString());
             stmt.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -162,7 +163,7 @@ public class BuilderProvider {
         return false;
     }
 
-    public int getCompletedBuildsCount(UUID uuid) {
+    public int getCompletedBuildsCount(@NotNull UUID uuid) {
         String query = "SELECT COUNT(p.plot_id) AS completed_plots FROM plot p INNER JOIN builder_is_plot_member " +
                 "bipm ON p.plot_id = bipm.plot_id WHERE p.status = 'completed' AND (p.owner_uuid = ? OR bipm.uuid = ?);";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -179,7 +180,7 @@ public class BuilderProvider {
         return 0;
     }
 
-    public Slot getFreeSlot(UUID uuid) {
+    public Slot getFreeSlot(@NotNull UUID uuid) {
         String query = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -197,7 +198,7 @@ public class BuilderProvider {
         return null;
     }
 
-    public Slot getSlot(UUID uuid, int plotId) {
+    public Slot getSlot(@NotNull UUID uuid, int plotId) {
         String query = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -216,7 +217,7 @@ public class BuilderProvider {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean canReviewPlot(UUID uuid, Plot plot) {
+    public boolean canReviewPlot(@NotNull UUID uuid, Plot plot) {
         // TODO: cache
         String query = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -237,7 +238,7 @@ public class BuilderProvider {
         return false;
     }
 
-    public boolean isAnyReviewer(UUID uuid) {
+    public boolean isAnyReviewer(@NotNull UUID uuid) {
         // TODO: cache
         String query = "SELECT uuid FROM build_team_has_reviewer WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -304,7 +305,8 @@ public class BuilderProvider {
      *               (e.g., daily, weekly, monthly, yearly).
      * @return the constructed SQL query as a {@code String}.
      */
-    private static String getLeaderboardQuery(LeaderboardTimeframe sortBy) {
+    @Contract(pure = true)
+    private static @NotNull String getLeaderboardQuery(@NotNull LeaderboardTimeframe sortBy) {
         String minimumDate = switch (sortBy) {
             case DAILY -> "(NOW() - INTERVAL 1 DAY)";
             case WEEKLY -> "(NOW() - INTERVAL 1 WEEK)";

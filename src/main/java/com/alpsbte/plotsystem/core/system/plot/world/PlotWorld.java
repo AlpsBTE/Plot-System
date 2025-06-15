@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
@@ -117,8 +118,7 @@ public class PlotWorld implements IWorld {
                     }
                 }
 
-                Bukkit.unloadWorld(getBukkitWorld(), true);
-                return !isWorldLoaded();
+                return Bukkit.unloadWorld(getBukkitWorld(), true);
             }
             return true;
         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not unload world " + worldName + " because it is not generated!"));
@@ -206,7 +206,7 @@ public class PlotWorld implements IWorld {
         return mvCore.getMVWorldManager().getMVWorld(worldName) != null || mvCore.getMVWorldManager().getUnloadedWorlds().contains(worldName);
     }
 
-    private ProtectedRegion getRegion(String regionName) {
+    private @Nullable ProtectedRegion getRegion(String regionName) {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         if (loadWorld()) {
             RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
@@ -226,7 +226,7 @@ public class PlotWorld implements IWorld {
      * @param worldName - the name of the world
      * @return - true if the world is a plot world
      */
-    public static boolean isOnePlotWorld(String worldName) {
+    public static boolean isOnePlotWorld(@NotNull String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("p-") || worldName.toLowerCase(Locale.ROOT).startsWith("t-");
     }
 
@@ -234,7 +234,7 @@ public class PlotWorld implements IWorld {
      * @param worldName - the name of the world
      * @return - true if the world is a city plot world
      */
-    public static boolean isCityPlotWorld(String worldName) {
+    public static boolean isCityPlotWorld(@NotNull String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("c-");
     }
 
@@ -243,12 +243,12 @@ public class PlotWorld implements IWorld {
      * It won't return the CityPlotWorld class because there is no use case without a plot.
      *
      * @param worldName - name of the world
-     * @param <T>       - OnePlotWorld or PlotWorld
      * @return - plot world
      */
-    public static <T extends PlotWorld> T getPlotWorldByName(String worldName) {
+    public static @Nullable PlotWorld getPlotWorldByName(String worldName) {
         if (isOnePlotWorld(worldName) || isCityPlotWorld(worldName)) {
-            int id = Integer.parseInt(worldName.substring(2));
+            Integer id = AlpsUtils.tryParseInt(worldName.substring(2));
+            if (id == null) return new PlotWorld(worldName, null);
             AbstractPlot plot = worldName.toLowerCase().startsWith("t-") ? DataProvider.TUTORIAL_PLOT.getById(id).orElse(null) : DataProvider.PLOT.getPlotById(id);
             return plot == null ? null : plot.getWorld();
         }
