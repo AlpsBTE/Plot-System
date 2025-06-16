@@ -11,7 +11,6 @@
 lang:
   name: "简体中文(中国大陆)"
   head-id: "23238"
-
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
@@ -69,6 +68,7 @@ difficulty:
 menu-title:
   close: "关闭"
   back: "返回"
+  continue: 'Continue'
   next-page: "下一页"
   previous-page: "上一页"
   error: "错误"
@@ -157,6 +157,11 @@ review:
   rejected: "驳回"
   feedback: "回馈"
   reviewer: "审核员"
+  no-feedback: "No feedback"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: "Toggle points"
+  total-points: "Total points"
   player-language: "Player Language"
   criteria:
     accuracy: "准确性"
@@ -172,6 +177,11 @@ note:
   wont-be-able-continue-building: "你将无法继续在此建地上进行建设！ "
   score-will-be-split: "审核时积分将分配给所有成员！ "
   player-has-to-be-online: "玩家必须上线！ "
+  optional: "Optional"
+  required: "Required"
+  criteria-fulfilled: "Fulfilled"
+  criteria-not-fulfilled: "Not fulfilled"
+  legacy: "LEGACY"
   action:
     read: 'Read'
     read-more: 'Read More'
@@ -195,6 +205,7 @@ note:
     click-to-play-with-friends: "§7想和你的朋友一起玩吗？ §6点击此区..."
     tutorial-show-stages: 'Show Stages'
     click-to-open-plots-menu: "点击此区 显示你的建地..."
+    click-to-toggle: "Click to toggle..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -219,6 +230,10 @@ message:
     removed-plot-member: "§a从建地 §6#{1}§a 移除 §6{0}§a！ "
     left-plot: "§a剩余建地 §6#{0}§a！ "
     plot-will-get-abandoned-warning: "§c§l警告： §c此建地将自动废弃！ "
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "§a储存建地..."
     creating-plot: "§a创建新建地..."
     created-new-plot: "§a创建新建地§a 为 §6{0}§a！ "
@@ -244,6 +259,8 @@ message:
     cannot-undo-review: "你无法撤回你自己未审核过的审核！ "
     cannot-send-feedback: "你无法发送你自己未审核过的回馈！ "
     cannot-review-own-plot: "你无法审核你所有的建地！ "
+    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
+    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
     player-has-no-permissions: "你没有权限做这个！ "
     player-has-no-invitations: "你没有受到邀请！ "
     player-is-not-allowed: "你不被允许做这个！ "
@@ -266,6 +283,7 @@ message:
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "Daily"
@@ -408,5 +426,24 @@ database:
       name: 'Medium'
     hard:
       name: 'Hard'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
+
 # NOTE: Do not change
 config-version: 2.5

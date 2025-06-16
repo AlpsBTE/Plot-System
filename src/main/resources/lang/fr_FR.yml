@@ -68,6 +68,7 @@ difficulty:
 menu-title:
   close: 'Fermer'
   back: 'Retour'
+  continue: 'Continue'
   next-page: 'Page Suivante'
   previous-page: 'Page Précédente'
   error: 'Erreur'
@@ -157,6 +158,11 @@ review:
   feedback: "Commentaires"
   reviewer: "Relecteur"
   player-language: "Langage du joueur"
+  no-feedback: "No feedback"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: "Toggle points"
+  total-points: "Total points"
   criteria:
     accuracy: "Précision"
     accuracy-desc: "Quelle est la précision du bâtiment?%newline%%newline%- Ressemble à RL%newline%- Contours corrects%newline%- Hauteur correcte%newline%- Est terminé"
@@ -171,6 +177,11 @@ note:
   wont-be-able-continue-building: "Vous ne pourrez plus continuer à construire sur ce terrain!"
   score-will-be-split: "Le score sera partagé entre tous les membres lors de la révision!"
   player-has-to-be-online: "Le joueur doit être en ligne!"
+  optional: "Optional"
+  required: "Required"
+  criteria-fulfilled: "Fulfilled"
+  criteria-not-fulfilled: "Not fulfilled"
+  legacy: "LEGACY"
   action:
     read: 'Lire'
     read-more: 'En savoir plus'
@@ -194,6 +205,7 @@ note:
     click-to-play-with-friends: "§7Vous voulez jouer avec vos amis? §6Cliquez ici..."
     tutorial-show-stages: 'Montrer les étapes'
     click-to-open-plots-menu: 'Cliquez pour ouvrir le menu des parcelles...'
+    click-to-toggle: "Click to toggle..."
 #-----------------------------------------------------
 #| Messages
 #-----------------------------------------------------
@@ -218,6 +230,10 @@ message:
     removed-plot-member: "§aSupprimé §6{0}§a du tracé §6#{1}§a!"
     left-plot: "§aTracé de gauche §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lATTENTION: §cCette parcelle sera automatiquement abandonnée!"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "§aEnregistrement de l'intrigue..."
     creating-plot: "§aCréation d'un nouveau tracé..."
     created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
@@ -243,6 +259,8 @@ message:
     cannot-undo-review: "Vous ne pouvez pas annuler une révision que vous n'avez pas révisée vous-même!"
     cannot-send-feedback: "Vous ne pouvez pas envoyer de commentaires à un tracé que vous n'avez pas révisé vous-même!"
     cannot-review-own-plot: "Vous ne pouvez pas réviser votre propre intrigue!"
+    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
+    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
     player-has-no-permissions: "Vous n'avez pas la permission de faire ça!"
     player-has-no-invitations: "Vous n'avez aucune invitation!"
     player-is-not-allowed: "Vous n'êtes pas autorisé à faire ça!"
@@ -265,6 +283,7 @@ message:
     chat-input-expired: "La saisie du chat a expiré."
     tutorial-disabled: 'Les tutoriels sont désactivés sur ce serveur.'
     tutorial-already-running: "Vous avez déjà un tutoriel en cours ! Terminez-le avant d'en commencer un nouveau."
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "Quotidien"
@@ -407,5 +426,24 @@ database:
       name: 'Medium'
     hard:
       name: 'Hard'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
+
 #NOTE: Do not change
 config-version: 2.5

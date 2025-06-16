@@ -158,6 +158,11 @@ review:
   feedback: "Feedback"
   reviewer: "Reviewer"
   player-language: "Spielersprache"
+  no-feedback: "No feedback"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: "Toggle points"
+  total-points: "Total points"
   criteria:
     accuracy: "Genauigkeit"
     accuracy-desc: "Wie akkurat ist das Gebäude?%newline%%newline%- Sieht aus wie in RL%newline%- Korrekte Umrisse%newline%- Korrekte Höhen%newline%- Ist vollständig"
@@ -172,6 +177,11 @@ note:
   wont-be-able-continue-building: "Du wirst auf diesem Plot nicht weiterbauen können!"
   score-will-be-split: "Die Punkte werden bei der Bewertung auf alle Mitglieder aufgeteilt!"
   player-has-to-be-online: "Spieler muss online sein!"
+  optional: "Optional"
+  required: "Required"
+  criteria-fulfilled: "Fulfilled"
+  criteria-not-fulfilled: "Not fulfilled"
+  legacy: "LEGACY"
   action:
     read: 'Gelesen'
     read-more: 'Mehr lesen'
@@ -195,6 +205,7 @@ note:
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
     tutorial-show-stages: 'Stages Anzeigen'
     click-to-open-plots-menu: 'Klicke hier, um das Plot Menü zu öffnen...'
+    click-to-toggle: "Click to toggle..."
 #-----------------------------------------------------
 #| Messages
 #-----------------------------------------------------
@@ -219,6 +230,10 @@ message:
     removed-plot-member: "§a§6{0}§a wurde vom Plot entfernt §6#{1}§a!"
     left-plot: "§aVerlasse Plot §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lWARNING: §cDieser Plot wird automatisch aufgelassen werden!"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "§aSpeichere Plot..."
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
@@ -244,6 +259,8 @@ message:
     cannot-undo-review: "Du kannst eine Bewertung nicht rückgängig machen, wenn du sie nicht selbst erstellt hast!"
     cannot-send-feedback: "Du kannst auf einen Plot kein Feedback geben, wenn du ihn nicht selbst bewertet hast!"
     cannot-review-own-plot: "Du kannst deine eigenen Plots nicht bewerten!"
+    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
+    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
     player-has-no-permissions: "Du hast keine Berechtigung dafür!"
     player-has-no-invitations: "Du hast keine offenen Einladungen!"
     player-is-not-allowed: "Du bist dazu nicht berechtigt!"
@@ -266,6 +283,7 @@ message:
     chat-input-expired: "Die Eingabe ist abgelaufen."
     tutorial-disabled: 'Tutorials sind auf diesem Server deaktiviert.'
     tutorial-already-running: "Du hast bereits ein Tutorial am Laufen! Schließe dieses ab, bevor du ein neues beginnst."
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "Heute"
@@ -408,5 +426,24 @@ database:
       name: 'Medium'
     hard:
       name: 'Hard'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
+
 #NOTE: Do not change
 config-version: 2.5
