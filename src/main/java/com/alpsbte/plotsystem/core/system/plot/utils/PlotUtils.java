@@ -336,10 +336,11 @@ public final class PlotUtils {
             if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
 
             // Determine if the current time is within the notification window.
-            // Run within a ±75-minute window around 16:00 local time.
+            // Run within a ±60-minute window around 16:00 local time.
             // TODO: Maybe a config option? the #startUnfinishedPlotReminderTimer is too frequent to be a discord ping
+            int minuteWindow = 60;
             long minutesDiff = Math.abs(ChronoUnit.MINUTES.between(LocalTime.now(), LocalTime.of(16, 0)));
-            boolean inNotificationWindow = minutesDiff <= 75;
+            boolean inNotificationWindow = minutesDiff < (minuteWindow / 2);
 
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
