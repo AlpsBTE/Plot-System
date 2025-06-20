@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.enums.Category;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.FTPManager;
@@ -45,13 +46,16 @@ import static net.kyori.adventure.text.Component.text;
 
 public class Review {
     private final int reviewID;
+    private final Integer plotID;
 
     public Review(int reviewID) {
         this.reviewID = reviewID;
+        this.plotID = null;
     }
 
     public Review(int plotID, UUID reviewer, String rating) throws SQLException {
         this.reviewID = DatabaseConnection.getTableID("plotsystem_reviews");
+        this.plotID = plotID;
 
         DatabaseConnection.createStatement("INSERT INTO plotsystem_reviews (id, reviewer_uuid, rating, review_date, feedback) VALUES (?, ?, ?, ?, ?)")
                 .setValue(this.reviewID)
@@ -173,6 +177,9 @@ public class Review {
     public void setFeedback(String feedback) throws SQLException {
         DatabaseConnection.createStatement("UPDATE plotsystem_reviews SET feedback = ? WHERE id = ?")
                 .setValue(feedback).setValue(this.reviewID).executeUpdate();
+
+        DiscordUtil.getOpt(this.plotID == null? this.getPlotID() : this.plotID)
+                .ifPresent(event -> event.onPlotFeedback(feedback));
     }
 
     public void setFeedbackSent(boolean isSent) throws SQLException {

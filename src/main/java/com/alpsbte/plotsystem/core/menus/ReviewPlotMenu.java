@@ -32,6 +32,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.chat.PlayerFeedbackChatInput;
@@ -225,6 +226,8 @@ public class ReviewPlotMenu extends AbstractMenu {
                         plot.getReview().setFeedback("No Feedback");
                         plot.getPlotOwner().addCompletedBuild(1);
 
+                        DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotApprove);
+
                         // Remove Plot from Owner
                         plot.getPlotOwner().removePlot(plot.getSlot());
 
@@ -271,6 +274,8 @@ public class ReviewPlotMenu extends AbstractMenu {
                             }
                             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), sb.toString()));
                         }
+
+                        DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotReject);
 
                         PlotUtils.Actions.undoSubmit(plot);
                     }

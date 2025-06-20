@@ -29,7 +29,6 @@ import asia.buildtheearth.asean.discord.plotsystem.api.PlotCreateData;
 import asia.buildtheearth.asean.discord.plotsystem.api.PlotCreateProvider;
 import asia.buildtheearth.asean.discord.plotsystem.api.events.*;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -41,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,7 +57,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
  *
  * <p>Submitting a plot: </p>
  * <blockquote>{@snippet :
- * AbstractPlot plot = DataProvider.PLOT.getPlotById(1);
+ * AbstractPlot plot = new Plot(1);
  * DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotSubmit);
  * }</blockquote>
  *
@@ -170,31 +170,31 @@ public class DiscordUtil {
         public @Nullable PlotCreateData getData(AbstractPlot plot) {
             if(plot == null) return null;
 
-            CityProject cityProject = ((Plot) plot).getCityProject();
-
-            if(!cityProject.isVisible()) return null;
-
-            // GeoCoordinate
-            double[] geoCoordinates = null;
             try {
-                BlockVector3 mcCoordinates = plot.getCoordinates();
+                CityProject cityProject = ((Plot) plot).getCity();
 
-                geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
-            } catch (IOException | OutOfProjectionBoundsException ignored) { }
+                if(!cityProject.isVisible()) return null;
 
-            int plotID = plot.getID();
+                // GeoCoordinate
+                double[] geoCoordinates = null;
+                try {
+                    BlockVector3 mcCoordinates = plot.getCoordinates();
+                    geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
+                }
+                catch (IOException | OutOfProjectionBoundsException ignored) { }
 
-            UUID ownerUUID = plot.getPlotOwner().getUUID();
+                int plotID = plot.getID();
 
-            String cityProjectID = cityProject.getID();
+                UUID ownerUUID = plot.getPlotOwner().getUUID();
 
-            String countryCode = cityProject.getCountry().getCode();
+                String cityProjectID = cityProject.getName();
 
-            try {
+                String countryCode = cityProject.getCountry().getName();
+
                 PlotCreateData.PlotStatus status = PlotCreateData.prepareStatus(plot.getStatus().name());
                 return new PlotCreateData(plotID, ownerUUID.toString(), status, cityProjectID, countryCode, geoCoordinates);
             }
-            catch (IllegalArgumentException ignored) {
+            catch (IllegalArgumentException | SQLException ignored) {
                 return null;
             }
         }
@@ -209,7 +209,7 @@ public class DiscordUtil {
 
         @Override
         public PlotCreateData getData(int plotID) {
-            return this.getData(DataProvider.PLOT.getPlotById(plotID));
+            return this.getData(new Plot(plotID));
         }
     }
 }

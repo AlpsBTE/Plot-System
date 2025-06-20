@@ -32,6 +32,8 @@ public abstract class ConfigPaths {
     public static final String ENABLE_SCORE_REQUIREMENT = "enable-score-requirement";
     public static final String DEV_MODE = "dev-mode";
     public static final String INACTIVITY_INTERVAL = "inactivity-interval";
+    public static final String INACTIVITY_NOTIFICATION_TIME = "inactivity-notification-time";
+    public static final String INACTIVITY_NOTIFICATION_DAYS = "inactivity-notification-days";
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
 
     private static final String SYNC_FTP_FILES = "sync-ftp-files.";
