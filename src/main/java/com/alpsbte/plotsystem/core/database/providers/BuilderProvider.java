@@ -26,7 +26,6 @@ package com.alpsbte.plotsystem.core.database.providers;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.holograms.leaderboards.LeaderboardTimeframe;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -42,10 +41,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class BuilderProvider {
-    public static final Map<UUID, Builder> builders = new HashMap<>();
+    protected static final Map<UUID, Builder> BUILDERS = new HashMap<>();
 
     public Builder getBuilderByUUID(UUID uuid) {
-        if (builders.containsKey(uuid)) return builders.get(uuid);
+        if (BUILDERS.containsKey(uuid)) return BUILDERS.get(uuid);
 
         String query = "SELECT name, score, first_slot, second_slot, third_slot, plot_type FROM builder WHERE uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -82,7 +81,7 @@ public class BuilderProvider {
     }
 
     public boolean addBuilderIfNotExists(UUID uuid, String name) {
-        if (builders.containsKey(uuid)) return true;
+        if (BUILDERS.containsKey(uuid)) return true;
 
         String selectQuery = "SELECT 1 FROM builder WHERE uuid = ?;";
         String insertQuery = "INSERT INTO builder (uuid, name, plot_type) VALUES (?, ?, 1);";
@@ -218,40 +217,7 @@ public class BuilderProvider {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canReviewPlot(@NotNull UUID uuid, Plot plot) {
-        // TODO: cache
-        String query = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, uuid.toString());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Optional<BuildTeam> team = DataProvider.BUILD_TEAM.getBuildTeam(rs.getInt(1));
-                    if (team.isEmpty()) continue;
-                    if (team.get().getCityProjects().stream().anyMatch(c -> Objects.equals(c.getID(), plot.getCityProject().getID())))
-                        return true;
-                }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
-    }
-
-    public boolean isAnyReviewer(@NotNull UUID uuid) {
-        // TODO: cache
-        String query = "SELECT uuid FROM build_team_has_reviewer WHERE uuid = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, uuid.toString());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) return true;
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        return DataProvider.BUILD_TEAM.getReviewerCities(uuid).stream().anyMatch(c -> c.getID().equals(plot.getCityProject().getID()));
     }
 
     public List<Builder> getReviewersByBuildTeam(int buildTeamId) {
@@ -278,21 +244,21 @@ public class BuilderProvider {
      * Retrieves the leaderboard entries for all players within a specified timeframe, including their names and scores.
      *
      * @param sortBy the timeframe used to filter leaderboard data (e.g., daily, weekly, etc.).
-     * @return provides a map of player names and their scores, or null if no data is found.
+     * @return provides a map of player names and their scores, or an empty map if no data is found.
      */
-    public LinkedHashMap<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
+    public Map<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
+        LinkedHashMap<String, Integer> playerEntries = new LinkedHashMap<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(getLeaderboardQuery(sortBy))) {
 
             try (ResultSet rs = stmt.executeQuery()) {
-                LinkedHashMap<String, Integer> playerEntries = new LinkedHashMap<>();
                 while (rs.next()) playerEntries.put(rs.getString(1), rs.getInt(2));
                 return playerEntries;
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
-        return null;
+        return playerEntries;
     }
 
     /**

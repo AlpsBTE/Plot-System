@@ -310,8 +310,8 @@ public class EventListener implements Listener {
         PlotUtils.startUnfinishedPlotReminderTimer(player);
 
         // Informing reviewer about new reviews
-        if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {
-            List<CityProject> reviewerCityProjects = DataProvider.BUILD_TEAM.getReviewerCities(builder);
+        if (player.hasPermission("plotsystem.admin") || DataProvider.BUILD_TEAM.isAnyReviewer(builder.getUUID())) {
+            List<CityProject> reviewerCityProjects = DataProvider.BUILD_TEAM.getReviewerCities(builder.getUUID());
             List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(reviewerCityProjects, Status.unreviewed);
 
             if (!unreviewedPlots.isEmpty()) {

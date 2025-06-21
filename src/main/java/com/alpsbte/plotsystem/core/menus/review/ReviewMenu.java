@@ -60,7 +60,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
-        cityProjects = DataProvider.BUILD_TEAM.getReviewerCities(Builder.byUUID(getMenuPlayer().getUniqueId()));
+        cityProjects = DataProvider.BUILD_TEAM.getReviewerCities(getMenuPlayer().getUniqueId());
         plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unreviewed));
         plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unfinished));
         return plots;

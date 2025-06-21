@@ -99,13 +99,11 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
             lines.add(new HologramRegister.LeaderboardPositionLine(index + 1, null, 0));
         }
 
-        LinkedHashMap<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
-        if (playerRankings != null) {
-            int i = 0;
-            for (Map.Entry<String, Integer> entry : playerRankings.entrySet()) {
-                lines.set(i, new HologramRegister.LeaderboardPositionLine(i + 1, entry.getKey(), entry.getValue()));
-                i++;
-            }
+        Map<String, Integer> playerRankings = DataProvider.BUILDER.getLeaderboardEntries(sortByLeaderboard);
+        int i = 0;
+        for (Map.Entry<String, Integer> entry : playerRankings.entrySet()) {
+            lines.set(i, new HologramRegister.LeaderboardPositionLine(i + 1, entry.getKey(), entry.getValue()));
+            i++;
         }
         return lines;
     }

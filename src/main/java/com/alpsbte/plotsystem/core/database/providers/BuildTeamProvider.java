@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -178,9 +179,16 @@ public class BuildTeamProvider {
         return false;
     }
 
-    public List<CityProject> getReviewerCities(Builder builder) {
+    public boolean isAnyReviewer(@NotNull UUID reviewerUUID) {
+        return BUILD_TEAMS.stream()
+                .anyMatch(bt -> bt.getReviewers().stream()
+                        .anyMatch(r -> r.getUUID().equals(reviewerUUID))
+                );
+    }
+
+    public List<CityProject> getReviewerCities(UUID reviewerUUID) {
         List<BuildTeam> buildTeams = BUILD_TEAMS.stream().filter(b
-                -> b.getReviewers().stream().anyMatch(r -> r.getUUID().equals(builder.getUUID()))).toList();
+                -> b.getReviewers().stream().anyMatch(r -> r.getUUID().equals(reviewerUUID))).toList();
         List<CityProject> cities = new ArrayList<>();
 
         for (BuildTeam buildTeam : buildTeams) {
