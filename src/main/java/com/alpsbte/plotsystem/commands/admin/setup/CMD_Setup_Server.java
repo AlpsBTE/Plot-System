@@ -135,8 +135,9 @@ public class CMD_Setup_Server extends SubCommand {
             }
 
             int buildTeamId = AlpsUtils.tryParseInt(args[2]);
-            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId) == null) {
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team with id " + buildTeamId + " could not be found!"));
+                return;
             }
 
             boolean successful = DataProvider.SERVER.addServer(serverName, buildTeamId);

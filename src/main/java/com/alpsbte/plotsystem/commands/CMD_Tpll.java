@@ -122,7 +122,7 @@ public class CMD_Tpll extends BaseCommand {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     int highestY = getHighestY(playerWorld, plotCoordinates);
 
-                    player.teleport(new Location(playerWorld, plotCoordinates[0], highestY + 1, plotCoordinates[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
+                    player.teleport(new Location(playerWorld, plotCoordinates[0], highestY + 1f, plotCoordinates[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
 
                     DecimalFormat df = new DecimalFormat("##.#####");
                     df.setRoundingMode(RoundingMode.FLOOR);

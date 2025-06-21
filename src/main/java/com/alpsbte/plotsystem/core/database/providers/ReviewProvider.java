@@ -38,9 +38,9 @@ import java.sql.*;
 import java.util.*;
 
 public class ReviewProvider {
-    private static final List<ReviewNotification> cachedNotifications = new ArrayList<>();
-    private static final List<ToggleCriteria> cachedToggleCriteria = new ArrayList<>();
-    private static final List<BuildTeamToggleCriteria> cachedBuildTeamToggleCriteria = new ArrayList<>();
+    protected static final List<ReviewNotification> NOTIFICATIONS = new ArrayList<>();
+    protected static final List<ToggleCriteria> TOGGLE_CRITERIA = new ArrayList<>();
+    protected static final List<BuildTeamToggleCriteria> BUILD_TEAM_TOGGLE_CRITERIA = new ArrayList<>();
 
     public ReviewProvider() {
         // cache all review notifications
@@ -49,7 +49,7 @@ public class ReviewProvider {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    cachedNotifications.add(new ReviewNotification(rs.getInt(1), UUID.fromString(rs.getString(2))));
+                    NOTIFICATIONS.add(new ReviewNotification(rs.getInt(1), UUID.fromString(rs.getString(2))));
                 }
             }
         } catch (SQLException ex) {
@@ -62,7 +62,7 @@ public class ReviewProvider {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    cachedToggleCriteria.add(new ToggleCriteria(rs.getString(1), rs.getBoolean(2)));
+                    TOGGLE_CRITERIA.add(new ToggleCriteria(rs.getString(1), rs.getBoolean(2)));
                 }
             }
         } catch (SQLException ex) {
@@ -76,8 +76,8 @@ public class ReviewProvider {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     String criteriaName = rs.getString(1);
-                    ToggleCriteria toggle = cachedToggleCriteria.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst().orElseThrow();
-                    cachedBuildTeamToggleCriteria.add(new BuildTeamToggleCriteria(rs.getInt(2), toggle));
+                    ToggleCriteria toggle = TOGGLE_CRITERIA.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst().orElseThrow();
+                    BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(rs.getInt(2), toggle));
                 }
             }
         } catch (SQLException ex) {
@@ -159,7 +159,7 @@ public class ReviewProvider {
     private ReviewRating getReviewRating(int reviewId, String ratingString) {
         int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
         int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
-        HashMap<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
+        Map<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
         return new ReviewRating(accuracyPoints, blockPalettePoints, toggleCriteria);
     }
 
@@ -197,9 +197,9 @@ public class ReviewProvider {
         if (!result) return null;
 
         PlotReview review = plot.getLatestReview().orElseThrow();
-        HashMap<ToggleCriteria, Boolean> allToggles = rating.getAllToggles();
-        for (ToggleCriteria criteria : allToggles.keySet()) {
-            if (!addReviewToggleCriteria(review.getReviewId(), criteria, allToggles.get(criteria)))
+        Map<ToggleCriteria, Boolean> allToggles = rating.getAllToggles();
+        for (Map.Entry<ToggleCriteria, Boolean> criteriaEntry : allToggles.entrySet()) {
+            if (!addReviewToggleCriteria(review.getReviewId(), criteriaEntry.getKey(), criteriaEntry.getValue()))
                 return null;
         }
 
@@ -257,14 +257,14 @@ public class ReviewProvider {
 
     // --- Toggle Criteria ---
     public Optional<ToggleCriteria> getToggleCriteria(String criteriaName) {
-        return cachedToggleCriteria.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst();
+        return TOGGLE_CRITERIA.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst();
     }
 
     public List<ToggleCriteria> getBuildTeamToggleCriteria(int buildTeamId) {
-        return cachedBuildTeamToggleCriteria.stream().filter(c -> c.getBuildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::getCriteria).toList();
+        return BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(c -> c.getBuildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::getCriteria).toList();
     }
 
-    public HashMap<ToggleCriteria, Boolean> getReviewToggleCriteria(int reviewId) {
+    public Map<ToggleCriteria, Boolean> getReviewToggleCriteria(int reviewId) {
         HashMap<ToggleCriteria, Boolean> toggleCriteriaList = new HashMap<>();
         String query = "SELECT criteria_name, is_checked FROM review_contains_toggle_criteria WHERE review_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -312,15 +312,15 @@ public class ReviewProvider {
 
     // --- Review Notification ---
     public Optional<ReviewNotification> getReviewNotification(int reviewId, UUID uuid) {
-        return cachedNotifications.stream().filter(n -> n.getReviewId() == reviewId && n.getUuid() == uuid).findFirst();
+        return NOTIFICATIONS.stream().filter(n -> n.getReviewId() == reviewId && n.getUuid() == uuid).findFirst();
     }
 
     public List<ReviewNotification> getReviewNotifications(int reviewId) {
-        return cachedNotifications.stream().filter(n -> n.getReviewId() == reviewId).toList();
+        return NOTIFICATIONS.stream().filter(n -> n.getReviewId() == reviewId).toList();
     }
 
     public List<ReviewNotification> getReviewNotifications(UUID uuid) {
-        return cachedNotifications.stream().filter(n -> n.getUuid() == uuid).toList();
+        return NOTIFICATIONS.stream().filter(n -> n.getUuid() == uuid).toList();
     }
 
     public boolean removeReviewNotification(int reviewId, UUID uuid) {
@@ -333,7 +333,7 @@ public class ReviewProvider {
             stmt.setInt(1, reviewId);
             stmt.setString(2, uuid.toString());
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedNotifications.remove(notification.get());
+            if (result) NOTIFICATIONS.remove(notification.get());
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -354,7 +354,7 @@ public class ReviewProvider {
             stmt.setInt(1, reviewId);
             stmt.setString(2, uuid.toString());
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedNotifications.add(new ReviewNotification(reviewId, uuid));
+            if (result) NOTIFICATIONS.add(new ReviewNotification(reviewId, uuid));
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }

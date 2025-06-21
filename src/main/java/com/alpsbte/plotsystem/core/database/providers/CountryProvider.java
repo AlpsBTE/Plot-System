@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CountryProvider {
-    private static final List<Country> cachedCountries = new ArrayList<>();
+    protected static final List<Country> COUNTRIES = new ArrayList<>();
 
     public CountryProvider() {
         String query = "SELECT country_code, continent, material, custom_model_data FROM country;";
@@ -50,7 +50,7 @@ public class CountryProvider {
                     Continent continent = Continent.fromDatabase(rs.getString(2));
                     Country country = new Country(rs.getString(1), continent, rs.getString(3),
                             rs.getString(4));
-                    cachedCountries.add(country); // cache all countries
+                    COUNTRIES.add(country); // cache all countries
                 }
             }
         } catch (SQLException ex) {
@@ -59,15 +59,15 @@ public class CountryProvider {
     }
 
     public List<Country> getCountries() {
-        return cachedCountries;
+        return COUNTRIES;
     }
 
     public List<Country> getCountriesByContinent(Continent continent) {
-        return cachedCountries.stream().filter(c -> c.getContinent() == continent).toList();
+        return COUNTRIES.stream().filter(c -> c.getContinent() == continent).toList();
     }
 
     public Optional<Country> getCountryByCode(String code) {
-        return cachedCountries.stream().filter(c -> c.getCode().equals(code)).findFirst();
+        return COUNTRIES.stream().filter(c -> c.getCode().equals(code)).findFirst();
     }
 
     public boolean setMaterialAndCustomModelData(String code, String material, @Nullable String customModelData) {
@@ -95,7 +95,7 @@ public class CountryProvider {
             stmt.setString(3, material);
             stmt.setString(4, customModelData);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedCountries.add(new Country(code, continent, material, customModelData));
+            if (result) COUNTRIES.add(new Country(code, continent, material, customModelData));
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -112,7 +112,7 @@ public class CountryProvider {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, code);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedCountries.remove(cachedCountry.get());
+            if (result) COUNTRIES.remove(cachedCountry.get());
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);

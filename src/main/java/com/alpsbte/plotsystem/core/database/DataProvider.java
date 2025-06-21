@@ -26,7 +26,7 @@ package com.alpsbte.plotsystem.core.database;
 
 import com.alpsbte.plotsystem.core.database.providers.*;
 
-public class DataProvider {
+public final class DataProvider {
     public static final BuilderProvider BUILDER = new BuilderProvider();
     public static final PlotProvider PLOT = new PlotProvider();
     public static final DifficultyProvider DIFFICULTY = new DifficultyProvider();
@@ -36,4 +36,6 @@ public class DataProvider {
     public static final TutorialPlotProvider TUTORIAL_PLOT = new TutorialPlotProvider();
     public static final ReviewProvider REVIEW = new ReviewProvider();
     public static final BuildTeamProvider BUILD_TEAM = new BuildTeamProvider(BUILDER, CITY_PROJECT); // has to be initialized after builder and city project providers
+
+    private DataProvider() {}
 }

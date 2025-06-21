@@ -87,7 +87,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -233,7 +232,7 @@ public final class PlotUtils {
             try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
                 double initialY = clipboard.getRegion().getMinimumY();
                 double offset = initialY - cuboidRegion.getMinimumY();
-                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0,offset,0))));
+                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
             }
         }
 
@@ -393,42 +392,50 @@ public final class PlotUtils {
                 return false;
             }
 
-            try {
-                CompletableFuture.runAsync(() -> {
-                    if (plot.getPlotType() == PlotType.TUTORIAL) return;
-                    Plot dPlot = (Plot) plot;
-                    DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
-                    for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
+            CompletableFuture.runAsync(() -> {
+                if (plot.getPlotType() == PlotType.TUTORIAL) return;
+                Plot dPlot = (Plot) plot;
+                boolean successful;
+                successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
 
-                    if (plot.getPlotOwner() != null) {
-                        Cache.clearCache(plot.getPlotOwner().getUUID());
-                        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1)) return;
-                    }
+                for (Builder builder : dPlot.getPlotMembers()) {
+                    if (!successful) break;
+                    successful = dPlot.removePlotMember(builder);
+                }
 
-                    dPlot.setPlotOwner(null);
-                    dPlot.setLastActivity(true);
-                    dPlot.setStatus(Status.unclaimed);
-                    dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
-                }).join();
-            } catch (CompletionException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
-                return false;
-            }
+                if (successful && plot.getPlotOwner() != null) {
+                    Cache.clearCache(plot.getPlotOwner().getUUID());
+                    successful = plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
+                }
+
+                if (successful) {
+                    successful = dPlot.setPlotOwner(null)
+                            && dPlot.setLastActivity(true)
+                            && dPlot.setStatus(Status.unclaimed)
+                            && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+                }
+
+                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+            });
             return true;
         }
 
         public static boolean deletePlot(Plot plot) {
             if (abandonPlot(plot)) {
-                CompletableFuture.runAsync(() -> DataProvider.PLOT.deletePlot(plot.getID()));
+                CompletableFuture.runAsync(() -> {
+                    if (DataProvider.PLOT.deletePlot(plot.getID())) return;
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+                });
                 return true;
             }
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
             return false;
         }
     }
 
     public static final class Cache {
         private Cache() {}
+
         private static final HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
         public static void clearCache() {
@@ -454,6 +461,7 @@ public final class PlotUtils {
 
     public static final class Effects {
         private Effects() {}
+
         public static final int CACHE_UPDATE_TICKS = 20 * 60;
         private static int time;
 
@@ -526,6 +534,7 @@ public final class PlotUtils {
 
     public static final class ChatFormatting {
         private ChatFormatting() {}
+
         public static void sendLinkMessages(AbstractPlot plot, Player player) {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 Component[] tc = new Component[3];

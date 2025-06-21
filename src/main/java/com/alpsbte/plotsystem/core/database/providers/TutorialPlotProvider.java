@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class TutorialPlotProvider {
-    public static final HashMap<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
+    public static final Map<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
     public static final LinkedList<Integer> freeTutorialPlotIds = new LinkedList<>();
 
     public Optional<TutorialPlot> getById(int id) {

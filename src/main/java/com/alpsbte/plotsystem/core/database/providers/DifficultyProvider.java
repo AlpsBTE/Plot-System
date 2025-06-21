@@ -42,7 +42,7 @@ import java.util.Optional;
 import static net.kyori.adventure.text.Component.text;
 
 public class DifficultyProvider {
-    private static final List<Difficulty> cachedDifficulties = new ArrayList<>();
+    protected static final List<Difficulty> DIFFICULTIES = new ArrayList<>();
 
     public DifficultyProvider() {
         // cache all difficulties
@@ -57,7 +57,7 @@ public class DifficultyProvider {
                     PlotDifficulty plotDifficulty = PlotDifficulty.valueOf(id);
 
                     Difficulty difficulty = new Difficulty(plotDifficulty, id, multiplier, scoreRequirement);
-                    cachedDifficulties.add(difficulty);
+                    DIFFICULTIES.add(difficulty);
                 }
             }
         } catch (SQLException ex) {
@@ -66,16 +66,16 @@ public class DifficultyProvider {
     }
 
     public List<Difficulty> getDifficulties() {
-        return cachedDifficulties;
+        return DIFFICULTIES;
     }
 
     public Optional<Difficulty> getDifficultyById(String id) {
-        return cachedDifficulties.stream().filter(d -> d.getID().equalsIgnoreCase(id)).findAny();
+        return DIFFICULTIES.stream().filter(d -> d.getID().equalsIgnoreCase(id)).findAny();
     }
 
     public Optional<Difficulty> getDifficultyByEnum(PlotDifficulty difficulty) {
         if (difficulty == null) return Optional.empty();
-        return cachedDifficulties.stream().filter(d -> d.getID().equalsIgnoreCase(difficulty.name())).findFirst();
+        return DIFFICULTIES.stream().filter(d -> d.getID().equalsIgnoreCase(difficulty.name())).findFirst();
     }
 
     public boolean setMultiplier(String id, double multiplier) {

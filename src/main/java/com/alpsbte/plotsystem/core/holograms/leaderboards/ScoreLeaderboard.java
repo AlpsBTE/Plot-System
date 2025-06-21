@@ -56,7 +56,7 @@ public class ScoreLeaderboard extends DecentHologramPagedDisplay implements Holo
         if (ConfigUtil.getInstance() == null) return new ArrayList<>();
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
         return Arrays.stream(LeaderboardTimeframe.values())
-                .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).collect(Collectors.toList());
+                .filter(p -> config.getBoolean(p.configPath)).map(LeaderboardTimeframe::toString).toList();
     }
 
     @Override

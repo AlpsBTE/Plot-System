@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CityProjectProvider {
-    public static final List<CityProject> cachedCityProjects = new ArrayList<>();
+    protected static final List<CityProject> CITY_PROJECTS = new ArrayList<>();
 
     public CityProjectProvider() {
         String query = "SELECT city_project_id, country_code, server_name, is_visible, build_team_id FROM city_project;";
@@ -45,7 +45,7 @@ public class CityProjectProvider {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    cachedCityProjects.add(new CityProject(rs.getString(1), // cache all city projects
+                    CITY_PROJECTS.add(new CityProject(rs.getString(1), // cache all city projects
                             rs.getString(2), rs.getString(3), rs.getBoolean(4), rs.getInt(5)));
                 }
             }
@@ -55,16 +55,16 @@ public class CityProjectProvider {
     }
 
     public Optional<CityProject> getById(String id) {
-        return cachedCityProjects.stream().filter(c -> c.getID().equals(id)).findFirst();
+        return CITY_PROJECTS.stream().filter(c -> c.getID().equals(id)).findFirst();
     }
 
     public List<CityProject> getByCountryCode(String countryCode, boolean onlyVisible) {
-        return cachedCityProjects.stream().filter(c -> (!onlyVisible || c.isVisible()) &&
+        return CITY_PROJECTS.stream().filter(c -> (!onlyVisible || c.isVisible()) &&
                 c.getCountry().getCode().equals(countryCode)).toList();
     }
 
     public List<CityProject> get(boolean onlyVisible) {
-        return cachedCityProjects.stream().filter(c -> !onlyVisible || c.isVisible()).toList();
+        return CITY_PROJECTS.stream().filter(c -> !onlyVisible || c.isVisible()).toList();
     }
 
     public List<CityProject> getCityProjectsByBuildTeam(int buildTeamId) {
@@ -99,7 +99,7 @@ public class CityProjectProvider {
             stmt.setString(3, countryCode);
             stmt.setString(4, serverName);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedCityProjects.add(new CityProject(id, countryCode, serverName, true, buildTeamId));
+            if (result) CITY_PROJECTS.add(new CityProject(id, countryCode, serverName, true, buildTeamId));
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -116,7 +116,7 @@ public class CityProjectProvider {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, id);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedCityProjects.remove(cityProject.get());
+            if (result) CITY_PROJECTS.remove(cityProject.get());
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);

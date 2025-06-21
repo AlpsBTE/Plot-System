@@ -35,14 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerProvider {
-    private static final List<String> cachedServers = new ArrayList<>();
+    protected static final List<String> SERVERS = new ArrayList<>();
 
     public ServerProvider() {
         String query = "SELECT server_name FROM server;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) cachedServers.add(rs.getString(1)); // cache all servers
+                while (rs.next()) SERVERS.add(rs.getString(1)); // cache all servers
             }
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -50,11 +50,11 @@ public class ServerProvider {
     }
 
     public boolean serverExists(String serverName) {
-        return cachedServers.stream().anyMatch(s -> s.equals(serverName));
+        return SERVERS.stream().anyMatch(s -> s.equals(serverName));
     }
 
     public List<String> getServers() {
-        return cachedServers;
+        return SERVERS;
     }
 
     public boolean addServer(String name, int buildTeamId) {
@@ -66,7 +66,7 @@ public class ServerProvider {
             stmt.setString(1, name);
             stmt.setInt(2, buildTeamId);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedServers.add(name);
+            if (result) SERVERS.add(name);
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
@@ -82,7 +82,7 @@ public class ServerProvider {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, name);
             boolean result = stmt.executeUpdate() > 0;
-            if (result) cachedServers.remove(name);
+            if (result) SERVERS.remove(name);
             return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);

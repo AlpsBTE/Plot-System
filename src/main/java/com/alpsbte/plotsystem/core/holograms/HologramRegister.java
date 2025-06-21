@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 public final class HologramRegister {
+    private HologramRegister() {}
+
     /**
      * Registers the {@link ScoreLeaderboard} and adds
      * them to {@link DecentHologramDisplay#activeDisplays}.
