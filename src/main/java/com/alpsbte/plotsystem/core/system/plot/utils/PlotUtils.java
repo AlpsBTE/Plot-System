@@ -182,11 +182,27 @@ public final class PlotUtils {
             clipboard = reader.read();
         }
 
-        Polygonal2DRegion region = new Polygonal2DRegion(BukkitAdapter.adapt(world), plot.getOutline(), clipboard.getMinimumPoint().y(), clipboard.getMaximumPoint().y());
+        Polygonal2DRegion region = new Polygonal2DRegion(
+                BukkitAdapter.adapt(world),
+                plot.getOutline(),
+                clipboard.getMinimumPoint().y(),
+                clipboard.getMaximumPoint().y()
+        );
+
+        BlockArrayClipboard newClipboard = new BlockArrayClipboard(region);
+        newClipboard.setOrigin(BlockVector3.at(region.getCenter().x(), region.getMinimumPoint().y(), region.getCenter().z()));
+        ForwardExtentCopy copy = new ForwardExtentCopy(
+                clipboard,
+                region,
+                newClipboard,
+                region.getMinimumPoint()
+        );
+
+        Operations.complete(copy);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-            writer.write(new BlockArrayClipboard(region));
+            writer.write(newClipboard);
         }
         return outputStream.toByteArray();
     }

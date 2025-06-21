@@ -36,13 +36,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class ScoreLeaderboard extends DecentHologramPagedDisplay implements HologramConfiguration {
-    private final DecimalFormat df = new DecimalFormat("#.##");
     private LeaderboardTimeframe sortByLeaderboard;
 
     public ScoreLeaderboard() {
