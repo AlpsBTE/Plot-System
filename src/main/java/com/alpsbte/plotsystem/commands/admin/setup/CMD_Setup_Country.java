@@ -141,7 +141,7 @@ public class CMD_Setup_Country extends SubCommand {
 
             Continent continent;
             try {
-                continent = Continent.valueOf(args[2].toUpperCase());
+                continent = Continent.fromDatabase(args[2].toUpperCase());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
                 return;
