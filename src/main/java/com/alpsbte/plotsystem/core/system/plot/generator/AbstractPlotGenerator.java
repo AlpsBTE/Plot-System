@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -92,7 +92,7 @@ public abstract class AbstractPlotGenerator {
      * @param plot    - plot which should be generated
      * @param builder - builder of the plot
      */
-    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
+    protected AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
         this(plot, builder, builder.getPlotType());
     }
 
@@ -103,7 +103,7 @@ public abstract class AbstractPlotGenerator {
      * @param builder  - builder of the plot
      * @param plotType - type of the plot
      */
-    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) {
+    protected AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) {
         this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld((Plot) plot));
     }
 
@@ -185,7 +185,6 @@ public abstract class AbstractPlotGenerator {
             DefaultDomain owner = protectedBuildRegion.getOwners();
             owner.addPlayer(builder.getUUID());
             protectedBuildRegion.setOwners(owner);
-            protectedRegion.setOwners(owner);
 
             // Set protected build region permissions
             setBuildRegionPermissions(protectedBuildRegion);
@@ -207,7 +206,7 @@ public abstract class AbstractPlotGenerator {
      *
      * @param region build region
      */
-    protected void setBuildRegionPermissions(ProtectedRegion region) {
+    protected void setBuildRegionPermissions(@NotNull ProtectedRegion region) {
         region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
         if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
@@ -219,9 +218,7 @@ public abstract class AbstractPlotGenerator {
      *
      * @param region plot region
      */
-    protected void setRegionPermissions(ProtectedRegion region) {
-        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
-        region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+    protected void setRegionPermissions(@NotNull ProtectedRegion region) {
         region.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
         region.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
@@ -236,7 +233,7 @@ public abstract class AbstractPlotGenerator {
      * @param config commands.yml config
      * @return list of blocked commands
      */
-    protected List<String> getBlockedCommands(FileConfiguration config) {
+    protected List<String> getBlockedCommands(@NotNull FileConfiguration config) {
         List<String> blockedCommands = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
         blockedCommands.removeIf(c -> c.equals("/cmd1"));
         return blockedCommands;
@@ -290,7 +287,7 @@ public abstract class AbstractPlotGenerator {
      * @param world         - world to paste in
      * @param clearArea     - clears the plot area with air before pasting
      */
-    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, PlotWorld world, boolean clearArea) throws IOException {
+    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea) throws IOException {
         // load world
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());

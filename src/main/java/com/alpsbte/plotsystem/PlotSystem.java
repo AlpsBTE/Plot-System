@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -169,8 +169,6 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        if (!DependencyManager.isWorldGuardExtraFlagsEnabled()) PlotSystem.getPlugin().getComponentLogger().warn(text("WorldGuardExtraFlags is not enabled!"));
 
         // Check for updates
         Bukkit.getConsoleSender().sendMessage(empty());

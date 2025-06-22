@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void setBuildRegionPermissions(ProtectedRegion region) {
+    protected void setBuildRegionPermissions(@NotNull ProtectedRegion region) {
         region.setFlag(Flags.BUILD, isBuildingEnabled() ? StateFlag.State.ALLOW : StateFlag.State.DENY);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
 
