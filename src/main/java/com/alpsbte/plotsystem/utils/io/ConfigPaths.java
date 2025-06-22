@@ -60,8 +60,6 @@ public abstract class ConfigPaths {
     public static final String DISPLAY_OPTIONS_SHOW_MONTHLY = DISPLAY_OPTIONS + "show-monthly";
     public static final String DISPLAY_OPTIONS_SHOW_YEARLY = DISPLAY_OPTIONS + "show-yearly";
     public static final String DISPLAY_OPTIONS_SHOW_LIFETIME = DISPLAY_OPTIONS + "show-lifetime";
-    public static final String DISPLAY_OPTIONS_ACTION_BAR_ENABLE = DISPLAY_OPTIONS + "action-bar-enable";
-    public static final String DISPLAY_OPTIONS_ACTION_BAR_RADIUS = DISPLAY_OPTIONS + "action-bar-radius";
 
     // FORMATTING
     private static final String CHAT_FORMAT = "chat-format.";

@@ -21,12 +21,6 @@ spawn-world: default
 # Prevents beginners from generating difficult plots
 enable-score-requirement: true
 
-# Automatic synchronisation of schematic files from SFTP/FTP servers
-# [interval] -> default: 3600 seconds (1 hour)
-sync-ftp-files:
-  sff-enable: false
-  sync-interval: 3600
-
 # How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
 
@@ -77,8 +71,6 @@ display-options:
   show-monthly: true
   show-yearly: false
   show-lifetime: false
-  action-bar-enable: true
-  action-bar-radius: 30
 
 
 # -----------------------------------------------------
@@ -111,4 +103,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 4.1
+config-version: 4.2
