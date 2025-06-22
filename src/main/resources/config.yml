@@ -58,7 +58,7 @@ database:
 
 # -----------------------------------------------------
 # | Leaderboards: Shows top plot and build scores / Are placed in the spawn world
-# | NOTE: Requires the HolographicDisplays plugin to work
+# | NOTE: Requires the DecentHolograms plugin to work
 # -----------------------------------------------------
 holograms:
   # Displays the top 10 builders with the highest score
@@ -111,4 +111,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 4.0
+config-version: 4.1
