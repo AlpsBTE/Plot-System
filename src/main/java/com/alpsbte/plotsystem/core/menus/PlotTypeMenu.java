@@ -142,8 +142,8 @@ public class PlotTypeMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
-                .pattern("111111111")
-                .pattern("000000000")
+                .pattern(Utils.FULL_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
                 .build();
     }

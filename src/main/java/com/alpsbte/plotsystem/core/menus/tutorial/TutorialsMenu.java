@@ -126,11 +126,11 @@ public class TutorialsMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(Component.empty()).build())
                 .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("111111111")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.FULL_MASK)
                 .build();
     }
 
@@ -143,7 +143,6 @@ public class TutorialsMenu extends AbstractMenu {
     private void setTutorialClickEvent(int tutorialId, ClickType clickType) {
         if (tutorialId >= 0 && tutorialId < TutorialCategory.values().length) {
             if (clickType == ClickType.LEFT) {
-                // TutorialPlot plot = getPlotById(tutorialId);
                 try {
                     if (plot == null || !plot.isComplete()) {
                         getMenuPlayer().closeInventory();

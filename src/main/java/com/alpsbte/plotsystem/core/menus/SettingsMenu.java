@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
@@ -43,7 +44,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class SettingsMenu extends AbstractMenu {
-    private Consumer<Player> onBack = (player) -> player.performCommand("companion");
+    private Consumer<Player> onBack = player -> player.performCommand("companion");
 
     public SettingsMenu(Player player) {
         super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), player);
@@ -94,8 +95,8 @@ public class SettingsMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
-                .pattern("111111111")
-                .pattern("000000000")
+                .pattern(Utils.FULL_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
                 .build();
     }

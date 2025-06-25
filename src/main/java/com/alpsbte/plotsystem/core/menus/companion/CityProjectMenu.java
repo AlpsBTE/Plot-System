@@ -170,10 +170,10 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
                 .pattern("001111001")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("100010001")
                 .build();
     }

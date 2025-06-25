@@ -102,7 +102,7 @@ public class ContinentMenu extends AbstractMenu {
                 .pattern("011111111")
                 .pattern("010101010")
                 .pattern("111101111")
-                .pattern("111111111")
+                .pattern(Utils.FULL_MASK)
                 .pattern("100010001")
                 .build();
     }
