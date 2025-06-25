@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.plotsystem.core.database.DataProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,10 @@ public class BuildTeam {
 
     public int getID() {
         return ID;
+    public BuildTeam(int id, String name) {
+        this(id, name, new ArrayList<>(), new ArrayList<>());
+    }
+
     }
 
     public String getName() {

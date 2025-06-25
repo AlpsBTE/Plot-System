@@ -114,7 +114,7 @@ public class BuildTeamProvider {
                 stmt.setString(1, name);
                 try (ResultSet rs = stmt.executeQuery()) {
                     rs.next(); // get the last inserted build team id
-                    BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name, List.of(), List.of()));
+                    BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name));
                 }
             } catch (SQLException ex) {
                 Utils.logSqlException(ex);
