@@ -30,11 +30,11 @@ sync-ftp-files:
 # How many days of inactivity it will take before a claimed plot is automatically abandoned
 inactivity-interval: 14
 
-# How long left until the plot gets abandon due to inactivity and the system will start pinging owner on discord
+# How long left (Days) until the plot gets abandon due to inactivity and the system will start pinging owner on discord
 # Be careful, if set >= inactivity-interval will ping the owner every day after plot is created
 inactivity-notification-days: 5
 
-# What local-time in a day to ping owner's discord for their inactive plot
+# What local-time in a day to ping owner's discord for their inactive plot (24 Hour)
 inactivity-notification-time: 16
 
 # Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
