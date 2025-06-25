@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -114,7 +114,7 @@ public class CityPlotWorld extends PlotWorld {
 
             // Plots created outside of vanilla build limit or the build-able height is too small
             if (plotHeight + groundLayer < MIN_WORLD_HEIGHT + groundLayer
-                    | plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
+                    || plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
                 return 0; // throw new IOException("Plot height is out of range.");
             return plotHeight;
         }
