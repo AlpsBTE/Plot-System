@@ -51,7 +51,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
-import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -59,12 +58,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.Consumer;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -164,21 +158,6 @@ public class PlotSystem extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        // Check for updates
-        Bukkit.getConsoleSender().sendMessage(empty());
-        Bukkit.getConsoleSender().sendMessage(text("Update-Checker:", GOLD));
-
-        UpdateChecker.getVersion(version -> {
-            if (new ComparableVersion(VERSION).compareTo(new ComparableVersion(version)) >= 0) {
-                Bukkit.getConsoleSender().sendMessage(text("You are using the latest stable version.", YELLOW));
-            } else {
-                UpdateChecker.isUpdateAvailable = true;
-                Bukkit.getConsoleSender().sendMessage(text("You are using a outdated version!", RED));
-                Bukkit.getConsoleSender().sendMessage(text("Latest version: ", GRAY).append(text(version, GREEN)).append(text(" | Your version: ", GRAY)).append(text(VERSION, RED)));
-                Bukkit.getConsoleSender().sendMessage(text("Update here: ", GRAY).append(text("https://github.com/AlpsBTE/Plot-System/releases", AQUA)));
-            }
-        });
 
         DecentHologramDisplay.registerPlugin(this);
         HologramRegister.init();
@@ -354,33 +333,6 @@ public class PlotSystem extends JavaPlugin {
          */
         public static String getWorldGuardConfigPath(String worldName) {
             return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("WorldGuard")).getDataFolder() + "/worlds/" + worldName;
-        }
-    }
-
-    public static class UpdateChecker {
-        private static final int RESOURCE_ID = 95757;
-        private static boolean isUpdateAvailable = false;
-
-        /**
-         * Get the latest plugin version from SpigotMC
-         *
-         * @param version Returns latest stable version
-         */
-        public static void getVersion(final Consumer<String> version) {
-            try (InputStream inputStream = new URI("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID).toURL().openStream(); Scanner scanner = new Scanner(inputStream)) {
-                if (scanner.hasNext()) {
-                    version.accept(scanner.next());
-                }
-            } catch (IOException | URISyntaxException ex) {
-                PlotSystem.getPlugin().getComponentLogger().warn(text("Cannot look for new updates:" + ex.getMessage()));
-            }
-        }
-
-        /**
-         * @return True if an update is available
-         */
-        public static boolean updateAvailable() {
-            return isUpdateAvailable;
         }
     }
 }
