@@ -41,7 +41,7 @@ import static net.kyori.adventure.text.Component.text;
 
 public class DatabaseConnection {
 
-    private final static HikariConfig config = new HikariConfig();
+    private static final HikariConfig config = new HikariConfig();
     private static HikariDataSource dataSource;
 
     private static String URL;
@@ -114,6 +114,9 @@ public class DatabaseConnection {
                 Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
             }
 
+            con.prepareStatement("INSERT INTO system_info (system_id, db_version, current_plot_version, description) " +
+                    "VALUES (1, 2.0, 4.0, 'Initial database schema for Plot-System v5.0')").executeUpdate();
+
             try (ResultSet rs = con.prepareStatement("SELECT COUNT(difficulty_id) FROM plot_difficulty").executeQuery()) {
                 if (rs.next()) {
                     if (rs.getInt(1) == 0) {
@@ -124,8 +127,6 @@ public class DatabaseConnection {
                     }
                 }
             }
-
-
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating á database table"), ex);
         }
