@@ -2,7 +2,7 @@ main: com.alpsbte.plotsystem.PlotSystem
 version: 5.0.0
 api-version: "1.21"
 name: Plot-System
-author: R3tuxn & Cinnazeyy
+author: R3tuxn, Cinnazeyy & Zoriot
 softdepend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit,
               DecentHolograms, WorldGuard, WorldGuardExtraFlags, HeadDatabase, ProtocolLib, ParticleNativeAPI ]
 
