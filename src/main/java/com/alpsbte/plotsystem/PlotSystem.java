@@ -42,13 +42,10 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
-import com.alpsbte.plotsystem.utils.PacketListener;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -188,13 +185,6 @@ public class PlotSystem extends JavaPlugin {
         PlotUtils.checkPlotsForLastActivity();
         Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
-
-        try {
-            new PacketListener();
-        } catch (NoClassDefFoundError ex) {
-            Bukkit.getConsoleSender().sendMessage(empty());
-            Bukkit.getConsoleSender().sendMessage(text("Could not find Protocol-Lib! Consider installing it to avoid issues.", RED));
-        }
 
         // Register tutorials
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
@@ -365,11 +355,6 @@ public class PlotSystem extends JavaPlugin {
         public static String getWorldGuardConfigPath(String worldName) {
             return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("WorldGuard")).getDataFolder() + "/worlds/" + worldName;
         }
-
-        /**
-         * @return Protocol Lib Instance
-         */
-        public static ProtocolManager getProtocolManager() {return ProtocolLibrary.getProtocolManager();}
     }
 
     public static class UpdateChecker {

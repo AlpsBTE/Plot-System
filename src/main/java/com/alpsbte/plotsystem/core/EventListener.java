@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,8 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -49,6 +49,7 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -241,6 +242,11 @@ public class EventListener implements Listener {
     @EventHandler
     public void onLanguageChange(@NotNull LanguageChangeEvent event) {
         Utils.updatePlayerInventorySlots(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerClientOptionsChange(@NotNull PlayerClientOptionsChangeEvent e) {
+        Utils.updatePlayerInventorySlots(e.getPlayer());
     }
 
     private void handleIronTrapdoorClick(@NotNull PlayerInteractEvent event) {
