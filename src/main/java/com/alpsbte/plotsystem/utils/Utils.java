@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -80,14 +80,14 @@ public class Utils {
 
         if (!Objects.requireNonNull(config.getString(ConfigPaths.SPAWN_WORLD)).equalsIgnoreCase("default")) {
             try {
-                MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
+                MultiverseWorld spawnWorld = DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
             } catch (Exception ignore) {
                 PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find %s in multiverse config!"), ConfigPaths.SPAWN_WORLD);
             }
         }
 
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
+        return DependencyManager.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
     }
 
     public static void updatePlayerInventorySlots(Player player) {

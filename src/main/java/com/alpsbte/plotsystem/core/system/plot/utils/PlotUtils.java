@@ -37,6 +37,7 @@ import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -44,7 +45,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
-import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
+import com.github.fierioziy.particlenativeapi.api.Particles_1_13;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -172,7 +173,7 @@ public final class PlotUtils {
     }
 
     public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
+        return DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
     public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, World world) throws IOException {
@@ -482,24 +483,24 @@ public final class PlotUtils {
         private static int time;
 
         private static boolean particleAPIEnabled = false;
-        private static Particles_1_8 particles;
+        private static Particles_1_13 particles;
 
         public static void loadParticleNativeAPI() {
-            particleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
+            particleAPIEnabled = DependencyManager.isParticleNativeAPIEnabled();
 
             // get API
             ParticleNativeAPI api = ParticleNativePlugin.getAPI();
 
             // choose particle list you want to use
-            particles = api.getParticles_1_8();
+            particles = api.getParticles_1_13();
         }
 
         public static void startTimer() {
-            if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+            if (DependencyManager.isParticleNativeAPIEnabled())
                 loadParticleNativeAPI();
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-                if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+                if (DependencyManager.isParticleNativeAPIEnabled())
                     loadParticleNativeAPI();
             }, 20 * 10L);
 

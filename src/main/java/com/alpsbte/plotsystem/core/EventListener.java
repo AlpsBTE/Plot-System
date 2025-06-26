@@ -40,6 +40,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
@@ -258,7 +259,7 @@ public class EventListener implements Listener {
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = regionContainer.createQuery();
 
-        if (!query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) return;
+        if (!query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) return;
 
         BlockState state = event.getClickedBlock().getState();
         Openable tp = (Openable) state.getBlockData();
@@ -273,7 +274,6 @@ public class EventListener implements Listener {
     }
 
     private void sendNotices(@NotNull Player player, Builder builder) {
-        sendAdminNotices(player);
         sendReviewNotices(player, builder);
 
         // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
@@ -285,14 +285,6 @@ public class EventListener implements Listener {
                 AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
                 player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
             }
-        }
-    }
-
-    private void sendAdminNotices(@NotNull Player player) {
-        // Inform player about update
-        if (player.hasPermission("plotsystem.admin") && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES) && PlotSystem.UpdateChecker.updateAvailable()) {
-            player.sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-            player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
         }
     }
 
