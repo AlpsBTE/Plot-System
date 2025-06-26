@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,10 @@ import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class ReviewProvider {
@@ -181,8 +184,8 @@ public class ReviewProvider {
         if (!result) return null;
 
         // Create Review
-        String query = "INSERT INTO plot_review (plot_id, rating, score, split_score, reviewed_by) " +
-                "VALUES (?, ?, ?, ?, ?);";
+        String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) " +
+                "VALUES (?, ?, ?, ?);";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, plot.getID());
@@ -298,16 +301,15 @@ public class ReviewProvider {
         return false;
     }
 
-    public boolean removeCheckedToggleCriteria(int reviewId) {
+    public void removeCheckedToggleCriteria(int reviewId) {
         String query = "DELETE FROM review_contains_toggle_criteria WHERE review_id = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, reviewId);
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
-        return false;
     }
 
     // --- Review Notification ---
@@ -323,9 +325,9 @@ public class ReviewProvider {
         return NOTIFICATIONS.stream().filter(n -> n.getUuid() == uuid).toList();
     }
 
-    public boolean removeReviewNotification(int reviewId, UUID uuid) {
+    public void removeReviewNotification(int reviewId, UUID uuid) {
         Optional<ReviewNotification> notification = getReviewNotification(reviewId, uuid);
-        if (notification.isEmpty()) return false;
+        if (notification.isEmpty()) return;
 
         String query = "DELETE FROM builder_has_review_notification WHERE review_id = ? AND uuid = ?;";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -334,11 +336,9 @@ public class ReviewProvider {
             stmt.setString(2, uuid.toString());
             boolean result = stmt.executeUpdate() > 0;
             if (result) NOTIFICATIONS.remove(notification.get());
-            return result;
         } catch (SQLException ex) {
             Utils.logSqlException(ex);
         }
-        return false;
     }
 
     public void createReviewNotification(int reviewId, UUID uuid) {
