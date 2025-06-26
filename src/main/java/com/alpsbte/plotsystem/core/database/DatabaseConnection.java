@@ -31,7 +31,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,18 +113,18 @@ public class DatabaseConnection {
                 Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
             }
 
-            con.prepareStatement("INSERT INTO system_info (system_id, db_version, current_plot_version, description) " +
-                    "VALUES (1, 2.0, 4.0, 'Initial database schema for Plot-System v5.0')").executeUpdate();
+            con.prepareStatement("INSERT INTO system_info (system_id, db_version, current_plot_version, description)" +
+                    "SELECT 1, 2.0, 4.0, 'Initial database schema for Plot-System v5.0'" +
+                    "WHERE NOT EXISTS (SELECT 1 FROM system_info);").executeUpdate();
 
             try (ResultSet rs = con.prepareStatement("SELECT COUNT(difficulty_id) FROM plot_difficulty").executeQuery()) {
-                if (rs.next()) {
-                    if (rs.getInt(1) == 0) {
+                if (rs.next() && rs.getInt(1) == 0) {
                         con.prepareStatement("INSERT INTO plot_difficulty (difficulty_id, multiplier)" +
                                 "VALUES ('EASY', 1.0)," +
                                 "       ('MEDIUM', 1.5)," +
                                 "       ('HARD', 2);").executeUpdate();
                     }
-                }
+
             }
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating á database table"), ex);
@@ -198,14 +197,14 @@ public class DatabaseConnection {
     }
 
     private static class Tables {
-        private final static List<String> tables;
+        private static final List<String> tablesSql;
 
         public static List<String> getTables() {
-            return tables;
+            return tablesSql;
         }
 
         static {
-            tables = Arrays.asList(
+            tablesSql = Arrays.asList(
                     // System Info
                     "CREATE TABLE IF NOT EXISTS system_info" +
                             "(" +
