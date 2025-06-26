@@ -3,8 +3,9 @@ version: "${project.version}${build.number}"
 api-version: "1.21"
 name: Plot-System
 author: R3tuxn, Cinnazeyy & Zoriot
-softdepend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit,
-              DecentHolograms, WorldGuard, WorldGuardExtraFlags, HeadDatabase, ParticleNativeAPI ]
+depend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core,
+          DecentHolograms, WorldGuard, HeadDatabase ]
+softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI ]
 
 commands:
   cancelchat:

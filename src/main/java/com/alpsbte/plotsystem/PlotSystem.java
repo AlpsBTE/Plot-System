@@ -42,7 +42,6 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
-import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -58,7 +57,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.UUID;
 
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
@@ -72,11 +70,6 @@ public class PlotSystem extends JavaPlugin {
         plugin = this;
         Component successPrefix = text("[", DARK_GRAY).append(text("✔", DARK_GREEN)).append(text("]", DARK_GRAY)).append(text(" ", GRAY));
         Component errorPrefix = text("[", DARK_GRAY).append(text("X", RED)).append(text("]", DARK_GRAY)).append(text(" ", GRAY));
-
-        getComponentLogger().info(text("------------------ Plot-System V" + getPluginMeta().getVersion() + " ------------------", GOLD));
-        getComponentLogger().info(text("Starting plugin...", DARK_GREEN).append(empty()));
-
-        if (!DependencyManager.notifyAndCheckIfContainsAllRequiredDependencies(successPrefix, errorPrefix)) return;
 
         // Load config, if it throws an exception disable plugin
         try {

@@ -27,74 +27,13 @@ package com.alpsbte.plotsystem.utils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 public class DependencyManager {
     private DependencyManager() {}
-
-    /**
-     * Check for all required dependencies and inform in console about missing dependencies
-     *
-     * @return True if all dependencies are present
-     */
-    public static boolean notifyAndCheckIfContainsAllRequiredDependencies(Component successPrefix, Component errorPrefix) {
-        PlotSystem plugin = PlotSystem.getPlugin();
-        PluginManager pluginManager = plugin.getServer().getPluginManager();
-        // List with all missing dependencies
-        List<String> missingDependencies = new ArrayList<>();
-        if (!pluginManager.isPluginEnabled("DecentHolograms")) {
-            missingDependencies.add("DecentHolograms");
-        }
-
-        if (!pluginManager.isPluginEnabled("Multiverse-Core")) {
-            missingDependencies.add("Multiverse-Core");
-        }
-
-        if (!pluginManager.isPluginEnabled("FastAsyncWorldEdit")) {
-            missingDependencies.add("FastAsyncWorldEdit");
-        }
-
-        if (!pluginManager.isPluginEnabled("WorldGuard")) {
-            missingDependencies.add("WorldGuard");
-        }
-
-        if (!pluginManager.isPluginEnabled("HeadDatabase")) {
-            missingDependencies.add("HeadDatabase");
-        }
-
-        if (!pluginManager.isPluginEnabled("VoidGen")) {
-            missingDependencies.add("VoidGen");
-        }
-
-        if (!pluginManager.isPluginEnabled("LangLibs")) {
-            missingDependencies.add("LangLibs");
-        }
-
-        if (!pluginManager.isPluginEnabled("FancyNpcs")) {
-            missingDependencies.add("FancyNpcs");
-        }
-
-        if (missingDependencies.isEmpty()) {
-            plugin.getComponentLogger().info(successPrefix.append(text("Successfully loaded required dependencies.")));
-        } else {
-            plugin.getComponentLogger().error(errorPrefix.append(text("Could not load required dependencies.")));
-            plugin.getComponentLogger().error(text("Missing Dependencies:", YELLOW));
-            missingDependencies.forEach(dependency -> plugin.getComponentLogger().error(text(" - " + dependency, YELLOW)));
-            PlotSystem.getPlugin().getServer().getPluginManager().disablePlugin(PlotSystem.getPlugin());
-        }
-
-        return missingDependencies.isEmpty();
-    }
 
     /**
      * @return True if ParticleNativeAPI is present
