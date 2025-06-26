@@ -82,7 +82,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         getMenu().getSlot(7).setItem(ReviewItems.getReviewInfoItem(getMenuPlayer()));
 
         // Set toggle items
-        buildTeamCriteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getID());
+        buildTeamCriteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getId());
         for (int i = 0; i < Math.min(buildTeamCriteria.size(), 36); i++) {
             ToggleCriteria criteria = buildTeamCriteria.get(i);
             boolean isChecked = rating.getCheckedToggles().stream()
@@ -129,10 +129,10 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111010111")
                 .build();
     }

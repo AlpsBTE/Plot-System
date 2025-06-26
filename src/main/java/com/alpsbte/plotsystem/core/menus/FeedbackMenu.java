@@ -32,10 +32,10 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -119,9 +119,9 @@ public class FeedbackMenu extends AbstractMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
-                .pattern("111111111")
-                .pattern("000000000")
-                .pattern("111111111")
+                .pattern(Utils.FULL_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.FULL_MASK)
                 .build();
     }
 

@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -103,7 +103,7 @@ public class DatabaseConnection {
     private static void createDatabase() throws SQLException {
         try (Connection con = DriverManager.getConnection(URL, username, password)) {
             try (Statement statement = con.createStatement()) {
-                statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
+                statement.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + name + "`");
             }
         }
     }
@@ -303,7 +303,7 @@ public class DatabaseConnection {
                             "    is_pasted          BOOLEAN                                                  NOT NULL DEFAULT 0," +
                             "    mc_version         VARCHAR(8)                                               NULL," +
                             "    plot_version       DOUBLE                                                   NOT NULL," +
-                            "    plot_type          INT                                                      NOT NULL," +
+                            "    plot_type          INT                                                      NULL," +
                             "    created_by         VARCHAR(36)                                              NOT NULL," +
                             "    create_date        DATETIME                                                 NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                             "    PRIMARY KEY (plot_id)," +

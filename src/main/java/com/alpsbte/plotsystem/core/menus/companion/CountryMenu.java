@@ -32,11 +32,11 @@ import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
-import com.alpsbte.plotsystem.utils.enums.Continent;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -142,10 +142,10 @@ public class CountryMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("001111001")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("100010001")
                 .build();
     }

@@ -30,14 +30,14 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
+import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.enums.Status;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -70,7 +70,7 @@ public class ReviewPlotMenu extends AbstractMenu {
 
     public ReviewPlotMenu(Player player, Plot plot) {
         this(player, plot,
-                new ReviewRating(0, 0, List.of(), DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getID())));
+                new ReviewRating(0, 0, List.of(), DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getId())));
     }
 
     @Override
@@ -203,10 +203,10 @@ public class ReviewPlotMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111010111")
                 .build();
     }

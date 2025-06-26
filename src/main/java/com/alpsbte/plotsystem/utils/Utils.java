@@ -28,8 +28,8 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -72,6 +72,7 @@ public class Utils {
 
     private static Random random;
     public static final String EMPTY_MASK = "000000000";
+    public static final String FULL_MASK = "111111111";
 
     // Spawn Location
     public static Location getSpawnLocation() {
@@ -100,7 +101,7 @@ public class Utils {
     }
 
     // TODO: extract to alpsLibs?
-    public static ItemStack getConfiguredItem(String material, Object customModelData) {
+    public static ItemStack getConfiguredItem(@NotNull String material, Object customModelData) {
         ItemStack base;
         if (material.startsWith("head(") && material.endsWith(")")) {
             String headId = material.substring(material.indexOf("(") + 1, material.lastIndexOf(")"));

@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,7 @@ public class LangUtil extends LanguageUtil {
                 new LanguageFile(plugin, 2.5, Language.ru_RU, "ba_RU", "tt_RU"),
                 new LanguageFile(plugin, 2.5, Language.zh_CN),
                 new LanguageFile(plugin, 2.5, Language.zh_TW, "zh_HK"),
+                new LanguageFile(plugin, 1.0, Language.he_IL),
         });
         langUtilInstance = new LangUtil();
     }

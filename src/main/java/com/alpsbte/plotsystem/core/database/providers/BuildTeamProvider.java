@@ -66,10 +66,10 @@ public class BuildTeamProvider {
     }
 
     public Optional<BuildTeam> getBuildTeam(int id) {
-        return BUILD_TEAMS.stream().filter(b -> b.getID() == id).findFirst();
+        return BUILD_TEAMS.stream().filter(b -> b.getId() == id).findFirst();
     }
 
-    public List<BuildTeam> getBuildTeamsByReviewer(UUID reviewerUUID) {
+    public List<BuildTeam> getBuildTeamsByReviewer(@NotNull UUID reviewerUUID) {
         List<BuildTeam> buildTeams = new ArrayList<>();
 
         String query = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
@@ -114,7 +114,7 @@ public class BuildTeamProvider {
                 stmt.setString(1, name);
                 try (ResultSet rs = stmt.executeQuery()) {
                     rs.next(); // get the last inserted build team id
-                    BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name, List.of(), List.of()));
+                    BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name));
                 }
             } catch (SQLException ex) {
                 Utils.logSqlException(ex);
@@ -192,7 +192,7 @@ public class BuildTeamProvider {
         List<CityProject> cities = new ArrayList<>();
 
         for (BuildTeam buildTeam : buildTeams) {
-            cities.addAll(cityProjectProvider.getCityProjectsByBuildTeam(buildTeam.getID()));
+            cities.addAll(cityProjectProvider.getCityProjectsByBuildTeam(buildTeam.getId()));
         }
         return cities;
     }

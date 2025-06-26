@@ -611,7 +611,7 @@ public final class PlotUtils {
         }
 
         public static void sendGroupTipMessage(@NotNull Plot plot, Player player) {
-            if (plot.getPlotMembers().isEmpty()) {
+            if (plot.getPlotMembers().isEmpty() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 Component tc = text("» ", DARK_GRAY)
                         .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
                         .clickEvent(ClickEvent.runCommand("/plot members " + plot.getID()))

@@ -44,6 +44,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,19 +169,19 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
-                .pattern("111111111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.FULL_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
                 .build();
     }
 
-    private List<Plot> getFilteredPlots(List<?> plots) {
-        List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).collect(Collectors.toList());
+    private List<Plot> getFilteredPlots(@NotNull List<?> plots) {
+        List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).toList();
         if (filteredCityProject != null)
-            filteredPlots = filteredPlots.stream().filter(p -> p.getCityProject().getID().equals(filteredCityProject.getID())).collect(Collectors.toList());
+            filteredPlots = filteredPlots.stream().filter(p -> p.getCityProject().getID().equals(filteredCityProject.getID())).toList();
         return filteredPlots;
     }
 

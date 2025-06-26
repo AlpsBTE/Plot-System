@@ -25,24 +25,25 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
+import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.BaseItems;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
     private int plotDisplayCount = 0;
 
-    public PlayerPlotsMenu(Player menuPlayer, Builder builder) {
+    public PlayerPlotsMenu(Player menuPlayer, @NotNull Builder builder) {
         super(6, LangUtil.getInstance().get(menuPlayer.getPlayer(), LangPaths.MenuTitle.PLAYER_PLOTS, builder.getName() + "'"), menuPlayer);
         this.builder = builder;
     }
@@ -128,10 +129,10 @@ public class PlayerPlotsMenu extends AbstractMenu {
         return BinaryMask.builder(getMenu())
                 .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
                 .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
                 .build();
     }
@@ -143,22 +144,22 @@ public class PlayerPlotsMenu extends AbstractMenu {
      * @param p    player instance for language system
      * @return description lore for plot item
      */
-    private LoreBuilder getLore(Plot plot, Player p) {
-        LoreBuilder builder = new LoreBuilder();
+    private @NotNull LoreBuilder getLore(@NotNull Plot plot, Player p) {
+        LoreBuilder loreBuilder = new LoreBuilder();
 
         Optional<PlotReview> review = plot.getLatestReview();
         int score = (review.isEmpty() || plot.isRejected()) ? 0 : review.get().getScore();
         if (plot.getPlotMembers().isEmpty()) {
             // Plot is single player plot
-            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
+            loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
                     .append(text(score, WHITE)));
         } else {
             // Plot is multiplayer plot
-            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.OWNER) + ": ", GRAY)
+            loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.OWNER) + ": ", GRAY)
                     .append(text(plot.getPlotOwner().getName(), WHITE)));
-            builder.emptyLine();
+            loreBuilder.emptyLine();
 
-            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
+            loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.TOTAL_SCORE) + ": ", GRAY)
                     .append(text(score + " ", WHITE))
                     .append(text(LangUtil.getInstance().get(p, LangPaths.Plot.GroupSystem.SHARED_BY_MEMBERS,
                             Integer.toString(plot.getPlotMembers().size() + 1)), DARK_GRAY)));
@@ -166,8 +167,8 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
         if (review.isPresent()) {
             ReviewRating rating = review.get().getRating();
-            builder.emptyLine();
-            builder.addLines(
+            loreBuilder.emptyLine();
+            loreBuilder.addLines(
                     text(LangUtil.getInstance().get(p, LangPaths.Review.Criteria.ACCURACY) + ": ", GRAY)
                             .append(Utils.ItemUtils.getColoredPointsComponent(rating.getAccuracyPoints(), 5))
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN)),
@@ -176,34 +177,34 @@ public class PlayerPlotsMenu extends AbstractMenu {
                             .append(text("/", DARK_GRAY)).append(text("5", GREEN))
             );
             if (plot.getVersion() > AbstractPlot.LEGACY_VERSION_THRESHOLD) {
-                builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.TOGGLE_POINTS) + ": ", GRAY)
+                loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.TOGGLE_POINTS) + ": ", GRAY)
                         .append(Utils.ItemUtils.getColoredPointsComponent(rating.getTogglePoints(), 10))
                         .append(text("/", DARK_GRAY)).append(text("10", GREEN)));
             }
-            builder.emptyLine();
-            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
+            loreBuilder.emptyLine();
+            loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
             String feedback = review.get().getFeedback() == null
                     ? LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.NO_FEEDBACK)
                     : review.get().getFeedback().replaceAll("//", " ");
-            builder.addLine(text(feedback, WHITE), true);
+            loreBuilder.addLine(text(feedback, WHITE), true);
         }
 
-        builder.emptyLine();
-        if (plot.isRejected()) builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.REJECTED), RED, BOLD));
-        builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.STATUS) + ": ", GRAY)
+        loreBuilder.emptyLine();
+        if (plot.isRejected()) loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.REJECTED), RED, BOLD));
+        loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Plot.STATUS) + ": ", GRAY)
                 .append(text(plot.getStatus().name().substring(0, 1).toUpperCase() +
                         plot.getStatus().name().substring(1), WHITE)));
 
         if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
-            builder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Note.LEGACY), RED).decoration(BOLD, true));
+            loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Note.LEGACY), RED).decoration(BOLD, true));
         }
-        return builder;
+        return loreBuilder;
     }
 
     /**
      * @return Menu item
      */
-    public static ItemStack getMenuItem(Player p) {
+    public static ItemStack getMenuItem(@NotNull Player p) {
         return new ItemBuilder(AlpsHeadUtils.getPlayerHead(p.getUniqueId()))
                 .setName(text(LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS), AQUA, BOLD))
                 .setLore(new LoreBuilder()

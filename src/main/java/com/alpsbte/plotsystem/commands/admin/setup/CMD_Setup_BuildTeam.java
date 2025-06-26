@@ -102,7 +102,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 b.getCityProjects().forEach(c -> citiesAsString.add(c.getID()));
                 b.getReviewers().forEach(r -> reviewersAsString.add(r.getName()));
                 sender.sendMessage(text(" » ", DARK_GRAY)
-                        .append(text(b.getID() + " (" + b.getName() + ") ", AQUA))
+                        .append(text(b.getId() + " (" + b.getName() + ") ", AQUA))
                         .append(text("- City Project IDs: " + (citiesAsString.length() == 0 ? "No City Projects" : citiesAsString)
                                 + " - Reviewers: " + (reviewersAsString.length() == 0 ? "No Reviewers" : reviewersAsString), WHITE)));
             }
@@ -189,7 +189,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-            boolean successful = DataProvider.BUILD_TEAM.removeBuildTeam(buildTeam.get().getID());
+            boolean successful = DataProvider.BUILD_TEAM.removeBuildTeam(buildTeam.get().getId());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
@@ -284,7 +284,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             Builder builder = Builder.byName(args[2]);
-            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getID() == buildTeam.get().getID())) {
+            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().anyMatch(b -> b.getId() == buildTeam.get().getId())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is already reviewer for this build team!"));
                 return;
             }
@@ -332,7 +332,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             Builder builder = Builder.byName(args[2]);
-            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getID() == buildTeam.get().getID())) {
+            if (builder == null || DataProvider.BUILD_TEAM.getBuildTeamsByReviewer(builder.getUUID()).stream().noneMatch(b -> b.getId() == buildTeam.get().getId())) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Player could not be found or is not a reviewer for this build team!"));
                 return;
             }

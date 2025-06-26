@@ -122,9 +122,7 @@ public class PlotSystem extends JavaPlugin {
             LangUtil.init();
             Bukkit.getConsoleSender().sendMessage(successPrefix.append(text("Successfully loaded language files.")));
         } catch (Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(errorPrefix.append(text("Could not load language file.")));
-            PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
-
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not load language file."), ex);
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
