@@ -34,7 +34,7 @@ inactivity-interval: 14
 # Be careful, if set >= inactivity-interval will ping the owner every day after plot is created
 inactivity-notification-days: 5
 
-# What local-time in a day to ping owner's discord for their inactive plot (24 Hour)
+# What local-time in a day to ping the owner discord for their inactive plot (24 Hour)
 inactivity-notification-time: 16
 
 # Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
