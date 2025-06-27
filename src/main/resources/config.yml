@@ -21,6 +21,13 @@ enable-score-requirement: true
 # How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
 
+# How long left (Days) until the plot gets abandon due to inactivity and the system will start pinging owner on discord
+# Be careful, if set >= inactivity-interval will ping the owner every day after plot is created
+inactivity-notification-days: 5
+
+# What local-time in a day to ping the owner discord for their inactive plot (24 Hour)
+inactivity-notification-time: 16
+
 # How many days of inactivity it will take before a rejected plots are automatically abandoned
 # Use -1 to use the normal inactivity-interval, -2 disables it
 rejected-inactivity-interval: -1

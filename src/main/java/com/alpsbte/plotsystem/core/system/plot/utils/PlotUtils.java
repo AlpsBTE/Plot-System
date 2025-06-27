@@ -331,16 +331,18 @@ public final class PlotUtils {
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
+            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL, -2);
             long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
+            int inactivityNotificationDays = config.getInt(ConfigPaths.INACTIVITY_NOTIFICATION_DAYS, 0);
+            int inactivityNotificationTime = config.getInt(ConfigPaths.INACTIVITY_NOTIFICATION_TIME, 16);
             if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
 
             // Determine if the current time is within the notification window.
-            // Run within a ±60-minute window around 16:00 local time.
-            // TODO: Maybe a config option? the #startUnfinishedPlotReminderTimer is too frequent to be a discord ping
-            int minuteWindow = 60;
-            long minutesDiff = Math.abs(ChronoUnit.MINUTES.between(LocalTime.now(), LocalTime.of(16, 0)));
-            boolean inNotificationWindow = minutesDiff < (minuteWindow / 2);
+            // Run within a ±minute window around a set local time.
+            LocalTime now = LocalTime.now();
+            LocalTime start = LocalTime.of(inactivityNotificationTime, 0).minusMinutes(30);
+            LocalTime end = LocalTime.of(inactivityNotificationTime, 0).plusMinutes(30);
+            boolean inNotificationWindow = inactivityNotificationDays > 0 && !now.isBefore(start) && !now.isAfter(end);;
 
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
@@ -349,8 +351,8 @@ public final class PlotUtils {
                 long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
                 LocalDate abandonDate = lastActivity.plusDays(interval);
 
-                // Check if today is within 5 days before the plot's abandon date
-                if(inNotificationWindow && LocalDate.now().isAfter(abandonDate.minusDays(5))) {
+                // Check if today is within X days before the plot's abandon date
+                if(inNotificationWindow && LocalDate.now().isAfter(abandonDate.minusDays(inactivityNotificationDays))) {
                     // Notify the plot's owner on discord
                     DiscordUtil.getOpt(plot.getId()).ifPresent(event -> event.onPlotInactivity(abandonDate));
                 }
