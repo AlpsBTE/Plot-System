@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,8 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -40,6 +40,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
@@ -49,6 +50,7 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -243,6 +245,11 @@ public class EventListener implements Listener {
         Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 
+    @EventHandler
+    public void onPlayerClientOptionsChange(@NotNull PlayerClientOptionsChangeEvent e) {
+        Utils.updatePlayerInventorySlots(e.getPlayer());
+    }
+
     private void handleIronTrapdoorClick(@NotNull PlayerInteractEvent event) {
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -252,7 +259,7 @@ public class EventListener implements Listener {
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = regionContainer.createQuery();
 
-        if (!query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) return;
+        if (!query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) return;
 
         BlockState state = event.getClickedBlock().getState();
         Openable tp = (Openable) state.getBlockData();
@@ -267,7 +274,6 @@ public class EventListener implements Listener {
     }
 
     private void sendNotices(@NotNull Player player, Builder builder) {
-        sendAdminNotices(player);
         sendReviewNotices(player, builder);
 
         // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
@@ -279,14 +285,6 @@ public class EventListener implements Listener {
                 AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
                 player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
             }
-        }
-    }
-
-    private void sendAdminNotices(@NotNull Player player) {
-        // Inform player about update
-        if (player.hasPermission("plotsystem.admin") && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES) && PlotSystem.UpdateChecker.updateAvailable()) {
-            player.sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-            player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
         }
     }
 

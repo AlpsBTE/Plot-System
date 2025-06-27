@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ The MIT License (MIT)
+  ~  The MIT License (MIT)
   ~
-  ~  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+  ~  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
   ~
   ~  Permission is hereby granted, free of charge, to any person obtaining a copy
   ~  of this software and associated documentation files (the "Software"), to deal
@@ -68,11 +68,6 @@
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
-        <!-- Protocol Lib -->
-        <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
     </repositories>
 
@@ -164,13 +159,6 @@
             <version>4.0.3</version>
             <scope>compile</scope>
         </dependency>
-        <!-- Protocol Lib -->
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>5.1.0</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- Fancy NPCs -->
         <dependency>
             <groupId>de.oliver</groupId>
@@ -205,6 +193,16 @@
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>false</filtering>
+                <excludes>
+                    <exclude>plugin.yml</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
             </resource>
             <resource>
                 <targetPath>./lang</targetPath>
@@ -225,7 +223,7 @@
         <!-- IMPORTANT: Plugin Building Path -->
         <sourceDirectory>src/main/java/</sourceDirectory>
         <!-- IMPORTANT: Output File Name -->
-        <finalName>${project.artifactId}-${project.version}-${build.number}</finalName>
+        <finalName>${project.artifactId}-${project.version}${build.number}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -271,7 +269,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <build.number/>
+        <build.number/> <!-- -SNAPSHOT -->
         <java.version>21</java.version>
     </properties>
 </project>

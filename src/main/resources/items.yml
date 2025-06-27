@@ -1,3 +1,10 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/Plot-System/wiki/items.yml
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# -----------------------------------------------------
 companion-item:
   material: NETHER_STAR
   modelId: ''

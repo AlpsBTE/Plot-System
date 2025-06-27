@@ -31,7 +31,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -110,22 +109,36 @@ public class DatabaseConnection {
 
     private static void createTables() {
         try (Connection con = dataSource.getConnection()) {
-            for (String table : Tables.getTables()) {
-                Objects.requireNonNull(con).prepareStatement(table).executeUpdate();
-            }
+            try (Statement statement = con.createStatement()) {
 
-            con.prepareStatement("INSERT INTO system_info (system_id, db_version, current_plot_version, description) " +
-                    "VALUES (1, 2.0, 4.0, 'Initial database schema for Plot-System v5.0')").executeUpdate();
 
-            try (ResultSet rs = con.prepareStatement("SELECT COUNT(difficulty_id) FROM plot_difficulty").executeQuery()) {
-                if (rs.next()) {
-                    if (rs.getInt(1) == 0) {
-                        con.prepareStatement("INSERT INTO plot_difficulty (difficulty_id, multiplier)" +
-                                "VALUES ('EASY', 1.0)," +
-                                "       ('MEDIUM', 1.5)," +
-                                "       ('HARD', 2);").executeUpdate();
-                    }
+                for (String table : Tables.getTables()) {
+                    statement.addBatch(table);
                 }
+
+                statement.addBatch("INSERT INTO system_info (system_id, db_version, current_plot_version, description)" +
+                        "SELECT 1, 2.0, 4.0, 'Initial database schema for Plot-System v5.0' FROM DUAL " +
+                        "WHERE NOT EXISTS (SELECT 1 FROM system_info);");
+
+                statement.addBatch("INSERT INTO review_toggle_criteria (criteria_name, is_optional) " +
+                        "VALUES" +
+                        "    ('built_on_outlines',0)," +
+                        "    ('correct_amount_windows_doors',0)," +
+                        "    ('correct_facade_colour',0)," +
+                        "    ('correct_height',0)," +
+                        "    ('correct_roof_colour',1)," +
+                        "    ('correct_roof_shape',0)," +
+                        "    ('correct_window_type',1)," +
+                        "    ('windows_blacked_out',0)" +
+                        "ON DUPLICATE KEY UPDATE criteria_name = VALUES(criteria_name);");
+
+                statement.addBatch("INSERT INTO plot_difficulty (difficulty_id, multiplier)" +
+                        "VALUES ('EASY', 1.0)," +
+                        "       ('MEDIUM', 1.5)," +
+                        "       ('HARD', 2)" +
+                "ON DUPLICATE KEY UPDATE difficulty_id = VALUES(difficulty_id);");
+
+                statement.executeBatch();
             }
         } catch (SQLException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating á database table"), ex);
@@ -198,14 +211,14 @@ public class DatabaseConnection {
     }
 
     private static class Tables {
-        private final static List<String> tables;
+        private static final List<String> tablesSql;
 
         public static List<String> getTables() {
-            return tables;
+            return tablesSql;
         }
 
         static {
-            tables = Arrays.asList(
+            tablesSql = Arrays.asList(
                     // System Info
                     "CREATE TABLE IF NOT EXISTS system_info" +
                             "(" +

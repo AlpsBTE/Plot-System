@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
@@ -67,7 +68,7 @@ public class TutorialPlotGenerator extends AbstractPlotGenerator {
         region.setFlag(Flags.BUILD, isBuildingEnabled() ? StateFlag.State.ALLOW : StateFlag.State.DENY);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
 
-        if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+        if (DependencyManager.isWorldGuardExtraFlagsEnabled())
             region.setFlag(new StateFlag("worldedit", false, RegionGroup.OWNERS), isWorldEditEnabled() ? StateFlag.State.ALLOW : StateFlag.State.DENY);
 
         try {

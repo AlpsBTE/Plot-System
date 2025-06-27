@@ -33,6 +33,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -209,7 +210,7 @@ public abstract class AbstractPlotGenerator {
     protected void setBuildRegionPermissions(@NotNull ProtectedRegion region) {
         region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
-        if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+        if (DependencyManager.isWorldGuardExtraFlagsEnabled())
             region.setFlag(new StateFlag("worldedit", true, RegionGroup.OWNERS), StateFlag.State.ALLOW);
     }
 

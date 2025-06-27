@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -46,7 +47,7 @@ import java.util.Random;
 import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
-    private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
+    private final MVWorldManager worldManager = DependencyManager.getMultiverseCore().getMVWorldManager();
     private WorldCreator worldCreator;
 
     private final String worldName;
@@ -127,7 +128,7 @@ public class PlotWorldGenerator {
             globalRegion.setFlag(Flags.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.ALL);
             globalRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
             globalRegion.setFlag(Flags.TNT.getRegionGroupFlag(), RegionGroup.ALL);
-            if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+            if (DependencyManager.isWorldGuardExtraFlagsEnabled())
                 globalRegion.setFlag(new StateFlag("worldedit", true, RegionGroup.ALL), StateFlag.State.DENY);
 
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);
