@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.commands.admin;
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -41,24 +40,24 @@ public class CMD_PReload extends BaseCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        PlotSystem plugin = PlotSystem.getPlugin();
         if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
             return true;
         }
 
         try {
-            PlotSystem.getPlugin().reloadConfig();
+            plugin.reloadConfig();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
             DecentHologramDisplay.activeDisplays.forEach(leaderboard -> leaderboard.setLocation(HologramRegister
                     .getLocation((HologramConfiguration) leaderboard)));
             HologramRegister.reload();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded leaderboards!"));
-
-            DatabaseConnection.InitializeDatabase();
+            plugin.initDatabase();
         } catch (Exception ex) {
             sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+            plugin.getComponentLogger().error(text("An error occurred!"), ex);
         }
         return true;
     }

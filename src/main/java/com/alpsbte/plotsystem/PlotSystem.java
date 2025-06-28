@@ -27,11 +27,12 @@ package com.alpsbte.plotsystem;
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.alpslib.io.YamlFileFactory;
 import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
+import com.alpsbte.alpslib.io.database.DatabaseConfigPaths;
+import com.alpsbte.alpslib.io.database.DatabaseConnection;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.CommandManager;
 import com.alpsbte.plotsystem.core.EventListener;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -46,6 +47,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.google.common.io.CharStreams;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -54,7 +56,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
@@ -95,7 +100,7 @@ public class PlotSystem extends JavaPlugin {
 
         // Initialize database connection
         try {
-            DatabaseConnection.InitializeDatabase();
+            initDatabase();
             getComponentLogger().info(successPrefix.append(text("Successfully initialized database connection.")));
         } catch (Exception ex) {
             getComponentLogger().error(errorPrefix.append(text("Could not initialize database connection.")), ex);
@@ -159,6 +164,9 @@ public class PlotSystem extends JavaPlugin {
 
             DecentHologramDisplay.activeDisplays.forEach(DecentHologramDisplay::delete);
         } else {
+            // Close database connection
+            DatabaseConnection.shutdown();
+
             // Unload plots
             for (UUID player : PlotUtils.Cache.getCachedInProgressPlots().keySet()) {
                 Builder builder = Builder.byUUID(player);
@@ -197,5 +205,13 @@ public class PlotSystem extends JavaPlugin {
 
     public static PlotSystem getPlugin() {
         return plugin;
+    }
+
+    public void initDatabase() throws IOException, SQLException, ClassNotFoundException {
+        DatabaseConnection.initializeDatabase(DatabaseConfigPaths.getConfig(getConfig()), getComponentLogger());
+        var initScript = CharStreams.toString(Objects.requireNonNull(getTextResource("DATABASE.sql")));
+        try (var con = DatabaseConnection.getConnection(); var s = con.createStatement()) {
+            s.execute(initScript);
+        }
     }
 }

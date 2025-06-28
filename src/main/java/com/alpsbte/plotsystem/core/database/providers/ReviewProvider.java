@@ -24,8 +24,8 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -33,11 +33,9 @@ import com.alpsbte.plotsystem.core.system.review.*;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 public class ReviewProvider {
@@ -47,119 +45,89 @@ public class ReviewProvider {
 
     public ReviewProvider() {
         // cache all review notifications
-        String query = "SELECT review_id, uuid FROM builder_has_review_notification;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
+        String qAllNotifys = "SELECT review_id, uuid FROM builder_has_review_notification;";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qAllNotifys, ps -> {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     NOTIFICATIONS.add(new ReviewNotification(rs.getInt(1), UUID.fromString(rs.getString(2))));
                 }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
 
         // cache all toggle criteria
-        query = "SELECT criteria_name, is_optional FROM review_toggle_criteria;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
+        String qAllToggleCriterias = "SELECT criteria_name, is_optional FROM review_toggle_criteria;";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qAllToggleCriterias, ps -> {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     TOGGLE_CRITERIA.add(new ToggleCriteria(rs.getString(1), rs.getBoolean(2)));
                 }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
 
         // cache all build team toggle criteria
-        query = "SELECT criteria_name, build_team_id FROM build_team_uses_toggle_criteria;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
+        String qAllBuildteamCriteria = "SELECT criteria_name, build_team_id FROM build_team_uses_toggle_criteria;";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qAllBuildteamCriteria, ps -> {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String criteriaName = rs.getString(1);
                     ToggleCriteria toggle = TOGGLE_CRITERIA.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst().orElseThrow();
                     BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(rs.getInt(2), toggle));
                 }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
     }
 
     public Optional<PlotReview> getReview(int reviewId) {
-        String query = "SELECT plot_id, rating, score, feedback, reviewed_by FROM plot_review WHERE review_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
+        String qById = "SELECT plot_id, rating, score, feedback, reviewed_by FROM plot_review WHERE review_id = ?;";
+        return Utils.handleSqlException(Optional.empty(), () -> SqlHelper.runQuery(qById, ps -> {
+            ps.setInt(1, reviewId);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) return Optional.empty();
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) return Optional.empty();
+            int plotId = rs.getInt(1);
+            ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
+            int score = rs.getInt(3);
+            String feedback = rs.getString(4);
+            UUID reviewedBy = UUID.fromString(rs.getString(5));
 
-                int plotId = rs.getInt(1);
-                ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
-                int score = rs.getInt(3);
-                String feedback = rs.getString(4);
-                UUID reviewedBy = UUID.fromString(rs.getString(5));
-
-                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return Optional.empty();
+            return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
+        }));
     }
 
     public Optional<PlotReview> getLatestReview(int plotId) {
-        String query = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review " +
-                "WHERE plot_id = ? ORDER BY review_date DESC LIMIT 1;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, plotId);
+        String qLatestByPlotId = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review WHERE plot_id = ? ORDER BY review_date DESC LIMIT 1;";
+        return Utils.handleSqlException(Optional.empty(), () -> SqlHelper.runQuery(qLatestByPlotId, ps -> {
+            ps.setInt(1, plotId);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) return Optional.empty();
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) return Optional.empty();
+            int reviewId = rs.getInt(1);
+            ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
+            int score = rs.getInt(3);
+            String feedback = rs.getString(4);
+            UUID reviewedBy = UUID.fromString(rs.getString(5));
 
+            return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
+        }));
+    }
+
+    public List<PlotReview> getPlotReviewHistory(int plotId) {
+        String qByPlotId = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review WHERE plot_id = ?;";
+        return Utils.handleSqlException(new ArrayList<>(), () -> SqlHelper.runQuery(qByPlotId, ps -> {
+            ps.setInt(1, plotId);
+            ResultSet rs = ps.executeQuery();
+            List<PlotReview> reviews = new ArrayList<>();
+            while (rs.next()) {
                 int reviewId = rs.getInt(1);
                 ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
                 int score = rs.getInt(3);
                 String feedback = rs.getString(4);
                 UUID reviewedBy = UUID.fromString(rs.getString(5));
 
-                return Optional.of(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
+                reviews.add(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
             }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return Optional.empty();
+            return reviews;
+        }));
     }
 
-    public List<PlotReview> getPlotReviewHistory(int plotId) {
-        List<PlotReview> reviews = new ArrayList<>();
-        String query = "SELECT review_id, rating, score, feedback, reviewed_by FROM plot_review WHERE plot_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, plotId);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    int reviewId = rs.getInt(1);
-                    ReviewRating rating = getReviewRating(reviewId, rs.getString(2));
-                    int score = rs.getInt(3);
-                    String feedback = rs.getString(4);
-                    UUID reviewedBy = UUID.fromString(rs.getString(5));
-
-                    reviews.add(new PlotReview(reviewId, plotId, rating, score, feedback, reviewedBy));
-                }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return reviews;
-    }
-
-    private ReviewRating getReviewRating(int reviewId, String ratingString) {
+    private @NotNull ReviewRating getReviewRating(int reviewId, @NotNull String ratingString) {
         int accuracyPoints = Integer.parseInt(ratingString.split(",")[0]);
         int blockPalettePoints = Integer.parseInt(ratingString.split(",")[1]);
         Map<ToggleCriteria, Boolean> toggleCriteria = getReviewToggleCriteria(reviewId);
@@ -167,35 +135,27 @@ public class ReviewProvider {
     }
 
     public boolean updateFeedback(int reviewId, String newFeedback) {
-        String query = "UPDATE plot_review SET feedback = ? WHERE review_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newFeedback);
-            stmt.setInt(2, reviewId);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qSetFeedback = "UPDATE plot_review SET feedback = ? WHERE review_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetFeedback, ps -> {
+            ps.setString(1, newFeedback);
+            ps.setInt(2, reviewId);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
-    public PlotReview createReview(Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
+    public PlotReview createReview(@NotNull Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
         boolean result = DataProvider.PLOT.setMcVersion(plot.getID());
         if (!result) return null;
 
         // Create Review
-        String query = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) " +
-                "VALUES (?, ?, ?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, plot.getID());
-            stmt.setString(2, rating.getRatingDatabaseString());
-            stmt.setInt(3, score);
-            stmt.setString(4, reviewerUUID.toString());
-            result = stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        String qInsert = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) VALUES (?, ?, ?, ?);";
+        result = Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
+            ps.setInt(1, plot.getID());
+            ps.setString(2, rating.getRatingDatabaseString());
+            ps.setInt(3, score);
+            ps.setString(4, reviewerUUID.toString());
+            return ps.executeUpdate() > 0;
+        })));
 
         if (!result) return null;
 
@@ -226,30 +186,23 @@ public class ReviewProvider {
         removeCheckedToggleCriteria(reviewId);
 
         // remove review
-        String query = "DELETE FROM plot_review WHERE review_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qDelete = "DELETE FROM plot_review WHERE review_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDelete, ps -> {
+            ps.setInt(1, reviewId);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public boolean removeAllReviewsOfPlot(int plotId) {
+        String qIdsByPlotId = "SELECT review_id FROM plot_review WHERE plot_id = ?;";
         List<Integer> reviewIds = new ArrayList<>();
-        String query = "SELECT review_id FROM plot_review WHERE plot_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, plotId);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) reviewIds.add(rs.getInt(1));
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qIdsByPlotId, ps -> {
+            ps.setInt(1, plotId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                reviewIds.add(rs.getInt(1));
             }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
 
         boolean successful = true;
         for (int reviewId : reviewIds) {
@@ -267,52 +220,39 @@ public class ReviewProvider {
         Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
         if (criteria.isPresent()) return false;
 
-        String query = "INSERT INTO review_toggle_criteria (criteria_name, is_optional) " +
-                "VALUES (?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, criteriaName);
-            stmt.setBoolean(2, isOptional);
-            boolean successful = stmt.executeUpdate() > 0;
-            if (successful) TOGGLE_CRITERIA.add(new ToggleCriteria(criteriaName, isOptional));
-            return successful;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qInsertToggleCriteria = "INSERT INTO review_toggle_criteria (criteria_name, is_optional) VALUES (?, ?);";
+        if (!Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsertToggleCriteria, ps -> {
+            ps.setString(1, criteriaName);
+            ps.setBoolean(2, isOptional);
+            return ps.executeUpdate() > 0;
+        })))) return false;
+        TOGGLE_CRITERIA.add(new ToggleCriteria(criteriaName, isOptional));
+        return true;
     }
 
     public boolean removeToggleCriteria(String criteriaName) {
         Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
         if (criteria.isEmpty()) return false;
 
-        String query = "DELETE FROM review_toggle_criteria WHERE criteria_name = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, criteriaName);
-            boolean successful = stmt.executeUpdate() > 0;
+        String qDeleteToggleCriteria = "DELETE FROM review_toggle_criteria WHERE criteria_name = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteToggleCriteria, ps -> {
+            ps.setString(1, criteriaName);
+            boolean successful = ps.executeUpdate() > 0;
             if (successful) TOGGLE_CRITERIA.remove(criteria.get());
             return successful;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 
     public boolean setToggleCriteriaOptional(String criteriaName, boolean isOptional) {
         Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
         if (criteria.isEmpty()) return false;
 
-        String query = "UPDATE review_toggle_criteria SET is_optional = ? WHERE criteria_name = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setBoolean(1, isOptional);
-            stmt.setString(1, criteriaName);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qSetToggleCriteriaOptional = "UPDATE review_toggle_criteria SET is_optional = ? WHERE criteria_name = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetToggleCriteriaOptional, ps -> {
+            ps.setBoolean(1, isOptional);
+            ps.setString(2, criteriaName);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public List<ToggleCriteria> getAllToggleCriteria() {return TOGGLE_CRITERIA.stream().toList();}
@@ -325,82 +265,57 @@ public class ReviewProvider {
         Optional<ToggleCriteria> existingCriteria = getBuildTeamToggleCriteria(buildTeamId).stream().filter(t ->
                 t.getCriteriaName().equals(criteria.getCriteriaName())).findFirst();
         if (existingCriteria.isPresent()) return false;
-        String query = "INSERT INTO build_team_uses_toggle_criteria (build_team_id, criteria_name) " +
-                "VALUES (?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, buildTeamId);
-            stmt.setString(2, criteria.getCriteriaName());
-            boolean successful = stmt.executeUpdate() > 0;
-            if (successful) BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(buildTeamId, criteria));
-            return successful;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qInsertCriteriaToBuildteam = "INSERT INTO build_team_uses_toggle_criteria (build_team_id, criteria_name) VALUES (?, ?);";
+        if (!Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsertCriteriaToBuildteam, ps -> {
+            ps.setInt(1, buildTeamId);
+            ps.setString(2, criteria.getCriteriaName());
+            return ps.executeUpdate() > 0;
+        })))) return false;
+        BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(buildTeamId, criteria));
+        return true;
     }
 
     public boolean removeBuildTeamToggleCriteria(int buildTeamId, ToggleCriteria criteria) {
         Optional<BuildTeamToggleCriteria> existingCriteria = BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(btc ->
                 btc.getBuildTeamId() == buildTeamId && btc.getCriteria().getCriteriaName().equals(criteria.getCriteriaName())).findFirst();
         if (existingCriteria.isEmpty()) return false;
-        String query = "DELETE FROM build_team_uses_toggle_criteria WHERE build_team_id = ? AND criteria_name = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, buildTeamId);
-            stmt.setString(2, criteria.getCriteriaName());
-            boolean successful = stmt.executeUpdate() > 0;
+        String qDeleteCriteriaToBuildteam = "DELETE FROM build_team_uses_toggle_criteria WHERE build_team_id = ? AND criteria_name = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteCriteriaToBuildteam, ps -> {
+            ps.setInt(1, buildTeamId);
+            ps.setString(2, criteria.getCriteriaName());
+            boolean successful = ps.executeUpdate() > 0;
             if (successful) BUILD_TEAM_TOGGLE_CRITERIA.remove(existingCriteria.get());
             return successful;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 
     public Map<ToggleCriteria, Boolean> getReviewToggleCriteria(int reviewId) {
-        HashMap<ToggleCriteria, Boolean> toggleCriteriaList = new HashMap<>();
-        String query = "SELECT criteria_name, is_checked FROM review_contains_toggle_criteria WHERE review_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    boolean isChecked = rs.getBoolean(2);
-                    toggleCriteriaList.put(getToggleCriteria(rs.getString(1)).orElseThrow(), isChecked);
-                }
+        String qReviewToggleCriteriasByReviewId = "SELECT criteria_name, is_checked FROM review_contains_toggle_criteria WHERE review_id = ?;";
+        return Utils.handleSqlException(new HashMap<>(), () -> SqlHelper.runQuery(qReviewToggleCriteriasByReviewId, ps -> {
+            ps.setInt(1, reviewId);
+            ResultSet rs = ps.executeQuery();
+            HashMap<ToggleCriteria, Boolean> toggleCriteriaList = new HashMap<>();
+            while (rs.next()) {
+                boolean isChecked = rs.getBoolean(2);
+                toggleCriteriaList.put(getToggleCriteria(rs.getString(1)).orElseThrow(), isChecked);
             }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return toggleCriteriaList;
+            return toggleCriteriaList;
+        }));
     }
 
-    public boolean addReviewToggleCriteria(int reviewId, ToggleCriteria toggle, boolean isChecked) {
-        String query = "INSERT INTO review_contains_toggle_criteria (review_id, criteria_name, is_checked) " +
-                "VALUES (?, ?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
-            stmt.setString(2, toggle.getCriteriaName());
-            stmt.setBoolean(3, isChecked);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+    public boolean addReviewToggleCriteria(int reviewId, @NotNull ToggleCriteria toggle, boolean isChecked) {
+        String qInsertToggleCriteriaToReview = "INSERT INTO review_contains_toggle_criteria (review_id, criteria_name, is_checked) VALUES (?, ?, ?);";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsertToggleCriteriaToReview, ps -> {
+            ps.setInt(1, reviewId);
+            ps.setString(2, toggle.getCriteriaName());
+            ps.setBoolean(3, isChecked);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public void removeCheckedToggleCriteria(int reviewId) {
-        String query = "DELETE FROM review_contains_toggle_criteria WHERE review_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        String qDeleteToggleCriteriaToReview = "DELETE FROM review_contains_toggle_criteria WHERE review_id = ?;";
+        Utils.handleSqlException(() -> SqlHelper.runStatement(qDeleteToggleCriteriaToReview, ps -> ps.setInt(1, reviewId)));
     }
 
     // --- Review Notification ---
@@ -420,16 +335,12 @@ public class ReviewProvider {
         Optional<ReviewNotification> notification = getReviewNotification(reviewId, uuid);
         if (notification.isEmpty()) return;
 
-        String query = "DELETE FROM builder_has_review_notification WHERE review_id = ? AND uuid = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
-            stmt.setString(2, uuid.toString());
-            boolean result = stmt.executeUpdate() > 0;
-            if (result) NOTIFICATIONS.remove(notification.get());
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        String qDeleteReviewNotify = "DELETE FROM builder_has_review_notification WHERE review_id = ? AND uuid = ?;";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qDeleteReviewNotify, ps -> {
+            ps.setInt(1, reviewId);
+            ps.setString(2, uuid.toString());
+            if (ps.executeUpdate() > 0) NOTIFICATIONS.remove(notification.get());
+        }));
     }
 
     public void createReviewNotification(int reviewId, UUID uuid) {
@@ -439,15 +350,11 @@ public class ReviewProvider {
             return;
         }
 
-        String query = "INSERT INTO builder_has_review_notification (review_id, uuid) VALUES (?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, reviewId);
-            stmt.setString(2, uuid.toString());
-            boolean result = stmt.executeUpdate() > 0;
-            if (result) NOTIFICATIONS.add(new ReviewNotification(reviewId, uuid));
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        String qInsertReviewNotify = "INSERT INTO builder_has_review_notification (review_id, uuid) VALUES (?, ?);";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qInsertReviewNotify, ps -> {
+            ps.setInt(1, reviewId);
+            ps.setString(2, uuid.toString());
+            if (ps.executeUpdate() > 0) NOTIFICATIONS.add(new ReviewNotification(reviewId, uuid));
+        }));
     }
 }

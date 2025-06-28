@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,14 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,22 +44,17 @@ public class BuildTeamProvider {
     public BuildTeamProvider(BuilderProvider builderProvider, CityProjectProvider cityProjectProvider) {
         this.cityProjectProvider = cityProjectProvider;
 
+        String qBuildTeams = "SELECT build_team_id, name FROM build_team;";
         // cache all build teams
-        String query = "SELECT build_team_id, name FROM build_team;";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    int buildTeamId = rs.getInt(1);
-
-                    List<CityProject> cityProjects = cityProjectProvider.getCityProjectsByBuildTeam(buildTeamId);
-                    List<Builder> reviewers = builderProvider.getReviewersByBuildTeam(buildTeamId);
-                    BUILD_TEAMS.add(new BuildTeam(buildTeamId, rs.getString(2), cityProjects, reviewers));
-                }
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qBuildTeams, ps -> {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int buildTeamId = rs.getInt(1);
+                List<CityProject> cityProjects = cityProjectProvider.getCityProjectsByBuildTeam(buildTeamId);
+                List<Builder> reviewers = builderProvider.getReviewersByBuildTeam(buildTeamId);
+                BUILD_TEAMS.add(new BuildTeam(buildTeamId, rs.getString(2), cityProjects, reviewers));
             }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
     }
 
     public Optional<BuildTeam> getBuildTeam(int id) {
@@ -70,24 +62,24 @@ public class BuildTeamProvider {
     }
 
     public List<BuildTeam> getBuildTeamsByReviewer(@NotNull UUID reviewerUUID) {
-        List<BuildTeam> buildTeams = new ArrayList<>();
+        var l = BUILD_TEAMS.stream()
+                .filter(b -> b.getReviewers().stream()
+                        .anyMatch(r -> r.getUUID().equals(reviewerUUID)))
+                .toList();
+        if (!l.isEmpty()) return l;
 
-        String query = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, reviewerUUID.toString());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+        String qIdByUuid = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
+        return Utils.handleSqlException(new ArrayList<>(), () -> SqlHelper.runQuery(qIdByUuid, ps -> {
+            ps.setString(1, reviewerUUID.toString());
+            ResultSet rs = ps.executeQuery();
+            List<BuildTeam> buildTeams = new ArrayList<>();
+            while (rs.next()) {
                     Optional<BuildTeam> buildTeam = getBuildTeam(rs.getInt(1));
                     if (buildTeam.isEmpty()) continue;
                     buildTeams.add(buildTeam.get());
                 }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return buildTeams;
+            return buildTeams;
+        }));
     }
 
     public List<BuildTeam> getBuildTeams() {
@@ -95,88 +87,66 @@ public class BuildTeamProvider {
     }
 
     public boolean addBuildTeam(String name) {
-        boolean result = false;
         if (BUILD_TEAMS.stream().anyMatch(b -> b.getName().equals(name))) return false;
 
-        String query = "INSERT INTO build_team (name) VALUES (?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, name);
-            result = stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        String qInsert = "INSERT INTO build_team (name) VALUES (?);";
+        String qByName = "SELECT build_team_id FROM build_team WHERE name = ?;";
+        // get the last inserted build team id
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
+            ps.setString(1, name);
+            boolean result = ps.executeUpdate() > 0;
 
-        if (result) {
-            String resultQuery = "SELECT build_team_id FROM build_team WHERE name = ?;";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(resultQuery)) {
-                stmt.setString(1, name);
-                try (ResultSet rs = stmt.executeQuery()) {
+            if (result) {
+                Utils.handleSqlException(() -> SqlHelper.runQuery(qByName, ps2 -> {
+                    ps2.setString(1, name);
+                    ResultSet rs = ps2.executeQuery();
                     rs.next(); // get the last inserted build team id
                     BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name));
-                }
-            } catch (SQLException ex) {
-                Utils.logSqlException(ex);
+                }));
             }
-        }
-        return result;
+            return result;
+        })));
     }
 
     public boolean removeBuildTeam(int id) {
         Optional<BuildTeam> cachedBuildTeam = getBuildTeam(id);
         if (cachedBuildTeam.isEmpty()) return false;
 
-        String query = "DELETE FROM build_team WHERE build_team_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            boolean result = stmt.executeUpdate() > 0;
+        String qDeleteById = "DELETE FROM build_team WHERE build_team_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteById, ps -> {
+            ps.setInt(1, id);
+            boolean result = ps.executeUpdate() > 0;
             if (result) BUILD_TEAMS.remove(cachedBuildTeam.get());
             return result;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 
     public boolean setBuildTeamName(int id, String newName) {
-        String query = "UPDATE build_team SET name = ? WHERE build_team_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newName);
-            stmt.setInt(2, id);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qSetNameById = "UPDATE build_team SET name = ? WHERE build_team_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetNameById, ps -> {
+            ps.setString(1, newName);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public boolean addReviewer(int id, String reviewerUUID) {
-        String query = "INSERT INTO build_team_has_reviewer (build_team_id, uuid) VALUES (?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            stmt.setString(2, reviewerUUID);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qInsertReviewer = "INSERT INTO build_team_has_reviewer (build_team_id, uuid) VALUES (?, ?);";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runInsertQuery(qInsertReviewer, ps -> {
+            ps.setInt(1, id);
+            ps.setString(2, reviewerUUID);
+            return ps.executeUpdate() > 0;
+
+        })));
     }
 
     public boolean removeReviewer(int id, String reviewerUUID) {
-        String query = "DELETE FROM build_team_has_reviewer WHERE build_team_id = ? AND uuid = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            stmt.setString(2, reviewerUUID);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qDeleteReviewer = "DELETE FROM build_team_has_reviewer WHERE build_team_id = ? AND uuid = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteReviewer, ps -> {
+            ps.setInt(1, id);
+            ps.setString(2, reviewerUUID);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public boolean isAnyReviewer(@NotNull UUID reviewerUUID) {

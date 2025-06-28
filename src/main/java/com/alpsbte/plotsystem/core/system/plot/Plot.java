@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -29,16 +29,15 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.sk89q.worldedit.math.BlockVector2;
-import com.sk89q.worldedit.math.BlockVector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -171,11 +170,6 @@ public class Plot extends AbstractPlot {
         return DataProvider.PLOT.getCompletedSchematic(getID());
     }
 
-    @Override
-    public BlockVector3 getCenter() {
-        return super.getCenter();
-    }
-
     public List<PlotReview> getReviewHistory() {
         return DataProvider.REVIEW.getPlotReviewHistory(getID());
     }
@@ -197,12 +191,12 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean addPlotMember(Builder member) {
-        List<Builder> members = getPlotMembers();
-        if (members.size() < 3 && members.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
+        List<Builder> plotMembers = getPlotMembers();
+        if (plotMembers.size() < 3 && plotMembers.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
             Slot slot = member.getFreeSlot();
             if (slot != null) {
-                members.add(member);
-                if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
+                plotMembers.add(member);
+                if (DataProvider.PLOT.addPlotMember(getID(), member)) {
                     if (!member.setSlot(slot, getID())) return false;
                     getPermissions().addBuilderPerms(member.getUUID());
                     return true;
@@ -213,10 +207,10 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean removePlotMember(Builder member) {
-        List<Builder> members = getPlotMembers();
-        if (!members.isEmpty() && members.contains(member)) {
-            members.remove(member);
-            if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
+        List<Builder> plotMembers = getPlotMembers();
+        if (!plotMembers.isEmpty() && plotMembers.contains(member)) {
+            plotMembers.remove(member);
+            if (DataProvider.PLOT.removePlotMember(getID(), member)) {
                 Slot slot = member.getSlotByPlotId(getID());
                 if (slot != null && !member.setSlot(slot, -1)) return false;
                 if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());

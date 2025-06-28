@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.utils;
 
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -55,6 +56,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -232,6 +234,23 @@ public class Utils {
 
     public static void logSqlException(Exception ex) {
         PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+    }
+
+    public static <T> @Nullable T handleSqlException(T defaultValue, @NotNull SqlHelper.SQLCheckedSupplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (SQLException e) {
+            logSqlException(e);
+            return defaultValue;
+        }
+    }
+
+    public static void handleSqlException(@NotNull SqlHelper.SQLRunnable supplier) {
+        try {
+            supplier.get();
+        } catch (SQLException e) {
+            logSqlException(e);
+        }
     }
 
     public static Random getRandom() {
