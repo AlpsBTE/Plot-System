@@ -432,6 +432,8 @@ public final class PlotUtils {
                             && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                 }
 
+                successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
+
                 if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
             });
             return true;

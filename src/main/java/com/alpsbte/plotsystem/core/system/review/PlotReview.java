@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.review;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,8 @@ public class PlotReview {
     private final int score;
     private final int splitScore;
     private final UUID reviewedBy;
-    @Nullable private String feedback;
+    @Nullable
+    private String feedback;
 
     public PlotReview(int reviewId, int plotId, ReviewRating rating, int score, @Nullable String feedback, UUID reviewedBy) {
         this(reviewId, DataProvider.PLOT.getPlotById(plotId), rating, score, feedback, reviewedBy);
@@ -67,7 +69,7 @@ public class PlotReview {
         return score;
     }
 
-    public int getSplitScore() { return splitScore; }
+    public int getSplitScore() {return splitScore;}
 
     public @Nullable String getFeedback() {
         return feedback;
@@ -96,21 +98,25 @@ public class PlotReview {
     public boolean undoReview() {
         // remove owner score and remove plot from slot
         if (!plot.getPlotOwner().addScore(splitScore == -1 ? -score : -splitScore)) return false;
-        if (plot.getPlotOwner().getSlotByPlotId(plot.getID()) != null
-                && !plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getID()), plot.getID()))
-            return false;
+
+        Slot slot = plot.getPlotOwner().getSlotByPlotId(plot.getID()); // get slot if plot is still in slots (rejected)
+        if (slot == null) slot = plot.getPlotOwner().getFreeSlot(); // get new slot otherwise (completed)
+        if (slot == null) return false;
+
+        if (!plot.getPlotOwner().setSlot(slot, plot.getID())) return false;
 
         // remove members score and remove plot from slot
         for (Builder member : plot.getPlotMembers()) {
             if (!member.addScore(-splitScore)) return false;
-            if (member.getSlotByPlotId(plot.getID()) != null && !member.setSlot(member.getSlotByPlotId(plot.getID()), plot.getID()))
-                return false;
+
+            Slot memberSlot = member.getSlotByPlotId(plot.getID());
+            if (memberSlot == null) memberSlot = member.getFreeSlot();
+            if (memberSlot == null || member.setSlot(memberSlot, plot.getID())) return false;
         }
 
         plot.setStatus(Status.unreviewed);
         plot.setPasted(false);
 
-        DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
         return DataProvider.REVIEW.removeReview(reviewId);
     }
 }
