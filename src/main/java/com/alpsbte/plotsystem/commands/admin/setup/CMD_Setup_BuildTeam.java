@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.BuildTeam;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.command.CommandSender;
 
@@ -53,6 +54,9 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         registerSubCommand(new CMD_Setup_BuildTeam_SetName(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_AddReviewer(getBaseCommand(), this));
         registerSubCommand(new CMD_Setup_BuildTeam_RemoveReviewer(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_BuildTeam_Criteria(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_BuildTeam_AssignCriteria(getBaseCommand(), this));
+        registerSubCommand(new CMD_Setup_BuildTeam_RemoveCriteria(getBaseCommand(), this));
     }
 
     @Override
@@ -226,7 +230,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
 
-            // Check if build team exits
+            // Check if build team exists
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
@@ -276,7 +280,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
                 return;
             }
 
-            // Check if build team exits
+            // Check if build team exists
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
@@ -323,7 +327,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
 
-            // Check if build team exits
+            // Check if build team exists
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
 
             if (buildTeam.isEmpty()) {
@@ -360,6 +364,149 @@ public class CMD_Setup_BuildTeam extends SubCommand {
         @Override
         public String getPermission() {
             return "plotsystem.admin.pss.buildteam.removereviewer";
+        }
+    }
+
+    public static class CMD_Setup_BuildTeam_Criteria extends SubCommand {
+        public CMD_Setup_BuildTeam_Criteria(BaseCommand baseCommand, SubCommand subCommand) {
+            super(baseCommand, subCommand);
+        }
+
+        @Override
+        public void onCommand(CommandSender sender, String[] args) {
+            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            List<ToggleCriteria> criteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(Integer.parseInt(args[1]));
+            if (criteria.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no toggle criteria assigned to the build team " + args[1] + " in the database!"));
+                return;
+            }
+
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + criteria.size() + " toggle criteria associated to this build team:"));
+            sender.sendMessage(text("--------------------------", DARK_GRAY));
+            for (ToggleCriteria c : criteria) {
+                sender.sendMessage(text(" » ", DARK_GRAY)
+                        .append(text(c.getCriteriaName() + " (" + (c.isOptional() ? "optional" : "required") + ")")));
+            }
+            sender.sendMessage(text("--------------------------", DARK_GRAY));
+        }
+
+        @Override
+        public String[] getNames() {
+            return new String[]{"criteria"};
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public String[] getParameter() {
+            return new String[]{"Build-Team-ID"};
+        }
+
+        @Override
+        public String getPermission() {
+            return "plotsystem.admin.pss.buildteam.criteria";
+        }
+    }
+
+    public static class CMD_Setup_BuildTeam_AssignCriteria extends SubCommand {
+        public CMD_Setup_BuildTeam_AssignCriteria(BaseCommand baseCommand, SubCommand subCommand) {
+            super(baseCommand, subCommand);
+        }
+
+        @Override
+        public void onCommand(CommandSender sender, String[] args) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+
+            // Check if build team exists
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            if (buildTeam.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
+                return;
+            }
+
+            // Check if toggle criteria exists
+            Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getToggleCriteria(args[2]);
+            if (criteria.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Toggle criteria could not be found!"));
+                return;
+            }
+
+            boolean successful = DataProvider.REVIEW.assignBuildTeamToggleCriteria(buildTeam.get().getId(), criteria.get());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully assigned criteria '" + criteria.get().getCriteriaName() + "' to build team with ID '" + args[1] + "'!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+        }
+
+        @Override
+        public String[] getNames() {
+            return new String[]{"assigncriteria"};
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public String[] getParameter() {
+            return new String[]{"Build-Team-ID", "Criteria-Name"};
+        }
+
+        @Override
+        public String getPermission() {
+            return "plotsystem.admin.pss.buildteam.assigncriteria";
+        }
+    }
+
+    public static class CMD_Setup_BuildTeam_RemoveCriteria extends SubCommand {
+        public CMD_Setup_BuildTeam_RemoveCriteria(BaseCommand baseCommand, SubCommand subCommand) {
+            super(baseCommand, subCommand);
+        }
+
+        @Override
+        public void onCommand(CommandSender sender, String[] args) {
+            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+
+            // Check if build team exists
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            if (buildTeam.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
+                return;
+            }
+
+            // Check if toggle criteria exists
+            Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(buildTeam.get().getId())
+                    .stream().filter(t -> t.getCriteriaName().equalsIgnoreCase(args[2])).findFirst();
+            if (criteria.isEmpty()) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Toggle criteria could not be found or is not assigned!"));
+                return;
+            }
+
+            boolean successful = DataProvider.REVIEW.removeBuildTeamToggleCriteria(buildTeam.get().getId(), criteria.get());
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed criteria '" + criteria.get().getCriteriaName() + "' from build team with ID '" + args[1] + "'!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+        }
+
+        @Override
+        public String[] getNames() {
+            return new String[]{"removecriteria"};
+        }
+
+        @Override
+        public String getDescription() {
+            return null;
+        }
+
+        @Override
+        public String[] getParameter() {
+            return new String[]{"Build-Team-ID", "Criteria-Name"};
+        }
+
+        @Override
+        public String getPermission() {
+            return "plotsystem.admin.pss.buildteam.removecriteria";
         }
     }
 }

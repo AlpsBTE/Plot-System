@@ -173,18 +173,20 @@ public class CMD_Setup_City extends SubCommand {
             }
 
             boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, buildTeamId, country.get().getCode(), serverName);
-            if (added) {
-                try {
-                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".name", cityProjectId);
-                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".description", "");
-                } catch (Exception e) {
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for City Project " + cityProjectId + "!").color(RED), e);
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for City Project " + cityProjectId + "!"));
-                }
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be the ID of the City & no description will be present!"));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
+            if (!added) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
+                return;
             }
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
+
+            try {
+                LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".name", cityProjectId);
+                LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".description", "");
+            } catch (Exception e) {
+                PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for City Project " + cityProjectId + "!").color(RED), e);
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for City Project " + cityProjectId + "!"));
+            }
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be the ID of the City & no description will be present!"));
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
         }
 
         @Override

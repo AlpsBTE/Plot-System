@@ -263,8 +263,99 @@ public class ReviewProvider {
         return TOGGLE_CRITERIA.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst();
     }
 
+    public boolean addToggleCriteria(String criteriaName, boolean isOptional) {
+        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
+        if (criteria.isPresent()) return false;
+
+        String query = "INSERT INTO review_toggle_criteria (criteria_name, is_optional) " +
+                "VALUES (?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, criteriaName);
+            stmt.setBoolean(2, isOptional);
+            boolean successful = stmt.executeUpdate() > 0;
+            if (successful) TOGGLE_CRITERIA.add(new ToggleCriteria(criteriaName, isOptional));
+            return successful;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
+    }
+
+    public boolean removeToggleCriteria(String criteriaName) {
+        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
+        if (criteria.isEmpty()) return false;
+
+        String query = "DELETE FROM review_toggle_criteria WHERE criteria_name = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, criteriaName);
+            boolean successful = stmt.executeUpdate() > 0;
+            if (successful) TOGGLE_CRITERIA.remove(criteria.get());
+            return successful;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
+    }
+
+    public boolean setToggleCriteriaOptional(String criteriaName, boolean isOptional) {
+        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
+        if (criteria.isEmpty()) return false;
+
+        String query = "UPDATE review_toggle_criteria SET is_optional = ? WHERE criteria_name = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setBoolean(1, isOptional);
+            stmt.setString(1, criteriaName);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
+    }
+
+    public List<ToggleCriteria> getAllToggleCriteria() {return TOGGLE_CRITERIA.stream().toList();}
+
     public List<ToggleCriteria> getBuildTeamToggleCriteria(int buildTeamId) {
         return BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(c -> c.getBuildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::getCriteria).toList();
+    }
+
+    public boolean assignBuildTeamToggleCriteria(int buildTeamId, ToggleCriteria criteria) {
+        Optional<ToggleCriteria> existingCriteria = getBuildTeamToggleCriteria(buildTeamId).stream().filter(t ->
+                t.getCriteriaName().equals(criteria.getCriteriaName())).findFirst();
+        if (existingCriteria.isPresent()) return false;
+        String query = "INSERT INTO build_team_uses_toggle_criteria (build_team_id, criteria_name) " +
+                "VALUES (?, ?);";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, buildTeamId);
+            stmt.setString(2, criteria.getCriteriaName());
+            boolean successful = stmt.executeUpdate() > 0;
+            if (successful) BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(buildTeamId, criteria));
+            return successful;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
+    }
+
+    public boolean removeBuildTeamToggleCriteria(int buildTeamId, ToggleCriteria criteria) {
+        Optional<BuildTeamToggleCriteria> existingCriteria = BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(btc ->
+                btc.getBuildTeamId() == buildTeamId && btc.getCriteria().getCriteriaName().equals(criteria.getCriteriaName())).findFirst();
+        if (existingCriteria.isEmpty()) return false;
+        String query = "DELETE FROM build_team_uses_toggle_criteria WHERE build_team_id = ? AND criteria_name = ?;";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, buildTeamId);
+            stmt.setString(2, criteria.getCriteriaName());
+            boolean successful = stmt.executeUpdate() > 0;
+            if (successful) BUILD_TEAM_TOGGLE_CRITERIA.remove(existingCriteria.get());
+            return successful;
+        } catch (SQLException ex) {
+            Utils.logSqlException(ex);
+        }
+        return false;
     }
 
     public Map<ToggleCriteria, Boolean> getReviewToggleCriteria(int reviewId) {
