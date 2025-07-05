@@ -156,18 +156,7 @@ public class CMD_Setup_Country extends SubCommand {
             String customModelData = args.length > 4 ? args[4] : null;
 
             boolean successful = DataProvider.COUNTRY.addCountry(code, continent, material, customModelData);
-            if (successful)
-            {
-                try {
-                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.COUNTRY + "." + code + ".name", code);
-                } catch (Exception e) {
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for country " + code + "!").color(RED), e);
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for country " + code + "!"));
-                }
-
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + code + " language config setting, otherwise the name will be the ID of the Country & no description will be present!"));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
-            }
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 

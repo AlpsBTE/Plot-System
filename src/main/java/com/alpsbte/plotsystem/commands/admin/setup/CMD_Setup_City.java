@@ -35,6 +35,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
+import org.yaml.snakeyaml.DumperOptions;
 
 import java.util.List;
 import java.util.Optional;
@@ -177,15 +178,6 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
                 return;
             }
-
-            try {
-                LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".name", cityProjectId);
-                LangUtil.getInstance().setDynamicKey(LangPaths.Database.CITY_PROJECT + "." + cityProjectId + ".description", "");
-            } catch (Exception e) {
-                PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for City Project " + cityProjectId + "!").color(RED), e);
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for City Project " + cityProjectId + "!"));
-            }
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be the ID of the City & no description will be present!"));
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
         }
 

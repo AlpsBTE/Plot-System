@@ -138,15 +138,7 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
 
             boolean successful = DataProvider.REVIEW.addToggleCriteria(name, isOptional);
             if (!successful) sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            else {
-                try {
-                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.TOGGLE_CRITERIA + "." + name, name.replace("-", " ").replace("_", " "));
-                } catch (Exception e) {
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for Toggle Criteria " + name + "!").color(RED), e);
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for Toggle Criteria " + name + "!"));
-                }
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added toggle criteria with name '" + name + "'!"));
-            }
+            else sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added toggle criteria with name '" + name + "'!"));
         }
 
         @Override
