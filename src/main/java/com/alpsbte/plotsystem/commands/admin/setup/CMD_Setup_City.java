@@ -140,7 +140,7 @@ public class CMD_Setup_City extends SubCommand {
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 4) {sendInfo(sender); return;}
 
-            String cityProjectId = args[1];
+            String cityProjectId = args[1].toLowerCase();
             String countryCode = args[2];
             Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(countryCode);
             if (country.isEmpty()) {

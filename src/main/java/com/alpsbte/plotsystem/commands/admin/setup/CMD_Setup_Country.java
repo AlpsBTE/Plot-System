@@ -147,6 +147,11 @@ public class CMD_Setup_Country extends SubCommand {
                 return;
             }
 
+            if (continent == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
+                return;
+            }
+
             String material = args[3];
             String customModelData = args.length > 4 ? args[4] : null;
 
