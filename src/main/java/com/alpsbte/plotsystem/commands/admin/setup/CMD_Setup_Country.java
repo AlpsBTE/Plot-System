@@ -156,8 +156,12 @@ public class CMD_Setup_Country extends SubCommand {
             String customModelData = args.length > 4 ? args[4] : null;
 
             boolean successful = DataProvider.COUNTRY.addCountry(code, continent, material, customModelData);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            if (!successful) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+                return;
+            }
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.COUNTRY + "." + code + " language config setting, otherwise the name will be the ID of the Country & no description will be present!"));
         }
 
         @Override

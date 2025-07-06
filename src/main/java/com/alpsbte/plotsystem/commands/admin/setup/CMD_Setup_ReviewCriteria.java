@@ -137,8 +137,14 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
             boolean isOptional = args[2].equalsIgnoreCase("true");
 
             boolean successful = DataProvider.REVIEW.addToggleCriteria(name, isOptional);
-            if (!successful) sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            else sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added toggle criteria with name '" + name + "'!"));
+            if (!successful) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+                return;
+            }
+
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.TOGGLE_CRITERIA + "." + name + " language config setting, otherwise the name will be the ID of the Toggle Criteria & no description will be present!"));
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added toggle criteria with name '" + name + "'!"));
         }
 
         @Override

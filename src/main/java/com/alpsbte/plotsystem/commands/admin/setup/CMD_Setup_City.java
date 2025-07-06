@@ -178,6 +178,7 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
                 return;
             }
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be the ID of the City & no description will be present!"));
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
         }
 
