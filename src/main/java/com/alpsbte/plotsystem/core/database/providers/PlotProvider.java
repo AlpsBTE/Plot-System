@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.alpslib.io.database.DatabaseConnection;
 import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -38,7 +37,9 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,88 +51,53 @@ public class PlotProvider {
             "plot.plot_version, plot.plot_type";
 
     public Plot getPlotById(int plotId) {
-        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE plot_id = ?;";
-        try (PreparedStatement stmt = DatabaseConnection.getConnection().prepareStatement(query)) {
-            stmt.setInt(1, plotId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) return null;
-                CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString(1)).orElseThrow();
-                PlotDifficulty difficulty = DataProvider.DIFFICULTY.getDifficultyById(rs.getString(2)).orElseThrow().getDifficulty();
-                String ownerUUIDString = rs.getString(3);
-                UUID ownerUUID = ownerUUIDString != null ? UUID.fromString(ownerUUIDString) : null;
-                Status status = Status.valueOf(rs.getString(4));
-                String outlineBounds = rs.getString(5);
-                Date lastActivityDate = rs.getDate(6);
-                LocalDate lastActivity = lastActivityDate != null ? lastActivityDate.toLocalDate() : null;
-                double version = rs.getDouble(7);
-                PlotType type = PlotType.byId(rs.getInt(8));
-
-                return new Plot(plotId, cityProject, difficulty, ownerUUID, status, outlineBounds,
-                        lastActivity, version, type, getPlotMembers(plotId));
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return null;
+        String qGet = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE plot_id = ?;";
+        return Utils.handleSqlException(null, () -> SqlHelper.runQuery(qGet, ps -> {
+            ps.setInt(1, plotId);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) return null; // No plot found
+            return extractPlot(rs);
+        }));
     }
 
     public List<Plot> getPlots(@NotNull Status status) {
-        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE status = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, status.name());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<Plot> plots = new ArrayList<>();
-                while (rs.next()) {
-                    plots.add(extractPlot(rs));
-                }
-                return plots;
+        String qAllByStatus = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE status = ?;";
+        return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qAllByStatus, ps -> {
+            ps.setString(1, status.name());
+            ResultSet rs = ps.executeQuery();
+            List<Plot> plots = new ArrayList<>();
+            while (rs.next()) {
+                plots.add(extractPlot(rs));
             }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return List.of();
+            return plots;
+        }));
     }
 
     public List<Plot> getPlots(@NotNull CityProject city, Status @NotNull ... statuses) {
         String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id = ?";
         query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, city.getID());
-            for (int i = 0; i < statuses.length; i++) stmt.setString(i + 2, statuses[i].name());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<Plot> plots = new ArrayList<>();
-                while (rs.next()) plots.add(extractPlot(rs));
-                return plots;
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return List.of();
+        String qPlotsWithCityAndStatuses = query;
+        return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qPlotsWithCityAndStatuses, ps -> {
+            ps.setString(1, city.getID());
+            for (int i = 0; i < statuses.length; i++) ps.setString(i + 2, statuses[i].name());
+            ResultSet rs = ps.executeQuery();
+            List<Plot> plots = new ArrayList<>();
+            while (rs.next()) plots.add(extractPlot(rs));
+            return plots;
+        }));
     }
 
     public List<Plot> getPlots(@NotNull CityProject city, @NotNull PlotDifficulty plotDifficulty, @NotNull Status status) {
-        String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id = ? AND difficulty_id = ? " +
-                "AND status = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setString(1, city.getID());
-            stmt.setString(2, plotDifficulty.name());
-            stmt.setString(3, status.name());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<Plot> plots = new ArrayList<>();
-                while (rs.next()) plots.add(extractPlot(rs));
-                return plots;
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return List.of();
+        String qAllByCityDifficultyStatus = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id = ? AND difficulty_id = ? AND status = ?;";
+        return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qAllByCityDifficultyStatus, ps -> {
+            ps.setString(1, city.getID());
+            ps.setString(2, plotDifficulty.name());
+            ps.setString(3, status.name());
+            ResultSet rs = ps.executeQuery();
+            List<Plot> plots = new ArrayList<>();
+            while (rs.next()) plots.add(extractPlot(rs));
+            return plots;
+        }));
     }
 
     public List<Plot> getPlots(@NotNull List<CityProject> cities, Status... statuses) {

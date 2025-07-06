@@ -236,7 +236,7 @@ public class Utils {
         PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
     }
 
-    public static <T> @Nullable T handleSqlException(T defaultValue, @NotNull SqlHelper.SQLCheckedSupplier<T> supplier) {
+    public static <T> @Nullable T handleSqlException(@Nullable T defaultValue, @NotNull SqlHelper.SQLCheckedSupplier<T> supplier) {
         try {
             return supplier.get();
         } catch (SQLException e) {

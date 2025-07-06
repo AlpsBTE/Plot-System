@@ -74,10 +74,10 @@ public class BuildTeamProvider {
             ResultSet rs = ps.executeQuery();
             List<BuildTeam> buildTeams = new ArrayList<>();
             while (rs.next()) {
-                    Optional<BuildTeam> buildTeam = getBuildTeam(rs.getInt(1));
-                    if (buildTeam.isEmpty()) continue;
-                    buildTeams.add(buildTeam.get());
-                }
+                Optional<BuildTeam> buildTeam = getBuildTeam(rs.getInt(1));
+                if (buildTeam.isEmpty()) continue;
+                buildTeams.add(buildTeam.get());
+            }
             return buildTeams;
         }));
     }
@@ -97,11 +97,12 @@ public class BuildTeamProvider {
             boolean result = ps.executeUpdate() > 0;
 
             if (result) {
-                Utils.handleSqlException(() -> SqlHelper.runQuery(qByName, ps2 -> {
+                Utils.handleSqlException(() -> SqlHelper.runQuery(qByName, ps.getConnection(), ps2 -> {
                     ps2.setString(1, name);
                     ResultSet rs = ps2.executeQuery();
                     rs.next(); // get the last inserted build team id
                     BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name));
+                    return null; // no need to return anything
                 }));
             }
             return result;
@@ -136,7 +137,6 @@ public class BuildTeamProvider {
             ps.setInt(1, id);
             ps.setString(2, reviewerUUID);
             return ps.executeUpdate() > 0;
-
         })));
     }
 

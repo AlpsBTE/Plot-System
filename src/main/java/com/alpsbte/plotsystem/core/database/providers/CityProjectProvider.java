@@ -35,15 +35,9 @@ import java.util.Optional;
 
 public class CityProjectProvider {
     protected static final List<CityProject> CITY_PROJECTS = new ArrayList<>();
-    String qCityProjects = "SELECT city_project_id, country_code, server_name, is_visible, build_team_id FROM city_project;";
-    String qIdByBtId = "SELECT city_project_id FROM city_project WHERE build_team_id = ?;";
-    String qInsert = "INSERT INTO city_project (city_project_id, build_team_id, country_code, server_name) VALUES (?, ?, ?, ?);";
-    String qDelete = "DELETE FROM city_project WHERE city_project_id = ?;";
-    String qUpdateVisible = "UPDATE city_project SET is_visible = ? WHERE city_project_id = ?;";
-    String qUpdateServerName = "UPDATE city_project SET server_name = ? WHERE city_project_id = ?;";
-    String qUpdateBuildTeamId = "UPDATE city_project SET build_team_id = ? WHERE city_project_id = ?;";
 
     public CityProjectProvider() {
+        String qCityProjects = "SELECT city_project_id, country_code, server_name, is_visible, build_team_id FROM city_project;";
         Utils.handleSqlException(() -> SqlHelper.runQuery(qCityProjects, ps -> {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -67,6 +61,7 @@ public class CityProjectProvider {
     }
 
     public List<CityProject> getCityProjectsByBuildTeam(int buildTeamId) {
+        String qIdByBtId = "SELECT city_project_id FROM city_project WHERE build_team_id = ?;";
         return Utils.handleSqlException(new ArrayList<>(), () -> SqlHelper.runQuery(qIdByBtId, ps -> {
             ps.setInt(1, buildTeamId);
             ResultSet rs = ps.executeQuery();
@@ -81,6 +76,8 @@ public class CityProjectProvider {
 
     public boolean add(String id, int buildTeamId, String countryCode, String serverName) {
         if (getById(id).isPresent()) return true;
+
+        String qInsert = "INSERT INTO city_project (city_project_id, build_team_id, country_code, server_name) VALUES (?, ?, ?, ?);";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
             ps.setString(1, id);
             ps.setInt(2, buildTeamId);
@@ -94,6 +91,7 @@ public class CityProjectProvider {
 
     public boolean remove(String id) {
         Optional<CityProject> cityProject = getById(id);
+        String qDelete = "DELETE FROM city_project WHERE city_project_id = ?;";
         return cityProject.filter(project -> Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDelete, ps -> {
             ps.setString(1, id);
             boolean result = ps.executeUpdate() > 0;
@@ -103,6 +101,7 @@ public class CityProjectProvider {
     }
 
     public boolean setVisibility(String id, boolean isVisible) {
+        String qUpdateVisible = "UPDATE city_project SET is_visible = ? WHERE city_project_id = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qUpdateVisible, ps -> {
             ps.setBoolean(1, isVisible);
             ps.setString(2, id);
@@ -111,6 +110,7 @@ public class CityProjectProvider {
     }
 
     public boolean setServer(String id, String serverName) {
+        String qUpdateServerName = "UPDATE city_project SET server_name = ? WHERE city_project_id = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qUpdateServerName, ps -> {
             ps.setString(1, serverName);
             ps.setString(2, id);
@@ -119,6 +119,7 @@ public class CityProjectProvider {
     }
 
     public boolean setBuildTeam(String id, int buildTeamId) {
+        String qUpdateBuildTeamId = "UPDATE city_project SET build_team_id = ? WHERE city_project_id = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qUpdateBuildTeamId, ps -> {
             ps.setInt(1, buildTeamId);
             ps.setString(2, id);

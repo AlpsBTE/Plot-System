@@ -39,9 +39,7 @@ import java.util.*;
 
 public class BuilderProvider {
     protected static final Map<UUID, Builder> BUILDERS = new HashMap<>();
-    private final String SET_PLOT_TYPE_BY_UUID = "UPDATE builder b SET plot_type = ? WHERE uuid = ?;";
-    private final String SLOTS_BY_UUID = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;";
-    private final String REVIEWER_UUID_BY_BT_ID = "SELECT uuid FROM build_team_has_reviewer WHERE build_team_id = ?;";
+    private static final String Q_SLOTS_BY_UUID = "SELECT first_slot, second_slot, third_slot FROM builder WHERE uuid = ?;";
 
     public Builder getBuilderByUUID(UUID uuid) {
         if (BUILDERS.containsKey(uuid)) return BUILDERS.get(uuid);
@@ -131,8 +129,9 @@ public class BuilderProvider {
     }
 
     public boolean setPlotType(@NotNull UUID uuid, int plotTypeId) {
+        String qSetPlotTypeByUuid = "UPDATE builder b SET plot_type = ? WHERE uuid = ?;";
         // update plot type
-        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(SET_PLOT_TYPE_BY_UUID, ps -> {
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetPlotTypeByUuid, ps -> {
             ps.setInt(1, plotTypeId);
             ps.setString(2, uuid.toString());
             return ps.executeUpdate() > 0; // update plot type
@@ -146,26 +145,26 @@ public class BuilderProvider {
             ps.setString(1, uuid.toString());
             ps.setString(2, uuid.toString());
             ResultSet rs = ps.executeQuery();
-                if (rs.next()) return rs.getInt(1);
+            if (rs.next()) return rs.getInt(1);
             return 0;
         }));
         return result != null ? result : 0;
     }
 
     public Slot getFreeSlot(@NotNull UUID uuid) {
-        return Utils.handleSqlException(null, () -> SqlHelper.runQuery(SLOTS_BY_UUID, ps -> {
+        return Utils.handleSqlException(null, () -> SqlHelper.runQuery(Q_SLOTS_BY_UUID, ps -> {
             ps.setString(1, uuid.toString());
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) return null; // no slots found
-                for (int i = 1; i <= 3; i++) {
-                    if (rs.getString(i) == null) return Slot.values()[i - 1]; // return first free slot
-                }
+            for (int i = 1; i <= 3; i++) {
+                if (rs.getString(i) == null) return Slot.values()[i - 1]; // return first free slot
+            }
             return null; // no free slots found
         }));
     }
 
     public Slot getSlot(@NotNull UUID uuid, int plotId) {
-        return Utils.handleSqlException(null, () -> SqlHelper.runQuery(SLOTS_BY_UUID, ps -> {
+        return Utils.handleSqlException(null, () -> SqlHelper.runQuery(Q_SLOTS_BY_UUID, ps -> {
             ps.setString(1, uuid.toString());
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) return null; // no slots found
@@ -181,14 +180,15 @@ public class BuilderProvider {
     }
 
     public List<Builder> getReviewersByBuildTeam(int buildTeamId) {
-        return Utils.handleSqlException(new ArrayList<>(), () -> SqlHelper.runQuery(REVIEWER_UUID_BY_BT_ID, ps -> {
+        String qReviewerUuidByBtId = "SELECT uuid FROM build_team_has_reviewer WHERE build_team_id = ?;";
+        return Utils.handleSqlException(new ArrayList<>(), () -> SqlHelper.runQuery(qReviewerUuidByBtId, ps -> {
             ps.setInt(1, buildTeamId);
             ResultSet rs = ps.executeQuery();
             List<Builder> builders = new ArrayList<>();
-                while (rs.next()) {
-                    Builder builder = getBuilderByUUID(UUID.fromString(rs.getString(1)));
-                    if (builder != null) builders.add(builder);
-                }
+            while (rs.next()) {
+                Builder builder = getBuilderByUUID(UUID.fromString(rs.getString(1)));
+                if (builder != null) builders.add(builder);
+            }
             return builders;
         }));
     }
@@ -201,13 +201,12 @@ public class BuilderProvider {
      */
     public Map<String, Integer> getLeaderboardEntries(LeaderboardTimeframe sortBy) {
         return Utils.handleSqlException(new LinkedHashMap<>(), () -> SqlHelper.runQuery(getLeaderboardQuery(sortBy), ps -> {
-            ps.setString(1, sortBy.name());
             ResultSet rs = ps.executeQuery();
             LinkedHashMap<String, Integer> playerEntries = new LinkedHashMap<>();
             while (rs.next()) {
                 playerEntries.put(rs.getString(1), rs.getInt(2));
             }
-                return playerEntries;
+            return playerEntries;
         }));
     }
 
