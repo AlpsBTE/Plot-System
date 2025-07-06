@@ -24,14 +24,12 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -39,7 +37,6 @@ import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class CMD_Setup_ReviewCriteria extends SubCommand {
     public CMD_Setup_ReviewCriteria(BaseCommand baseCommand) {

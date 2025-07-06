@@ -37,6 +37,7 @@ public class CMD_Setup extends BaseCommand {
         registerSubCommand(new CMD_Setup_Country(this));
         registerSubCommand(new CMD_Setup_City(this));
         registerSubCommand(new CMD_Setup_Difficulty(this));
+        registerSubCommand(new CMD_Setup_ReviewCriteria(this));
     }
 
     @Override
