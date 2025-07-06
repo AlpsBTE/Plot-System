@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,14 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.Difficulty;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,23 +43,18 @@ public class DifficultyProvider {
 
     public DifficultyProvider() {
         // cache all difficulties
-        String query = "SELECT difficulty_id, multiplier, score_requirement FROM plot_difficulty;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
+        String qAll = "SELECT difficulty_id, multiplier, score_requirement FROM plot_difficulty;";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qAll, ps -> {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String id = rs.getString(1);
                     double multiplier = rs.getDouble(2);
                     int scoreRequirement = rs.getInt(3);
-                    PlotDifficulty plotDifficulty = PlotDifficulty.valueOf(id);
 
-                    Difficulty difficulty = new Difficulty(plotDifficulty, id, multiplier, scoreRequirement);
-                    DIFFICULTIES.add(difficulty);
+                    Difficulty difficulty = new Difficulty(PlotDifficulty.valueOf(id), id, multiplier, scoreRequirement);
+                    DIFFICULTIES.add(difficulty); // cache all difficulties
                 }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
     }
 
     public List<Difficulty> getDifficulties() {
@@ -79,29 +71,21 @@ public class DifficultyProvider {
     }
 
     public boolean setMultiplier(String id, double multiplier) {
-        String query = "UPDATE plot_difficulty SET multiplier = ? WHERE difficulty_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setDouble(1, multiplier);
-            stmt.setString(2, id);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qSetMulti = "UPDATE plot_difficulty SET multiplier = ? WHERE difficulty_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetMulti, ps -> {
+            ps.setDouble(1, multiplier);
+            ps.setString(2, id);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public boolean setScoreRequirement(String id, int scoreRequirement) {
-        String query = "UPDATE plot_difficulty SET score_requirement = ? WHERE difficulty_id = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, scoreRequirement);
-            stmt.setString(2, id);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qSetScoreRequirement = "UPDATE plot_difficulty SET score_requirement = ? WHERE difficulty_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetScoreRequirement, ps -> {
+            ps.setInt(1, scoreRequirement);
+            ps.setString(2, id);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public boolean builderMeetsRequirements(Builder builder, PlotDifficulty plotDifficulty) {

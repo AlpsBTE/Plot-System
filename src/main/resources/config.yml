@@ -6,9 +6,6 @@
 # | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
 # -----------------------------------------------------
 
-# Keep updated about newer versions
-check-for-updates: true
-
 # Enables special dev tools and features for development
 # NOTE: Do not change if you do not know what you are doing
 dev-mode: false
@@ -48,6 +45,10 @@ database:
   dbname: plotsystem
   username: plotsystem
   password: minecraft
+  max-lifetime: 1800000 # 30 minutes
+  connection-timeout: 30000 # 30 seconds
+  keepalive-time: 120000 # 2 minutes
+  maximum-pool-size: 10 # Maximum number of connections in the pool
 
 
 # -----------------------------------------------------

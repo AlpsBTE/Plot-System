@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,11 @@
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class ConfigPaths {
+
     private ConfigPaths() {throw new IllegalStateException("Utility class");}
 
     // General Behaviour
     public static final String SPAWN_WORLD = "spawn-world";
-    public static final String CHECK_FOR_UPDATES = "check-for-updates";
     public static final String ENABLE_SCORE_REQUIREMENT = "enable-score-requirement";
     public static final String DEV_MODE = "dev-mode";
     public static final String INACTIVITY_INTERVAL = "inactivity-interval";
@@ -37,14 +37,6 @@ public abstract class ConfigPaths {
     public static final String ENABLE_GROUP_SUPPORT = "enable-group-support";
     public static final String UNFINISHED_REMINDER_INTERVAL = "unfinished-reminder-interval";
     public static final String DISABLE_CITY_INSPIRATION_MODE = "disable-city-inspiration-mode";
-
-    // Database
-    private static final String DATABASE = "database.";
-    public static final String DATABASE_URL = DATABASE + "url";
-    public static final String DATABASE_NAME = DATABASE + "dbname";
-    public static final String DATABASE_USERNAME = DATABASE + "username";
-    public static final String DATABASE_PASSWORD = DATABASE + "password";
-
     // Leaderboards
     private static final String HOLOGRAMS = "holograms.";
     public static final String SCORE_LEADERBOARD = "score-leaderboard";

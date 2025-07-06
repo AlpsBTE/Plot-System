@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,10 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.plotsystem.utils.Utils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,15 +35,14 @@ public class ServerProvider {
     protected static final List<String> SERVERS = new ArrayList<>();
 
     public ServerProvider() {
-        String query = "SELECT server_name FROM server;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) SERVERS.add(rs.getString(1)); // cache all servers
+        String qAll = "SELECT server_name FROM server;";
+
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qAll, ps -> {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SERVERS.add(rs.getString(1)); // cache all servers
             }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
     }
 
     public boolean serverExists(String serverName) {
@@ -60,33 +56,25 @@ public class ServerProvider {
     public boolean addServer(String name, int buildTeamId) {
         if (serverExists(name)) return true;
 
-        String query = "INSERT INTO server (server_name, build_team_id) VALUES (?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, name);
-            stmt.setInt(2, buildTeamId);
-            boolean result = stmt.executeUpdate() > 0;
+        String qInsert = "INSERT INTO server (server_name, build_team_id) VALUES (?, ?);";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
+            ps.setString(1, name);
+            ps.setInt(2, buildTeamId);
+            boolean result = ps.executeUpdate() > 0;
             if (result) SERVERS.add(name);
             return result;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 
     public boolean removeServer(String name) {
         if (!serverExists(name)) return false;
 
-        String query = "DELETE FROM server WHERE server_name = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, name);
-            boolean result = stmt.executeUpdate() > 0;
+        String qDelete = "DELETE FROM server WHERE server_name = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDelete, ps -> {
+            ps.setString(1, name);
+            boolean result = ps.executeUpdate() > 0;
             if (result) SERVERS.remove(name);
             return result;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 }

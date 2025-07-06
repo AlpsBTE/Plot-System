@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,13 @@
 
 package com.alpsbte.plotsystem.core.database.providers;
 
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,20 +39,16 @@ public class CountryProvider {
     protected static final List<Country> COUNTRIES = new ArrayList<>();
 
     public CountryProvider() {
-        String query = "SELECT country_code, continent, material, custom_model_data FROM country;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
+        String qAll = "SELECT country_code, continent, material, custom_model_data FROM country;";
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qAll, ps -> {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     Continent continent = Continent.fromDatabase(rs.getString(2));
                     Country country = new Country(rs.getString(1), continent, rs.getString(3),
                             rs.getString(4));
                     COUNTRIES.add(country); // cache all countries
                 }
-            }
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
+        }));
     }
 
     public List<Country> getCountries() {
@@ -71,52 +64,40 @@ public class CountryProvider {
     }
 
     public boolean setMaterialAndCustomModelData(String code, String material, @Nullable String customModelData) {
-        String query = "UPDATE country SET material = ?, custom_model_data = ? WHERE country_code = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, material);
-            stmt.setString(2, customModelData);
-            stmt.setString(3, code);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        String qSetItem = "UPDATE country SET material = ?, custom_model_data = ? WHERE country_code = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetItem, ps -> {
+            ps.setString(1, material);
+            ps.setString(2, customModelData);
+            ps.setString(3, code);
+            return ps.executeUpdate() > 0;
+        })));
     }
 
     public boolean addCountry(String code, Continent continent, String material, @Nullable String customModelData) {
         if (getCountryByCode(code).isPresent()) return true;
 
-        String query = "INSERT INTO country (country_code, continent, material, custom_model_data) VALUES (?, ?, ?, ?);";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, code);
-            stmt.setString(2, continent.databaseEnum);
-            stmt.setString(3, material);
-            stmt.setString(4, customModelData);
-            boolean result = stmt.executeUpdate() > 0;
+        String qInsert = "INSERT INTO country (country_code, continent, material, custom_model_data) VALUES (?, ?, ?, ?);";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
+            ps.setString(1, code);
+            ps.setString(2, continent.databaseEnum);
+            ps.setString(3, material);
+            ps.setString(4, customModelData);
+            boolean result = ps.executeUpdate() > 0;
             if (result) COUNTRIES.add(new Country(code, continent, material, customModelData));
             return result;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 
     public boolean removeCountry(String code) {
         Optional<Country> cachedCountry = getCountryByCode(code);
         if (cachedCountry.isEmpty()) return false;
 
-        String query = "DELETE FROM country WHERE country_code = ?;";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, code);
-            boolean result = stmt.executeUpdate() > 0;
+        String qDelete = "DELETE FROM country WHERE country_code = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDelete, ps -> {
+            ps.setString(1, code);
+            boolean result = ps.executeUpdate() > 0;
             if (result) COUNTRIES.remove(cachedCountry.get());
             return result;
-        } catch (SQLException ex) {
-            Utils.logSqlException(ex);
-        }
-        return false;
+        })));
     }
 }
