@@ -24,7 +24,6 @@
 
 package com.alpsbte.plotsystem.commands.admin.setup;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -32,7 +31,6 @@ import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
@@ -40,7 +38,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 
 public class CMD_Setup_Country extends SubCommand {
 
@@ -142,12 +141,10 @@ public class CMD_Setup_Country extends SubCommand {
             Continent continent;
             try {
                 continent = Continent.fromDatabase(args[2].toUpperCase());
+                if (continent == null) {
+                    continent = Continent.valueOf(args[2].toUpperCase());
+                }
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
-                return;
-            }
-
-            if (continent == null) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
                 return;
             }
@@ -161,7 +158,7 @@ public class CMD_Setup_Country extends SubCommand {
                 return;
             }
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.COUNTRY + "." + code + " language config setting, otherwise the name will be the ID of the Country & no description will be present!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.COUNTRY + "." + code + " language config setting, otherwise name & id will be undefined!"));
         }
 
         @Override

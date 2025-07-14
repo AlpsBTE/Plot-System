@@ -30,6 +30,7 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,7 @@ public class CMD_PReload extends BaseCommand {
 
         try {
             plugin.reloadConfig();
+            LangUtil.getInstance().reloadFiles();
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully reloaded config!"));
 
             DecentHologramDisplay.activeDisplays.forEach(leaderboard -> leaderboard.setLocation(HologramRegister
