@@ -42,6 +42,7 @@ public class SkeletonWorldGenerator {
     public SkeletonWorldGenerator() {
         generateWorld();
         configureWorld();
+        saveWorld();
     }
 
     protected void generateWorld() {
@@ -71,6 +72,11 @@ public class SkeletonWorldGenerator {
 
         // Set time to noon
         bukkitWorld.setTime(6000);
+    }
+
+    protected void saveWorld() {
+        assert this.world != null;
+        this.world.save();
     }
 
     public static class EmptyChunkGenerator extends ChunkGenerator {
