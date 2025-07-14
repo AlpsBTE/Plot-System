@@ -12,6 +12,7 @@ import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.generator.world.SkeletonWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
@@ -125,6 +126,13 @@ public class PlotSystem extends JavaPlugin {
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
             AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));
             Bukkit.getScheduler().runTaskTimerAsynchronously(FancyNpcsPlugin.get().getPlugin(), new TutorialNPCTurnTracker(), 0, 1L);
+        }
+
+        // Generate Skeleton World
+        if (Bukkit.getWorld("Skeleton") == null) {
+            getComponentLogger().info("No skeleton world found!");
+            getComponentLogger().info("Generating skeleton world...");
+            new SkeletonWorldGenerator();
         }
 
         pluginEnabled = true;
