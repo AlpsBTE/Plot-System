@@ -72,6 +72,9 @@ public class PlotWorldGenerator {
         Path worldPath = Bukkit.getWorldContainer().toPath().resolve(worldName);
         FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile());
 
+        // delete uid.dat
+        Files.delete(worldPath.resolve("uid.dat"));
+
         // rename world name in level.dat
         Path levelDat = worldPath.resolve("level.dat");
         NamedTag level = NBTUtil.read(levelDat.toFile());
