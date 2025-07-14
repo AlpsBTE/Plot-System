@@ -1,4 +1,28 @@
-package com.alpsbte.plotsystem.core.system.plot.generator;
+/*
+ *  The MIT License (MIT)
+ *
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
+package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.DependencyManager;
@@ -11,36 +35,33 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.entity.SpawnCategory;
-import org.bukkit.generator.ChunkGenerator;
+import net.querz.nbt.io.NBTUtil;
+import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.tag.CompoundTag;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.*;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.external.vavr.control.Option;
 
-import javax.annotation.Nonnull;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
-import java.util.Random;
 
 import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
     private final WorldManager worldManager = DependencyManager.getMultiverseCore().getWorldManager();
-    private WorldCreator worldCreator;
-
     private final String worldName;
     private static final World.Environment environment = World.Environment.NORMAL;
     private static final WorldType worldType = WorldType.FLAT;
-    private static final String generatorSettings = "{\"features\": false,\"layers\": [{\"block\": \"air\", \"height\": 1}],\"biome\":\"plains\"}";
 
-    public PlotWorldGenerator(String worldName) throws Exception {
+    private World world = null;
+
+    public PlotWorldGenerator(String worldName) throws IOException, StorageException {
         this.worldName = worldName;
         generateWorld();
         createMultiverseWorld();
@@ -48,53 +69,47 @@ public class PlotWorldGenerator {
         createGlobalProtection();
     }
 
-    protected void generateWorld() {
-        worldCreator = new WorldCreator(worldName);
-        worldCreator.environment(environment);
-        worldCreator.type(worldType);
-        worldCreator.generator(new EmptyChunkGenerator());
-        worldCreator.generatorSettings(generatorSettings);
-        worldCreator.createWorld();
+    protected void generateWorld() throws IOException {
+        // copy skeleton world with correct world name
+        Path skeletonPath = Bukkit.getWorldContainer().toPath().resolve("Skeleton");
+        Path worldPath = Bukkit.getWorldContainer().toPath().resolve(worldName);
+        FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile());
+
+        // rename world name in level.dat
+        Path levelDat = worldPath.resolve("level.dat");
+        NamedTag level = NBTUtil.read(levelDat.toFile());
+        CompoundTag tag = (CompoundTag) level.getTag();
+        tag.remove("LevelName");
+        tag.putString("LevelName", worldName);
+        level.setTag(tag);
+        NBTUtil.write(level, levelDat.toFile());
+
+        // rename world in paper-world.yml
+        Path paperWorld = worldPath.resolve("paper-world.yml");
+        String paperWorldContents = Files.readString(paperWorld);
+        String updatedContents = paperWorldContents
+                .replaceAll(SkeletonWorldGenerator.WORLD_NAME, worldName)
+                .replaceAll(SkeletonWorldGenerator.WORLD_NAME.toLowerCase(), worldName.toLowerCase());
+        Files.writeString(paperWorld, updatedContents);
+
+        // load world
+        this.world = Bukkit.getWorld(worldName);
     }
 
-    protected void createMultiverseWorld() throws Exception {
-        // Check if world creator is configured and add new world to multiverse world manager
-        if (worldCreator != null) {
-            if (!worldManager.isLoadedWorld(worldName)) {
-                worldManager.importWorld(ImportWorldOptions.worldName(worldName)
-                        .environment(environment)
-                        .generator("VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}")
-                        .useSpawnAdjust(false)
-                );
-            }
-        } else {
-            throw new Exception("World Creator is not configured");
+    protected void createMultiverseWorld() {
+        assert this.world != null;
+        if (!worldManager.isLoadedWorld(worldName)) {
+            worldManager.importWorld(ImportWorldOptions.worldName(worldName)
+                    .environment(environment)
+                    .generator("VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}")
+                    .useSpawnAdjust(false)
+            );
         }
     }
 
     protected void configureWorld() {
-        World bukkitWorld = Bukkit.getWorld(worldName);
+        assert this.world != null;
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
-
-        if (mvWorld.isEmpty()) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Multiverse world" + worldName + " is not loaded! Skipping world configuration..."));
-            return;
-        }
-
-        // Set world time to midday
-        assert bukkitWorld != null;
-        bukkitWorld.setTime(6000);
-
-        // Set Bukkit world game rules
-        bukkitWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        bukkitWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
-        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
-        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        bukkitWorld.setGameRule(GameRule.DO_TILE_DROPS, false);
-        bukkitWorld.setGameRule(GameRule.DO_MOB_LOOT, false);
 
         // Configure multiverse world
         mvWorld.get().setAllowFlight(true);
@@ -130,15 +145,6 @@ public class PlotWorldGenerator {
             regionManager.saveChanges();
         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
     }
-
-    public static class EmptyChunkGenerator extends ChunkGenerator {
-        @Override
-        @Nonnull
-        public ChunkData generateChunkData(@Nonnull World world, @Nonnull Random random, int x, int z, @Nonnull BiomeGrid biome) {
-            return createChunkData(world);
-        }
-    }
-
 }
 
 

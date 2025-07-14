@@ -169,6 +169,11 @@
             <version>2.17.0</version> <!-- Provided by Minecraft (libraries folder) -->
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.Querz</groupId>
+            <artifactId>NBT</artifactId>
+            <version>6.1</version>
+        </dependency>
     </dependencies>
     <!-- Fast Async World Edit -->
     <dependencyManagement>
