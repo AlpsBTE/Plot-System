@@ -74,7 +74,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +92,9 @@ import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class EventListener implements Listener {
@@ -156,6 +164,9 @@ public class EventListener implements Listener {
             if (plotWorld != null && !plotWorld.getWorldName().toLowerCase(Locale.ROOT).startsWith("t-"))
                 plotWorld.unloadWorld(false);
         }, 60L);
+
+        PlotUtils.plotReminder.get(event.getPlayer().getUniqueId()).cancel();
+        PlotUtils.plotReminder.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

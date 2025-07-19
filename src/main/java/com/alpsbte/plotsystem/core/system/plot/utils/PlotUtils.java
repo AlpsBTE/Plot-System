@@ -74,6 +74,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,17 +87,28 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public final class PlotUtils {
     private PlotUtils() {}
 
     private static final String MSG_LINE = "--------------------------";
+    public static final Map<java.util.UUID, BukkitTask> plotReminder = new HashMap<>();
 
     /**
      * Returns the plot that the player is currently standing on or next to.
@@ -336,7 +348,10 @@ public final class PlotUtils {
     public static void startUnfinishedPlotReminderTimer(Player player) {
         int interval = PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.UNFINISHED_REMINDER_INTERVAL);
         if (interval == -1) return;
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())), 0L, 20L * 60 * interval);
+        plotReminder.put(player.getUniqueId(), Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(),
+                () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())),
+                20L * 60 * interval,
+                20L * 60 * interval));
     }
 
     public static final class Actions {
