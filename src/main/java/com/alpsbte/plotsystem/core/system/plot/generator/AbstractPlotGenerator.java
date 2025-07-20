@@ -31,8 +31,6 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.world.PlotWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
-import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -69,6 +67,7 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +77,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -87,7 +87,6 @@ public abstract class AbstractPlotGenerator {
     protected final PlotWorld world;
     protected final double plotVersion;
     protected final PlotType plotType;
-
     /**
      * Generates a new plot in the plot world
      *
@@ -106,7 +105,7 @@ public abstract class AbstractPlotGenerator {
      * @param plotType - type of the plot
      */
     protected AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) {
-        this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld((Plot) plot));
+        this(plot, builder, plotType, PlotWorld.getByType(plotType, (Plot) plot));
     }
 
     /**
@@ -123,24 +122,42 @@ public abstract class AbstractPlotGenerator {
         this.plotVersion = plot.getVersion();
         this.plotType = plotType;
 
-        if (init()) {
-            Exception exception = null;
-            try {
-                if (plotType.hasOnePlotPerWorld() || !world.isWorldGenerated()) {
-                    new PlotWorldGenerator(world.getWorldName());
-                } else if (!world.isWorldLoaded() && !world.loadWorld()) throw new Exception("Could not load world");
-                generateOutlines();
-                createPlotProtection();
-            } catch (Exception ex) {
-                exception = ex;
-            }
-            this.onComplete(exception != null, false);
+        PlotSystem.getPlugin().getComponentLogger().info("plotType: " + plotType.getId());
 
-            if (exception != null) {
-                PlotUtils.Actions.abandonPlot(plot);
-                onException(exception);
+        if (!init()) return;
+        boolean generateWorld = plotType.hasOnePlotPerWorld() || !world.isWorldGenerated();
+        boolean isWorldLoaded = world.isWorldLoaded();
+
+        CompletableFuture.runAsync(() -> {
+            final Exception[] exception = new Exception[]{null};
+            try {
+                if (generateWorld) {
+                    new PlotWorldGenerator(world.getWorldName());
+                } else if (!isWorldLoaded) {
+                    final boolean[] successful = new boolean[1];
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> successful[0] = world.loadWorld());
+                    if (!successful[0]) throw new Exception("Could not load world");
+                }
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                    try {
+                        createPlotProtection();
+                        generateOutlines();
+                    } catch (StorageException | IOException e) {
+                        exception[0] = e;
+                    }
+                });
+            } catch (Exception ex) {
+                exception[0] = ex;
             }
-        }
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                this.onComplete(exception[0] != null, false);
+
+                if (exception[0] != null) {
+                    PlotUtils.Actions.abandonPlot(plot);
+                    onException(exception[0]);
+                }
+            });
+        });
     }
 
 
