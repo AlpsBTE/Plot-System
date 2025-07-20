@@ -46,32 +46,31 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected boolean init() {
-        if (getBuilder().getFreeSlot() != null) {
-            if (DefaultPlotGenerator.playerPlotGenerationHistory.containsKey(getBuilder().getUUID())) {
-                if (DefaultPlotGenerator.playerPlotGenerationHistory.get(getBuilder().getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
-                    DefaultPlotGenerator.playerPlotGenerationHistory.remove(getBuilder().getUUID());
-                } else {
-                    getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
-                    getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                    return false;
-                }
-            }
-
-            DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
-            getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
-            getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
-            return true;
-        } else {
+        if (getBuilder().getFreeSlot() == null) {
             getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
             getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            return false;
         }
-        return false;
+
+        if (DefaultPlotGenerator.playerPlotGenerationHistory.containsKey(getBuilder().getUUID())) {
+            if (!DefaultPlotGenerator.playerPlotGenerationHistory.get(getBuilder().getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
+                getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Error.PLEASE_WAIT)));
+                getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+                return false;
+            }
+            DefaultPlotGenerator.playerPlotGenerationHistory.remove(getBuilder().getUUID());
+        }
+
+        DefaultPlotGenerator.playerPlotGenerationHistory.put(getBuilder().getUUID(), LocalDateTime.now());
+        getBuilder().getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getBuilder().getPlayer(), LangPaths.Message.Info.CREATING_PLOT)));
+        getBuilder().getPlayer().playSound(getBuilder().getPlayer().getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, 1, 1);
+        return true;
     }
 
     @Override
     protected void generateOutlines() throws IOException, WorldEditException {
-        if (plot instanceof Plot) {
-            byte[] completedSchematic = ((Plot) plot).getCompletedSchematic();
+        if (plot instanceof Plot p) {
+            byte[] completedSchematic = p.getCompletedSchematic();
             if (completedSchematic != null) {
                 PlotSystem.getPlugin().getComponentLogger().info("Found completed schematic, pasting only that.");
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);

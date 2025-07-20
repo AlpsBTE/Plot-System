@@ -24,25 +24,23 @@ public class CityPlotWorld extends PlotWorld {
 
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
-        if (super.teleportPlayer(player)) {
-            player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND, 1, 1);
-            player.setAllowFlight(true);
-            player.setFlying(true);
+        if (!super.teleportPlayer(player)) return false;
 
-            if (getPlot() != null) {
-                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+        player.playSound(player.getLocation(), Utils.SoundUtils.TELEPORT_SOUND, 1, 1);
+        player.setAllowFlight(true);
+        player.setFlying(true);
 
-                Utils.updatePlayerInventorySlots(player);
-                PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
+        if (getPlot() == null) return true;
 
-                if (getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) {
-                    getPlot().setLastActivity(false);
-                }
-            }
+        player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
 
-            return true;
-        }
-        return false;
+        Utils.updatePlayerInventorySlots(player);
+        PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
+
+        if (!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
+        getPlot().setLastActivity(false);
+
+        return true;
     }
 
     @Override
@@ -76,25 +74,24 @@ public class CityPlotWorld extends PlotWorld {
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
             clipboard = reader.read();
         }
-        if (clipboard != null) {
-            int plotHeight = clipboard.getMinimumPoint().y();
+        if (clipboard == null) throw new IOException("A Plot's Outline schematic fails to load, cannot get clipboard.");
 
-            /// Minimum building height for a plot (this should be configurable depending on minecraft build limit)
-            /// This is in the case that a plot is created at y level 300 where the max build limit is 318,
-            /// so you don't want builder to only be able to build for 18 blocks
-            int minBuildingHeight = 128;
+        int plotHeight = clipboard.getMinimumPoint().y();
 
-            /// Negative y level of the current minecraft version (1.21)
-            /// Additional ground layer the plot use to save as schematic need to be included for plot's y-level
-            int groundLayer = 64;
+        /// Minimum building height for a plot (this should be configurable depending on minecraft build limit)
+        /// This is in the case that a plot is created at y level 300 where the max build limit is 318,
+        /// so you don't want builder to only be able to build for 18 blocks
+        int minBuildingHeight = 128;
 
-            // Plots created outside of vanilla build limit or the build-able height is too small
-            if (plotHeight + groundLayer < MIN_WORLD_HEIGHT + groundLayer
-                    || plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
-                return 0; // throw new IOException("Plot height is out of range.");
-            return plotHeight;
-        }
-        throw new IOException("A Plot's Outline schematic fails to load, cannot get clipboard.");
+        /// Negative y level of the current minecraft version (1.21)
+        /// Additional ground layer the plot use to save as schematic need to be included for plot's y-level
+        int groundLayer = 64;
+
+        // Plots created outside of vanilla build limit or the build-able height is too small
+        if (plotHeight + groundLayer < MIN_WORLD_HEIGHT + groundLayer
+                || plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
+            return 0; // throw new IOException("Plot height is out of range.");
+        return plotHeight;
     }
 
     /**

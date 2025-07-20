@@ -6,7 +6,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -127,14 +126,8 @@ public class Plot extends AbstractPlot {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends PlotWorld> T getWorld() {
-        if (getVersion() <= 2 || getPlotType().hasOnePlotPerWorld()) {
-            if (onePlotWorld == null) onePlotWorld = new OnePlotWorld(this);
-            return (T) onePlotWorld;
-        } else {
-            if (cityPlotWorld == null) cityPlotWorld = new CityPlotWorld(this);
-            return (T) cityPlotWorld;
-        }
+    public PlotWorld getWorld() {
+        return PlotWorld.getByType(getPlotType(), this);
     }
 
     @Override

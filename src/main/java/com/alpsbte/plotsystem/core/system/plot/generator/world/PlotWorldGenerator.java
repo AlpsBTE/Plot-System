@@ -61,12 +61,21 @@ public class PlotWorldGenerator {
 
     private World world = null;
 
-    public PlotWorldGenerator(String worldName) throws IOException, StorageException {
+    public PlotWorldGenerator(String worldName) throws Exception {
         this.worldName = worldName;
         generateWorld();
-        createMultiverseWorld();
-        configureWorld();
-        createGlobalProtection();
+
+        final Exception[] exception = {null};
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            try {
+                createMultiverseWorld();
+                configureWorld();
+                createGlobalProtection();
+            } catch (Exception e) {
+                exception[0] = e;
+            }
+        });
+        if (exception[0] != null) throw exception[0];
     }
 
     protected void generateWorld() throws IOException {
@@ -94,13 +103,9 @@ public class PlotWorldGenerator {
                 .replaceAll(SkeletonWorldGenerator.WORLD_NAME, worldName)
                 .replaceAll(SkeletonWorldGenerator.WORLD_NAME.toLowerCase(), worldName.toLowerCase());
         Files.writeString(paperWorld, updatedContents);
-
-        // load world
-        this.world = Bukkit.getWorld(worldName);
     }
 
     protected void createMultiverseWorld() {
-        assert this.world != null;
         if (!worldManager.isLoadedWorld(worldName)) {
             worldManager.importWorld(ImportWorldOptions.worldName(worldName)
                     .environment(environment)
@@ -111,6 +116,7 @@ public class PlotWorldGenerator {
     }
 
     protected void configureWorld() {
+        this.world = Bukkit.getWorld(worldName);
         assert this.world != null;
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
 
