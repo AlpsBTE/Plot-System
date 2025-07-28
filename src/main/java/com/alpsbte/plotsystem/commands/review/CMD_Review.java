@@ -82,6 +82,11 @@ public class CMD_Review extends BaseCommand {
                 return;
             }
 
+            if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_LOAD_LEGACY_PLOT)));
+                return;
+            }
+
             Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
             if (DataProvider.BUILDER.canNotReviewPlot(builder.getUUID(), plot) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));

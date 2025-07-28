@@ -28,6 +28,7 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -144,6 +145,10 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for teleport to plot item
         getMenu().getSlot(hasReview ? 12 : 13).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
+            if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.CANNOT_LOAD_LEGACY_PLOT)));
+                return;
+            }
             plot.getWorld().teleportPlayer(clickPlayer);
         });
 
