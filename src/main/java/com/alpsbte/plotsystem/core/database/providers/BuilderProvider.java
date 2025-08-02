@@ -89,12 +89,11 @@ public class BuilderProvider {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) return true; // builder already exists
 
-            SqlHelper.runQuery(qInsert, ps.getConnection(), insertStmt -> {
+            return SqlHelper.runQuery(qInsert, ps.getConnection(), insertStmt -> {
                 insertStmt.setString(1, uuid.toString());
                 insertStmt.setString(2, name);
                 return insertStmt.executeUpdate() > 0; // insert new builder
             });
-            return false;
         })));
     }
 
