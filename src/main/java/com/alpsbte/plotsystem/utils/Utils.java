@@ -40,6 +40,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
@@ -100,6 +103,34 @@ public class Utils {
         if (customModelData != null) builder.setItemModel(customModelData);
 
         return builder.build();
+    }
+
+    public static CompletableFuture<Void> runSync(Callable<Void> task) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            try {
+                var result = task.call();
+                future.complete(result);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        });
+
+        return future;
+    }
+
+    public static <T> CompletableFuture<T> supplySync(Callable<T> task) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        Executor executor = Bukkit.getScheduler().getMainThreadExecutor(PlotSystem.getPlugin());
+        executor.execute(() -> {
+            try {
+                var result = task.call();
+                future.complete(result);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        });
+        return future;
     }
 
     public static class SoundUtils {
