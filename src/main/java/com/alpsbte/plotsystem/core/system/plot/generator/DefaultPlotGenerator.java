@@ -92,14 +92,16 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void generateOutlines() throws IOException, WorldEditException {
-        if (plot instanceof Plot p) {
+    protected void generateOutlines(byte[] schematic) throws IOException, WorldEditException {
+        long startTime = System.nanoTime();
+        if (!(plot instanceof Plot p)) super.generateOutlines(schematic);
+        else {
             byte[] completedSchematic = p.getCompletedSchematic();
             if (completedSchematic != null) {
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
                 pasteSchematic(airMask, completedSchematic, world, true);
-            } else super.generateOutlines();
-        } else super.generateOutlines();
+            } else super.generateOutlines(schematic);
+        }
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
@@ -124,6 +126,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                 }
             };
         }
+
+        PlotSystem.getPlugin().getComponentLogger().info("(DPG) Generate Outlines time: {}ms", (System.nanoTime() - startTime) / 1_000_000);
     }
 
     @Override

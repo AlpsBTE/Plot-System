@@ -33,15 +33,19 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -50,6 +54,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class CityProjectMenu extends AbstractPaginatedMenu {
@@ -124,6 +129,34 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         }));
 
         CompanionMenu.clickEventTutorialItem(getMenu());
+    }
+
+    public void handleCityProjectClick(Player player, CityProject city) {
+        Builder builder = Builder.byUUID(player.getUniqueId());
+
+        PlotDifficulty plotDifficultyForCity;
+        try {
+            plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();
+        } catch (ExecutionException | InterruptedException ex) {
+            sqlError(player, ex);
+            return;
+        }
+
+        List<Plot> unclaimedPlots = DataProvider.PLOT.getPlots(city, plotDifficultyForCity, Status.unclaimed);
+        if (unclaimedPlots.isEmpty()) {
+            player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.NO_PLOTS_LEFT)));
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1));
+            return;
+        }
+
+        Plot plot = unclaimedPlots.get(Utils.getRandom().nextInt(unclaimedPlots.size()));
+
+        PlotType type = builder.getPlotType();
+        if (type.equals(PlotType.CITY_INSPIRATION_MODE) && ConfigUtil.getInstance().configs[0].getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE))
+            type = PlotType.LOCAL_INSPIRATION_MODE;
+
+        boolean successful = PlotHandler.assignPlot(builder, plot);
+        if (successful) PlotHandler.generatePlot(builder, plot, type);
     }
 
     public static boolean generateRandomPlot(Player player, @NotNull List<CityProject> items, PlotDifficulty selectedPlotDifficulty) {
@@ -205,29 +238,9 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                     return;
                 }
-
                 clickPlayer.closeInventory();
-                Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
 
-                try {
-                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();
-                    List<Plot> unclaimedPlots = DataProvider.PLOT.getPlots(city, plotDifficultyForCity, Status.unclaimed);
-                    if (unclaimedPlots.isEmpty()) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        return;
-                    }
-
-                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !DataProvider.DIFFICULTY.builderMeetsRequirements(builder, selectedPlotDifficulty)) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        return;
-                    }
-
-                    new DefaultPlotGenerator(city, plotDifficultyForCity, builder);
-                } catch (ExecutionException | InterruptedException ex) {
-                    sqlError(clickPlayer, ex);
-                }
+                CompletableFuture.runAsync(() -> handleCityProjectClick(clickPlayer, city));
             });
             slot++;
         }

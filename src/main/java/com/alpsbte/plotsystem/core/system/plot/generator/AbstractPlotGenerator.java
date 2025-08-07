@@ -124,28 +124,43 @@ public abstract class AbstractPlotGenerator {
 
         PlotSystem.getPlugin().getComponentLogger().info("plotType: " + plotType.getId());
 
+        long initStartTime = System.nanoTime();
         if (!init()) return;
+        PlotSystem.getPlugin().getComponentLogger().info("(APG) Init time: {}ms", (System.nanoTime() - initStartTime) / 1_000_000);
+
         boolean generateWorld = plotType.hasOnePlotPerWorld() || !world.isWorldGenerated();
         boolean isWorldLoaded = world.isWorldLoaded();
 
         CompletableFuture.runAsync(() -> {
             final Exception[] exception = new Exception[]{null};
             try {
+                // Generate and/or load world
                 if (generateWorld) {
+                    long worldGenerationStartTime = System.nanoTime();
                     new PlotWorldGenerator(world.getWorldName());
+                    PlotSystem.getPlugin().getComponentLogger().info("(APG) Total PlotWorldGenerator time: {}ms", (System.nanoTime() - worldGenerationStartTime) / 1_000_000);
                 } else if (!isWorldLoaded) {
                     final boolean[] successful = new boolean[1];
                     Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> successful[0] = world.loadWorld());
                     if (!successful[0]) throw new Exception("Could not load world");
                 }
+
+                long schemFetchTime = System.nanoTime();
+                // Fetch initial plot schematic
+                byte[] initialSchematic = plot.getInitialSchematicBytes();
+                PlotSystem.getPlugin().getComponentLogger().info("(APG) schem fetching time: {}ms", (System.nanoTime() - schemFetchTime) / 1_000_000);
+
+                long generateOutlinesTime = System.nanoTime();
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     try {
                         createPlotProtection();
-                        generateOutlines();
+                        generateOutlines(initialSchematic);
                     } catch (StorageException | IOException e) {
                         exception[0] = e;
                     }
                 });
+                PlotSystem.getPlugin().getComponentLogger().info("(APG) generate outlines time (main thread): {}ms", (System.nanoTime() - generateOutlinesTime) / 1_000_000);
+
             } catch (Exception ex) {
                 exception[0] = ex;
             }
@@ -157,6 +172,7 @@ public abstract class AbstractPlotGenerator {
                     onException(exception[0]);
                 }
             });
+            PlotSystem.getPlugin().getComponentLogger().info("(APG) total time: {}ms", (System.nanoTime() - initStartTime) / 1_000_000);
         });
     }
 
@@ -172,12 +188,12 @@ public abstract class AbstractPlotGenerator {
     /**
      * Generates plot schematic and outlines
      */
-    protected void generateOutlines() throws IOException {
+    protected void generateOutlines(byte[] initialSchematic) throws IOException {
         if (plotVersion >= 3 && plotType.hasEnvironment()) {
-            pasteSchematic(null, plot.getInitialSchematicBytes(), world, false);
+            pasteSchematic(null, initialSchematic, world, false);
         } else {
             Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, initialSchematic, world.getBukkitWorld()), world, true);
         }
     }
 
