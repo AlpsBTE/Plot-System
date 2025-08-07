@@ -98,8 +98,9 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         else {
             byte[] completedSchematic = p.getCompletedSchematic();
             if (completedSchematic != null) {
+                PlotSystem.getPlugin().getComponentLogger().info("Found completed schematic, pasting only that.");
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, completedSchematic, world, true);
+                pasteSchematic(airMask, completedSchematic, world, false);
             } else super.generateOutlines(schematic);
         }
 
@@ -126,8 +127,6 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                 }
             };
         }
-
-        PlotSystem.getPlugin().getComponentLogger().info("(DPG) Generate Outlines time: {}ms", (System.nanoTime() - startTime) / 1_000_000);
     }
 
     @Override

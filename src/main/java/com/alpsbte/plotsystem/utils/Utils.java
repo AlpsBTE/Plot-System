@@ -59,6 +59,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
@@ -69,7 +70,14 @@ import java.util.concurrent.Executor;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_RED;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class Utils {
@@ -112,7 +120,7 @@ public class Utils {
             String headId = material.substring(material.indexOf("(") + 1, material.lastIndexOf(")"));
             base = AlpsHeadUtils.getCustomHead(headId);
         } else {
-            Material mat = Material.getMaterial(material);
+            Material mat = Material.getMaterial(material.toUpperCase(Locale.ROOT));
             base = new ItemStack(mat == null ? Material.BARRIER : mat);
         }
         ItemBuilder builder = new ItemBuilder(base);

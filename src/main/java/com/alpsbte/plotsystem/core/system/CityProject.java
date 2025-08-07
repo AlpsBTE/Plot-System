@@ -116,7 +116,7 @@ public class CityProject {
 
     public List<TextComponent> getDescriptionComponents(Player player) {
         ArrayList<TextComponent> descriptionLines = new ArrayList<>();
-        for (String line : getDescription(player).split("%newline%")) descriptionLines.add(text(line));
+        for (String line : getDescription(player).split("%newline%")) descriptionLines.add(text(line, GRAY));
         return descriptionLines;
     }
 

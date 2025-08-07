@@ -25,7 +25,6 @@
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -33,15 +32,15 @@ import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
-import org.yaml.snakeyaml.DumperOptions;
 
 import java.util.List;
 import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public class CMD_Setup_City extends SubCommand {
 
@@ -178,8 +177,8 @@ public class CMD_Setup_City extends SubCommand {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
                 return;
             }
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be the ID of the City & no description will be present!"));
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + cityProjectId + " language config setting, otherwise the name will be undefined!"));
         }
 
         @Override
