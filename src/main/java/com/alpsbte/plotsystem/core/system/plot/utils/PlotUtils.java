@@ -164,9 +164,9 @@ public final class PlotUtils {
         return DependencyManager.getMultiverseCore().getWorldManager().isLoadedWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
-    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, World world) throws IOException {
+    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, byte[] initialSchematic, World world) throws IOException {
         Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(initialSchematic);
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
             clipboard = reader.read();
         }
@@ -388,7 +388,7 @@ public final class PlotUtils {
                             if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                             if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
-                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes(), world.getBukkitWorld()), world, true);
                         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
 
                         playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));

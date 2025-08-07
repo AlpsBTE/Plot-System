@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.DependencyManager;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -59,23 +60,24 @@ public class PlotWorldGenerator {
     private static final World.Environment environment = World.Environment.NORMAL;
     private static final WorldType worldType = WorldType.FLAT;
 
-    private World world = null;
-
     public PlotWorldGenerator(String worldName) throws Exception {
+        long startTime = System.nanoTime();
         this.worldName = worldName;
+
+        // Async Part
         generateWorld();
 
-        final Exception[] exception = {null};
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            try {
-                createMultiverseWorld();
-                configureWorld();
-                createGlobalProtection();
-            } catch (Exception e) {
-                exception[0] = e;
-            }
-        });
-        if (exception[0] != null) throw exception[0];
+        // Sync Part
+        long mainThreadStart = System.nanoTime();
+        Utils.runSync(() -> {
+            createMultiverseWorld();
+            configureWorld();
+            createGlobalProtection();
+            return null;
+        }).get();
+
+        PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time to generate world: {}ms", (System.nanoTime() - startTime) / 1_000_000);
+        PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time on main thread: {}ms", (System.nanoTime() - mainThreadStart) / 1_000_000);
     }
 
     protected void generateWorld() throws IOException {
@@ -116,8 +118,8 @@ public class PlotWorldGenerator {
     }
 
     protected void configureWorld() {
-        this.world = Bukkit.getWorld(worldName);
-        assert this.world != null;
+        World world = Bukkit.getWorld(worldName);
+        assert world != null;
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
 
         // Configure multiverse world

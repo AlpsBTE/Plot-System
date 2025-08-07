@@ -170,7 +170,7 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onlPlayerItemDropEvent(@NotNull PlayerDropItemEvent event) {
+    public void onPlayerItemDropEvent(@NotNull PlayerDropItemEvent event) {
         if (event.getItemDrop().getItemStack().equals(CompanionMenu.getMenuItem(event.getPlayer())) ||
                 event.getItemDrop().getItemStack().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
             event.setCancelled(true);

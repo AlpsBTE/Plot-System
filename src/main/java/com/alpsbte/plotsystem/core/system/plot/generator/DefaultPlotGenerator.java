@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -68,15 +92,17 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
     }
 
     @Override
-    protected void generateOutlines() throws IOException, WorldEditException {
-        if (plot instanceof Plot p) {
+    protected void generateOutlines(byte[] schematic) throws IOException, WorldEditException {
+        long startTime = System.nanoTime();
+        if (!(plot instanceof Plot p)) super.generateOutlines(schematic);
+        else {
             byte[] completedSchematic = p.getCompletedSchematic();
             if (completedSchematic != null) {
                 PlotSystem.getPlugin().getComponentLogger().info("Found completed schematic, pasting only that.");
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
                 pasteSchematic(airMask, completedSchematic, world, false);
-            } else super.generateOutlines();
-        } else super.generateOutlines();
+            } else super.generateOutlines(schematic);
+        }
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         if (PlotWorld.isOnePlotWorld(world.getWorldName()) && plotVersion >= 3 && plot.getStatus() != Status.completed) {
@@ -101,6 +127,8 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
                 }
             };
         }
+
+        PlotSystem.getPlugin().getComponentLogger().info("(DPG) Generate Outlines time: {}ms", (System.nanoTime() - startTime) / 1_000_000);
     }
 
     @Override
