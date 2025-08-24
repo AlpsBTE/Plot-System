@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="AlpsMIT">
+  <settings>
     <module2copyright>
-      <element module="Project Files" copyright="AlpsMIT" />
+      <element module="Java" copyright="AlpsMIT" />
     </module2copyright>
   </settings>
 </component>

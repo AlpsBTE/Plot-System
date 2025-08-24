@@ -1,5 +1,6 @@
 main: com.alpsbte.plotsystem.PlotSystem
-version: "${project.version}${build.number}"
+version: "${version}"
+description: "${description}"
 api-version: "1.21"
 name: Plot-System
 author: R3tuxn, Cinnazeyy & Zoriot
