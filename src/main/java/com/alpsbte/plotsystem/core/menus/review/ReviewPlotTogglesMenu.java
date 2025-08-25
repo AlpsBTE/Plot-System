@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +86,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         for (int i = 0; i < Math.min(buildTeamCriteria.size(), 36); i++) {
             ToggleCriteria criteria = buildTeamCriteria.get(i);
             boolean isChecked = rating.getCheckedToggles().stream()
-                    .anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
+                    .anyMatch(t -> t.criteriaName().equals(criteria.criteriaName()));
             getMenu().getSlot(9 + i).setItem(getToggleItem(criteria, isChecked));
         }
 
@@ -113,7 +113,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             int finalI = i;
             getMenu().getSlot(9 + i).setClickHandler(((player, clickInformation) -> {
                 ToggleCriteria clickedCriteria = buildTeamCriteria.get(finalI);
-                boolean isChecked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName()));
+                boolean isChecked = rating.getCheckedToggles().stream().anyMatch(t -> t.criteriaName().equals(clickedCriteria.criteriaName()));
                 rating.setToggleCriteria(clickedCriteria, !isChecked);
 
                 getMenu().getSlot(9 + finalI).setItem(getToggleItem(clickedCriteria, !isChecked));

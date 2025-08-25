@@ -29,14 +29,23 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
-import com.alpsbte.plotsystem.core.system.review.*;
+import com.alpsbte.plotsystem.core.system.review.BuildTeamToggleCriteria;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
+import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
+import com.alpsbte.plotsystem.core.system.review.ReviewRating;
+import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ReviewProvider {
     protected static final List<ReviewNotification> NOTIFICATIONS = new ArrayList<>();
@@ -68,7 +77,7 @@ public class ReviewProvider {
             ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String criteriaName = rs.getString(1);
-                    ToggleCriteria toggle = TOGGLE_CRITERIA.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst().orElseThrow();
+                    ToggleCriteria toggle = TOGGLE_CRITERIA.stream().filter(c -> c.criteriaName().equals(criteriaName)).findFirst().orElseThrow();
                     BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(rs.getInt(2), toggle));
                 }
         }));
@@ -179,7 +188,7 @@ public class ReviewProvider {
         // remove all review notifications
         List<ReviewNotification> notifications = getReviewNotifications(reviewId);
         for (ReviewNotification notification : notifications) {
-            removeReviewNotification(notification.getReviewId(), notification.getUuid());
+            removeReviewNotification(notification.reviewId(), notification.uuid());
         }
 
         // remove checked toggle criteria
@@ -213,11 +222,11 @@ public class ReviewProvider {
 
     // --- Toggle Criteria ---
     public Optional<ToggleCriteria> getToggleCriteria(String criteriaName) {
-        return TOGGLE_CRITERIA.stream().filter(c -> c.getCriteriaName().equals(criteriaName)).findFirst();
+        return TOGGLE_CRITERIA.stream().filter(c -> c.criteriaName().equals(criteriaName)).findFirst();
     }
 
     public boolean addToggleCriteria(String criteriaName, boolean isOptional) {
-        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
+        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.criteriaName().equals(criteriaName)).findFirst();
         if (criteria.isPresent()) return false;
 
         String qInsertToggleCriteria = "INSERT INTO review_toggle_criteria (criteria_name, is_optional) VALUES (?, ?);";
@@ -231,7 +240,7 @@ public class ReviewProvider {
     }
 
     public boolean removeToggleCriteria(String criteriaName) {
-        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
+        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.criteriaName().equals(criteriaName)).findFirst();
         if (criteria.isEmpty()) return false;
 
         String qDeleteToggleCriteria = "DELETE FROM review_toggle_criteria WHERE criteria_name = ?;";
@@ -244,7 +253,7 @@ public class ReviewProvider {
     }
 
     public boolean setToggleCriteriaOptional(String criteriaName, boolean isOptional) {
-        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.getCriteriaName().equals(criteriaName)).findFirst();
+        Optional<ToggleCriteria> criteria = TOGGLE_CRITERIA.stream().filter(t -> t.criteriaName().equals(criteriaName)).findFirst();
         if (criteria.isEmpty()) return false;
 
         String qSetToggleCriteriaOptional = "UPDATE review_toggle_criteria SET is_optional = ? WHERE criteria_name = ?;";
@@ -258,17 +267,17 @@ public class ReviewProvider {
     public List<ToggleCriteria> getAllToggleCriteria() {return TOGGLE_CRITERIA.stream().toList();}
 
     public List<ToggleCriteria> getBuildTeamToggleCriteria(int buildTeamId) {
-        return BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(c -> c.getBuildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::getCriteria).toList();
+        return BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(c -> c.buildTeamId() == buildTeamId).map(BuildTeamToggleCriteria::criteria).toList();
     }
 
     public boolean assignBuildTeamToggleCriteria(int buildTeamId, ToggleCriteria criteria) {
         Optional<ToggleCriteria> existingCriteria = getBuildTeamToggleCriteria(buildTeamId).stream().filter(t ->
-                t.getCriteriaName().equals(criteria.getCriteriaName())).findFirst();
+                t.criteriaName().equals(criteria.criteriaName())).findFirst();
         if (existingCriteria.isPresent()) return false;
         String qInsertCriteriaToBuildteam = "INSERT INTO build_team_uses_toggle_criteria (build_team_id, criteria_name) VALUES (?, ?);";
         if (!Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsertCriteriaToBuildteam, ps -> {
             ps.setInt(1, buildTeamId);
-            ps.setString(2, criteria.getCriteriaName());
+            ps.setString(2, criteria.criteriaName());
             return ps.executeUpdate() > 0;
         })))) return false;
         BUILD_TEAM_TOGGLE_CRITERIA.add(new BuildTeamToggleCriteria(buildTeamId, criteria));
@@ -277,12 +286,12 @@ public class ReviewProvider {
 
     public boolean removeBuildTeamToggleCriteria(int buildTeamId, ToggleCriteria criteria) {
         Optional<BuildTeamToggleCriteria> existingCriteria = BUILD_TEAM_TOGGLE_CRITERIA.stream().filter(btc ->
-                btc.getBuildTeamId() == buildTeamId && btc.getCriteria().getCriteriaName().equals(criteria.getCriteriaName())).findFirst();
+                btc.buildTeamId() == buildTeamId && btc.criteria().criteriaName().equals(criteria.criteriaName())).findFirst();
         if (existingCriteria.isEmpty()) return false;
         String qDeleteCriteriaToBuildteam = "DELETE FROM build_team_uses_toggle_criteria WHERE build_team_id = ? AND criteria_name = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteCriteriaToBuildteam, ps -> {
             ps.setInt(1, buildTeamId);
-            ps.setString(2, criteria.getCriteriaName());
+            ps.setString(2, criteria.criteriaName());
             boolean successful = ps.executeUpdate() > 0;
             if (successful) BUILD_TEAM_TOGGLE_CRITERIA.remove(existingCriteria.get());
             return successful;
@@ -307,7 +316,7 @@ public class ReviewProvider {
         String qInsertToggleCriteriaToReview = "INSERT INTO review_contains_toggle_criteria (review_id, criteria_name, is_checked) VALUES (?, ?, ?);";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsertToggleCriteriaToReview, ps -> {
             ps.setInt(1, reviewId);
-            ps.setString(2, toggle.getCriteriaName());
+            ps.setString(2, toggle.criteriaName());
             ps.setBoolean(3, isChecked);
             return ps.executeUpdate() > 0;
         })));
@@ -320,15 +329,15 @@ public class ReviewProvider {
 
     // --- Review Notification ---
     public Optional<ReviewNotification> getReviewNotification(int reviewId, UUID uuid) {
-        return NOTIFICATIONS.stream().filter(n -> n.getReviewId() == reviewId && n.getUuid() == uuid).findFirst();
+        return NOTIFICATIONS.stream().filter(n -> n.reviewId() == reviewId && n.uuid() == uuid).findFirst();
     }
 
     public List<ReviewNotification> getReviewNotifications(int reviewId) {
-        return NOTIFICATIONS.stream().filter(n -> n.getReviewId() == reviewId).toList();
+        return NOTIFICATIONS.stream().filter(n -> n.reviewId() == reviewId).toList();
     }
 
     public List<ReviewNotification> getReviewNotifications(UUID uuid) {
-        return NOTIFICATIONS.stream().filter(n -> n.getUuid() == uuid).toList();
+        return NOTIFICATIONS.stream().filter(n -> n.uuid() == uuid).toList();
     }
 
     public void removeReviewNotification(int reviewId, UUID uuid) {

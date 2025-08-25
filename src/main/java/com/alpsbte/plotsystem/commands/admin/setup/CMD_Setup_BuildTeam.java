@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,9 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public class CMD_Setup_BuildTeam extends SubCommand {
     public CMD_Setup_BuildTeam(BaseCommand baseCommand) {
@@ -385,7 +387,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             sender.sendMessage(text("--------------------------", DARK_GRAY));
             for (ToggleCriteria c : criteria) {
                 sender.sendMessage(text(" » ", DARK_GRAY)
-                        .append(text(c.getCriteriaName() + " (" + (c.isOptional() ? "optional" : "required") + ")")));
+                        .append(text(c.criteriaName() + " (" + (c.isOptional() ? "optional" : "required") + ")")));
             }
             sender.sendMessage(text("--------------------------", DARK_GRAY));
         }
@@ -435,7 +437,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
 
             boolean successful = DataProvider.REVIEW.assignBuildTeamToggleCriteria(buildTeam.get().getId(), criteria.get());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully assigned criteria '" + criteria.get().getCriteriaName() + "' to build team with ID '" + args[1] + "'!"));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully assigned criteria '" + criteria.get().criteriaName() + "' to build team with ID '" + args[1] + "'!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 
@@ -478,14 +480,14 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             // Check if toggle criteria exists
             Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(buildTeam.get().getId())
-                    .stream().filter(t -> t.getCriteriaName().equalsIgnoreCase(args[2])).findFirst();
+                    .stream().filter(t -> t.criteriaName().equalsIgnoreCase(args[2])).findFirst();
             if (criteria.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Toggle criteria could not be found or is not assigned!"));
                 return;
             }
 
             boolean successful = DataProvider.REVIEW.removeBuildTeamToggleCriteria(buildTeam.get().getId(), criteria.get());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed criteria '" + criteria.get().getCriteriaName() + "' from build team with ID '" + args[1] + "'!"));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed criteria '" + criteria.get().criteriaName() + "' from build team with ID '" + args[1] + "'!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }
 

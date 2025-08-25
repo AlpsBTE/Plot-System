@@ -90,7 +90,7 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
             sender.sendMessage(text("--------------------------", DARK_GRAY));
             for (ToggleCriteria c : criteria) {
                 sender.sendMessage(text(" » ", DARK_GRAY)
-                        .append(text(c.getCriteriaName() + " (" + (c.isOptional() ? "optional" : "required") + ")")));
+                        .append(text(c.criteriaName() + " (" + (c.isOptional() ? "optional" : "required") + ")")));
             }
             sender.sendMessage(text("--------------------------", DARK_GRAY));
         }
@@ -182,7 +182,7 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
                 return;
             }
 
-            boolean successful = DataProvider.REVIEW.removeToggleCriteria(criteria.get().getCriteriaName());
+            boolean successful = DataProvider.REVIEW.removeToggleCriteria(criteria.get().criteriaName());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
         }

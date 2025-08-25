@@ -108,7 +108,7 @@ public final class PlotUtils {
     private PlotUtils() {}
 
     private static final String MSG_LINE = "--------------------------";
-    public static final Map<java.util.UUID, BukkitTask> plotReminder = new HashMap<>();
+    public static final Map<UUID, BukkitTask> plotReminder = new HashMap<>();
 
     /**
      * Returns the plot that the player is currently standing on or next to.
@@ -643,7 +643,7 @@ public final class PlotUtils {
         public static void sendFeedbackMessage(@NotNull List<ReviewNotification> notifications, @NotNull Player player) {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
             for (ReviewNotification notification : notifications) {
-                PlotReview review = DataProvider.REVIEW.getReview(notification.getReviewId()).orElseThrow();
+                PlotReview review = DataProvider.REVIEW.getReview(notification.reviewId()).orElseThrow();
                 player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getID())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
@@ -651,7 +651,7 @@ public final class PlotUtils {
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 
-                DataProvider.REVIEW.removeReviewNotification(notification.getReviewId(), notification.getUuid());
+                DataProvider.REVIEW.removeReviewNotification(notification.reviewId(), notification.uuid());
 
                 if (notifications.size() != notifications.indexOf(notification) + 1) {
                     player.sendMessage(empty());

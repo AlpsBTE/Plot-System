@@ -33,7 +33,11 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
 
 public class TutorialPlotProvider {
     public static final Map<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
@@ -47,7 +51,7 @@ public class TutorialPlotProvider {
         Optional<TutorialPlot> tutorialPlot = tutorialPlots.keySet().stream()
                 .filter(t -> t.getTutorialID() == tutorialId && t.getUUID().toString().equals(playerUUID)).findFirst();
 
-        if (!tutorialPlot.isEmpty()) return tutorialPlot;
+        if (tutorialPlot.isPresent()) return tutorialPlot;
 
         String qGet = "SELECT stage_id, is_complete, last_stage_complete_date FROM tutorial WHERE tutorial_id = ? AND uuid = ?;";
         return Utils.handleSqlException(tutorialPlot, () -> SqlHelper.runQuery(qGet, ps -> {
