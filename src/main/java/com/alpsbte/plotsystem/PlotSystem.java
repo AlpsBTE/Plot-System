@@ -53,6 +53,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
@@ -221,5 +222,10 @@ public class PlotSystem extends JavaPlugin {
         try (var con = DatabaseConnection.getConnection(); var s = con.createStatement()) {
             s.execute(initScript);
         }
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
+        return new SkeletonWorldGenerator.EmptyChunkGenerator();
     }
 }
