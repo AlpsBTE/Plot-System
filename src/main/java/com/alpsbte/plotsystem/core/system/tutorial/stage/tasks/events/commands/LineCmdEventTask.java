@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -53,8 +55,8 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     private Vector minPoint;
     private Vector maxPoint;
 
-    public LineCmdEventTask(Player player, Component assignmentMessage, String blockName, int blockId, Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
-        super(player, "//line", new String[]{blockName, String.valueOf(blockId)}, assignmentMessage, linePoints.size(), true);
+    public LineCmdEventTask(Player player, Component assignmentMessage, @NotNull List<String> blocks, @NotNull Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
+        super(player, "//line", blocks.toArray(new String[0]), assignmentMessage, linePoints.size(), true);
         this.linePoints = linePoints;
         this.lineCmdAction = lineCmdAction;
     }
@@ -83,8 +85,8 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof PlayerInteractEvent) {
-            onPlayerInteractEvent((PlayerInteractEvent) event);
+        if (event instanceof PlayerInteractEvent playerInteractEvent) {
+            onPlayerInteractEvent(playerInteractEvent);
         } else super.performEvent(event);
     }
 
@@ -108,11 +110,9 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     }
 
     private boolean drawLine() {
-        try {
-            EditSession editSession = WorldEdit.getInstance().newEditSession((new BukkitWorld(player.getWorld())));
+        try (EditSession editSession = WorldEdit.getInstance().newEditSession((new BukkitWorld(player.getWorld())))) {
             editSession.drawLine(Objects.requireNonNull(BlockTypes.WHITE_WOOL).getDefaultState(), BlockVector3.at(minPoint.getX(), minPoint.getY(), minPoint.getZ()),
                     BlockVector3.at(maxPoint.getX(), maxPoint.getY(), maxPoint.getZ()), 0, false);
-            editSession.close();
         } catch (MaxChangedBlocksException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while drawing line!"), ex);
             return false;

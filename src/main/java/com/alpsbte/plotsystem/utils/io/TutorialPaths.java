@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,7 @@ public abstract class TutorialPaths {
         public static final String POINT_2 = TELEPORT_COORDINATES + "point-2";
         public static final String POINT_3 = TELEPORT_COORDINATES + "point-3";
         public static final String POINT_4 = TELEPORT_COORDINATES + "point-4";
-        public static final String BASE_BLOCK = BEGINNER + "base-block";
-        public static final String BASE_BLOCK_ID = BEGINNER + "base-block-id";
+        public static final String BASE_BLOCKS = BEGINNER + "base-blocks";
         public static final String HEIGHT = BEGINNER + "height";
         public static final String HEIGHT_OFFSET = BEGINNER + "height-offset";
         public static final String WINDOW_POINTS = BEGINNER + "window-points";

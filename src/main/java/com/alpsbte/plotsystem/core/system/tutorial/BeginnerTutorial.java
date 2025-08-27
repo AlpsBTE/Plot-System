@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ *  The MIT License (MIT)
  *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -40,24 +40,44 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.W
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.*;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.io.TutorialPaths;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.*;
-import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
-import static net.kyori.adventure.text.Component.text;
 import static com.alpsbte.alpslib.utils.AlpsUtils.deserialize;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Delay;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_CLICK_HIGHLIGHT;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.getDocumentationLinks;
+import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.setBlockAt;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class BeginnerTutorial extends AbstractPlotTutorial {
@@ -106,7 +126,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         Bukkit.getScheduler().runTaskLaterAsynchronously(PlotSystem.getPlugin(), () -> {
             sendTutorialCompletedTipMessage(getPlayer());
             getPlayer().playSound(getPlayer().getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
-        }, 20 * 7);
+        }, 20 * 7L);
     }
 
     private static class Stage1 extends AbstractPlotStage {
@@ -312,8 +332,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage5 extends AbstractPlotStage {
-        private final static String BASE_BLOCK = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getString(TutorialPaths.Beginner.BASE_BLOCK);
-        private final static int BASE_BLOCK_ID = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.BASE_BLOCK_ID);
+        private static final List<String> BASE_BLOCKS = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getStringList(TutorialPaths.Beginner.BASE_BLOCKS);
 
         protected Stage5(Player player, TutorialPlot plot) {
             super(player, 1, plot, 1);
@@ -335,7 +354,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         @Override
         protected List<String> setTasks() {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE5_TASKS,
-                    TEXT_HIGHLIGHT_START + "//line " + BASE_BLOCK.toLowerCase() + TEXT_HIGHLIGHT_END);
+                    TEXT_HIGHLIGHT_START + "//line " + BASE_BLOCKS.getFirst() + TEXT_HIGHLIGHT_END);
         }
 
         @Override
@@ -364,7 +383,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
                     .addTask(new PlotPermissionChangeTask(getPlayer(), false, true))
-                    .addTask(new LineCmdEventTask(getPlayer(), deserialize(getTasks().getFirst()), BASE_BLOCK, BASE_BLOCK_ID, buildingLinePoints, ((minPoint, maxPoint) -> {
+                    .addTask(new LineCmdEventTask(getPlayer(), deserialize(getTasks().getFirst()), BASE_BLOCKS, buildingLinePoints, ((minPoint, maxPoint) -> {
                         if (minPoint != null && maxPoint != null) {
                             buildingLinePoints.remove(minPoint);
 
@@ -381,8 +400,8 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
     }
 
     private static class Stage6 extends AbstractPlotStage {
-        private final static int HEIGHT = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT);
-        private final static int HEIGHT_OFFSET = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
+        private static final int HEIGHT = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT);
+        private static final int HEIGHT_OFFSET = ConfigUtil.getTutorialInstance().getBeginnerTutorial().getInt(TutorialPaths.Beginner.HEIGHT_OFFSET);
 
         protected Stage6(Player player, TutorialPlot plot) {
             super(player, 1, plot, 2);
