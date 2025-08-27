@@ -66,9 +66,8 @@ beginner:
     point-2: '3693367.0,-4531328.0'
     point-3: '3693370.0,-4531337.0'
     point-4: '3693357.0,-4531342.0'
-  # BaseBlock for the building outline
-  base-block: 'WHITE_WOOL'
-  base-block-id: 35
+  # BaseBlocks for the building outline (multiple blocks or legacy id's are supported)
+  base-blocks: [ 'WHITE_WOOL', 'WHITE', '35', '35:0' ]
   # Height of the plot building, which must be calculated
   height: 7
   height-offset: 1
