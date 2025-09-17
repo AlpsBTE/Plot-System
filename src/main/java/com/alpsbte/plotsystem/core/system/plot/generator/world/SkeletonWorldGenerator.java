@@ -25,11 +25,11 @@
 package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import net.kyori.adventure.util.TriState;
-import org.bukkit.*;
+import org.bukkit.GameRule;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.generator.ChunkGenerator;
-
-import javax.annotation.Nonnull;
-import java.util.Random;
 
 public class SkeletonWorldGenerator {
     public static final String WORLD_NAME = "Skeleton";
@@ -80,10 +80,6 @@ public class SkeletonWorldGenerator {
     }
 
     public static class EmptyChunkGenerator extends ChunkGenerator {
-        @Override
-        @Nonnull
-        public ChunkData generateChunkData(@Nonnull World world, @Nonnull Random random, int x, int z, @Nonnull BiomeGrid biome) {
-            return createChunkData(world);
-        }
+        // It should just do nothing
     }
 }
