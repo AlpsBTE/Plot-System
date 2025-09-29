@@ -25,8 +25,6 @@
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -37,7 +35,12 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.generator.ChunkGenerator;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -46,7 +49,7 @@ import java.util.Random;
 import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
-    private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
+    private final WorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getWorldManager();
     private WorldCreator worldCreator;
 
     private final String worldName;
@@ -74,9 +77,13 @@ public class PlotWorldGenerator {
     protected void createMultiverseWorld() throws Exception {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            if (!worldManager.isMVWorld(worldName))
-                worldManager.addWorld(worldName, environment, null, worldType, false,
-                        "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}", false);
+            if (!worldManager.isLoadedWorld(worldName)) {
+                worldManager.importWorld(ImportWorldOptions.worldName(worldName)
+                        .environment(environment)
+                        .generator("VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}")
+                        .useSpawnAdjust(false)
+                );
+            }
         } else {
             throw new Exception("World Creator is not configured");
         }
@@ -84,7 +91,12 @@ public class PlotWorldGenerator {
 
     protected void configureWorld() {
         World bukkitWorld = Bukkit.getWorld(worldName);
-        MultiverseWorld mvWorld = worldManager.getMVWorld(bukkitWorld);
+        Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
+
+        if (mvWorld.isEmpty()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Multiverse world" + worldName + " is not loaded! Skipping world configuration..."));
+            return;
+        }
 
         // Set world time to midday
         assert bukkitWorld != null;
@@ -100,14 +112,14 @@ public class PlotWorldGenerator {
         bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         // Configure multiverse world
-        mvWorld.setAllowFlight(true);
-        mvWorld.setGameMode(GameMode.CREATIVE);
-        mvWorld.setEnableWeather(false);
-        mvWorld.setDifficulty(Difficulty.PEACEFUL);
-        mvWorld.setAllowAnimalSpawn(false);
-        mvWorld.setAllowMonsterSpawn(false);
-        mvWorld.setAutoLoad(false);
-        mvWorld.setKeepSpawnInMemory(false);
+        mvWorld.get().setAllowFlight(true);
+        mvWorld.get().setGameMode(GameMode.CREATIVE);
+        mvWorld.get().setAllowWeather(false);
+        mvWorld.get().setDifficulty(Difficulty.PEACEFUL);
+        mvWorld.get().getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.ANIMAL).setSpawn(false);
+        mvWorld.get().getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.MONSTER).setSpawn(false);
+        mvWorld.get().setAutoLoad(false);
+        mvWorld.get().setKeepSpawnInMemory(false);
         worldManager.saveWorldsConfig();
     }
 

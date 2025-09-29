@@ -49,7 +49,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
@@ -61,6 +60,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -346,8 +346,8 @@ public class PlotSystem extends JavaPlugin {
         /**
          * @return Multiverse-Core instance
          */
-        public static MultiverseCore getMultiverseCore() {
-            return (MultiverseCore) plugin.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        public static MultiverseCoreApi getMultiverseCore() {
+            return MultiverseCoreApi.get();
         }
 
         /**
