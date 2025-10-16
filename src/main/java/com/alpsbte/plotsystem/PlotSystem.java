@@ -75,7 +75,7 @@ public class PlotSystem extends JavaPlugin {
             LangUtil.init();
             getComponentLogger().info(successPrefix.append(text("Successfully loaded language files.")));
         } catch (Exception ex) {
-            getComponentLogger().error(errorPrefix.append(text("Could not load language file.")), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not load language file."), ex);
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }

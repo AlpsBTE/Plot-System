@@ -1,10 +1,10 @@
 package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import java.util.Objects;
 
@@ -37,8 +37,8 @@ public class DependencyManager {
     /**
      * @return Multiverse-Core instance
      */
-    public static MultiverseCore getMultiverseCore() {
-        return (MultiverseCore) PlotSystem.getPlugin().getServer().getPluginManager().getPlugin("Multiverse-Core");
+    public static MultiverseCoreApi getMultiverseCore() {
+        return MultiverseCoreApi.get();
     }
 
     /**

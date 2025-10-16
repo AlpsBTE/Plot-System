@@ -160,8 +160,8 @@ public final class PlotUtils {
                 clipboard.getMaximumPoint().withY(PlotWorld.MAX_WORLD_HEIGHT));
     }
 
-    public static boolean isPlotWorld(World world) {
-        return DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
+    public static boolean isPlotWorld(@NotNull World world) {
+        return DependencyManager.getMultiverseCore().getWorldManager().isLoadedWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
     public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, World world) throws IOException {

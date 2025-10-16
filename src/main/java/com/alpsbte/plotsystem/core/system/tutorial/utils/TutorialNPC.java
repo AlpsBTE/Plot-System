@@ -3,7 +3,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.utils;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
-import de.oliver.fancynpcs.api.utils.SkinFetcher;
+import de.oliver.fancynpcs.api.skins.SkinData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class TutorialNPC {
     private final String id;
     private final String displayName;
     private final String interactionPrompt;
-    private final SkinFetcher.SkinData skin;
+    private final SkinData skin;
 
     private Npc npc;
     private TutorialNPCHologram hologram;
@@ -37,7 +37,7 @@ public class TutorialNPC {
         this.id = npcId;
         this.displayName = npcDisplayName;
         this.interactionPrompt = npcInteractionPrompt;
-        this.skin = new SkinFetcher.SkinData(npcId, npcSknTexture, npcSkinSignature);
+        this.skin = new SkinData(npcId, SkinData.SkinVariant.AUTO, npcSknTexture, npcSkinSignature);
     }
 
     /**
@@ -50,7 +50,7 @@ public class TutorialNPC {
 
         NpcData npcData = new NpcData(id, UUID.randomUUID(), spawnPos);
         npc = FancyNpcsPlugin.get().getNpcAdapter().apply(npcData);
-        npc.getData().setSkin(skin);
+        npc.getData().setSkinData(skin);
         npc.getData().setDisplayName(EMPTY_TAG);
         npc.getData().setTurnToPlayer(true);
         npc.setSaveToFile(false);
@@ -134,7 +134,7 @@ public class TutorialNPC {
         return interactionPrompt;
     }
 
-    public SkinFetcher.SkinData getSkin() {
+    public SkinData getSkin() {
         return skin;
     }
 }
