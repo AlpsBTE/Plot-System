@@ -165,7 +165,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             Integer input = AlpsUtils.tryParseInt(args[1]);
             if (input == null) {sendInfo(sender); return;}
 
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(input);
 
             // Check if build team exists
             if (buildTeam.isEmpty()) {
