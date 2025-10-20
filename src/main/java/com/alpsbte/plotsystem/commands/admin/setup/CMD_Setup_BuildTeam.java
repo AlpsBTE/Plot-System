@@ -160,7 +160,10 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 1) {sendInfo(sender); return;}
+
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
 
             Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
 
@@ -173,7 +176,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             boolean successful = DataProvider.BUILD_TEAM.removeBuildTeam(buildTeam.get().getId());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -204,9 +207,12 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
 
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
+
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(input);
 
             // Check if build team exists
             if (buildTeam.isEmpty()) {
@@ -253,13 +259,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {
-                sendInfo(sender);
-                return;
-            }
+            if (args.length <= 2) {sendInfo(sender); return;}
+
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
 
             // Check if build team exists
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(input);
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
@@ -303,10 +309,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
+
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
 
             // Check if build team exists
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(input);
 
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
@@ -352,8 +361,12 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 1 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
-            List<ToggleCriteria> criteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(Integer.parseInt(args[1]));
+            if (args.length <= 1) {sendInfo(sender); return;}
+
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
+
+            List<ToggleCriteria> criteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(input);
             if (criteria.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently no toggle criteria assigned to the build team " + args[1] + " in the database!"));
                 return;
@@ -396,10 +409,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
+
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
 
             // Check if build team exists
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(input);
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
@@ -445,10 +461,13 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
         @Override
         public void onCommand(CommandSender sender, String[] args) {
-            if (args.length <= 2 || AlpsUtils.tryParseInt(args[1]) == null) {sendInfo(sender); return;}
+            if (args.length <= 2) {sendInfo(sender); return;}
+
+            Integer input = AlpsUtils.tryParseInt(args[1]);
+            if (input == null) {sendInfo(sender); return;}
 
             // Check if build team exists
-            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(Integer.parseInt(args[1]));
+            Optional<BuildTeam> buildTeam = DataProvider.BUILD_TEAM.getBuildTeam(input);
             if (buildTeam.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team could not be found!"));
                 return;
