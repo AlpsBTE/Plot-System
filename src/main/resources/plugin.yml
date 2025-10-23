@@ -1,7 +1,8 @@
 main: com.alpsbte.plotsystem.PlotSystem
-version: 5.0.0
+version: "${version}"
 api-version: "1.21"
 name: Plot-System
+description: "${description}"
 author: R3tuxn, Cinnazeyy & Zoriot
 depend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core,
           DecentHolograms, WorldGuard, HeadDatabase ]
