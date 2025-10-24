@@ -104,8 +104,8 @@ tasks.processResources {
         from("src/main/resources/plugin.yml") {
             expand(
                 mapOf(
-                    "version" to version,
-                    "description" to description
+                    "version" to project.version,
+                    "description" to project.description
                 )
             )
         }
