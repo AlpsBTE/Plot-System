@@ -47,7 +47,6 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.external.vavr.control.Option;
 
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
