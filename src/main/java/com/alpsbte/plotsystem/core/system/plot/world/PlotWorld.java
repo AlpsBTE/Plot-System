@@ -68,7 +68,7 @@ public class PlotWorld implements IWorld {
 
     private final MultiverseCoreApi mvCore = DependencyManager.getMultiverseCore();
     private final String worldName;
-    private final AbstractPlot plot;
+    protected final AbstractPlot plot;
 
     public PlotWorld(@NotNull String worldName, @Nullable AbstractPlot plot) {
         this.worldName = worldName;
@@ -208,6 +208,16 @@ public class PlotWorld implements IWorld {
         return mvCore.getWorldManager().getWorld(worldName).isDefined();
     }
 
+    @Override
+    public AbstractPlot getPlot() {
+        return plot;
+    }
+
+    @Override
+    public boolean onAbandon() {
+        return true;
+    }
+
     private @Nullable ProtectedRegion getRegion(String regionName) {
         if (!loadWorld()) return null;
 
@@ -218,11 +228,6 @@ public class PlotWorld implements IWorld {
         PlotSystem.getPlugin().getComponentLogger().warn(text("Region manager is null!"));
         return null;
     }
-
-    public AbstractPlot getPlot() {
-        return plot;
-    }
-
 
     /**
      * @param worldName - the name of the world
@@ -248,6 +253,7 @@ public class PlotWorld implements IWorld {
      * @return - plot world
      */
     public static @Nullable PlotWorld getPlotWorldByName(String worldName) {
+        // TODO: rework
         if (!isOnePlotWorld(worldName) && !isCityPlotWorld(worldName)) return null;
 
         Integer id = AlpsUtils.tryParseInt(worldName.substring(2));
@@ -258,6 +264,7 @@ public class PlotWorld implements IWorld {
     }
 
     public static PlotWorld getByType(PlotType type, Plot plot) {
+        // TODO: rework
         boolean disableCIM = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE);
         return disableCIM || type.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld(plot);
     }

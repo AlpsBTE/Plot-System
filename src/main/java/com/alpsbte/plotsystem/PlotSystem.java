@@ -12,6 +12,7 @@ import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.generator.world.SkeletonWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -119,9 +120,11 @@ public class PlotSystem extends JavaPlugin {
 
         DecentHologramDisplay.registerPlugin(this);
         HologramRegister.init();
-        PlotUtils.checkPlotsForLastActivity();
         Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
+
+        // Start task that checks for and abandons inactive plots every hour
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), PlotHandler::abandonInactivePlots, 0L, 20 * 60 * 60L);
 
         // Register tutorials
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {

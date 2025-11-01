@@ -6,10 +6,8 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
@@ -38,17 +36,13 @@ import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -62,8 +56,6 @@ import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -137,9 +129,10 @@ public final class PlotUtils {
     }
 
     public static boolean isPlayerOnPlot(@NotNull AbstractPlot plot, Player player) {
-        if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
+        PlotWorld world = plot.getWorld();
+        if (world.isWorldLoaded() && world.getBukkitWorld().getPlayers().contains(player)) {
             Location playerLoc = player.getLocation();
-            ProtectedRegion protectedRegion = plot.getWorld().getProtectedRegion();
+            ProtectedRegion protectedRegion = world.getProtectedRegion();
             return protectedRegion == null || protectedRegion.contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
         }
         return false;
@@ -278,37 +271,15 @@ public final class PlotUtils {
         };
 
         // Return coordinates if they are in the schematic plot region
-        ProtectedRegion protectedPlotRegion = plot.getWorld().getProtectedRegion() != null
-                ? plot.getWorld().getProtectedRegion()
-                : plot.getWorld().getProtectedBuildRegion();
-        if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
+        PlotWorld world = plot.getWorld();
+        ProtectedRegion protectedPlotRegion = world.getProtectedRegion() != null
+                ? world.getProtectedRegion()
+                : world.getProtectedBuildRegion();
+        if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], world.getPlotHeightCentered(), (int) plotCoords[1]))) {
             return CompletableFuture.completedFuture(plotCoords);
         }
 
         return null;
-    }
-
-    public static void checkPlotsForLastActivity() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
-            long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
-            if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
-            for (Plot plot : plots) {
-                LocalDate lastActivity = plot.getLastActivity();
-                long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-                if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
-
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (Actions.abandonPlot(plot)) {
-                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
-                    } else {
-                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
-                    }
-                });
-            }
-        }, 0L, 20 * 60 * 60L); // Check every hour
     }
 
     public static void informPlayerAboutUnfinishedPlots(@NotNull Player player, Builder builder) {
@@ -328,119 +299,6 @@ public final class PlotUtils {
                 () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())),
                 20L * 60 * interval,
                 20L * 60 * interval));
-    }
-
-    public static final class Actions {
-        private Actions() {}
-
-        public static void submitPlot(@NotNull Plot plot) {
-            plot.setStatus(Status.unreviewed);
-
-            if (plot.getWorld().isWorldLoaded()) {
-                for (Player player : plot.getWorld() instanceof OnePlotWorld ? plot.getWorld().getBukkitWorld().getPlayers() : ((CityPlotWorld) plot.getWorld()).getPlayersOnPlot()) {
-                    player.teleport(Utils.getSpawnLocation());
-                }
-            }
-
-            plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (!plot.getPlotMembers().isEmpty()) {
-                for (Builder builder : plot.getPlotMembers()) {
-                    plot.getPermissions().removeBuilderPerms(builder.getUUID());
-                }
-            }
-        }
-
-        public static void undoSubmit(@NotNull Plot plot) {
-            plot.setStatus(Status.unfinished);
-
-            plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (!plot.getPlotMembers().isEmpty()) {
-                for (Builder builder : plot.getPlotMembers()) {
-                    plot.getPermissions().addBuilderPerms(builder.getUUID());
-                }
-            }
-        }
-
-        public static boolean abandonPlot(@NotNull AbstractPlot plot) {
-            try {
-                if (plot.getWorld() instanceof OnePlotWorld) {
-                    if (plot.getWorld().isWorldGenerated()) {
-                        if (plot.getWorld().isWorldLoaded()) {
-                            for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                                player.teleport(Utils.getSpawnLocation());
-                            }
-                        }
-                        if (!plot.getWorld().deleteWorld()) PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete plot world " + plot.getWorld().getWorldName() + "!"));
-                    }
-                } else if (!(plot instanceof TutorialPlot)) {
-                    RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
-
-                    if (plot.getWorld().loadWorld()) {
-                        CityPlotWorld world = plot.getWorld();
-                        List<Player> playersToTeleport = new ArrayList<>(world.getPlayersOnPlot());
-
-                        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
-                        if (regionManager != null) {
-                            for (Builder builder : ((Plot) plot).getPlotMembers()) {
-                                ((Plot) plot).removePlotMember(builder);
-                            }
-
-                            if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
-                            if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
-
-                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes(), world.getBukkitWorld()), world, true);
-                        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
-
-                        playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
-                        if (plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(false);
-                    }
-                }
-            } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
-                return false;
-            }
-
-            CompletableFuture.runAsync(() -> {
-                if (plot.getPlotType() == PlotType.TUTORIAL) return;
-                Plot dPlot = (Plot) plot;
-                boolean successful;
-                successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
-
-                for (Builder builder : dPlot.getPlotMembers()) {
-                    if (!successful) break;
-                    successful = dPlot.removePlotMember(builder);
-                }
-
-                if (successful && plot.getPlotOwner() != null) {
-                    Cache.clearCache(plot.getPlotOwner().getUUID());
-                    successful = plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
-                }
-
-                if (successful) {
-                    successful = dPlot.setPlotOwner(null)
-                            && dPlot.setLastActivity(true)
-                            && dPlot.setStatus(Status.unclaimed)
-                            && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
-                }
-
-                successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
-
-                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
-            });
-            return true;
-        }
-
-        public static boolean deletePlot(Plot plot) {
-            if (abandonPlot(plot)) {
-                CompletableFuture.runAsync(() -> {
-                    if (DataProvider.PLOT.deletePlot(plot.getID())) return;
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
-                });
-                return true;
-            }
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
-            return false;
-        }
     }
 
     public static final class Cache {
@@ -524,19 +382,19 @@ public final class PlotUtils {
 
                     List<BlockVector2> points = plot.getBlockOutline();
 
-                    for (BlockVector2 point : points)
-                        if (point.distanceSq(playerPos2D) < 50 * 50) {
-                            if (!particleAPIEnabled) {
-                                player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
-                            } else {
-                                Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
-                                // create a particle packet
-                                Object packet = particles.FLAME().packet(true, loc);
-
-                                // send this packet to player
-                                particles.sendPacket(player, packet);
-                            }
+                    for (BlockVector2 point : points) {
+                        if (point.distanceSq(playerPos2D) >= 50 * 50) continue;
+                        if (!particleAPIEnabled) {
+                            player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
+                            continue;
                         }
+                        Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
+                        // create a particle packet
+                        Object packet = particles.FLAME().packet(true, loc);
+
+                        // send this packet to player
+                        particles.sendPacket(player, packet);
+                    }
                 }
             }
         }

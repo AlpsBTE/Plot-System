@@ -8,6 +8,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -75,7 +76,7 @@ public class CMD_Plot_Submit extends SubCommand {
 
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
 
-                PlotUtils.Actions.submitPlot(plot);
+                PlotHandler.submitPlot(plot);
                 if (plotMembers.isEmpty()) {
                     // Plot was made alone
                     langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), plot.getPlotOwner().getName());

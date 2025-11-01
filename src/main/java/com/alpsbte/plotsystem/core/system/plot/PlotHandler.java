@@ -29,6 +29,9 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.DefaultPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -36,11 +39,18 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class PlotHandler {
     private PlotHandler() {}
@@ -89,5 +99,103 @@ public class PlotHandler {
         player.playSound(player.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, SoundCategory.MASTER, 1, 1, 0);
 
         new DefaultPlotLoader(plot, builder, type, PlotWorld.getByType(type, plot));
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean abandonPlot(AbstractPlot plot) {
+        boolean successfullyAbandoned = plot.getWorld().onAbandon();
+        if (!successfullyAbandoned) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+            return false;
+        }
+
+        CompletableFuture.runAsync(() -> {
+            if (plot.getPlotType() == PlotType.TUTORIAL) return;
+            Plot dPlot = (Plot) plot;
+            boolean successful;
+            successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
+
+            for (Builder builder : dPlot.getPlotMembers()) {
+                if (!successful) break;
+                successful = dPlot.removePlotMember(builder);
+            }
+
+            if (successful && plot.getPlotOwner() != null) {
+                PlotUtils.Cache.clearCache(plot.getPlotOwner().getUUID());
+                successful = plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
+            }
+
+            if (successful) {
+                successful = dPlot.setPlotOwner(null)
+                        && dPlot.setLastActivity(true)
+                        && dPlot.setStatus(Status.unclaimed)
+                        && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+            }
+
+            successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
+            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+        });
+        return true;
+    }
+
+    public static boolean deletePlot(Plot plot) {
+        if (!abandonPlot(plot)) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + "!"));
+            return false;
+        }
+        CompletableFuture.runAsync(() -> {
+            if (DataProvider.PLOT.deletePlot(plot.getID())) return;
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + " from the database!"));
+        });
+        return true;
+    }
+
+    public static void abandonInactivePlots() {
+        FileConfiguration config = PlotSystem.getPlugin().getConfig();
+        long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
+        long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
+        if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
+
+        for (Plot plot : DataProvider.PLOT.getPlots(Status.unfinished)) {
+            LocalDate lastActivity = plot.getLastActivity();
+            long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
+            if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
+
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (!abandonPlot(plot)) {
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
+                    return;
+                }
+                PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
+            });
+        }
+    }
+
+    public static void submitPlot(@NotNull Plot plot) {
+        plot.setStatus(Status.unreviewed);
+
+        if (plot.getWorld().isWorldLoaded()) {
+            for (Player player : plot.getWorld() instanceof OnePlotWorld ? plot.getWorld().getBukkitWorld().getPlayers() : ((CityPlotWorld) plot.getWorld()).getPlayersOnPlot(plot)) {
+                player.teleport(Utils.getSpawnLocation());
+            }
+        }
+
+        plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        if (!plot.getPlotMembers().isEmpty()) {
+            for (Builder builder : plot.getPlotMembers()) {
+                plot.getPermissions().removeBuilderPerms(builder.getUUID());
+            }
+        }
+    }
+
+    public static void undoSubmit(@NotNull Plot plot) {
+        plot.setStatus(Status.unfinished);
+
+        plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
+        if (!plot.getPlotMembers().isEmpty()) {
+            for (Builder builder : plot.getPlotMembers()) {
+                plot.getPermissions().addBuilderPerms(builder.getUUID());
+            }
+        }
     }
 }

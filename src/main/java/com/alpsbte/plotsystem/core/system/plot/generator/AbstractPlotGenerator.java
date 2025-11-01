@@ -4,6 +4,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.generator.world.PlotWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -144,7 +145,7 @@ public abstract class AbstractPlotGenerator {
                 this.onComplete(exception[0] != null, false);
 
                 if (exception[0] != null) {
-                    PlotUtils.Actions.abandonPlot(plot);
+                    PlotHandler.abandonPlot(plot);
                     onException(exception[0]);
                 }
             });

@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.system.plot.world;
 
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -10,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+/**
+ * Represents the world of a given plot. There can be multiple instances of this interface per actual bukkit world.
+ */
 public interface IWorld {
     /**
      * Generates the plot world with the required configurations and schematic
@@ -123,4 +127,18 @@ public interface IWorld {
      * @return true if world is generated
      */
     boolean isWorldGenerated();
+
+    /**
+     * Returns the plot associated with this world object
+     *
+     * @return the plot associated with this world object
+     */
+    AbstractPlot getPlot();
+
+    /**
+     * Executes all World specific side effects needed to abandon a plot
+     *
+     * @return true if successfully executed
+     */
+    boolean onAbandon();
 }

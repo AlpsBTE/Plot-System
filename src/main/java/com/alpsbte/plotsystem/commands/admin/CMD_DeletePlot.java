@@ -5,6 +5,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import org.bukkit.Bukkit;
@@ -38,10 +39,12 @@ public class CMD_DeletePlot extends BaseCommand {
 
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Deleting plot..."));
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                if (PlotUtils.Actions.deletePlot(plot)) {
-                    sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
-                    if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
-                } else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An unexpected error has occurred!"));
+                if (!PlotHandler.deletePlot(plot)) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An unexpected error has occurred!"));
+                    return;
+                }
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
+                if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             });
         });
         return true;
