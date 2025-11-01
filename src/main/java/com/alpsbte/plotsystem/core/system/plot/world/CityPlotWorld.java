@@ -24,15 +24,22 @@
 
 package com.alpsbte.plotsystem.core.system.plot.world;
 
+import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.google.common.annotations.Beta;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +47,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) {
@@ -54,29 +63,29 @@ public class CityPlotWorld extends PlotWorld {
         player.setAllowFlight(true);
         player.setFlying(true);
 
-        if (getPlot() == null) return true;
+        if (plot == null) return true;
 
-        player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+        player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getID()))));
 
         Utils.updatePlayerInventorySlots(player);
-        PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
+        PlotUtils.ChatFormatting.sendLinkMessages(plot, player);
 
-        if (!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
-        getPlot().setLastActivity(false);
+        if (!plot.getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
+        plot.setLastActivity(false);
 
         return true;
     }
 
     @Override
     public String getRegionName() {
-        return super.getRegionName() + "-" + getPlot().getID();
+        return super.getRegionName() + "-" + plot.getID();
     }
 
 
     @Beta
     @Override
     public int getPlotHeight() throws IOException {
-        return getPlot().getVersion() >= 3 ? MIN_WORLD_HEIGHT + getWorldHeight() : getPlotHeightCentered();
+        return plot.getVersion() >= 3 ? MIN_WORLD_HEIGHT + getWorldHeight() : getPlotHeightCentered();
     }
 
     @Beta
@@ -94,7 +103,7 @@ public class CityPlotWorld extends PlotWorld {
     @Beta
     public int getWorldHeight() throws IOException {
         Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(getPlot().getInitialSchematicBytes());
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
             clipboard = reader.read();
         }
@@ -123,14 +132,48 @@ public class CityPlotWorld extends PlotWorld {
      *
      * @return a list of players located on the plot
      */
-    public List<Player> getPlayersOnPlot() {
+    public List<Player> getPlayersOnPlot(AbstractPlot plot) {
         List<Player> players = new ArrayList<>();
-        if (getPlot() != null && getPlot().getWorld().isWorldLoaded() && !getPlot().getWorld().getBukkitWorld().getPlayers().isEmpty()) {
-            for (Player player : getPlot().getWorld().getBukkitWorld().getPlayers()) {
-                if (PlotUtils.isPlayerOnPlot(getPlot(), player)) players.add(player);
-            }
-            return players;
+        if (plot == null || !plot.getWorld().isWorldLoaded() || plot.getWorld().getBukkitWorld().getPlayers().isEmpty()) return players;
+
+        for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
+            if (PlotUtils.isPlayerOnPlot(plot, player)) players.add(player);
         }
         return players;
+    }
+
+    @Override
+    public boolean onAbandon() {
+        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        if (!loadWorld()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world!"));
+            return false;
+        }
+
+        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(getBukkitWorld()));
+        if (regionManager == null) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
+            return false;
+        }
+
+        for (Builder builder : ((Plot) plot).getPlotMembers()) {
+            ((Plot) plot).removePlotMember(builder);
+        }
+
+        if (regionManager.hasRegion(getRegionName())) regionManager.removeRegion(getRegionName());
+        if (regionManager.hasRegion(getRegionName() + "-1")) regionManager.removeRegion(getRegionName() + "-1");
+
+        // paste initial schematic to reset plot
+        try {
+            AbstractPlotLoader.pasteSchematic(null, PlotUtils.getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes(), getBukkitWorld()), this, true);
+        } catch (IOException e) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not paste schematic!"), e);
+        }
+
+        List<Player> playersToTeleport = new ArrayList<>(getPlayersOnPlot(plot));
+        playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
+
+        if (isWorldLoaded()) unloadWorld(false);
+        return super.onAbandon();
     }
 }

@@ -31,6 +31,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
@@ -156,7 +157,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), getParticipantsString()));
-            PlotUtils.Actions.undoSubmit(plot);
+            PlotHandler.undoSubmit(plot);
         }
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
