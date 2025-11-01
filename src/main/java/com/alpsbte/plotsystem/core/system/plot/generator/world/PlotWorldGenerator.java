@@ -41,6 +41,7 @@ import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
+import org.bukkit.entity.SpawnCategory;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
