@@ -87,7 +87,6 @@ public class Utils {
         });
     }
 
-    // TODO: extract to alpsLibs?
     public static ItemStack getConfiguredItem(@NotNull String material, Object customModelData) {
         ItemStack base;
         if (material.startsWith("head(") && material.endsWith(")")) {

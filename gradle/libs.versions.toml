@@ -4,7 +4,7 @@
 [versions]
 com-alpsbte-alpslib-alpslib-hologram = "1.1.1"
 com-alpsbte-alpslib-alpslib-io = "1.2.0"
-com-alpsbte-alpslib-alpslib-utils = "1.3.5"
+com-alpsbte-alpslib-alpslib-utils = "1.3.6"
 com-alpsbte-canvas = "1.3"
 com-arcaniax-headdatabase-api = "1.3.2"
 com-github-decentsoftware-eu-decentholograms = "2.9.2"
