@@ -16,7 +16,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class TutorialUtils {
-    public static final String TEXT_HIGHLIGHT_START = "<gold>", TEXT_HIGHLIGHT_END = "</gold>";
+    public static final String TEXT_HIGHLIGHT_START = "<gold>";
+    public static final String TEXT_HIGHLIGHT_END = "</gold>";
     public static final String TEXT_CLICK_HIGHLIGHT = "<underlined>";
 
     public static final Component CHAT_PREFIX_COMPONENT = text("»", DARK_GRAY)
