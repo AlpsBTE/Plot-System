@@ -85,8 +85,11 @@ tasks.shadowJar {
     exclude("org/slf4j/**")
     exclude("META-INF/**")
     archiveClassifier = ""
-    enableAutoRelocation = true
-    relocationPrefix = "alpsplotsystem.libs."
+
+    val relocationPrefix = "alpsplotsystem.libs"
+    relocate("com.alpsbte.alpslib", "$relocationPrefix.com.alpsbte.alpslib")
+    relocate("org.mariadb.jdbc", "$relocationPrefix.org.mariadb.jdbc")
+    relocate("com.zaxxer.hikari", "$relocationPrefix.com.zaxxer.hikari")
 }
 
 tasks.assemble {
