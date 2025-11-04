@@ -190,8 +190,8 @@ public final class PlotUtils {
         return null;
     }
 
-    public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
+    public static boolean isPlotWorld(@NotNull World world) {
+        return PlotSystem.DependencyManager.getMultiverseCore().getWorldManager().isLoadedWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
 

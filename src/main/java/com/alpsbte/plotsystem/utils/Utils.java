@@ -36,7 +36,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.CustomHeads;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -53,6 +52,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -79,14 +80,14 @@ public class Utils {
 
         if (!Objects.requireNonNull(config.getString(ConfigPaths.SPAWN_WORLD)).equalsIgnoreCase("default")) {
             try {
-                MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
-                return spawnWorld.getSpawnLocation();
+                Option<LoadedMultiverseWorld> spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getWorldManager().getLoadedWorld(config.getString(ConfigPaths.SPAWN_WORLD));
+                return spawnWorld.get().getSpawnLocation();
             } catch (Exception ignore) {
                 PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find %s in multiverse config!"), ConfigPaths.SPAWN_WORLD);
             }
         }
 
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
+        return PlotSystem.DependencyManager.getMultiverseCore().getWorldManager().getDefaultWorld().get().getSpawnLocation();
     }
 
     public static void updatePlayerInventorySlots(Player player) {
