@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -38,10 +39,18 @@ public class CMD_Plot_Members extends SubCommand {
 
         CompletableFuture.runAsync(() -> {
             Plot plot;
-            if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-                if (plot == null) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot does not exist!"));
+
+            // Use tryParseInt result (avoids double parsing) and handle null safely
+            if (args.length > 0) {
+                Integer id = AlpsUtils.tryParseInt(args[0]);
+                if (id != null) {
+                    plot = DataProvider.PLOT.getPlotById(id);
+                    if (plot == null) {
+                        sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot does not exist!"));
+                        return;
+                    }
+                } else {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Invalid plot ID."));
                     return;
                 }
             } else if (PlotUtils.isPlotWorld(player.getWorld())) {
@@ -57,6 +66,12 @@ public class CMD_Plot_Members extends SubCommand {
                 return;
             }
 
+            // Guard against missing owner data
+            if (plot.getPlotOwner() == null || plot.getPlotOwner().getUUID() == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot has no owner assigned. Contact an admin."));
+                return;
+            }
+
             if (!plot.getPlotOwner().getUUID().equals(player.getUniqueId()) && !player.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to manage this plot's members!"));
                 return;
@@ -66,7 +81,9 @@ public class CMD_Plot_Members extends SubCommand {
                 return;
             }
 
-            new PlotMemberMenu(plot, player);
+            // Switch to main thread for menu creation (GUI operations must be on main thread)
+            Plot finalPlot = plot;
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new PlotMemberMenu(finalPlot, player));
         });
     }
 

@@ -13,7 +13,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -48,14 +47,16 @@ public class PlotMemberMenu extends AbstractMenu {
         getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         // Set loading item for plot member items
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+        if (plot != null) {
             List<Builder> plotMembers = plot.getPlotMembers();
             for (int i = 1; i <= 3; i++) {
                 getMenu().getSlot(11 + i).setItem(plotMembers.size() >= i
                         ? MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer())
                         : emptyMemberSlotItem);
             }
-        });
+        } else {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("PlotMemberMenu: plot is null in setPreviewItems"));
+        }
 
         // Set add plot member item
         ItemStack addItem = BaseItems.MENU_ADD.getItem();
