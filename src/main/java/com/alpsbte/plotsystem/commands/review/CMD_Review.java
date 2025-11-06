@@ -41,54 +41,59 @@ public class CMD_Review extends BaseCommand {
                 return;
             }
 
-            if (args.length == 0) {
+            Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
+            AbstractPlot currentPlot = PlotUtils.getCurrentPlot(builder);
+
+            if (args.length == 0 && !(currentPlot instanceof Plot)) {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewMenu(player));
                 return;
             }
 
-            if (AlpsUtils.tryParseInt(args[0]) == null) {
-                sendInfo(sender);
+            Plot plotToReview;
+            if (args.length == 0) plotToReview = (Plot) currentPlot;
+            else {
+                Integer id = AlpsUtils.tryParseInt(args[0]);
+                if (id == null) {
+                    sendInfo(sender);
+                    return;
+                }
+
+                plotToReview = DataProvider.PLOT.getPlotById(id);
+                if (plotToReview == null || plotToReview.getStatus() != Status.unreviewed) {
+                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    return;
+                }
+            }
+
+            if (plotToReview.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_LOAD_LEGACY_PLOT)));
                 return;
             }
 
-            Plot plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-            if (plot == null || plot.getStatus() != Status.unreviewed) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender,
-                        LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                return;
-            }
-
-            if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
-                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_LOAD_LEGACY_PLOT)));
-                return;
-            }
-
-            Builder builder = DataProvider.BUILDER.getBuilderByUUID(player.getUniqueId());
-            if (DataProvider.BUILDER.canNotReviewPlot(builder.getUUID(), plot) && !sender.hasPermission("plotsystem.admin")) {
+            if (DataProvider.BUILDER.canNotReviewPlot(builder.getUUID(), plotToReview) && !sender.hasPermission("plotsystem.admin")) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
                 return;
             }
 
             // Players cannot review their own plots
-            boolean isParticipant = plot.getPlotOwner().getUUID() == player.getUniqueId() || plot.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
+            boolean isParticipant = plotToReview.getPlotOwner().getUUID() == player.getUniqueId() || plotToReview.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
             if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE) && isParticipant) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
             }
 
             // Check if the reviewer is on the plot
-            AbstractPlot currentPlot = PlotUtils.getCurrentPlot(builder, Status.unreviewed);
             boolean teleportPlayer = false;
             if (currentPlot instanceof Plot) {
-                if (plot.getID() != currentPlot.getID()) teleportPlayer = true;
+                if (plotToReview.getID() != currentPlot.getID()) teleportPlayer = true;
             } else teleportPlayer = true;
 
             // If the reviewer is not on the plot, teleport the player
             if (teleportPlayer) {
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plot.getWorld().teleportPlayer(player));
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plotToReview.getWorld().teleportPlayer(player));
                 return;
             }
 
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewPlotMenu(player, plot));
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewPlotMenu(player, plotToReview));
         });
         return true;
     }
