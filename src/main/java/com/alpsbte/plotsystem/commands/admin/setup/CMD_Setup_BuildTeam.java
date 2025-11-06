@@ -81,7 +81,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             for (BuildTeam b : buildTeams) {
                 StringJoiner citiesAsString = new StringJoiner(", ");
                 StringJoiner reviewersAsString = new StringJoiner(", ");
-                b.getCityProjects().forEach(c -> citiesAsString.add(c.getID()));
+                b.getCityProjects().forEach(c -> citiesAsString.add(c.getId()));
                 b.getReviewers().forEach(r -> reviewersAsString.add(r.getName()));
                 sender.sendMessage(text(" » ", DARK_GRAY)
                         .append(text(b.getId() + " (" + b.getName() + ") ", AQUA))

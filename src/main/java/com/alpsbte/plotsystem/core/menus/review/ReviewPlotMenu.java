@@ -43,7 +43,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     boolean sentWarning = false;
 
     public ReviewPlotMenu(Player player, Plot plot, ReviewRating rating) {
-        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
+        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getId())), player);
         this.plot = plot;
         this.rating = rating;
     }
@@ -132,7 +132,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                 plot.setStatus(Status.unfinished);
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     clickPlayer.closeInventory();
-                    clickPlayer.performCommand("plot abandon " + plot.getID());
+                    clickPlayer.performCommand("plot abandon " + plot.getId());
                 });
                 return;
             }

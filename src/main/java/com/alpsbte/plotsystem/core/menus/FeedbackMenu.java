@@ -95,9 +95,6 @@ public class FeedbackMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync(/* Not needed */) {}
-
-    @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
                 .item(Utils.DEFAULT_ITEM)

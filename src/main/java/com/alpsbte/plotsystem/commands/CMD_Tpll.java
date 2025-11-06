@@ -107,7 +107,10 @@ public class CMD_Tpll extends BaseCommand {
             } catch (IOException | OutOfProjectionBoundsException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A coordinate conversion error occurred!"), ex);
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            } catch (InterruptedException | ExecutionException ex) {
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                sendInfo(sender);
+            } catch (ExecutionException ex) {
                 sendInfo(sender);
             }
         });

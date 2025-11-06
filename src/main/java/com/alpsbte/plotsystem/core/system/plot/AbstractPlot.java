@@ -35,7 +35,7 @@ public abstract class AbstractPlot {
     public static final ClipboardFormat CLIPBOARD_FORMAT = BuiltInClipboardFormat.FAST_V2;
     public static final double LEGACY_VERSION_THRESHOLD = 3;
 
-    private final int ID;
+    private final int id;
 
     protected Builder plotOwner;
     protected OnePlotWorld onePlotWorld;
@@ -46,16 +46,16 @@ public abstract class AbstractPlot {
     protected List<BlockVector2> outline;
     protected List<BlockVector2> blockOutline;
 
-    public AbstractPlot(int id, UUID plotOwnerUUID) {
-        this.ID = id;
+    protected AbstractPlot(int id, UUID plotOwnerUUID) {
+        this.id = id;
         this.plotOwner = plotOwnerUUID != null ? DataProvider.BUILDER.getBuilderByUUID(plotOwnerUUID) : null;
     }
 
     /**
      * @return plot id
      */
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
     /**
@@ -200,18 +200,18 @@ public abstract class AbstractPlot {
             return this.blockOutline;
 
         List<BlockVector2> points = new ArrayList<>();
-        List<BlockVector2> outline = getOutline();
+        List<BlockVector2> correctOutline = getOutline();
 
-        for (int i = 0; i < outline.size() - 1; i++) {
-            BlockVector2 b1 = outline.get(i);
-            BlockVector2 b2 = outline.get(i + 1);
+        for (int i = 0; i < correctOutline.size() - 1; i++) {
+            BlockVector2 b1 = correctOutline.get(i);
+            BlockVector2 b2 = correctOutline.get(i + 1);
             int distance = (int) b1.distance(b2);
 
             points.addAll(Utils.getLineBetweenPoints(b1, b2, distance));
         }
 
-        BlockVector2 first = outline.getFirst();
-        BlockVector2 last = outline.getLast();
+        BlockVector2 first = correctOutline.getFirst();
+        BlockVector2 last = correctOutline.getLast();
         points.addAll(Utils.getLineBetweenPoints(last, first, (int) first.distance(last)));
 
         this.blockOutline = points;

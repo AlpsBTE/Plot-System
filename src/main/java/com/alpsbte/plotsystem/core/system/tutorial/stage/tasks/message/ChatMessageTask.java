@@ -10,6 +10,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
@@ -44,7 +45,7 @@ public class ChatMessageTask extends AbstractTask {
         return isWaitToContinue;
     }
 
-    public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
+    public static void sendTaskMessage(@NotNull Player player, Object[] messages, boolean waitToContinue) {
         AbstractTutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
         if (tutorial == null || tutorial.getNPC() == null) return;
 
@@ -53,12 +54,12 @@ public class ChatMessageTask extends AbstractTask {
         player.sendMessage(text(tutorial.getNPC().getDisplayName() + " ")
                 .append(TutorialUtils.CHAT_PREFIX_COMPONENT));
         for (Object message : messages) {
-            if (message instanceof ClickableTaskMessage) {
-                player.sendMessage(((ClickableTaskMessage) message).getComponent());
-            } else if (message instanceof Component) {
-                player.sendMessage(((Component) message).color(GRAY));
-            } else if (message instanceof String) {
-                player.sendMessage(text((String) message).color(GRAY));
+            if (message instanceof ClickableTaskMessage ctm) {
+                player.sendMessage(ctm.getComponent());
+            } else if (message instanceof Component c) {
+                player.sendMessage(c.color(GRAY));
+            } else if (message instanceof String s) {
+                player.sendMessage(text(s).color(GRAY));
             }
         }
 
@@ -68,7 +69,7 @@ public class ChatMessageTask extends AbstractTask {
                 LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED)));
     }
 
-    public static Component getContinueButtonComponent(String text, String hoverText) {
+    public static @NotNull Component getContinueButtonComponent(String text, String hoverText) {
         return text("[", DARK_GRAY).append(text(text, GREEN).append(text("]", DARK_GRAY)))
                 .hoverEvent(HoverEvent.showText(text(hoverText, GRAY))).clickEvent(ClickEvent.runCommand("/tutorial continue"));
     }
@@ -78,12 +79,6 @@ public class ChatMessageTask extends AbstractTask {
         private final Component messageComponent;
         private final Component hoverTextComponent;
         private final ClickEvent clickEvent;
-
-        public ClickableTaskMessage(String message, String hoverText, ClickEvent clickEvent) {
-            this.messageComponent = text(message);
-            this.hoverTextComponent = text(hoverText);
-            this.clickEvent = clickEvent;
-        }
 
         public ClickableTaskMessage(Component messageComponent, Component hoverTextComponent, ClickEvent clickEvent) {
             this.messageComponent = messageComponent;

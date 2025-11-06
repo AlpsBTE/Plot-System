@@ -208,7 +208,7 @@ public class CompanionMenu {
                     .decoration(BOLD, true)
                     .append(text(statusText, GRAY));
             lore = new LoreBuilder()
-                    .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getID(), WHITE)),
+                    .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getId(), WHITE)),
                             text(plotCityText + ": ", GRAY).append(text(plot.getCityProject().getName(langPlayer), WHITE)),
                             text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
                             empty(),

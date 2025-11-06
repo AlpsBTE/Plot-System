@@ -54,7 +54,7 @@ public class Plot extends AbstractPlot {
 
     @Override
     public boolean setStatus(@NotNull Status status) {
-        if (DataProvider.PLOT.setStatus(getID(), status)) {
+        if (DataProvider.PLOT.setStatus(getId(), status)) {
             this.status = status;
             return true;
         }
@@ -71,7 +71,7 @@ public class Plot extends AbstractPlot {
 
     @Override
     public boolean setPlotOwner(@Nullable Builder plotOwner) {
-        if (DataProvider.PLOT.setPlotOwner(getID(), plotOwner == null ? null : plotOwner.getUUID())) {
+        if (DataProvider.PLOT.setPlotOwner(getId(), plotOwner == null ? null : plotOwner.getUUID())) {
             this.plotOwner = plotOwner;
             return true;
         }
@@ -101,7 +101,7 @@ public class Plot extends AbstractPlot {
     @Override
     public boolean setLastActivity(boolean setNull) {
         LocalDate activityDate = setNull ? null : LocalDate.now();
-        if (DataProvider.PLOT.setLastActivity(getID(), activityDate)) {
+        if (DataProvider.PLOT.setLastActivity(getId(), activityDate)) {
             this.lastActivity = activityDate;
             return true;
         }
@@ -118,7 +118,7 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean setPlotType(PlotType type) {
-        if (DataProvider.PLOT.setPlotType(getID(), type)) {
+        if (DataProvider.PLOT.setPlotType(getId(), type)) {
             this.plotType = type;
             return true;
         }
@@ -139,19 +139,19 @@ public class Plot extends AbstractPlot {
 
     @Override
     public byte[] getInitialSchematicBytes() {
-        return DataProvider.PLOT.getInitialSchematic(getID());
+        return DataProvider.PLOT.getInitialSchematic(getId());
     }
 
     public byte[] getCompletedSchematic() {
-        return DataProvider.PLOT.getCompletedSchematic(getID());
+        return DataProvider.PLOT.getCompletedSchematic(getId());
     }
 
     public List<PlotReview> getReviewHistory() {
-        return DataProvider.REVIEW.getPlotReviewHistory(getID());
+        return DataProvider.REVIEW.getPlotReviewHistory(getId());
     }
 
     public Optional<PlotReview> getLatestReview() {
-        return DataProvider.REVIEW.getLatestReview(getID());
+        return DataProvider.REVIEW.getLatestReview(getId());
     }
 
     public boolean isReviewed() {
@@ -163,7 +163,7 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean setPasted(boolean pasted) {
-        return DataProvider.PLOT.setPasted(getID(), pasted);
+        return DataProvider.PLOT.setPasted(getId(), pasted);
     }
 
     public boolean addPlotMember(Builder member) {
@@ -172,8 +172,8 @@ public class Plot extends AbstractPlot {
             Slot slot = member.getFreeSlot();
             if (slot != null) {
                 plotMembers.add(member);
-                if (DataProvider.PLOT.addPlotMember(getID(), member)) {
-                    if (!member.setSlot(slot, getID())) return false;
+                if (DataProvider.PLOT.addPlotMember(getId(), member)) {
+                    if (!member.setSlot(slot, getId())) return false;
                     getPermissions().addBuilderPerms(member.getUUID());
                     return true;
                 }
@@ -186,8 +186,8 @@ public class Plot extends AbstractPlot {
         List<Builder> plotMembers = getPlotMembers();
         if (!plotMembers.isEmpty() && plotMembers.contains(member)) {
             plotMembers.remove(member);
-            if (DataProvider.PLOT.removePlotMember(getID(), member)) {
-                Slot slot = member.getSlotByPlotId(getID());
+            if (DataProvider.PLOT.removePlotMember(getId(), member)) {
+                Slot slot = member.getSlotByPlotId(getId());
                 if (slot != null && !member.setSlot(slot, -1)) return false;
                 if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
                 return true;

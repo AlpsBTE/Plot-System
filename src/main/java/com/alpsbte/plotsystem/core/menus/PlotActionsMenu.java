@@ -29,10 +29,10 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public class PlotActionsMenu extends AbstractMenu {
     private final Plot plot;
     private final boolean hasReview;
-    FileConfiguration config;
+    final FileConfiguration config;
 
     public PlotActionsMenu(Player menuPlayer, @NotNull Plot plot) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
+        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
 
         this.plot = plot;
         hasReview = plot.getLatestReview().isPresent();
@@ -119,7 +119,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for submit or undo submit plot item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand("plot " + (plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getID());
+            clickPlayer.performCommand("plot " + (plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getId());
         });
 
         // Set click event for teleport to plot item
@@ -135,14 +135,14 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for abandon plot item
         getMenu().getSlot(hasReview ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand("plot abandon " + plot.getID());
+            clickPlayer.performCommand("plot abandon " + plot.getId());
         });
 
         // Set click event for feedback menu button
         if (hasReview) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
-                clickPlayer.performCommand("plot feedback " + plot.getID());
+                clickPlayer.performCommand("plot feedback " + plot.getId());
             });
         }
 
@@ -163,7 +163,7 @@ public class PlotActionsMenu extends AbstractMenu {
                     // Leave Plot
                     clickPlayer.closeInventory();
                     plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
-                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getId()))));
                 }
             });
         }

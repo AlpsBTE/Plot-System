@@ -9,11 +9,6 @@ import org.bukkit.entity.Player;
 
 public abstract class AbstractTask {
     @FunctionalInterface
-    public interface TaskAction<T> {
-        void performAction(T t);
-    }
-
-    @FunctionalInterface
     public interface BiTaskAction<T, R> {
         void performAction(T t, R r);
     }
@@ -30,7 +25,7 @@ public abstract class AbstractTask {
      *
      * @param player The player who is doing the task.
      */
-    public AbstractTask(Player player) {
+    protected AbstractTask(Player player) {
         this(player, null, 0);
     }
 
@@ -41,7 +36,7 @@ public abstract class AbstractTask {
      * @param assignmentMessage The message which is displayed in the action bar and chat.
      * @param totalAssignments  The total assignment progress which is needed to complete the task.
      */
-    public AbstractTask(Player player, Component assignmentMessage, int totalAssignments) {
+    protected AbstractTask(Player player, Component assignmentMessage, int totalAssignments) {
         this.player = player;
         this.assignmentMessage = assignmentMessage;
         this.totalAssignments = totalAssignments;

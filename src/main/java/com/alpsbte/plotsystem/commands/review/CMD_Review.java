@@ -84,7 +84,7 @@ public class CMD_Review extends BaseCommand {
             // Check if the reviewer is on the plot
             boolean teleportPlayer = false;
             if (currentPlot instanceof Plot) {
-                if (plotToReview.getID() != currentPlot.getID()) teleportPlayer = true;
+                if (plotToReview.getId() != currentPlot.getId()) teleportPlayer = true;
             } else teleportPlayer = true;
 
             // If the reviewer is not on the plot, teleport the player

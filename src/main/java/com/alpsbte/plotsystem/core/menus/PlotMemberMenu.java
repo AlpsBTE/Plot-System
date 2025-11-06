@@ -38,7 +38,7 @@ public class PlotMemberMenu extends AbstractMenu {
     private List<Builder> builders;
 
     public PlotMemberMenu(@NotNull Plot plot, Player menuPlayer) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
+        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(), menuPlayer);
         this.plot = plot;
     }
 
@@ -122,7 +122,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(itemSlot - 12);
                 plot.removePlotMember(builder);
                 clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
-                        LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
+                        LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getId()))));
                 reloadMenuAsync();
             });
         }

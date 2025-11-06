@@ -60,7 +60,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         for (int i = 0; i < plots.size(); i++) {
             Plot plot = plots.get(i);
             List<String> lines = new ArrayList<>();
-            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getID());
+            lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.ID) + ": §f" + plot.getId());
             lines.add("");
             lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER) + ": §f" + plot.getPlotOwner().getName());
             if (!plot.getPlotMembers().isEmpty()) {
@@ -89,7 +89,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     return;
                 }
 
-                player.performCommand("review " + plot.getID());
+                player.performCommand("review " + plot.getId());
             });
         }
     }
@@ -156,7 +156,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     private List<Plot> getFilteredPlots(@NotNull List<?> plots) {
         List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).toList();
         if (filteredCityProject != null)
-            filteredPlots = filteredPlots.stream().filter(p -> p.getCityProject().getID().equals(filteredCityProject.getID())).toList();
+            filteredPlots = filteredPlots.stream().filter(p -> p.getCityProject().getId().equals(filteredCityProject.getId())).toList();
         return filteredPlots;
     }
 
@@ -166,7 +166,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         LegacyLoreBuilder.emptyLine();
 
         cityProjects.forEach(c -> {
-            if (filteredCityProject != null && filteredCityProject.getID().equals(c.getID())) {
+            if (filteredCityProject != null && filteredCityProject.getId().equals(c.getId())) {
                 LegacyLoreBuilder.addLine("§b§l> §f§l" + filteredCityProject.getName(langPlayer));
             } else LegacyLoreBuilder.addLine("§7" + c.getName(langPlayer));
         });

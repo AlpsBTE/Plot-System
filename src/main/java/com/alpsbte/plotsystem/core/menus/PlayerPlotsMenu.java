@@ -84,7 +84,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
             getMenu().getSlot(9 + i)
                     .setItem(new ItemBuilder(item)
-                            .setName(text(plot.getCityProject().getName(getMenuPlayer()) + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), AQUA).decoration(BOLD, true))
+                            .setName(text(plot.getCityProject().getName(getMenuPlayer()) + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(), AQUA).decoration(BOLD, true))
                             .setLore(getLore(plot, getMenuPlayer()).build())
                             .build());
         }

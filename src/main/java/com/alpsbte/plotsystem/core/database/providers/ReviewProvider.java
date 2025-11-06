@@ -129,13 +129,13 @@ public class ReviewProvider {
     }
 
     public PlotReview createReview(@NotNull Plot plot, ReviewRating rating, int score, UUID reviewerUUID) {
-        boolean result = DataProvider.PLOT.setMcVersion(plot.getID());
+        boolean result = DataProvider.PLOT.setMcVersion(plot.getId());
         if (!result) return null;
 
         // Create Review
         String qInsert = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) VALUES (?, ?, ?, ?);";
         result = Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
-            ps.setInt(1, plot.getID());
+            ps.setInt(1, plot.getId());
             ps.setString(2, rating.getRatingDatabaseString());
             ps.setInt(3, score);
             ps.setString(4, reviewerUUID.toString());

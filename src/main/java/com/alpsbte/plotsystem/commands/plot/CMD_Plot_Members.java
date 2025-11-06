@@ -46,8 +46,8 @@ public class CMD_Plot_Members extends SubCommand {
                 }
             } else if (PlotUtils.isPlotWorld(player.getWorld())) {
                 AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed);
-                if (p instanceof Plot) {
-                    plot = (Plot) p;
+                if (p instanceof Plot pl) {
+                    plot = pl;
                 } else {
                     sendInfo(sender);
                     return;

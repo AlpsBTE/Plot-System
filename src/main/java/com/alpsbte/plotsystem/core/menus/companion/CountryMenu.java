@@ -62,7 +62,7 @@ public class CountryMenu extends AbstractMenu {
                 TutorialsMenu.getTutorialItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
 
         super.setPreviewItems();
     }
@@ -104,7 +104,7 @@ public class CountryMenu extends AbstractMenu {
         }
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler()));
     }
 
     public static boolean generateRandomPlot(Player clickPlayer, @NotNull List<Country> countryProjects, PlotDifficulty selectedPlotDifficulty) {

@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     List<CityProject> projects;
     private PlotDifficulty selectedPlotDifficulty;
 
-    CityProjectMenu(Player player, Country country, PlotDifficulty selectedPlotDifficulty) {
+    CityProjectMenu(Player player, @NotNull Country country, PlotDifficulty selectedPlotDifficulty) {
         super(6, 4, country.getName(player) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_CITY), player);
         this.country = country;
         this.selectedPlotDifficulty = selectedPlotDifficulty;
@@ -42,7 +43,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent()));
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
 
         // Set loading item for plots difficulty item
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
@@ -59,9 +60,6 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
         super.setPreviewItems();
     }
-
-    @Override
-    protected void setMenuItemsAsync() {}
 
     @Override
     protected void setItemClickEventsAsync() {
@@ -87,7 +85,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         }
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent()));
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler()));
 
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler(((clickPlayer, clickInformation) -> {
@@ -121,7 +119,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         return true;
     }
 
-    public static List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, Country country) {
+    public static @NotNull @Unmodifiable List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, @NotNull Country country) {
         return DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true).stream().filter(test -> {
             if (!(test instanceof CityProject project)) return false;
             var pd = selectedPlotDifficulty;
@@ -157,7 +155,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     }
 
     @Override
-    protected void setPaginatedMenuItemsAsync(List<?> source) {
+    protected void setPaginatedMenuItemsAsync(@NotNull List<?> source) {
         List<CityProject> cities = source.stream().map(l -> (CityProject) l).toList();
         int slot = 9;
         for (CityProject city : cities) {
@@ -167,7 +165,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     }
 
     @Override
-    protected void setPaginatedItemClickEventsAsync(List<?> source) {
+    protected void setPaginatedItemClickEventsAsync(@NotNull List<?> source) {
         List<CityProject> cities = source.stream().map(l -> (CityProject) l).toList();
         int slot = 9;
         for (CityProject city : cities) {

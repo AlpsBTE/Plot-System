@@ -68,7 +68,7 @@ public class CMD_EditFeedback extends BaseCommand {
             }
 
             boolean successful = review.get().updateFeedback(feedback.toString());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getID() + "")));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, plot.getId() + "")));
             else sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
         });
         return true;

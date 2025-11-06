@@ -75,7 +75,9 @@ public class PlotMemberInvitation {
     public void acceptInvite() {
         Builder builder = Builder.byUUID(invitee.getUniqueId());
         if (builder.getFreeSlot() != null) {
-            plot.addPlotMember(Builder.byUUID(invitee.getUniqueId()));
+            if (!plot.addPlotMember(Builder.byUUID(invitee.getUniqueId()))) {
+                PlotSystem.getPlugin().getComponentLogger().error("Failed to add plot member {} to plot #{}!", invitee.getName(), plot.getId());
+            }
 
             // Messages Receiver
             invitee.sendMessage(Utils.ChatUtils.getInfoFormat(AlpsUtils.deserialize(LangUtil.getInstance().get(invitee,

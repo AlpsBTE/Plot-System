@@ -34,7 +34,7 @@ public class ContinentMenu extends AbstractMenu {
         getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
 
         super.setPreviewItems();
     }
@@ -65,7 +65,7 @@ public class ContinentMenu extends AbstractMenu {
         }
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler()));
     }
 
     @Override

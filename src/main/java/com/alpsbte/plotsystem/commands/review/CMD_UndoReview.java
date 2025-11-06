@@ -77,7 +77,7 @@ public class CMD_UndoReview extends BaseCommand {
             }
 
             boolean successful = review.get().undoReview();
-            if (successful) player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.UNDID_REVIEW, plot.getID() + "", plot.getPlotOwner().getName())));
+            if (successful) player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.UNDID_REVIEW, plot.getId() + "", plot.getPlotOwner().getName())));
             else player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
         });
         return true;

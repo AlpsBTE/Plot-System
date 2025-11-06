@@ -48,10 +48,10 @@ public class BuildEventTask extends AbstractTask implements EventTask {
             Block placedBlock = buildEvent.getBlockPlaced();
             Vector placedBlockVector = new Vector(placedBlock.getX(), placedBlock.getY(), placedBlock.getZ());
 
-            for (Vector blockVector : blocksToBuild.keySet()) {
-                if (blockVector.equals(placedBlockVector)) {
-                    if (placedBlock.getBlockData().matches(blocksToBuild.get(blockVector))) {
-                        removeBlockToBuild(blockVector);
+            for (Map.Entry<Vector, BlockData> vectorBlock : blocksToBuild.entrySet()) {
+                if (vectorBlock.getKey().equals(placedBlockVector)) {
+                    if (placedBlock.getBlockData().matches(vectorBlock.getValue())) {
+                        removeBlockToBuild(vectorBlock.getKey());
                         return;
                     }
                     onPlacedBlockAction.performAction(placedBlockVector, false);

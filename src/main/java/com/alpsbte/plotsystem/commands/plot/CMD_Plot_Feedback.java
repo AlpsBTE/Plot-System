@@ -66,7 +66,7 @@ public class CMD_Plot_Feedback extends SubCommand {
                 return;
             }
 
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new FeedbackMenu(player, plot.getID()));
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new FeedbackMenu(player, plot.getId()));
         });
     }
 

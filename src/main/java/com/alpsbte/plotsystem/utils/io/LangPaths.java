@@ -285,7 +285,6 @@ public abstract class LangPaths {
             public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR_PREFIX + "can-only-undo-submissions-unreviewed-plots";
             public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR_PREFIX + "can-only-manage-members-unfinished-plots";
             public static final String CANNOT_TELEPORT_OUTSIDE_PLOT = ERROR_PREFIX + "cannot-teleport-outside-plot";
-            public static final String CANNOT_UNDO_REVIEW = ERROR_PREFIX + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR_PREFIX + "cannot-send-feedback";
             public static final String CANNOT_REVIEW_OWN_PLOT = ERROR_PREFIX + "cannot-review-own-plot";
             public static final String CANNOT_MODIFY_LEGACY_PLOT = ERROR_PREFIX + "cannot-modify-legacy-plot";
@@ -322,9 +321,6 @@ public abstract class LangPaths {
         private Leaderboards() {}
         private static final String LBS = "leaderboards.";
         public static final String PAGES = LBS + "pages.";
-        public static final String ACTIONBAR_POSITION = LBS + "actionbar-position";
-        public static final String ACTIONBAR_PERCENTAGE = LBS + "actionbar-percentage";
-        public static final String NOT_ON_LEADERBOARD = LBS + "not-on-leaderboard";
     }
 
     public static final class Tutorials {

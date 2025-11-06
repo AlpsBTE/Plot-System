@@ -75,7 +75,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
      * @return null if sender is not a player
      */
     protected Player getPlayer(CommandSender sender) {
-        return sender instanceof Player ? (Player) sender : null;
+        return sender instanceof Player p ? p : null;
     }
 
     /**

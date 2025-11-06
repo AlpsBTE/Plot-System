@@ -20,8 +20,8 @@ public class Builder {
     private int thirdSlot;
     private int plotType;
 
-    public Builder(UUID UUID, String name, int score, int firstSlot, int secondSlot, int thirdSlot, int plotType) {
-        this.uuid = UUID;
+    public Builder(UUID uniqueId, String name, int score, int firstSlot, int secondSlot, int thirdSlot, int plotType) {
+        this.uuid = uniqueId;
         this.name = name;
         this.score = score;
         this.firstSlot = firstSlot;
@@ -74,7 +74,7 @@ public class Builder {
     }
 
     public Slot getSlot(Plot plot) {
-        return DataProvider.BUILDER.getSlot(this.uuid, plot.getID());
+        return DataProvider.BUILDER.getSlot(this.uuid, plot.getId());
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

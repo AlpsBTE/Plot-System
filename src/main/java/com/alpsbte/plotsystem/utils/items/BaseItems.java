@@ -5,11 +5,11 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public enum BaseItems {
     COMPANION_ITEM("companion-item"),
 
-    LEADERBOARD_PLOT("leaderboard-plot"),
     LEADERBOARD_SCORE("leaderboard-score"),
 
     PLOT_UNFINISHED("plot-unfinished"),
@@ -42,7 +42,6 @@ public enum BaseItems {
     REVIEW_POINT_FOUR("review-point-four"),
     REVIEW_POINT_FIVE("review-point-five"),
     REVIEW_SUBMIT("review-submit"),
-    REVIEW_CANCEL("review-cancel"),
     REVIEW_INFO("review-info"),
     REVIEW_INFO_PLOT("review-info-plot"),
     REVIEW_TOGGLE_OPTIONAL("review-toggle-optional"),
@@ -74,10 +73,10 @@ public enum BaseItems {
         itemStack = ItemUtils.getConfiguredItem(materialString, customModelData);
 
         itemStack.getItemMeta().setAttributeModifiers(null);
-        itemStack.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS);
+        itemStack.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
     }
 
-    public ItemStack getItem() {
+    public @NotNull ItemStack getItem() {
         return itemStack.clone();
     }
 }

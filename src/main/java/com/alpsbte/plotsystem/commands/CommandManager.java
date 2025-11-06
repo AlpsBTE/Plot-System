@@ -16,32 +16,33 @@ import java.util.List;
 import java.util.Objects;
 
 public class CommandManager {
-
-    public final List<BaseCommand> baseCommands = new ArrayList<>() {{
+    public final List<BaseCommand> baseCommands = new ArrayList<>();
+    
+    public CommandManager() {
         // Default Commands
-        add(new CMD_CancelChat());
-        add(new CMD_Companion());
-        add(new CMD_Plots());
-        add(new CMD_Tpll());
+        baseCommands.add(new CMD_CancelChat());
+        baseCommands.add(new CMD_Companion());
+        baseCommands.add(new CMD_Plots());
+        baseCommands.add(new CMD_Tpll());
 
         // Plot Commands
-        add(new CMD_Plot());
+        baseCommands.add(new CMD_Plot());
 
         // Review Commands
-        add(new CMD_Review());
-        add(new CMD_UndoReview());
-        add(new CMD_EditFeedback());
-        add(new CMD_EditPlot());
+        baseCommands.add(new CMD_Review());
+        baseCommands.add(new CMD_UndoReview());
+        baseCommands.add(new CMD_EditFeedback());
+        baseCommands.add(new CMD_EditPlot());
 
         // Admin Commands
-        add(new CMD_DeletePlot());
-        add(new CMD_SetLeaderboard());
-        add(new CMD_PReload());
+        baseCommands.add(new CMD_DeletePlot());
+        baseCommands.add(new CMD_SetLeaderboard());
+        baseCommands.add(new CMD_PReload());
 
         // Admin Setup Commands
-        add(new CMD_Setup());
-        add(new CMD_Tutorial());
-    }};
+        baseCommands.add(new CMD_Setup());
+        baseCommands.add(new CMD_Tutorial());
+    }
 
     public void init() {
         for (BaseCommand baseCmd : baseCommands) {
@@ -49,9 +50,5 @@ public class CommandManager {
                 Objects.requireNonNull(PlotSystem.getPlugin().getCommand(baseName)).setExecutor(baseCmd);
             }
         }
-    }
-
-    public List<BaseCommand> getBaseCommands() {
-        return baseCommands;
     }
 }

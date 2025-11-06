@@ -29,22 +29,22 @@ import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CityProject {
-    private final String ID;
+    private final String id;
     private final String countryCode;
     private String serverName;
     private boolean isVisible;
     private int buildTeamId;
 
     public CityProject(String id, String countryCode, String serverName, boolean isVisible, int buildTeamId) {
-        this.ID = id;
+        this.id = id;
         this.countryCode = countryCode;
         this.serverName = serverName;
         this.isVisible = isVisible;
         this.buildTeamId = buildTeamId;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public Country getCountry() {
@@ -57,7 +57,7 @@ public class CityProject {
     }
 
     public boolean setServer(String serverName) {
-        if (DataProvider.CITY_PROJECT.setServer(ID, serverName)) {
+        if (DataProvider.CITY_PROJECT.setServer(id, serverName)) {
             this.serverName = serverName;
             return true;
         }
@@ -69,7 +69,7 @@ public class CityProject {
     }
 
     public boolean setVisible(boolean isVisible) {
-        if (DataProvider.CITY_PROJECT.setVisibility(ID, isVisible)) {
+        if (DataProvider.CITY_PROJECT.setVisibility(id, isVisible)) {
             this.isVisible = isVisible;
             return true;
         }
@@ -77,11 +77,11 @@ public class CityProject {
     }
 
     public String getName(Player player) {
-        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".name");
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + id + ".name");
     }
 
     public String getDescription(Player player) {
-        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".description");
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + id + ".description");
     }
 
     public BuildTeam getBuildTeam() {
@@ -89,7 +89,7 @@ public class CityProject {
     }
 
     public boolean setBuildTeam(int buildTeamId) {
-        if (DataProvider.CITY_PROJECT.setBuildTeam(ID, buildTeamId)) {
+        if (DataProvider.CITY_PROJECT.setBuildTeam(id, buildTeamId)) {
             this.buildTeamId = buildTeamId;
             return true;
         }

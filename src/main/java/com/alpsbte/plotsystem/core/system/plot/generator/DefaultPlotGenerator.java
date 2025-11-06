@@ -109,7 +109,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed, false);
         if (failed) return;
 
-        if (!getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getID())) return;
+        if (!getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getId())) return;
         if (!plot.setStatus(Status.unfinished)) return;
         if (!((Plot) plot).setPlotType(plotType)) return;
         if (!plot.setPlotOwner(getBuilder())) return;

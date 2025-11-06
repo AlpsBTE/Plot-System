@@ -43,7 +43,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     private List<ToggleCriteria> buildTeamCriteria = new ArrayList<>();
 
     public ReviewPlotTogglesMenu(Player player, @NotNull Plot plot, ReviewRating rating) {
-        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
+        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getId())), player);
         this.plot = plot;
         this.rating = rating;
     }
@@ -127,10 +127,10 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
 
         Component reviewerConfirmationMessage;
         if (!isRejected) {
-            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), getParticipantsString()));
+            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getId()), getParticipantsString()));
             if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
         } else {
-            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), getParticipantsString()));
+            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getId()), getParticipantsString()));
             PlotUtils.Actions.undoSubmit(plot);
         }
 
@@ -174,17 +174,17 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             try {
                 if (!PlotUtils.savePlotAsSchematic(plot)) {
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"));
                 }
             } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"), ex);
             }
         });
 
         plot.setStatus(Status.completed);
 
         // Remove Plot from Owner
-        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getID()), -1)) return false;
+        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getId()), -1)) return false;
 
         if (plot.getPlotMembers().isEmpty()) {
             // Plot was made alone
@@ -200,7 +200,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 if (!builder.addScore(splitScore)) return false;
 
                 // Remove Slot from Member
-                if (!builder.setSlot(builder.getSlotByPlotId(plot.getID()), -1)) return false;
+                if (!builder.setSlot(builder.getSlotByPlotId(plot.getId()), -1)) return false;
             }
         }
         return true;

@@ -242,7 +242,7 @@ public final class PlotUtils {
         }
 
         // Set Completed Schematic
-        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
         if (!successful) return false;
 
         // If plot was created in a void world, copy the result to the city world
@@ -302,9 +302,9 @@ public final class PlotUtils {
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     if (Actions.abandonPlot(plot)) {
-                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
+                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
                     } else {
-                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
+                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
                     }
                 });
             }
@@ -396,7 +396,7 @@ public final class PlotUtils {
                     }
                 }
             } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"), ex);
                 return false;
             }
 
@@ -404,7 +404,7 @@ public final class PlotUtils {
                 if (plot.getPlotType() == PlotType.TUTORIAL) return;
                 Plot dPlot = (Plot) plot;
                 boolean successful;
-                successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
+                successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
 
                 for (Builder builder : dPlot.getPlotMembers()) {
                     if (!successful) break;
@@ -423,9 +423,9 @@ public final class PlotUtils {
                             && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
                 }
 
-                successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
+                successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getId(), null);
 
-                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
             });
             return true;
         }
@@ -433,12 +433,12 @@ public final class PlotUtils {
         public static boolean deletePlot(Plot plot) {
             if (abandonPlot(plot)) {
                 CompletableFuture.runAsync(() -> {
-                    if (DataProvider.PLOT.deletePlot(plot.getID())) return;
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+                    if (DataProvider.PLOT.deletePlot(plot.getId())) return;
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
                 });
                 return true;
             }
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
             return false;
         }
     }
@@ -608,7 +608,7 @@ public final class PlotUtils {
             if (plot.getPlotMembers().isEmpty() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 Component tc = text("» ", DARK_GRAY)
                         .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
-                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
 
                 player.sendMessage(tc);
@@ -620,10 +620,10 @@ public final class PlotUtils {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
             for (ReviewNotification notification : notifications) {
                 PlotReview review = DataProvider.REVIEW.getReview(notification.reviewId()).orElseThrow();
-                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getID())), GREEN)));
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getId())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 

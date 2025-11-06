@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) {
-        super("C-" + plot.getCityProject().getID(), plot);
+        super("C-" + plot.getCityProject().getId(), plot);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CityPlotWorld extends PlotWorld {
             player.setFlying(true);
 
             if (getPlot() != null) {
-                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getId()))));
 
                 Utils.updatePlayerInventorySlots(player);
                 PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
@@ -47,7 +47,7 @@ public class CityPlotWorld extends PlotWorld {
 
     @Override
     public String getRegionName() {
-        return super.getRegionName() + "-" + getPlot().getID();
+        return super.getRegionName() + "-" + getPlot().getId();
     }
 
 
@@ -79,13 +79,13 @@ public class CityPlotWorld extends PlotWorld {
         if (clipboard != null) {
             int plotHeight = clipboard.getMinimumPoint().y();
 
-            /// Minimum building height for a plot (this should be configurable depending on minecraft build limit)
-            /// This is in the case that a plot is created at y level 300 where the max build limit is 318,
-            /// so you don't want builder to only be able to build for 18 blocks
+            // Minimum building height for a plot (this should be configurable depending on minecraft build limit)
+            // This is in the case that a plot is created at y level 300 where the max build limit is 318,
+            // so you don't want builder to only be able to build for 18 blocks
             int minBuildingHeight = 128;
 
-            /// Negative y level of the current minecraft version (1.21)
-            /// Additional ground layer the plot use to save as schematic need to be included for plot's y-level
+            // Negative y level of the current minecraft version (1.21)
+            // Additional ground layer the plot use to save as schematic need to be included for plot's y-level
             int groundLayer = 64;
 
             // Plots created outside of vanilla build limit or the build-able height is too small

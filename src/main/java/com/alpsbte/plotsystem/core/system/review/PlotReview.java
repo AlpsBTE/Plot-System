@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.system.review;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -75,24 +76,37 @@ public class PlotReview {
         // remove owner score and remove plot from slot
         if (!plot.getPlotOwner().addScore(splitScore == -1 ? -score : -splitScore)) return false;
 
-        Slot slot = plot.getPlotOwner().getSlotByPlotId(plot.getID()); // get slot if plot is still in slots (rejected)
+        Slot slot = plot.getPlotOwner().getSlotByPlotId(plot.getId()); // get slot if plot is still in slots (rejected)
         if (slot == null) slot = plot.getPlotOwner().getFreeSlot(); // get new slot otherwise (completed)
         if (slot == null) return false;
 
-        if (!plot.getPlotOwner().setSlot(slot, plot.getID())) return false;
+        if (!plot.getPlotOwner().setSlot(slot, plot.getId())) return false;
 
         // remove members score and remove plot from slot
         for (Builder member : plot.getPlotMembers()) {
             if (!member.addScore(-splitScore)) return false;
 
-            Slot memberSlot = member.getSlotByPlotId(plot.getID());
+            Slot memberSlot = member.getSlotByPlotId(plot.getId());
             if (memberSlot == null) memberSlot = member.getFreeSlot();
-            if (memberSlot == null || member.setSlot(memberSlot, plot.getID())) return false;
+            if (memberSlot == null || member.setSlot(memberSlot, plot.getId())) return false;
         }
 
-        plot.setStatus(Status.unreviewed);
-        plot.setPasted(false);
+        boolean successful = true;
+        if (!plot.setStatus(Status.unreviewed)) {
+            successful = false;
+            PlotSystem.getPlugin().getComponentLogger().error("Failed to set plot status to unreviewed while undoing review for plot ID {}", plot.getId());
+        }
 
-        return DataProvider.REVIEW.removeReview(reviewId);
+        if (!plot.setPasted(false)) {
+            successful = false;
+            PlotSystem.getPlugin().getComponentLogger().error("Failed to set plot pasted status to false while undoing review for plot ID {}", plot.getId());
+        }
+
+        if (!DataProvider.REVIEW.removeReview(reviewId)) {
+            successful = false;
+            PlotSystem.getPlugin().getComponentLogger().error("Failed to remove plot review with ID {} from database!", reviewId);
+        }
+
+        return successful;
     }
 }
