@@ -37,8 +37,16 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     protected List<?> getSource() {
         List<Plot> plots = new ArrayList<>();
         cityProjects = DataProvider.BUILD_TEAM.getReviewerCities(getMenuPlayer().getUniqueId());
-        plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unreviewed));
-        plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unfinished));
+
+        // Get plots based on city filter
+        if (filteredCityProject != null) {
+            plots.addAll(DataProvider.PLOT.getPlots(List.of(filteredCityProject), Status.unreviewed));
+            plots.addAll(DataProvider.PLOT.getPlots(List.of(filteredCityProject), Status.unfinished));
+        } else {
+            plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unreviewed));
+            plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unfinished));
+        }
+
         return plots;
     }
 
@@ -75,6 +83,12 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                     .setLore(lines)
                     .build());
         }
+
+        // Set previous page item
+        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
+
+        // Set next page item
+        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
     }
 
     @Override
@@ -92,15 +106,22 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 player.performCommand("review " + plot.getId());
             });
         }
-    }
 
-    @Override
-    protected void setMenuItemsAsync() {
-        // Set previous page item
-        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
+        // Set click event for previous page item
+        if (hasPreviousPage()) {
+            getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
+                previousPage();
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
+            });
+        }
 
-        // Set next page item
-        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
+        // Set click event for next page item
+        if (hasNextPage()) {
+            getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
+                nextPage();
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
+            });
+        }
     }
 
     @Override
@@ -120,24 +141,8 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             reloadMenuAsync(false);
         });
 
-        // Set click event for previous page item
-        if (hasPreviousPage()) {
-        getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
-                previousPage();
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-        });
-        }
-
         // Set click event for close item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
-
-        // Set click event for next page item
-        if (hasNextPage()) {
-        getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-                nextPage();
-                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-        });
-        }
     }
 
     @Override
@@ -154,10 +159,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     }
 
     private List<Plot> getFilteredPlots(@NotNull List<?> plots) {
-        List<Plot> filteredPlots = plots.stream().map(p -> (Plot) p).toList();
-        if (filteredCityProject != null)
-            filteredPlots = filteredPlots.stream().filter(p -> p.getCityProject().getId().equals(filteredCityProject.getId())).toList();
-        return filteredPlots;
+        return plots.stream().map(p -> (Plot) p).toList();
     }
 
     private ItemStack getFilterItem(Player langPlayer) {
