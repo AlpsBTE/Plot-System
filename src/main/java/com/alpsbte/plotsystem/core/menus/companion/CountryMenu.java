@@ -16,7 +16,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
@@ -61,7 +59,7 @@ public class CountryMenu extends AbstractMenu {
 
         // Set tutorial item
         getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
-                TutorialsMenu.getTutorialItem(getMenuPlayer()) : new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build());
+                TutorialsMenu.getTutorialItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
@@ -121,7 +119,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("001111001")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
@@ -136,7 +134,7 @@ public class CountryMenu extends AbstractMenu {
         if (CompanionMenu.hasContinentView()) {
             getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } else {
-            getMenu().getSlot(1).setItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build());
+            getMenu().getSlot(1).setItem(Utils.DEFAULT_ITEM);
         }
 
         for (Country country : countryProjects) {

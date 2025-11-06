@@ -60,6 +60,7 @@ public class Utils {
     private static Random random;
     public static final String EMPTY_MASK = "000000000";
     public static final String FULL_MASK = "111111111";
+    public static final ItemStack DEFAULT_ITEM = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build();
 
     // Spawn Location
     public static Location getSpawnLocation() {

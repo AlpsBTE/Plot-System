@@ -14,7 +14,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -158,7 +157,7 @@ public class TutorialStagesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

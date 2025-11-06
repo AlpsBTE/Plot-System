@@ -1,6 +1,5 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
@@ -17,8 +16,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -52,15 +49,13 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
         // Set tutorial item
         getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
-                TutorialsMenu.getTutorialItem(getMenuPlayer()) : new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build());
+                TutorialsMenu.getTutorialItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         // Set previous page item
-        if (hasPreviousPage())
-            getMenu().getSlot(45).setItem(MenuItems.previousPageItem(getMenuPlayer()));
+        getMenu().getSlot(45).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         // Set next page item
-        if (hasNextPage())
-            getMenu().getSlot(53).setItem(MenuItems.nextPageItem(getMenuPlayer()));
+        getMenu().getSlot(53).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         super.setPreviewItems();
     }
@@ -76,19 +71,20 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
 
         // Set click event for previous page item
-        getMenu().getSlot(45).setClickHandler((clickPlayer, clickInformation) -> {
-            if (hasPreviousPage()) {
+        if (hasPreviousPage()) {
+            getMenu().getSlot(45).setClickHandler((clickPlayer, clickInformation) -> {
                 previousPage();
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-            }
-        });
+            });
+        }
 
         // Set click event for next page item
-        getMenu().getSlot(53).setClickHandler((clickPlayer, clickInformation) -> {
-            if (!hasNextPage()) return;
-            nextPage();
-            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-        });
+        if (hasNextPage()) {
+            getMenu().getSlot(53).setClickHandler((clickPlayer, clickInformation) -> {
+                nextPage();
+                clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
+            });
+        }
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, country.getContinent()));
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
@@ -144,7 +140,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("001111001")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

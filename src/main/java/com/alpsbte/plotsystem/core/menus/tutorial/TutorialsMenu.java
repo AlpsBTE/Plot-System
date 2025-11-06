@@ -17,7 +17,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -82,8 +81,8 @@ public class TutorialsMenu extends AbstractMenu {
         );
 
         // Set back item
-        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
-            getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
+        getMenu().getSlot(49).setItem(!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL)
+                || isBeginnerTutorialCompleted ? MenuItems.backMenuItem( getMenuPlayer()) : Utils.DEFAULT_ITEM);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class TutorialsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

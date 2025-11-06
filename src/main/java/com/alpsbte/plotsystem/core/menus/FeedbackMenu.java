@@ -83,7 +83,7 @@ public class FeedbackMenu extends AbstractMenu {
         getMenu().getSlot(14).setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA, BOLD))
                 .setLore(new LoreBuilder()
-                        .addLine(feedbackText.replaceAll("//", " "), true)
+                        .addLine(feedbackText.replace("//", " "), true)
                         .build())
                 .build());
 
@@ -95,12 +95,12 @@ public class FeedbackMenu extends AbstractMenu {
     }
 
     @Override
-    protected void setItemClickEventsAsync() {}
+    protected void setItemClickEventsAsync(/* Not needed */) {}
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.FULL_MASK)
