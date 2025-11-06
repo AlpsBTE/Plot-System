@@ -59,8 +59,7 @@ public class PlotTypeMenu extends AbstractMenu {
                         .build());
 
         boolean inspirationModeDisabled = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE); // TODO remove or enhance as soon CIM is working again
-        if (!inspirationModeDisabled) {
-            getMenu().getSlot(15).setItem(
+            getMenu().getSlot(15).setItem(!inspirationModeDisabled ?
                     new ItemBuilder(BaseItems.PLOT_CITY_INSPIRATION_MODE.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.SELECT_CITY_INSPIRATION_MODE), GOLD, BOLD)
                                     .append(text(" [", DARK_GRAY).append(text("BETA", RED).append(text("]", DARK_GRAY))))) // temporary BETA tag
@@ -68,8 +67,8 @@ public class PlotTypeMenu extends AbstractMenu {
                                     .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
                                     .build())
                             .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
-                            .build());
-        }
+                            .build() : Utils.DEFAULT_ITEM);
+
 
 
         // Set selected glass pane
@@ -79,7 +78,6 @@ public class PlotTypeMenu extends AbstractMenu {
         if (builder.getPlotType() == PlotType.CITY_INSPIRATION_MODE)
             selectedPlotTypeSlot = 15;
         getMenu().getSlot(selectedPlotTypeSlot - 9).setItem(new ItemBuilder(Material.LIME_STAINED_GLASS_PANE, 1).setName(empty()).build());
-
 
         // Set back item
         getMenu().getSlot(22).setItem(MenuItems.backMenuItem(getMenuPlayer()));
@@ -119,7 +117,7 @@ public class PlotTypeMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")

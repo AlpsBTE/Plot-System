@@ -25,17 +25,16 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class ReviewPlotTogglesMenu extends AbstractMenu {
@@ -43,7 +42,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     private final ReviewRating rating;
     private List<ToggleCriteria> buildTeamCriteria = new ArrayList<>();
 
-    public ReviewPlotTogglesMenu(Player player, Plot plot, ReviewRating rating) {
+    public ReviewPlotTogglesMenu(Player player, @NotNull Plot plot, ReviewRating rating) {
         super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
         this.plot = plot;
         this.rating = rating;
@@ -103,7 +102,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
@@ -207,7 +206,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         return true;
     }
 
-    private ItemStack getToggleItem(ToggleCriteria criteria, boolean checked) {
+    private ItemStack getToggleItem(@NotNull ToggleCriteria criteria, boolean checked) {
         Player p = getMenuPlayer();
         ItemStack baseItem = checked
                 ? BaseItems.REVIEW_TOGGLE_CHECKED.getItem()

@@ -27,7 +27,6 @@ import org.ipvp.canvas.mask.Mask;
 import java.util.List;
 import java.util.Objects;
 
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
@@ -182,7 +181,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

@@ -14,7 +14,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -98,10 +97,10 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected void setMenuItemsAsync() {
         // Set previous page item
-        if (hasPreviousPage()) getMenu().getSlot(46).setItem(MenuItems.previousPageItem(getMenuPlayer()));
+        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         // Set next page item
-        if (hasNextPage()) getMenu().getSlot(52).setItem(MenuItems.nextPageItem(getMenuPlayer()));
+        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
     }
 
     @Override
@@ -122,29 +121,29 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         });
 
         // Set click event for previous page item
+        if (hasPreviousPage()) {
         getMenu().getSlot(46).setClickHandler((clickPlayer, clickInformation) -> {
-            if (hasPreviousPage()) {
                 previousPage();
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-            }
         });
+        }
 
         // Set click event for close item
         getMenu().getSlot(49).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.closeInventory());
 
         // Set click event for next page item
+        if (hasNextPage()) {
         getMenu().getSlot(52).setClickHandler((clickPlayer, clickInformation) -> {
-            if (hasNextPage()) {
                 nextPage();
                 clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.INVENTORY_CLICK_SOUND, 1, 1);
-            }
         });
+        }
     }
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
