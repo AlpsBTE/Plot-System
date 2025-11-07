@@ -19,8 +19,8 @@ public abstract class LangPaths {
         public static final String SCORE = PLOT_PREFIX + "score";
         public static final String TOTAL_SCORE = PLOT_PREFIX + "total-score";
         public static final String COMPLETED_PLOTS = PLOT_PREFIX + "completed-plots";
-
         public static final class GroupSystem {
+
             private GroupSystem() {}
 
             private static final String GROUP_SYSTEM = PLOT_PREFIX + "group-system.";
@@ -28,8 +28,8 @@ public abstract class LangPaths {
             public static final String SHARED_BY_MEMBERS = GROUP_SYSTEM + "shared-by-members";
         }
     }
-
     public static final class CityProject {
+
         private CityProject() {}
         private static final String CITY_PROJECT = "city-project.";
         public static final String CITIES = CITY_PROJECT + "cities";
@@ -40,15 +40,15 @@ public abstract class LangPaths {
         public static final String PROJECT_NO_PLOTS_AVAILABLE = CITY_PROJECT + "no-plots-available";
         public static final String FOR_YOUR_DIFFICULTY = CITY_PROJECT + "for-your-difficulty";
     }
-
     public static final class Country {
+
         private Country() {}
 
         private static final String COUNTRY_PREFIX = "country.";
         public static final String COUNTRIES = COUNTRY_PREFIX + "countries";
     }
-
     public static final class Continent {
+
         private Continent() {}
 
         private static final String CONTINENT_PREFIX = "continent.";
@@ -59,16 +59,16 @@ public abstract class LangPaths {
         public static final String SOUTH_AMERICA = CONTINENT_PREFIX + "south-america";
         public static final String NORTH_AMERICA = CONTINENT_PREFIX + "north-america";
     }
-
     public static final class Difficulty {
+
         private Difficulty() {}
 
         private static final String DIFFICULTY_PREFIX = "difficulty.";
         public static final String AUTOMATIC = DIFFICULTY_PREFIX + "automatic";
         public static final String SCORE_MULTIPLIER = DIFFICULTY_PREFIX + "score-multiplier";
     }
-
     public static final class MenuTitle {
+
         private MenuTitle() {}
         private static final String MENU_TITLES = "menu-title.";
         public static final String CLOSE = MENU_TITLES + "close";
@@ -117,8 +117,8 @@ public abstract class LangPaths {
         public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
         public static final String COMPANION_RANDOM = MENU_TITLES + "companion-random";
     }
-
     public static final class MenuDescription {
+
         private MenuDescription() {}
         private static final String MENU_DESCRIPTIONS = "menu-description.";
         public static final String ERROR = MENU_DESCRIPTIONS + "error-desc";
@@ -152,8 +152,8 @@ public abstract class LangPaths {
         public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
         public static final String COMPANION_RANDOM = MENU_DESCRIPTIONS + "companion-random-desc";
     }
-
     public static final class Review {
+
         private Review() {}
 
         private static final String REVIEW_PREFIX = "review.";
@@ -171,10 +171,9 @@ public abstract class LangPaths {
         public static final String BLOCK_PALETTE_POINTS = REVIEW_PREFIX + "block-palette-points";
         public static final String TOGGLE_POINTS = REVIEW_PREFIX + "toggle-points";
         public static final String TOTAL_POINTS = REVIEW_PREFIX + "total-points";
-
+        public static final String ABANDONED_IN_DAYS = REVIEW_PREFIX + "abandoned-in-days";
         public static final class Criteria {
             private Criteria() {}
-
             private static final String CRITERIA_PREFIX = REVIEW_PREFIX + "criteria.";
             public static final String ACCURACY = CRITERIA_PREFIX + "accuracy";
             public static final String ACCURACY_DESC = CRITERIA_PREFIX + "accuracy-desc";
@@ -182,8 +181,8 @@ public abstract class LangPaths {
             public static final String BLOCK_PALETTE_DESC = CRITERIA_PREFIX + "block-palette-desc";
         }
     }
-
     public static final class Note {
+
         private Note() {}
         private static final String NOTES = "note.";
         public static final String TIP = NOTES + "tip";
@@ -196,8 +195,8 @@ public abstract class LangPaths {
         public static final String CRITERIA_FULFILLED = NOTES + "criteria-fulfilled";
         public static final String CRITERIA_NOT_FULFILLED = NOTES + "criteria-not-fulfilled";
         public static final String LEGACY = NOTES + "legacy";
-
         public static final class Action {
+
             private Action() {}
             private static final String ACTION_PREFIX = NOTES + "action.";
             public static final String READ = ACTION_PREFIX + "read";

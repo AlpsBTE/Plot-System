@@ -81,7 +81,7 @@ public class PlotProvider {
 
         String cityPlaceholders = "?,".repeat(cities.size() - 1) + "?";
         String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id IN (" + cityPlaceholders + ")";
-        query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
+        query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?) ORDER BY plot.plot_id;" : ";";
         String qPlotsWithCitiesAndStatuses = query;
 
         return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qPlotsWithCitiesAndStatuses, ps -> {
