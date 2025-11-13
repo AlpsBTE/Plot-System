@@ -80,11 +80,13 @@ public class PlotActionsMenu extends AbstractMenu {
                         .build());
 
         // Set plot feedback item
+        if (hasReview) {
             getMenu().getSlot(16)
-                    .setItem(hasReview ? new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
+                    .setItem(new ItemBuilder(BaseItems.REVIEW_FEEDBACK.getItem())
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.FEEDBACK), AQUA).decoration(BOLD, true))
                             .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK), true).build())
-                            .build() : Utils.DEFAULT_ITEM);
+                            .build());
+        }
         
         // Set plot members item
         if (!plot.isReviewed() && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
