@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class CMD_Review extends BaseCommand {
@@ -79,21 +80,56 @@ public class CMD_Review extends BaseCommand {
             boolean isParticipant = plotToReview.getPlotOwner().getUUID() == player.getUniqueId() || plotToReview.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
             if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE) && isParticipant) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
+                return;
             }
 
             // Check if the reviewer is on the plot
             boolean teleportPlayer = false;
-            if (currentPlot instanceof Plot) {
-                if (plotToReview.getId() != currentPlot.getId()) teleportPlayer = true;
-            } else teleportPlayer = true;
+            if (currentPlot instanceof Plot currentPlotCast) {
+                if (plotToReview.getId() != currentPlotCast.getId()) {
+                    teleportPlayer = true;
+                    if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                        PlotSystem.getPlugin().getComponentLogger().info(text("Review: Player on different plot, will teleport. Current: " + currentPlotCast.getId() + ", Target: " + plotToReview.getId()));
+                    }
+                } else {
+                    if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                        PlotSystem.getPlugin().getComponentLogger().info(text("Review: Player on target plot " + plotToReview.getId() + ", opening menu directly"));
+                    }
+                }
+            } else {
+                teleportPlayer = true;
+                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                    PlotSystem.getPlugin().getComponentLogger().info(text("Review: Player not on any plot, will teleport to plot " + plotToReview.getId()));
+                }
+            }
 
-            // If the reviewer is not on the plot, teleport the player
+            Plot finalPlotToReview = plotToReview;
+
+            // If the reviewer is not on the plot, teleport the player first
             if (teleportPlayer) {
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plotToReview.getWorld().teleportPlayer(player));
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                    plotToReview.getWorld().teleportPlayer(player);
+                    if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                        PlotSystem.getPlugin().getComponentLogger().info(text("Review: Teleported player, scheduling menu open in 20 ticks"));
+                    }
+                    // Open menu after teleportation completes
+                    Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
+                        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                            PlotSystem.getPlugin().getComponentLogger().info(text("Review: Opening ReviewPlotMenu for plot " + finalPlotToReview.getId()));
+                        }
+                        new ReviewPlotMenu(player, finalPlotToReview);
+                    }, 20L);
+                });
                 return;
             }
 
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new ReviewPlotMenu(player, plotToReview));
+            // Player is already on the plot, open menu on main thread
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
+                    PlotSystem.getPlugin().getComponentLogger().info(text("Review: Opening ReviewPlotMenu for plot " + finalPlotToReview.getId() + " (no teleport needed)"));
+                }
+                new ReviewPlotMenu(player, finalPlotToReview);
+            });
         });
         return true;
     }

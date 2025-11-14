@@ -78,6 +78,11 @@ public class PlotMemberMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
+        if (plot == null) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("PlotMemberMenu: plot is null in setMenuItemsAsync, cannot load menu items"));
+            return;
+        }
+
         // Set plot owner item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
