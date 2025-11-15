@@ -37,8 +37,15 @@ public class PlotMemberMenu extends AbstractMenu {
     private List<Builder> builders;
 
     public PlotMemberMenu(@NotNull Plot plot, Player menuPlayer) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(), menuPlayer);
+        // Avoid opening the menu before 'plot' is assigned
+        super(3,
+                LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " +
+                        LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(),
+                menuPlayer,
+                false);
         this.plot = plot;
+        // Now that 'plot' is set, we can safely load the menu
+        reloadMenuAsync();
     }
 
     @Override
@@ -155,3 +162,4 @@ public class PlotMemberMenu extends AbstractMenu {
                 .build();
     }
 }
+

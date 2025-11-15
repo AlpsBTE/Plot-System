@@ -112,13 +112,6 @@ public class CMD_Review extends BaseCommand {
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
                         PlotSystem.getPlugin().getComponentLogger().info(text("Review: Teleported player, scheduling menu open in 20 ticks"));
                     }
-                    // Open menu after teleportation completes
-                    Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
-                        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                            PlotSystem.getPlugin().getComponentLogger().info(text("Review: Opening ReviewPlotMenu for plot " + finalPlotToReview.getId()));
-                        }
-                        new ReviewPlotMenu(player, finalPlotToReview);
-                    }, 20L);
                 });
                 return;
             }
