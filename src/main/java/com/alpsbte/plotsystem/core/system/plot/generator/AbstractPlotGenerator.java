@@ -285,12 +285,16 @@ public abstract class AbstractPlotGenerator {
             clipboard = reader.read();
         }
 
+        BlockVector3 clipboardOrigin = clipboard.getOrigin();
+        if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
+        int pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
+
         // paste schematic
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
             if (pasteMask != null) editSession.setMask(pasteMask);
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
-                    .to(BlockVector3.at(world.getPlot().getCenter().x(), world.getPlotHeight(), world.getPlot().getCenter().z()))
+                    .to(BlockVector3.at(world.getPlot().getCenter().x(), pasteY, world.getPlot().getCenter().z()))
                     .build();
             Operations.complete(clipboardHolder);
         }
