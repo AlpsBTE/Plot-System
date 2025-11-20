@@ -132,10 +132,10 @@ public abstract class AbstractPlotGenerator {
      */
     protected void generateOutlines() throws IOException {
         if (plotVersion >= 3 && plotType.hasEnvironment()) {
-            pasteSchematic(null, plot.getInitialSchematicBytes(), world, false);
+            pasteSchematic(null, plot.getInitialSchematicBytes(), world, false, false);
         } else {
             Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true, false);
         }
     }
 
@@ -263,8 +263,9 @@ public abstract class AbstractPlotGenerator {
      * @param schematicFile - plot/environment schematic file
      * @param world         - world to paste in
      * @param clearArea     - clears the plot area with air before pasting
+     * @param offset        - offset for the paste operation
      */
-    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea) throws IOException {
+    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
         // load world
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());
@@ -285,9 +286,13 @@ public abstract class AbstractPlotGenerator {
             clipboard = reader.read();
         }
 
-        BlockVector3 clipboardOrigin = clipboard.getOrigin();
-        if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
-        int pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
+        int pasteY = world.getPlotHeight();
+
+        if (offset) {
+            BlockVector3 clipboardOrigin = clipboard.getOrigin();
+            if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
+            pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
+        }
 
         // paste schematic
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {

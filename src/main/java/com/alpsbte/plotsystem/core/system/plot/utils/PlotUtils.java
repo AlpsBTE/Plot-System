@@ -30,6 +30,8 @@ import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
+import com.sk89q.worldedit.function.mask.BlockTypeMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -38,6 +40,7 @@ import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -278,7 +281,9 @@ public final class PlotUtils {
 
         // If plot was created in a void world, copy the result to the city world
         if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
-            AbstractPlotGenerator.pasteSchematic(null, outputStream.toByteArray(), new CityPlotWorld(plot), false);
+            var cpw = new CityPlotWorld(plot);
+            Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(cpw.getBukkitWorld()), BlockTypes.AIR);
+            AbstractPlotGenerator.pasteSchematic(airMask, outputStream.toByteArray(), cpw, false, true);
         }
         return true;
     }
@@ -419,7 +424,7 @@ public final class PlotUtils {
                             if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                             if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
-                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true, false);
                         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
 
                         playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
