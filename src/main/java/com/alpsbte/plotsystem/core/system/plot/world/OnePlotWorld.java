@@ -29,10 +29,9 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.DefaultPlotLoader;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -56,13 +55,13 @@ public class OnePlotWorld extends PlotWorld {
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotLoader> boolean generateWorld(@NotNull Class<T> generator) {
         if (isWorldGenerated()) return false;
 
-        if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-            new DefaultPlotGenerator(plot, plotOwner);
-        } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
-            new TutorialPlotGenerator(plot, plotOwner);
+        if (generator.isAssignableFrom(DefaultPlotLoader.class)) {
+            new DefaultPlotLoader(plot, plotOwner);
+        } else if (generator.isAssignableFrom(TutorialPlotLoader.class)) {
+            new TutorialPlotLoader(plot, plotOwner);
         } else return false;
         return true;
     }
@@ -73,7 +72,7 @@ public class OnePlotWorld extends PlotWorld {
 
         // Generate plot if it doesn't exist
         if (plot.getPlotType() == PlotType.TUTORIAL || ((Plot) plot).getCompletedSchematic() == null)
-            generateWorld(TutorialPlotGenerator.class);
+            generateWorld(TutorialPlotLoader.class);
 
         new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this);
 

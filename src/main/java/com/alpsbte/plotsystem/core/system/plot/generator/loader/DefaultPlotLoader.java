@@ -29,6 +29,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -41,25 +42,36 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public class DefaultPlotLoader extends AbstractPlotLoader {
     public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder, PlotType plotType, PlotWorld plotWorld) {
         super(plot, builder, plotType, plotWorld);
     }
 
+    public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder) {
+        this(plot, builder, builder.getPlotType());
+    }
+
+    public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder, PlotType plotType) {
+        this(plot, builder, plotType, PlotWorld.getByType(plotType, (Plot) plot));
+    }
+
     @Override
     protected void generateStructure() throws Exception {
-        if (!(plot instanceof Plot p)) super.generateStructure();
-        else {
-            byte[] completedSchematic = p.getCompletedSchematic();
-            if (completedSchematic != null) {
-                Utils.runSync(() -> {
-                    Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                    pasteSchematic(airMask, completedSchematic, plotWorld, true);
-                    return null;
-                }).get();
-            } else super.generateStructure();
+        if (!(plot instanceof Plot p)) {
+            super.generateStructure();
+            return;
         }
 
+        byte[] completedSchematic = p.getCompletedSchematic();
+        if (completedSchematic != null) {
+            Utils.runSync(() -> {
+                Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(plotWorld.getBukkitWorld()), BlockTypes.AIR);
+                pasteSchematic(airMask, completedSchematic, plotWorld, true);
+                return null;
+            }).get();
+        } else super.generateStructure();
         copyToCityWorld();
     }
 
@@ -71,12 +83,13 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         });
     }
 
-    protected void copyToCityWorld() {
+    protected void copyToCityWorld() throws IOException {
+        assert plot instanceof Plot;
         if (plot.getStatus() == Status.completed) return;
         if (!PlotWorld.isOnePlotWorld(plotWorld.getWorldName())) return;
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
-        // TODO: generate plot on city world
-        // TODO: unload CIM world when done
+        CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
+        AbstractPlotLoader.pasteSchematic(null, this.schematicBytes, cityPlotWorld, false);
     }
 }

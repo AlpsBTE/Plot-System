@@ -7,8 +7,8 @@ import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
@@ -123,7 +123,7 @@ public class EventListener implements Listener {
     public void onPlayerQuitEvent(@NotNull PlayerQuitEvent event) {
         final World w = event.getPlayer().getWorld();
 
-        DefaultPlotGenerator.playerPlotGenerationHistory.remove(event.getPlayer().getUniqueId());
+        PlotHandler.removePlayerFromGenerationHistory(event.getPlayer().getUniqueId());
         ChatInput.awaitChatInput.remove(event.getPlayer().getUniqueId());
         PlotUtils.Cache.clearCache(event.getPlayer().getUniqueId());
 

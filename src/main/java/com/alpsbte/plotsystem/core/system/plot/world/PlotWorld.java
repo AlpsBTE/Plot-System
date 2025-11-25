@@ -30,7 +30,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -75,12 +75,12 @@ public class PlotWorld implements IWorld {
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotLoader> boolean generateWorld(@NotNull Class<T> generator) {
         throw new UnsupportedOperationException("No world generator set for world " + getWorldName());
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotLoader> boolean regenWorld(@NotNull Class<T> generator) {
         return deleteWorld() && generateWorld(generator);
     }
 

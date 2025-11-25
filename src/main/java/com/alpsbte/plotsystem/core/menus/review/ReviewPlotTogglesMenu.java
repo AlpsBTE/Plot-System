@@ -35,6 +35,7 @@ import org.ipvp.canvas.mask.Mask;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -174,11 +175,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
-                if (!PlotUtils.savePlotAsSchematic(plot)) {
+                if (!PlotHandler.savePlotAsSchematic(plot)) {
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                     PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
                 }
-            } catch (IOException | WorldEditException ex) {
+            } catch (IOException | WorldEditException | ExecutionException | InterruptedException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
             }
         });
