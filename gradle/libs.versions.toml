@@ -18,6 +18,7 @@ io-papermc-paper-paper-api = "1.21.8-R0.1-SNAPSHOT"
 li-cinnazeyy-langlibs-api = "1.5.1"
 org-mariadb-jdbc-mariadb-java-client = "2.7.4"
 com-intellectualsites-bom-bom-newest = "1.55" # Ref: https://github.com/IntellectualSites/bom
+com-github-querz-nbt-newest = "6.1"
 
 [libraries]
 com-alpsbte-alpslib-alpslib-hologram = { module = "com.alpsbte.alpslib:alpslib-hologram", version.ref = "com-alpsbte-alpslib-alpslib-hologram" }
@@ -27,6 +28,7 @@ com-alpsbte-canvas = { module = "com.alpsbte:canvas", version.ref = "com-alpsbte
 com-arcaniax-headdatabase-api = { module = "com.arcaniax:HeadDatabase-API", version.ref = "com-arcaniax-headdatabase-api" }
 com-github-decentsoftware-eu-decentholograms = { module = "com.github.decentsoftware-eu:decentholograms", version.ref = "com-github-decentsoftware-eu-decentholograms" }
 com-github-fierioziy-particlenativeapi-particlenativeapi-plugin = { module = "com.github.fierioziy.particlenativeapi:ParticleNativeAPI-plugin", version.ref = "com-github-fierioziy-particlenativeapi-particlenativeapi-plugin" }
+com-github-querz-nbt = { module = "com.github.Querz:NBT", version.ref = "com-github-querz-nbt-newest" }
 multiverse-core = { module = "org.mvplugins.multiverse.core:multiverse-core", version.ref = "multiverse-core" }
 com-sk89q-worldguard-worldguard-bukkit = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "com-sk89q-worldguard-worldguard-bukkit" }
 com-zaxxer-hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "com-zaxxer-hikaricp" }

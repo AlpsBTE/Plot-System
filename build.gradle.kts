@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.com.alpsbte.alpslib.alpslib.utils)
     implementation(libs.org.mariadb.jdbc.mariadb.java.client)
     implementation(libs.com.zaxxer.hikaricp)
+    implementation(libs.com.github.querz.nbt)
     compileOnly(libs.io.papermc.paper.paper.api)
     implementation(platform(libs.com.intellectualsites.bom.bom.newest))
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
