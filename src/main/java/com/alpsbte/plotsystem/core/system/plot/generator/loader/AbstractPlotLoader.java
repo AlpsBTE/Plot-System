@@ -27,6 +27,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator.loader;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.generator.world.PlotWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -259,7 +260,7 @@ public abstract class AbstractPlotLoader {
     }
 
     protected void onException(Exception e) {
-        // TODO: abandon plot
+        PlotHandler.abandonPlot(this.plot);
 
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot!"), e);
         builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));

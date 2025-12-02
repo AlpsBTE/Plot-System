@@ -6,8 +6,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
@@ -21,9 +19,7 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_13;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
@@ -33,7 +29,6 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -60,7 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -191,58 +185,6 @@ public final class PlotUtils {
 
     public static @NotNull String getDefaultSchematicPath() {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
-    }
-
-    public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException {
-        if (plot.getVersion() < 4) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
-            return false;
-        }
-
-        Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
-        }
-        if (clipboard == null) return false;
-
-        CuboidRegion cuboidRegion = getPlotAsRegion(plot);
-        if (cuboidRegion == null) return false;
-
-        BlockVector3 plotCenter = plot.getCenter();
-
-        // Get plot outline
-        List<BlockVector2> plotOutlines = plot.getOutline();
-
-        // Load finished plot region as cuboid region
-        if (!plot.getWorld().loadWorld()) return false;
-        com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-        Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
-
-        // Copy and write finished plot clipboard to schematic
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (Clipboard cb = new BlockArrayClipboard(region)) {
-            cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
-
-            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
-            Operations.complete(forwardExtentCopy);
-
-            try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-                double initialY = clipboard.getRegion().getMinimumY();
-                double offset = initialY - cuboidRegion.getMinimumY();
-                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
-            }
-        }
-
-        // Set Completed Schematic
-        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
-        if (!successful) return false;
-
-        // If plot was created in a void world, copy the result to the city world
-        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
-            AbstractPlotGenerator.pasteSchematic(null, outputStream.toByteArray(), new CityPlotWorld(plot), false);
-        }
-        return true;
     }
 
     public static @Nullable CompletableFuture<double[]> convertTerraToPlotXZ(@NotNull AbstractPlot plot, double[] terraCoords) throws IOException {

@@ -27,6 +27,8 @@ package com.alpsbte.plotsystem.core.system.plot;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.DefaultPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
@@ -34,21 +36,41 @@ import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -79,6 +101,23 @@ public class PlotHandler {
         if (!builder.setSlot(builder.getFreeSlot(), plot.getID())) return false;
         if (!plot.setStatus(Status.unfinished)) return false;
         return plot.setPlotOwner(builder);
+    }
+
+    public static boolean assignAndGeneratePlot(Builder builder, Plot plot) {
+        PlotType type = builder.getPlotType();
+        if (type.equals(PlotType.CITY_INSPIRATION_MODE) && ConfigUtil.getInstance().configs[0].getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE))
+            type = PlotType.LOCAL_INSPIRATION_MODE;
+
+        boolean successful = assignPlot(builder, plot);
+        if (successful) generatePlot(builder, plot, type);
+
+        return successful;
+    }
+
+    public static boolean assignAndGenerateRandomPlot(Builder builder, CityProject city, PlotDifficulty difficulty) {
+        Plot randomPlot = DataProvider.PLOT.getPlots(city, difficulty, Status.unclaimed)
+                .get(Utils.getRandom().nextInt(DataProvider.PLOT.getPlots(city, difficulty, Status.unclaimed).size()));
+        return assignAndGeneratePlot(builder, randomPlot);
     }
 
     public static void generatePlot(Builder builder, Plot plot, PlotType type) {
@@ -197,5 +236,64 @@ public class PlotHandler {
                 plot.getPermissions().addBuilderPerms(builder.getUUID());
             }
         }
+    }
+
+    public static void removePlayerFromGenerationHistory(UUID playerUuid) {
+        playerPlotGenerationHistory.remove(playerUuid);
+    }
+
+    public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException, ExecutionException, InterruptedException {
+        if (plot.getVersion() < 4) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
+            return false;
+        }
+
+        Clipboard clipboard;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+            clipboard = reader.read();
+        }
+        if (clipboard == null) return false;
+
+        CuboidRegion cuboidRegion = PlotUtils.getPlotAsRegion(plot);
+        if (cuboidRegion == null) return false;
+
+        BlockVector3 plotCenter = plot.getCenter();
+
+        // Get plot outline
+        List<BlockVector2> plotOutlines = plot.getOutline();
+
+        // Load finished plot region as cuboid region
+        if (!plot.getWorld().loadWorld()) return false;
+        com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
+        Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
+
+        // Copy and write finished plot clipboard to schematic
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (Clipboard cb = new BlockArrayClipboard(region)) {
+            cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
+
+            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
+            Operations.complete(forwardExtentCopy);
+
+            try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+                double initialY = clipboard.getRegion().getMinimumY();
+                double offset = initialY - cuboidRegion.getMinimumY();
+                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
+            }
+        }
+
+        // Set Completed Schematic
+        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+        if (!successful) return false;
+
+        // If plot was created in a void world, copy the result to the city world
+        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
+            Utils.runSync(() -> {
+                AbstractPlotLoader.pasteSchematic(null, outputStream.toByteArray(), new CityPlotWorld(plot), false);
+                return null;
+            }).get();
+        }
+        return true;
     }
 }

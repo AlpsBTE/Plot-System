@@ -6,7 +6,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.providers.TutorialPlotProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
@@ -22,7 +22,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +39,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot tutorialPlot;
-    private TutorialPlotGenerator plotGenerator;
+    private TutorialPlotLoader plotGenerator;
     private boolean isPasteSchematic;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) {
@@ -91,7 +90,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws IOException {
+    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws Exception {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
             plotGenerator.generateOutlines(schematicId);
@@ -119,7 +118,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             if (isPasteSchematic) {
                 try {
                     onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     onException(ex);
                     return;
                 }
@@ -147,11 +146,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
-        if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
-            plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
+        if (tutorialWorldIndex == 1 && (plotGenerator == null || !tutorialPlot.getWorld().isWorldGenerated())) {
+            plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
             try {
                 onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 onException(ex);
                 return;
             }

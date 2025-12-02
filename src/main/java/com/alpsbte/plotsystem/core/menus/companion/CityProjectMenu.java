@@ -10,13 +10,10 @@ import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -126,13 +123,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         }
 
         Plot plot = unclaimedPlots.get(Utils.getRandom().nextInt(unclaimedPlots.size()));
-
-        PlotType type = builder.getPlotType();
-        if (type.equals(PlotType.CITY_INSPIRATION_MODE) && ConfigUtil.getInstance().configs[0].getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE))
-            type = PlotType.LOCAL_INSPIRATION_MODE;
-
-        boolean successful = PlotHandler.assignPlot(builder, plot);
-        if (successful) PlotHandler.generatePlot(builder, plot, type);
+        PlotHandler.assignAndGeneratePlot(builder, plot);
     }
 
     public static boolean generateRandomPlot(Player player, @NotNull List<CityProject> items, PlotDifficulty selectedPlotDifficulty) {
@@ -147,14 +138,13 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         try {
             if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity, Builder.byUUID(player.getUniqueId())).get();
             if (difficulty == null) difficulty = PlotDifficulty.EASY;
-
-            player.closeInventory();
-            new DefaultPlotGenerator(randomCity, difficulty, builder);
         } catch (InterruptedException | ExecutionException e) {
             sqlError(player, e);
             return false;
         }
-        player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1);
+        player.closeInventory();
+        boolean successful = PlotHandler.assignAndGenerateRandomPlot(builder, randomCity, difficulty);
+        if (successful) player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1);
         return true;
     }
 
