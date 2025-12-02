@@ -12,12 +12,11 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
@@ -30,12 +29,14 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public class PlotActionsMenu extends AbstractMenu {
     private final Plot plot;
     private final boolean hasReview;
+    final FileConfiguration config;
 
-    public PlotActionsMenu(Player menuPlayer, Plot plot) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
+    public PlotActionsMenu(Player menuPlayer, @NotNull Plot plot) {
+        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
 
         this.plot = plot;
         hasReview = plot.getLatestReview().isPresent();
+        config = PlotSystem.getPlugin().getConfig();
     }
 
     @Override
@@ -86,11 +87,10 @@ public class PlotActionsMenu extends AbstractMenu {
                             .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK), true).build())
                             .build());
         }
-
+        
         // Set plot members item
-        if (!plot.isReviewed()) {
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
+        if (!plot.isReviewed() && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
+            if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin"))) {
                 getMenu().getSlot(22)
                         .setItem(new ItemBuilder(BaseItems.MENU_ADD.getItem())
                                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.MANAGE_MEMBERS), AQUA).decoration(BOLD, true))
@@ -111,6 +111,8 @@ public class PlotActionsMenu extends AbstractMenu {
                                         .build())
                                 .build());
             }
+        } else {
+            getMenu().getSlot(22).setItem(Utils.DEFAULT_ITEM);
         }
     }
 
@@ -119,7 +121,7 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for submit or undo submit plot item
         getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand("plot " + (plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getID());
+            clickPlayer.performCommand("plot " + (plot.getStatus().equals(Status.unreviewed) ? "undosubmit " : "submit ") + plot.getId());
         });
 
         // Set click event for teleport to plot item
@@ -135,42 +137,44 @@ public class PlotActionsMenu extends AbstractMenu {
         // Set click event for abandon plot item
         getMenu().getSlot(hasReview ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
             clickPlayer.closeInventory();
-            clickPlayer.performCommand("plot abandon " + plot.getID());
+            clickPlayer.performCommand("plot abandon " + plot.getId());
         });
 
         // Set click event for feedback menu button
         if (hasReview) {
             getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> {
                 clickPlayer.closeInventory();
-                clickPlayer.performCommand("plot feedback " + plot.getID());
+                clickPlayer.performCommand("plot feedback " + plot.getId());
             });
         }
 
         // Set click event for plot members item
-        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
-            if (plot.isReviewed()) return;
-            if (plot.getStatus() != Status.unfinished) {
-                clickPlayer.closeInventory();
-                clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
-                return;
-            }
+        if (!plot.isReviewed() && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
+            getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> {
+                if (plot.isReviewed()) return;
+                if (plot.getStatus() != Status.unfinished) {
+                    clickPlayer.closeInventory();
+                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.CAN_ONLY_MANAGE_MEMBERS_UNFINISHED)));
+                    return;
+                }
 
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
-                new PlotMemberMenu(plot, clickPlayer);
-            } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
-                // Leave Plot
-                clickPlayer.closeInventory();
-                plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
-                clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getID()))));
-            }
-        });
+                FileConfiguration config = PlotSystem.getPlugin().getConfig();
+                if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin")) && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
+                    new PlotMemberMenu(plot, clickPlayer);
+                } else if (plot.getPlotMembers().stream().anyMatch(m -> m.getUUID().equals(getMenuPlayer().getUniqueId()))) {
+                    // Leave Plot
+                    clickPlayer.closeInventory();
+                    plot.removePlotMember(Builder.byUUID(clickPlayer.getUniqueId()));
+                    clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.LEFT_PLOT, Integer.toString(plot.getId()))));
+                }
+            });
+        }
     }
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.FULL_MASK)

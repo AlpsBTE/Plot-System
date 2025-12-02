@@ -122,19 +122,11 @@ public class TutorialNPC {
         return hologram;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
 
     public String getInteractionPrompt() {
         return interactionPrompt;
-    }
-
-    public SkinData getSkin() {
-        return skin;
     }
 }

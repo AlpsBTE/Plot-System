@@ -1,6 +1,5 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -8,8 +7,6 @@ import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -37,7 +34,7 @@ public class ContinentMenu extends AbstractMenu {
         getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
 
         super.setPreviewItems();
     }
@@ -68,13 +65,13 @@ public class ContinentMenu extends AbstractMenu {
         }
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
-        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler));
+        footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler()));
     }
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("011111111")
                 .pattern("010101010")
                 .pattern("111101111")

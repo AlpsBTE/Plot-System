@@ -156,7 +156,7 @@ public class BuilderProvider {
     }
 
     public boolean canNotReviewPlot(@NotNull UUID uuid, Plot plot) {
-        return DataProvider.BUILD_TEAM.getReviewerCities(uuid).stream().noneMatch(c -> c.getID().equals(plot.getCityProject().getID()));
+        return DataProvider.BUILD_TEAM.getReviewerCities(uuid).stream().noneMatch(c -> c.getId().equals(plot.getCityProject().getId()));
     }
 
     public List<Builder> getReviewersByBuildTeam(int buildTeamId) {

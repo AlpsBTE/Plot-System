@@ -64,10 +64,7 @@ val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDe
 val details = versionDetails()
 
 group = "com.alpsbte"
-version = "5.0.0" + "-" + details.branchName.replace(
-    "/",
-    "-"
-) + "-" + details.commitDistance + "-" + details.gitHash + "-SNAPSHOT"
+version = "5.0.0" + "-" + details.commitDistance + "-" + details.gitHash + "-SNAPSHOT"
 description = "An easy to use building system for the BuildTheEarth project."
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -86,8 +83,11 @@ tasks.shadowJar {
     exclude("org/slf4j/**")
     exclude("META-INF/**")
     archiveClassifier = ""
-    enableAutoRelocation = true
-    relocationPrefix = "alpsplotsystem.libs."
+
+    val relocationPrefix = "alpsplotsystem.libs"
+    relocate("com.alpsbte.alpslib", "$relocationPrefix.com.alpsbte.alpslib")
+    relocate("org.mariadb.jdbc", "$relocationPrefix.org.mariadb.jdbc")
+    relocate("com.zaxxer.hikari", "$relocationPrefix.com.zaxxer.hikari")
 }
 
 tasks.assemble {

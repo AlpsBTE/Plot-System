@@ -81,23 +81,47 @@ public final class PlotUtils {
      */
     @Nullable
     public static AbstractPlot getCurrentPlot(@NotNull Builder builder, Status... statuses) {
+        boolean dev = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE);
+        if (dev) {
+            PlotSystem.getPlugin().getComponentLogger().info(text(
+                    "getCurrentPlot: enter | player=" + (builder.isOnline() ? builder.getPlayer().getName() : builder.getUUID()) +
+                            ", statuses=" + (statuses == null ? "null" : java.util.Arrays.toString(statuses))
+            ));
+        }
+
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
+            if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: worldName=" + worldName));
 
             if (PlotWorld.isOnePlotWorld(worldName)) {
-                int id = Integer.parseInt(worldName.substring(2));
-                AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
-                        ? DataProvider.PLOT.getPlotById(id)
-                        : DataProvider.TUTORIAL_PLOT.getById(id).orElseThrow();
-                if (statuses == null) return plot;
-                for (Status status : statuses) if (status == plot.getStatus()) return plot;
-                return null;
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: detected OnePlotWorld"));
+                try {
+                    int id = Integer.parseInt(worldName.substring(2));
+                    AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
+                            ? DataProvider.PLOT.getPlotById(id)
+                            : DataProvider.TUTORIAL_PLOT.getById(id).orElse(null);
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: one-plot id=" + id + ", resolved=" + (plot == null ? "null" : (plot.getClass().getSimpleName() + "#" + plot.getId() + " status=" + plot.getStatus()))));
+
+                    if (plot == null) return null;
+                    if (statuses == null || statuses.length == 0) return plot;
+                    for (Status status : statuses) if (status == plot.getStatus()) return plot;
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: status filter did not match for plot #" + plot.getId()));
+                    return null;
+                } catch (NumberFormatException ex) {
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().warn(text("getCurrentPlot: failed to parse plot id from worldName=" + worldName), ex);
+                    return null;
+                }
             } else if (PlotWorld.isCityPlotWorld(worldName)) {
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: detected CityPlotWorld"));
                 String cityID = worldName.substring(2);
                 Optional<CityProject> city = DataProvider.CITY_PROJECT.getById(cityID);
-                if (city.isEmpty()) return null;
+                if (city.isEmpty()) {
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().warn(text("getCurrentPlot: city not found for id=" + cityID));
+                    return null;
+                }
 
                 List<Plot> plots = DataProvider.PLOT.getPlots(city.get(), statuses);
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: candidate plots in city=" + city.get().getName(builder.isOnline() ? builder.getPlayer() : null) + ", count=" + plots.size()));
                 if (plots.isEmpty()) return null;
                 if (plots.size() == 1) return plots.getFirst();
 
@@ -105,19 +129,26 @@ public final class PlotUtils {
                 Location playerLoc = builder.getPlayer().getLocation().clone();
                 Vector3 playerVector = Vector3.at(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
 
-                double distance = 100000000;
+                double distance = Double.MAX_VALUE;
                 Plot chosenPlot = plots.getFirst();
                 for (Plot plot : plots) {
                     if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) continue;
                     BlockVector3 plotCenter = plot.getCenter();
-                    if (plotCenter.withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
-                        distance = plotCenter.distance(playerVector.toBlockPoint());
+                    double currentDistance = plotCenter.withY((int) playerVector.y()).distance(playerVector.toBlockPoint());
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: candidate #" + plot.getId() + " center=" + plotCenter + " distance=" + currentDistance));
+                    if (currentDistance < distance) {
+                        distance = currentDistance;
                         chosenPlot = plot;
                     }
                 }
 
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: chosen plot id=" + chosenPlot.getId() + ", distance=" + distance));
                 return chosenPlot;
+            } else {
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: world is not a plot world"));
             }
+        } else if (dev) {
+            PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: builder is offline"));
         }
         return null;
     }
@@ -408,7 +439,7 @@ public final class PlotUtils {
             if (plot.getPlotMembers().isEmpty() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 Component tc = text("» ", DARK_GRAY)
                         .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
-                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
 
                 player.sendMessage(tc);
@@ -420,10 +451,10 @@ public final class PlotUtils {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
             for (ReviewNotification notification : notifications) {
                 PlotReview review = DataProvider.REVIEW.getReview(notification.reviewId()).orElseThrow();
-                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getID())), GREEN)));
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getId())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 

@@ -27,9 +27,9 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
         void onClick(@NotNull HologramClickEvent clickEvent);
     }
 
-    private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
-    private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
-    private final static String EMPTY_TAG = "&f";
+    private static final int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
+    private static final String HOLOGRAM_LINE_BREAKER = "%newline%";
+    private static final String EMPTY_TAG = "&f";
 
     protected final Player player;
     protected final int holoId;
@@ -42,7 +42,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     private ClickAction markAsReadClickAction;
     private boolean isMarkAsReadClicked = false;
 
-    public AbstractTutorialHologram(Player player, int tutorialId, int holoId, String content, int readMoreId) {
+    protected AbstractTutorialHologram(@NotNull Player player, int tutorialId, int holoId, String content, int readMoreId) {
         super("ps-tutorial-" + tutorialId + "-" + holoId, null, true);
         this.holoId = holoId;
         this.player = player;
@@ -87,7 +87,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected abstract String getMarkAsReadClickedActionText();
 
     @Override
-    public void create(Player player) {
+    public void create(@NotNull Player player) {
         setLocation(new Location(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
         super.create(player);
     }
@@ -103,7 +103,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     }
 
     @Override
-    public boolean hasViewPermission(UUID uuid) {
+    public boolean hasViewPermission(@NotNull UUID uuid) {
         return player.getUniqueId().toString().equals(uuid.toString());
     }
 

@@ -1,6 +1,8 @@
 package com.alpsbte.plotsystem.commands.plot;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +15,7 @@ public class CMD_Plot extends BaseCommand {
         registerSubCommand(new CMD_Plot_Links(this));
         registerSubCommand(new CMD_Plot_Submit(this));
         registerSubCommand(new CMD_Plot_Abandon(this));
-        registerSubCommand(new CMD_Plot_Invite(this));
+        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) registerSubCommand(new CMD_Plot_Invite(this));
         registerSubCommand(new CMD_Plot_Feedback(this));
         registerSubCommand(new CMD_Plot_UndoSubmit(this));
         registerSubCommand(new CMD_Plot_Members(this));

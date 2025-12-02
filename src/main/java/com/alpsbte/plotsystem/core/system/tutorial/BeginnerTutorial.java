@@ -32,6 +32,10 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -129,8 +133,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             TEXT_HIGHLIGHT_END);
         }
 
+        @Contract(pure = true)
         @Override
-        protected List<AbstractTutorialHologram> setHolograms() {
+        protected @Nullable List<AbstractTutorialHologram> setHolograms() {
             return null;
         }
 
@@ -178,8 +183,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE2_TASKS);
         }
 
+        @Contract(pure = true)
         @Override
-        protected List<AbstractTutorialHologram> setHolograms() {
+        protected @Nullable List<AbstractTutorialHologram> setHolograms() {
             return null;
         }
 
@@ -231,8 +237,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     TEXT_HIGHLIGHT_START + "/tpll" + TEXT_HIGHLIGHT_END);
         }
 
+        @Contract(" -> new")
         @Override
-        protected List<AbstractTutorialHologram> setHolograms() {
+        protected @NotNull @Unmodifiable List<AbstractTutorialHologram> setHolograms() {
             return Collections.singletonList(
                     new PlotTutorialHologram(getPlayer(), getId(), 0, getMessages().get(4), 3)
             );
@@ -289,8 +296,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     TEXT_HIGHLIGHT_START + "//wand" + TEXT_HIGHLIGHT_END);
         }
 
+        @Contract(pure = true)
         @Override
-        protected List<AbstractTutorialHologram> setHolograms() {
+        protected @Nullable List<AbstractTutorialHologram> setHolograms() {
             return null;
         }
 
@@ -333,8 +341,9 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                     TEXT_HIGHLIGHT_START + "//line " + BASE_BLOCKS.getFirst() + TEXT_HIGHLIGHT_END);
         }
 
+        @Contract(pure = true)
         @Override
-        protected List<AbstractTutorialHologram> setHolograms() {
+        protected @Nullable List<AbstractTutorialHologram> setHolograms() {
             return null;
         }
 
@@ -400,13 +409,14 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
             return LangUtil.getInstance().getList(getPlayer(), LangPaths.Tutorials.Beginner.STAGE6_TASKS);
         }
 
+        @Contract(" -> new")
         @Override
-        protected List<AbstractTutorialHologram> setHolograms() {
+        protected @NotNull @Unmodifiable List<AbstractTutorialHologram> setHolograms() {
             return Collections.singletonList(new PlotTutorialHologram(getPlayer(), getId(), 13, getMessages().get(7), 4));
         }
 
         @Override
-        public StageTimeline getTimeline() throws IOException {
+        public @NotNull StageTimeline getTimeline() throws IOException {
             StageTimeline stage = new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)

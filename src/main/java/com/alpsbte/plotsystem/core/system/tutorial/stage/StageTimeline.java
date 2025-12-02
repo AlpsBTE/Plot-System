@@ -23,7 +23,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -239,18 +238,6 @@ public class StageTimeline implements TutorialTimeline {
      */
     public StageTimeline createHolograms(Component assignmentMessage, AbstractTutorialHologram... holograms) {
         tasks.add(new CreateHologramTask(player, assignmentMessage, new LinkedList<>(Arrays.asList(holograms)), true));
-        return this;
-    }
-
-    /**
-     * Adds a DeleteHologramTask to the timeline.
-     * Deletes a specific tutorial hologram from the stage.
-     *
-     * @param hologram hologram to delete from the current stage
-     * @see AbstractStage#getHolograms()
-     */
-    public StageTimeline deleteHologram(AbstractTutorialHologram hologram) {
-        tasks.add(new DeleteHologramTask(player, Collections.singletonList(hologram)));
         return this;
     }
 

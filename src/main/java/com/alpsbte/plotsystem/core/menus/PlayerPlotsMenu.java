@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
 import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
@@ -85,7 +84,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
 
             getMenu().getSlot(9 + i)
                     .setItem(new ItemBuilder(item)
-                            .setName(text(plot.getCityProject().getName(getMenuPlayer()) + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), AQUA).decoration(BOLD, true))
+                            .setName(text(plot.getCityProject().getName(getMenuPlayer()) + " | " + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(), AQUA).decoration(BOLD, true))
                             .setLore(getLore(plot, getMenuPlayer()).build())
                             .build());
         }
@@ -109,7 +108,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
@@ -167,7 +166,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
             loreBuilder.addLine(text(LangUtil.getInstance().get(p, LangPaths.Review.FEEDBACK) + ":", GRAY));
             String feedback = review.get().getFeedback() == null
                     ? LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.NO_FEEDBACK)
-                    : review.get().getFeedback().replaceAll("//", " ");
+                    : review.get().getFeedback().replace("//", " ");
             loreBuilder.addLine(text(feedback, WHITE), true);
         }
 

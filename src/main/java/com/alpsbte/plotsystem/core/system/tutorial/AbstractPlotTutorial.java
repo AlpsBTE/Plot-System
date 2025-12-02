@@ -76,7 +76,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     protected TutorialNPC initNpc() {
         return new TutorialNPC(
-                "ps-tutorial-" + tutorialPlot.getID(),
+                "ps-tutorial-" + tutorialPlot.getId(),
                 ChatColor.GOLD + ChatColor.BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
                 ChatColor.GRAY + "(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")",
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
@@ -139,7 +139,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             if (stageId >= stages.size()) {
                 if (!tutorialPlot.isComplete()) tutorialPlot.setComplete();
-            } else if (stageId > tutorialPlot.getStageID()) tutorialPlot.setStageID(stageId);
+            } else if (stageId > tutorialPlot.getStageID()) {
+                if (!tutorialPlot.setStageID(stageId)) {
+                    PlotSystem.getPlugin().getComponentLogger().error("Could not save tutorial progress for tutorial plot #{}!", tutorialPlot.getId());
+                }
+            }
         });
     }
 

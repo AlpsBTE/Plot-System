@@ -14,11 +14,11 @@ public abstract class AbstractMenu {
     private final Player menuPlayer;
     private final String title;
 
-    public AbstractMenu(int rows, String title, Player menuPlayer) {
+    protected AbstractMenu(int rows, String title, Player menuPlayer) {
         this(rows, title, menuPlayer, true);
     }
 
-    public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
+    protected AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.title = title;
         this.menuPlayer = menuPlayer;
         this.menu = ChestMenu.builder(rows).title(text(title)).redraw(true).build();
@@ -29,12 +29,16 @@ public abstract class AbstractMenu {
     /**
      * Places items asynchronously in the menu after it is opened
      */
-    protected abstract void setMenuItemsAsync();
+    protected void setMenuItemsAsync() {
+        // Default just does nothing, for use-cases which doesn't need it.
+    }
 
     /**
      * Sets click events for the items placed in the menu async after it is opened
      */
-    protected abstract void setItemClickEventsAsync();
+    protected void setItemClickEventsAsync() {
+        // Default just does nothing, for use-cases which doesn't need it.
+    }
 
     /**
      * Places pre-defined items in the menu before it is opened

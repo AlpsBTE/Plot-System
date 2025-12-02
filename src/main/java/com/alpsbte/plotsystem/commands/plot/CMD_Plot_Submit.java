@@ -79,7 +79,7 @@ public class CMD_Plot_Submit extends SubCommand {
                 PlotHandler.submitPlot(plot);
                 if (plotMembers.isEmpty()) {
                     // Plot was made alone
-                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), plot.getPlotOwner().getName());
+                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getId()), plot.getPlotOwner().getName());
                 } else {
                     // Plot was made in a group
                     StringBuilder sb = new StringBuilder(plot.getPlotOwner().getName() + ", ");
@@ -89,7 +89,7 @@ public class CMD_Plot_Submit extends SubCommand {
                                 plotMembers.get(i).getName() :
                                 plotMembers.get(i).getName() + ", ");
                     }
-                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), sb.toString());
+                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getId()), sb.toString());
                 }
 
                 Objects.requireNonNull(player).playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);

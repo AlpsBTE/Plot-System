@@ -9,6 +9,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -115,7 +115,7 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     protected abstract void prepareStage(PrepareStageAction action);
 
-    protected AbstractTutorial(Player player, int tutorialId, int stageId) {
+    protected AbstractTutorial(@NotNull Player player, int tutorialId, int stageId) {
         this.tutorialId = tutorialId;
         this.playerUUID = player.getUniqueId();
         this.player = player;
@@ -161,7 +161,7 @@ public abstract class AbstractTutorial implements Tutorial {
                 .filter(AbstractTutorialHologram.class::isInstance)
                 .filter(holo -> holo.isVisible(playerUUID))
                 .map(h -> (AbstractTutorialHologram) h)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -203,10 +203,8 @@ public abstract class AbstractTutorial implements Tutorial {
                 // Ge the timeline of the current stage
                 stageTimeline = currentStage.getTimeline();
 
-                prepareStage(() -> {
-                    // Start tasks timeline
-                    stageTimeline.StartTimeline();
-                });
+                // Start tasks timeline
+                prepareStage(stageTimeline::StartTimeline);
             } catch (Exception ex) {
                 onException(ex);
             }
@@ -251,7 +249,7 @@ public abstract class AbstractTutorial implements Tutorial {
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while processing tutorial!"), ex);
 
         // Send player back to hub after 3 seconds if an error occurred
-        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20 * 3);
+        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20L * 3);
     }
 
     /**
@@ -262,16 +260,6 @@ public abstract class AbstractTutorial implements Tutorial {
     public List<Class<? extends AbstractStage>> getStages() {
         return stages;
     }
-
-    /**
-     * Gets all registered worlds of the tutorial.
-     *
-     * @return list of all worlds
-     */
-    public List<TutorialWorld> getWorlds() {
-        return worlds;
-    }
-
 
     /**
      * Gets all active tutorials currently being run by a player.

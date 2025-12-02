@@ -49,7 +49,7 @@ public class OnePlotWorld extends PlotWorld {
     private final AbstractPlot plot;
 
     public OnePlotWorld(@NotNull AbstractPlot plot) {
-        super((plot instanceof TutorialPlot ? "T-" : "P-") + plot.getID(), plot);
+        super((plot instanceof TutorialPlot ? "T-" : "P-") + plot.getId(), plot);
         this.plot = plot;
         this.plotOwner = plot.getPlotOwner();
     }
@@ -77,7 +77,7 @@ public class OnePlotWorld extends PlotWorld {
         new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this);
 
         if (!isWorldGenerated() || !isWorldLoaded()) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + plot.getID() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + plot.getId() + "!"));
             return false;
         }
         return true;
@@ -102,7 +102,7 @@ public class OnePlotWorld extends PlotWorld {
 
         if (plot == null) return true;
         if (plot.getPlotType() != PlotType.TUTORIAL) {
-            player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getID()))));
+            player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getId()))));
             PlotUtils.ChatFormatting.sendLinkMessages(plot, player);
         }
         Utils.updatePlayerInventorySlots(player);

@@ -54,7 +54,7 @@ public class PlotProvider {
         query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
         String qPlotsWithCityAndStatuses = query;
         return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qPlotsWithCityAndStatuses, ps -> {
-            ps.setString(1, city.getID());
+            ps.setString(1, city.getId());
             for (int i = 0; i < statuses.length; i++) ps.setString(i + 2, statuses[i].name());
             ResultSet rs = ps.executeQuery();
             List<Plot> plots = new ArrayList<>();
@@ -66,7 +66,7 @@ public class PlotProvider {
     public List<Plot> getPlots(@NotNull CityProject city, @NotNull PlotDifficulty plotDifficulty, @NotNull Status status) {
         String qAllByCityDifficultyStatus = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id = ? AND difficulty_id = ? AND status = ?;";
         return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qAllByCityDifficultyStatus, ps -> {
-            ps.setString(1, city.getID());
+            ps.setString(1, city.getId());
             ps.setString(2, plotDifficulty.name());
             ps.setString(3, status.name());
             ResultSet rs = ps.executeQuery();
@@ -81,12 +81,12 @@ public class PlotProvider {
 
         String cityPlaceholders = "?,".repeat(cities.size() - 1) + "?";
         String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE city_project_id IN (" + cityPlaceholders + ")";
-        query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?);" : ";";
+        query += statuses.length > 0 ? " AND status IN (" + "?,".repeat(statuses.length - 1) + "?) ORDER BY plot.plot_id;" : ";";
         String qPlotsWithCitiesAndStatuses = query;
 
         return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qPlotsWithCitiesAndStatuses, ps -> {
             int index = 1;
-            for (CityProject city : cities) ps.setString(index++, city.getID());
+            for (CityProject city : cities) ps.setString(index++, city.getId());
             for (Status status : statuses) ps.setString(index++, status.name());
 
             ResultSet rs = ps.executeQuery();

@@ -13,7 +13,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -38,8 +37,15 @@ public class PlotMemberMenu extends AbstractMenu {
     private List<Builder> builders;
 
     public PlotMemberMenu(@NotNull Plot plot, Player menuPlayer) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " + LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getID(), menuPlayer);
+        // Avoid opening the menu before 'plot' is assigned
+        super(3,
+                LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " +
+                        LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(),
+                menuPlayer,
+                false);
         this.plot = plot;
+        // Now that 'plot' is set, we can safely load the menu
+        reloadMenuAsync();
     }
 
     @Override
@@ -48,14 +54,16 @@ public class PlotMemberMenu extends AbstractMenu {
         getMenu().getSlot(10).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer()));
 
         // Set loading item for plot member items
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+        if (plot != null) {
             List<Builder> plotMembers = plot.getPlotMembers();
             for (int i = 1; i <= 3; i++) {
                 getMenu().getSlot(11 + i).setItem(plotMembers.size() >= i
                         ? MenuItems.loadingItem(Material.PLAYER_HEAD, getMenuPlayer())
                         : emptyMemberSlotItem);
             }
-        });
+        } else {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("PlotMemberMenu: plot is null in setPreviewItems"));
+        }
 
         // Set add plot member item
         ItemStack addItem = BaseItems.MENU_ADD.getItem();
@@ -77,6 +85,11 @@ public class PlotMemberMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
+        if (plot == null) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("PlotMemberMenu: plot is null in setMenuItemsAsync, cannot load menu items"));
+            return;
+        }
+
         // Set plot owner item
         getMenu().getSlot(10)
                 .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
@@ -122,7 +135,7 @@ public class PlotMemberMenu extends AbstractMenu {
                 Builder builder = builders.get(itemSlot - 12);
                 plot.removePlotMember(builder);
                 clickPlayer.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(),
-                        LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getID()))));
+                        LangPaths.Message.Info.REMOVED_PLOT_MEMBER, builder.getName(), Integer.toString(plot.getId()))));
                 reloadMenuAsync();
             });
         }
@@ -142,10 +155,11 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
                 .build();
     }
 }
+

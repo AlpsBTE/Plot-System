@@ -82,12 +82,12 @@ public class CMD_EditPlot extends BaseCommand {
 
                 if (!plot.getPermissions().hasBuildingPerms(builder.getUUID())) {
                     plot.getPermissions().addBuilderPerms(builder.getUUID()).save();
-                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.ENABLED_PLOT_PERMISSIONS, plot.getId() + "")));
                     return;
                 }
 
                 plot.getPermissions().removeBuilderPerms(builder.getUUID()).save();
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getID() + "")));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Info.DISABLED_PLOT_PERMISSIONS, plot.getId() + "")));
             });
         });
 

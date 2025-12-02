@@ -69,7 +69,7 @@ public class CMD_Plot_Abandon extends SubCommand {
 
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 if (!PlotHandler.abandonPlot(plot)) return;
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getId() + "")));
                 player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
             });
         });

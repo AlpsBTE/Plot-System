@@ -197,7 +197,7 @@ public class EventListener implements Listener {
                 feedbackInput.getReview().updateFeedback(messageComp.content());
                 ChatInput.awaitChatInput.remove(playerUUID);
                 event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(),
-                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlot().getID()))));
+                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlot().getId()))));
             } else if (input instanceof PlayerInviteeChatInput inviteeInput) {
                 Player player = Bukkit.getPlayer(messageComp.content());
 

@@ -72,7 +72,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 PlotHandler.undoSubmit(plot);
 
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getID() + "")));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getId() + "")));
                 player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
             });
         });

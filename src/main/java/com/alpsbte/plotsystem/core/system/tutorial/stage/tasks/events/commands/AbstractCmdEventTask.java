@@ -16,11 +16,11 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
 
     private final boolean isCancelCmdEvent;
 
-    public AbstractCmdEventTask(Player player, String expectedCommand, Component assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
+    protected AbstractCmdEventTask(Player player, String expectedCommand, Component assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
         this(player, expectedCommand, null, assignmentMessage, totalAssignments, cancelCmdEvent);
     }
 
-    public AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, Component assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
+    protected AbstractCmdEventTask(Player player, String expectedCommand, String[] args1, Component assignmentMessage, int totalAssignments, boolean cancelCmdEvent) {
         super(player, assignmentMessage, totalAssignments);
         this.expectedCommand = expectedCommand;
         this.args1 = args1;
@@ -36,20 +36,18 @@ public abstract class AbstractCmdEventTask extends AbstractTask implements Event
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof PlayerCommandPreprocessEvent cmdEvent) {
-            if (cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
+        if (event instanceof PlayerCommandPreprocessEvent cmdEvent && cmdEvent.getMessage().toLowerCase().startsWith(expectedCommand.toLowerCase())) {
                 if (isCancelCmdEvent) cmdEvent.setCancelled(true);
 
                 // Check if the expected args are used
                 String[] args = cmdEvent.getMessage().toLowerCase().replaceFirst(expectedCommand.toLowerCase(), "").trim().split(" ");
-                if (args1 != null && args1.length > 0) {
-                    if (args.length == 0 || Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0]))) {
+                if (args1 != null && args1.length > 0 && (args.length == 0 || Arrays.stream(args1).noneMatch(arg -> arg.equalsIgnoreCase(args[0])))) {
                         onCommand(false, args);
                         return;
                     }
-                }
-                onCommand(true, args);
+
+            onCommand(true, args);
             }
-        }
+
     }
 }

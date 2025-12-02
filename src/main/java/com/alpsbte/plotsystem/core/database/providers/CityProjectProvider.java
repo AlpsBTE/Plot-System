@@ -24,7 +24,7 @@ public class CityProjectProvider {
     }
 
     public Optional<CityProject> getById(String id) {
-        return CITY_PROJECTS.stream().filter(c -> c.getID().equals(id)).findFirst();
+        return CITY_PROJECTS.stream().filter(c -> c.getId().equals(id)).findFirst();
     }
 
     public List<CityProject> getByCountryCode(String countryCode, boolean onlyVisible) {
