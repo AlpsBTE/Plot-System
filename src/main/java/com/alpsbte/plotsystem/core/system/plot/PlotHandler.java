@@ -98,7 +98,7 @@ public class PlotHandler {
         }
 
         // Assign
-        if (!builder.setSlot(builder.getFreeSlot(), plot.getID())) return false;
+        if (!builder.setSlot(builder.getFreeSlot(), plot.getId())) return false;
         if (!plot.setStatus(Status.unfinished)) return false;
         return plot.setPlotOwner(builder);
     }
@@ -144,7 +144,7 @@ public class PlotHandler {
     public static boolean abandonPlot(AbstractPlot plot) {
         boolean successfullyAbandoned = plot.getWorld().onAbandon();
         if (!successfullyAbandoned) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
             return false;
         }
 
@@ -152,7 +152,7 @@ public class PlotHandler {
             if (plot.getPlotType() == PlotType.TUTORIAL) return;
             Plot dPlot = (Plot) plot;
             boolean successful;
-            successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
+            successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
 
             for (Builder builder : dPlot.getPlotMembers()) {
                 if (!successful) break;
@@ -171,20 +171,20 @@ public class PlotHandler {
                         && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
             }
 
-            successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getID(), null);
-            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"));
+            successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getId(), null);
+            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
         });
         return true;
     }
 
     public static boolean deletePlot(Plot plot) {
         if (!abandonPlot(plot)) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + "!"));
             return false;
         }
         CompletableFuture.runAsync(() -> {
-            if (DataProvider.PLOT.deletePlot(plot.getID())) return;
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + " from the database!"));
+            if (DataProvider.PLOT.deletePlot(plot.getId())) return;
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + " from the database!"));
         });
         return true;
     }
@@ -202,10 +202,10 @@ public class PlotHandler {
 
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 if (!abandonPlot(plot)) {
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
                     return;
                 }
-                PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
+                PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
             });
         }
     }
@@ -284,7 +284,7 @@ public class PlotHandler {
         }
 
         // Set Completed Schematic
-        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
         if (!successful) return false;
 
         // If plot was created in a void world, copy the result to the city world

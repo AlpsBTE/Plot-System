@@ -93,7 +93,7 @@ public abstract class AbstractPlotLoader {
         this.plotWorld = plotWorld;
         this.builder = builder;
 
-        PlotSystem.getPlugin().getComponentLogger().info("Loading plot #{}...", plot.getID());
+        PlotSystem.getPlugin().getComponentLogger().info("Loading plot #{}...", plot.getId());
         PlotSystem.getPlugin().getComponentLogger().info("Plot Type: {}", plot.getPlotType().name());
 
         boolean successful = true;
