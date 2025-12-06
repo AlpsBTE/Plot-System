@@ -75,7 +75,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
             if (completedSchematic != null) {
                 PlotSystem.getPlugin().getComponentLogger().info("Found completed schematic, pasting only that.");
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, completedSchematic, world, false);
+                pasteSchematic(airMask, completedSchematic, world, false, true);
             } else super.generateOutlines();
         } else super.generateOutlines();
 
