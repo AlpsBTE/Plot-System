@@ -22,12 +22,17 @@ public class CMD_DeletePlot extends BaseCommand {
             return true;
         }
 
-        if (!(args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null)) {
+        if (args.length == 0) {
             sendInfo(sender);
             return true;
         }
 
-        int plotID = Integer.parseInt(args[0]);
+        Integer plotID = AlpsUtils.tryParseInt(args[0]);
+
+        if (plotID == null) {
+            sendInfo(sender);
+            return true;
+        }
 
         CompletableFuture.runAsync(() -> {
             Plot plot = DataProvider.PLOT.getPlotById(plotID);
