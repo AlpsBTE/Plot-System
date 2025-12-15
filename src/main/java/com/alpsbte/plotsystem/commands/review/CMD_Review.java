@@ -77,7 +77,7 @@ public class CMD_Review extends BaseCommand {
             }
 
             // Players cannot review their own plots
-            boolean isParticipant = plotToReview.getPlotOwner().getUUID() == player.getUniqueId() || plotToReview.getPlotMembers().stream().anyMatch(b -> b.getUUID() == player.getUniqueId());
+            boolean isParticipant = plotToReview.getPlotOwner().getUUID().equals(player.getUniqueId()) || plotToReview.getPlotMembers().stream().anyMatch(b -> b.getUUID().equals(player.getUniqueId()));
             if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE) && isParticipant) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_REVIEW_OWN_PLOT)));
                 return;
