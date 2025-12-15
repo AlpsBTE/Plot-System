@@ -84,10 +84,13 @@ public class ReviewMenu extends AbstractPaginatedMenu {
             lines.add("§7" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.DIFFICULTY) + ": §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
             lines.add("");
 
-            long inactivityIntervalDays = PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.INACTIVITY_INTERVAL);
-            long rejectedInactivityIntervalDays = (PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
-            long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-            if (interval > -1) lines.add(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED_IN_DAYS, String.valueOf(DAYS.between(LocalDate.now(), plot.getLastActivity().plusDays(interval)))));
+            if (plot.getStatus() == Status.unfinished) {
+                long inactivityIntervalDays = PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.INACTIVITY_INTERVAL);
+                long rejectedInactivityIntervalDays = (PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
+                long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
+                if (interval > -1) lines.add(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED_IN_DAYS, String.valueOf(DAYS.between(LocalDate.now(), plot.getLastActivity().plusDays(interval)))));
+
+            }
 
             getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
