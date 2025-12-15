@@ -118,7 +118,7 @@ public class CMD_Setup_Server extends SubCommand {
 
             boolean successful = DataProvider.SERVER.addServer(serverName, buildTeamId);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added server!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -150,17 +150,18 @@ public class CMD_Setup_Server extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 1) {sendInfo(sender); return;}
+            String name = args[1];
 
             // Check if server exists
-            if (!DataProvider.SERVER.serverExists(args[1])) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with ID " + args[1] + "!"));
+            if (!DataProvider.SERVER.serverExists(name)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with name " + name + "!"));
                 sendInfo(sender);
                 return;
             }
 
-            boolean successful = DataProvider.SERVER.removeServer(args[1]);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed server with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            boolean successful = DataProvider.SERVER.removeServer(name);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed server with name " + name + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override

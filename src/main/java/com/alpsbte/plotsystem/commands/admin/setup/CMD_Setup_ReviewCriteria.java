@@ -149,18 +149,19 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 1) {sendInfo(sender); return;}
+            String name = args[1];
 
             // Check if criteria exists
-            Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getToggleCriteria(args[1]);
+            Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getToggleCriteria(name);
             if (criteria.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any toggle criteria with name " + args[1] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any toggle criteria with name " + name + "!"));
                 sendInfo(sender);
                 return;
             }
 
             boolean successful = DataProvider.REVIEW.removeToggleCriteria(criteria.get().criteriaName());
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed build team with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed toggle criteria with name " + name + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -192,20 +193,21 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 2) {sendInfo(sender); return;}
+            String name = args[1];
 
             // Check if criteria exits
-            Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getToggleCriteria(args[1]);
+            Optional<ToggleCriteria> criteria = DataProvider.REVIEW.getToggleCriteria(name);
             if (criteria.isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Toggle criteria could not be found!"));
                 return;
             }
 
-            String name = args[1];
+
             boolean isOptional = args[2].equalsIgnoreCase("true");
 
             boolean successful = DataProvider.REVIEW.setToggleCriteriaOptional(name, isOptional);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed optionality of toggle criteria with name " + name + " to '" + isOptional + "'!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -228,5 +230,4 @@ public class CMD_Setup_ReviewCriteria extends SubCommand {
             return "plotsystem.admin.pss.buildteam.setoptional";
         }
     }
-
 }

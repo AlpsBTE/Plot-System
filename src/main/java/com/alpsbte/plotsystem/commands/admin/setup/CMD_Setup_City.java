@@ -150,7 +150,7 @@ public class CMD_Setup_City extends SubCommand {
 
             boolean added = DataProvider.CITY_PROJECT.add(cityProjectId, buildTeamId, country.get().getCode(), serverName);
             if (!added) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while adding City Project! Check console for any exceptions."));
                 return;
             }
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added City Project with Name '" + cityProjectId + "' under country with the code " + countryCode + "!"));
@@ -198,7 +198,7 @@ public class CMD_Setup_City extends SubCommand {
 
             boolean removed = DataProvider.CITY_PROJECT.remove(cityProjectId);
             if (removed) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed City Project with ID " + cityProjectId + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while removing city project!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while removing city project! Check console for any exceptions."));
         }
 
         @Override
@@ -249,7 +249,7 @@ public class CMD_Setup_City extends SubCommand {
 
             boolean successful = cityProject.get().setServer(serverName);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed server of City Project with ID " + args[1] + " to '" + serverName + "'!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project server!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project server! Check console for any exceptions."));
         }
 
         @Override
@@ -293,7 +293,7 @@ public class CMD_Setup_City extends SubCommand {
             boolean successful = cityProject.get().setBuildTeam(buildTeamId);
 
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set Build Team of City Project with ID " + args[1] + " to " + buildTeamId + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project build team!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project build team! Check console for any exceptions."));
         }
 
         @Override
@@ -325,17 +325,18 @@ public class CMD_Setup_City extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 2) {sendInfo(sender); return;}
+            String id = args[1];
 
             // Check if City Project exits
-            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(args[1]);
+            Optional<CityProject> cityProject = DataProvider.CITY_PROJECT.getById(id);
             if (cityProject.isEmpty()) return;
             if (!args[2].equalsIgnoreCase("true") && !args[2].equalsIgnoreCase("false")) return;
 
             boolean isVisible = args[2].equalsIgnoreCase("true");
             boolean successful = cityProject.get().setVisible(isVisible);
 
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set visibility of City Project with ID " + args[1] + " to " + args[2].toUpperCase() + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project visibility!"));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set visibility of City Project with ID " + id + " to " + args[2].toUpperCase() + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while updating city project visibility! Check console for any exceptions."));
         }
 
         @Override

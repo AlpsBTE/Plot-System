@@ -112,7 +112,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
             boolean successful = difficulty.get().setMultiplier(Double.parseDouble(args[2]));
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set multiplier of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -154,7 +154,7 @@ public class CMD_Setup_Difficulty extends SubCommand {
 
             boolean successful = difficulty.get().setScoreRequirement(Integer.parseInt(args[2]));
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully set score requirement of Difficulty with ID " + args[1] + " to " + args[2] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
