@@ -119,9 +119,13 @@ public class CMD_Review extends BaseCommand {
             // Player is already on the plot, open menu on main thread
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
-                    PlotSystem.getPlugin().getComponentLogger().info(text("Review: Opening ReviewPlotMenu for plot " + finalPlotToReview.getId() + " (no teleport needed)"));
+                    PlotSystem.getPlugin().getComponentLogger().info(text("Review: Opening ReviewPlotMenu for plot if status is unreviewed" + finalPlotToReview.getId() + " (no teleport needed)"));
                 }
-                new ReviewPlotMenu(player, finalPlotToReview);
+                if (finalPlotToReview.getStatus() == Status.unreviewed) {
+                    new ReviewPlotMenu(player, finalPlotToReview);
+                } else {
+                    new ReviewMenu(player);
+                }
             });
         });
         return true;
