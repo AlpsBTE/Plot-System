@@ -21,6 +21,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -91,7 +92,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws IOException {
+    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws IOException {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
             plotGenerator.generateOutlines(schematicId);
@@ -99,7 +100,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotPermissionChange(UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
+    public void onPlotPermissionChange(@NotNull UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null) {
             plotGenerator.setBuildingEnabled(isBuildingAllowed);
@@ -149,7 +150,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
+    public void onSwitchWorld(@NotNull UUID playerUUID, int tutorialWorldIndex) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
             plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
@@ -194,7 +195,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param player The player to send the message to.
      * @param title  The title of the stage.
      */
-    protected static void sendStageUnlockedMessage(Player player, String title) {
+    protected static void sendStageUnlockedMessage(@NotNull Player player, String title) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.NEW_STAGE_UNLOCKED)).color(AQUA).decorate(BOLD));
         player.sendMessage(text("  ◆ ", WHITE, BOLD).append(text(title).color(GOLD).decorate(BOLD)));
@@ -208,7 +209,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param tutorialName The name of the tutorial.
      * @see TutorialCategory
      */
-    protected static void sendTutorialCompletedMessage(Player player, String tutorialName) {
+    protected static void sendTutorialCompletedMessage(@NotNull Player player, String tutorialName) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIAL_COMPLETED).toUpperCase()).color(AQUA).decorate(BOLD));
         player.sendMessage(text("  ◆ ").color(WHITE).decorate(BOLD).append(text(tutorialName).color(GOLD)));
