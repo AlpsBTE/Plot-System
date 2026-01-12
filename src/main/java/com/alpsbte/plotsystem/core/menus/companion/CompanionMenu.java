@@ -46,7 +46,6 @@ public class CompanionMenu {
     private CompanionMenu() {throw new IllegalStateException("Utility class");}
 
     public static boolean hasContinentView() {
-        // TODO: make this run async
         return Arrays.stream(Continent.values()).map(continent -> DataProvider.COUNTRY.getCountriesByContinent(continent).size()).filter(count -> count > 0).count() > 1;
     }
 
@@ -59,7 +58,6 @@ public class CompanionMenu {
         if (hasContinentView()) {
             new ContinentMenu(player);
         } else {
-            // TODO: make this run async
             Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !DataProvider.COUNTRY.getCountriesByContinent(c).isEmpty()).findFirst();
 
             if (continent.isEmpty()) {
@@ -128,7 +126,9 @@ public class CompanionMenu {
                 default:
                     break;
             }
-        } else item = BaseItems.DIFFICULTY_AUTOMATIC.getItem();
+        }
+
+        if (item == null) item = BaseItems.DIFFICULTY_AUTOMATIC.getItem();
 
         Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyByEnum(selectedPlotDifficulty);
         if (difficulty.isEmpty() && selectedPlotDifficulty != null) {

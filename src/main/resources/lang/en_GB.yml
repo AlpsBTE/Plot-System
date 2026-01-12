@@ -278,7 +278,6 @@ message:
     player-needs-higher-score: "You need a higher score to build in this difficulty level."
     player-missing-tutorial: "The player must first complete the tutorial to be added to the plot!"
     error-occurred: "An error occurred! Please try again!"
-    command-disabled: "This command is disabled!"
     no-plots-left: "This city project does not have any more plots left. Please select another project."
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."

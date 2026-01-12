@@ -10,6 +10,8 @@ import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,7 +26,11 @@ public class CMD_Companion extends BaseCommand {
         }
 
         Player player = getPlayer(sender);
-        if (player == null) return true;
+
+        if (player == null) {
+            sender.sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            return true;
+        }
 
         Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
         if (tutorial != null) {

@@ -32,7 +32,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
     public void onCommand(CommandSender sender, String[] args) {
         Player player = getPlayer(sender);
         if (player == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            sender.sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return;
         }
 

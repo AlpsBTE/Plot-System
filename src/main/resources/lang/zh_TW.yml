@@ -277,7 +277,6 @@ message:
     player-needs-higher-score: "你需要更高的積分來才能在這個難度下建設。"
     player-missing-tutorial: "玩家必须先完成教程，才能加入剧情！"
     error-occurred: "發生錯誤！請再次嘗試！"
-    command-disabled: "此指令已被禁用！"
     no-plots-left: "此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。"
     please-wait: "請稍後再建立一個新的建地！"
     all-slots-occupied: "你全部的槽位都被占用了！在建立新的建地前請先完成你當前的建地。"

@@ -21,7 +21,7 @@ public class CMD_Plots extends BaseCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         Player player = getPlayer(sender);
         if (player == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            sender.sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
 
@@ -39,14 +39,11 @@ public class CMD_Plots extends BaseCommand {
 
         CompletableFuture.runAsync(() -> {
             Builder builder = Builder.byName(args[0]);
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                if (builder == null) {
-                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
-                    return;
-                }
-
-                new PlayerPlotsMenu(player, builder);
-            });
+            if (builder == null) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.PLAYER_NOT_FOUND)));
+                return;
+            }
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new PlayerPlotsMenu(player, builder));
         });
         return true;
     }

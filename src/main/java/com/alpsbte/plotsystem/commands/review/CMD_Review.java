@@ -32,7 +32,7 @@ public class CMD_Review extends BaseCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         Player player = getPlayer(sender);
         if (player == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", RED));
+            sender.sendMessage(Component.text("This command can only be used as a player!", RED));
             return true;
         }
 
@@ -148,6 +148,6 @@ public class CMD_Review extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "";
+        return "plotsystem.review";
     }
 }

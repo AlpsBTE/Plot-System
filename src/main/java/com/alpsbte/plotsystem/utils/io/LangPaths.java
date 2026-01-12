@@ -305,7 +305,6 @@ public abstract class LangPaths {
             public static final String PLAYER_MISSING_TUTORIAL = MESSAGE_PREFIX + "player-missing-tutorial";
 
             public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
-            public static final String COMMAND_DISABLED = ERROR_PREFIX + "command-disabled";
             public static final String NO_PLOTS_LEFT = ERROR_PREFIX + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR_PREFIX + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR_PREFIX + "all-slots-occupied";

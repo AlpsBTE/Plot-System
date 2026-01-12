@@ -277,7 +277,6 @@ message:
     player-needs-higher-score: "Vous avez besoin d'un score plus élevé pour intégrer ce niveau de difficulté."
     player-missing-tutorial: "Le joueur doit d'abord terminer le tutoriel pour être intégré à l'intrigue!"
     error-occurred: "Une erreur s'est produite! Veuillez réessayer!"
-    command-disabled: "Cette commande est désactivée!"
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."

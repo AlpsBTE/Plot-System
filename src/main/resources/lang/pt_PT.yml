@@ -277,7 +277,6 @@ message:
     player-needs-higher-score: "Você precisa de uma pontuação mais alta para construir neste nível de dificuldade."
     player-missing-tutorial: "O jogador tem de completar o tutorial primeiro, para ser adicionado ao enredo!"
     error-occurred: "Um erro ocorreu! Por favor, tente novamente!"
-    command-disabled: "Este comando está desabilitado!"
     no-plots-left: "Este projeto da cidade não tem mais terrenos. Por favor, Selecione outro projeto."
     please-wait: "Aguarde alguns segundos antes de criar um novo terreno!"
     all-slots-occupied: "Todos os seus slots estão ocupados! Por favor, termine seus terrenos atuais antes de criar um novo."

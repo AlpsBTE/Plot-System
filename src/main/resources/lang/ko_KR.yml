@@ -277,7 +277,6 @@ message:
     player-needs-higher-score: "해당 난이도에서 건축하시려면 더 높은 점수가 필요합니다."
     player-missing-tutorial: "플레이어는 먼저 튜토리얼을 완료해야 플롯에 추가할 수 있습니다!"
     error-occurred: "에러 발생! 다시 시도해주세요!"
-    command-disabled: "비활성화된 커맨드입니다!"
     no-plots-left: "이 도시 프로젝트에 남아있는 플롯이 없습니다. 다른 프로젝트를 선택해주세요."
     please-wait: "새 플롯이 생성될 때까지 기다려주세요!"
     all-slots-occupied: "슬롯이 모두 꽉 찼습니다! 새 플롯을 생성하기 전에 현재 남아있는 플롯을 먼저 완성해주세요."

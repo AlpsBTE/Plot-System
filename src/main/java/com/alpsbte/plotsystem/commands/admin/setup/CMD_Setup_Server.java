@@ -65,12 +65,12 @@ public class CMD_Setup_Server extends SubCommand {
                 return;
             }
 
-            sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + servers.size() + " Servers registered in the database:"));
+            var msg = Utils.ChatUtils.getInfoFormat("There are currently " + servers.size() + " Servers registered in the database:").appendNewline();
 
             for (String server : servers) {
-                sender.sendMessage(text(" » ", DARK_GRAY).append(text(server, AQUA)));
+                msg = msg.append(text(" » ", DARK_GRAY).append(text(server, AQUA))).appendNewline();
             }
-            sender.sendMessage(text("--------------------------", DARK_GRAY));
+            sender.sendMessage(msg.append(text("--------------------------", DARK_GRAY)));
         }
 
         @Override

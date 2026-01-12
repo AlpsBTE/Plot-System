@@ -278,7 +278,6 @@ message:
     player-needs-higher-score: "Du benötigst einen höheren Punktestand, um in diesem Schwierigkeitsgrad zu bauen."
     player-missing-tutorial: "Der Spieler muss zuerst das Tutorial abschließen, um hinzugefügt zu werden!"
     error-occurred: "Ein Fehler ist aufgetreten! Bitte versuche es erneut!"
-    command-disabled: "Dieser Befehl ist deaktiviert!"
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
