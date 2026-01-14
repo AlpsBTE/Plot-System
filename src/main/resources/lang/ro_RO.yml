@@ -1,0 +1,450 @@
+#-----------------------------------------------------
+#|            Plot System - by Alps BTE
+#-----------------------------------------------------
+#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+#|
+#| [Formatting] Use %newline% for a newline
+#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+#-----------------------------------------------------
+lang:
+  name: "Română (RO)"
+  head-id: "21899"
+#-----------------------------------------------------
+#| Plot
+#-----------------------------------------------------
+plot:
+  plot-name: "Plot"
+  id: "ID"
+  owner: "Proprietar plot"
+  members: "Membri plot"
+  member: "Membru plot"
+  city: "Oraș"
+  country: "Țară"
+  difficulty: "Dificultate"
+  status: "Status"
+  score: "Scor"
+  total-score: "Scor Total"
+  completed-plots: "Plot-uri completate"
+  group-system:
+    empty-member-slot: "Loc de membru liber"
+    shared-by-members: "(împărțit de {0} membri)"
+#-----------------------------------------------------
+#| City Projects
+#-----------------------------------------------------
+city-project:
+  cities: "Orașe"
+  open: "Plot-uri deschise"
+  in-progress: "Plot-uri în desfășurare"
+  completed: "Plot-uri completate"
+  plots-available: 'Plot-uri disponibile'
+  no-plots-available: "Niciun plot disponibil"
+  for-your-difficulty: "({0} pentru dificultate)"
+#-----------------------------------------------------
+#| Countries
+#-----------------------------------------------------
+country:
+  countries: "Țări"
+#-----------------------------------------------------
+#| Continents
+#-----------------------------------------------------
+continent:
+  europe: "Europa"
+  asia: "Asia"
+  africa: "Africa"
+  oceania: "Oceania"
+  south-america: "America de Sud"
+  north-america: "America de Nord"
+#-----------------------------------------------------
+#| Difficulty
+#-----------------------------------------------------
+difficulty:
+  automatic: "Automat"
+  score-multiplier: "Multiplicator de scor"
+#-----------------------------------------------------
+#| Menu Titles
+#-----------------------------------------------------
+menu-title:
+  close: 'Închide'
+  back: 'Înapoi'
+  continue: 'Continuă'
+  next-page: 'Pagina următoare'
+  previous-page: 'Pagina anterioară'
+  error: 'Eroare'
+  loading: 'Se încarcă...'
+  plot-difficulty: 'Dificultate plot'
+  slot: 'Slot'
+  builder-utilities: 'Builder Utilities'
+  show-plots: 'Afișează plot-uri'
+  settings: 'Setări'
+  submit: 'Trimite'
+  teleport: 'Teleportează-te'
+  abandon: 'Abandonează'
+  undo-submit: 'Anulează trimiterea'
+  manage-members: 'Gestionare membri'
+  feedback: 'Feedback | Evaluare #{0}'
+  custom-heads: 'Custom Heads'
+  banner-maker: 'Banner Maker'
+  special-tools: 'Block-uri și item-uri speciale'
+  review-point: 'Punct'
+  review-points: 'Puncte'
+  cancel: 'Anulează'
+  add-member-to-plot: 'Adaugă membru la plot'
+  companion: 'Asistent'
+  companion-select-continent: 'Alege un continent'
+  companion-select-country: 'Alege o țară'
+  companion-select-city: 'Alege un oraș'
+  player-plots: '{0} plot-uri'
+  leave-plot: 'Părăsește plot-ul'
+  review-plots: 'Corectează plot-uri'
+  review-plot: 'Evaluează plot-ul #{0}'
+  select-language: 'Selectează limba'
+  select-plot-type: 'Alege tipul plot-ului'
+  select-focus-mode: 'Alege modul Focus'
+  select-local-inspiration-mode: 'Alege modul Inspiration'
+  select-city-inspiration-mode: 'Alege modul City Inspiration'
+  filter-by-country: 'Filtrează după țară'
+  information: 'Info'
+  tutorials: 'Tutoriale'
+  tutorial-stages: 'Etape tutorial'
+  tutorial-end: 'Încheie tutorial'
+  tutorial-beginner: 'Începe'
+  companion-random: 'Alegere aleatorie'
+#-----------------------------------------------------
+#| Menu Descriptions
+#-----------------------------------------------------
+menu-description:
+  error-desc: 'A apărut o eroare...'
+  plot-difficulty-desc: 'Clic pentru a comuta...'
+  slot-desc: 'Clic pe un oraș pentru a crea un plot nou'
+  builder-utilities-desc: 'Accesează custom heads, bannere și block-uri speciale'
+  show-plots-desc: 'Afișează toate plot-urile tale'
+  settings-desc: 'Modifică setările de utilizator'
+  submit-plot-desc: 'Clic pentru a completa acest plot și a-l trimite spre evaluare'
+  teleport-desc: 'Clic pentru a teleportare la plot'
+  abandon-desc: 'Clic pentru a reseta plot-ul și a-l da altcuiva'
+  undo-submit-desc: 'Clic pentru a anula trimiterea'
+  manage-members-desc: 'Clic pentru a deschide meniul Membri Plot, unde poți adăuga si elimina alți jucători din plot-ul tău'
+  feedback-desc: 'Clic pentru a vedea feedback-ul de la evaluarea plot-ului tău'
+  custom-heads-desc: 'Clic pentru a deschide meniul Heads și obține acces la o varietate de custom head-uri'
+  banner-maker-desc: 'Clic pentru a crea și salva propriile bannere'
+  special-tools-desc: 'Clic pentru a obține o varietate de block-uri și item-uri inaccesibile'
+  add-member-to-plot-desc: 'Invită-ți prietenii la plot și construiți împreună'
+  review-points-desc: 'Clic pentru a selecta'
+  submit-review-desc: 'Trimite punctele selectate și marchează plot-ul ca evaluat'
+  leave-plot-desc: 'Clic pentru a părăsi acest plot'
+  select-language-desc: 'Alege limba'
+  select-plot-type-desc: 'Alege tipul de plot'
+  select-focus-mode-desc: "Construiește pe o insulă plutitoare în void.%newline%%newline%- Fără împrejurimi %newline%- Fără plot-uri vecine"
+  select-local-inspiration-mode-desc: "Construiește pe o insulă plutitoare cu mediu înconjurător, ca referință.%newline%%newline%+ Împrejurimi %newline%- Fără plot-uri vecine"
+  select-city-inspiration-mode-desc: "Construiește pe o insulă plutitoare cu mediu înconjurător, dar și alte plot-uri care au fost scanate în apropiere.%newline%%newline%+ Împrejurimi%newline%+ Plot-uri vecine"
+  filter-desc: "Afișează tot"
+  information-desc: "Un plot poate primi maxim 20 de puncte. Dacă primește mai puțin de 8 puncte sau o categorie are 0 puncte, plot-ul este refuzat și builder-ul îl primește înapoi pentru a-l îmbunătăți. Dacă plot-ul primește 0 puncte, acesta este abandonat."
+  tutorials-desc: 'Învață bazele proiectului Build The Earth și dezvoltă-ți abilitățile de construit cu tutoriale pe subiecte diverse.'
+  tutorial-end-desc: 'Progresul tău va fi salvat.'
+  tutorial-beginner-desc: 'Învață bazele construitului în proiectul Build The Earth.'
+  companion-random-desc: 'Click pentru a alege aleatoriu.'
+#-----------------------------------------------------
+#| Review
+#-----------------------------------------------------
+review:
+  review-plot: "Evaluează Plot"
+  manage-plot: "Gestionează Plot"
+  manage-and-review-plots: "Gestionează & Evaluează Plot-uri"
+  accepted: "Acceptat"
+  rejected: "Refuzat"
+  abandoned: "Abandonat"
+  feedback: "Feedback"
+  reviewer: "Evaluator"
+  player-language: "Limbă jucător"
+  no-feedback: "Fără feedback"
+  accuracy-points: "Puncte pentru acuratețe"
+  block-palette-points: "Puncte pentru paleta de block-uri"
+  toggle-points: "Comută vizibilitate puncte"
+  total-points: "Totalul punctelor"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
+  criteria:
+    accuracy: "Acuratețe"
+    accuracy-desc: "Care este acuratețea clădirii? %newline%%newline%-Arată ca în viața reală%newline%- Contur corect%newline%-Înălțime corectă%newline%- E completă"
+    block-palette: "Paleta de block-uri"
+    block-palette-desc: "Număr block-uri diferite folosite și cât de creativ sunt folosite?%newline%%newline%- Alegerea culorilor/texturilor block-urilor%newline%- Block-uri aleatorii"
+#-----------------------------------------------------
+#| Notes
+#-----------------------------------------------------
+note:
+  tip: "Sfat"
+  under-construction: 'În construcție'
+  wont-be-able-continue-building: "Nu vei putea continua să construiești pe acest plot!"
+  score-will-be-split: "Scorul va fi distribuit între toți membrii după evaluare!"
+  player-has-to-be-online: "Jucătorul trebuie să fie online!"
+  optional: "Opțional"
+  required: "Obligatoriu"
+  criteria-fulfilled: "Îndeplinit"
+  criteria-not-fulfilled: "Neîndeplinit"
+  legacy: "LEGACY"
+  action:
+    read: 'Citește'
+    read-more: 'Citește mai mult'
+    mark-as-read: 'Marchează citit'
+    start: 'Start'
+    continue: "Continuă"
+    continue-tutorial: 'Continuă tutorialul'
+    create-plot: 'Creează plot'
+    right-click: "Clic Dreapta"
+    left-click: "Clic stânga"
+    accept: 'Acceptă'
+    reject: 'Refuză'
+    click-to-create-plot: 'Clic pentru a crea un plot nou...'
+    click-to-proceed: "Clic pentru a continua..."
+    click-to-remove-plot-member: "Clic pentru a elimina membrul din plot..."
+    click-to-open-link: "Click pentru a deschide link-ul {0} ..."
+    click-to-open-link-with-shortlink: "§6Clic aici §7pentru a deschide linkul §a{0}§7 sau folosește acest link: §a{1}"
+    click-to-show-feedback: "§6Clic aici §a pentru a afișa feedback-ul plot-ului tău..."
+    click-to-show-open-reviews: "§6Clic aici §a pentru a vedea evaluările deschise..."
+    click-to-show-plots: "§6Clic aici §a pentru a vedea plot-urile tale..."
+    click-to-play-with-friends: "§7Vrei să te joci cu prietenii tăi? §6Clic aici..."
+    tutorial-show-stages: 'Afișează etape'
+    click-to-open-plots-menu: 'Clic pentru a deschide meniu plot-uri...'
+    click-to-toggle: "Clic pentru a comuta..."
+#-----------------------------------------------------
+#| Messages
+#-----------------------------------------------------
+message:
+  info:
+    teleporting-plot: "§aSe teleportează la plot-ul §6#{0}§a..."
+    teleporting-tpll: "§aSe teleportează la §6{0}§a, §6{1}§a..."
+    abandoned-plot: "§aPlot-ul §6#{0}§a a fost abandonat!"
+    finished-plot: "§aPlot-ul §6#{0}§a de §6{1}§a a fost finalizat!"
+    plot-marked-as-reviewed: "§aPlot-ul §6#{0}§a de §6{1}§a a fost marcat ca evaluat!"
+    plot-rejected: "§aPlot-ul §6#{0}§a de §6{1}§a a fost refuzat!"
+    undid-submission: "§aTrimiterea plot-ului §6#{0}§a a fost anulată!"
+    undid-review: "§aEvaluarea plot-ului §6#{0}§a de §6{1}§a a fost anulată!"
+    reviewed-plot: "§aPlot-ul tău §6#{0}§a a fost evaluat!"
+    unreviewed-plot: "§6{0}§a plot nu este evaluat!"
+    unreviewed-plots: "§6{0}§a plot-uri nu sunt evaluate!"
+    unfinished-plot: "§aAi §6{0}§a plot neterminat!"
+    unfinished-plots: "§aAi §6{0}§a plot-uri neterminate!"
+    enabled-build-permissions: "§aPermisiunile de construit activate pentru evaluatori pe plot-ul §6#{0}§a!"
+    disabled-build-permissions: "§aPermisiunile de construit dezactivate pentru evaluatori pe plot-ul §6#{0}§a!"
+    updated-plot-feedback: "§aFeedback-ul pentru plot-ul §6#{0}§a a fost actualizat!"
+    removed-plot-member: "§6{0}§a a fost eliminat din plot-ul §6#{1}§!"
+    left-plot: "§aAi părăsit plot-ul §6#{0}§a!"
+    plot-will-get-abandoned-warning: "§c§lATENȚIE: §cAcest plot va fi abandonat automat!"
+    plot-will-be-rejected: "Plot-ul va fi refuzat!"
+    plot-will-be-accepted: "Plot-ul va fi acceptat"
+    plots-reviewed-singular: "{0} plot a fost evaluat!"
+    plots-reviewed-plural: "{0} plot-uri au fost evaluate!"
+    saving-plot: "§aSe salvează plot-ul..."
+    creating-plot: "§aSe creează un plot nou..."
+    created-new-plot: "§aPlot nou creat§a pentru §6{0}§a!"
+    chat-enter-player: 'Introduceți numele jucătorului în chat.'
+    chat-enter-feedback: "Introduceți feedback-ul pentru jucător în chat."
+    chat-input-expires-after: "Input-ul în chat expiră după {0} minute."
+    beginner-tutorial-required: 'Completează tutorialul pentru a participa în proiect.'
+    beginner-tutorial-completed: 'Ești pregătit să construiești propriul tău plot? Acum e momentul!'
+    player-invite-sent: 'A fost trimisă o invitație lui {0} pentru a se alătura plot-ului tău.'
+    player-invite-to-sent: '{0} te-a invitat să ajuți la construirea plot-ului său.'
+    player-invite-accepted: 'Invitația la plot-ul lui {0} a fost acceptată.'
+    player-invite-to-accepted: '{0} ți-a acceptat invitația și a fost adăugat la plot-ul tău.'
+    player-invite-rejected: 'Invitația la plot-ul lui {0} a fost refuzată.'
+  error:
+    plot-does-not-exist: "Acest plot nu există!"
+    plot-either-unclaimed-or-unreviewed: "Acest plot nu a fost rezervat sau nu a fost încă evaluat!"
+    plot-has-not-yet-reviewed: "Acest plot nu a fost evaluat!"
+    can-only-abandon-unfinished-plots: "Poți abandona doar plot-uri nefinalizate!"
+    can-only-submit-unfinished-plots: "Poți trimite la evaluare doar plot-uri neterminate!"
+    can-only-undo-submissions-unreviewed-plots: "Poți anula trimiterea la evaluare doar pentru plot-uri neevaluate!"
+    can-only-manage-members-unfinished-plots: "Poți gestiona doar membrii din plot-uri neterminate!"
+    cannot-teleport-outside-plot: "Nu poți să te teleportezi în afara plot-ului!"
+    cannot-undo-review: "Nu poți anula o evaluare pe care nu ai făcut-o!"
+    cannot-send-feedback: "Nu poți trimite feedback pentru un plot pe care nu l-ai evaluat!"
+    cannot-review-own-plot: "Nu poți evalua propriul plot!"
+    cannot-modify-legacy-plot: "Plot-urile legacy nu pot fi modificate!"
+    cannot-load-legacy-plot: "Plot-urile legacy nu pot fi încărcate!"
+    player-has-no-permissions: "Nu ai permisiunea să faci asta!"
+    player-has-no-invitations: "Nu ai invitații!"
+    player-is-not-allowed: "Nu ai permisiunea să faci asta!"
+    player-is-plot-owner: "Acest jucător este deja proprietarul plot-ului!"
+    player-is-plot-member: "Acest jucător este deja membru al plot-ului!"
+    player-is-not-online: "Jucătorul nu este online!"
+    player-not-found: "Nu am găsit acel jucător!"
+    player-already-invited: '{0} a fost deja invitat la un plot.'
+    player-invite-expired: 'Invitația de la {0} a expirat.'
+    player-invite-to-expired: 'Invitația trimisă lui {0} a expirat.'
+    player-invite-to-rejected: '{0} a respins invitația ta.'
+    player-needs-to-be-on-plot: "Trebuie să fii pe un plot pentru a folosi asta!"
+    player-needs-higher-score: "Ai nevoie de un scor mai mare pentru a construi la acest nivel de dificultate."
+    player-missing-tutorial: "Jucătorul trebuie mai întâi să completeze tutorialul pentru a fi adăugat la plot!"
+    error-occurred: "A apărut o eroare! Încearcă din nou!"
+    no-plots-left: "Proiectul pentru acest oraș nu mai are plot-uri disponibile. Selectează un alt proiect."
+    please-wait: "Te rog așteaptă câteva secunde înainte să creezi un plot nou!"
+    all-slots-occupied: "Toate spațiile tale sunt ocupate! Termină plot-urile începute înainte de a crea unul nou."
+    chat-input-expired: "Input-ul în chat a expirat."
+    tutorial-disabled: 'Tutorialele sunt dezactivate pe acest server.'
+    tutorial-already-running: "Deja ai început un tutorial! Completează-l înainte de a începe unul nou."
+    review-not-found: "Evaluarea nu a fost găsită!"
+leaderboards:
+  pages:
+    DAILY: "Zilnic"
+    WEEKLY: "Săptămânal"
+    MONTHLY: "Lunar"
+    YEARLY: "Anual"
+    LIFETIME: "General"
+  actionbar-position: "Locul #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Nu este în clasament"
+tutorials:
+  stage: 'Etapă'
+  new-stage-unlocked: 'ETAPĂ NOUĂ DEBLOCATĂ'
+  tutorial-completed: 'TUTORIAL COMPLETAT'
+  beginner:
+    stage-1:
+      stage-1-title: 'Ce este proiectul Build The Earth?'
+      stage-1-messages:
+        - 'Salut {0}! Îmi pare bine să te cunosc, numele meu este {1}. Tocmai ai intrat în lumea captivantă a proiectului Build The Earth!'
+        - 'Ținta noastră este să recreăm întreaga planetă la scară 1:1. Da, ai auzit bine, scară 1:1!'
+        - 'Cu toate acestea, noi, cei de la Alps BTE, suntem responsabili doar pentru recrearea frumoaselor țări alpine, Austria, Elveția și Liechtenstein.'
+        - 'Ești gata să înveți cum să construiești pentru BTE? Te voi ghida prin elementele de bază pentru a participa la proiect. Hai să continuăm!'
+      stage-1-tasks:
+        - 'Vorbește cu {0} pe șantier.'
+    stage-2:
+      stage-2-title: 'Surse de referințe'
+      stage-2-messages:
+        - 'Bine ai venit pe mica ta insula. Aici vom construi prima noastră clădire pentru proiectul Build The Earth!'
+        - 'Înainte de a începe să construim, trebuie să știm cum arată clădirea în viața reală. Pentru asta folosim unelte ca {0} și {1}.'
+        - 'Folosim {2} pentru a copia coordonatele, astfel încât să ne putem teleporta la un anumit punct. De asemenea, putem accesa {3} pentru a vedea mai îndeaproape clădirea.'
+        - '{4}'
+        - 'Folosim {5} pentru a măsura înălțimea clădirii. Acest lucru este important de știut, astfel încât clădirea noastră să aibă înălțimea corectă.'
+        - '{6}'
+        - 'Folosește comanda {7} dacă ai nevoie de link-uri mai târziu.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleportarea'
+      stage-3-messages:
+        - 'Conturul clădirii este generate automat, dar deoarece ele nu sunt exacte, trebuie să le corectăm. Pentru a le corecta, trebuie mai întâi să ne teleportăm la colțurile clădirii.'
+        - 'Folosește comanda {0} pentru a te teleporta la locație în joc. {1} pe unul dintre colțurile clădirii pentru a copia coordonatele.'
+        - '{2}'
+        - 'Pentru a continua, teleportează-te la punctele marcate. Încearcă din nou!'
+        - 'Comutați la stratul §6Satelit§f în Google Maps pentru a vedea clădirea în 3D.%newline%%newline% Clic pe §6Straturi§f în colțul din stânga jos al ecranului. Daca nu apar clădiri 3D, activează §6Vizualizarea glob§f prin opțiunea "Mai multe".'
+      stage-3-tasks:
+        - 'Teleportează-te la toate cele {0} colțuri ale clădirii folosind {1}.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Înainte de a continua la contur, trebuie să știm un instrument important numit {0}. WorldEdit ne permite să construim mai rapid și mai eficient.'
+        - 'Pentru a folosi WorldEdit, trebuie să obții un <gold>topor de lemn</gold>.'
+        - 'Acum că ai toporul de lemn, poți să faci o selecție făcând {1} și {2} pe blocuri.'
+      stage-4-tasks:
+        - 'Folosește comanda {0} pentru a obține un topor de lemn.'
+    stage-5:
+      stage-5-title: 'Conturul clădirii'
+      stage-5-messages:
+        - 'Acum că am aflat de WorldEdit, putem face conturul clădirii.'
+        - 'Pentru a face conturul, folosim comanda {0}.'
+        - '{1} pentru a selecta primul punct și {2} pentru a selecta al doilea punct.'
+        - 'Pentru a continua conectează punctele folosind {0}. Încearcă din nou!'
+      stage-5-tasks:
+        - 'Conectează punctele folosind {0}.'
+    stage-6:
+      stage-6-title: 'Înălțimile construcției'
+      stage-6-messages:
+        - 'Acum că avem conturul clădirii, trebuie să <gold>măsurăm</gold> înălțimea clădirii.'
+        - 'Calculați înălțimea <gold>fațadei</gold> prin scăderea altitudinii <gold>solului</gold> din altitudinea <gold>acoperișului</gold>.'
+        - 'Introduceți în chat înălțimea fațadei (în metri) pentru a continua.'
+        - '{0}'
+        - 'Bravo! Înălțimea clădirii este {1} blocuri.'
+        - 'Ai fost aproape. Înălțimea clădirii este {1} blocuri.'
+        - 'Ai fost aproape. Încearcă din nou!'
+        - 'Poți să §6vezi§f altitudinea în Google Earth în colțul dreapta jos al ecranului.%newline%%newline%Pentru a §6măsura§f altitudinea, mișcă §6cursorul§f pe hartă.'
+      stage-6-tasks:
+        - 'Calculează înălțimea clădirii.'
+    stage-7:
+      stage-7-title: 'Anvelopa clădirii'
+      stage-7-messages:
+        - 'Acum putem în sfârșit să începem cu clădirea! Primul pas este anvelopa clădirii, pe care acum le putem realiza cu ajutorul conturului și a înălțimilor.'
+        - 'Teleportează-te la cel puțin §6un punct§f al coamei acoperișului și §6conectează-l§f cu fațada.'
+        - 'Folosește §6tipuri diferite§f de block-uri și culori pentru anvelopă pentru a §6separa§f clădirea în secțiuni bine definite.'
+        - 'În continuare, putem ridica pereții și închide acoperișul. Acum trebuie să marcăm locurile pentru geamuri și uși.'
+        - 'Folosește comanda WorldEdit §6{0}§f pentru a ridica pereții rapid și ușor.'
+        - 'Umple acoperișul manual sau folosiți comanda WorldEdit §6{1}§f. Alternativ, folosește comanda §6{2}§f pentru a schimba selecția pentru acoperișuri mai mari și mai complexe.'
+        - 'Verifică întotdeauna §6înălțimea§f geamurilor și ușilor astfel încât să fie §6corecte§f relativ cu fațada.'
+      stage-7-tasks:
+        - 'Citește toate sfaturile de pe plot și marchează-le citite.'
+    stage-8:
+      stage-8-title: 'Geamuri'
+      stage-8-messages:
+        - 'Anvelopa clădirii e terminată! Să trecem la geamuri și uși.'
+        - 'O, nu... se pare că lipsesc două ferestre. Mă poți ajuta să le construiesc? Arătă ca cele din partea dreaptă.'
+        - 'Nu uita să §6acoperi ferestrele§f și §6ușile§f încât să nu poți vedea prin ele. Noi nu construim și spațiile interioare!'
+        - 'Există multe modalități de a construi ferestre pentru BTE folosind de exemplu §6bannere§f, §6trape§f sau §6covoare§f.'
+        - 'Folosește aceleași block-uri ca și geamurile din dreapta. Încearcă din nou!'
+        - 'Mulțumesc pentru ajutor! Acum putem continua cu texturarea.'
+      stage-8-tasks:
+        - 'Adaugă detaliile lipsă ferestrelor.'
+    stage-9:
+      stage-9-title: 'Texturarea'
+      stage-9-messages:
+        - 'Texturarea este o parte importantă a procesului de construcție. Este esențial să folosești block-urile și culorile potrivite pentru a face clădirea să arate realist.'
+        - 'Folosește §6Google Street View§f sau §6imagini§f pentru a alege block-urile corecte, deoarece imaginile din satelit nu sunt foarte precise.'
+        - 'Folosește comanda WorldEdit §6{0}§f pentru a înlocui anvelopa cu pattern-ul tău.'
+        - 'Încearcă să folosești §6amestecuri de block-uri§f și §6degradeuri§f pentru pereți și acoperiș, doar unde este necesar, astfel încât clădirea să fie mai realistă.'
+      stage-9-tasks:
+        - 'Citește toate sfaturile de pe plot și marchează-le citite.'
+    stage-10:
+      stage-10-title: 'Detaliere și pașii următori'
+      stage-10-messages:
+        - 'Detalierea este unul din cele mai importante etape, deoarece face construcția distinctă și unică.'
+        - 'Adaugă §6bannere personalizate§f si §6custom heads§f în clădirile tale. Folosește comanda §6{0}§f pentru a accesa o varietate de custom heads.'
+        - 'Există multe moduri de a §6decora§f clădirile tale. Întotdeauna fii atent la detaliile de pe fațade și acoperișuri cum ar fi §6hornuri§f, §6ferestre§f și §6burlane§f.'
+        - 'Mulțumim pentru participare. Acum ești pregătit să creezi propriile clădiri pentru proiectul Build The Earth!'
+        - 'Clic aici pentru a afla mai multe despre proiect.'
+        - 'Pentru a <gold>aplica ca builder</gold>, construiește și trimite <gold>unul sau mai multe plot-uri</gold> pe serverul nostru. Puteți găsi mai multe informații despre procesul de aplicare pe site-ul nostru sau {1}.'
+        - 'Dacă vrei să explorezi progresul actual al hărții, intră pe serverul <gold>Terra</gold>!'
+        - 'Spor la construit! ☺'
+      stage-10-tasks:
+        - 'Citește toate sfaturile de pe plot și marchează-le citite.'
+#-----------------------------------------------------
+#| Database
+#-----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Oraș exemplu'
+      description: 'Descriere'
+  country:
+    AT:
+      name: 'Austria'
+    CH:
+      name: 'Elveția'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Ușor'
+    medium:
+      name: 'Mediu'
+    hard:
+      name: 'Greu'
+  status:
+    unclaimed:
+      name: 'Nerezervat'
+    unfinished:
+      name: 'Neterminat'
+    unreviewed:
+      name: 'Neevaluat'
+    completed:
+      name: 'Completat'
+  toggle-criteria:
+    built_on_outlines: 'Construit pe contur'
+    correct_height: 'Înălțime clădire corectă'
+    correct_facade_colour: 'Culoare clădire corectă'
+    correct_roof_colour: 'Culoare acoperiș corectă'
+    correct_roof_shape: 'Formă acoperiș corectă'
+    correct_amount_windows_doors: 'Număr ferestre și uși corect'
+    correct_window_type: 'Modele ferestre corecte'
+    windows_blacked_out: 'Toate ferestrele închise cu block-uri'
+
+#NOTE: Do not change
+config-version: 1.0
