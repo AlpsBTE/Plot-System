@@ -1,0 +1,449 @@
+#-----------------------------------------------------
+#|            Plot System - by Alps BTE
+#-----------------------------------------------------
+#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+#|
+#| [Formatting] Use %newline% for a newline
+#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+#-----------------------------------------------------
+lang:
+  name: "Dansk (DK)"
+  head-id: "4411"
+#-----------------------------------------------------
+#| Plot
+#-----------------------------------------------------
+plot:
+  plot-name: "Plot"
+  id: "ID"
+  owner: "Plot Ejer"
+  members: "Plot Medlemmer"
+  member: "Plot Medlem"
+  city: "By"
+  country: "Land"
+  difficulty: "Vanskelighed"
+  status: "Status"
+  score: "Score"
+  total-score: "Samlet Score"
+  completed-plots: "Afsluttede Plot"
+  group-system:
+    empty-member-slot: "Tom Medlem Slot"
+    shared-by-members: "(delt af {0} medlemmer)"
+#-----------------------------------------------------
+#| City Projects
+#-----------------------------------------------------
+city-project:
+  cities: "Byer"
+  open: "Åbne Plot"
+  in-progress: "Plot I Gang"
+  completed: "Plot Udført"
+  plots-available: 'Tilgængelige Plot'
+  no-plots-available: "Ingen Plot Tilgængelige"
+  for-your-difficulty: "({0} for din sværhed)"
+#-----------------------------------------------------
+#| Countries
+#-----------------------------------------------------
+country:
+  countries: "Lande"
+#-----------------------------------------------------
+#| Continents
+#-----------------------------------------------------
+continent:
+  europe: "Europa"
+  asia: "Asien"
+  africa: "Afrika"
+  oceania: "Oceania"
+  south-america: "Sydamerika"
+  north-america: "Nordamerika"
+#-----------------------------------------------------
+#| Difficulty
+#-----------------------------------------------------
+difficulty:
+  automatic: "Automatisk"
+  score-multiplier: "Score Multiplikator"
+#-----------------------------------------------------
+#| Menu Titles
+#-----------------------------------------------------
+menu-title:
+  close: 'Luk'
+  back: 'Tilbage'
+  continue: 'Fortsæt'
+  next-page: 'Næste Side'
+  previous-page: 'Forrige Side'
+  error: 'Fejl'
+  loading: 'Indlæser...'
+  plot-difficulty: 'Plot Vanskelighed'
+  slot: 'Plads'
+  builder-utilities: 'Builder Utilities'
+  show-plots: 'Vis Plot'
+  settings: 'Indstillinger'
+  submit: 'Indsend'
+  teleport: 'Teleportering'
+  abandon: 'Abandon'
+  undo-submit: 'Fortryd Indsendelse'
+  manage-members: 'Administrer Medlemmer'
+  feedback: 'Tilbagemeldingforespørgsel #{0}'
+  custom-heads: 'Brugerdefinerede Hoveder'
+  banner-maker: 'Banner Maker'
+  special-tools: 'Særlige Blokke Og Punkter'
+  review-point: 'Punkt'
+  review-points: 'Point'
+  cancel: 'Annuller'
+  add-member-to-plot: 'Tilføj medlem til Plot'
+  companion: 'Ledsagende'
+  companion-select-continent: 'Vælg Et Kontinent'
+  companion-select-country: 'Vælg Et Land'
+  companion-select-city: 'Vælg En By'
+  player-plots: '{0}s Plot'
+  leave-plot: 'Forlad Plot'
+  review-plots: 'Gennemgå Plot'
+  review-plot: 'Gennemgå Plot #{0}'
+  select-language: 'Vælg Sprog'
+  select-plot-type: 'Vælg Plot Type'
+  select-focus-mode: 'Vælg Fokustilstand'
+  select-local-inspiration-mode: 'Vælg Inspirationstilstand'
+  select-city-inspiration-mode: 'Vælg By Inspirationstilstand'
+  filter-by-country: 'Filtrer Efter Land'
+  information: 'Info'
+  tutorials: 'Vejledninger'
+  tutorial-stages: 'Tutorial Trin'
+  tutorial-end: 'Afslut Vejledning'
+  tutorial-beginner: 'Kom I Gang'
+  companion-random: 'Tilfældigt Markering'
+#-----------------------------------------------------
+#| Menu Descriptions
+#-----------------------------------------------------
+menu-description:
+  error-desc: 'Der opstod en fejl...'
+  plot-difficulty-desc: 'Klik for at Skifte...'
+  slot-desc: 'Klik på et byprojekt for at oprette et nyt plot'
+  builder-utilities-desc: 'Få adgang til brugerdefinerede hoveder, bannere og specielle blokke'
+  show-plots-desc: 'Vis alle dine plot'
+  settings-desc: 'Ændre dine brugerindstillinger'
+  submit-plot-desc: 'Klik for at udfylde dette plot og indsende det for at blive gennemgået'
+  teleport-desc: 'Klik for at teleportere til plottet'
+  abandon-desc: 'Klik for at nulstille dit plot og give det til en anden'
+  undo-submit-desc: 'Klik for at fortryde din indsendelse'
+  manage-members-desc: 'Klik for at åbne Plot Medlemsmenuen, hvor du kan tilføje og fjerne andre spillere på dit plot'
+  feedback-desc: 'Klik for at se din plot anmeldelse feedback'
+  custom-heads-desc: 'Klik for at åbne hovedmenuen for at få en række brugerdefinerede hoveder'
+  banner-maker-desc: 'Klik for at oprette og gemme dine egne bannere'
+  special-tools-desc: 'Klik for at få adgang til en række utilgængelige blokke og genstande'
+  add-member-to-plot-desc: 'Inviter dine venner til dit plot og begynd at bygge sammen'
+  review-points-desc: 'Klik for at vælge'
+  submit-review-desc: 'Indsend valgte punkter og markér plot som gennemgåede'
+  leave-plot-desc: 'Klik for at forlade dette plot'
+  select-language-desc: 'Vælg dit sprog'
+  select-plot-type-desc: 'Vælg din plot type'
+  select-focus-mode-desc: "Byg din grund på en flydende ø i tomrum.%newline%%newline%- Ingen Miljø%newline%- Ingen naboområder"
+  select-local-inspiration-mode-desc: "Byg på en flydende ø med omgivende miljø som reference.%newline%%newline%+ Miljø%newline%- Ingen naboområder"
+  select-city-inspiration-mode-desc: "Byg på en flydende ø med omgivende miljø og andre spillere plot, der fik scannet nær det eget plot.%newline%%newline%+ Miljø%newline%+ Nabolade"
+  filter-desc: "Vis Alle"
+  information-desc: "Et plot kan modtage maksimalt 20 point. Hvis plottet modtager mindre end 8 point eller en kategori har 0 point. plottet afvises og bygherren får plottet tilbage for at forbedre det. Hvis plottet modtager 0 point, bliver det opgivet."
+  tutorials-desc: 'Lær det grundlæggende i BuildTheEarth projektet og forbedre dine bygningskompetencer med tutorials om forskellige emner.'
+  tutorial-end-desc: 'Dine fremskridt vil blive gemt.'
+  tutorial-beginner-desc: 'Lær det grundlæggende, hvordan man bygger til BuildTheEarth projektet.'
+  companion-random-desc: 'Klik for at vælge tilfældigt.'
+#-----------------------------------------------------
+#| Review
+#-----------------------------------------------------
+review:
+  review-plot: "Gennemgå Plot"
+  manage-plot: "Administrer Plot"
+  manage-and-review-plots: "Håndtér & Gennemgangsplotter"
+  accepted: "Accepteret"
+  rejected: "Afvist"
+  abandoned: "Forladt"
+  feedback: "Tilbagemelding"
+  reviewer: "Tester"
+  player-language: "Spiller Sprog"
+  no-feedback: "Ingen feedback"
+  accuracy-points: "Nøjagtighed punkter"
+  block-palette-points: "Blokér palettepunkter"
+  toggle-points: "Skift point"
+  total-points: "Samlet antal point"
+  abandoned-in-days: "§6Forladt i §6{0} dage"
+  criteria:
+    accuracy: "Nøjagtighed"
+    accuracy-desc: "Hvor præcis er bygningen?%newline%%newline%- Ligner i RL%newline%- Korrekt skitserer%newline%- Korrekt højde%newline%- Fuldført"
+    block-palette: "Bloker Palet"
+    block-palette-desc: "Hvor mange forskellige blokke bruges, og hvor kreative er de?%newline%%newline%- Valg af blokke farver/teksturer%newline%- Tilfældige blokke"
+#-----------------------------------------------------
+#| Notes
+#-----------------------------------------------------
+note:
+  tip: "Tip"
+  under-construction: 'Under Konstruktion'
+  wont-be-able-continue-building: "De vil ikke kunne fortsætte med at bygge videre på dette område!"
+  score-will-be-split: "Score vil blive delt mellem alle medlemmer når de gennemgået!"
+  player-has-to-be-online: "Spilleren skal være online!"
+  optional: "Valgfri"
+  required: "Påkrævet"
+  criteria-fulfilled: "Opfyldt"
+  criteria-not-fulfilled: "Ikke opfyldt"
+  legacy: "LEGACY"
+  action:
+    read: 'Læs'
+    read-more: 'Læs Mere'
+    mark-as-read: 'Markér som læst'
+    start: 'Start'
+    continue: "Fortsæt"
+    continue-tutorial: 'Fortsæt Vejledning'
+    create-plot: 'Opret Plot'
+    right-click: "Højre Klik"
+    left-click: "Venstreklik"
+    accept: 'Accepter'
+    reject: 'Afvis'
+    click-to-create-plot: 'Klik for at oprette nyt plot...'
+    click-to-proceed: "Klik for at fortsætte..."
+    click-to-remove-plot-member: "Klik for at fjerne medlem fra plot..."
+    click-to-open-link: "Klik her for at åbne {0} linket..."
+    click-to-open-link-with-shortlink: "§6Klik her §7for at åbne linket §a{0}§7 eller brug dette link: §a{1}"
+    click-to-show-feedback: "§6Klik her §ato viser dit plot feedback..."
+    click-to-show-open-reviews: "§6Klik her §ato viser åbne anmeldelser..."
+    click-to-show-plots: "§6Klik her §ato viser dine plots..."
+    click-to-play-with-friends: "§7Vil du spille med dine venner? §6Klik her..."
+    tutorial-show-stages: 'Vis Trin'
+    click-to-open-plots-menu: 'Klik for at åbne plot-menuen...'
+    click-to-toggle: "Klik for at skifte..."
+#-----------------------------------------------------
+#| Messages
+#-----------------------------------------------------
+message:
+  info:
+    teleporting-plot: "§aTeleporterer til plot §6#{0}§a..."
+    teleporting-tpll: "§aTeleporterer til §6{0}§a, §6{1}§a..."
+    abandoned-plot: "§aForladt plot med ID §6#{0}§a!"
+    finished-plot: "§aPlot §6#{0}§a af §6{1}§a er blevet færdig!"
+    plot-marked-as-reviewed: "§aPlot §6#{0}§a af §6{1}§a er blevet markeret som reviewed!"
+    plot-rejected: "§aPlot §6#{0}§a af §6{1}§a er blevet afvist!"
+    undid-submission: "§aUndid submission of plot §6#{0}§a!"
+    undid-review: "§aUndid anmeldelse af plot §6#{0}§a af §6{1}§a!"
+    reviewed-plot: "§aDit plot §6#{0}§a er blevet anmeldt!"
+    unreviewed-plot: "§aDer er §6{0}§a uanmeldt plot!"
+    unreviewed-plots: "§aDer er §6{0}§a uanmeldte plotter!"
+    unfinished-plot: "§aDu har §6{0}§a uafsluttede plot!"
+    unfinished-plots: "§aDu har §6{0}§a uafsluttede plotter!"
+    enabled-build-permissions: "§aAktiverede build tilladelser for reviewers på plot §6#{0}§a!"
+    disabled-build-permissions: "§aDeaktiverede build tilladelser for reviewers på plot §6#{0}§a!"
+    updated-plot-feedback: "§aFeedback for plot §6#{0}§a er blevet opdateret!"
+    removed-plot-member: "§aFjernede §6{0}§a fra plot §6#{1}§a!"
+    left-plot: "§aVenstre plot §6#{0}§a!"
+    plot-will-get-abandoned-warning: "§c§lADVARSEL: §cDette plot vil automatisk blive forladt!"
+    plot-will-be-rejected: "Plot vil blive afvist!"
+    plot-will-be-accepted: "Plot vil blive accepteret"
+    plots-reviewed-singular: "{0} plot er blevet gennemgået!"
+    plots-reviewed-plural: "{0} plotter er blevet gennemgået!"
+    saving-plot: "§aGemmer plot..."
+    creating-plot: "§aOpretter nyt plot..."
+    created-new-plot: "§aOprettet nyt plot§a for §6{0}§a!"
+    chat-enter-player: 'Indtast navnet på spilleren i chatten.'
+    chat-enter-feedback: "Indtast venligst en tilbagemelding til spilleren i chatten."
+    chat-input-expires-after: "Chat input udløber efter {0} minutter."
+    beginner-tutorial-required: 'Færdiggør den tutorial for at deltage i projektet.'
+    beginner-tutorial-completed: 'Er du klar til at bygge dit eget plot? Nu det opretter din tur!'
+    player-invite-sent: 'En invitation er blevet sendt til {0} for at deltage i dit plot.'
+    player-invite-to-sent: '{0} har inviteret dig til at hjælpe med at bygge videre på hans plot.'
+    player-invite-accepted: 'Invitation til {0}¤ s plot er blevet accepteret.'
+    player-invite-to-accepted: '{0} har accepteret din invitation og er blevet tilføjet til dit plot.'
+    player-invite-rejected: 'Invitationen til {0}, s plot er blevet afvist.'
+  error:
+    plot-does-not-exist: "Dette plot eksisterer ikke!"
+    plot-either-unclaimed-or-unreviewed: "Dette plot er enten ikke anmeldt eller er ikke blevet gennemgået endnu!"
+    plot-has-not-yet-reviewed: "Denne plot er endnu ikke blevet gennemgået!"
+    can-only-abandon-unfinished-plots: "Du kan kun opgive uafsluttede områder!"
+    can-only-submit-unfinished-plots: "Du kan kun indsende uafsluttede plots!"
+    can-only-undo-submissions-unreviewed-plots: "Du kan kun fortryde indsendelser af ikke-gennemgåede plots!"
+    can-only-manage-members-unfinished-plots: "Du kan kun administrere medlemmer af uafsluttede plots!"
+    cannot-teleport-outside-plot: "Du kan ikke teleportere uden for plottet!"
+    cannot-undo-review: "Du kan ikke fortryde en anmeldelse, som du ikke selv har gennemgået!"
+    cannot-send-feedback: "Du kan ikke sende feedback til et plot, som du ikke selv har gennemgået!"
+    cannot-review-own-plot: "Du kan ikke gennemgå dit eget plot!"
+    cannot-modify-legacy-plot: "Ældre plot kan ikke ændres!"
+    cannot-load-legacy-plot: "Ældre plot kan ikke indlæses!"
+    player-has-no-permissions: "Du har ikke tilladelse til at gøre dette!"
+    player-has-no-invitations: "Du har ingen invitationer!"
+    player-is-not-allowed: "Du har ikke tilladelse til at gøre dette!"
+    player-is-plot-owner: "Denne spiller er allerede plot ejer!"
+    player-is-plot-member: "Denne spiller er allerede medlem af dette plot!"
+    player-is-not-online: "Denne spiller er ikke online!"
+    player-not-found: "Kunne ikke finde den spiller!"
+    player-already-invited: '{0} er allerede blevet inviteret til et plot.'
+    player-invite-expired: 'Invitationen fra {0} er udløbet.'
+    player-invite-to-expired: 'Den invitation, du sendte til {0} , er udløbet.'
+    player-invite-to-rejected: '{0} har afvist din invitation.'
+    player-needs-to-be-on-plot: "Du skal være på en plot for at bruge dette!"
+    player-needs-higher-score: "Du har brug for en højere score for at bygge i dette sværhedsgrad."
+    player-missing-tutorial: "Spilleren skal først fuldføre den tutorial for at blive tilføjet til plotet!"
+    error-occurred: "Der opstod en fejl! Prøv venligst igen!"
+    no-plots-left: "Dette byprojekt har ikke flere plot tilbage. Vælg et andet projekt."
+    please-wait: "Vent et par sekunder, før du opretter et nyt plot!"
+    all-slots-occupied: "Alle dine slots er optaget! Færdiggør venligst dine nuværende plots, før du opretter en ny."
+    chat-input-expired: "Chatinput er udløbet."
+    tutorial-disabled: 'Tutorials er deaktiveret på denne server.'
+    tutorial-already-running: "Du har allerede en tutorial kørende! Færdiggør den før du starter en ny."
+    review-not-found: "Anmeldelse blev ikke fundet!"
+leaderboards:
+  pages:
+    DAILY: "Dagligt"
+    WEEKLY: "Ugentlig"
+    MONTHLY: "Månedligt"
+    YEARLY: "Årligt"
+    LIFETIME: "Levetid"
+  actionbar-position: "Placering #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Ikke på Leaderboard"
+tutorials:
+  stage: 'Trin'
+  new-stage-unlocked: 'NYT STAGE ULÅBET'
+  tutorial-completed: 'TUTORIAL FULDT'
+  beginner:
+    stage-1:
+      stage-1-title: 'Forståelse af BuildTheEarth projektet'
+      stage-1-messages:
+        - 'Hej {0}! Dejligt at møde dig, mit navn er {1}. Du har lige trådt ind i den spændende verden af BuildTheEarth projektet!'
+        - 'Vores mission er at genskabe hele planeten Jorden i Minecraft i en skala på 1:1. Ja, du hørte ret, på en skala på 1:1!'
+        - 'Men vi i Alps BTE er kun ansvarlige for at genskabe de smukke alpine lande i Østrig, Schweiz og Liechtenstein.'
+        - 'Er du klar til at lære at bygge til BTE? Jeg vil guide dig gennem det grundlæggende for at deltage i projektet. Lad opdateringerne fortsætte!'
+      stage-1-tasks:
+        - 'Tal med {0} på byggepladsen.'
+    stage-2:
+      stage-2-title: 'Referencer'
+      stage-2-messages:
+        - 'Velkommen på din lille ø. Her vil vi bygge vores første bygning til Byg Jorden projektet!'
+        - 'Før vi begynder at bygge, er vi nødt til at vide, hvordan den virkelige livsbygning ser ud. Til det bruger vi værktøjer som {0} og {1}.'
+        - 'Vi bruger {2} til at kopiere koordinater, så vi kan teleportere til et bestemt punkt. Derudover kan vi få adgang til {3} for at få et nærmere kig på bygningen.'
+        - '{4}'
+        - 'Vi bruger {5} til at måle højden af bygningen. Dette er vigtigt at vide, så bygningen har den rigtige højde.'
+        - '{6}'
+        - 'Brug kommandoen {7} , hvis du har brug for links senere.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleporterer'
+      stage-3-messages:
+        - 'Bygningen skitser genereres som standard, men da de for det meste ikke er nøjagtige, er vi nødt til at rette dem. For at rette op på skitserne skal vi først og fremmest teleportere til kanten af bygningen.'
+        - 'Brug kommandoen {0} til at teleportere til placeringen i spillet. {1} på en af kanterne af bygningen til at kopiere koordinaterne.'
+        - '{2}'
+        - 'For at fortsætte teleportere til de markerede punkter. Prøv igen!'
+        - 'Skift til §6Satellit§f-visning i Google Maps for at vise bygningen i 3D.%newline%%newline%Click på §6Layers§f nederst til venstre på kortet. Hvis ingen 3D-bygninger vises, aktivér §6Globe visning§f under "Mere".'
+      stage-3-tasks:
+        - 'Teleporter til alle {0} kanter af bygningen ved hjælp af {1}.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Før vi fortsætter med de skitser, vi har brug for at kende et vigtigt værktøj kaldet {0}. WorldEdit giver os mulighed for at bygge hurtigere og mere effektivt.'
+        - 'For at kunne bruge WorldEdit, skal du få en <gold>træøkse</gold>.'
+        - 'Nu hvor du har din træøkse, kan du {1} og {2} på blokke for at foretage dit valg.'
+      stage-4-tasks:
+        - 'Brug kommandoen {0} til at få din træøkse.'
+    stage-5:
+      stage-5-title: 'Tegn konturerne'
+      stage-5-messages:
+        - 'Nu, hvor vi kender til WorldEdit, kan vi trække omridset af bygningen.'
+        - 'For at tegne skitser, bruger vi kommandoen {0}.'
+        - '{1} for at vælge det første punkt og {2} for at vælge det andet punkt.'
+        - 'For at fortsætte med at forbinde punkterne ved hjælp af {0}. Prøv igen!'
+      stage-5-tasks:
+        - 'Tilslut punkterne ved hjælp af {0}.'
+    stage-6:
+      stage-6-title: 'Byggehøjder'
+      stage-6-messages:
+        - 'Nu, hvor vi har bygningen skitser, er vi nødt til at <gold>måle</gold> højden af bygningen.'
+        - 'Beregn højden af <gold>facaden</gold> ved at trække højden af <gold>jorden</gold> fra højden af <gold>taget</gold>.'
+        - 'Indtast højden (i meter) på byggefacaden i chatten for at fortsætte.'
+        - '{0}'
+        - 'Godt gået! Højden af bygningen er {1} blokke.'
+        - 'Du har næsten lavet det. Højden af bygningen er {1} blokke.'
+        - 'Du har næsten lavet det. Prøv igen!'
+        - 'Du kan §6læse§f højden på Google Earth i §6nederst til højre§f på kortet.%newline%%newline%To §6måle§f højden, flyt din §6mus markør§f på kortet.'
+      stage-6-tasks:
+        - 'Beregn højden af bygningen.'
+    stage-7:
+      stage-7-title: 'Byggeskaller'
+      stage-7-messages:
+        - 'Nu kan vi endelig begynde på bygningen! De første skridt er skallerne, som vi nu kan begynde med omridset og bygningshøjderne.'
+        - 'Teleporter til mindst §6et punkt§f af taghøjderyggen for at §6forbinde§f punktet(erne) med facaden.'
+        - 'Brug §6forskellige typer§f af blokke og farver for skallerne for at gøre det lettere at §6adskille§f bygningen ind i sektioner.'
+        - 'Derefter kan vi hæve væggene og forsegle taget. Nu er det tid til at markere vinduer og døre.'
+        - 'Brug WorldEdit kommandoen §6{0}§f til at hæve væggene hurtigt og nemt.'
+        - 'Fyld taget med hånden eller brug WorldEdit kommandoen §6{1}§f. Alternativt kan du bruge kommandoen §6{2}§f til at skifte valg for større og mere komplekse tage.'
+        - 'Kontroller altid §6højden§f af vinduer og døre, så den §6matcher§f med facaden.'
+      stage-7-tasks:
+        - 'Læs alle tips på plottet og markér dem som læst.'
+    stage-8:
+      stage-8-title: 'Vinduer'
+      stage-8-messages:
+        - 'Bygningen skallen er færdig! Lad ¤ s fortsætte med vinduer og døre.'
+        - 'Ohh... det ser ud til at der mangler to vinduer. Kan du hjælpe mig med at placere dem? De ser ud som på højre side.'
+        - 'Glem at §6bliver mørkeret§f vinduerne §6§f og §6døre§f så du kan se gennem dem. Vi gør ikke brug af dit interiør!'
+        - 'Der er mange måder at bygge vinduer til BTE på ved at bruge for eksempel §6bannere§f, §6lemdoors§f eller §6tæpper§f.'
+        - 'Brug de samme blokke som for vinduerne til højre. Prøv igen!'
+        - 'Tak for din hjælp! Nu kan vi fortsætte med teksturen.'
+      stage-8-tasks:
+        - 'Placer de manglende vinduesdetaljer.'
+    stage-9:
+      stage-9-title: 'Teksturering'
+      stage-9-messages:
+        - 'Teksturering er en integreret del af byggeprocessen. Det er vigtigt at bruge de rigtige blokke og farver til at gøre bygningen til at se realistisk.'
+        - 'Brug §6Google Street View§f eller §6billeder§f for at gøre det rigtige blokvalg, da luftbilleder nogle gange ikke er særlig nøjagtige.'
+        - 'Brug WorldEdit kommandoen §6{0}§f til blot at erstatte skallen med dit mønster.'
+        - 'Prøv at bruge §6blok blander§f og §6gradienter§f for væggene og taget, så bygningen ser mere realistisk ud og skiller sig ud.'
+      stage-9-tasks:
+        - 'Læs alle tips på plottet og markér dem som læst.'
+    stage-10:
+      stage-10-title: 'Detaljer Og Yderligere Trin'
+      stage-10-messages:
+        - 'Detailhandel er en af de vigtigste processer, da det gør bygningen karakteristisk og unik.'
+        - 'Tilføj §6brugerdefinerede bannere§f og §6brugerdefinerede hoveder§f til dit byggeri. Brug kommandoen §6{0}§f for at få en række brugerdefinerede hoveder.'
+        - 'Der er mange måder at §6dekorere på§f dine bygninger. Vær altid opmærksom på detaljer om facaden og tagene såsom §6skorstener§f, §6vinduer§f og §6render§f.'
+        - 'Tak for din deltagelse. Du er nu klar til at skabe dine egne bygninger til BuildTheEarth projektet!'
+        - 'Klik her for at læse mere om projektet.'
+        - 'For at <gold>anvende som builder</gold>, skal du oprette og indsende <gold>en eller flere plotter</gold> på vores server. Du kan finde mere information om ansøgningsprocessen på vores hjemmeside eller {1}.'
+        - 'Hvis du ønsker at udforske de aktuelle fremskridt på kortet, så tjek <gold>Terra</gold> serveren!'
+        - 'Glad bygning! ☺️'
+      stage-10-tasks:
+        - 'Læs alle tips på plottet og markér dem som læst.'
+#-----------------------------------------------------
+#| Database
+#-----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Eksempel By'
+      description: 'Nogle beskrivelser'
+  country:
+    AT:
+      name: 'Østrig'
+    CH:
+      name: 'Schweiz'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Nem'
+    medium:
+      name: 'Mellem'
+    hard:
+      name: 'Svær'
+  status:
+    unclaimed:
+      name: 'Udestående'
+    unfinished:
+      name: 'Ufærdige'
+    unreviewed:
+      name: 'Uanmeldt'
+    completed:
+      name: 'Afsluttet'
+  toggle-criteria:
+    built_on_outlines: 'Bygget på skitser'
+    correct_height: 'Korrekt bygningshøjde'
+    correct_facade_colour: 'Korrekt bygningsfarve'
+    correct_roof_colour: 'Korrekt tag farve'
+    correct_roof_shape: 'Korrekt tagform'
+    correct_amount_windows_doors: 'Korrekt antal vinduer og døre'
+    correct_window_type: 'Korrigér vinduetyper'
+    windows_blacked_out: 'Alle vinduer blacked ud'
+#NOTE: Do not change
+config-version: 1.0

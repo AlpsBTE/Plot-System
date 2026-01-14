@@ -164,6 +164,7 @@ review:
   block-palette-points: "Block palette points"
   toggle-points: "Toggle points"
   total-points: "Total points"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
   criteria:
     accuracy: "Précision"
     accuracy-desc: "Quelle est la précision du bâtiment?%newline%%newline%- Ressemble à RL%newline%- Contours corrects%newline%- Hauteur correcte%newline%- Est terminé"

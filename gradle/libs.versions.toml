@@ -15,7 +15,7 @@ com-zaxxer-hikaricp = "6.3.0"
 commons-io-commons-io = "2.20.0"
 de-oliver-fancynpcs = "2.7.0"
 io-papermc-paper-paper-api = "1.21.8-R0.1-SNAPSHOT"
-li-cinnazeyy-langlibs-api = "1.5.1"
+li-cinnazeyy-langlibs-api = "1.5.2"
 org-mariadb-jdbc-mariadb-java-client = "2.7.4"
 com-intellectualsites-bom-bom-newest = "1.55" # Ref: https://github.com/IntellectualSites/bom
 
