@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -149,7 +148,7 @@ public class TutorialPlot extends AbstractPlot {
     public byte[] getInitialSchematicBytes() {
         File schematic;
         String fileName = getTutorialID() + "-" + currentSchematicId + ".schem";
-        schematic = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials", fileName).toFile();
+        schematic = PlotUtils.getTutorialSchematicPath().resolve(fileName).toFile();
         try {
             if (!schematic.exists()) FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin()
                     .getResource("tutorial/schematics/" + fileName + ".gz")), schematic);

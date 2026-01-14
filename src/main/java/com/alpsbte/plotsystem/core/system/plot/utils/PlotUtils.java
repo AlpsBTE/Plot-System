@@ -59,10 +59,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -230,8 +230,8 @@ public final class PlotUtils {
         return outputStream.toByteArray();
     }
 
-    public static @NotNull String getDefaultSchematicPath() {
-        return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
+    public static @NotNull Path getTutorialSchematicPath() {
+        return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "tutorial", "schematics");
     }
 
     public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException {
