@@ -141,10 +141,8 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             if (stageId >= stages.size()) {
                 if (!tutorialPlot.isComplete()) tutorialPlot.setComplete();
-            } else if (stageId > tutorialPlot.getStageID()) {
-                if (!tutorialPlot.setStageID(stageId)) {
-                    PlotSystem.getPlugin().getComponentLogger().error("Could not save tutorial progress for tutorial plot #{}!", tutorialPlot.getId());
-                }
+            } else if (stageId > tutorialPlot.getStageID() && !tutorialPlot.setStageID(stageId)) {
+                PlotSystem.getPlugin().getComponentLogger().error("Could not save tutorial progress for tutorial plot #{}!", tutorialPlot.getId());
             }
         });
     }
