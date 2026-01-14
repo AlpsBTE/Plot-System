@@ -17,7 +17,7 @@ lang:
 # -----------------------------------------------------
 plot:
   plot-name: "פלוט"
-  id: "ID"
+  id: "מזהה"
   owner: "בעלי הפלוט"
   members: "חברי פלוט"
   member: "חבר פלוט"
@@ -69,6 +69,7 @@ difficulty:
 menu-title:
   close: 'לסגור'
   back: 'אחורה'
+  continue: 'המשך'
   next-page: 'עמוד הבא'
   previous-page: 'עמוד קודם'
   error: 'תקלה'
@@ -158,15 +159,16 @@ review:
   feedback: "משוב"
   reviewer: "סוקר"
   player-language: "שפת השחקן"
+  no-feedback: "אין משוב"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: ""
+  total-points: "סך הכל נקודות"
   criteria:
     accuracy: "דיוק"
     accuracy-desc: "עד כמה הבנייה מדויקת?%newline%%newline%- נראית כמו במציאות%newline%- קווי המתאר נכונים%newline%- גובה נכון%newline%- מושלמת"
     block-palette: "פלטת בלוקים"
     block-palette-desc: "כמה בלוקים שונים נעשה שימוש וכמה זה יצירתי?%newline%%newline%- בחירת צבעים/מרקמים%newline%- בלוקים אקראיים"
-    detailing: "פרטים"
-    detailing-desc: "כמה פרטים יש לבנייה?%newline%%newline%- פרטי גג%newline%- פרטים על חזיתות%newline%- ראשים ודגלים"
-    technique: "טכניקה"
-    technique-desc: "אילו טכניקות בנייה נעשה בהן שימוש וכמה הן יצירתיות?%newline%%newline%- World-Edit%newline%- בלוקים מיוחדים"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -176,6 +178,11 @@ note:
   wont-be-able-continue-building: "לא תוכל להמשיך לבנות בפלוט זה!"
   score-will-be-split: "הציון יחולק בין כל החברים בעת הסקירה!"
   player-has-to-be-online: "השחקן חייב להיות מחובר!"
+  optional: "Optional"
+  required: "חובה"
+  criteria-fulfilled: "בוצע"
+  criteria-not-fulfilled: "Not fulfilled"
+  legacy: "LEGACY"
   action:
     read: 'קרא'
     read-more: 'קרא עוד'
@@ -198,6 +205,8 @@ note:
     click-to-show-plots: "ֲ§6לחץ כאן ֲ§כדי להציג את הפלוטים שלך..."
     click-to-play-with-friends: "ֲ§7רוצה לשחק עם חברים? ֲ§6לחץ כאן..."
     tutorial-show-stages: 'הצג שלבים'
+    click-to-open-plots-menu: 'Click to open the plots menu...'
+    click-to-toggle: "Click to toggle..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -222,7 +231,10 @@ message:
     removed-plot-member: "ֲ§aהוסר ֲ§6{0}ֲ§a מהפלוט ֲ§6#{1}ֲ§a!"
     left-plot: "ֲ§aעזבת את הפלוט ֲ§6#{0}ֲ§a!"
     plot-will-get-abandoned-warning: "ֲ§cֲ§lאזהרה: ֲ§cפלוט זה ייעזב אוטומטית!"
-    plot-will-get-rejected-warning: "ֲ§cֲ§lאזהרה: ֲ§cפלוט זה יידחה!"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "ֲ§aשומרים את הפלוט..."
     creating-plot: "ֲ§aיוצרים פלוט חדש..."
     created-new-plot: "ֲ§aפלוט חדש נוצר עבור ֲ§6{0}ֲ§a!"
@@ -248,7 +260,9 @@ message:
     cannot-undo-review: "אי אפשר לבטל סקירה שלא ביצעת בעצמך!"
     cannot-send-feedback: "אי אפשר לבטל סקירה שלא ביצעת בעצמך!"
     cannot-review-own-plot: "אי אפשר לסקור את הפלוט שלך!"
-    player-has-no-permissions: אין לך הרשאות לבצע זאת!"
+    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
+    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
+    player-has-no-permissions: "אין לך הרשאות לבצע זאת!\""
     player-has-no-invitations: "אין לך הזמנות!!"
     player-is-not-allowed: "אתה לא מורשה לעשות זאת!"
     player-is-plot-owner: "השחקן הזה הוא כבר בעל הפלוט!"
@@ -261,6 +275,7 @@ message:
     player-invite-to-rejected: '{0} דחה את ההזמנה שלך.'
     player-needs-to-be-on-plot: "עליך להיות בפלוט כדי להשתמש בזה!"
     player-needs-higher-score: "אתה צריך ציון גבוה יותר כדי לבנות ברמת קושי זו."
+    player-missing-tutorial: "The player must first complete the tutorial to be added to the plot!"
     error-occurred: "אירעה שגיאה! אנא נסה שוב!"
     no-plots-left: "אין עוד פלוטים פנויים בפרויקט העיר הזה. נא לבחור בפרויקט אחר."
     please-wait: "אנא המתן כמה שניות לפני יצירת פלוט חדש!"
@@ -268,6 +283,7 @@ message:
     chat-input-expired: "הזנת הצ'אט פגה."
     tutorial-disabled: 'הדרכות מושבתות בשרת זה.'
     tutorial-already-running: "כבר יש לך הדרכה פעילה! סיים אותה לפני שתתחיל חדשה."
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "יומי"
@@ -279,7 +295,7 @@ leaderboards:
   actionbar-percentage: "TOP {0}%"
   not-on-leaderboard: "לא נמצא בטבלת המובילים"
 tutorials:
-  stage: 'Stage'
+  stage: 'שלב'
   new-stage-unlocked: 'שלב חדש נפתח'
   tutorial-completed: 'ההדרכה הושלמה'
   beginner:
@@ -388,5 +404,45 @@ tutorials:
         - 'בנייה מהנה! ג˜÷'
       stage-10-tasks:
         - 'קרא את כל הטיפים במגרש וסמן אותם כנקראו.'
+#-----------------------------------------------------
+#| Database
+#-----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'עיר לדוגמה'
+      description: 'Some description'
+  country:
+    AT:
+      name: 'אוסטריה'
+    CH:
+      name: 'שוויץ'
+    LI:
+      name: 'ליכטנשטיין'
+  difficulty:
+    easy:
+      name: 'קל'
+    medium:
+      name: 'בינוני'
+    hard:
+      name: 'קשה'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'לא גמור'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'הושלם'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 1.0
+config-version: 1.1
