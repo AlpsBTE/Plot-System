@@ -4,8 +4,7 @@
 
 <p align="Center">
   <a href="https://github.com/AlpsBTE/PlotSystem">
-    <img src="https://owncloud.alps-bte.com/s/YQuxrGJvHAPNCfx/download" alt="Plot System Logo" width="250" 
-        style="image-rendering: pixelated;" />
+    <img src="https://raw.githubusercontent.com/BuildTheEarth/assets/60fa2c8b84d271e52c4d643c23d219c31642ee56/images/global_plot_system/plot-256.png" alt="Plot System Logo" />
   </a>
 </p>
 
