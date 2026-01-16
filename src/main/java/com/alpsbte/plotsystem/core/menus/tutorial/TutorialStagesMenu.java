@@ -1,31 +1,8 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.menus.tutorial;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LegacyLoreBuilder;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
@@ -37,7 +14,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -46,9 +22,12 @@ import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
-import java.sql.SQLException;
-
-import static net.md_5.bungee.api.ChatColor.*;
+import static net.md_5.bungee.api.ChatColor.AQUA;
+import static net.md_5.bungee.api.ChatColor.BOLD;
+import static net.md_5.bungee.api.ChatColor.GREEN;
+import static net.md_5.bungee.api.ChatColor.RED;
+import static net.md_5.bungee.api.ChatColor.WHITE;
+import static net.md_5.bungee.api.ChatColor.YELLOW;
 
 public class TutorialStagesMenu extends AbstractMenu {
     private static final int TOTAL_STAGES_ROWS = 2;
@@ -125,13 +104,11 @@ public class TutorialStagesMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        try {
-            plot = TutorialPlot.getPlot(getMenuPlayer().getUniqueId().toString(), tutorialId);
-            if (plot != null) {
-                playerHighestStage = plot.getStageID();
-                isTutorialCompleted = plot.isCompleted();
-            }
-        } catch (SQLException ex) {Utils.logSqlException(ex);}
+        plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, getMenuPlayer().getUniqueId().toString()).orElse(null);
+        if (plot != null) {
+            playerHighestStage = plot.getStageID();
+            isTutorialCompleted = plot.isComplete();
+        }
 
         // Set tutorial stats item
         ItemBuilder tutorialItem = new ItemBuilder(Material.valueOf(tutorialItemName));
@@ -180,7 +157,7 @@ public class TutorialStagesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(Component.empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

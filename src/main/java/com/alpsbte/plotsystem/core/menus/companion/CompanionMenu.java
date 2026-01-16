@@ -1,40 +1,16 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.menus.companion;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.BuilderUtilitiesMenu;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.menus.SettingsMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.core.system.Difficulty;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
@@ -44,13 +20,14 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.CustomHeads;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,13 +36,17 @@ import java.util.function.Consumer;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CompanionMenu {
-    private CompanionMenu() {}
+    private CompanionMenu() {throw new IllegalStateException("Utility class");}
+
     public static boolean hasContinentView() {
-        return Arrays.stream(Continent.values()).map(continent -> Country.getCountries(continent).size()).filter(count -> count > 0).count() > 1;
+        return Arrays.stream(Continent.values()).map(continent -> DataProvider.COUNTRY.getCountriesByContinent(continent).size()).filter(count -> count > 0).count() > 1;
     }
 
     /**
@@ -77,7 +58,7 @@ public class CompanionMenu {
         if (hasContinentView()) {
             new ContinentMenu(player);
         } else {
-            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !Country.getCountries(c).isEmpty()).findFirst();
+            Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !DataProvider.COUNTRY.getCountriesByContinent(c).isEmpty()).findFirst();
 
             if (continent.isEmpty()) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
@@ -96,7 +77,7 @@ public class CompanionMenu {
      * @param returnToMenu a lambda to call when needing to return to current menu
      * @return FooterItems indexed by slot number
      */
-    public static Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
+    public static @NotNull Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
         HashMap<Integer, FooterItem> items = new HashMap<>();
         // Set builder utilities menu item
         items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer)));
@@ -116,18 +97,13 @@ public class CompanionMenu {
 
                 final int i_ = i;
 
-                Plot plot = builder.getPlot(Slot.values()[i]);
-                items.put(startingSlot + 1 + i, new FooterItem(builder.getPlotMenuItem(plot, Slot.values()[i].ordinal(), player), (clickPlayer, clickInformation) -> {
+                Plot plot = builder.getSlot(Slot.values()[i]);
+                ItemStack slotItem = getPlotMenuItem(plot, i, player);
+                items.put(startingSlot + 1 + i, new FooterItem(slotItem, (clickPlayer, clickInformation) -> {
                     if (plot == null) return;
-                    try {
-                        new PlotActionsMenu(clickPlayer, builder.getPlot(Slot.values()[i_]));
-                    } catch (SQLException ex) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while opening the plot actions menu!"), ex);
-                    }
+                    new PlotActionsMenu(clickPlayer, builder.getSlot(Slot.values()[i_]));
                 }));
-            } catch (NullPointerException | SQLException ex) {
+            } catch (NullPointerException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while placing player slot items!"), ex);
                 items.put(startingSlot + 1 + i, new FooterItem(MenuItems.errorItem(player)));
             }
@@ -142,31 +118,34 @@ public class CompanionMenu {
         if (selectedPlotDifficulty != null) {
             switch (selectedPlotDifficulty) {
                 case EASY:
-                    item = AlpsHeadUtils.getCustomHead(CustomHeads.GREEN_CONCRETE.getId()); break;
+                    item = BaseItems.DIFFICULTY_EASY.getItem(); break;
                 case MEDIUM:
-                    item = AlpsHeadUtils.getCustomHead(CustomHeads.YELLOW_CONCRETE.getId()); break;
+                    item = BaseItems.DIFFICULTY_MEDIUM.getItem(); break;
                 case HARD:
-                    item = AlpsHeadUtils.getCustomHead(CustomHeads.RED_CONCRETE.getId()); break;
+                    item = BaseItems.DIFFICULTY_HARD.getItem(); break;
                 default:
                     break;
             }
-        } else item = AlpsHeadUtils.getCustomHead(CustomHeads.WHITE_CONCRETE.getId());
-
-        try {
-            return new ItemBuilder(item)
-                    .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY), AQUA).decoration(BOLD, true))
-                    .setLore(new LoreBuilder()
-                            .emptyLine()
-                            .addLines(selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty) : text(LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC), WHITE).decoration(BOLD, true),
-                                    selectedPlotDifficulty != null ? text(LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": ", GRAY).append(text("x" + Plot.getMultiplierByDifficulty(selectedPlotDifficulty), WHITE)) : empty())
-                            .emptyLine()
-                            .addLine(text(LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY), GRAY))
-                            .build())
-                    .build();
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            return MenuItems.errorItem(player);
         }
+
+        if (item == null) item = BaseItems.DIFFICULTY_AUTOMATIC.getItem();
+
+        Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyByEnum(selectedPlotDifficulty);
+        if (difficulty.isEmpty() && selectedPlotDifficulty != null) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("No database entry for difficulty " + selectedPlotDifficulty.name() + " was found!"));
+        }
+        double scoreMultiplier = difficulty.map(Difficulty::getMultiplier).orElse(0.0);
+
+        return new ItemBuilder(item)
+                .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY), AQUA).decoration(BOLD, true))
+                .setLore(new LoreBuilder()
+                        .emptyLine()
+                        .addLines(selectedPlotDifficulty != null ? Utils.ItemUtils.getFormattedDifficulty(selectedPlotDifficulty, player) : text(LangUtil.getInstance().get(player, LangPaths.Difficulty.AUTOMATIC), WHITE).decoration(BOLD, true),
+                                selectedPlotDifficulty != null ? text(LangUtil.getInstance().get(player, LangPaths.Difficulty.SCORE_MULTIPLIER) + ": ", GRAY).append(text("x" + scoreMultiplier, WHITE)) : empty())
+                        .emptyLine()
+                        .addLine(text(LangUtil.getInstance().get(player, LangPaths.MenuDescription.PLOT_DIFFICULTY), GRAY))
+                        .build())
+                .build();
     }
 
     /**
@@ -208,18 +187,38 @@ public class CompanionMenu {
             });
     }
 
-    public static class FooterItem {
-        public final ItemStack item;
-        public final org.ipvp.canvas.slot.Slot.ClickHandler clickHandler;
+    public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) {
+        String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
+        ItemStack baseItem = plot == null ? BaseItems.PLOT_SLOT_EMPTY.getItem().clone() : BaseItems.PLOT_SLOT_FILLED.getItem().clone();
+        baseItem.setAmount(1 + slotIndex);
+        ArrayList<TextComponent> lore;
 
-        FooterItem(ItemStack item, org.ipvp.canvas.slot.Slot.ClickHandler clickHandler) {
-            this.item = item;
-            this.clickHandler = clickHandler;
+        if (plot == null) {
+            TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);
+            lore = new LoreBuilder()
+                    .addLine(slotDescriptionComp)
+                    .build();
+        } else {
+            String plotIdText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.ID);
+            String plotCityText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.CITY);
+            String plotDifficultyText = LangUtil.getInstance().get(langPlayer, LangPaths.Plot.DIFFICULTY);
+            String statusText = LangUtil.getInstance().get(langPlayer, LangPaths.Database.STATUS + "." + plot.getStatus().name() + ".name");
+
+            TextComponent statusComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.Plot.STATUS) + ": ", GOLD)
+                    .decoration(BOLD, true)
+                    .append(text(statusText, GRAY));
+            lore = new LoreBuilder()
+                    .addLines(text(plotIdText + ": ", GRAY).append(text(plot.getId(), WHITE)),
+                            text(plotCityText + ": ", GRAY).append(text(plot.getCityProject().getName(langPlayer), WHITE)),
+                            text(plotDifficultyText + ": ", GRAY).append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)),
+                            empty(),
+                            statusComp)
+                    .build();
         }
 
-        FooterItem(ItemStack item) {
-            this.item = item;
-            this.clickHandler = null;
-        }
+        return new ItemBuilder(baseItem)
+                .setName(text(nameText, GOLD).decoration(BOLD, true))
+                .setLore(lore)
+                .build();
     }
 }

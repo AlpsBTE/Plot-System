@@ -1,33 +1,10 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -35,14 +12,12 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
-import java.util.Objects;
-
-import static net.kyori.adventure.text.Component.text;
+import java.util.concurrent.CompletableFuture;
 
 public class CMD_Plot_Abandon extends SubCommand {
 
@@ -52,42 +27,52 @@ public class CMD_Plot_Abandon extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        @Nullable Player player = getPlayer(sender);
-        try {
+        CompletableFuture.runAsync(() -> {
             Plot plot;
+            if (!(sender instanceof Player player)) {
+                sendInfo(sender);
+                return;
+            }
+
             if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                int plotID = Integer.parseInt(args[0]);
-                if (PlotUtils.plotExists(plotID)) {
-                    plot = new Plot(plotID);
-                } else {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                    return;
-                }
-            } else if (player != null && PlotUtils.isPlotWorld(player.getWorld())) {
+                plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
+            } else if (PlotUtils.isPlotWorld(player.getWorld())) {
                 AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished);
-                if (p instanceof Plot) {
-                    plot = (Plot) p;
-                } else {
+                if (!(p instanceof Plot)) {
                     sendInfo(sender);
                     return;
                 }
+                plot = (Plot) p;
             } else {
                 sendInfo(sender);
                 return;
             }
 
-            if (Objects.requireNonNull(plot).getStatus() == Status.unfinished) {
-                if (Utils.isOwnerOrReviewer(sender, player, plot) && PlotUtils.Actions.abandonPlot(plot)) {
-                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getID() + "")));
-                    if (player != null) player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
-                }
-            } else {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
+            if (plot == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                return;
             }
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+            if (!Utils.isOwnerOrReviewer(sender, player, plot)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLAYER_IS_NOT_ALLOWED)));
+                return;
+            }
+            if (plot.getStatus() != Status.unfinished) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.CAN_ONLY_ABANDON_UNFINISHED_PLOTS)));
+                return;
+            }
+
+            if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_MODIFY_LEGACY_PLOT)));
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (PlotUtils.Actions.abandonPlot(plot)) {
+                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getId() + "")));
+                    player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
+                }
+            });
+        });
     }
 
     @Override

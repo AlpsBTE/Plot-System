@@ -1,42 +1,13 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks;
 
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
-import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractTask {
-    @FunctionalInterface
-    public interface TaskAction<T> {
-        void performAction(T t);
-    }
-
     @FunctionalInterface
     public interface BiTaskAction<T, R> {
         void performAction(T t, R r);
@@ -54,7 +25,7 @@ public abstract class AbstractTask {
      *
      * @param player The player who is doing the task.
      */
-    public AbstractTask(Player player) {
+    protected AbstractTask(Player player) {
         this(player, null, 0);
     }
 
@@ -65,7 +36,7 @@ public abstract class AbstractTask {
      * @param assignmentMessage The message which is displayed in the action bar and chat.
      * @param totalAssignments  The total assignment progress which is needed to complete the task.
      */
-    public AbstractTask(Player player, Component assignmentMessage, int totalAssignments) {
+    protected AbstractTask(Player player, Component assignmentMessage, int totalAssignments) {
         this.player = player;
         this.assignmentMessage = assignmentMessage;
         this.totalAssignments = totalAssignments;

@@ -1,30 +1,5 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialStagesMenu;
 import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
@@ -33,18 +8,14 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.sql.SQLException;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Companion extends BaseCommand {
     @Override
@@ -54,20 +25,19 @@ public class CMD_Companion extends BaseCommand {
             return true;
         }
 
-        if (getPlayer(sender) == null) return true;
+        Player player = getPlayer(sender);
 
-        try {
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            Tutorial tutorial = AbstractTutorial.getActiveTutorial(getPlayer(sender).getUniqueId());
-            if (tutorial != null) {
-                new TutorialStagesMenu(getPlayer(sender), tutorial.getId());
-            } else if (config.getBoolean(ConfigPaths.TUTORIAL_ENABLE) && config.getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) &&
-                    !TutorialPlot.isPlotCompleted(getPlayer(sender), TutorialCategory.BEGINNER.getId()) && getPlayer(sender).hasPermission("plotsystem.tutorial")) {
-                new TutorialsMenu(getPlayer(sender));
-            } else CompanionMenu.open((Player) sender);
-        } catch (SQLException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        if (player == null) {
+            sender.sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            return true;
         }
+
+        Tutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
+        if (tutorial != null) {
+            new TutorialStagesMenu(player, tutorial.getId());
+        } else if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId()) && player.hasPermission("plotsystem.tutorial")) {
+            new TutorialsMenu(player);
+        } else CompanionMenu.open((Player) sender);
 
         return true;
     }

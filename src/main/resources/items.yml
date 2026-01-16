@@ -1,3 +1,10 @@
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/Plot-System/wiki/items.yml
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# -----------------------------------------------------
 companion-item:
   material: NETHER_STAR
   modelId: ''
@@ -18,12 +25,52 @@ plot-unreviewed:
 plot-completed:
   material: GREEN_WOOL
   modelId: ''
+plot-type:
+  material: head(4159)
+  modelId: ''
+plot-focus-mode:
+  material: head(38199)
+  modelId: ''
+plot-city-inspiration-mode:
+  material: head(38094)
+  modelId: ''
+plot-slot-empty:
+  material: MAP
+  modelId: ''
+plot-slot-filled:
+  material: FILLED_MAP
+  modelId: ''
+plot-submit:
+  material: NAME_TAG
+  modelId: ''
+plot-undo-submit:
+  material: FIRE_CHARGE
+  modelId: ''
+plot-abandon:
+  material: BARRIER
+  modelId: ''
+plot-teleport:
+  material: COMPASS
+  modelId: ''
+
 
 menu-error:
   material: BARRIER
   modelId: ''
 menu-close:
   material: BARRIER
+  modelId: ''
+menu-back:
+  material: head(9226)
+  modelId: ''
+menu-next:
+  material: head(9223)
+  modelId: ''
+menu-add:
+  material: head(9237)
+  modelId: ''
+menu-remove:
+  material: head(9243)
   modelId: ''
 
 review-item:
@@ -35,11 +82,14 @@ review-accuracy:
 review-block-palette:
   material: PAINTING
   modelId: ''
-review-detailing:
-  material: ENDER_EYE
+review-toggle-optional:
+  material: FIREWORK_STAR
   modelId: ''
-review-technique:
-  material: WOODEN_AXE
+review-toggle-required:
+  material: FIRE_CHARGE
+  modelId: ''
+review-toggle-checked:
+  material: SLIME_BALL
   modelId: ''
 review-point-zero:
   material: LIGHT_GRAY_WOOL
@@ -60,20 +110,57 @@ review-point-five:
   material: LIME_WOOL
   modelId: ''
 review-submit:
-  material: GREEN_CONCRETE
+  material: FIREWORK_ROCKET
   modelId: ''
 review-cancel:
   material: RED_CONCRETE
   modelId: ''
+review-info:
+  material: head(46488)
+  modelId: ''
 review-info-plot:
   material: MAP
   modelId: ''
+review-feedback:
+  material: WRITABLE_BOOK
+  modelId: ''
+review-score:
+  material: NETHER_STAR
+  modelId: ''
 
+builder-utilities:
+  material: GOLDEN_AXE
+  modelId: ''
+filter-item:
+  material: HOPPER
+  modelId: ''
 settings-item:
   material: COMPARATOR
   modelId: ''
 random-plot-item:
-  material: COMPARATOR
+  material: MAGMA_CREAM
   modelId: ''
+
+difficulty-automatic:
+  material: head(8614)
+  modelId: ''
+difficulty-easy:
+  material: head(8621)
+  modelId: ''
+difficulty-medium:
+  material: head(8613)
+  modelId: ''
+difficulty-hard:
+  material: head(8616)
+  modelId: ''
+
+tutorial-item:
+  material: head(24180)
+  modelId: ''
+
+language-item:
+  material: head(49973)
+  modelId: ''
+
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

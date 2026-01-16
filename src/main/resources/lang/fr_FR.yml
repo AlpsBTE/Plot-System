@@ -2,8 +2,9 @@
 #|            Plot System - by Alps BTE
 #-----------------------------------------------------
 #| [Github Repo] https://github.com/AlpsBTE/PlotSystem
-#| [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-#| [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
 #|
 #| [Formatting] Use %newline% for a newline
 #| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
@@ -68,6 +69,7 @@ difficulty:
 menu-title:
   close: 'Fermer'
   back: 'Retour'
+  continue: 'Continue'
   next-page: 'Page Suivante'
   previous-page: 'Page Précédente'
   error: 'Erreur'
@@ -157,15 +159,16 @@ review:
   feedback: "Commentaires"
   reviewer: "Relecteur"
   player-language: "Langage du joueur"
+  no-feedback: "No feedback"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: "Toggle points"
+  total-points: "Total points"
   criteria:
     accuracy: "Précision"
     accuracy-desc: "Quelle est la précision du bâtiment?%newline%%newline%- Ressemble à RL%newline%- Contours corrects%newline%- Hauteur correcte%newline%- Est terminé"
     block-palette: "palette de blocs"
     block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?%newline%%newline%- Choix des couleurs/textures des blocs%newline%- Blocs aléatoires"
-    detailing: "Détail"
-    detailing-desc: "Combien de détails le bâtiment a-t-il?%newline%%newline%- Détails du toit%newline%- Détails sur les façades%newline%- Têtes et bannières"
-    technique: "Technique"
-    technique-desc: "Quelles techniques de construction ont été utilisées et à quel point sont-elles créatives?%newline%%newline%- World-Edit%newline%- Blocs spéciaux"
 #-----------------------------------------------------
 #| Notes
 #-----------------------------------------------------
@@ -175,6 +178,11 @@ note:
   wont-be-able-continue-building: "Vous ne pourrez plus continuer à construire sur ce terrain!"
   score-will-be-split: "Le score sera partagé entre tous les membres lors de la révision!"
   player-has-to-be-online: "Le joueur doit être en ligne!"
+  optional: "Optional"
+  required: "Required"
+  criteria-fulfilled: "Fulfilled"
+  criteria-not-fulfilled: "Not fulfilled"
+  legacy: "LEGACY"
   action:
     read: 'Lire'
     read-more: 'En savoir plus'
@@ -197,6 +205,8 @@ note:
     click-to-show-plots: "§6Cliquez ici §apour afficher vos tracés..."
     click-to-play-with-friends: "§7Vous voulez jouer avec vos amis? §6Cliquez ici..."
     tutorial-show-stages: 'Montrer les étapes'
+    click-to-open-plots-menu: 'Cliquez pour ouvrir le menu des parcelles...'
+    click-to-toggle: "Click to toggle..."
 #-----------------------------------------------------
 #| Messages
 #-----------------------------------------------------
@@ -209,7 +219,7 @@ message:
     plot-marked-as-reviewed: "§aLe terrain §6#{0}§a par §6{1}§a a été marqué comme révisé!"
     plot-rejected: "§aLe tracé §6#{0}§a par §6{1}§a a été rejeté!"
     undid-submission: "§aUndid soumission du complot §6#{0}§a!"
-    undid-review: "§aChangement les commentaires de la parcelle§6#{0}§a par §6#{1}§a!"
+    undid-review: "§aChangement les commentaires de la parcelle§6#{0}§a par §6{1}§a!"
     reviewed-plot: "§aVotre parcelle §6#{0}§a a été revue!"
     unreviewed-plot: "§aIl y a §6{0}§a un complot non révisé!"
     unreviewed-plots: "§aIl y a §6{0}§a des parcelles non revues!"
@@ -221,7 +231,10 @@ message:
     removed-plot-member: "§aSupprimé §6{0}§a du tracé §6#{1}§a!"
     left-plot: "§aTracé de gauche §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lATTENTION: §cCette parcelle sera automatiquement abandonnée!"
-    plot-will-get-rejected-warning: "§c§lATTENTION: §cCette parcelle sera rejetée!"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "§aEnregistrement de l'intrigue..."
     creating-plot: "§aCréation d'un nouveau tracé..."
     created-new-plot: "§aCréé un nouveau tracé§a pour §6{0}§a!"
@@ -247,6 +260,8 @@ message:
     cannot-undo-review: "Vous ne pouvez pas annuler une révision que vous n'avez pas révisée vous-même!"
     cannot-send-feedback: "Vous ne pouvez pas envoyer de commentaires à un tracé que vous n'avez pas révisé vous-même!"
     cannot-review-own-plot: "Vous ne pouvez pas réviser votre propre intrigue!"
+    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
+    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
     player-has-no-permissions: "Vous n'avez pas la permission de faire ça!"
     player-has-no-invitations: "Vous n'avez aucune invitation!"
     player-is-not-allowed: "Vous n'êtes pas autorisé à faire ça!"
@@ -260,14 +275,15 @@ message:
     player-invite-to-rejected: '{0} a rejeté votre invitation.'
     player-needs-to-be-on-plot: "Vous devez être sur un terrain pour pouvoir l'utiliser!"
     player-needs-higher-score: "Vous avez besoin d'un score plus élevé pour intégrer ce niveau de difficulté."
+    player-missing-tutorial: "Le joueur doit d'abord terminer le tutoriel pour être intégré à l'intrigue!"
     error-occurred: "Une erreur s'est produite! Veuillez réessayer!"
-    command-disabled: "Cette commande est désactivée!"
     no-plots-left: "Ce projet de ville n'a plus de parcelles restantes. Veuillez sélectionner un autre projet."
     please-wait: "Veuillez patienter quelques secondes avant de créer un nouveau tracé!"
     all-slots-occupied: "Tous vos slots sont occupés! Veuillez terminer vos tracés actuels avant d'en créer un nouveau."
     chat-input-expired: "La saisie du chat a expiré."
     tutorial-disabled: 'Les tutoriels sont désactivés sur ce serveur.'
     tutorial-already-running: "Vous avez déjà un tutoriel en cours ! Terminez-le avant d'en commencer un nouveau."
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "Quotidien"
@@ -388,5 +404,46 @@ tutorials:
         - 'Bonne construction ! ☺'
       stage-10-tasks:
         - 'Lisez tous les conseils sur les parcelles et marquez-les comme lus.'
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Example City'
+      description: 'Some description'
+  country:
+    AT:
+      name: 'Austria'
+    CH:
+      name: 'Switzerland'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Easy'
+    medium:
+      name: 'Medium'
+    hard:
+      name: 'Hard'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
+
 #NOTE: Do not change
-config-version: 2.3
+config-version: 2.5

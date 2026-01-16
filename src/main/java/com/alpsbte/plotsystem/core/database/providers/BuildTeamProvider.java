@@ -1,0 +1,145 @@
+package com.alpsbte.plotsystem.core.database.providers;
+
+import com.alpsbte.alpslib.io.database.SqlHelper;
+import com.alpsbte.plotsystem.core.system.BuildTeam;
+import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.CityProject;
+import com.alpsbte.plotsystem.utils.Utils;
+import org.jetbrains.annotations.NotNull;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public class BuildTeamProvider {
+    private static final List<BuildTeam> BUILD_TEAMS = new ArrayList<>();
+    private final CityProjectProvider cityProjectProvider;
+
+    public BuildTeamProvider(BuilderProvider builderProvider, CityProjectProvider cityProjectProvider) {
+        this.cityProjectProvider = cityProjectProvider;
+
+        String qBuildTeams = "SELECT build_team_id, name FROM build_team;";
+        // cache all build teams
+        Utils.handleSqlException(() -> SqlHelper.runQuery(qBuildTeams, ps -> {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int buildTeamId = rs.getInt(1);
+                List<CityProject> cityProjects = cityProjectProvider.getCityProjectsByBuildTeam(buildTeamId);
+                List<Builder> reviewers = builderProvider.getReviewersByBuildTeam(buildTeamId);
+                BUILD_TEAMS.add(new BuildTeam(buildTeamId, rs.getString(2), cityProjects, reviewers));
+            }
+        }));
+    }
+
+    public Optional<BuildTeam> getBuildTeam(int id) {
+        return BUILD_TEAMS.stream().filter(b -> b.getId() == id).findFirst();
+    }
+
+    public List<BuildTeam> getBuildTeamsByReviewer(@NotNull UUID reviewerUUID) {
+        var l = BUILD_TEAMS.stream()
+                .filter(b -> b.getReviewers().stream()
+                        .anyMatch(r -> r.getUUID().equals(reviewerUUID)))
+                .toList();
+        if (!l.isEmpty()) return l;
+
+        String qIdByUuid = "SELECT build_team_id FROM build_team_has_reviewer WHERE uuid = ?;";
+        return Utils.handleSqlException(new ArrayList<>(), () -> SqlHelper.runQuery(qIdByUuid, ps -> {
+            ps.setString(1, reviewerUUID.toString());
+            ResultSet rs = ps.executeQuery();
+            List<BuildTeam> buildTeams = new ArrayList<>();
+            while (rs.next()) {
+                Optional<BuildTeam> buildTeam = getBuildTeam(rs.getInt(1));
+                if (buildTeam.isEmpty()) continue;
+                buildTeams.add(buildTeam.get());
+            }
+            return buildTeams;
+        }));
+    }
+
+    public List<BuildTeam> getBuildTeams() {
+        return BUILD_TEAMS;
+    }
+
+    public boolean addBuildTeam(String name) {
+        if (BUILD_TEAMS.stream().anyMatch(b -> b.getName().equals(name))) return false;
+
+        String qInsert = "INSERT INTO build_team (name) VALUES (?);";
+        String qByName = "SELECT build_team_id FROM build_team WHERE name = ?;";
+        // get the last inserted build team id
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
+            ps.setString(1, name);
+            boolean result = ps.executeUpdate() > 0;
+
+            if (result) {
+                Utils.handleSqlException(() -> SqlHelper.runQuery(qByName, ps.getConnection(), ps2 -> {
+                    ps2.setString(1, name);
+                    ResultSet rs = ps2.executeQuery();
+                    rs.next(); // get the last inserted build team id
+                    BUILD_TEAMS.add(new BuildTeam(rs.getInt(1), name));
+                    return null; // no need to return anything
+                }));
+            }
+            return result;
+        })));
+    }
+
+    public boolean removeBuildTeam(int id) {
+        Optional<BuildTeam> cachedBuildTeam = getBuildTeam(id);
+        if (cachedBuildTeam.isEmpty()) return false;
+
+        String qDeleteById = "DELETE FROM build_team WHERE build_team_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteById, ps -> {
+            ps.setInt(1, id);
+            boolean result = ps.executeUpdate() > 0;
+            if (result) BUILD_TEAMS.remove(cachedBuildTeam.get());
+            return result;
+        })));
+    }
+
+    public boolean setBuildTeamName(int id, String newName) {
+        String qSetNameById = "UPDATE build_team SET name = ? WHERE build_team_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetNameById, ps -> {
+            ps.setString(1, newName);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        })));
+    }
+
+    public boolean addReviewer(int id, String reviewerUUID) {
+        String qInsertReviewer = "INSERT INTO build_team_has_reviewer (build_team_id, uuid) VALUES (?, ?);";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runInsertQuery(qInsertReviewer, ps -> {
+            ps.setInt(1, id);
+            ps.setString(2, reviewerUUID);
+            return ps.executeUpdate() > 0;
+        })));
+    }
+
+    public boolean removeReviewer(int id, String reviewerUUID) {
+        String qDeleteReviewer = "DELETE FROM build_team_has_reviewer WHERE build_team_id = ? AND uuid = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qDeleteReviewer, ps -> {
+            ps.setInt(1, id);
+            ps.setString(2, reviewerUUID);
+            return ps.executeUpdate() > 0;
+        })));
+    }
+
+    public boolean isAnyReviewer(@NotNull UUID reviewerUUID) {
+        return BUILD_TEAMS.stream()
+                .anyMatch(bt -> bt.getReviewers().stream()
+                        .anyMatch(r -> r.getUUID().equals(reviewerUUID))
+                );
+    }
+
+    public List<CityProject> getReviewerCities(UUID reviewerUUID) {
+        List<BuildTeam> buildTeams = BUILD_TEAMS.stream().filter(b
+                -> b.getReviewers().stream().anyMatch(r -> r.getUUID().equals(reviewerUUID))).toList();
+        List<CityProject> cities = new ArrayList<>();
+
+        for (BuildTeam buildTeam : buildTeams) {
+            cities.addAll(cityProjectProvider.getCityProjectsByBuildTeam(buildTeam.getId()));
+        }
+        return cities;
+    }
+}

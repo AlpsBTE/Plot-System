@@ -2,8 +2,9 @@
 #|            Plot System - by Alps BTE
 #-----------------------------------------------------
 #| [Github Repo] https://github.com/AlpsBTE/PlotSystem
-#| [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-#| [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
 #|
 #| [Formatting] Use %newline% for a newline
 #| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
@@ -68,6 +69,7 @@ difficulty:
 menu-title:
   close: 'Schließen'
   back: 'Zurück'
+  continue: 'Weiter'
   next-page: 'Nächste Seite'
   previous-page: 'Vorherige Seite'
   error: 'Fehler'
@@ -157,15 +159,17 @@ review:
   feedback: "Feedback"
   reviewer: "Reviewer"
   player-language: "Spielersprache"
+  no-feedback: "Kein Feedback"
+  accuracy-points: "Genauigkeit Punkte"
+  block-palette-points: "Block Palette Punkte"
+  toggle-points: "Schalter Punkte"
+  total-points: "Gesamtpunkte"
+  abandoned-in-days: "§6Wird in §6{0} Tagen gelöscht"
   criteria:
     accuracy: "Genauigkeit"
     accuracy-desc: "Wie akkurat ist das Gebäude?%newline%%newline%- Sieht aus wie in RL%newline%- Korrekte Umrisse%newline%- Korrekte Höhen%newline%- Ist vollständig"
     block-palette: "Block-Palette"
     block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?%newline%%newline%- Wahl der Blockfarben/Texturen%newline%- Randomisierte Blöcke"
-    detailing: "Detaillierung"
-    detailing-desc: "Wie viele Details hat das Gebäude?%newline%%newline%- Dachdetails%newline%- Details an den Fassaden%newline%- Köpfe und Banner"
-    technique: "Technik"
-    technique-desc: "Welche Bautechniken wurden verwendet und wie kreativ sind sie?%newline%%newline%- World-Edit%newline%- Spezialblöcke"
 #-----------------------------------------------------
 #| Notes
 #-----------------------------------------------------
@@ -175,6 +179,11 @@ note:
   wont-be-able-continue-building: "Du wirst auf diesem Plot nicht weiterbauen können!"
   score-will-be-split: "Die Punkte werden bei der Bewertung auf alle Mitglieder aufgeteilt!"
   player-has-to-be-online: "Spieler muss online sein!"
+  optional: "Optional"
+  required: "Erforderlich"
+  criteria-fulfilled: "Erfüllt"
+  criteria-not-fulfilled: "Nicht erfüllt"
+  legacy: "LEGACY"
   action:
     read: 'Gelesen'
     read-more: 'Mehr lesen'
@@ -197,6 +206,8 @@ note:
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
     tutorial-show-stages: 'Stages Anzeigen'
+    click-to-open-plots-menu: 'Klicke hier, um das Plot Menü zu öffnen...'
+    click-to-toggle: "Zum Umschalten klicken..."
 #-----------------------------------------------------
 #| Messages
 #-----------------------------------------------------
@@ -209,7 +220,7 @@ message:
     plot-marked-as-reviewed: "§aPlot §6#{0}§a von §6{1}§a wurde als geprüft markiert!"
     plot-rejected: "§aPlot §6#{0}§a von §6{1}§a wurde abgelehnt!"
     undid-submission: "§aDie Einreichung des Plots §6#{0}§a wurde rückgängig gemacht!"
-    undid-review: "§aDie Bewertung des Plots §6#{0}§a von §6#{1}§a wurde rückgängig gemacht!"
+    undid-review: "§aDie Bewertung des Plots §6#{0}§a von §6{1}§a wurde rückgängig gemacht!"
     reviewed-plot: "§aDein Plot §6#{0}§a wurde bewertet!"
     unreviewed-plot: "§aEs gibt §6{0}§a unbewerteten Plot!"
     unreviewed-plots: "§aEs gibt §6{0}§a unbewertete Plots!"
@@ -221,7 +232,10 @@ message:
     removed-plot-member: "§a§6{0}§a wurde vom Plot entfernt §6#{1}§a!"
     left-plot: "§aVerlasse Plot §6#{0}§a!"
     plot-will-get-abandoned-warning: "§c§lWARNING: §cDieser Plot wird automatisch aufgelassen werden!"
-    plot-will-get-rejected-warning: "§c§lWARNING: §cDieser Plot wird abgelehnt werden!"
+    plot-will-be-rejected: "Plot wird abgelehnt!"
+    plot-will-be-accepted: "Plot wird akzeptiert"
+    plots-reviewed-singular: "{0} Plot wurde bewertet!"
+    plots-reviewed-plural: "{0} Plots wurden bewertet!"
     saving-plot: "§aSpeichere Plot..."
     creating-plot: "§aErstelle neuen Plot..."
     created-new-plot: "§aEin neuer Plot§a wurde für §6{0}§a erstellt!"
@@ -243,10 +257,12 @@ message:
     can-only-submit-unfinished-plots: "Du kannst nur unfertige Plots abgeben!"
     can-only-undo-submissions-unreviewed-plots: "Du kannst nur Einreichungen von unbewerteten Plots rückgängig machen!"
     can-only-manage-members-unfinished-plots: "Du kannst nur Mitglieder von unfertigen Plots verwalten!"
-    cannot-teleport-outside-plot: "Du kannst dich nicht ausserhalb des Plots teleportieren!"
+    cannot-teleport-outside-plot: "Du kannst dich nicht ausserhalb des Plotes teleportieren!"
     cannot-undo-review: "Du kannst eine Bewertung nicht rückgängig machen, wenn du sie nicht selbst erstellt hast!"
     cannot-send-feedback: "Du kannst auf einen Plot kein Feedback geben, wenn du ihn nicht selbst bewertet hast!"
     cannot-review-own-plot: "Du kannst deine eigenen Plots nicht bewerten!"
+    cannot-modify-legacy-plot: "Legacy-Plots können nicht geändert werden!"
+    cannot-load-legacy-plot: "Legacy-Plots können nicht geladen werden!"
     player-has-no-permissions: "Du hast keine Berechtigung dafür!"
     player-has-no-invitations: "Du hast keine offenen Einladungen!"
     player-is-not-allowed: "Du bist dazu nicht berechtigt!"
@@ -260,14 +276,15 @@ message:
     player-invite-to-rejected: '{0} hat deine Einladung abgelehnt.'
     player-needs-to-be-on-plot: "Um dies zu nutzen musst du auf einem Plot sein!"
     player-needs-higher-score: "Du benötigst einen höheren Punktestand, um in diesem Schwierigkeitsgrad zu bauen."
+    player-missing-tutorial: "Der Spieler muss zuerst das Tutorial abschließen, um hinzugefügt zu werden!"
     error-occurred: "Ein Fehler ist aufgetreten! Bitte versuche es erneut!"
-    command-disabled: "Dieser Befehl ist deaktiviert!"
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
     chat-input-expired: "Die Eingabe ist abgelaufen."
     tutorial-disabled: 'Tutorials sind auf diesem Server deaktiviert.'
     tutorial-already-running: "Du hast bereits ein Tutorial am Laufen! Schließe dieses ab, bevor du ein neues beginnst."
+    review-not-found: "Bewertung konnte nicht gefunden werden!"
 leaderboards:
   pages:
     DAILY: "Heute"
@@ -388,5 +405,45 @@ tutorials:
         - 'Frohes Bauen! ☺'
       stage-10-tasks:
         - 'Lies alle Tipps auf dem Plot und markiere sie als gelesen.'
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Beispiel Stadt'
+      description: 'Eine Beschreibung'
+  country:
+    AT:
+      name: 'Österreich'
+    CH:
+      name: 'Schweiz'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Einfach'
+    medium:
+      name: 'Normal'
+    hard:
+      name: 'Schwer'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unvollendet'
+    unreviewed:
+      name: 'Nicht bewertet'
+    completed:
+      name: 'Fertiggestellt'
+  toggle-criteria:
+    built_on_outlines: 'Auf Grundriss gebaut'
+    correct_height: 'Richtige Gebäudehöhe'
+    correct_facade_colour: 'Richtige Fassadenfarbe'
+    correct_roof_colour: 'Richtige Dachfarbe'
+    correct_roof_shape: 'Richtige Dachform'
+    correct_amount_windows_doors: 'Korrekte Anzahl von Fenstern und Türen'
+    correct_window_type: 'Richtige Verstrebungen'
+    windows_blacked_out: 'Alle Fenster verdunkelt'
 #NOTE: Do not change
-config-version: 2.2
+config-version: 2.5

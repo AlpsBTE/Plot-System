@@ -1,41 +1,22 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.StageTimeline;
-import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.TutorialWorld;
-import org.bukkit.*;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -79,7 +60,6 @@ public abstract class AbstractTutorial implements Tutorial {
     private static final long PLAYER_INTERACTION_COOLDOWN = 1000; // The cooldown for player interactions in milliseconds
 
 
-    protected final TutorialDataModel tutorialDataModel;
     private final int tutorialId;
     private final UUID playerUUID;
     private final Player player;
@@ -135,11 +115,10 @@ public abstract class AbstractTutorial implements Tutorial {
      */
     protected abstract void prepareStage(PrepareStageAction action);
 
-    protected AbstractTutorial(Player player, TutorialDataModel tutorialDataModel, int tutorialId, int stageId) {
+    protected AbstractTutorial(@NotNull Player player, int tutorialId, int stageId) {
         this.tutorialId = tutorialId;
         this.playerUUID = player.getUniqueId();
         this.player = player;
-        this.tutorialDataModel = tutorialDataModel;
 
         if (stageId < 0) stageId = 0;
         currentStageIndex = stageId - 1;
@@ -182,7 +161,7 @@ public abstract class AbstractTutorial implements Tutorial {
                 .filter(AbstractTutorialHologram.class::isInstance)
                 .filter(holo -> holo.isVisible(playerUUID))
                 .map(h -> (AbstractTutorialHologram) h)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -224,10 +203,8 @@ public abstract class AbstractTutorial implements Tutorial {
                 // Ge the timeline of the current stage
                 stageTimeline = currentStage.getTimeline();
 
-                prepareStage(() -> {
-                    // Start tasks timeline
-                    stageTimeline.StartTimeline();
-                });
+                // Start tasks timeline
+                prepareStage(stageTimeline::StartTimeline);
             } catch (Exception ex) {
                 onException(ex);
             }
@@ -248,6 +225,7 @@ public abstract class AbstractTutorial implements Tutorial {
         currentWorldIndex = tutorialWorldIndex;
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
+        if (world == null) return;
         player.teleport(world.getPlayerSpawnLocation());
         if (npc.getNpc() != null) {
             npc.move(player, world.getNpcSpawnLocation());
@@ -271,7 +249,7 @@ public abstract class AbstractTutorial implements Tutorial {
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while processing tutorial!"), ex);
 
         // Send player back to hub after 3 seconds if an error occurred
-        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20 * 3);
+        Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> onTutorialStop(player.getUniqueId()), 20L * 3);
     }
 
     /**
@@ -282,16 +260,6 @@ public abstract class AbstractTutorial implements Tutorial {
     public List<Class<? extends AbstractStage>> getStages() {
         return stages;
     }
-
-    /**
-     * Gets all registered worlds of the tutorial.
-     *
-     * @return list of all worlds
-     */
-    public List<TutorialWorld> getWorlds() {
-        return worlds;
-    }
-
 
     /**
      * Gets all active tutorials currently being run by a player.
@@ -336,7 +304,7 @@ public abstract class AbstractTutorial implements Tutorial {
      * @return true if the tutorial was loaded successfully, otherwise false
      */
     public static boolean loadTutorial(Player player, int tutorialId) {
-        return loadTutorialByStage(player, tutorialId, -1);
+        return loadTutorialByStage(player, tutorialId, 0);
     }
 
     /**

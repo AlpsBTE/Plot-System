@@ -2,12 +2,9 @@
 # |            Plot System - by Alps BTE
 # -----------------------------------------------------
 # | [Github Repo] https://github.com/AlpsBTE/PlotSystem
-# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# | [Documentation] https://github.com/AlpsBTE/Plot-System/wiki/config.yml
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
 # -----------------------------------------------------
-
-# Keep updated about newer versions
-check-for-updates: true
 
 # Enables special dev tools and features for development
 # NOTE: Do not change if you do not know what you are doing
@@ -21,19 +18,24 @@ spawn-world: default
 # Prevents beginners from generating difficult plots
 enable-score-requirement: true
 
-# Automatic synchronisation of schematic files from SFTP/FTP servers
-# [interval] -> default: 3600 seconds (1 hour)
-sync-ftp-files:
-  sff-enable: false
-  sync-interval: 3600
-
-# How many days of inactivity it will take before a claimed plot is automatically abandoned
+# How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
+
+# How many days of inactivity it will take before a rejected plots are automatically abandoned
+# Use -1 to use the normal inactivity-interval, -2 disables it
+rejected-inactivity-interval: -1
 
 # Enable or disable the Group System, that allows users to invite other Builders as members of their plot,
 # allowing them to build together.
 # NOTE: Score will be split by all participating members
 enable-group-support: true
+
+# After how many minutes a player receives a reminder to finish his plot.
+# Will be repeated every x minutes; It uses the unfinished-plots string, set it to -1 to disable
+unfinished-reminder-interval: 20
+
+# Disable the City Inspiration Mode (Beta) CIM completely for new plots (Temporary Config Setting)
+disable-city-inspiration-mode: false
 
 # -----------------------------------------------------
 # | Supported databases: MariaDB & MySQL
@@ -43,11 +45,15 @@ database:
   dbname: plotsystem
   username: plotsystem
   password: minecraft
+  max-lifetime: 1800000 # 30 minutes
+  connection-timeout: 30000 # 30 seconds
+  keepalive-time: 120000 # 2 minutes
+  maximum-pool-size: 10 # Maximum number of connections in the pool
 
 
 # -----------------------------------------------------
 # | Leaderboards: Shows top plot and build scores / Are placed in the spawn world
-# | NOTE: Requires the HolographicDisplays plugin to work
+# | NOTE: Requires the DecentHolograms plugin to work
 # -----------------------------------------------------
 holograms:
   # Displays the top 10 builders with the highest score
@@ -56,12 +62,6 @@ holograms:
     sl-x: 0
     sl-y: 0
     sl-z: 0
-  # Displays the top 10 players with the most completed plots
-  plots-leaderboard:
-    pl-enable: false
-    pl-x: 0
-    pl-y: 0
-    pl-z: 0
 
 # Switch score-leaderboard between different time stamps
 # [interval] -> default: 15 seconds
@@ -72,8 +72,6 @@ display-options:
   show-monthly: true
   show-yearly: false
   show-lifetime: false
-  action-bar-enable: true
-  action-bar-radius: 30
 
 
 # -----------------------------------------------------
@@ -106,4 +104,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 3.0
+config-version: 4.2

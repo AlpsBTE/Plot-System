@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
@@ -29,20 +5,22 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.ICommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-
-import static net.kyori.adventure.text.Component.text;
+import java.util.concurrent.CompletableFuture;
 
 public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
@@ -52,30 +30,45 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        try {
-            if (getPlayer(sender) != null) {
-                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                    int plotID = Integer.parseInt(args[0]);
-                    Plot plot;
-                    if (PlotUtils.plotExists(plotID) && (plot = new Plot(plotID)).getStatus() != Status.unclaimed) {
-                        plot.getWorld().teleportPlayer(getPlayer(sender));
-                    } else {
-                        if (sender.hasPermission("plotsystem.admin") && PlotUtils.plotExists(plotID)) {
-                            new DefaultPlotGenerator(new Plot(plotID), Builder.byUUID(getPlayer(sender).getUniqueId()));
-                        } else {
-                            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
-                        }
-                    }
-                } else {
-                    sendInfo(sender);
-                }
-            } else {
-                Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
-            }
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+        Player player = getPlayer(sender);
+        if (player == null) {
+            sender.sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            return;
         }
+
+        if (args.length == 0 || AlpsUtils.tryParseInt(args[0]) == null) {
+            sendInfo(sender);
+            return;
+        }
+
+        int plotID = Integer.parseInt(args[0]);
+
+        CompletableFuture.runAsync(() -> {
+            Plot plot = DataProvider.PLOT.getPlotById(plotID);
+
+            if (plot != null && plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_LOAD_LEGACY_PLOT)));
+                return;
+            }
+
+            if (plot == null || plot.getStatus() == Status.unclaimed) {
+                if (!sender.hasPermission("plotsystem.admin") || plot == null) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    return;
+                }
+
+                Builder builder = Builder.byUUID(player.getUniqueId());
+                if (builder == null) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
+                    return;
+                }
+
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new DefaultPlotGenerator(plot, builder));
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plot.getWorld().teleportPlayer(player));
+        });
     }
 
     @Override

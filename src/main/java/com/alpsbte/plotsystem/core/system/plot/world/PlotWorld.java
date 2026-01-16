@@ -1,38 +1,16 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.world;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -48,9 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Locale;
 
 import static net.kyori.adventure.text.Component.text;
@@ -60,7 +38,7 @@ public class PlotWorld implements IWorld {
     public static final int MAX_WORLD_HEIGHT = 256;
     public static final int MIN_WORLD_HEIGHT = 5;
 
-    private final MultiverseCoreApi mvCore = PlotSystem.DependencyManager.getMultiverseCore();
+    private final MultiverseCoreApi mvCore = DependencyManager.getMultiverseCore();
     private final String worldName;
     private final AbstractPlot plot;
 
@@ -86,8 +64,8 @@ public class PlotWorld implements IWorld {
                     .map(world -> mvCore.getWorldManager().deleteWorld(DeleteWorldOptions.world(world)).isSuccess())
                     .getOrElse(false)) && mvCore.getWorldManager().saveWorldsConfig().isSuccess()) {
                 try {
-                    File multiverseInventoriesConfig = new File(PlotSystem.DependencyManager.getMultiverseInventoriesConfigPath(getWorldName()));
-                    File worldGuardConfig = new File(PlotSystem.DependencyManager.getWorldGuardConfigPath(getWorldName()));
+                    File multiverseInventoriesConfig = new File(DependencyManager.getMultiverseInventoriesConfigPath(getWorldName()));
+                    File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(getWorldName()));
                     if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
                     if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
                 } catch (IOException ex) {
@@ -120,8 +98,7 @@ public class PlotWorld implements IWorld {
                     }
                 }
 
-                Bukkit.unloadWorld(getBukkitWorld(), true);
-                return !isWorldLoaded();
+                return Bukkit.unloadWorld(getBukkitWorld(), true);
             }
             return true;
         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not unload world " + worldName + " because it is not generated!"));
@@ -162,7 +139,11 @@ public class PlotWorld implements IWorld {
     @Override
     public int getPlotHeightCentered() throws IOException {
         if (plot != null) {
-            Clipboard clipboard = FaweAPI.load(plot.getOutlinesSchematic());
+            Clipboard clipboard;
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+            try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
+                clipboard = reader.read();
+            }
             if (clipboard != null) {
                 return (int) clipboard.getRegion().getCenter().y() - clipboard.getMinimumPoint().y();
             }
@@ -205,7 +186,7 @@ public class PlotWorld implements IWorld {
         return mvCore.getWorldManager().getWorld(worldName).isDefined();
     }
 
-    private ProtectedRegion getRegion(String regionName) {
+    private @Nullable ProtectedRegion getRegion(String regionName) {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         if (loadWorld()) {
             RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
@@ -225,7 +206,7 @@ public class PlotWorld implements IWorld {
      * @param worldName - the name of the world
      * @return - true if the world is a plot world
      */
-    public static boolean isOnePlotWorld(String worldName) {
+    public static boolean isOnePlotWorld(@NotNull String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("p-") || worldName.toLowerCase(Locale.ROOT).startsWith("t-");
     }
 
@@ -233,7 +214,7 @@ public class PlotWorld implements IWorld {
      * @param worldName - the name of the world
      * @return - true if the world is a city plot world
      */
-    public static boolean isCityPlotWorld(String worldName) {
+    public static boolean isCityPlotWorld(@NotNull String worldName) {
         return worldName.toLowerCase(Locale.ROOT).startsWith("c-");
     }
 
@@ -242,17 +223,14 @@ public class PlotWorld implements IWorld {
      * It won't return the CityPlotWorld class because there is no use case without a plot.
      *
      * @param worldName - name of the world
-     * @param <T>       - OnePlotWorld or PlotWorld
      * @return - plot world
      */
-    public static <T extends PlotWorld> T getPlotWorldByName(String worldName) {
+    public static @Nullable PlotWorld getPlotWorldByName(String worldName) {
         if (isOnePlotWorld(worldName) || isCityPlotWorld(worldName)) {
-            int id = Integer.parseInt(worldName.substring(2));
-            try {
-                return worldName.toLowerCase().startsWith("t-") ? new TutorialPlot(id).getWorld() : new Plot(id).getWorld();
-            } catch (SQLException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-            }
+            Integer id = AlpsUtils.tryParseInt(worldName.substring(2));
+            if (id == null) return new PlotWorld(worldName, null);
+            AbstractPlot plot = worldName.toLowerCase().startsWith("t-") ? DataProvider.TUTORIAL_PLOT.getById(id).orElse(null) : DataProvider.PLOT.getPlotById(id);
+            return plot == null ? null : plot.getWorld();
         }
         return null;
     }

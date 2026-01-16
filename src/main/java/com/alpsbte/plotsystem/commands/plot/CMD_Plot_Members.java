@@ -1,33 +1,10 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
+import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.PlotMemberMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
@@ -35,12 +12,14 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -52,45 +31,60 @@ public class CMD_Plot_Members extends SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        try {
-            if (getPlayer(sender) != null) {
-                Plot plot;
-                // Get Plot
-                if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                    //plot members <id>
-                    int plotID = Integer.parseInt(args[0]);
-                    if (PlotUtils.plotExists(plotID)) {
-                        plot = new Plot(plotID);
-                    } else {
+        Player player = getPlayer(sender);
+        if (player == null) {
+            Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
+            return;
+        }
+
+        CompletableFuture.runAsync(() -> {
+            Plot plot;
+
+            // Use tryParseInt result (avoids double parsing) and handle null safely
+            if (args.length > 0) {
+                Integer id = AlpsUtils.tryParseInt(args[0]);
+                if (id != null) {
+                    plot = DataProvider.PLOT.getPlotById(id);
+                    if (plot == null) {
                         sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot does not exist!"));
                         return;
                     }
-                } else if (PlotUtils.isPlotWorld(getPlayer(sender).getWorld())) {
-                    //plot members
-                    AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(getPlayer(sender).getUniqueId()), Status.unfinished, Status.unreviewed);
-                    if (p instanceof Plot) {
-                        plot = (Plot) p;
-                    } else {
-                        sendInfo(sender);
-                        return;
-                    }
+                } else {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Invalid plot ID."));
+                    return;
+                }
+            } else if (PlotUtils.isPlotWorld(player.getWorld())) {
+                AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed);
+                if (p instanceof Plot pl) {
+                    plot = pl;
                 } else {
                     sendInfo(sender);
                     return;
                 }
-
-                if (Objects.requireNonNull(plot).getPlotOwner().getUUID().equals(getPlayer(sender).getUniqueId()) || getPlayer(sender).hasPermission("plotsystem.admin")) {
-                    new PlotMemberMenu(plot, getPlayer(sender));
-                } else {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to manage this plot's members!"));
-                }
             } else {
-                Bukkit.getConsoleSender().sendMessage(text("This command can only be used as a player!", NamedTextColor.RED));
+                sendInfo(sender);
+                return;
             }
-        } catch (SQLException ex) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
-            PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
-        }
+
+            // Guard against missing owner data
+            if (plot.getPlotOwner() == null || plot.getPlotOwner().getUUID() == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot has no owner assigned. Contact an admin."));
+                return;
+            }
+
+            if (!plot.getPlotOwner().getUUID().equals(player.getUniqueId()) && !player.hasPermission("plotsystem.admin")) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to manage this plot's members!"));
+                return;
+            }
+            if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.CANNOT_MODIFY_LEGACY_PLOT)));
+                return;
+            }
+
+            // Switch to main thread for menu creation (GUI operations must be on main thread)
+            Plot finalPlot = plot;
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new PlotMemberMenu(finalPlot, player));
+        });
     }
 
     @Override
