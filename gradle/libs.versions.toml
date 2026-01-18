@@ -18,6 +18,7 @@ io-papermc-paper-paper-api = "1.21.8-R0.1-SNAPSHOT"
 li-cinnazeyy-langlibs-api = "1.5.1"
 org-mariadb-jdbc-mariadb-java-client = "2.7.4"
 com-intellectualsites-bom-bom-newest = "1.55" # Ref: https://github.com/IntellectualSites/bom
+asia-buildtheearth-asean-discord-discord-plotsystem-api = "1.2.3" # Ref: https://github.com/ASEAN-Build-The-Earth/discordsrv-plotsystem
 
 [libraries]
 com-alpsbte-alpslib-alpslib-hologram = { module = "com.alpsbte.alpslib:alpslib-hologram", version.ref = "com-alpsbte-alpslib-alpslib-hologram" }
@@ -36,3 +37,4 @@ io-papermc-paper-paper-api = { module = "io.papermc.paper:paper-api", version.re
 li-cinnazeyy-langlibs-api = { module = "li.cinnazeyy:LangLibs-API", version.ref = "li-cinnazeyy-langlibs-api" }
 org-mariadb-jdbc-mariadb-java-client = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "org-mariadb-jdbc-mariadb-java-client" }
 com-intellectualsites-bom-bom-newest = { module = "com.intellectualsites.bom:bom-newest", version.ref = "com-intellectualsites-bom-bom-newest" }
+asia-buildtheearth-asean-discord-discord-plotsystem-api = { module = "asia.buildtheearth.asean.discord:discord-plotsystem-api", version.ref = "asia-buildtheearth-asean-discord-discord-plotsystem-api" }
