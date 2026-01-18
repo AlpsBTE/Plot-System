@@ -105,6 +105,13 @@
             <version>2.9.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Discord Integration -->
+        <dependency>
+            <groupId>asia.buildtheearth.asean.discord</groupId>
+            <artifactId>discord-plotsystem-api</artifactId>
+            <version>1.2.3</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Alps Utils -->
         <dependency>
             <groupId>com.alpsbte.alpslib</groupId>

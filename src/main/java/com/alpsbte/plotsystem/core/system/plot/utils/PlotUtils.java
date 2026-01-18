@@ -14,6 +14,7 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
 import com.alpsbte.plotsystem.utils.DependencyManager;
+import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -74,6 +75,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -328,16 +331,36 @@ public final class PlotUtils {
         Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
             List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
             FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
+            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL, -2);
             long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
+            int inactivityNotificationDays = config.getInt(ConfigPaths.INACTIVITY_NOTIFICATION_DAYS, 0);
+            int inactivityNotificationTime = config.getInt(ConfigPaths.INACTIVITY_NOTIFICATION_TIME, 16);
             if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
+
+            // Determine if the current time is within the notification window.
+            // Run within a ±minute window around a set local time.
+            LocalTime now = LocalTime.now();
+            LocalTime start = LocalTime.of(inactivityNotificationTime, 0).minusMinutes(30);
+            LocalTime end = LocalTime.of(inactivityNotificationTime, 0).plusMinutes(30);
+            boolean inNotificationWindow = inactivityNotificationDays > 0 && !now.isBefore(start) && !now.isAfter(end);;
+
             for (Plot plot : plots) {
                 LocalDate lastActivity = plot.getLastActivity();
+
+                if(lastActivity == null) continue;
                 long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-                if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
+                LocalDate abandonDate = lastActivity.plusDays(interval);
+
+                // Check if today is within X days before the plot's abandon date
+                if(inNotificationWindow && LocalDate.now().isAfter(abandonDate.minusDays(inactivityNotificationDays))) {
+                    // Notify the plot's owner on discord
+                    DiscordUtil.getOpt(plot.getId()).ifPresent(event -> event.onPlotInactivity(abandonDate));
+                }
+
+                if (interval == -2 || abandonDate.isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (Actions.abandonPlot(plot)) {
+                    if (Actions.abandonPlot(plot, DiscordUtil.AbandonType.INACTIVE)) {
                         PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
                     } else {
                         PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
@@ -384,6 +407,8 @@ public final class PlotUtils {
                     plot.getPermissions().removeBuilderPerms(builder.getUUID());
                 }
             }
+
+            DiscordUtil.getOpt(plot.getId()).ifPresent(DiscordUtil.PlotEventAction::onPlotSubmit);
         }
 
         public static void undoSubmit(@NotNull Plot plot) {
@@ -397,7 +422,7 @@ public final class PlotUtils {
             }
         }
 
-        public static boolean abandonPlot(@NotNull AbstractPlot plot) {
+        public static boolean abandonPlot(@NotNull AbstractPlot plot, @NotNull DiscordUtil.AbandonType type) {
             try {
                 if (plot.getWorld() instanceof OnePlotWorld) {
                     if (plot.getWorld().isWorldGenerated()) {
@@ -431,6 +456,8 @@ public final class PlotUtils {
                         if (plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(false);
                     }
                 }
+                // Send to discord
+                DiscordUtil.getOpt(plot.getId()).ifPresent(event -> event.onPlotAbandon(type));
             } catch (IOException | WorldEditException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"), ex);
                 return false;
@@ -467,7 +494,7 @@ public final class PlotUtils {
         }
 
         public static boolean deletePlot(Plot plot) {
-            if (abandonPlot(plot)) {
+            if (abandonPlot(plot, DiscordUtil.AbandonType.COMMANDS)) {
                 CompletableFuture.runAsync(() -> {
                     if (DataProvider.PLOT.deletePlot(plot.getId())) return;
                     PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));

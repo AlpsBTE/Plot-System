@@ -6,7 +6,7 @@ description: "${description}"
 author: R3tuxn, Cinnazeyy & Zoriot
 depend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core,
           DecentHolograms, WorldGuard, HeadDatabase ]
-softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI ]
+softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI, DiscordPlotSystem ]
 
 commands:
   cancelchat:
