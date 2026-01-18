@@ -19,6 +19,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -129,10 +130,8 @@ public class PlotSystem extends JavaPlugin {
         }
 
         // Register discord Integration
-        org.bukkit.plugin.Plugin discordPlugin = plugin.getServer().getPluginManager().getPlugin("DiscordPlotSystem");
-        if(discordPlugin != null) {
-            DiscordUtil.init(discordPlugin);
-        }
+        org.bukkit.plugin.Plugin discordPlugin = DependencyManager.getDiscordIntegration();
+        if(discordPlugin != null) DiscordUtil.init(discordPlugin);
 
         pluginEnabled = true;
         getComponentLogger().info(text("Enabled Plot-System plugin.", DARK_GREEN));
