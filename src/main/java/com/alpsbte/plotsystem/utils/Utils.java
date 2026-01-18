@@ -1,42 +1,18 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.utils;
 
+import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldedit.math.BlockVector2;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -54,9 +30,13 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
@@ -64,7 +44,14 @@ import java.util.Set;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_RED;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class Utils {
@@ -72,6 +59,8 @@ public class Utils {
 
     private static Random random;
     public static final String EMPTY_MASK = "000000000";
+    public static final String FULL_MASK = "111111111";
+    public static final ItemStack DEFAULT_ITEM = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build();
 
     // Spawn Location
     public static Location getSpawnLocation() {
@@ -79,14 +68,14 @@ public class Utils {
 
         if (!Objects.requireNonNull(config.getString(ConfigPaths.SPAWN_WORLD)).equalsIgnoreCase("default")) {
             try {
-                MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
-                return spawnWorld.getSpawnLocation();
+                Option<LoadedMultiverseWorld> spawnWorld = DependencyManager.getMultiverseCore().getWorldManager().getLoadedWorld(config.getString(ConfigPaths.SPAWN_WORLD));
+                return spawnWorld.get().getSpawnLocation();
             } catch (Exception ignore) {
                 PlotSystem.getPlugin().getComponentLogger().warn(text("Could not find %s in multiverse config!"), ConfigPaths.SPAWN_WORLD);
             }
         }
 
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getSpawnWorld().getSpawnLocation();
+        return DependencyManager.getMultiverseCore().getWorldManager().getDefaultWorld().get().getSpawnLocation();
     }
 
     public static void updatePlayerInventorySlots(Player player) {
@@ -99,14 +88,13 @@ public class Utils {
         });
     }
 
-    // TODO: extract to alpsLibs?
-    public static ItemStack getConfiguredItem(String material, Object customModelData) {
+    public static ItemStack getConfiguredItem(@NotNull String material, Object customModelData) {
         ItemStack base;
         if (material.startsWith("head(") && material.endsWith(")")) {
             String headId = material.substring(material.indexOf("(") + 1, material.lastIndexOf(")"));
             base = AlpsHeadUtils.getCustomHead(headId);
         } else {
-            Material mat = Material.getMaterial(material);
+            Material mat = Material.getMaterial(material.toUpperCase(Locale.ROOT));
             base = new ItemStack(mat == null ? Material.BARRIER : mat);
         }
         ItemBuilder builder = new ItemBuilder(base);
@@ -231,6 +219,23 @@ public class Utils {
 
     public static void logSqlException(Exception ex) {
         PlotSystem.getPlugin().getComponentLogger().error(text("A SQL error occurred!"), ex);
+    }
+
+    public static <T> @Nullable T handleSqlException(@Nullable T defaultValue, @NotNull SqlHelper.SQLCheckedSupplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (SQLException e) {
+            logSqlException(e);
+            return defaultValue;
+        }
+    }
+
+    public static void handleSqlException(@NotNull SqlHelper.SQLRunnable supplier) {
+        try {
+            supplier.get();
+        } catch (SQLException e) {
+            logSqlException(e);
+        }
     }
 
     public static Random getRandom() {

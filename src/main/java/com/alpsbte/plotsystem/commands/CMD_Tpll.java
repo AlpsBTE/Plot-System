@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -43,6 +19,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -122,7 +99,7 @@ public class CMD_Tpll extends BaseCommand {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     int highestY = getHighestY(playerWorld, plotCoordinates);
 
-                    player.teleport(new Location(playerWorld, plotCoordinates[0], highestY + 1, plotCoordinates[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
+                    player.teleport(new Location(playerWorld, plotCoordinates[0], highestY + 1f, plotCoordinates[1], player.getLocation().getYaw(), player.getLocation().getPitch()));
 
                     DecimalFormat df = new DecimalFormat("##.#####");
                     df.setRoundingMode(RoundingMode.FLOOR);
@@ -131,22 +108,20 @@ public class CMD_Tpll extends BaseCommand {
             } catch (IOException | OutOfProjectionBoundsException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("A coordinate conversion error occurred!"), ex);
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.ERROR_OCCURRED)));
-            } catch (InterruptedException | ExecutionException ex) {
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                sendInfo(sender);
+            } catch (ExecutionException ex) {
                 sendInfo(sender);
             }
         });
         return true;
     }
 
-    private static int getHighestY(World playerWorld, double[] plotCoordinates) {
-        int highestY = 0;
+    private static int getHighestY(World playerWorld, double @NonNull [] plotCoordinates) {
         Location block = new Location(playerWorld, plotCoordinates[0], 0, plotCoordinates[1]);
-        for (int i = 1; i < 256; i++) {
-            block.add(0, 1, 0);
-            if (!block.getBlock().isEmpty()) {
-                highestY = i;
-            }
-        }
+        int highestY = playerWorld.getHighestBlockYAt(block);
+
         if (highestY < PlotWorld.MIN_WORLD_HEIGHT) {
             highestY = PlotWorld.MIN_WORLD_HEIGHT;
         }

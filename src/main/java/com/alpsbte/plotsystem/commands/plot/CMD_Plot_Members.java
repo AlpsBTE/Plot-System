@@ -1,30 +1,7 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -62,22 +39,36 @@ public class CMD_Plot_Members extends SubCommand {
 
         CompletableFuture.runAsync(() -> {
             Plot plot;
-            if (args.length > 0 && AlpsUtils.tryParseInt(args[0]) != null) {
-                plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
-                if (plot == null) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot does not exist!"));
+
+            // Use tryParseInt result (avoids double parsing) and handle null safely
+            if (args.length > 0) {
+                Integer id = AlpsUtils.tryParseInt(args[0]);
+                if (id != null) {
+                    plot = DataProvider.PLOT.getPlotById(id);
+                    if (plot == null) {
+                        sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot does not exist!"));
+                        return;
+                    }
+                } else {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("Invalid plot ID."));
                     return;
                 }
             } else if (PlotUtils.isPlotWorld(player.getWorld())) {
                 AbstractPlot p = PlotUtils.getCurrentPlot(Builder.byUUID(player.getUniqueId()), Status.unfinished, Status.unreviewed);
-                if (p instanceof Plot) {
-                    plot = (Plot) p;
+                if (p instanceof Plot pl) {
+                    plot = pl;
                 } else {
                     sendInfo(sender);
                     return;
                 }
             } else {
                 sendInfo(sender);
+                return;
+            }
+
+            // Guard against missing owner data
+            if (plot.getPlotOwner() == null || plot.getPlotOwner().getUUID() == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("This plot has no owner assigned. Contact an admin."));
                 return;
             }
 
@@ -90,7 +81,9 @@ public class CMD_Plot_Members extends SubCommand {
                 return;
             }
 
-            new PlotMemberMenu(plot, player);
+            // Switch to main thread for menu creation (GUI operations must be on main thread)
+            Plot finalPlot = plot;
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> new PlotMemberMenu(finalPlot, player));
         });
     }
 

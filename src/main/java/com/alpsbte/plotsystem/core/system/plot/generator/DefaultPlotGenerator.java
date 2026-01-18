@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -98,8 +74,9 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         if (plot instanceof Plot) {
             byte[] completedSchematic = ((Plot) plot).getCompletedSchematic();
             if (completedSchematic != null) {
+                PlotSystem.getPlugin().getComponentLogger().info("Found completed schematic, pasting only that.");
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, completedSchematic, world, true);
+                pasteSchematic(airMask, completedSchematic, world, false, true);
             } else super.generateOutlines();
         } else super.generateOutlines();
 
@@ -133,7 +110,7 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         super.onComplete(failed, false);
         if (failed) return;
 
-        if (!getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getID())) return;
+        if (!getBuilder().setSlot(getBuilder().getFreeSlot(), plot.getId())) return;
         if (!plot.setStatus(Status.unfinished)) return;
         if (!((Plot) plot).setPlotType(plotType)) return;
         if (!plot.setPlotOwner(getBuilder())) return;

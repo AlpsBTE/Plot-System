@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
@@ -102,7 +78,7 @@ public class CMD_Plot_Submit extends SubCommand {
                 PlotUtils.Actions.submitPlot(plot);
                 if (plotMembers.isEmpty()) {
                     // Plot was made alone
-                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), plot.getPlotOwner().getName());
+                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getId()), plot.getPlotOwner().getName());
                 } else {
                     // Plot was made in a group
                     StringBuilder sb = new StringBuilder(plot.getPlotOwner().getName() + ", ");
@@ -112,7 +88,7 @@ public class CMD_Plot_Submit extends SubCommand {
                                 plotMembers.get(i).getName() :
                                 plotMembers.get(i).getName() + ", ");
                     }
-                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getID()), sb.toString());
+                    langUtil.broadcast(LangPaths.Message.Info.FINISHED_PLOT, String.valueOf(plot.getId()), sb.toString());
                 }
 
                 Objects.requireNonNull(player).playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);

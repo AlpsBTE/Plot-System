@@ -2,8 +2,9 @@
 # |            Plot System - by Alps BTE
 # -----------------------------------------------------
 # | [Github Repo] https://github.com/AlpsBTE/PlotSystem
-# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
@@ -163,6 +164,7 @@ review:
   block-palette-points: "Block palette points"
   toggle-points: "Toggle points"
   total-points: "Total points"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
   criteria:
     accuracy: "Accuracy"
     accuracy-desc: "How accurate is the building?%newline%%newline%- Looks like in RL%newline%- Correct outlines%newline%- Correct height%newline%- Is completed"
@@ -276,7 +278,6 @@ message:
     player-needs-higher-score: "You need a higher score to build in this difficulty level."
     player-missing-tutorial: "The player must first complete the tutorial to be added to the plot!"
     error-occurred: "An error occurred! Please try again!"
-    command-disabled: "This command is disabled!"
     no-plots-left: "This city project does not have any more plots left. Please select another project."
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."

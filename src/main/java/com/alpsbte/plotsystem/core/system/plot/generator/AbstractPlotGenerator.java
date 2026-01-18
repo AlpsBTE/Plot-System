@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -33,7 +9,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.utils.DiscordUtil;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -93,7 +69,7 @@ public abstract class AbstractPlotGenerator {
      * @param plot    - plot which should be generated
      * @param builder - builder of the plot
      */
-    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
+    protected AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder) {
         this(plot, builder, builder.getPlotType());
     }
 
@@ -104,7 +80,7 @@ public abstract class AbstractPlotGenerator {
      * @param builder  - builder of the plot
      * @param plotType - type of the plot
      */
-    public AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) {
+    protected AbstractPlotGenerator(@NotNull AbstractPlot plot, @NotNull Builder builder, @NotNull PlotType plotType) {
         this(plot, builder, plotType, plot.getVersion() <= 2 || plotType.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld((Plot) plot));
     }
 
@@ -136,7 +112,7 @@ public abstract class AbstractPlotGenerator {
             this.onComplete(exception != null, false);
 
             if (exception != null) {
-                PlotUtils.Actions.abandonPlot(plot, DiscordUtil.AbandonType.SYSTEM);
+                PlotUtils.Actions.abandonPlot(plot);
                 onException(exception);
             }
         }
@@ -156,10 +132,10 @@ public abstract class AbstractPlotGenerator {
      */
     protected void generateOutlines() throws IOException {
         if (plotVersion >= 3 && plotType.hasEnvironment()) {
-            pasteSchematic(null, plot.getInitialSchematicBytes(), world, false);
+            pasteSchematic(null, plot.getInitialSchematicBytes(), world, false, false);
         } else {
             Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(world.getBukkitWorld()), BlockTypes.AIR);
-            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+            pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true, false);
         }
     }
 
@@ -186,7 +162,6 @@ public abstract class AbstractPlotGenerator {
             DefaultDomain owner = protectedBuildRegion.getOwners();
             owner.addPlayer(builder.getUUID());
             protectedBuildRegion.setOwners(owner);
-            protectedRegion.setOwners(owner);
 
             // Set protected build region permissions
             setBuildRegionPermissions(protectedBuildRegion);
@@ -208,10 +183,10 @@ public abstract class AbstractPlotGenerator {
      *
      * @param region build region
      */
-    protected void setBuildRegionPermissions(ProtectedRegion region) {
+    protected void setBuildRegionPermissions(@NotNull ProtectedRegion region) {
         region.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
         region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
-        if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+        if (DependencyManager.isWorldGuardExtraFlagsEnabled())
             region.setFlag(new StateFlag("worldedit", true, RegionGroup.OWNERS), StateFlag.State.ALLOW);
     }
 
@@ -220,9 +195,7 @@ public abstract class AbstractPlotGenerator {
      *
      * @param region plot region
      */
-    protected void setRegionPermissions(ProtectedRegion region) {
-        region.setFlag(Flags.BUILD, StateFlag.State.DENY);
-        region.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.ALL);
+    protected void setRegionPermissions(@NotNull ProtectedRegion region) {
         region.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
         region.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
@@ -237,7 +210,7 @@ public abstract class AbstractPlotGenerator {
      * @param config commands.yml config
      * @return list of blocked commands
      */
-    protected List<String> getBlockedCommands(FileConfiguration config) {
+    protected List<String> getBlockedCommands(@NotNull FileConfiguration config) {
         List<String> blockedCommands = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
         blockedCommands.removeIf(c -> c.equals("/cmd1"));
         return blockedCommands;
@@ -290,8 +263,9 @@ public abstract class AbstractPlotGenerator {
      * @param schematicFile - plot/environment schematic file
      * @param world         - world to paste in
      * @param clearArea     - clears the plot area with air before pasting
+     * @param offset        - offset for the paste operation
      */
-    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, PlotWorld world, boolean clearArea) throws IOException {
+    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
         // load world
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());
@@ -312,12 +286,20 @@ public abstract class AbstractPlotGenerator {
             clipboard = reader.read();
         }
 
+        int pasteY = world.getPlotHeight();
+
+        if (offset) {
+            BlockVector3 clipboardOrigin = clipboard.getOrigin();
+            if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
+            pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
+        }
+
         // paste schematic
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
             if (pasteMask != null) editSession.setMask(pasteMask);
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
-                    .to(BlockVector3.at(world.getPlot().getCenter().x(), world.getPlotHeight(), world.getPlot().getCenter().z()))
+                    .to(BlockVector3.at(world.getPlot().getCenter().x(), pasteY, world.getPlot().getCenter().z()))
                     .build();
             Operations.complete(clipboardHolder);
         }

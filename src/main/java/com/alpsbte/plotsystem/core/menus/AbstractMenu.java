@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -38,11 +14,11 @@ public abstract class AbstractMenu {
     private final Player menuPlayer;
     private final String title;
 
-    public AbstractMenu(int rows, String title, Player menuPlayer) {
+    protected AbstractMenu(int rows, String title, Player menuPlayer) {
         this(rows, title, menuPlayer, true);
     }
 
-    public AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
+    protected AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
         this.title = title;
         this.menuPlayer = menuPlayer;
         this.menu = ChestMenu.builder(rows).title(text(title)).redraw(true).build();
@@ -53,12 +29,16 @@ public abstract class AbstractMenu {
     /**
      * Places items asynchronously in the menu after it is opened
      */
-    protected abstract void setMenuItemsAsync();
+    protected void setMenuItemsAsync() {
+        // Default just does nothing, for use-cases which doesn't need it.
+    }
 
     /**
      * Sets click events for the items placed in the menu async after it is opened
      */
-    protected abstract void setItemClickEventsAsync();
+    protected void setItemClickEventsAsync() {
+        // Default just does nothing, for use-cases which doesn't need it.
+    }
 
     /**
      * Places pre-defined items in the menu before it is opened

@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.utils.io;
 
 public abstract class LangPaths {
@@ -43,8 +19,8 @@ public abstract class LangPaths {
         public static final String SCORE = PLOT_PREFIX + "score";
         public static final String TOTAL_SCORE = PLOT_PREFIX + "total-score";
         public static final String COMPLETED_PLOTS = PLOT_PREFIX + "completed-plots";
-
         public static final class GroupSystem {
+
             private GroupSystem() {}
 
             private static final String GROUP_SYSTEM = PLOT_PREFIX + "group-system.";
@@ -52,8 +28,8 @@ public abstract class LangPaths {
             public static final String SHARED_BY_MEMBERS = GROUP_SYSTEM + "shared-by-members";
         }
     }
-
     public static final class CityProject {
+
         private CityProject() {}
         private static final String CITY_PROJECT = "city-project.";
         public static final String CITIES = CITY_PROJECT + "cities";
@@ -64,15 +40,15 @@ public abstract class LangPaths {
         public static final String PROJECT_NO_PLOTS_AVAILABLE = CITY_PROJECT + "no-plots-available";
         public static final String FOR_YOUR_DIFFICULTY = CITY_PROJECT + "for-your-difficulty";
     }
-
     public static final class Country {
+
         private Country() {}
 
         private static final String COUNTRY_PREFIX = "country.";
         public static final String COUNTRIES = COUNTRY_PREFIX + "countries";
     }
-
     public static final class Continent {
+
         private Continent() {}
 
         private static final String CONTINENT_PREFIX = "continent.";
@@ -83,16 +59,16 @@ public abstract class LangPaths {
         public static final String SOUTH_AMERICA = CONTINENT_PREFIX + "south-america";
         public static final String NORTH_AMERICA = CONTINENT_PREFIX + "north-america";
     }
-
     public static final class Difficulty {
+
         private Difficulty() {}
 
         private static final String DIFFICULTY_PREFIX = "difficulty.";
         public static final String AUTOMATIC = DIFFICULTY_PREFIX + "automatic";
         public static final String SCORE_MULTIPLIER = DIFFICULTY_PREFIX + "score-multiplier";
     }
-
     public static final class MenuTitle {
+
         private MenuTitle() {}
         private static final String MENU_TITLES = "menu-title.";
         public static final String CLOSE = MENU_TITLES + "close";
@@ -141,8 +117,8 @@ public abstract class LangPaths {
         public static final String TUTORIAL_BEGINNER = MENU_TITLES + "tutorial-beginner";
         public static final String COMPANION_RANDOM = MENU_TITLES + "companion-random";
     }
-
     public static final class MenuDescription {
+
         private MenuDescription() {}
         private static final String MENU_DESCRIPTIONS = "menu-description.";
         public static final String ERROR = MENU_DESCRIPTIONS + "error-desc";
@@ -176,8 +152,8 @@ public abstract class LangPaths {
         public static final String TUTORIAL_BEGINNER = MENU_DESCRIPTIONS + "tutorial-beginner-desc";
         public static final String COMPANION_RANDOM = MENU_DESCRIPTIONS + "companion-random-desc";
     }
-
     public static final class Review {
+
         private Review() {}
 
         private static final String REVIEW_PREFIX = "review.";
@@ -195,10 +171,9 @@ public abstract class LangPaths {
         public static final String BLOCK_PALETTE_POINTS = REVIEW_PREFIX + "block-palette-points";
         public static final String TOGGLE_POINTS = REVIEW_PREFIX + "toggle-points";
         public static final String TOTAL_POINTS = REVIEW_PREFIX + "total-points";
-
+        public static final String ABANDONED_IN_DAYS = REVIEW_PREFIX + "abandoned-in-days";
         public static final class Criteria {
             private Criteria() {}
-
             private static final String CRITERIA_PREFIX = REVIEW_PREFIX + "criteria.";
             public static final String ACCURACY = CRITERIA_PREFIX + "accuracy";
             public static final String ACCURACY_DESC = CRITERIA_PREFIX + "accuracy-desc";
@@ -206,8 +181,8 @@ public abstract class LangPaths {
             public static final String BLOCK_PALETTE_DESC = CRITERIA_PREFIX + "block-palette-desc";
         }
     }
-
     public static final class Note {
+
         private Note() {}
         private static final String NOTES = "note.";
         public static final String TIP = NOTES + "tip";
@@ -220,8 +195,8 @@ public abstract class LangPaths {
         public static final String CRITERIA_FULFILLED = NOTES + "criteria-fulfilled";
         public static final String CRITERIA_NOT_FULFILLED = NOTES + "criteria-not-fulfilled";
         public static final String LEGACY = NOTES + "legacy";
-
         public static final class Action {
+
             private Action() {}
             private static final String ACTION_PREFIX = NOTES + "action.";
             public static final String READ = ACTION_PREFIX + "read";
@@ -309,7 +284,6 @@ public abstract class LangPaths {
             public static final String CAN_ONLY_UNDO_SUBMISSIONS_UNREVIEWED_PLOTS = ERROR_PREFIX + "can-only-undo-submissions-unreviewed-plots";
             public static final String CAN_ONLY_MANAGE_MEMBERS_UNFINISHED = ERROR_PREFIX + "can-only-manage-members-unfinished-plots";
             public static final String CANNOT_TELEPORT_OUTSIDE_PLOT = ERROR_PREFIX + "cannot-teleport-outside-plot";
-            public static final String CANNOT_UNDO_REVIEW = ERROR_PREFIX + "cannot-undo-review";
             public static final String CANNOT_SEND_FEEDBACK = ERROR_PREFIX + "cannot-send-feedback";
             public static final String CANNOT_REVIEW_OWN_PLOT = ERROR_PREFIX + "cannot-review-own-plot";
             public static final String CANNOT_MODIFY_LEGACY_PLOT = ERROR_PREFIX + "cannot-modify-legacy-plot";
@@ -331,7 +305,6 @@ public abstract class LangPaths {
             public static final String PLAYER_MISSING_TUTORIAL = MESSAGE_PREFIX + "player-missing-tutorial";
 
             public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
-            public static final String COMMAND_DISABLED = ERROR_PREFIX + "command-disabled";
             public static final String NO_PLOTS_LEFT = ERROR_PREFIX + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR_PREFIX + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR_PREFIX + "all-slots-occupied";
@@ -346,9 +319,6 @@ public abstract class LangPaths {
         private Leaderboards() {}
         private static final String LBS = "leaderboards.";
         public static final String PAGES = LBS + "pages.";
-        public static final String ACTIONBAR_POSITION = LBS + "actionbar-position";
-        public static final String ACTIONBAR_PERCENTAGE = LBS + "actionbar-percentage";
-        public static final String NOT_ON_LEADERBOARD = LBS + "not-on-leaderboard";
     }
 
     public static final class Tutorials {

@@ -1,33 +1,9 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
+import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -40,6 +16,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.AbstractPlotTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialCategory;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.PlotMemberInvitation;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
@@ -49,6 +26,7 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -72,7 +50,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +68,9 @@ import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class EventListener implements Listener {
@@ -154,6 +140,9 @@ public class EventListener implements Listener {
             if (plotWorld != null && !plotWorld.getWorldName().toLowerCase(Locale.ROOT).startsWith("t-"))
                 plotWorld.unloadWorld(false);
         }, 60L);
+
+        PlotUtils.plotReminder.get(event.getPlayer().getUniqueId()).cancel();
+        PlotUtils.plotReminder.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -208,7 +197,7 @@ public class EventListener implements Listener {
                 feedbackInput.getReview().updateFeedback(messageComp.content());
                 ChatInput.awaitChatInput.remove(playerUUID);
                 event.getPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(event.getPlayer(),
-                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlot().getID()))));
+                        LangPaths.Message.Info.UPDATED_PLOT_FEEDBACK, String.valueOf(feedbackInput.getReview().getPlot().getId()))));
             } else if (input instanceof PlayerInviteeChatInput inviteeInput) {
                 Player player = Bukkit.getPlayer(messageComp.content());
 
@@ -243,6 +232,11 @@ public class EventListener implements Listener {
         Utils.updatePlayerInventorySlots(event.getPlayer());
     }
 
+    @EventHandler
+    public void onPlayerClientOptionsChange(@NotNull PlayerClientOptionsChangeEvent e) {
+        Utils.updatePlayerInventorySlots(e.getPlayer());
+    }
+
     private void handleIronTrapdoorClick(@NotNull PlayerInteractEvent event) {
         if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
         if (event.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -252,7 +246,7 @@ public class EventListener implements Listener {
         RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = regionContainer.createQuery();
 
-        if (!query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) return;
+        if (!query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()), DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) return;
 
         BlockState state = event.getClickedBlock().getState();
         Openable tp = (Openable) state.getBlockData();
@@ -267,7 +261,6 @@ public class EventListener implements Listener {
     }
 
     private void sendNotices(@NotNull Player player, Builder builder) {
-        sendAdminNotices(player);
         sendReviewNotices(player, builder);
 
         // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
@@ -279,14 +272,6 @@ public class EventListener implements Listener {
                 AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
                 player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
             }
-        }
-    }
-
-    private void sendAdminNotices(@NotNull Player player) {
-        // Inform player about update
-        if (player.hasPermission("plotsystem.admin") && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.CHECK_FOR_UPDATES) && PlotSystem.UpdateChecker.updateAvailable()) {
-            player.sendMessage(Utils.ChatUtils.getInfoFormat("There is a new update for the Plot-System available. Check your console for more information!"));
-            player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
         }
     }
 
@@ -310,8 +295,8 @@ public class EventListener implements Listener {
         PlotUtils.startUnfinishedPlotReminderTimer(player);
 
         // Informing reviewer about new reviews
-        if (player.hasPermission("plotsystem.admin") || DataProvider.BUILDER.isAnyReviewer(builder.getUUID())) {
-            List<CityProject> reviewerCityProjects = DataProvider.BUILD_TEAM.getReviewerCities(builder);
+        if (player.hasPermission("plotsystem.admin") || DataProvider.BUILD_TEAM.isAnyReviewer(builder.getUUID())) {
+            List<CityProject> reviewerCityProjects = DataProvider.BUILD_TEAM.getReviewerCities(builder.getUUID());
             List<Plot> unreviewedPlots = DataProvider.PLOT.getPlots(reviewerCityProjects, Status.unreviewed);
 
             if (!unreviewedPlots.isEmpty()) {

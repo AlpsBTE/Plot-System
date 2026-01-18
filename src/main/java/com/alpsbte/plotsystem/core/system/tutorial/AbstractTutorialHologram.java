@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
@@ -35,7 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected static final String READ_EMOJI = "✅";
@@ -48,9 +27,9 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
         void onClick(@NotNull HologramClickEvent clickEvent);
     }
 
-    private final static int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
-    private final static String HOLOGRAM_LINE_BREAKER = "%newline%";
-    private final static String EMPTY_TAG = "&f";
+    private static final int MAX_HOLOGRAM_LENGTH = 48; // The maximum length of a line in the hologram
+    private static final String HOLOGRAM_LINE_BREAKER = "%newline%";
+    private static final String EMPTY_TAG = "&f";
 
     protected final Player player;
     protected final int holoId;
@@ -63,7 +42,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     private ClickAction markAsReadClickAction;
     private boolean isMarkAsReadClicked = false;
 
-    public AbstractTutorialHologram(Player player, int tutorialId, int holoId, String content, int readMoreId) {
+    protected AbstractTutorialHologram(@NotNull Player player, int tutorialId, int holoId, String content, int readMoreId) {
         super("ps-tutorial-" + tutorialId + "-" + holoId, null, true);
         this.holoId = holoId;
         this.player = player;
@@ -108,7 +87,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     protected abstract String getMarkAsReadClickedActionText();
 
     @Override
-    public void create(Player player) {
+    public void create(@NotNull Player player) {
         setLocation(new Location(player.getWorld(), vectorPos.getX(), vectorPos.getY(), vectorPos.getZ()));
         super.create(player);
     }
@@ -124,7 +103,7 @@ public abstract class AbstractTutorialHologram extends DecentHologramDisplay {
     }
 
     @Override
-    public boolean hasViewPermission(UUID uuid) {
+    public boolean hasViewPermission(@NotNull UUID uuid) {
         return player.getUniqueId().toString().equals(uuid.toString());
     }
 

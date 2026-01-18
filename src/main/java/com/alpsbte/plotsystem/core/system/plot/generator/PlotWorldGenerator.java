@@ -1,32 +1,7 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -36,8 +11,19 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.GameRule;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.generator.ChunkGenerator;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -46,7 +32,7 @@ import java.util.Random;
 import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
-    private final MVWorldManager worldManager = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager();
+    private final WorldManager worldManager = DependencyManager.getMultiverseCore().getWorldManager();
     private WorldCreator worldCreator;
 
     private final String worldName;
@@ -74,9 +60,13 @@ public class PlotWorldGenerator {
     protected void createMultiverseWorld() throws Exception {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            if (!worldManager.isMVWorld(worldName))
-                worldManager.addWorld(worldName, environment, null, worldType, false,
-                        "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}", false);
+            if (!worldManager.isLoadedWorld(worldName)) {
+                worldManager.importWorld(ImportWorldOptions.worldName(worldName)
+                        .environment(environment)
+                        .generator("VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}")
+                        .useSpawnAdjust(false)
+                );
+            }
         } else {
             throw new Exception("World Creator is not configured");
         }
@@ -84,7 +74,12 @@ public class PlotWorldGenerator {
 
     protected void configureWorld() {
         World bukkitWorld = Bukkit.getWorld(worldName);
-        MultiverseWorld mvWorld = worldManager.getMVWorld(bukkitWorld);
+        Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
+
+        if (mvWorld.isEmpty()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Multiverse world" + worldName + " is not loaded! Skipping world configuration..."));
+            return;
+        }
 
         // Set world time to midday
         assert bukkitWorld != null;
@@ -102,14 +97,14 @@ public class PlotWorldGenerator {
         bukkitWorld.setGameRule(GameRule.DO_MOB_LOOT, false);
 
         // Configure multiverse world
-        mvWorld.setAllowFlight(true);
-        mvWorld.setGameMode(GameMode.CREATIVE);
-        mvWorld.setEnableWeather(false);
-        mvWorld.setDifficulty(Difficulty.PEACEFUL);
-        mvWorld.setAllowAnimalSpawn(false);
-        mvWorld.setAllowMonsterSpawn(false);
-        mvWorld.setAutoLoad(false);
-        mvWorld.setKeepSpawnInMemory(false);
+        mvWorld.get().setAllowFlight(true);
+        mvWorld.get().setGameMode(GameMode.CREATIVE);
+        mvWorld.get().setAllowWeather(false);
+        mvWorld.get().setDifficulty(Difficulty.PEACEFUL);
+        mvWorld.get().getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.ANIMAL).setSpawn(false);
+        mvWorld.get().getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.MONSTER).setSpawn(false);
+        mvWorld.get().setAutoLoad(false);
+        mvWorld.get().setKeepSpawnInMemory(false);
         worldManager.saveWorldsConfig();
     }
 
@@ -127,7 +122,7 @@ public class PlotWorldGenerator {
             globalRegion.setFlag(Flags.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.ALL);
             globalRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
             globalRegion.setFlag(Flags.TNT.getRegionGroupFlag(), RegionGroup.ALL);
-            if (PlotSystem.DependencyManager.isWorldGuardExtraFlagsEnabled())
+            if (DependencyManager.isWorldGuardExtraFlagsEnabled())
                 globalRegion.setFlag(new StateFlag("worldedit", true, RegionGroup.ALL), StateFlag.State.DENY);
 
             if (regionManager.hasRegion(regionName)) regionManager.removeRegion(regionName);

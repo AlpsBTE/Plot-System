@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.admin.setup;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
@@ -89,12 +65,12 @@ public class CMD_Setup_Server extends SubCommand {
                 return;
             }
 
-            sender.sendMessage(Utils.ChatUtils.getInfoFormat("There are currently " + servers.size() + " Servers registered in the database:"));
+            var msg = Utils.ChatUtils.getInfoFormat("There are currently " + servers.size() + " Servers registered in the database:").appendNewline();
 
             for (String server : servers) {
-                sender.sendMessage(text(" » ", DARK_GRAY).append(text(server, AQUA)));
+                msg = msg.append(text(" » ", DARK_GRAY).append(text(server, AQUA))).appendNewline();
             }
-            sender.sendMessage(text("--------------------------", DARK_GRAY));
+            sender.sendMessage(msg.append(text("--------------------------", DARK_GRAY)));
         }
 
         @Override
@@ -135,13 +111,14 @@ public class CMD_Setup_Server extends SubCommand {
             }
 
             int buildTeamId = AlpsUtils.tryParseInt(args[2]);
-            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId) == null) {
+            if (DataProvider.BUILD_TEAM.getBuildTeam(buildTeamId).isEmpty()) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Build team with id " + buildTeamId + " could not be found!"));
+                return;
             }
 
             boolean successful = DataProvider.SERVER.addServer(serverName, buildTeamId);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added server!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -173,17 +150,18 @@ public class CMD_Setup_Server extends SubCommand {
         @Override
         public void onCommand(CommandSender sender, String[] args) {
             if (args.length <= 1) {sendInfo(sender); return;}
+            String name = args[1];
 
             // Check if server exists
-            if (!DataProvider.SERVER.serverExists(args[1])) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with ID " + args[1] + "!"));
+            if (!DataProvider.SERVER.serverExists(name)) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any server with name " + name + "!"));
                 sendInfo(sender);
                 return;
             }
 
-            boolean successful = DataProvider.SERVER.removeServer(args[1]);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed server with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            boolean successful = DataProvider.SERVER.removeServer(name);
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed server with name " + name + "!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override

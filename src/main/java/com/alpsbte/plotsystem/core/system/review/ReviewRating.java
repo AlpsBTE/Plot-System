@@ -3,6 +3,7 @@ package com.alpsbte.plotsystem.core.system.review;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReviewRating {
     private int accuracyPoints;
@@ -17,7 +18,7 @@ public class ReviewRating {
         this.uncheckedToggles.addAll(uncheckedToggles);
     }
 
-    public ReviewRating(int accuracyPoints, int blockPalettePoints, HashMap<ToggleCriteria, Boolean> toggles) {
+    public ReviewRating(int accuracyPoints, int blockPalettePoints, Map<ToggleCriteria, Boolean> toggles) {
         this.accuracyPoints = accuracyPoints;
         this.blockPalettePoints = blockPalettePoints;
 
@@ -51,7 +52,7 @@ public class ReviewRating {
         return uncheckedToggles;
     }
 
-    public HashMap<ToggleCriteria, Boolean> getAllToggles() {
+    public Map<ToggleCriteria, Boolean> getAllToggles() {
         HashMap<ToggleCriteria, Boolean> allToggles = new HashMap<>();
         for (ToggleCriteria checked : checkedToggles) allToggles.put(checked, true);
         for (ToggleCriteria unchecked : uncheckedToggles) allToggles.put(unchecked, false);

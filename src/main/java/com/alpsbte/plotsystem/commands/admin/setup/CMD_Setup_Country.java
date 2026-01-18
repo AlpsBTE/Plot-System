@@ -1,30 +1,5 @@
-/*
- *  The MIT License (MIT)
- *
- *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.commands.admin.setup;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -32,7 +7,6 @@ import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
-import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
@@ -40,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 
 public class CMD_Setup_Country extends SubCommand {
 
@@ -141,7 +116,10 @@ public class CMD_Setup_Country extends SubCommand {
 
             Continent continent;
             try {
-                continent = Continent.valueOf(args[2].toUpperCase());
+                continent = Continent.fromDatabase(args[2].toUpperCase());
+                if (continent == null) {
+                    continent = Continent.valueOf(args[2].toUpperCase());
+                }
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("Unknown continent! " + Arrays.toString(Continent.values())));
                 return;
@@ -151,19 +129,12 @@ public class CMD_Setup_Country extends SubCommand {
             String customModelData = args.length > 4 ? args[4] : null;
 
             boolean successful = DataProvider.COUNTRY.addCountry(code, continent, material, customModelData);
-            if (successful)
-            {
-                try {
-                    LangUtil.getInstance().setDynamicKey(LangPaths.Database.COUNTRY + "." + code + ".name", code);
-                } catch (Exception e) {
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while saving the language file for country " + code + "!").color(RED), e);
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while saving the language file for country " + code + "!"));
-                }
-
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.CITY_PROJECT + "." + code + " language config setting, otherwise the name will be the ID of the Country & no description will be present!"));
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            if (!successful) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+                return;
             }
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added country!"));
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Edit the " + LangPaths.Database.COUNTRY + "." + code + " language config setting, otherwise name & id will be undefined!"));
         }
 
         @Override
@@ -205,7 +176,7 @@ public class CMD_Setup_Country extends SubCommand {
             }
             boolean successful = DataProvider.COUNTRY.removeCountry(code);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -248,14 +219,14 @@ public class CMD_Setup_Country extends SubCommand {
             // Check if country exists
             Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(code);
             if (country.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with name " + args[1] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with code " + code + "!"));
                 sendInfo(sender);
                 return;
             }
 
             boolean successful = country.get().setMaterialAndModelData(material, customModelData);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated country with code " + country + "! Material: " + material + " CustomModelData: " + (customModelData == null ? "NULL" : customModelData)));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated country with code " + code + "! Material: " + material + " CustomModelData: " + (customModelData == null ? "NULL" : customModelData)));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override

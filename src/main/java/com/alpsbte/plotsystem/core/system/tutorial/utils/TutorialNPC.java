@@ -1,33 +1,9 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2024, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial.utils;
 
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
-import de.oliver.fancynpcs.api.utils.SkinFetcher;
+import de.oliver.fancynpcs.api.skins.SkinData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -44,7 +20,7 @@ public class TutorialNPC {
     private final String id;
     private final String displayName;
     private final String interactionPrompt;
-    private final SkinFetcher.SkinData skin;
+    private final SkinData skin;
 
     private Npc npc;
     private TutorialNPCHologram hologram;
@@ -61,7 +37,7 @@ public class TutorialNPC {
         this.id = npcId;
         this.displayName = npcDisplayName;
         this.interactionPrompt = npcInteractionPrompt;
-        this.skin = new SkinFetcher.SkinData(npcId, npcSknTexture, npcSkinSignature);
+        this.skin = new SkinData(npcId, SkinData.SkinVariant.AUTO, npcSknTexture, npcSkinSignature);
     }
 
     /**
@@ -74,7 +50,7 @@ public class TutorialNPC {
 
         NpcData npcData = new NpcData(id, UUID.randomUUID(), spawnPos);
         npc = FancyNpcsPlugin.get().getNpcAdapter().apply(npcData);
-        npc.getData().setSkin(skin);
+        npc.getData().setSkinData(skin);
         npc.getData().setDisplayName(EMPTY_TAG);
         npc.getData().setTurnToPlayer(true);
         npc.setSaveToFile(false);
@@ -146,19 +122,11 @@ public class TutorialNPC {
         return hologram;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
 
     public String getInteractionPrompt() {
         return interactionPrompt;
-    }
-
-    public SkinFetcher.SkinData getSkin() {
-        return skin;
     }
 }

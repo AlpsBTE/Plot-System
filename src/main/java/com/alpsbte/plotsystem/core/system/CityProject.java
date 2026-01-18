@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -43,26 +19,32 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CityProject {
-    private final String ID;
+    private final String id;
     private final String countryCode;
     private String serverName;
     private boolean isVisible;
     private int buildTeamId;
 
     public CityProject(String id, String countryCode, String serverName, boolean isVisible, int buildTeamId) {
-        this.ID = id;
+        this.id = id;
         this.countryCode = countryCode;
         this.serverName = serverName;
         this.isVisible = isVisible;
         this.buildTeamId = buildTeamId;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public Country getCountry() {
@@ -75,7 +57,7 @@ public class CityProject {
     }
 
     public boolean setServer(String serverName) {
-        if (DataProvider.CITY_PROJECT.setServer(ID, serverName)) {
+        if (DataProvider.CITY_PROJECT.setServer(id, serverName)) {
             this.serverName = serverName;
             return true;
         }
@@ -87,7 +69,7 @@ public class CityProject {
     }
 
     public boolean setVisible(boolean isVisible) {
-        if (DataProvider.CITY_PROJECT.setVisibility(ID, isVisible)) {
+        if (DataProvider.CITY_PROJECT.setVisibility(id, isVisible)) {
             this.isVisible = isVisible;
             return true;
         }
@@ -95,11 +77,11 @@ public class CityProject {
     }
 
     public String getName(Player player) {
-        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".name");
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + id + ".name");
     }
 
     public String getDescription(Player player) {
-        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + ID + ".description");
+        return LangUtil.getInstance().get(player, LangPaths.Database.CITY_PROJECT + "." + id + ".description");
     }
 
     public BuildTeam getBuildTeam() {
@@ -107,7 +89,7 @@ public class CityProject {
     }
 
     public boolean setBuildTeam(int buildTeamId) {
-        if (DataProvider.CITY_PROJECT.setBuildTeam(ID, buildTeamId)) {
+        if (DataProvider.CITY_PROJECT.setBuildTeam(id, buildTeamId)) {
             this.buildTeamId = buildTeamId;
             return true;
         }
@@ -116,7 +98,7 @@ public class CityProject {
 
     public List<TextComponent> getDescriptionComponents(Player player) {
         ArrayList<TextComponent> descriptionLines = new ArrayList<>();
-        for (String line : getDescription(player).split("%newline%")) descriptionLines.add(text(line));
+        for (String line : getDescription(player).split("%newline%")) descriptionLines.add(text(line, GRAY));
         return descriptionLines;
     }
 

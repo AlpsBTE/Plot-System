@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.menus.review;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
@@ -50,17 +26,16 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 public class ReviewPlotTogglesMenu extends AbstractMenu {
@@ -68,8 +43,8 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     private final ReviewRating rating;
     private List<ToggleCriteria> buildTeamCriteria = new ArrayList<>();
 
-    public ReviewPlotTogglesMenu(Player player, Plot plot, ReviewRating rating) {
-        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getID())), player);
+    public ReviewPlotTogglesMenu(Player player, @NotNull Plot plot, ReviewRating rating) {
+        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getId())), player);
         this.plot = plot;
         this.rating = rating;
     }
@@ -83,11 +58,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         getMenu().getSlot(7).setItem(ReviewItems.getReviewInfoItem(getMenuPlayer()));
 
         // Set toggle items
-        buildTeamCriteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getID());
+        buildTeamCriteria = DataProvider.REVIEW.getBuildTeamToggleCriteria(plot.getCityProject().getBuildTeam().getId());
         for (int i = 0; i < Math.min(buildTeamCriteria.size(), 36); i++) {
             ToggleCriteria criteria = buildTeamCriteria.get(i);
             boolean isChecked = rating.getCheckedToggles().stream()
-                    .anyMatch(t -> t.getCriteriaName().equals(criteria.getCriteriaName()));
+                    .anyMatch(t -> t.criteriaName().equals(criteria.criteriaName()));
             getMenu().getSlot(9 + i).setItem(getToggleItem(criteria, isChecked));
         }
 
@@ -114,7 +89,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             int finalI = i;
             getMenu().getSlot(9 + i).setClickHandler(((player, clickInformation) -> {
                 ToggleCriteria clickedCriteria = buildTeamCriteria.get(finalI);
-                boolean isChecked = rating.getCheckedToggles().stream().anyMatch(t -> t.getCriteriaName().equals(clickedCriteria.getCriteriaName()));
+                boolean isChecked = rating.getCheckedToggles().stream().anyMatch(t -> t.criteriaName().equals(clickedCriteria.criteriaName()));
                 rating.setToggleCriteria(clickedCriteria, !isChecked);
 
                 getMenu().getSlot(9 + finalI).setItem(getToggleItem(clickedCriteria, !isChecked));
@@ -128,12 +103,12 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(empty()).build())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("111101111")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
-                .pattern("000000000")
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
+                .pattern(Utils.EMPTY_MASK)
                 .pattern("111010111")
                 .build();
     }
@@ -153,11 +128,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
 
         Component reviewerConfirmationMessage;
         if (!isRejected) {
-            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getID()), getParticipantsString()));
+            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getId()), getParticipantsString()));
             if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
             DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotApprove);
         } else {
-            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getID()), getParticipantsString()));
+            reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getId()), getParticipantsString()));
             PlotUtils.Actions.undoSubmit(plot);
             DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotReject);
         }
@@ -202,17 +177,17 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             try {
                 if (!PlotUtils.savePlotAsSchematic(plot)) {
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"));
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"));
                 }
             } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getID() + ")!"), ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"), ex);
             }
         });
 
         plot.setStatus(Status.completed);
 
         // Remove Plot from Owner
-        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getID()), -1)) return false;
+        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getId()), -1)) return false;
 
         if (plot.getPlotMembers().isEmpty()) {
             // Plot was made alone
@@ -228,13 +203,13 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 if (!builder.addScore(splitScore)) return false;
 
                 // Remove Slot from Member
-                if (!builder.setSlot(builder.getSlotByPlotId(plot.getID()), -1)) return false;
+                if (!builder.setSlot(builder.getSlotByPlotId(plot.getId()), -1)) return false;
             }
         }
         return true;
     }
 
-    private ItemStack getToggleItem(ToggleCriteria criteria, boolean checked) {
+    private ItemStack getToggleItem(@NotNull ToggleCriteria criteria, boolean checked) {
         Player p = getMenuPlayer();
         ItemStack baseItem = checked
                 ? BaseItems.REVIEW_TOGGLE_CHECKED.getItem()

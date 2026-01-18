@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
@@ -43,7 +19,7 @@ import java.util.List;
 
 public class CityPlotWorld extends PlotWorld {
     public CityPlotWorld(@NotNull Plot plot) {
-        super("C-" + plot.getCityProject().getID(), plot);
+        super("C-" + plot.getCityProject().getId(), plot);
     }
 
     @Override
@@ -54,7 +30,7 @@ public class CityPlotWorld extends PlotWorld {
             player.setFlying(true);
 
             if (getPlot() != null) {
-                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getID()))));
+                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getId()))));
 
                 Utils.updatePlayerInventorySlots(player);
                 PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
@@ -71,7 +47,7 @@ public class CityPlotWorld extends PlotWorld {
 
     @Override
     public String getRegionName() {
-        return super.getRegionName() + "-" + getPlot().getID();
+        return super.getRegionName() + "-" + getPlot().getId();
     }
 
 
@@ -103,18 +79,18 @@ public class CityPlotWorld extends PlotWorld {
         if (clipboard != null) {
             int plotHeight = clipboard.getMinimumPoint().y();
 
-            /// Minimum building height for a plot (this should be configurable depending on minecraft build limit)
-            /// This is in the case that a plot is created at y level 300 where the max build limit is 318,
-            /// so you don't want builder to only be able to build for 18 blocks
+            // Minimum building height for a plot (this should be configurable depending on minecraft build limit)
+            // This is in the case that a plot is created at y level 300 where the max build limit is 318,
+            // so you don't want builder to only be able to build for 18 blocks
             int minBuildingHeight = 128;
 
-            /// Negative y level of the current minecraft version (1.21)
-            /// Additional ground layer the plot use to save as schematic need to be included for plot's y-level
+            // Negative y level of the current minecraft version (1.21)
+            // Additional ground layer the plot use to save as schematic need to be included for plot's y-level
             int groundLayer = 64;
 
             // Plots created outside of vanilla build limit or the build-able height is too small
             if (plotHeight + groundLayer < MIN_WORLD_HEIGHT + groundLayer
-                    | plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
+                    || plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
                 return 0; // throw new IOException("Plot height is out of range.");
             return plotHeight;
         }

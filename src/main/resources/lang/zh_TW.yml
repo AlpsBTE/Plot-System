@@ -2,8 +2,9 @@
 # |            Plot System - by Alps BTE
 # -----------------------------------------------------
 # | [Github Repo] https://github.com/AlpsBTE/PlotSystem
-# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
 # |
 # | [Formatting] Use %newline% for a newline
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
@@ -68,6 +69,7 @@ difficulty:
 menu-title:
   close: "關閉"
   back: "返回"
+  continue: 'Continue'
   next-page: "下一頁"
   previous-page: "上一頁"
   error: "錯誤"
@@ -125,13 +127,13 @@ menu-description:
   abandon-desc: "點擊以重設你的建地，並將其交付他人"
   undo-submit-desc: "點擊以撤回你的提交"
   manage-members-desc: "點擊以開啟建地成員選單你可以在那裡添加和移除在你建地上的其他玩家"
-  feedback-desc: "點擊以查看你建地的審核評語"
+  feedback-desc: "點擊以查看你的建地審核評語"
   custom-heads-desc: "點擊開啟頭顱選單以取得一個定製頭顱"
-  banner-maker-desc: "點擊以創造並儲存你自己的旗幟"
+  banner-maker-desc: "點擊以創建並儲存你自己的旗幟"
   special-tools-desc: "點擊此處以存取各種無法存取的方塊和物品"
   add-member-to-plot-desc: "邀請你的朋友到你的建地並開始共同建設"
   review-points-desc: "點擊以選取"
-  submit-review-desc: "提交選定的點並將建地標記為已審核"
+  submit-review-desc: "提交選取點並標記建地供審核"
   leave-plot-desc: "點擊以離開此建地"
   select-language-desc: "選擇你的語言"
   select-plot-type-desc: '挑選你的建地類型'
@@ -139,7 +141,7 @@ menu-description:
   select-local-inspiration-mode-desc: "在有周邊環境能作參考的空島建設。%newline%%newline%+ 周邊環境%newline%- 沒有鄰近建地"
   select-city-inspiration-mode-desc: "在有周邊環境的空島建設，並投影出附近其他玩家的建地。%newline%%newline%+ 周邊環境%newline%+ 鄰近建地"
   filter-desc: "顯示全部"
-  information-desc: "一個建地最高可以獲得20積分。如果建地得分小於8分或任一類別獲得0分，該建地將被否決，建造者要取回建地並改進。如果建地獲得0分，它將被廢棄。"
+  information-desc: "一個建地最高可以獲得20積分。如果建地得分小於8分或任一類別獲得0分，該建地將被駁回，建造者要取回建地並改進。如果建地獲得0分，它將被廢棄。"
   tutorials-desc: '透過各種主題的教學來學習BuildTheEarth計畫的基礎知識並提升你的建築技巧。'
   tutorial-end-desc: '你的進度將被儲存。'
   tutorial-beginner-desc: '學習在BuildTheEarth計畫建築的基礎知識。'
@@ -152,16 +154,21 @@ review:
   manage-plot: "管理建地"
   manage-and-review-plots: "管理與審核建地"
   accepted: "已同意"
-  abandoned: "已廢棄"
   rejected: "已否決"
-  feedback: "評語"
-  reviewer: "審核人"
+  abandoned: "已廢棄"
+  feedback: "回饋"
+  reviewer: "審核員"
   player-language: "玩家語言"
+  no-feedback: "No feedback"
+  accuracy-points: "Accuracy points"
+  block-palette-points: "Block palette points"
+  toggle-points: "Toggle points"
+  total-points: "Total points"
   criteria:
     accuracy: "準確性"
     accuracy-desc: "建築的精確度如何？%newline%%newline%- 看起來像在真實世界%newline%- 正確的輪廓%newline%- 正確的高度%newline%- 完成了"
     block-palette: "方塊用色"
-    block-palette-desc: "使用了多少個不同的方塊，它們的創意如何？%newline%%newline%- 方塊顏色/紋理的選擇%newline%- 隨機方塊"
+    block-palette-desc: "使用了多少個不同的方塊，它們的創意如何？%newline%%newline%- 方塊顏色/材質的選擇%newline%- 隨機方塊"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -169,8 +176,13 @@ note:
   tip: "提示"
   under-construction: '建設中'
   wont-be-able-continue-building: "你將無法繼續在此建地上進行建設！"
-  score-will-be-split: "審核時積分將分配給全部的成員！"
+  score-will-be-split: "審核時積分將分配給所有成員！"
   player-has-to-be-online: "玩家必須上線！"
+  optional: "Optional"
+  required: "Required"
+  criteria-fulfilled: "Fulfilled"
+  criteria-not-fulfilled: "Not fulfilled"
+  legacy: "LEGACY"
   action:
     read: '已讀'
     read-more: '閱讀更多'
@@ -194,6 +206,7 @@ note:
     click-to-play-with-friends: "§7想和你的朋友一起玩嗎？§6點擊此處..."
     tutorial-show-stages: '顯示階段'
     click-to-open-plots-menu: '點擊以開啟建地選單...'
+    click-to-toggle: "Click to toggle..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -214,10 +227,14 @@ message:
     unfinished-plots: "§a你有§6{0}§a處尚未完成的建地！"
     enabled-build-permissions: "§a啟用審核人於建地§6#{0}§a的建築權限！"
     disabled-build-permissions: "§a禁用審核人於建地§6#{0}§a的建築權限！"
-    updated-plot-feedback: "§a建地§6#{0}§a的評語已更新！"
+    updated-plot-feedback: "§a建地 §6#{0}§a 的回饋已更新！"
     removed-plot-member: "§a將§6{0}§a從建地§6#{1}§a中移除！"
     left-plot: "§a離開建地§6#{0}§a！"
     plot-will-get-abandoned-warning: "§c§l警告：§c此建地將自動被廢棄！"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
     saving-plot: "§a儲存建地..."
     creating-plot: "§a建立新建地..."
     created-new-plot: "§a為§6{0}§a建立了新建地§a！"
@@ -228,51 +245,53 @@ message:
     beginner-tutorial-completed: '你準備好建設你自己的建地了嗎？現在該你上場了！'
     player-invite-sent: '已向{0}發送加入你建地的邀請。'
     player-invite-to-sent: '{0}邀請你到他的建地協助建設。'
-    player-invite-accepted: '已同意來自{0}建地的邀請。'
-    player-invite-to-accepted: '{0}同意了你的邀請並加入了你的建地。'
-    player-invite-rejected: '已否決來自{0}建地的邀請。'
+    player-invite-accepted: '已接受來自 {0} 建地的邀請。'
+    player-invite-to-accepted: '{0} 接受了你的邀請並加入了你的建地。'
+    player-invite-rejected: '已拒絕來自 {0} 建地的邀請。'
   error:
     plot-does-not-exist: "此建地不存在！"
     plot-either-unclaimed-or-unreviewed: "此建地無人認領或尚未審核！"
-    plot-has-not-yet-reviewed: "此建地尚未審核！"
+    plot-has-not-yet-reviewed: "此建地尚未審核！!"
     can-only-abandon-unfinished-plots: "你只能廢棄尚未完成的建地！"
     can-only-submit-unfinished-plots: "你只能提交尚未完成的建地！"
     can-only-undo-submissions-unreviewed-plots: "你只能撤回尚未審核的建地！"
-    can-only-manage-members-unfinished-plots: "你只能管理尚未完成的建地的成員！"
+    can-only-manage-members-unfinished-plots: "你只能管理尚未完成建地的成員！"
     cannot-teleport-outside-plot: "你無法傳送到建地外！"
     cannot-undo-review: "你無法撤回未經你本人審核過的審核！"
     cannot-send-feedback: "你無法給未經你本人審核過建地的發送評語！"
     cannot-review-own-plot: "你無法審核你所有的建地！"
+    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
+    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
     player-has-no-permissions: "你沒有權限使用！"
     player-has-no-invitations: "你沒有受到邀請！"
     player-is-not-allowed: "你不被允許使用！"
-    player-is-plot-owner: "此玩家已經是建地的所有人！"
+    player-is-plot-owner: "此玩家已經是建地擁有者！"
     player-is-plot-member: "此玩家已經是此建地的成員！"
     player-is-not-online: "此玩家不在線上！"
     player-not-found: "無法找到該玩家！"
     player-already-invited: '{0}已被邀請加入建地了。'
     player-invite-expired: '來自{0}的邀請過期了。'
     player-invite-to-expired: '你發送給{0}的邀請過期了。'
-    player-invite-to-rejected: '{0}否決了你的邀請。'
+    player-invite-to-rejected: '{0} 拒絕了你的邀請。'
     player-needs-to-be-on-plot: "你需要在一個建地上才能使用它！"
     player-needs-higher-score: "你需要更高的積分來才能在這個難度下建設。"
     player-missing-tutorial: "玩家必须先完成教程，才能加入剧情！"
     error-occurred: "發生錯誤！請再次嘗試！"
-    command-disabled: "此指令已被禁用！"
     no-plots-left: "此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。"
     please-wait: "請稍後再建立一個新的建地！"
     all-slots-occupied: "你全部的槽位都被占用了！在建立新的建地前請先完成你當前的建地。"
     chat-input-expired: "聊天輸入過期了。"
     tutorial-disabled: '此伺服器的教學被停用了。'
     tutorial-already-running: "你已經有一個教學正在進行！在開始新的教學前請先將它完成。"
+    review-not-found: "Review could not be found!"
 leaderboards:
   pages:
     DAILY: "每日"
-    WEEKLY: "每周"
+    WEEKLY: "每週"
     MONTHLY: "每月"
     YEARLY: "每年"
     LIFETIME: "生涯"
-  actionbar-position: "排名#{0}"
+  actionbar-position: "排行 #{0}"
   actionbar-percentage: "前{0}%"
   not-on-leaderboard: "不在排行榜上"
 tutorials:
@@ -309,7 +328,7 @@ tutorials:
         - '繼續傳送到其他標記點。以此類推！'
         - '切換Google地圖中的§6衛星§f視圖，建築物將以3D呈現。%newline%%newline%點擊地圖左下角的§6圖層§f。如果3D建築物沒有出現，則啟用「更多」中的§6地球檢視畫面§6。'
       stage-3-tasks:
-        - '使用{1}來傳送到建築物的全部{0}個邊緣。'
+        - '使用{1} 來傳送到所有的{0} 個建築物邊緣。'
     stage-4:
       stage-4-title: 'WorldEdit'
       stage-4-messages:
@@ -326,7 +345,7 @@ tutorials:
         - '{1}以選取第一個點，{2}以選取第二個點。'
         - '使用{0}繼續連接其他點。以此類推！'
       stage-5-tasks:
-        - '使用{0}連接全部的點。'
+        - '使用 {0} 連接所有點。'
     stage-6:
       stage-6-title: '建築物高度'
       stage-6-messages:
@@ -351,7 +370,7 @@ tutorials:
         - '使用WorldEdit指令§6{1}§f或手動填充屋頂。或使用指令§6{2}§f來切換選取區以因應更大更複雜的屋頂。'
         - '時刻檢查門窗的§6高度§f，使其與立面§6匹配§f。'
       stage-7-tasks:
-        - '閱讀建地上全部的提示並將其標記為已讀。'
+        - '閱讀建地上的所有提示並將其標記為已讀。'
     stage-8:
       stage-8-title: '窗戶'
       stage-8-messages:
@@ -360,7 +379,7 @@ tutorials:
         - '別忘了§6暗化§f§6門窗§f讓你無法看穿他們。我們不建造內飾！'
         - '為BTE建造窗戶的方法有很多種，例如使用§6旗幟§f、§6地板門§f或§6地毯§f。'
         - '使用與右邊窗戶相同的方塊來製作。以此類推！'
-        - '感謝你的幫助！現在我們可以繼續塗裝了。'
+        - '感謝你的幫助！現在我們可以繼續上色了。'
       stage-8-tasks:
         - '放置缺失的窗戶細節。'
     stage-9:
@@ -369,22 +388,22 @@ tutorials:
         - '塗裝是建築過程中不可或缺的一部分。使用合適的方塊和顏色使建築物看起來逼真非常重要。'
         - '使用§6Google街景服務§f或§6圖片§f來挑選合適的方塊，因為航照影像有時不是很準確。'
         - '使用WorldEdit指令§6{0}§f將你要的圖樣直接替換到外殼上。'
-        - '嘗試為牆壁和屋頂使用§6混合方塊§f和§6漸層§f，使建築物看起來更加真實與出眾。'
+        - '嘗試為牆壁和屋頂使用§6混合方塊§f和§6漸層§f，使建築物看起來更真實和出眾。'
       stage-9-tasks:
-        - '閱讀建地上全部的提示並將其標記為已讀。'
+        - '閱讀建地上的所有提示並將其標記為已讀。'
     stage-10:
       stage-10-title: '裝飾&後續步驟'
       stage-10-messages:
         - '裝飾是最重要的過程之一，它將使建築物與眾不同。'
         - '添加§6定製旗幟§f和§6定製頭顱§f到你的建築上。使用指令§6{0}§f來取得各種定製頭顱。'
         - '§6裝飾§f你建築物的方法有很多。時刻留意立面和屋頂的細節，例如§6煙囪§f、§6窗戶§f和§6排水槽§f。'
-        - '感謝你的參與。你現在已經準備好為BuildTheEarth計畫創造你自己的建築物了！'
+        - '感謝你的參與。你現在已經準備好為BuildTheEarth計畫創建你自己的建築物了！'
         - '點擊此處更深入了解此計畫。'
-        - '要<gold>申請成為建築師</gold>，請在我們的伺服器上建立並提交<gold>一或多個建地</gold>。你可以在我們的網站或{1}上找到更多關於申請過程的資訊。'
-        - '如果你想要探索地圖目前的進度，請查看<gold>Terra</gold>伺服器！'
+        - '要<gold>申請成為建築師</gold>，請在我們的伺服器上創建並提交<gold>一或多個建地</gold>。你可以在我們的網站或 {1} 上找到更多關於申請過程的資訊。'
+        - '如果你想要探索地圖目前的進度，請查看<gold>大地</gold>伺服器！'
         - '建築愉快！☺'
       stage-10-tasks:
-        - '閱讀建地上全部的提示並將其標記為已讀。'
+        - '閱讀建地上的所有提示並將其標記為已讀。'
 # -----------------------------------------------------
 # | Database
 # -----------------------------------------------------
@@ -407,5 +426,24 @@ database:
       name: 'Medium'
     hard:
       name: 'Hard'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'All windows blacked out'
+
 # NOTE: Do not change
 config-version: 2.5

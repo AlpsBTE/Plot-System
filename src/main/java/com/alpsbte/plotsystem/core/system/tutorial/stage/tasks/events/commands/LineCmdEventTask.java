@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -40,7 +16,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -53,8 +31,8 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     private Vector minPoint;
     private Vector maxPoint;
 
-    public LineCmdEventTask(Player player, Component assignmentMessage, String blockName, int blockId, Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
-        super(player, "//line", new String[]{blockName, String.valueOf(blockId)}, assignmentMessage, linePoints.size(), true);
+    public LineCmdEventTask(Player player, Component assignmentMessage, @NotNull List<String> blocks, @NotNull Map<Vector, Vector> linePoints, BiTaskAction<Vector, Vector> lineCmdAction) {
+        super(player, "//line", blocks.toArray(new String[0]), assignmentMessage, linePoints.size(), true);
         this.linePoints = linePoints;
         this.lineCmdAction = lineCmdAction;
     }
@@ -83,8 +61,8 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
 
     @Override
     public void performEvent(Event event) {
-        if (event instanceof PlayerInteractEvent) {
-            onPlayerInteractEvent((PlayerInteractEvent) event);
+        if (event instanceof PlayerInteractEvent playerInteractEvent) {
+            onPlayerInteractEvent(playerInteractEvent);
         } else super.performEvent(event);
     }
 
@@ -108,11 +86,9 @@ public class LineCmdEventTask extends AbstractCmdEventTask {
     }
 
     private boolean drawLine() {
-        try {
-            EditSession editSession = WorldEdit.getInstance().newEditSession((new BukkitWorld(player.getWorld())));
+        try (EditSession editSession = WorldEdit.getInstance().newEditSession((new BukkitWorld(player.getWorld())))) {
             editSession.drawLine(Objects.requireNonNull(BlockTypes.WHITE_WOOL).getDefaultState(), BlockVector3.at(minPoint.getX(), minPoint.getY(), minPoint.getZ()),
                     BlockVector3.at(maxPoint.getX(), maxPoint.getY(), maxPoint.getZ()), 0, false);
-            editSession.close();
         } catch (MaxChangedBlocksException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while drawing line!"), ex);
             return false;

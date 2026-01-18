@@ -1,5 +1,8 @@
 package com.alpsbte.plotsystem.utils.conversion;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class MathUtils {
     /**
      * Square root of 3
@@ -7,23 +10,17 @@ public class MathUtils {
     public static final double ROOT3 = Math.sqrt(3);
 
     /**
-     * Two times pi
-     */
-    public static final double TAU = 2 * Math.PI;
-
-
-    /**
      * Converts geographic latitude and longitude coordinates to spherical coordinates on a sphere of radius 1.
      *
      * @param geo - geographic coordinates as a double array of length 2, {longitude, latitude}, in degrees
      * @return the corresponding spherical coordinates in radians: {longitude, colatitude}
      */
-    public static double[] geo2Spherical(double[] geo) {
+    @Contract("_ -> new")
+    public static double @NotNull [] geo2Spherical(double @NotNull [] geo) {
         double lambda = Math.toRadians(geo[0]);
         double phi = Math.toRadians(90 - geo[1]);
         return new double[]{lambda, phi};
     }
-
 
     /**
      * Converts spherical coordinates to geographic coordinates on a sphere of radius 1.
@@ -31,7 +28,8 @@ public class MathUtils {
      * @param spherical - spherical coordinates in radians as a double array of length 2: {longitude, colatitude}
      * @return the corresponding geographic coordinates in degrees: {longitude, latitude}
      */
-    public static double[] spherical2Geo(double[] spherical) {
+    @Contract("_ -> new")
+    public static double @NotNull [] spherical2Geo(double @NotNull [] spherical) {
         double lon = Math.toDegrees(spherical[0]);
         double lat = 90 - Math.toDegrees(spherical[1]);
         return new double[]{lon, lat};
@@ -44,7 +42,8 @@ public class MathUtils {
      * @param spherical - spherical coordinates in radians as a double array of length 2: {longitude, colatitude}
      * @return the corresponding Cartesian coordinates: {x, y, z}
      */
-    public static double[] spherical2Cartesian(double[] spherical) {
+    @Contract("_ -> new")
+    public static double @NotNull [] spherical2Cartesian(double @NotNull [] spherical) {
         double sinphi = Math.sin(spherical[1]);
         double x = sinphi * Math.cos(spherical[0]);
         double y = sinphi * Math.sin(spherical[0]);
@@ -58,7 +57,8 @@ public class MathUtils {
      * @param cartesian - Cartesian coordinates as double array of length 3: {x, y, z}
      * @return the spherical coordinates of the corresponding normalized vector
      */
-    public static double[] cartesian2Spherical(double[] cartesian) {
+    @Contract("_ -> new")
+    public static double @NotNull [] cartesian2Spherical(double @NotNull [] cartesian) {
         double lambda = Math.atan2(cartesian[1], cartesian[0]);
         double phi = Math.atan2(Math.sqrt(cartesian[0] * cartesian[0] + cartesian[1] * cartesian[1]), cartesian[2]);
         return new double[]{lambda, phi};
@@ -66,14 +66,15 @@ public class MathUtils {
 
 
     /**
-     * TODO produceZYZRotationMatrix javadoc
+     * Generates a Z\-Y\-Z Euler rotation matrix for angles a, b, c (in radians).
      *
-     * @param a
-     * @param b
-     * @param c
-     * @return
+     * @param a rotation about the Z\-axis (first Z rotation) in radians
+     * @param b rotation about the Y\-axis (tilt, beta) in radians
+     * @param c rotation about the Z\-axis (second Z rotation) in radians
+     * @return a new 3x3 rotation matrix as double[][] in format matrix[row][col]
+     *         corresponding to the composition Rz(a) * Ry(b) * Rz(c)
      */
-    public static double[][] produceZYZRotationMatrix(double a, double b, double c) {
+    public static double[] @NotNull [] produceZYZRotationMatrix(double a, double b, double c) {
 
         double sina = Math.sin(a);
         double cosa = Math.cos(a);
@@ -106,7 +107,8 @@ public class MathUtils {
      * @param vector - the vector as double array of length n
      * @return the result of the multiplication as an array of double on length n
      */
-    public static double[] matVecProdD(double[][] matrix, double[] vector) {
+    @Contract(pure = true)
+    public static double @NotNull [] matVecProdD(double[][] matrix, double @NotNull [] vector) {
         double[] result = new double[vector.length];
         for (int i = 0; i < result.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {

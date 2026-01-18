@@ -1,27 +1,3 @@
-/*
- *  The MIT License (MIT)
- *
- *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -37,6 +13,7 @@ import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.DiscordUtil;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -45,7 +22,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
-import com.github.fierioziy.particlenativeapi.api.Particles_1_8;
+import com.github.fierioziy.particlenativeapi.api.Particles_1_13;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -54,6 +31,8 @@ import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
+import com.sk89q.worldedit.function.mask.BlockTypeMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -62,6 +41,7 @@ import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -74,32 +54,43 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public final class PlotUtils {
     private PlotUtils() {}
 
     private static final String MSG_LINE = "--------------------------";
+    public static final Map<UUID, BukkitTask> plotReminder = new HashMap<>();
 
     /**
      * Returns the plot that the player is currently standing on or next to.
@@ -110,23 +101,47 @@ public final class PlotUtils {
      */
     @Nullable
     public static AbstractPlot getCurrentPlot(@NotNull Builder builder, Status... statuses) {
+        boolean dev = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE);
+        if (dev) {
+            PlotSystem.getPlugin().getComponentLogger().info(text(
+                    "getCurrentPlot: enter | player=" + (builder.isOnline() ? builder.getPlayer().getName() : builder.getUUID()) +
+                            ", statuses=" + (statuses == null ? "null" : java.util.Arrays.toString(statuses))
+            ));
+        }
+
         if (builder.isOnline()) {
             String worldName = builder.getPlayer().getWorld().getName();
+            if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: worldName=" + worldName));
 
             if (PlotWorld.isOnePlotWorld(worldName)) {
-                int id = Integer.parseInt(worldName.substring(2));
-                AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
-                        ? DataProvider.PLOT.getPlotById(id)
-                        : DataProvider.TUTORIAL_PLOT.getById(id).orElseThrow();
-                if (statuses == null) return plot;
-                for (Status status : statuses) if (status == plot.getStatus()) return plot;
-                return null;
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: detected OnePlotWorld"));
+                try {
+                    int id = Integer.parseInt(worldName.substring(2));
+                    AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
+                            ? DataProvider.PLOT.getPlotById(id)
+                            : DataProvider.TUTORIAL_PLOT.getById(id).orElse(null);
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: one-plot id=" + id + ", resolved=" + (plot == null ? "null" : (plot.getClass().getSimpleName() + "#" + plot.getId() + " status=" + plot.getStatus()))));
+
+                    if (plot == null) return null;
+                    if (statuses == null || statuses.length == 0) return plot;
+                    for (Status status : statuses) if (status == plot.getStatus()) return plot;
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: status filter did not match for plot #" + plot.getId()));
+                    return null;
+                } catch (NumberFormatException ex) {
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().warn(text("getCurrentPlot: failed to parse plot id from worldName=" + worldName), ex);
+                    return null;
+                }
             } else if (PlotWorld.isCityPlotWorld(worldName)) {
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: detected CityPlotWorld"));
                 String cityID = worldName.substring(2);
                 Optional<CityProject> city = DataProvider.CITY_PROJECT.getById(cityID);
-                if (city.isEmpty()) return null;
+                if (city.isEmpty()) {
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().warn(text("getCurrentPlot: city not found for id=" + cityID));
+                    return null;
+                }
 
                 List<Plot> plots = DataProvider.PLOT.getPlots(city.get(), statuses);
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: candidate plots in city=" + city.get().getName(builder.isOnline() ? builder.getPlayer() : null) + ", count=" + plots.size()));
                 if (plots.isEmpty()) return null;
                 if (plots.size() == 1) return plots.getFirst();
 
@@ -134,19 +149,26 @@ public final class PlotUtils {
                 Location playerLoc = builder.getPlayer().getLocation().clone();
                 Vector3 playerVector = Vector3.at(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
 
-                double distance = 100000000;
+                double distance = Double.MAX_VALUE;
                 Plot chosenPlot = plots.getFirst();
                 for (Plot plot : plots) {
                     if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) continue;
                     BlockVector3 plotCenter = plot.getCenter();
-                    if (plotCenter.withY((int) playerVector.y()).distance(playerVector.toBlockPoint()) < distance) {
-                        distance = plotCenter.distance(playerVector.toBlockPoint());
+                    double currentDistance = plotCenter.withY((int) playerVector.y()).distance(playerVector.toBlockPoint());
+                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: candidate #" + plot.getId() + " center=" + plotCenter + " distance=" + currentDistance));
+                    if (currentDistance < distance) {
+                        distance = currentDistance;
                         chosenPlot = plot;
                     }
                 }
 
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: chosen plot id=" + chosenPlot.getId() + ", distance=" + distance));
                 return chosenPlot;
+            } else {
+                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: world is not a plot world"));
             }
+        } else if (dev) {
+            PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: builder is offline"));
         }
         return null;
     }
@@ -175,8 +197,8 @@ public final class PlotUtils {
                 clipboard.getMaximumPoint().withY(PlotWorld.MAX_WORLD_HEIGHT));
     }
 
-    public static boolean isPlotWorld(World world) {
-        return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
+    public static boolean isPlotWorld(@NotNull World world) {
+        return DependencyManager.getMultiverseCore().getWorldManager().isLoadedWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
     public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, World world) throws IOException {
@@ -186,17 +208,33 @@ public final class PlotUtils {
             clipboard = reader.read();
         }
 
-        Polygonal2DRegion region = new Polygonal2DRegion(BukkitAdapter.adapt(world), plot.getOutline(), clipboard.getMinimumPoint().y(), clipboard.getMaximumPoint().y());
+        Polygonal2DRegion region = new Polygonal2DRegion(
+                BukkitAdapter.adapt(world),
+                plot.getOutline(),
+                clipboard.getMinimumPoint().y(),
+                clipboard.getMaximumPoint().y()
+        );
+
+        BlockArrayClipboard newClipboard = new BlockArrayClipboard(region);
+        newClipboard.setOrigin(BlockVector3.at(region.getCenter().x(), region.getMinimumPoint().y(), region.getCenter().z()));
+        ForwardExtentCopy copy = new ForwardExtentCopy(
+                clipboard,
+                region,
+                newClipboard,
+                region.getMinimumPoint()
+        );
+
+        Operations.complete(copy);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-            writer.write(new BlockArrayClipboard(region));
+            writer.write(newClipboard);
         }
         return outputStream.toByteArray();
     }
 
-    public static @NotNull String getDefaultSchematicPath() {
-        return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "schematics") + File.separator;
+    public static @NotNull Path getTutorialSchematicPath() {
+        return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "tutorial", "schematics");
     }
 
     public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException {
@@ -236,17 +274,19 @@ public final class PlotUtils {
             try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
                 double initialY = clipboard.getRegion().getMinimumY();
                 double offset = initialY - cuboidRegion.getMinimumY();
-                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0,offset,0))));
+                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
             }
         }
 
         // Set Completed Schematic
-        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getID(), outputStream.toByteArray());
+        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
         if (!successful) return false;
 
         // If plot was created in a void world, copy the result to the city world
         if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
-            AbstractPlotGenerator.pasteSchematic(null, outputStream.toByteArray(), new CityPlotWorld(plot), false);
+            var cpw = new CityPlotWorld(plot);
+            Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(cpw.getBukkitWorld()), BlockTypes.AIR);
+            AbstractPlotGenerator.pasteSchematic(airMask, outputStream.toByteArray(), cpw, false, true);
         }
         return true;
     }
@@ -317,10 +357,10 @@ public final class PlotUtils {
                 if (interval == -2 || abandonDate.isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (Actions.abandonPlot(plot, DiscordUtil.AbandonType.INACTIVE)) {
-                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getID() + " due to inactivity!"));
+                    if (Actions.abandonPlot(plot)) {
+                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
                     } else {
-                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getID() + " due to inactivity!"));
+                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
                     }
                 });
             }
@@ -340,7 +380,10 @@ public final class PlotUtils {
     public static void startUnfinishedPlotReminderTimer(Player player) {
         int interval = PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.UNFINISHED_REMINDER_INTERVAL);
         if (interval == -1) return;
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())), 0L, 20L * 60 * interval);
+        plotReminder.put(player.getUniqueId(), Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(),
+                () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())),
+                20L * 60 * interval,
+                20L * 60 * interval));
     }
 
     public static final class Actions {
@@ -403,7 +446,7 @@ public final class PlotUtils {
                             if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
                             if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
 
-                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true);
+                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true, false);
                         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
 
                         playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
@@ -411,48 +454,58 @@ public final class PlotUtils {
                     }
                 }
                 // Send to discord
-                DiscordUtil.getOpt(plot.getID()).ifPresent(event -> event.onPlotAbandon(type));
+                DiscordUtil.getOpt(plot.getId()).ifPresent(event -> event.onPlotAbandon(type));
             } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
+                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"), ex);
                 return false;
             }
 
-            try {
-                CompletableFuture.runAsync(() -> {
-                    if (plot.getPlotType() == PlotType.TUTORIAL) return;
-                    Plot dPlot = (Plot) plot;
-                    DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getID());
-                    for (Builder builder : dPlot.getPlotMembers()) dPlot.removePlotMember(builder);
+            CompletableFuture.runAsync(() -> {
+                if (plot.getPlotType() == PlotType.TUTORIAL) return;
+                Plot dPlot = (Plot) plot;
+                boolean successful;
+                successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
 
-                    if (plot.getPlotOwner() != null) {
-                        Cache.clearCache(plot.getPlotOwner().getUUID());
-                        if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1)) return;
-                    }
+                for (Builder builder : dPlot.getPlotMembers()) {
+                    if (!successful) break;
+                    successful = dPlot.removePlotMember(builder);
+                }
 
-                    dPlot.setPlotOwner(null);
-                    dPlot.setLastActivity(true);
-                    dPlot.setStatus(Status.unclaimed);
-                    dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
-                }).join();
-            } catch (CompletionException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getID() + "!"), ex);
-                return false;
-            }
+                if (successful && plot.getPlotOwner() != null) {
+                    Cache.clearCache(plot.getPlotOwner().getUUID());
+                    successful = plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
+                }
+
+                if (successful) {
+                    successful = dPlot.setPlotOwner(null)
+                            && dPlot.setLastActivity(true)
+                            && dPlot.setStatus(Status.unclaimed)
+                            && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+                }
+
+                successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getId(), null);
+
+                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
+            });
             return true;
         }
 
         public static boolean deletePlot(Plot plot) {
             if (abandonPlot(plot, DiscordUtil.AbandonType.COMMANDS)) {
-                CompletableFuture.runAsync(() -> DataProvider.PLOT.deletePlot(plot.getID()));
+                CompletableFuture.runAsync(() -> {
+                    if (DataProvider.PLOT.deletePlot(plot.getId())) return;
+                    PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
+                });
                 return true;
             }
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getID() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
             return false;
         }
     }
 
     public static final class Cache {
         private Cache() {}
+
         private static final HashMap<UUID, List<Plot>> cachedInProgressPlots = new HashMap<>();
 
         public static void clearCache() {
@@ -478,28 +531,29 @@ public final class PlotUtils {
 
     public static final class Effects {
         private Effects() {}
+
         public static final int CACHE_UPDATE_TICKS = 20 * 60;
         private static int time;
 
         private static boolean particleAPIEnabled = false;
-        private static Particles_1_8 particles;
+        private static Particles_1_13 particles;
 
         public static void loadParticleNativeAPI() {
-            particleAPIEnabled = PlotSystem.DependencyManager.isParticleNativeAPIEnabled();
+            particleAPIEnabled = DependencyManager.isParticleNativeAPIEnabled();
 
             // get API
             ParticleNativeAPI api = ParticleNativePlugin.getAPI();
 
             // choose particle list you want to use
-            particles = api.getParticles_1_8();
+            particles = api.getParticles_1_13();
         }
 
         public static void startTimer() {
-            if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+            if (DependencyManager.isParticleNativeAPIEnabled())
                 loadParticleNativeAPI();
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
-                if (PlotSystem.DependencyManager.isParticleNativeAPIEnabled())
+                if (DependencyManager.isParticleNativeAPIEnabled())
                     loadParticleNativeAPI();
             }, 20 * 10L);
 
@@ -550,6 +604,7 @@ public final class PlotUtils {
 
     public static final class ChatFormatting {
         private ChatFormatting() {}
+
         public static void sendLinkMessages(AbstractPlot plot, Player player) {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 Component[] tc = new Component[3];
@@ -610,10 +665,10 @@ public final class PlotUtils {
         }
 
         public static void sendGroupTipMessage(@NotNull Plot plot, Player player) {
-            if (plot.getPlotMembers().isEmpty()) {
+            if (plot.getPlotMembers().isEmpty() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
                 Component tc = text("» ", DARK_GRAY)
                         .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
-                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot members " + plot.getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.MEMBERS)));
 
                 player.sendMessage(tc);
@@ -624,15 +679,15 @@ public final class PlotUtils {
         public static void sendFeedbackMessage(@NotNull List<ReviewNotification> notifications, @NotNull Player player) {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
             for (ReviewNotification notification : notifications) {
-                PlotReview review = DataProvider.REVIEW.getReview(notification.getReviewId()).orElseThrow();
-                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getID())), GREEN)));
+                PlotReview review = DataProvider.REVIEW.getReview(notification.reviewId()).orElseThrow();
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getId())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getID()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
 
-                DataProvider.REVIEW.removeReviewNotification(notification.getReviewId(), notification.getUuid());
+                DataProvider.REVIEW.removeReviewNotification(notification.reviewId(), notification.uuid());
 
                 if (notifications.size() != notifications.indexOf(notification) + 1) {
                     player.sendMessage(empty());

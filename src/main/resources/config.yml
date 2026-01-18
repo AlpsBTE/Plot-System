@@ -2,12 +2,9 @@
 # |            Plot System - by Alps BTE
 # -----------------------------------------------------
 # | [Github Repo] https://github.com/AlpsBTE/PlotSystem
-# | [Config Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/Configuration
-# | [Contacts - Discord] R3tuxn#7169, Cinnazeyy#2440
+# | [Documentation] https://github.com/AlpsBTE/Plot-System/wiki/config.yml
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
 # -----------------------------------------------------
-
-# Keep updated about newer versions
-check-for-updates: true
 
 # Enables special dev tools and features for development
 # NOTE: Do not change if you do not know what you are doing
@@ -20,12 +17,6 @@ spawn-world: default
 # Enable score requirement to restrict players to certain plot difficulties
 # Prevents beginners from generating difficult plots
 enable-score-requirement: true
-
-# Automatic synchronisation of schematic files from SFTP/FTP servers
-# [interval] -> default: 3600 seconds (1 hour)
-sync-ftp-files:
-  sff-enable: false
-  sync-interval: 3600
 
 # How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
@@ -54,11 +45,15 @@ database:
   dbname: plotsystem
   username: plotsystem
   password: minecraft
+  max-lifetime: 1800000 # 30 minutes
+  connection-timeout: 30000 # 30 seconds
+  keepalive-time: 120000 # 2 minutes
+  maximum-pool-size: 10 # Maximum number of connections in the pool
 
 
 # -----------------------------------------------------
 # | Leaderboards: Shows top plot and build scores / Are placed in the spawn world
-# | NOTE: Requires the HolographicDisplays plugin to work
+# | NOTE: Requires the DecentHolograms plugin to work
 # -----------------------------------------------------
 holograms:
   # Displays the top 10 builders with the highest score
@@ -77,8 +72,6 @@ display-options:
   show-monthly: true
   show-yearly: false
   show-lifetime: false
-  action-bar-enable: true
-  action-bar-radius: 30
 
 
 # -----------------------------------------------------
@@ -111,4 +104,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 4.0
+config-version: 4.2

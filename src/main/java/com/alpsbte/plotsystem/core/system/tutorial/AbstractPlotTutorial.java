@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
@@ -45,6 +21,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +31,12 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
@@ -96,7 +78,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     protected TutorialNPC initNpc() {
         return new TutorialNPC(
-                "ps-tutorial-" + tutorialPlot.getID(),
+                "ps-tutorial-" + tutorialPlot.getId(),
                 ChatColor.GOLD + ChatColor.BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
                 ChatColor.GRAY + "(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")",
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
@@ -110,7 +92,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws IOException {
+    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws IOException {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
             plotGenerator.generateOutlines(schematicId);
@@ -118,7 +100,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotPermissionChange(UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
+    public void onPlotPermissionChange(@NotNull UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null) {
             plotGenerator.setBuildingEnabled(isBuildingAllowed);
@@ -159,12 +141,14 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             if (stageId >= stages.size()) {
                 if (!tutorialPlot.isComplete()) tutorialPlot.setComplete();
-            } else if (stageId > tutorialPlot.getStageID()) tutorialPlot.setStageID(stageId);
+            } else if (stageId > tutorialPlot.getStageID() && !tutorialPlot.setStageID(stageId)) {
+                PlotSystem.getPlugin().getComponentLogger().error("Could not save tutorial progress for tutorial plot #{}!", tutorialPlot.getId());
+            }
         });
     }
 
     @Override
-    public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
+    public void onSwitchWorld(@NotNull UUID playerUUID, int tutorialWorldIndex) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
             plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
@@ -209,7 +193,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param player The player to send the message to.
      * @param title  The title of the stage.
      */
-    protected static void sendStageUnlockedMessage(Player player, String title) {
+    protected static void sendStageUnlockedMessage(@NotNull Player player, String title) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.NEW_STAGE_UNLOCKED)).color(AQUA).decorate(BOLD));
         player.sendMessage(text("  ◆ ", WHITE, BOLD).append(text(title).color(GOLD).decorate(BOLD)));
@@ -223,7 +207,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param tutorialName The name of the tutorial.
      * @see TutorialCategory
      */
-    protected static void sendTutorialCompletedMessage(Player player, String tutorialName) {
+    protected static void sendTutorialCompletedMessage(@NotNull Player player, String tutorialName) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIAL_COMPLETED).toUpperCase()).color(AQUA).decorate(BOLD));
         player.sendMessage(text("  ◆ ").color(WHITE).decorate(BOLD).append(text(tutorialName).color(GOLD)));

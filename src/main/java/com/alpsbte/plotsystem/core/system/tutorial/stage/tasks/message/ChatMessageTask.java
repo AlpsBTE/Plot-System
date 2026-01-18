@@ -1,32 +1,8 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
-import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
@@ -34,9 +10,12 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import static net.kyori.adventure.text.Component.*;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public class ChatMessageTask extends AbstractTask {
     private final Object[] messages;
@@ -66,7 +45,7 @@ public class ChatMessageTask extends AbstractTask {
         return isWaitToContinue;
     }
 
-    public static void sendTaskMessage(Player player, Object[] messages, boolean waitToContinue) {
+    public static void sendTaskMessage(@NotNull Player player, Object[] messages, boolean waitToContinue) {
         AbstractTutorial tutorial = AbstractTutorial.getActiveTutorial(player.getUniqueId());
         if (tutorial == null || tutorial.getNPC() == null) return;
 
@@ -75,12 +54,12 @@ public class ChatMessageTask extends AbstractTask {
         player.sendMessage(text(tutorial.getNPC().getDisplayName() + " ")
                 .append(TutorialUtils.CHAT_PREFIX_COMPONENT));
         for (Object message : messages) {
-            if (message instanceof ClickableTaskMessage) {
-                player.sendMessage(((ClickableTaskMessage) message).getComponent());
-            } else if (message instanceof Component) {
-                player.sendMessage(((Component) message).color(GRAY));
-            } else if (message instanceof String) {
-                player.sendMessage(text((String) message).color(GRAY));
+            if (message instanceof ClickableTaskMessage ctm) {
+                player.sendMessage(ctm.getComponent());
+            } else if (message instanceof Component c) {
+                player.sendMessage(c.color(GRAY));
+            } else if (message instanceof String s) {
+                player.sendMessage(text(s).color(GRAY));
             }
         }
 
@@ -90,7 +69,7 @@ public class ChatMessageTask extends AbstractTask {
                 LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PROCEED)));
     }
 
-    public static Component getContinueButtonComponent(String text, String hoverText) {
+    public static @NotNull Component getContinueButtonComponent(String text, String hoverText) {
         return text("[", DARK_GRAY).append(text(text, GREEN).append(text("]", DARK_GRAY)))
                 .hoverEvent(HoverEvent.showText(text(hoverText, GRAY))).clickEvent(ClickEvent.runCommand("/tutorial continue"));
     }
@@ -100,12 +79,6 @@ public class ChatMessageTask extends AbstractTask {
         private final Component messageComponent;
         private final Component hoverTextComponent;
         private final ClickEvent clickEvent;
-
-        public ClickableTaskMessage(String message, String hoverText, ClickEvent clickEvent) {
-            this.messageComponent = text(message);
-            this.hoverTextComponent = text(hoverText);
-            this.clickEvent = clickEvent;
-        }
 
         public ClickableTaskMessage(Component messageComponent, Component hoverTextComponent, ClickEvent clickEvent) {
             this.messageComponent = messageComponent;

@@ -1,27 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -29,16 +5,15 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
-import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.sk89q.worldedit.math.BlockVector2;
-import com.sk89q.worldedit.math.BlockVector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,7 +54,7 @@ public class Plot extends AbstractPlot {
 
     @Override
     public boolean setStatus(@NotNull Status status) {
-        if (DataProvider.PLOT.setStatus(getID(), status)) {
+        if (DataProvider.PLOT.setStatus(getId(), status)) {
             this.status = status;
             return true;
         }
@@ -96,7 +71,7 @@ public class Plot extends AbstractPlot {
 
     @Override
     public boolean setPlotOwner(@Nullable Builder plotOwner) {
-        if (DataProvider.PLOT.setPlotOwner(getID(), plotOwner == null ? null : plotOwner.getUUID())) {
+        if (DataProvider.PLOT.setPlotOwner(getId(), plotOwner == null ? null : plotOwner.getUUID())) {
             this.plotOwner = plotOwner;
             return true;
         }
@@ -126,7 +101,7 @@ public class Plot extends AbstractPlot {
     @Override
     public boolean setLastActivity(boolean setNull) {
         LocalDate activityDate = setNull ? null : LocalDate.now();
-        if (DataProvider.PLOT.setLastActivity(getID(), activityDate)) {
+        if (DataProvider.PLOT.setLastActivity(getId(), activityDate)) {
             this.lastActivity = activityDate;
             return true;
         }
@@ -143,7 +118,7 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean setPlotType(PlotType type) {
-        if (DataProvider.PLOT.setPlotType(getID(), type)) {
+        if (DataProvider.PLOT.setPlotType(getId(), type)) {
             this.plotType = type;
             return true;
         }
@@ -164,24 +139,19 @@ public class Plot extends AbstractPlot {
 
     @Override
     public byte[] getInitialSchematicBytes() {
-        return DataProvider.PLOT.getInitialSchematic(getID());
+        return DataProvider.PLOT.getInitialSchematic(getId());
     }
 
     public byte[] getCompletedSchematic() {
-        return DataProvider.PLOT.getCompletedSchematic(getID());
-    }
-
-    @Override
-    public BlockVector3 getCenter() {
-        return super.getCenter();
+        return DataProvider.PLOT.getCompletedSchematic(getId());
     }
 
     public List<PlotReview> getReviewHistory() {
-        return DataProvider.REVIEW.getPlotReviewHistory(getID());
+        return DataProvider.REVIEW.getPlotReviewHistory(getId());
     }
 
     public Optional<PlotReview> getLatestReview() {
-        return DataProvider.REVIEW.getLatestReview(getID());
+        return DataProvider.REVIEW.getLatestReview(getId());
     }
 
     public boolean isReviewed() {
@@ -193,17 +163,17 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean setPasted(boolean pasted) {
-        return DataProvider.PLOT.setPasted(getID(), pasted);
+        return DataProvider.PLOT.setPasted(getId(), pasted);
     }
 
     public boolean addPlotMember(Builder member) {
-        List<Builder> members = getPlotMembers();
-        if (members.size() < 3 && members.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
+        List<Builder> plotMembers = getPlotMembers();
+        if (plotMembers.size() < 3 && plotMembers.stream().noneMatch(m -> m.getUUID().equals(member.getUUID()))) {
             Slot slot = member.getFreeSlot();
             if (slot != null) {
-                members.add(member);
-                if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
-                    if (!member.setSlot(slot, getID())) return false;
+                plotMembers.add(member);
+                if (DataProvider.PLOT.addPlotMember(getId(), member)) {
+                    if (!member.setSlot(slot, getId())) return false;
                     getPermissions().addBuilderPerms(member.getUUID());
                     return true;
                 }
@@ -213,11 +183,11 @@ public class Plot extends AbstractPlot {
     }
 
     public boolean removePlotMember(Builder member) {
-        List<Builder> members = getPlotMembers();
-        if (!members.isEmpty() && members.contains(member)) {
-            members.remove(member);
-            if (DataProvider.PLOT.setPlotMembers(getID(), members)) {
-                Slot slot = member.getSlotByPlotId(getID());
+        List<Builder> plotMembers = getPlotMembers();
+        if (!plotMembers.isEmpty() && plotMembers.contains(member)) {
+            plotMembers.remove(member);
+            if (DataProvider.PLOT.removePlotMember(getId(), member)) {
+                Slot slot = member.getSlotByPlotId(getId());
                 if (slot != null && !member.setSlot(slot, -1)) return false;
                 if (getWorld().isWorldGenerated()) getPermissions().removeBuilderPerms(member.getUUID());
                 return true;

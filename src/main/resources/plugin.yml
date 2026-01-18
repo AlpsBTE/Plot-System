@@ -1,10 +1,12 @@
 main: com.alpsbte.plotsystem.PlotSystem
-version: 5.0.0
+version: "${version}"
 api-version: "1.21"
 name: Plot-System
-author: R3tuxn & Cinnazeyy
-softdepend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core, WorldEdit,
-              DecentHolograms, WorldGuard, WorldGuardExtraFlags, HeadDatabase, ProtocolLib, ParticleNativeAPI, DiscordPlotSystem ]
+description: "${description}"
+author: R3tuxn, Cinnazeyy & Zoriot
+depend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core,
+          DecentHolograms, WorldGuard, HeadDatabase ]
+softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI, DiscordPlotSystem ]
 
 commands:
   cancelchat:

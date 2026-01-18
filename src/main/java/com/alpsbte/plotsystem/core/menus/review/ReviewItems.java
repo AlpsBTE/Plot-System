@@ -10,7 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class ReviewItems {
@@ -48,7 +53,7 @@ public class ReviewItems {
                         .color(AQUA)
                         .decoration(BOLD, true))
                 .setLore(new LoreBuilder()
-                        .addLine(text(LangUtil.getInstance().get(player, LangPaths.Plot.ID) + ": ", GRAY).append(text(plot.getID(), WHITE)))
+                        .addLine(text(LangUtil.getInstance().get(player, LangPaths.Plot.ID) + ": ", GRAY).append(text(plot.getId(), WHITE)))
                         .emptyLine()
                         .addLines(text(LangUtil.getInstance().get(player, LangPaths.Plot.OWNER) + ": ", GRAY).append(text(plotOwner, WHITE)),
                                 text(LangUtil.getInstance().get(player, LangPaths.Plot.CITY) + ": ", GRAY).append(text(city, WHITE)),

@@ -1,39 +1,15 @@
-/*
- * The MIT License (MIT)
- *
- *  Copyright © 2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.utils.items;
 
-import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.alpslib.utils.item.ItemUtils;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public enum BaseItems {
     COMPANION_ITEM("companion-item"),
 
-    LEADERBOARD_PLOT("leaderboard-plot"),
     LEADERBOARD_SCORE("leaderboard-score"),
 
     PLOT_UNFINISHED("plot-unfinished"),
@@ -66,7 +42,6 @@ public enum BaseItems {
     REVIEW_POINT_FOUR("review-point-four"),
     REVIEW_POINT_FIVE("review-point-five"),
     REVIEW_SUBMIT("review-submit"),
-    REVIEW_CANCEL("review-cancel"),
     REVIEW_INFO("review-info"),
     REVIEW_INFO_PLOT("review-info-plot"),
     REVIEW_TOGGLE_OPTIONAL("review-toggle-optional"),
@@ -95,13 +70,13 @@ public enum BaseItems {
         String materialString = ConfigUtil.getInstance().configs[2].getString(configPath + ".material");
         materialString = materialString == null ? Material.BARRIER.name() : materialString;
         Object customModelData = ConfigUtil.getInstance().configs[2].get(configPath + ".modelId");
-        itemStack = Utils.getConfiguredItem(materialString, customModelData);
+        itemStack = ItemUtils.getConfiguredItem(materialString, customModelData);
 
         itemStack.getItemMeta().setAttributeModifiers(null);
-        itemStack.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS);
+        itemStack.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
     }
 
-    public ItemStack getItem() {
+    public @NotNull ItemStack getItem() {
         return itemStack.clone();
     }
 }
