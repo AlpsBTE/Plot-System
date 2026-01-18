@@ -120,6 +120,6 @@ public class DefaultPlotGenerator extends AbstractPlotGenerator {
         LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, getBuilder().getName());
 
         // Create the plot to discord forum
-        DiscordUtil.getOpt(plot.getID()).ifPresent(event -> event.onPlotCreate(this.plot));
+        DiscordUtil.getOpt(plot.getId()).ifPresent(event -> event.onPlotCreate(this.plot));
     }
 }

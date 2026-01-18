@@ -71,7 +71,7 @@ public class CMD_Plot_UndoSubmit extends SubCommand {
 
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 PlotUtils.Actions.undoSubmit(plot);
-                DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotUndoSubmit);
+                DiscordUtil.getOpt(plot.getId()).ifPresent(DiscordUtil.PlotEventAction::onPlotUndoSubmit);
 
                 sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.UNDID_SUBMISSION, plot.getId() + "")));
                 player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);

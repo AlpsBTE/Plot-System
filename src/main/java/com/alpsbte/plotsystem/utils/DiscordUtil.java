@@ -182,11 +182,11 @@ public class DiscordUtil {
                 geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
             } catch (IOException | OutOfProjectionBoundsException ignored) { }
 
-            int plotID = plot.getID();
+            int plotID = plot.getId();
 
             UUID ownerUUID = plot.getPlotOwner().getUUID();
 
-            String cityProjectID = cityProject.getID();
+            String cityProjectID = cityProject.getId();
 
             String countryCode = cityProject.getCountry().getCode();
 

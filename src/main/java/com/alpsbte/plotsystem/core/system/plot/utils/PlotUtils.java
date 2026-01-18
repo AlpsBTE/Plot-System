@@ -351,13 +351,13 @@ public final class PlotUtils {
                 // Check if today is within 5 days before the plot's abandon date
                 if(inNotificationWindow && LocalDate.now().isAfter(abandonDate.minusDays(5))) {
                     // Notify the plot's owner on discord
-                    DiscordUtil.getOpt(plot.getID()).ifPresent(event -> event.onPlotInactivity(abandonDate));
+                    DiscordUtil.getOpt(plot.getId()).ifPresent(event -> event.onPlotInactivity(abandonDate));
                 }
 
                 if (interval == -2 || abandonDate.isAfter(LocalDate.now())) continue;
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (Actions.abandonPlot(plot)) {
+                    if (Actions.abandonPlot(plot, DiscordUtil.AbandonType.INACTIVE)) {
                         PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
                     } else {
                         PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
@@ -405,7 +405,7 @@ public final class PlotUtils {
                 }
             }
 
-            DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotSubmit);
+            DiscordUtil.getOpt(plot.getId()).ifPresent(DiscordUtil.PlotEventAction::onPlotSubmit);
         }
 
         public static void undoSubmit(@NotNull Plot plot) {

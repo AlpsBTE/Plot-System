@@ -130,11 +130,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         if (!isRejected) {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getId()), getParticipantsString()));
             if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
-            DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotApprove);
+            DiscordUtil.getOpt(plot.getId()).ifPresent(DiscordUtil.PlotEventAction::onPlotApprove);
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getId()), getParticipantsString()));
             PlotUtils.Actions.undoSubmit(plot);
-            DiscordUtil.getOpt(plot.getID()).ifPresent(DiscordUtil.PlotEventAction::onPlotReject);
+            DiscordUtil.getOpt(plot.getId()).ifPresent(DiscordUtil.PlotEventAction::onPlotReject);
         }
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
