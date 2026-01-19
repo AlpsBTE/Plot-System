@@ -6,9 +6,12 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.fastasyncworldedit.core.extent.clipboard.CPUOptimizedClipboard;
 import com.google.common.annotations.Beta;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +77,9 @@ public class CityPlotWorld extends PlotWorld {
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(getPlot().getInitialSchematicBytes());
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
+            clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
+                    new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
+            ));
         }
         if (clipboard != null) {
             int plotHeight = clipboard.getMinimumPoint().y();
