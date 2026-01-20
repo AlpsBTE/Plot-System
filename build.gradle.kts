@@ -46,7 +46,6 @@ dependencies {
     implementation(libs.com.alpsbte.alpslib.alpslib.utils)
     implementation(libs.org.mariadb.jdbc.mariadb.java.client)
     implementation(libs.com.zaxxer.hikaricp)
-    compileOnly(libs.io.papermc.paper.paper.api)
     implementation(platform(libs.com.intellectualsites.bom.bom.newest))
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
     compileOnly(libs.com.sk89q.worldguard.worldguard.bukkit)
@@ -57,13 +56,14 @@ dependencies {
     compileOnly(libs.de.oliver.fancynpcs)
     compileOnly(libs.li.cinnazeyy.langlibs.api)
     compileOnly(libs.commons.io.commons.io)
+    compileOnly(libs.io.papermc.paper.paper.api)
 }
 
 val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
 val details = versionDetails()
 
 group = "com.alpsbte"
-version = "5.0.0" // + "-" + details.commitDistance + "-" + details.gitHash + "-SNAPSHOT"
+version = "5.0.1" + "-" + details.gitHash + "-SNAPSHOT"
 description = "An easy to use building system for the BuildTheEarth project."
 java.sourceCompatibility = JavaVersion.VERSION_21
 
