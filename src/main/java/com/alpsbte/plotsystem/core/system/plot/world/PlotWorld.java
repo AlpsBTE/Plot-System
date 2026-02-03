@@ -8,10 +8,12 @@ import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.fastasyncworldedit.core.extent.clipboard.CPUOptimizedClipboard;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -142,7 +144,9 @@ public class PlotWorld implements IWorld {
             Clipboard clipboard;
             ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
             try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-                clipboard = reader.read();
+                clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
+                        new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
+                ));
             }
             if (clipboard != null) {
                 return (int) clipboard.getRegion().getCenter().y() - clipboard.getMinimumPoint().y();

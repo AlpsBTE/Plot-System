@@ -11,13 +11,14 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.fastasyncworldedit.core.extent.clipboard.CPUOptimizedClipboard;
 import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -140,7 +141,9 @@ public abstract class AbstractPlot {
     public BlockVector3 getCoordinates() throws IOException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(getInitialSchematicBytes());
         try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(inputStream)) {
-            Clipboard clipboard = reader.read();
+            var clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
+                    new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
+            ));
             if (clipboard != null) return clipboard.getOrigin();
         }
         return null;
@@ -149,7 +152,9 @@ public abstract class AbstractPlot {
     public BlockVector3 getCenter() {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(getInitialSchematicBytes());
         try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(inputStream)){
-            Clipboard clipboard = reader.read();
+            var clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
+                    new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
+            ));
             if (clipboard != null) {
                 Vector3 clipboardCenter = clipboard.getRegion().getCenter();
                 return BlockVector3.at(clipboardCenter.x(), this.getWorld().getPlotHeightCentered(), clipboardCenter.z());
