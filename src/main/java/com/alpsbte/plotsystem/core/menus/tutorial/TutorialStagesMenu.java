@@ -95,7 +95,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         if (playerCurrentStage != -1) {
             getMenu().getSlot(49).setItem(new ItemBuilder(Material.BARRIER)
                     .setName(RED + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_END))
-                    .setLore(new LegacyLoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_END)).build())
+                    .setStringLore(new LegacyLoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.TUTORIAL_END)).build())
                     .build());
         } else getMenu().getSlot(49).setItem(MenuItems.backMenuItem(getMenuPlayer()));
 
@@ -114,7 +114,7 @@ public class TutorialStagesMenu extends AbstractMenu {
         ItemBuilder tutorialItem = new ItemBuilder(Material.valueOf(tutorialItemName));
         tutorialItem.setName(AQUA + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.TUTORIAL_BEGINNER));
         if (plot != null) {
-            tutorialItem.setLore(
+            tutorialItem.setStringLore(
                     new LegacyLoreBuilder().addLines("",
                                     LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + ": " + WHITE +
                                             (playerHighestStage + (isTutorialCompleted ? 1 : 0)) + "/" + ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES))
@@ -217,7 +217,7 @@ public class TutorialStagesMenu extends AbstractMenu {
 
         return new ItemBuilder(stageItem)
                 .setName(titleColor + BOLD.toString() + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + " " + (stageId + 1))
-                .setLore(lore.build())
+                .setStringLore(lore.build())
                 .setEnchanted(playerCurrentStage == stageId)
                 .build();
     }

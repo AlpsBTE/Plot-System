@@ -78,7 +78,6 @@ tasks.withType<Javadoc> {
 }
 
 tasks.shadowJar {
-    exclude("org/jetbrains/annotations/**")
     archiveClassifier = ""
 
     relocationPrefix = "$group.plotsystem.shaded"
