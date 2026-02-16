@@ -40,7 +40,10 @@ import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.SpawnCategory;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -58,7 +61,6 @@ public class PlotWorldGenerator {
     private final WorldManager worldManager = DependencyManager.getMultiverseCore().getWorldManager();
     private final String worldName;
     private static final World.Environment environment = World.Environment.NORMAL;
-    private static final WorldType worldType = WorldType.FLAT;
 
     public PlotWorldGenerator(String worldName) throws Exception {
         long startTime = System.nanoTime();
@@ -111,7 +113,7 @@ public class PlotWorldGenerator {
         if (!worldManager.isLoadedWorld(worldName)) {
             worldManager.importWorld(ImportWorldOptions.worldName(worldName)
                     .environment(environment)
-                    .generator("VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}")
+                    .generator("Plot-System")
                     .useSpawnAdjust(false)
             );
         }
