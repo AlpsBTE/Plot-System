@@ -189,10 +189,8 @@ public class PlotSystem extends JavaPlugin {
         return plugin;
     }
 
-    public void initDatabase() throws IOException, SQLException, RuntimeException {
-        // We currently want to save everything in UTC to have no mismatch, because CURRENT_TIMESTAMP uses UTC + DateTime doesn't support timezones (we would have to use TIMESTAMP)
-        // These url parameters align behaviour (at least on linux)
-        DatabaseConnection.initializeDatabase(DatabaseConfigPaths.getConfig(getConfig()), true, "serverTimezone=UTC&forceConnectionTimeZoneToSession=true");
+    public void initDatabase() throws IOException, SQLException {
+        DatabaseConnection.initializeDatabase(DatabaseConfigPaths.getConfig(getConfig()), true);
         var initScript = CharStreams.toString(Objects.requireNonNull(getTextResource("DATABASE.sql")));
         try (var con = DatabaseConnection.getConnection(); var s = con.createStatement()) {
             s.execute(initScript);
