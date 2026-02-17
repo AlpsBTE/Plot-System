@@ -79,8 +79,7 @@ tasks.withType<Javadoc> {
 
 tasks.shadowJar {
     archiveClassifier = ""
-
-    relocationPrefix = "$group.plotsystem.shaded"
+    relocationPrefix = "com.alpsbte.plotsystem.shaded"
     enableAutoRelocation = true
 }
 

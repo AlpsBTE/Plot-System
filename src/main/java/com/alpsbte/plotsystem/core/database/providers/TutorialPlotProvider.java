@@ -7,7 +7,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -64,7 +64,7 @@ public class TutorialPlotProvider {
         String qSetStage = "UPDATE tutorial SET stage_id = ?, last_stage_complete_date = ? WHERE tutorial_id = ? AND uuid = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetStage, ps -> {
             ps.setInt(1, stageId);
-            ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setTimestamp(2, Timestamp.from(Instant.now()));
             ps.setInt(3, tutorialId);
             ps.setString(4, playerUUID);
             return ps.executeUpdate() > 0;
@@ -75,7 +75,8 @@ public class TutorialPlotProvider {
         String qSetComplete = "UPDATE tutorial SET is_complete = ?, last_stage_complete_date = ? WHERE tutorial_id = ? AND uuid = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetComplete, ps -> {
             ps.setBoolean(1, true);
-            ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+
+            ps.setTimestamp(2, Timestamp.from(Instant.now()));
             ps.setInt(3, tutorialId);
             ps.setString(4, playerUUID);
             return ps.executeUpdate() > 0;
