@@ -94,7 +94,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
 
             getMenu().getSlot(i + 9).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
                     .setName("§b§l" + LangUtil.getInstance().get(getMenuPlayer(), plot.getStatus() == Status.unfinished ? LangPaths.Review.MANAGE_PLOT : LangPaths.Review.REVIEW_PLOT))
-                    .setLore(lines)
+                    .setStringLore(lines)
                     .build());
         }
 
@@ -188,7 +188,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         });
 
         return new ItemBuilder(MenuItems.filterItem(getMenuPlayer()))
-                .setLore(LegacyLoreBuilder.build())
+                .setStringLore(LegacyLoreBuilder.build())
                 .setEnchanted(filteredCityProject != null)
                 .build();
     }

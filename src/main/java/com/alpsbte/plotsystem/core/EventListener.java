@@ -75,7 +75,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class EventListener implements Listener {
     @EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event) {
+    public void onPlayerJoinEvent(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         // Add Items
@@ -141,8 +141,10 @@ public class EventListener implements Listener {
                 plotWorld.unloadWorld(false);
         }, 60L);
 
-        PlotUtils.plotReminder.get(event.getPlayer().getUniqueId()).cancel();
-        PlotUtils.plotReminder.remove(event.getPlayer().getUniqueId());
+        if (PlotUtils.plotReminder.containsKey(event.getPlayer().getUniqueId())) {
+            PlotUtils.plotReminder.get(event.getPlayer().getUniqueId()).cancel();
+            PlotUtils.plotReminder.remove(event.getPlayer().getUniqueId());
+        }
     }
 
     @EventHandler
