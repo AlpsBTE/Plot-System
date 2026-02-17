@@ -66,9 +66,12 @@ public class PlotWorld implements IWorld {
                     .map(world -> mvCore.getWorldManager().deleteWorld(DeleteWorldOptions.world(world)).isSuccess())
                     .getOrElse(false)) && mvCore.getWorldManager().saveWorldsConfig().isSuccess()) {
                 try {
-                    File multiverseInventoriesConfig = new File(DependencyManager.getMultiverseInventoriesConfigPath(getWorldName()));
+                    var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(getWorldName());
+                    if (mviConfig != null) {
+                        File multiverseInventoriesConfig = new File(mviConfig);
+                        if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
+                    }
                     File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(getWorldName()));
-                    if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
                     if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
                 } catch (IOException ex) {
                     PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"));

@@ -4,6 +4,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import java.util.Objects;
@@ -30,8 +31,8 @@ public class DependencyManager {
      * @param worldName Name of the world
      * @return Config path for the world
      */
-    public static @NotNull String getMultiverseInventoriesConfigPath(String worldName) {
-        return DependencyManager.isMultiverseInventoriesEnabled() ? Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Multiverse-Inventories")).getDataFolder() + "/worlds/" + worldName : "";
+    public static @Nullable String getMultiverseInventoriesConfigPath(String worldName) {
+        return DependencyManager.isMultiverseInventoriesEnabled() ? Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Multiverse-Inventories")).getDataFolder() + "/worlds/" + worldName : null;
     }
 
     /**
