@@ -65,7 +65,7 @@ val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDe
 val details = versionDetails()
 
 group = "com.alpsbte"
-version = "5.0.1" + "-" + details.gitHash + "-SNAPSHOT"
+version = "5.0.1" // + "-" + details.gitHash + "-SNAPSHOT"
 description = "An easy to use building system for the BuildTheEarth project."
 java.sourceCompatibility = JavaVersion.VERSION_21
 
