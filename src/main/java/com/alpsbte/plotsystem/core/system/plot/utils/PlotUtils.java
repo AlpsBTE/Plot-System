@@ -20,13 +20,13 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.fastasyncworldedit.core.extent.clipboard.CPUOptimizedClipboard;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_13;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
@@ -182,9 +182,7 @@ public final class PlotUtils {
     public static @Nullable CuboidRegion getPlotAsRegion(@NotNull AbstractPlot plot) throws IOException {
         Clipboard clipboard;
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(plot.getInitialSchematicBytes()))) {
-            clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
-                    new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
-            ));
+            clipboard = reader.read();
         }
         if (clipboard == null) return null;
 
@@ -204,9 +202,7 @@ public final class PlotUtils {
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
-                    new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
-            ));
+            clipboard = reader.read();
         }
 
         Polygonal2DRegion region = new Polygonal2DRegion(
@@ -216,7 +212,7 @@ public final class PlotUtils {
                 clipboard.getMaximumPoint().y()
         );
 
-        Clipboard newClipboard = new CPUOptimizedClipboard(region);
+        BlockArrayClipboard newClipboard = new BlockArrayClipboard(region);
         newClipboard.setOrigin(BlockVector3.at(region.getCenter().x(), region.getMinimumPoint().y(), region.getCenter().z()));
         ForwardExtentCopy copy = new ForwardExtentCopy(
                 clipboard,
@@ -266,7 +262,7 @@ public final class PlotUtils {
 
         // Copy and write finished plot clipboard to schematic
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (Clipboard cb = new CPUOptimizedClipboard(region)) {
+        try (Clipboard cb = new BlockArrayClipboard(region)) {
             cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
 
             ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
@@ -297,9 +293,7 @@ public final class PlotUtils {
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read(null, dimensions -> new CPUOptimizedClipboard(
-                    new CuboidRegion(null, BlockVector3.ZERO, dimensions.subtract(BlockVector3.ONE))
-            ));
+            clipboard = reader.read();
         }
         if (clipboard == null) return null;
 
