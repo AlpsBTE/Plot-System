@@ -8,15 +8,12 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 
 public class TutorialPlotProvider {
     public static final Map<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
-    public static final Deque<Integer> freeTutorialPlotIds = new LinkedList<>();
 
     public Optional<TutorialPlot> getById(int id) {
         return tutorialPlots.keySet().stream().filter(t -> tutorialPlots.get(t) == id).findFirst();
@@ -34,7 +31,7 @@ public class TutorialPlotProvider {
             ps.setString(2, playerUUID);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int plotId = freeTutorialPlotIds.isEmpty() ? 0 : freeTutorialPlotIds.poll();
+                int plotId = getNextTutorialPlotId();
                 int stageId = rs.getInt(1);
                 boolean isComplete = rs.getBoolean(2);
                 Date lastStageCompleteDate = rs.getDate(3);
@@ -46,7 +43,6 @@ public class TutorialPlotProvider {
             }
             return Optional.empty();
         }));
-
     }
 
     public boolean add(int tutorialId, String playerUUID) {
@@ -80,5 +76,13 @@ public class TutorialPlotProvider {
             ps.setString(4, playerUUID);
             return ps.executeUpdate() > 0;
         })));
+    }
+
+    private int getNextTutorialPlotId() {
+        int id = 0;
+        while (tutorialPlots.containsValue(id)) {
+            id++;
+        }
+        return id;
     }
 }

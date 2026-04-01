@@ -176,9 +176,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         super.onTutorialStop(playerUUID);
         if (tutorialPlot != null) tutorialPlot.getWorld().deleteWorld();
-        int index = TutorialPlotProvider.tutorialPlots.get(tutorialPlot);
         TutorialPlotProvider.tutorialPlots.remove(tutorialPlot);
-        TutorialPlotProvider.freeTutorialPlotIds.add(index);
     }
 
     @Override
