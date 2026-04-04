@@ -240,6 +240,9 @@ public abstract class LangPaths {
             public static final String FINISHED_PLOT = INFO_PREFIX + "finished-plot";
             public static final String PLOT_MARKED_REVIEWED = INFO_PREFIX + "plot-marked-as-reviewed";
             public static final String PLOT_REJECTED = INFO_PREFIX + "plot-rejected";
+            public static final String PLOT_PREVIOUSLY_REJECTED = INFO_PREFIX + "plot-previously-rejected";
+            public static final String PLOT_PREVIOUSLY_REJECTED_FEEDBACK = INFO_PREFIX + "plot-previously-rejected-feedback";
+            public static final String PLOT_PREVIOUSLY_REJECTED_REVIEWER = INFO_PREFIX + "plot-previously-rejected-reviewer";
             public static final String UNDID_SUBMISSION = INFO_PREFIX + "undid-submission";
             public static final String UNDID_REVIEW = INFO_PREFIX + "undid-review";
             public static final String REVIEWED_PLOT = INFO_PREFIX + "reviewed-plot";

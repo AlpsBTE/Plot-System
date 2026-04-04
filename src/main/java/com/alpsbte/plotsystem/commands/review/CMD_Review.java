@@ -10,6 +10,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -23,8 +24,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 public class CMD_Review extends BaseCommand {
     @Override
@@ -103,11 +108,39 @@ public class CMD_Review extends BaseCommand {
             }
 
             Plot finalPlotToReview = plotToReview;
+            long previousRejections = finalPlotToReview.getReviewHistory().stream()
+                    .filter(review -> review.getRating().isRejected())
+                    .count();
+            PlotReview latestRejectedReview = finalPlotToReview.getLatestReview()
+                    .filter(review -> review.getRating().isRejected())
+                    .orElse(null);
 
             // If the reviewer is not on the plot, teleport the player first
             if (teleportPlayer) {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    plotToReview.getWorld().teleportPlayer(player);
+                    boolean teleported = plotToReview.getWorld().teleportPlayer(player);
+                    if (!teleported) return;
+                    if (previousRejections > 0) {
+                        player.sendMessage(Utils.ChatUtils.getAlertFormat(
+                                LangUtil.getInstance().getComponent(player.getUniqueId(),
+                                        LangPaths.Message.Info.PLOT_PREVIOUSLY_REJECTED,
+                                        YELLOW,
+                                        text(previousRejections + "x", GOLD))));
+                        if (latestRejectedReview != null) {
+                            String feedback = latestRejectedReview.getFeedback() == null
+                                    ? LangUtil.getInstance().get(player, LangPaths.Review.NO_FEEDBACK)
+                                    : latestRejectedReview.getFeedback().replace("//", " ");
+                            Builder reviewer = latestRejectedReview.getReviewer();
+                            String reviewerName = reviewer != null ? reviewer.getName() : latestRejectedReview.getReviewerUUID().toString();
+
+                            player.sendMessage(Utils.ChatUtils.getAlertFormat(empty()
+                                    .append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.PLOT_PREVIOUSLY_REJECTED_FEEDBACK), YELLOW))
+                                    .append(text(" " + feedback, WHITE))));
+                            player.sendMessage(Utils.ChatUtils.getAlertFormat(empty()
+                                    .append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.PLOT_PREVIOUSLY_REJECTED_REVIEWER), YELLOW))
+                                    .append(text(" " + reviewerName, GOLD))));
+                        }
+                    }
                     if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE)) {
                         PlotSystem.getPlugin().getComponentLogger().info(text("Review: Teleported player, scheduling menu open in 20 ticks"));
                     }
