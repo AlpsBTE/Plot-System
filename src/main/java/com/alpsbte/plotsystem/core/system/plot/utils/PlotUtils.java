@@ -631,7 +631,10 @@ public final class PlotUtils {
                     double lon = Double.parseDouble(coordsSplit[1]);
                     DecimalFormat df = new DecimalFormat("##.#####");
                     df.setRoundingMode(RoundingMode.FLOOR);
-                    coords = text(df.format(lat), GREEN).append(text(", ", GRAY)).append(text(df.format(lon), GREEN));
+                    String formattedCoords = df.format(lat) + ", " + df.format(lon);
+                    coords = text(formattedCoords, GREEN)
+                            .clickEvent(ClickEvent.copyToClipboard(formattedCoords))
+                            .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_COPY_TO_CLIPBOARD), GRAY));
                 } catch (IOException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
                 }

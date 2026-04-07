@@ -201,6 +201,7 @@ note:
     click-to-remove-plot-member: "Cliquez pour supprimer le membre du tracé..."
     click-to-open-link: "Cliquez ici pour ouvrir le lien {0}..."
     click-to-open-link-with-shortlink: "§6Cliquez ici §7pour ouvrir le lien §a{0}§7 ou utilisez ce lien: §a{1}"
+    click-to-copy-to-clipboard: "Copier dans le presse-papiers"
     click-to-show-feedback: "§6Cliquez ici §pour afficher vos commentaires sur le tracé..."
     click-to-show-open-reviews: "§6Cliquez ici §apour afficher les avis ouverts..."
     click-to-show-plots: "§6Cliquez ici §apour afficher vos tracés..."

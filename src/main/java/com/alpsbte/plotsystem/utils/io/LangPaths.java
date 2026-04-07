@@ -215,6 +215,7 @@ public abstract class LangPaths {
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION_PREFIX + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION_PREFIX + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION_PREFIX + "click-to-open-link-with-shortlink";
+            public static final String CLICK_TO_COPY_TO_CLIPBOARD = ACTION_PREFIX + "click-to-copy-to-clipboard";
             public static final String CLICK_TO_SHOW_FEEDBACK = ACTION_PREFIX + "click-to-show-feedback";
             public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION_PREFIX + "click-to-show-open-reviews";
             public static final String CLICK_TO_SHOW_PLOTS = ACTION_PREFIX + "click-to-show-plots";

@@ -201,6 +201,7 @@ note:
     click-to-remove-plot-member: "Klicke, um ein Mitglied vom Plot zu entfernen..."
     click-to-open-link: "Klicke hier um den {0} Link zu öffnen..."
     click-to-open-link-with-shortlink: "§6Klicke hier, §7 um den §a{0}§7 Link zu öffnen oder benutze diesen Link: §a{1}"
+    click-to-copy-to-clipboard: "In die Zwischenablage kopieren"
     click-to-show-feedback: "§6Klicke hier, §aum dein Plot Feedback anzuzeigen..."
     click-to-show-open-reviews: "§6Klicke hier, §aum offene Bewertungen anzuzeigen..."
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
