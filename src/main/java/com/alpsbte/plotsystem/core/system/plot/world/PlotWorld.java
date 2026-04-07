@@ -93,19 +93,14 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if (isWorldGenerated()) {
-            if (isWorldLoaded()) {
-                if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
-                    for (Player player : getBukkitWorld().getPlayers()) {
-                        player.teleport(Utils.getSpawnLocation());
-                    }
-                }
-
-                return Bukkit.unloadWorld(getBukkitWorld(), true);
+        if (!isWorldLoaded()) return true;
+        if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
+            for (Player player : getBukkitWorld().getPlayers()) {
+                player.teleport(Utils.getSpawnLocation());
             }
-            return true;
-        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not unload world " + worldName + " because it is not generated!"));
-        return false;
+        }
+
+        return Bukkit.unloadWorld(getBukkitWorld(), true);
     }
 
     @Override
