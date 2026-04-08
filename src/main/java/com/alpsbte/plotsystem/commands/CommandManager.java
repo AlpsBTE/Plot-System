@@ -10,6 +10,8 @@ import com.alpsbte.plotsystem.commands.review.CMD_EditFeedback;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
 import com.alpsbte.plotsystem.commands.review.CMD_Review;
 import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,9 @@ public class CommandManager {
         baseCommands.add(new CMD_Review());
         baseCommands.add(new CMD_UndoReview());
         baseCommands.add(new CMD_EditFeedback());
-        baseCommands.add(new CMD_EditPlot());
+        if (ConfigUtil.getInstance().configs[1].getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
+            baseCommands.add(new CMD_EditPlot());
+        }
 
         // Admin Commands
         baseCommands.add(new CMD_DeletePlot());

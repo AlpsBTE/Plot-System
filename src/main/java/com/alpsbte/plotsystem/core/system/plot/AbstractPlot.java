@@ -180,6 +180,10 @@ public abstract class AbstractPlot {
         return "https://earth.google.com/web/@" + getGeoCoordinates() + ",0a,1000d,20y,-0h,0t,0r";
     }
 
+    public String getAppleLookAroundLink() throws IOException {
+        return "https://lookmap.eu.pythonanywhere.com/#c=20/" + getGeoCoordinates().replace(",", "/");
+    }
+
     protected List<BlockVector2> getOutlinePoints(String outlinePoints) {
         List<BlockVector2> locations = new ArrayList<>();
         String[] list = outlinePoints.split("\\|");

@@ -38,12 +38,19 @@ public class CMD_EditFeedback extends BaseCommand {
                 return;
             }
 
-            if (args.length < 1 || AlpsUtils.tryParseInt(args[0]) == null) {
+            if (args.length < 1) {
                 sendInfo(sender);
                 return;
             }
 
-            Plot plot = DataProvider.PLOT.getPlotById(Integer.parseInt(args[0]));
+            Integer plotId = AlpsUtils.tryParseInt(args[0]);
+
+            if (plotId == null) {
+                sendInfo(sender);
+                return;
+            }
+
+            Plot plot = DataProvider.PLOT.getPlotById(plotId);
 
             if (plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD) {
                 player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.CANNOT_MODIFY_LEGACY_PLOT)));

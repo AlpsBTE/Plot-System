@@ -155,7 +155,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(Utils.DEFAULT_ITEM)
+                .item(MenuItems.borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")

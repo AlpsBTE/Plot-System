@@ -21,15 +21,16 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -46,7 +47,6 @@ public class CompanionMenu {
     private CompanionMenu() {throw new IllegalStateException("Utility class");}
 
     public static boolean hasContinentView() {
-        // TODO: make this run async
         return Arrays.stream(Continent.values()).map(continent -> DataProvider.COUNTRY.getCountriesByContinent(continent).size()).filter(count -> count > 0).count() > 1;
     }
 
@@ -59,7 +59,6 @@ public class CompanionMenu {
         if (hasContinentView()) {
             new ContinentMenu(player);
         } else {
-            // TODO: make this run async
             Optional<Continent> continent = Arrays.stream(Continent.values()).filter(c -> !DataProvider.COUNTRY.getCountriesByContinent(c).isEmpty()).findFirst();
 
             if (continent.isEmpty()) {
@@ -128,7 +127,9 @@ public class CompanionMenu {
                 default:
                     break;
             }
-        } else item = BaseItems.DIFFICULTY_AUTOMATIC.getItem();
+        }
+
+        if (item == null) item = BaseItems.DIFFICULTY_AUTOMATIC.getItem();
 
         Optional<Difficulty> difficulty = DataProvider.DIFFICULTY.getDifficultyByEnum(selectedPlotDifficulty);
         if (difficulty.isEmpty() && selectedPlotDifficulty != null) {
@@ -191,7 +192,7 @@ public class CompanionMenu {
         String nameText = LangUtil.getInstance().get(langPlayer, LangPaths.MenuTitle.SLOT).toUpperCase() + " " + (slotIndex + 1);
         ItemStack baseItem = plot == null ? BaseItems.PLOT_SLOT_EMPTY.getItem().clone() : BaseItems.PLOT_SLOT_FILLED.getItem().clone();
         baseItem.setAmount(1 + slotIndex);
-        ArrayList<TextComponent> lore;
+        List<Component> lore;
 
         if (plot == null) {
             TextComponent slotDescriptionComp = text(LangUtil.getInstance().get(langPlayer, LangPaths.MenuDescription.SLOT), GRAY);

@@ -59,7 +59,7 @@ public class CountryMenu extends AbstractMenu {
 
         // Set tutorial item
         getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
-                TutorialsMenu.getTutorialItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
+                TutorialsMenu.getTutorialItem(getMenuPlayer()) : MenuItems.borderItem());
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
@@ -119,7 +119,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(Utils.DEFAULT_ITEM)
+                .item(MenuItems.borderItem())
                 .pattern("001111001")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
@@ -134,7 +134,7 @@ public class CountryMenu extends AbstractMenu {
         if (CompanionMenu.hasContinentView()) {
             getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } else {
-            getMenu().getSlot(1).setItem(Utils.DEFAULT_ITEM);
+            getMenu().getSlot(1).setItem(MenuItems.borderItem());
         }
 
         for (Country country : countryProjects) {

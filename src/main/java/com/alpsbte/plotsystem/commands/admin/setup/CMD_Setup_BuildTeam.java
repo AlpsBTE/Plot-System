@@ -129,7 +129,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             boolean successful = DataProvider.BUILD_TEAM.addBuildTeam(name);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added build team with name '" + name + "'!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -228,7 +228,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             boolean successful = buildTeam.get().setName(name);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully changed name of build team with ID " + args[1] + " to '" + name + "'!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -278,7 +278,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
             }
             boolean successful = buildTeam.get().addReviewer(builder);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully added '" + builder.getName() + "' as reviewer to build team with ID " + buildTeam.get().getName() + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -330,7 +330,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             boolean successful = buildTeam.get().removeReviewer(builder.getUUID().toString());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed '" + builder.getName() + "' as reviewer from build team with ID " + args[1] + "!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -430,7 +430,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             boolean successful = DataProvider.REVIEW.assignBuildTeamToggleCriteria(buildTeam.get().getId(), criteria.get());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully assigned criteria '" + criteria.get().criteriaName() + "' to build team with ID '" + args[1] + "'!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -483,7 +483,7 @@ public class CMD_Setup_BuildTeam extends SubCommand {
 
             boolean successful = DataProvider.REVIEW.removeBuildTeamToggleCriteria(buildTeam.get().getId(), criteria.get());
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed criteria '" + criteria.get().criteriaName() + "' from build team with ID '" + args[1] + "'!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override

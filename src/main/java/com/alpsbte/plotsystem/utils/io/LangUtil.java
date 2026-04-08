@@ -25,7 +25,12 @@ public class LangUtil extends LanguageUtil {
                 new LanguageFile(plugin, 2.5, Language.ru_RU, "ba_RU", "tt_RU"),
                 new LanguageFile(plugin, 2.5, Language.zh_CN),
                 new LanguageFile(plugin, 2.5, Language.zh_TW, "zh_HK"),
-                new LanguageFile(plugin, 1.0, Language.he_IL),
+                new LanguageFile(plugin, 1.1, Language.he_IL),
+                new LanguageFile(plugin, 1.0, Language.es_ES),
+                new LanguageFile(plugin, 1.0, Language.hu_HU),
+                new LanguageFile(plugin, 1.0, Language.nl_NL),
+                new LanguageFile(plugin, 1.0, Language.ro_RO),
+                new LanguageFile(plugin, 1.0, Language.da_DK),
         });
         langUtilInstance = new LangUtil();
     }

@@ -14,7 +14,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,7 +29,7 @@ public class CMD_UndoReview extends BaseCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         Player player = getPlayer(sender);
         if (player == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", RED));
+            sender.sendMessage(Component.text("This command can only be used as a player!", RED));
             return true;
         }
 

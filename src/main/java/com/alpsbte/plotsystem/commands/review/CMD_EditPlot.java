@@ -10,8 +10,6 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
-import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
@@ -31,13 +29,7 @@ public class CMD_EditPlot extends BaseCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         Player player = getPlayer(sender);
         if (player == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", RED));
-            return true;
-        }
-
-        // TODO: don't register command if this config value is false
-        if (!ConfigUtil.getInstance().configs[1].getBoolean(ConfigPaths.EDITPLOT_ENABLED)) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(sender, LangPaths.Message.Error.COMMAND_DISABLED)));
+            sender.sendMessage(Component.text("This command can only be used as a player!", RED));
             return true;
         }
 

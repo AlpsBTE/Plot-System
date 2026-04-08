@@ -7,17 +7,13 @@ import com.alpsbte.plotsystem.utils.Utils;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 
 public class TutorialPlotProvider {
     public static final Map<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
-    public static final Deque<Integer> freeTutorialPlotIds = new LinkedList<>();
 
     public Optional<TutorialPlot> getById(int id) {
         return tutorialPlots.keySet().stream().filter(t -> tutorialPlots.get(t) == id).findFirst();
@@ -35,7 +31,7 @@ public class TutorialPlotProvider {
             ps.setString(2, playerUUID);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int plotId = freeTutorialPlotIds.isEmpty() ? 0 : freeTutorialPlotIds.poll();
+                int plotId = getNextTutorialPlotId();
                 int stageId = rs.getInt(1);
                 boolean isComplete = rs.getBoolean(2);
                 Date lastStageCompleteDate = rs.getDate(3);
@@ -47,7 +43,6 @@ public class TutorialPlotProvider {
             }
             return Optional.empty();
         }));
-
     }
 
     public boolean add(int tutorialId, String playerUUID) {
@@ -65,7 +60,7 @@ public class TutorialPlotProvider {
         String qSetStage = "UPDATE tutorial SET stage_id = ?, last_stage_complete_date = ? WHERE tutorial_id = ? AND uuid = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetStage, ps -> {
             ps.setInt(1, stageId);
-            ps.setObject(2, LocalDate.now());
+            ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             ps.setInt(3, tutorialId);
             ps.setString(4, playerUUID);
             return ps.executeUpdate() > 0;
@@ -76,10 +71,18 @@ public class TutorialPlotProvider {
         String qSetComplete = "UPDATE tutorial SET is_complete = ?, last_stage_complete_date = ? WHERE tutorial_id = ? AND uuid = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetComplete, ps -> {
             ps.setBoolean(1, true);
-            ps.setObject(2, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             ps.setInt(3, tutorialId);
             ps.setString(4, playerUUID);
             return ps.executeUpdate() > 0;
         })));
+    }
+
+    private int getNextTutorialPlotId() {
+        int id = 0;
+        while (tutorialPlots.containsValue(id)) {
+            id++;
+        }
+        return id;
     }
 }

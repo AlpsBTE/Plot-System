@@ -19,6 +19,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -117,15 +118,10 @@ public class CMD_Tpll extends BaseCommand {
         return true;
     }
 
-    private static int getHighestY(World playerWorld, double[] plotCoordinates) {
-        int highestY = 0;
+    private static int getHighestY(World playerWorld, double @NonNull [] plotCoordinates) {
         Location block = new Location(playerWorld, plotCoordinates[0], 0, plotCoordinates[1]);
-        for (int i = 1; i < 256; i++) {
-            block.add(0, 1, 0);
-            if (!block.getBlock().isEmpty()) {
-                highestY = i;
-            }
-        }
+        int highestY = playerWorld.getHighestBlockYAt(block);
+
         if (highestY < PlotWorld.MIN_WORLD_HEIGHT) {
             highestY = PlotWorld.MIN_WORLD_HEIGHT;
         }

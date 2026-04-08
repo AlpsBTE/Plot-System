@@ -50,8 +50,7 @@ public class ConfigUtil {
         public void updateConfigFile(@NotNull ConfigFile file) {
             int tutorialId = file.getInt(TutorialUtils.Path.TUTORIAL_ID);
 
-            File directory = Paths.get(PlotUtils.getDefaultSchematicPath(), "tutorials").toFile();
-            File[] files = directory.listFiles();
+            File[] files = PlotUtils.getTutorialSchematicPath().toFile().listFiles();
             if (files == null) return;
 
             // Delete schematic files of the updated tutorial config after config has been updated

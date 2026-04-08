@@ -1,0 +1,450 @@
+#-----------------------------------------------------
+#|            Plot System - by Alps BTE
+#-----------------------------------------------------
+#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+#|
+#| [Formatting] Use %newline% for a newline
+#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+#-----------------------------------------------------
+lang:
+  name: "Nederlands (NL)"
+  head-id: "67279"
+#-----------------------------------------------------
+#| Plot
+#-----------------------------------------------------
+plot:
+  plot-name: "Plot"
+  id: "ID"
+  owner: "Plot Eigenaar"
+  members: "Plot Leden"
+  member: "Plot Lid"
+  city: "Stad"
+  country: "Land"
+  difficulty: "Moeilijkheidsgraad"
+  status: "Status"
+  score: "Score"
+  total-score: "Totaalscore"
+  completed-plots: "Voltooide Plots"
+  group-system:
+    empty-member-slot: "Lege Ledenplek"
+    shared-by-members: "(gedeeld door {0} leden)"
+#-----------------------------------------------------
+#| City Projects
+#-----------------------------------------------------
+city-project:
+  cities: "Steden"
+  open: "Plots Open"
+  in-progress: "Plots In Aanbouw"
+  completed: "Plots Voltooid"
+  plots-available: 'Plots Beschikbaar'
+  no-plots-available: "Geen Plots Beschikbaar"
+  for-your-difficulty: "({0} voor uw moeilijkheid)"
+#-----------------------------------------------------
+#| Countries
+#-----------------------------------------------------
+country:
+  countries: "Landen"
+#-----------------------------------------------------
+#| Continents
+#-----------------------------------------------------
+continent:
+  europe: "Europa"
+  asia: "Azië"
+  africa: "Afrika"
+  oceania: "Oceanië"
+  south-america: "Zuid-Amerika"
+  north-america: "Noord-Amerika"
+#-----------------------------------------------------
+#| Difficulty
+#-----------------------------------------------------
+difficulty:
+  automatic: "Automatisch"
+  score-multiplier: "Score Vermenigvuldiger"
+#-----------------------------------------------------
+#| Menu Titles
+#-----------------------------------------------------
+menu-title:
+  close: 'Sluiten'
+  back: 'Vorige'
+  continue: 'Continue'
+  next-page: 'Volgende Pagina'
+  previous-page: 'Vorige Pagina'
+  error: 'Fout'
+  loading: 'Aan Het Laden...'
+  plot-difficulty: 'Plot Moeilijkheidsgraad'
+  slot: 'Plek'
+  builder-utilities: 'Bouwer Voorzieningen'
+  show-plots: 'Toon Plots'
+  settings: 'Instellingen'
+  submit: 'Indienen'
+  teleport: 'Teleporteer'
+  abandon: 'Verlaten'
+  undo-submit: 'Indienen ongedaan maken'
+  manage-members: 'Leden Beheren'
+  feedback: 'Beoordeling | Review #{0}'
+  custom-heads: 'Custom Hoofden'
+  banner-maker: 'Banner Maker'
+  special-tools: 'Special Blocks & Items'
+  review-point: 'Point'
+  review-points: 'Points'
+  cancel: 'Cancel'
+  add-member-to-plot: 'Add Member to Plot'
+  companion: 'Companion'
+  companion-select-continent: 'Select A Continent'
+  companion-select-country: 'Select A Country'
+  companion-select-city: 'Select A City'
+  player-plots: '{0}s Plots'
+  leave-plot: 'Leave Plot'
+  review-plots: 'Review Plots'
+  review-plot: 'Review Plot #{0}'
+  select-language: 'Select Language'
+  select-plot-type: 'Select Plot Type'
+  select-focus-mode: 'Select Focus Mode'
+  select-local-inspiration-mode: 'Select Inspiration Mode'
+  select-city-inspiration-mode: 'Select City Inspiration Mode'
+  filter-by-country: 'Filter By Country'
+  information: 'Info'
+  tutorials: 'Tutorials'
+  tutorial-stages: 'Tutorial Stages'
+  tutorial-end: 'End Tutorial'
+  tutorial-beginner: 'Get Started'
+  companion-random: 'Random Selection'
+#-----------------------------------------------------
+#| Menu Descriptions
+#-----------------------------------------------------
+menu-description:
+  error-desc: 'An error occurred...'
+  plot-difficulty-desc: 'Click to Switch...'
+  slot-desc: 'Click on a city project to create a new plot'
+  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
+  show-plots-desc: 'Show all your plots'
+  settings-desc: 'Modify your user settings'
+  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
+  teleport-desc: 'Click to teleport to the plot'
+  abandon-desc: 'Click to reset your plot and give it to someone else'
+  undo-submit-desc: 'Click to undo your submission'
+  manage-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
+  feedback-desc: 'Click to view your plot review feedback'
+  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
+  banner-maker-desc: 'Click to create and save your own banners'
+  special-tools-desc: 'Click to access a variety of inaccessible blocks and items'
+  add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
+  review-points-desc: 'Click to select'
+  submit-review-desc: 'Submit selected points and mark plot as reviewed'
+  leave-plot-desc: 'Click to leave this plot'
+  select-language-desc: 'Choose your language'
+  select-plot-type-desc: 'Choose your plot type'
+  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
+  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
+  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
+  filter-desc: "Toon Alle"
+  information-desc: "Een plot kan maximaal 20 punten krijgen. Als het plot minder dan 8 punten ontvangt of een categorie 0 punten heeft, wordt het plot geweigerd en de bouwer krijgt het plot terug om het te verbeteren. Als het plot 0 punten krijgt, wordt het verlaten."
+  tutorials-desc: 'Leer de basics van het BuildTheEarth project en verbeter je bouwvaardigheden met tutorials over verschillende onderwerpen.'
+  tutorial-end-desc: 'Je voortgang zal worden opgeslagen.'
+  tutorial-beginner-desc: 'Leer de basics hoe te bouwen voor het BuildTheEarth project.'
+  companion-random-desc: 'Klik om willekeurig te selecteren.'
+#-----------------------------------------------------
+#| Review
+#-----------------------------------------------------
+review:
+  review-plot: "Beoordeel Plot"
+  manage-plot: "Plot Beheren"
+  manage-and-review-plots: "Beheer & Beoordeel Plots"
+  accepted: "Geaccepteerd"
+  rejected: "Afgekeurd"
+  abandoned: "Verlaten"
+  feedback: "Feedback"
+  reviewer: "Reviewer"
+  player-language: "Speler Taal"
+  no-feedback: "Geen feedback"
+  accuracy-points: "Nauwkeurigheidspunten"
+  block-palette-points: "Blokkenpaletpunten"
+  toggle-points: "Toon punten"
+  total-points: "Totaal aantal punten"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
+  criteria:
+    accuracy: "Nauwkeurigheid"
+    accuracy-desc: "Hoe accuraat is het gebouw?%newline%%newline%- ziet er uit zoals in het echt%newline%- Juiste contouren%newline%- Correcte hoogte%newline%- Is voltooid"
+    block-palette: "Blokkenpalet"
+    block-palette-desc: "Hoeveel verschillende blokken worden er gebruikt en hoe creatief zijn ze?%newline%%newline%- Keuze van blok- kleuren/texturen%newline%- Willekeurige blokken"
+#-----------------------------------------------------
+#| Notes
+#-----------------------------------------------------
+note:
+  tip: "Tip"
+  under-construction: 'In Aanbouw'
+  wont-be-able-continue-building: "Je zal niet verder kunnen bouwen op dit plot!"
+  score-will-be-split: "Score zal verdeeld worden over alle leden wanneer deze beoordeeld wordt!"
+  player-has-to-be-online: "De speler moet online zijn!"
+  optional: "Optioneel"
+  required: "Vereist"
+  criteria-fulfilled: "Voltooid"
+  criteria-not-fulfilled: "Niet Voltooid"
+  legacy: "LEGACY"
+  action:
+    read: 'Lezen'
+    read-more: 'Lees meer'
+    mark-as-read: 'Markeren als gelezen'
+    start: 'Start'
+    continue: "Continue"
+    continue-tutorial: 'Doorgaan met Tutorial'
+    create-plot: 'Plot Maken'
+    right-click: "Right Click"
+    left-click: "Left Click"
+    accept: 'Accepteren'
+    reject: 'Afkeuren'
+    click-to-create-plot: 'Klik om een nieuwe plots te maken...'
+    click-to-proceed: "Klik om door te gaan..."
+    click-to-remove-plot-member: "Klik om lid uit plot te verwijderen..."
+    click-to-open-link: "Klik hier om de {0} link te openen..."
+    click-to-open-link-with-shortlink: "§6Klik Hier §7om de §a{0}§7 link te openen of gebruik deze link: §a{1}"
+    click-to-show-feedback: "§6Click Here §ato show your plot feedback..."
+    click-to-show-open-reviews: "§6Click Here §ato show open reviews..."
+    click-to-show-plots: "§6Click Here §ato show your plots..."
+    click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
+    tutorial-show-stages: 'Show Stages'
+    click-to-open-plots-menu: 'Click to open the plots menu...'
+    click-to-toggle: "Click to toggle..."
+#-----------------------------------------------------
+#| Messages
+#-----------------------------------------------------
+message:
+  info:
+    teleporting-plot: "§aTeleporting to plot §6#{0}§a..."
+    teleporting-tpll: "§aTeleporting to §6{0}§a, §6{1}§a..."
+    abandoned-plot: "§aAbandoned plot with ID §6#{0}§a!"
+    finished-plot: "§aPlot §6#{0}§a by §6{1}§a has been finished!"
+    plot-marked-as-reviewed: "§aPlot §6#{0}§a by §6{1}§a has been marked as reviewed!"
+    plot-rejected: "§aPlot §6#{0}§a by §6{1}§a has been rejected!"
+    undid-submission: "§aUndid submission of plot §6#{0}§a!"
+    undid-review: "§aUndid review of plot §6#{0}§a by §6{1}§a!"
+    reviewed-plot: "§aYour plot §6#{0}§a has been reviewed!"
+    unreviewed-plot: "§aThere is §6{0}§a unreviewed plot!"
+    unreviewed-plots: "§aThere are §6{0}§a unreviewed plots!"
+    unfinished-plot: "§aYou have §6{0}§a unfinished plot!"
+    unfinished-plots: "§aYou have §6{0}§a unfinished plots!"
+    enabled-build-permissions: "§aEnabled build permissions for reviewers on plot §6#{0}§a!"
+    disabled-build-permissions: "§aDisabled build permissions for reviewers on plot §6#{0}§a!"
+    updated-plot-feedback: "§aFeedback for plot §6#{0}§a has been updated!"
+    removed-plot-member: "§aRemoved §6{0}§a from plot §6#{1}§a!"
+    left-plot: "§aLeft plot §6#{0}§a!"
+    plot-will-get-abandoned-warning: "§c§lWARNING: §cThis plot will automatically get abandoned!"
+    plot-will-be-rejected: "Plot will be rejected!"
+    plot-will-be-accepted: "Plot will be accepted"
+    plots-reviewed-singular: "{0} plot has been reviewed!"
+    plots-reviewed-plural: "{0} plots have been reviewed!"
+    saving-plot: "§aSaving plot..."
+    creating-plot: "§aCreating new plot..."
+    created-new-plot: "§aCreated new plot§a for §6{0}§a!"
+    chat-enter-player: 'Please enter the name of the player in the chat.'
+    chat-enter-feedback: "Please enter a feedback for the player in the chat."
+    chat-input-expires-after: "Chat input expires after {0} minutes."
+    beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
+    beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
+    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
+    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
+    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
+    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
+  error:
+    plot-does-not-exist: "This plot does not exist!"
+    plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
+    plot-has-not-yet-reviewed: "This plot has not yet been reviewed!"
+    can-only-abandon-unfinished-plots: "You can only abandon unfinished plots!"
+    can-only-submit-unfinished-plots: "Je kunt alleen onvoltooide plots indienen!"
+    can-only-undo-submissions-unreviewed-plots: "Je kunt alleen inzendingen van niet-beoordeelde plots ongedaan maken!"
+    can-only-manage-members-unfinished-plots: "Je kunt alleen leden beheren van onvoltooide plots!"
+    cannot-teleport-outside-plot: "Je kan niet buiten het plot teleporteren!"
+    cannot-undo-review: "Je kunt een beoordeling die je zelf niet hebt beoordeeld niet ongedaan maken!"
+    cannot-send-feedback: "Je kunt geen feedback sturen naar een plot dat je zelf niet hebt beoordeeld!"
+    cannot-review-own-plot: "Je kunt je eigen plot niet beoordelen!"
+    cannot-modify-legacy-plot: "Legacy plots kunnen niet worden gewijzigd!"
+    cannot-load-legacy-plot: "Legacy plots kunnen niet worden geladen!"
+    player-has-no-permissions: "Je hebt geen toestemming om dit te doen!"
+    player-has-no-invitations: "Je hebt geen uitnodigingen!"
+    player-is-not-allowed: "Je hebt geen toestemming om dit te doen!"
+    player-is-plot-owner: "Deze speler is al de plot eigenaar!"
+    player-is-plot-member: "Deze speler is al lid van dit plot!"
+    player-is-not-online: "Deze speler is niet online!"
+    player-not-found: "Deze speler kon niet worden gevonden!"
+    player-already-invited: '{0} is al uitgenodigd voor een plot.'
+    player-invite-expired: 'De uitnodiging van {0} is verlopen.'
+    player-invite-to-expired: 'De uitnodiging die je naar {0} hebt verzonden is verlopen.'
+    player-invite-to-rejected: '{0} heeft jouw uitnodiging geweigerd.'
+    player-needs-to-be-on-plot: "Je moet in een plot zitten om dit te gebruiken!"
+    player-needs-higher-score: "Je hebt een hogere score nodig om te bouwen in dit moeilijkheidsniveau."
+    player-missing-tutorial: "De speler moet eerst de tutorial voltooien om toegevoegd te worden aan het plot!"
+    error-occurred: "Er is een fout opgetreden! Probeer het nog eens!"
+    no-plots-left: "Dit stadsproject heeft geen plots meer. Selecteer alstublieft een ander project."
+    please-wait: "Wacht alstublieft een paar seconden voordat u een nieuw plot aanmaakt!"
+    all-slots-occupied: "Al je slots zijn bezet! Voltooi je huidige plots voordat je een nieuwe maakt."
+    chat-input-expired: "De chatinvoer is verlopen."
+    tutorial-disabled: 'Tutorials zijn uitgeschakeld op deze server.'
+    tutorial-already-running: "Je hebt al een tutorial bezig! Voltooi deze voordat je een nieuwe begint."
+    review-not-found: "Beoordeling kan niet worden gevonden!"
+leaderboards:
+  pages:
+    DAILY: "Dagelijks"
+    WEEKLY: "Wekelijks"
+    MONTHLY: "Maandelijks"
+    YEARLY: "Jaarlijks"
+    LIFETIME: "Levenslang"
+  actionbar-position: "Positie #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Niet op de Ranglijst"
+tutorials:
+  stage: 'Niveau'
+  new-stage-unlocked: 'NIEUW NIVEAU ONTGRENDELD'
+  tutorial-completed: 'TUTORIAL VOLTOOID'
+  beginner:
+    stage-1:
+      stage-1-title: 'Het BuildTheEarth Project begrijpen'
+      stage-1-messages:
+        - 'Hallo {0}! Leuk om je te ontmoeten, mijn naam is {1}. Je bent zojuist de spannende wereld van het BuildTheEarth-project binnen gestapt!'
+        - 'Onze missie is om de hele planeet aarde in Minecraft op een 1:1 schaal te recreëren. Ja, dat heb je juist gehoord, 1:1 schaal!'
+        - 'Wij Alps BTE zijn echter alleen maar verantwoordelijk voor het recreëren van de prachtige Alpiene landen Oostenrijk, Zwitserland en Liechtenstein.'
+        - 'Ben je klaar om te leren hoe je voor BTE moet bouwen? Ik zal je door de basis leiden om deel te nemen aan het project. Laten we verder gaan!'
+      stage-1-tasks:
+        - 'Praat met {0} op het bouwterrein.'
+    stage-2:
+      stage-2-title: 'Referenties'
+      stage-2-messages:
+        - 'Welkom op je eilandje. Hier zullen we ons eerste gebouw voor het Build The Earth project bouwen!'
+        - 'Voordat we beginnen met bouwen, moeten we weten hoe het gebouw eruitziet in het echt. Daarvoor gebruiken we hulpmiddelen zoals {0} en {1}.'
+        - 'We gebruiken {2} om coördinaten te kopiëren, zodat we kunnen teleporteren naar een specifiek punt. Daarnaast kunnen we {3} gebruiken om het gebouw van dichterbij te bekijken.'
+        - '{4}'
+        - 'We gebruiken {5} om de hoogte van het gebouw te meten. Dit is belangrijk om te weten, zodat het gebouw de correcte hoogte heeft.'
+        - '{6}'
+        - 'Gebruik de command {7} als je de links later nodig hebt.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleporteren'
+      stage-3-messages:
+        - 'De contouren van het gebouw worden standaard gegenereerd, maar omdat ze meestal niet accuraat zijn, moeten we ze corrigeren. Om de contouren te corrigeren, moeten we in de eerste plaats naar de hoeken van het gebouw teleporteren.'
+        - 'Gebruik de command {0} om naar de locatie in-game te teleporteren. {1} op een van de hoeken van het gebouw om de coördinaten te kopiëren.'
+        - '{2}'
+        - 'Om door te gaan, teleporteer naar de gemarkeerde punten. Probeer het opnieuw!'
+        - 'Schakel over naar de weergave van §6Satelliet§f in Google Maps om het gebouw in 3D te tonen.%newline%%newline%Klik op §6Lagen§f linksonder op de kaart. Als er geen 3D-gebouwen verschijnen, schakel dan de §6Wereldbolweergave§f in onder "Meer".'
+      stage-3-tasks:
+        - 'Teleporteer naar alle {0} hoeken van het gebouw door {1} te gebruiken.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Voordat we verdergaan met de contouren, moeten we een belangrijk werktuig kennen, genaamd {0}. WorldEdit stelt ons in staat om sneller en efficiënter te bouwen.'
+        - 'Om WorldEdit te kunnen gebruiken moet je een <gold>houten bijl</gold> krijgen.'
+        - 'Nu je je houten bijl hebt, kun je {1} en {2} op blokken klikken om je selectie te maken.'
+      stage-4-tasks:
+        - 'Gebruik de command {0} om je houten bijl te krijgen.'
+    stage-5:
+      stage-5-title: 'Teken de contouren'
+      stage-5-messages:
+        - 'Nu we weten hoe WorldEdit werkt, kunnen we de bouwcontouren tekenen.'
+        - 'Om de contouren te tekenen, gebruiken we de command {0}.'
+        - 'Klik {1} om het eerste punt te selecteren en {2} om het tweede punt te selecteren.'
+        - 'Om door te gaan, verbind de punten met {0}. Probeer het opnieuw!'
+      stage-5-tasks:
+        - 'Verbind de punten door {0} te gebruiken.'
+    stage-6:
+      stage-6-title: 'Bouwhoogtes'
+      stage-6-messages:
+        - 'Nu we het gebouw hebben, moeten we de hoogte <gold>meten</gold> van het gebouw.'
+        - 'Bereken de hoogte van de <gold>façade</gold> door de hoogte van de <gold>grond</gold> af te trekken van de hoogte van het <gold>dak</gold>.'
+        - 'Vul de hoogte (in meter) van de façade van het gebouw in de chat in om door te gaan.'
+        - '{0}'
+        - 'Goed gedaan! De hoogte van het gebouw is {1} blokken.'
+        - 'Je bent er bijna. De hoogte van het gebouw is {1} blokken.'
+        - 'Je bent er bijna. Probeer het nog eens!'
+        - 'Je kunt de hoogte §6lezen§f in Google Earth §6rechtsonder§f op de kaart.%newline%%newline%Om de hoogte te §6meten§f, verplaats je §6muisaanwijzer§f op de kaart.'
+      stage-6-tasks:
+        - 'Bereken de hoogte van het gebouw.'
+    stage-7:
+      stage-7-title: 'Basisvorm van een Gebouw'
+      stage-7-messages:
+        - 'Nu kunnen we eindelijk beginnen met bouwen! We starten met de basisvormen, die we aan de hand van de contouren en hoogte zullen maken.'
+        - 'Teleporteer naar minstens §6één punt§f van de daknok om de punt(en) te §6verbinden§f met de façade.'
+        - 'Gebruik §6verschillende soorten§f blokken en kleuren voor de basisvorm om het gebouw makkelijker te §6scheiden§f in secties.'
+        - 'In de volgende stap kunnen we de muren verhogen en het dak toemaken. Nu is het tijd om de ramen en deuren te markeren.'
+        - 'Gebruik het WorldEdit command §6{0}§f om de muren snel en eenvoudig te verhogen.'
+        - 'Vul het dak met de hand in of gebruik het WorldEdit command §6{1}§f. Gebruik ook de command §6{2}§f om de selectie te veranderen voor grotere en complexere daken.'
+        - 'Controleer altijd de §6hoogte§f van de ramen en deuren zodat het §6overeenkomt§f met de façade.'
+      stage-7-tasks:
+        - 'Lees alle tips op het plot en markeer ze als gelezen.'
+    stage-8:
+      stage-8-title: 'Ramen'
+      stage-8-messages:
+        - 'De basisvorm is klaar! Laten we doorgaan met de ramen en deuren.'
+        - 'Ohh... het lijkt erop dat er twee ramen ontbreken. Kun je me helpen om ze te plaatsen? Ze zien er hetzelfde uit als aan de rechterkant.'
+        - 'Vergeet niet de §6ramen§f en de §6deuren§f te §6verduisteren§f zodat je er niet door kan kijken. We bouwen geen interieur!'
+        - 'Er zijn vele manieren om ramen te bouwen in BTE door bijvoorbeeld §6banners§f, §6trapdoors§f of §6carpets§f te gebruiken.'
+        - 'Gebruik dezelfde blokken als voor de vensters aan de rechterkant. Probeer het opnieuw!'
+        - 'Bedankt voor je hulp! Nu kunnen we doorgaan met textuur toevoegen.'
+      stage-8-tasks:
+        - 'Plaats de ontbrekende raamdetails.'
+    stage-9:
+      stage-9-title: 'Texturering'
+      stage-9-messages:
+        - 'Textuur toevoegen is een integraal onderdeel van het bouwproces. Het is belangrijk om de juiste blokken en kleuren te gebruiken om het gebouw er realistisch uit te laten zien.'
+        - ''
+        - 'Gebruik de WorldEdit opdracht §6{0}§f om de shell simpelweg te vervangen door uw patroon.'
+        - 'Probeer §6blok mixes§f en §6gradiënten§f te gebruiken voor de muren en het dak, zodat het gebouw realistischer lijkt en opvalt.'
+      stage-9-tasks:
+        - 'Lees alle tips op de plot en markeer ze als gelezen.'
+    stage-10:
+      stage-10-title: 'Detailleren en Verdere Stappen'
+      stage-10-messages:
+        - 'Detailleren is een van de belangrijkste processen omdat het gebouw zo uniek wordt.'
+        - 'Voeg §6aangepaste banners§f en §6aangepaste hoofden§f toe aan jouw builds. Gebruik de command §6{0}§f om een aantal aangepaste hoofden te krijgen.'
+        - 'Er zijn vele manieren om je gebouwen te versieren§f. Let altijd op de details van de façade en daken zoals §6schoorstenen§f, §6ramen§f en §6dakgoten§f.'
+        - 'Bedankt voor je deelneming. Je bent nu klaar om je eigen gebouwen te maken voor het BuildTheEarth-project!'
+        - 'Klik hier voor meer informatie over het project.'
+        - 'Om <gold>te solliciteren als bouwer</gold>, maak en verzend <gold>één of meer plots</gold> op onze server. Je vindt meer informatie over het applicatieproces op onze website of {1}.'
+        - 'Als je de huidige voortgang van de kaart wilt verkennen, bekijk dan de <gold>Terra</gold> server!'
+        - 'Veel bouwplezier! ☺️'
+      stage-10-tasks:
+        - 'Lees alle tips op de plot en markeer ze als gelezen.'
+#-----------------------------------------------------
+#| Database
+#-----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Voorbeeld Stad'
+      description: 'Some description'
+  country:
+    AT:
+      name: 'Oostenrijk'
+    CH:
+      name: 'Zwitserland'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Gemakkelijk'
+    medium:
+      name: 'Gemiddeld'
+    hard:
+      name: 'Moeilijk'
+  status:
+    unclaimed:
+      name: 'Unclaimed'
+    unfinished:
+      name: 'Unfinished'
+    unreviewed:
+      name: 'Unreviewed'
+    completed:
+      name: 'Completed'
+  toggle-criteria:
+    built_on_outlines: 'Built on outlines'
+    correct_height: 'Correct building height'
+    correct_facade_colour: 'Correct building colour'
+    correct_roof_colour: 'Correct roof colour'
+    correct_roof_shape: 'Correct roof shape'
+    correct_amount_windows_doors: 'Correct amount of windows and doors'
+    correct_window_type: 'Correct window types'
+    windows_blacked_out: 'Alle ramen zijn verduisterd'
+
+#NOTE: Do not change
+config-version: 1.0

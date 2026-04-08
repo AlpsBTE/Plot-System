@@ -21,6 +21,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -90,7 +91,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(UUID playerUUID, int schematicId) throws Exception {
+    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws Exception {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
             plotGenerator.generateOutlines(schematicId);
@@ -98,7 +99,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotPermissionChange(UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
+    public void onPlotPermissionChange(@NotNull UUID playerUUID, boolean isBuildingAllowed, boolean isWorldEditAllowed) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (plotGenerator != null) {
             plotGenerator.setBuildingEnabled(isBuildingAllowed);
@@ -139,16 +140,14 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
             if (stageId >= stages.size()) {
                 if (!tutorialPlot.isComplete()) tutorialPlot.setComplete();
-            } else if (stageId > tutorialPlot.getStageID()) {
-                if (!tutorialPlot.setStageID(stageId)) {
-                    PlotSystem.getPlugin().getComponentLogger().error("Could not save tutorial progress for tutorial plot #{}!", tutorialPlot.getId());
-                }
+            } else if (stageId > tutorialPlot.getStageID() && !tutorialPlot.setStageID(stageId)) {
+                PlotSystem.getPlugin().getComponentLogger().error("Could not save tutorial progress for tutorial plot #{}!", tutorialPlot.getId());
             }
         });
     }
 
     @Override
-    public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
+    public void onSwitchWorld(@NotNull UUID playerUUID, int tutorialWorldIndex) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (tutorialWorldIndex == 1 && (plotGenerator == null || !tutorialPlot.getWorld().isWorldGenerated())) {
             plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
@@ -176,9 +175,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         super.onTutorialStop(playerUUID);
         if (tutorialPlot != null) tutorialPlot.getWorld().deleteWorld();
-        int index = TutorialPlotProvider.tutorialPlots.get(tutorialPlot);
         TutorialPlotProvider.tutorialPlots.remove(tutorialPlot);
-        TutorialPlotProvider.freeTutorialPlotIds.add(index);
     }
 
     @Override
@@ -193,7 +190,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param player The player to send the message to.
      * @param title  The title of the stage.
      */
-    protected static void sendStageUnlockedMessage(Player player, String title) {
+    protected static void sendStageUnlockedMessage(@NotNull Player player, String title) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.NEW_STAGE_UNLOCKED)).color(AQUA).decorate(BOLD));
         player.sendMessage(text("  ◆ ", WHITE, BOLD).append(text(title).color(GOLD).decorate(BOLD)));
@@ -207,7 +204,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
      * @param tutorialName The name of the tutorial.
      * @see TutorialCategory
      */
-    protected static void sendTutorialCompletedMessage(Player player, String tutorialName) {
+    protected static void sendTutorialCompletedMessage(@NotNull Player player, String tutorialName) {
         player.sendMessage(text());
         player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Tutorials.TUTORIAL_COMPLETED).toUpperCase()).color(AQUA).decorate(BOLD));
         player.sendMessage(text("  ◆ ").color(WHITE).decorate(BOLD).append(text(tutorialName).color(GOLD)));

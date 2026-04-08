@@ -215,6 +215,7 @@ public abstract class LangPaths {
             public static final String CLICK_TO_REMOVE_PLOT_MEMBER = ACTION_PREFIX + "click-to-remove-plot-member";
             public static final String CLICK_TO_OPEN_LINK = ACTION_PREFIX + "click-to-open-link";
             public static final String CLICK_TO_OPEN_LINK_WITH_SHORTLINK = ACTION_PREFIX + "click-to-open-link-with-shortlink";
+            public static final String CLICK_TO_COPY_TO_CLIPBOARD = ACTION_PREFIX + "click-to-copy-to-clipboard";
             public static final String CLICK_TO_SHOW_FEEDBACK = ACTION_PREFIX + "click-to-show-feedback";
             public static final String CLICK_TO_SHOW_OPEN_REVIEWS = ACTION_PREFIX + "click-to-show-open-reviews";
             public static final String CLICK_TO_SHOW_PLOTS = ACTION_PREFIX + "click-to-show-plots";
@@ -240,6 +241,9 @@ public abstract class LangPaths {
             public static final String FINISHED_PLOT = INFO_PREFIX + "finished-plot";
             public static final String PLOT_MARKED_REVIEWED = INFO_PREFIX + "plot-marked-as-reviewed";
             public static final String PLOT_REJECTED = INFO_PREFIX + "plot-rejected";
+            public static final String PLOT_PREVIOUSLY_REJECTED = INFO_PREFIX + "plot-previously-rejected";
+            public static final String PLOT_PREVIOUSLY_REJECTED_FEEDBACK = INFO_PREFIX + "plot-previously-rejected-feedback";
+            public static final String PLOT_PREVIOUSLY_REJECTED_REVIEWER = INFO_PREFIX + "plot-previously-rejected-reviewer";
             public static final String UNDID_SUBMISSION = INFO_PREFIX + "undid-submission";
             public static final String UNDID_REVIEW = INFO_PREFIX + "undid-review";
             public static final String REVIEWED_PLOT = INFO_PREFIX + "reviewed-plot";
@@ -305,7 +309,6 @@ public abstract class LangPaths {
             public static final String PLAYER_MISSING_TUTORIAL = MESSAGE_PREFIX + "player-missing-tutorial";
 
             public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
-            public static final String COMMAND_DISABLED = ERROR_PREFIX + "command-disabled";
             public static final String NO_PLOTS_LEFT = ERROR_PREFIX + "no-plots-left";
             public static final String PLEASE_WAIT = ERROR_PREFIX + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR_PREFIX + "all-slots-occupied";

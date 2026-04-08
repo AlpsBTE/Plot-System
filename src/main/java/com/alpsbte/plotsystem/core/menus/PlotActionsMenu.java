@@ -12,6 +12,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -112,7 +113,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                 .build());
             }
         } else {
-            getMenu().getSlot(22).setItem(Utils.DEFAULT_ITEM);
+            getMenu().getSlot(22).setItem(MenuItems.borderItem());
         }
     }
 
@@ -174,7 +175,7 @@ public class PlotActionsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(Utils.DEFAULT_ITEM)
+                .item(MenuItems.borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.FULL_MASK)

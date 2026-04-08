@@ -4,6 +4,9 @@ import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +20,14 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class MenuItems {
     private MenuItems() {}
+
+    public static ItemStack borderItem() {
+        ItemStack item =  new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(Component.empty()).build();
+
+        //noinspection UnstableApiUsage
+        item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().hideTooltip(true).build());
+        return item;
+    }
 
     public static ItemStack closeMenuItem(Player player) {
         return new ItemBuilder(BaseItems.MENU_CLOSE.getItem())

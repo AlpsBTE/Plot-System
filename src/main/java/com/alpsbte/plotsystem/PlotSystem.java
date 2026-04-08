@@ -201,7 +201,7 @@ public class PlotSystem extends JavaPlugin {
         return plugin;
     }
 
-    public void initDatabase() throws IOException, SQLException, ClassNotFoundException {
+    public void initDatabase() throws IOException, SQLException {
         DatabaseConnection.initializeDatabase(DatabaseConfigPaths.getConfig(getConfig()), true);
         var initScript = CharStreams.toString(Objects.requireNonNull(getTextResource("DATABASE.sql")));
         try (var con = DatabaseConnection.getConnection(); var s = con.createStatement()) {

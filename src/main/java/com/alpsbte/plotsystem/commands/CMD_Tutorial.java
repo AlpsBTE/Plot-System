@@ -14,7 +14,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,7 @@ public class CMD_Tutorial extends BaseCommand {
             return true;
         }
         if (getPlayer(sender) == null) {
-            Bukkit.getConsoleSender().sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
+            sender.sendMessage(Component.text("This command can only be used as a player!", NamedTextColor.RED));
             return true;
         }
         if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {

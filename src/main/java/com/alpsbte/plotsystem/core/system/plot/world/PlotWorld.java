@@ -94,9 +94,12 @@ public class PlotWorld implements IWorld {
             return false;
         }
         try {
-            File multiverseInventoriesConfig = new File(DependencyManager.getMultiverseInventoriesConfigPath(getWorldName()));
+            var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(getWorldName());
+            if (mviConfig != null) {
+                File multiverseInventoriesConfig = new File(mviConfig);
+                if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
+            }
             File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(getWorldName()));
-            if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
             if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
         } catch (IOException ex) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"));
@@ -117,12 +120,7 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        if (!isWorldGenerated()) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not unload world " + worldName + " because it is not generated!"));
-            return false;
-        }
         if (!isWorldLoaded()) return true;
-
         if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {
             for (Player player : getBukkitWorld().getPlayers()) {
                 player.teleport(Utils.getSpawnLocation());

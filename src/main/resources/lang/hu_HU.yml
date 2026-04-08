@@ -1,0 +1,450 @@
+#-----------------------------------------------------
+#|            Plot System - by Alps BTE
+#-----------------------------------------------------
+#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+#|
+#| [Formatting] Use %newline% for a newline
+#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+#-----------------------------------------------------
+lang:
+  name: "Magyar (HU)"
+  head-id: "4284"
+#-----------------------------------------------------
+#| Plot
+#-----------------------------------------------------
+plot:
+  plot-name: "Telek"
+  id: "Azonosító"
+  owner: "Telek Tulajdonos"
+  members: "Telek Tagjai"
+  member: "Telek Tag"
+  city: "Város"
+  country: "Ország"
+  difficulty: "Nehézségi Szint"
+  status: "Állapot"
+  score: "Pontszám"
+  total-score: "Összpontszám"
+  completed-plots: "Megépített Telkek"
+  group-system:
+    empty-member-slot: "Üres Tag Hely"
+    shared-by-members: "(megosztva {0} tag által)"
+#-----------------------------------------------------
+#| City Projects
+#-----------------------------------------------------
+city-project:
+  cities: "Városok"
+  open: "Elérhető Telkek"
+  in-progress: "Folyamatban levő Telkek"
+  completed: "Felépített Telkek"
+  plots-available: 'Elérhető Telkek'
+  no-plots-available: "Nincs Elérhető Telek"
+  for-your-difficulty: "({0} a saját nehézségi szintedhez)"
+#-----------------------------------------------------
+#| Countries
+#-----------------------------------------------------
+country:
+  countries: "Országok"
+#-----------------------------------------------------
+#| Continents
+#-----------------------------------------------------
+continent:
+  europe: "Európa"
+  asia: "Ázsia"
+  africa: "Afrika"
+  oceania: "Óceánia"
+  south-america: "Dél-Amerika"
+  north-america: "Észak-Amerika"
+#-----------------------------------------------------
+#| Difficulty
+#-----------------------------------------------------
+difficulty:
+  automatic: "Automatikus"
+  score-multiplier: "Pontszám-szorzó"
+#-----------------------------------------------------
+#| Menu Titles
+#-----------------------------------------------------
+menu-title:
+  close: 'Bezárás'
+  back: 'Vissza'
+  continue: 'Folytatás'
+  next-page: 'Következő oldal'
+  previous-page: 'Előző oldal'
+  error: 'Hiba'
+  loading: 'Betöltés...'
+  plot-difficulty: 'Telek Nehézségi Szint'
+  slot: 'Telek Hely'
+  builder-utilities: 'Builder Utilities'
+  show-plots: 'Telkek Megjelenítése'
+  settings: 'Beállítások'
+  submit: 'Beküldés'
+  teleport: 'Teleportálás'
+  abandon: 'Feladás'
+  undo-submit: 'Beküldés Visszavonása'
+  manage-members: 'Tagok Kezelése'
+  feedback: 'Visszajelzés | Értékelés #{0}'
+  custom-heads: 'Egyedi Fejkockák'
+  banner-maker: 'Zászló Készítő'
+  special-tools: 'Speciális Kockák és Tárgyak'
+  review-point: 'Pont'
+  review-points: 'Pontok'
+  cancel: 'Mégse'
+  add-member-to-plot: 'Tag Hozzáadása a Telekhez'
+  companion: 'Navigátor'
+  companion-select-continent: 'Válassz ki egy Földrészt'
+  companion-select-country: 'Válassz ki egy Országot'
+  companion-select-city: 'Válassz ki egy Várost'
+  player-plots: '{0}s Telkek'
+  leave-plot: 'Telek elhagyása'
+  review-plots: 'Telkek Elbírálása'
+  review-plot: '#{0} -as/es Telek Elbírálása'
+  select-language: 'Nyelv Kiválasztása'
+  select-plot-type: 'Telek Típus Kiválasztása'
+  select-focus-mode: 'Fókusz Mód Kiválasztása'
+  select-local-inspiration-mode: 'Inspiráció Mód Kiválasztása'
+  select-city-inspiration-mode: 'Város Inspiráció Mód Kiválasztása'
+  filter-by-country: 'Szűrés Ország Alapján'
+  information: 'Információ'
+  tutorials: 'Útmutatók'
+  tutorial-stages: 'Útmutató Fázisai'
+  tutorial-end: 'Útmutató Befejezése'
+  tutorial-beginner: 'Kezdés'
+  companion-random: 'Véletlenszerű Kiválasztás'
+#-----------------------------------------------------
+#| Menu Descriptions
+#-----------------------------------------------------
+menu-description:
+  error-desc: 'Hiba történt...'
+  plot-difficulty-desc: 'Kattints a Váltáshoz...'
+  slot-desc: 'Kattints a város projektre egy új telek létrehozásához'
+  builder-utilities-desc: 'Hozzáférhetsz egyedi fej kockákhoz, zászlókhoz és különleges kockákhoz'
+  show-plots-desc: 'Összes telked megtekintése'
+  settings-desc: 'Felhasználói beállításaid módosítása'
+  submit-plot-desc: 'Kattints ide a telek befejezéséhez és beküldéséhez értékelésre'
+  teleport-desc: 'Kattints ide a telekbe való teleportáláshoz'
+  abandon-desc: 'Kattints ide a telked visszaállításához, hogy más megépíthesse'
+  undo-submit-desc: 'Kattints ide a telked beküldésének visszavonásához'
+  manage-members-desc: 'Kattints ide a Telek Tagjai menü megnyitásához, ahol hozzáadhatsz vagy eltávolíthatsz más játékosokat a telkedről'
+  feedback-desc: 'Kattints ide a telked értékelésének megtekintéséhez'
+  custom-heads-desc: 'Kattints ide a fej-adatbázis megnyitásához, hogy hozzáférj rengeteg egyedi fejkockához'
+  banner-maker-desc: 'Kattints ide saját zászlók létrehozásához és elmentésükhöz'
+  special-tools-desc: 'Kattints ide számtalan rejtett kockához és tárgyhoz való hozzáféréshez'
+  add-member-to-plot-desc: 'Hívd meg a barátaidat a telkedre és kezdjetek építeni együtt'
+  review-points-desc: 'Kattints ide a kiválasztáshoz'
+  submit-review-desc: 'Kiválasztott pontok beküldése és telek megjelölése értékeltként'
+  leave-plot-desc: 'Kattints ide ezen telek elhagyásához'
+  select-language-desc: 'Válaszd ki a nyelvedet'
+  select-plot-type-desc: 'Válaszd ki a telked típusát'
+  select-focus-mode-desc: "Építsd a telkedet egy lebegő szigeten az űr közepén.%newline%%newline%- Nincsen Környezet%newline%- Nincsenek szomszédos telkek"
+  select-local-inspiration-mode-desc: "Építsd a telkedet egy lebegő szigeten, a közvetlen környezetet referenciának használva.%newline%%newline%+ Környezet%newline%- Nincsenek szomszédos telkek"
+  select-city-inspiration-mode-desc: "Építsd a telkedet egy lebegő szigeten, a közvetlen környezettel és a tiédhez közeli, más játékosok telkeivel.%newline%%newline%+ Környezet%newline%+ Szomszédos telkek"
+  filter-desc: "Összes megjelenítése"
+  information-desc: "Egy telek legfeljebb 20 pontot kaphat. Ha egy telek 8 vagy kevesebb pontot kap, vagy egy kategóriában 0 pontot szerez, el lesz utasítva, és az építész visszakapja a telket, hogy tovább építse. Ha egy telek 0 pontot kap, el lesz hagyva."
+  tutorials-desc: 'Tanuld meg a BuildTheEarth projekt alapjait és fejleszd építész képességeidet számtalan témájú útmutatóval.'
+  tutorial-end-desc: 'A haladásod el lesz mentve.'
+  tutorial-beginner-desc: 'Tanuld meg a BuildTheEarth projektben való építés alapjait.'
+  companion-random-desc: 'Kattints ide a random választáshoz.'
+#-----------------------------------------------------
+#| Review
+#-----------------------------------------------------
+review:
+  review-plot: "Telek Elbírálása"
+  manage-plot: "Telek Kezelése"
+  manage-and-review-plots: "Telkek Kezelése és Elbírálása"
+  accepted: "Elfogadva"
+  rejected: "Elutasítva"
+  abandoned: "Elhagyott"
+  feedback: "Visszajelzés"
+  reviewer: "Elbíráló"
+  player-language: "Játékos Nyelve"
+  no-feedback: "Nincs visszajelzés"
+  accuracy-points: "Pontosság pontozása"
+  block-palette-points: "Kocka paletta pontozása"
+  toggle-points: "Pontok megjelenítése"
+  total-points: "Összesített pontszám"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
+  criteria:
+    accuracy: "Pontosság"
+    accuracy-desc: "Mennyire pontos az épület?%newline%%newline%- Olyan mint a valóságban%newline%- Helyes körvonalak%newline%- Helyes magasság%newline%- Készen van"
+    block-palette: "Kocka paletta"
+    block-palette-desc: "Hány különböző kockát használtak és mennyire voltak kreatívak?%newline%%newline%- Kockák színének/textúrájának választása%newline%- Random kockák"
+#-----------------------------------------------------
+#| Notes
+#-----------------------------------------------------
+note:
+  tip: "Tipp"
+  under-construction: 'Építés Alatt'
+  wont-be-able-continue-building: "!"
+  score-will-be-split: "Az eredmény el lesz osztva minden tag között elbírálás után!"
+  player-has-to-be-online: "A játékosnak online kell lennie!"
+  optional: "Opcionális"
+  required: "Szükséges"
+  criteria-fulfilled: "Teljesítve"
+  criteria-not-fulfilled: "Nincs teljesítve"
+  legacy: "LEGACY"
+  action:
+    read: 'Olvasás'
+    read-more: 'Tovább Olvasás'
+    mark-as-read: 'Megjelölés olvasottként'
+    start: 'Kezdés'
+    continue: "Folytatás"
+    continue-tutorial: 'Útmutató Folytatása'
+    create-plot: 'Telek létrehozása'
+    right-click: "Jobb kattintás"
+    left-click: "Bal kattintás"
+    accept: 'Elfogadás'
+    reject: 'Elutasítás'
+    click-to-create-plot: 'Kattints ide egy új telek létrehozásához...'
+    click-to-proceed: "Kattints ide a folytatáshoz..."
+    click-to-remove-plot-member: "Kattints ide egy tag eltávolításához a telekről..."
+    click-to-open-link: "Kattints ide a {0} link megnyitásához..."
+    click-to-open-link-with-shortlink: "§6Kattints Ide §7hogy megnyisd a §a{0}§7 linket vagy használd ezt a linket: §a{1}"
+    click-to-show-feedback: "§6Kattints Ide §ahogy megnézd a telkedre érkezett visszajelzést..."
+    click-to-show-open-reviews: "§6Kattints Ide §ahogy lásd az értékelésre váró telkeket..."
+    click-to-show-plots: "§6Kattints Ide §ahogy megtekintsd a telkeidet..."
+    click-to-play-with-friends: "§7Barátaiddal akarsz együtt játszani? §6Kattints Ide..."
+    tutorial-show-stages: 'Fázisok Megjelenítése'
+    click-to-open-plots-menu: 'Kattints ide a telek menü megnyitásához...'
+    click-to-toggle: "Kattints hogy bekapcsold a..."
+#-----------------------------------------------------
+#| Messages
+#-----------------------------------------------------
+message:
+  info:
+    teleporting-plot: "§aTeleportálás a(z) §6#{0}§a -as/es telekhez..."
+    teleporting-tpll: "§aTeleportálás ide §6{0}§a, §6{1}§a..."
+    abandoned-plot: "§aA(z) §6#{0}§a -as/es számú telek feladva!"
+    finished-plot: "§aA(z) §6#{0}§a -as/es telek amit §6{1}§a épített, elkészült!"
+    plot-marked-as-reviewed: "§aA(z) §6#{0}§a -as telek, amit §6{1}§a épített, elbíráltnak lett megjelölve!"
+    plot-rejected: "§aA(z) §6#{0}§a -as telek, amit §6{1}§a épített, elutasítottnak lett megjelölve!"
+    undid-submission: "§aTelek §6#{0}§a beküldése vissza lett vonva!"
+    undid-review: "§aA(z) §6{1}§a által épített, §6#{0}§a -as/es telek értékelése visszavonva!"
+    reviewed-plot: "§aA §6#{0}§a -as/es telked el lett bírálva!"
+    unreviewed-plot: "§aVan §6{0}§a elbírálatlan telek!"
+    unreviewed-plots: "§aVan §6{0}§a elbírálatlan telek!"
+    unfinished-plot: "§aVan §6{0}§a befejezetlen telked!"
+    unfinished-plots: "§aVan §6{0}§a befejezetlen telked!"
+    enabled-build-permissions: "§aÉpítész jogok bekapcsolva az elbírálók számára a(z) §6#{0}§a -as/es telken!"
+    disabled-build-permissions: "§aÉpítész jogok kikapcsolva az elbírálók számára a(z) §6#{0}§a -as/es telken!"
+    updated-plot-feedback: "§aFrissült a visszajelzés a(z) §6#{0}§a -as/es telekről!"
+    removed-plot-member: "§6{0}§a eltávolítva a(z) §6#{1}§a -as/es telekről!"
+    left-plot: "§aTelek §6#{0}§a elhagyva!"
+    plot-will-get-abandoned-warning: "§c§lFIGYELEM: §cEz a telek automatikusan fel lesz adva!"
+    plot-will-be-rejected: "A telek el lesz utasítva!"
+    plot-will-be-accepted: "A telek el lesz fogadva"
+    plots-reviewed-singular: "{0} telek lett elbírálva!"
+    plots-reviewed-plural: "{0} telek lett elbírálva!"
+    saving-plot: "§aTelek mentése..."
+    creating-plot: "§aÚj telek létrehozása..."
+    created-new-plot: "§aÚj telek létrehozva§a §6{0}§a számára!"
+    chat-enter-player: 'Kérlek írd be a játékos nevét a chatre.'
+    chat-enter-feedback: "Kérdlek írj egy visszajelzést a játékos számára a chatre."
+    chat-input-expires-after: "A chat parancs lejár {0} perc múlva."
+    beginner-tutorial-required: 'Teljesítsd az útmutatót a projektben való részvételhez.'
+    beginner-tutorial-completed: 'Készen állsz megépíteni a saját telkedet? Itt a lehetőséged!'
+    player-invite-sent: 'Egy meghívót elküldtünk {0} számára, hogy csatlakozzon a telkedhez.'
+    player-invite-to-sent: '{0} meghívott téged, hogy segíts építeni a telkén.'
+    player-invite-accepted: 'A meghívó {0} telkére el lett fogadva.'
+    player-invite-to-accepted: '{0} elfogadta a meghívásodat, és hozzá lett adva a telkedhez.'
+    player-invite-rejected: 'A meghívó {0} telkére el lett utasítva.'
+  error:
+    plot-does-not-exist: "Ez a telek nem létezik!"
+    plot-either-unclaimed-or-unreviewed: "Ez a telek vagy gazdátlan, vagy még nem lett értékelve!"
+    plot-has-not-yet-reviewed: "Ez a telek még nem került elbírálásra!"
+    can-only-abandon-unfinished-plots: "Csak befejezetlen telkeket tudsz feladni!"
+    can-only-submit-unfinished-plots: "Csak befejezetlen telkeket tudsz beküldeni!"
+    can-only-undo-submissions-unreviewed-plots: "Csak te vonhatod vissza az elbírálatlan telkek beküldését!"
+    can-only-manage-members-unfinished-plots: "Csak te kezelheted a befejezetlen telek tagjait!"
+    cannot-teleport-outside-plot: "Nem teleportálhatsz a telek határán kívülre!"
+    cannot-undo-review: "Nem vonhatsz vissza egy elbírálást, amit nem te készítettél!"
+    cannot-send-feedback: "Nem küldhetsz visszajelzést egy telekről, amit nem te értékeltél!"
+    cannot-review-own-plot: "Nem értékelheted a saját telkedet!"
+    cannot-modify-legacy-plot: "Legacy telkeket nem lehet módosítani!"
+    cannot-load-legacy-plot: "Legacy telkeket nem lehet betölteni!"
+    player-has-no-permissions: "Ehhez nincsen jogosultságod!"
+    player-has-no-invitations: "Nincsenek meghívásaid!"
+    player-is-not-allowed: "Ezt nem szabad megtenned!"
+    player-is-plot-owner: "Ez a játékos már a telek tulajdonosa!"
+    player-is-plot-member: "Ez a játékos már a telek tagja!"
+    player-is-not-online: "Ez a játékos nincs online!"
+    player-not-found: "Ez a játékos nem található!"
+    player-already-invited: '{0} már meg lett hívva a telekre.'
+    player-invite-expired: 'A meghívó {0} -tól/től lejárt.'
+    player-invite-to-expired: 'A {0} -nak/nek küldött meghívó lejárt.'
+    player-invite-to-rejected: '{0} elutasította a meghívásodat.'
+    player-needs-to-be-on-plot: "Egy telken kell lenned, hogy ezt használni tudd!"
+    player-needs-higher-score: "Magasabb pontszám szükséges, hogy ilyen nehézségi szintű telket építhess."
+    player-missing-tutorial: "A játékosnak előbb teljesítenie kell az útmutatót, hogy hozzá legyen adva a telekhez!"
+    error-occurred: "Hiba történt. Kérjük, próbálja meg újra!"
+    no-plots-left: "Ennél a városnál nincs több elérhető telek. Kérlek válassz egy másik projektet."
+    please-wait: "Kérlek várj pár másodpercet, mielőtt létrehozol egy új telket!"
+    all-slots-occupied: "Minden telek helyed foglalt! Kérlek fejezd be a jelenlegi telkeidet, mielőtt létrehozol egy újat."
+    chat-input-expired: "A chat parancs lejárt."
+    tutorial-disabled: 'Ezen a szerveren az Útmutató nem elérhető.'
+    tutorial-already-running: "Már folyamatban van egy útmutató! Végezd el, mielőtt újat kezdesz."
+    review-not-found: "Értékelés nem található!"
+leaderboards:
+  pages:
+    DAILY: "Napi"
+    WEEKLY: "Heti"
+    MONTHLY: "Havi"
+    YEARLY: "Éves"
+    LIFETIME: "Örökranglista"
+  actionbar-position: "Helyezés #{0}"
+  actionbar-percentage: "Top {0}%"
+  not-on-leaderboard: "Nem vagy rajta a Ranglistán"
+tutorials:
+  stage: 'Fázis'
+  new-stage-unlocked: 'ÚJ FÁZIS FELOLDVA'
+  tutorial-completed: 'ÚTMUTATÓ TELJESÍTVE'
+  beginner:
+    stage-1:
+      stage-1-title: 'A BuildTheEarth Projekt megismerése'
+      stage-1-messages:
+        - 'Üdv {0}! Örülök, hogy megismerhetlek, az én nevem {1}. Üdvözöllek a BuildTheEarth projekt izgalmas világába!'
+        - 'A célunk az egész világ 1:1 arányú másolatának megépítése Minecraftban. Igen, jól olvastad, 1:1 arányban!'
+        - 'Azonban mi, az Alpok BTE csapata, csak a gyönyörű Ausztria, Svájc és Lichtenstein alpesi országainak építésén dolgozunk.'
+        - 'Készen állsz megtanulni a BTE építési folyamatának alapjait? Átvezetlek téged a projektben való részvétel lépésein. Csapjunk bele!'
+      stage-1-tasks:
+        - 'Beszélj {0} -val/vel az építési területen.'
+    stage-2:
+      stage-2-title: 'Viszonyítási Pontok'
+      stage-2-messages:
+        - 'Üdvözöllek a kis szigeteden. Itt fogjuk megépíteni az első épületedet a Build The Earth projektben!'
+        - 'Mielőtt elkezdünk építeni, tudnunk kell, hogyan néz ki az épület a valóságban. Ehhez olyan segédeszközöket használunk, mint a(z) {0} és {1}.'
+        - 'A(z) {2} -t használjuk a koordináták másolására, hogy egy adott pontban tudjunk teleportálni. Valamint hozzáférünk a(z) {3} -hoz, hogy közelebbről láthassuk az épületet.'
+        - '{4}'
+        - 'A(z) {5} -t használjuk az épület magasságának megméréséhez. Ez azért fontos, hogy az épület megfelelően magas legyen.'
+        - '{6}'
+        - 'Használd a {7} parancsot, ha később szükséged lenne a linkekre.'
+      stage-2-tasks:
+    stage-3:
+      stage-3-title: 'Teleportálás'
+      stage-3-messages:
+        - 'A ház körvonalai alapból létre vannak hozva, de mivel jellemzően nem elég pontosak, ki kell javítsuk őket. A helyes körvonal létrehozásához először az épület sarkaiba kell teleportálnunk.'
+        - 'Használd a {0} parancsot hogy odateleportálj a játékon belül. {1} az épület egyik sarkára, hogy kimásold a koordinátáit.'
+        - '{2}'
+        - 'A folytatáshoz teleportálj a kijelölt pontokba. Próbáld újra!'
+        - 'Válts a Google Earth §6Szatellit§f nézetére, hogy 3D-ben lásd az épületet.%newline%%newline%Kattints a §6Rétegek§f -re a térkép bal alsó sarkában. Ha nem jelennek meg 3D-s épületek, kapcsold be a §6GFöldgömb Nézet§f -et a "Több" fülre kattintva.'
+      stage-3-tasks:
+        - 'Teleportáj az épület mind a(z) {0} sarkához a {1} használatával.'
+    stage-4:
+      stage-4-title: 'WorldEdit'
+      stage-4-messages:
+        - 'Mielőtt rátérünk a körvonalakra, meg kell ismernünk egy fontos eszközt, amit {0} -nek hívnak. A WorldEdit segítségével gyorsabban és hatékonyabban tudunk építeni.'
+        - 'A WorldEdit használatához, szükséged van egy <gold>fa fejszére</gold>.'
+        - 'Most, hogy megvan a fa fejszéd, a {1} és {2} gombokkal kockákra kattinthatsz, hogy létrehozd a kijelölésedet.'
+      stage-4-tasks:
+        - 'Használd a(z) {0} parancsot a fa fejsze megszerzéséhez.'
+    stage-5:
+      stage-5-title: 'Építsd meg a Körvonalakat'
+      stage-5-messages:
+        - 'Most, hogy tudjuk mi az a WorldEdit, elkezdhetjük megépíteni a ház alaprajzát.'
+        - 'A körvonalak megrajzolásához, a(z) {0} parancsot használjuk.'
+        - '{1} az első pont kijelöléséhez és {2} a második pont kijelöléséhez.'
+        - 'A folytatáshoz kösd össze a pontokat a {0} használatával. Próbáld újra!'
+      stage-5-tasks:
+        - 'Kösd össze a pontokat a(z) {0} paranccsal.'
+    stage-6:
+      stage-6-title: 'Épületek Magassága'
+      stage-6-messages:
+        - 'Most, hogy kész az épület alaprajza, meg kell <gold>mérnünk</gold> az épület magasságát.'
+        - 'Számold ki a <gold>homlokzat</gold>magasságát, amihez vond ki a <gold>talajszint magasságát</gold> a <gold>tető</gold> magasságából.'
+        - 'Írd be az épület homlokzatának magasságát (méterben) a folytatáshoz.'
+        - '{0}'
+        - 'Ügyes vagy! Az épület magassága {1} kocka.'
+        - 'Majdnem eltaláltad. Az épület magassága valójában {1} kocka.'
+        - 'Majdnem megcsináltad. Próbáld újra!'
+        - 'Le tudod §6olvasni§f a domborzat magasságát a Google Earth térképének §6jobb alsó§f sarkában.%newline%%newline%A magasság §6méréséhez§f mozgasd az §6egeredet§f a megfelelő pontra a térképen.'
+      stage-6-tasks:
+        - 'Számítsd ki az épület magasságát.'
+    stage-7:
+      stage-7-title: 'Vázak Építése'
+      stage-7-messages:
+        - 'Végre elkezdhetjük építeni az épületet! Az első lépés a ház vázának felépítése, amit az alaprajz és magasság segítségével létre tudunk már így hozni.'
+        - 'Teleportálj legalább a tetőgerinc §6egyik pontjába§f, hogy §6összekösd§f a pont(okat) a homlokzattal.'
+        - 'Használj §6különböző fajta§f kockákat és színeket a házak vázához, hogy könnyebben §6szét tudd választani§f az épületet különböző részekre.'
+        - 'Következhet a falak felhúzása és a tető befedése. Itt az idő az ajtók és ablakok kijelölésére.'
+        - 'Használd a(z) §6{0}§f WorldEdit parancsot, hogy gyorsan és könnyedén felhúzd az épület falait.'
+        - 'Töltsd ki a tető hézagjait kézzel, vagy használd a(z) §6{1}§f WorldEdit parancsot. További lehetőség a(z) §6{2}§f parancs használata, hogy a nagyobb és összetettebb tetőkhöz ideális kijelölésfajtát válaszd ki.'
+        - 'Mindig ellenőrizd az ablakok és ajtók §6magasságát§f, hogy §6eggyezzen§f a homlokzattal.'
+      stage-7-tasks:
+        - 'Olvass el minden tippet a telken, hogy olvasottként legyenek megjelölve.'
+    stage-8:
+      stage-8-title: 'Ablakok'
+      stage-8-messages:
+        - 'A ház váza készen van! Folytassuk az ablakokkal és az ajtókkal.'
+        - 'Ó.. úgy tűnik, hogy két ablak hiányzik. Segítesz megépíteni őket? Ugyan úgy néznek ki, mint a jobb oldalon.'
+        - 'Ne felejtsd el §6eltakarni§f az §6ablakok§f és §6ajtók§f hátulját, hogy ne tudj átlátni rajtuk. Mi nem építjük meg a belső tereket!'
+        - 'Számtalan módon tudsz ablakokat csinálni a BTE házaira, például §6zászlókkal§f, §6csapóajtókkal§f vagy §6szőnyegekkel§f.'
+        - 'Használd ugyanazokat a kockákat a jobb oldali ablakhoz. Próbáld újra!'
+        - 'Köszönöm a segítségedet! Most folytathatjuk a textúrázással.'
+      stage-8-tasks:
+        - 'Építsd meg a hiányzó ablak részleteket.'
+    stage-9:
+      stage-9-title: 'Textúrázás'
+      stage-9-messages:
+        - 'A textúrázás szerves része az építési folyamatnak. Fontos a megfelelő kockák és színek kiválasztása, hogy élethű legyen az épület.'
+        - 'Használd a §6Google Street View§f -t vagy §6képeket§f, hogy a megfelelő színű kockát kiválaszd, mivel a szatellit képek színe gyakran pontatlan.'
+        - 'Használd a WorldEdit§6{0}§f parancsát, hogy egyszerűen kicseréld a vázadat a mintáddal.'
+        - 'Próbálj használni §6kocka keverékeket§f és §6grádienseket§f a falakhoz és a tetőhöz, hogy az épület élethűbb és szembetűnőbb legyen.'
+      stage-9-tasks:
+        - 'Olvass el minden tippet a telken, hogy olvasottként legyenek megjelölve.'
+    stage-10:
+      stage-10-title: 'Részletek & További Lépések'
+      stage-10-messages:
+        - 'A részletezés az egyik legfontosabb folyamat, mert felismerhetővé és egyedivé változtatja az épületet.'
+        - 'Adj hozzá §6egyedi zászlókat§f és §6egyedi fejkockákat§f az építményeidhez. Használd a(z) §6{0}§f parancsot, hogy hozzáférj rengeteg egyedi fejkockához.'
+        - 'Sokféleképpen tudod §6díszíteni§f az épületeidet. Mindig figyelj oda a homlokzat és a tető apró részleteire, mint például a §6kémények§f, §6ablakok§f és §6ereszcsatornák§f.'
+        - 'Köszönjük a részvételedet. Most már készen állsz rá, hogy megépítsd a saját épületeidet a BuildTheEarth projektben!'
+        - 'Kattints ide, hogy többet megtudj a projektről.'
+        - 'Ahhoz, hogy <gold>építész lehessél</gold>, építs meg és küldj be <gold>egy vagy több telket</gold> a szerverünkön. A jelentkezési folyamatról többet megtudhatsz a weboldalunkon, vagy itt {1}.'
+        - 'Ha fel akarod fedezni a térkép jelenlegi haladását, nézz át a <gold>Terra</gold> szerverre!'
+        - 'Jó építést! ☺'
+      stage-10-tasks:
+        - 'Olvass el minden tippet a telken, hogy olvasottként legyenek megjelölve.'
+#-----------------------------------------------------
+#| Database
+#-----------------------------------------------------
+database:
+  city-project:
+    example-city:
+      name: 'Példa Város'
+      description: 'Valami leírás'
+  country:
+    AT:
+      name: 'Ausztria'
+    CH:
+      name: 'Svájc'
+    LI:
+      name: 'Liechtenstein'
+  difficulty:
+    easy:
+      name: 'Könnyű'
+    medium:
+      name: 'Közepes'
+    hard:
+      name: 'Nehéz'
+  status:
+    unclaimed:
+      name: 'Gazdátlan'
+    unfinished:
+      name: 'Befejezetlen'
+    unreviewed:
+      name: 'Visszajelzés Nélküli'
+    completed:
+      name: 'Befejezett'
+  toggle-criteria:
+    built_on_outlines: 'Körvonalakra épült'
+    correct_height: 'Helyes épület magasság'
+    correct_facade_colour: 'Helyes épület szín'
+    correct_roof_colour: 'Helyes tető szín'
+    correct_roof_shape: 'Helyes tető forma'
+    correct_amount_windows_doors: 'Helyes számú ablak és ajtó'
+    correct_window_type: 'Helyes ablak fajta'
+    windows_blacked_out: 'Minden ablak mögé nem lehet belátni'
+
+#NOTE: Do not change
+config-version: 1.0

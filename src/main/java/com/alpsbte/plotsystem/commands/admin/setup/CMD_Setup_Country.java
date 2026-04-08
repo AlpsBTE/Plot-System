@@ -176,7 +176,7 @@ public class CMD_Setup_Country extends SubCommand {
             }
             boolean successful = DataProvider.COUNTRY.removeCountry(code);
             if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully removed country!"));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override
@@ -219,14 +219,14 @@ public class CMD_Setup_Country extends SubCommand {
             // Check if country exists
             Optional<Country> country = DataProvider.COUNTRY.getCountryByCode(code);
             if (country.isEmpty()) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with name " + args[1] + "!"));
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find any country with code " + code + "!"));
                 sendInfo(sender);
                 return;
             }
 
             boolean successful = country.get().setMaterialAndModelData(material, customModelData);
-            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated country with code " + country + "! Material: " + material + " CustomModelData: " + (customModelData == null ? "NULL" : customModelData)));
-            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command!"));
+            if (successful) sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated country with code " + code + "! Material: " + material + " CustomModelData: " + (customModelData == null ? "NULL" : customModelData)));
+            else sender.sendMessage(Utils.ChatUtils.getAlertFormat("An error occurred while executing command! Check console for any exceptions."));
         }
 
         @Override

@@ -1,7 +1,7 @@
 plugins {
     java
-    id("com.palantir.git-version") version "4.0.0"
-    id("com.gradleup.shadow") version "9.0.2"
+    alias(libs.plugins.git.version)
+    alias(libs.plugins.shadow)
 }
 
 repositories {
@@ -45,9 +45,10 @@ dependencies {
     implementation(libs.com.alpsbte.alpslib.alpslib.hologram)
     implementation(libs.com.alpsbte.alpslib.alpslib.utils)
     implementation(libs.org.mariadb.jdbc.mariadb.java.client)
-    implementation(libs.com.zaxxer.hikaricp)
+    implementation(libs.com.zaxxer.hikaricp) {
+        exclude(group = "org.slf4j")
+    }
     implementation(libs.com.github.querz.nbt)
-    compileOnly(libs.io.papermc.paper.paper.api)
     implementation(platform(libs.com.intellectualsites.bom.bom.newest))
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
     compileOnly(libs.com.sk89q.worldguard.worldguard.bukkit)
@@ -58,13 +59,14 @@ dependencies {
     compileOnly(libs.de.oliver.fancynpcs)
     compileOnly(libs.li.cinnazeyy.langlibs.api)
     compileOnly(libs.commons.io.commons.io)
+    compileOnly(libs.io.papermc.paper.paper.api)
 }
 
 val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
 val details = versionDetails()
 
 group = "com.alpsbte"
-version = "5.0.0" + "-" + details.commitDistance + "-" + details.gitHash + "-SNAPSHOT"
+version = "5.0.3" + "-" + details.gitHash + "-SNAPSHOT"
 description = "An easy to use building system for the BuildTheEarth project."
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -77,17 +79,9 @@ tasks.withType<Javadoc> {
 }
 
 tasks.shadowJar {
-    // Exclude annotation classes (e.g. org.jetbrains.annotations)
-    exclude("org/jetbrains/annotations/**")
-    // Exclude slf4j classes
-    exclude("org/slf4j/**")
-    exclude("META-INF/**")
     archiveClassifier = ""
-
-    val relocationPrefix = "alpsplotsystem.libs"
-    relocate("com.alpsbte.alpslib", "$relocationPrefix.com.alpsbte.alpslib")
-    relocate("org.mariadb.jdbc", "$relocationPrefix.org.mariadb.jdbc")
-    relocate("com.zaxxer.hikari", "$relocationPrefix.com.zaxxer.hikari")
+    relocationPrefix = "com.alpsbte.plotsystem.shaded"
+    enableAutoRelocation = true
 }
 
 tasks.assemble {
@@ -95,6 +89,7 @@ tasks.assemble {
 }
 
 tasks.jar {
+    archiveClassifier = "UNSHADED"
     enabled = false // Disable the default jar task since we are using shadowJar
 }
 
