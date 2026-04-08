@@ -68,7 +68,7 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         if (completedSchematic != null) {
             Utils.runSync(() -> {
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, completedSchematic, plotWorld, true);
+                pasteSchematic(airMask, completedSchematic, plotWorld, true, true);
                 return null;
             }).get();
         } else super.generateStructure();
@@ -90,6 +90,6 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
-        AbstractPlotLoader.pasteSchematic(null, this.schematicBytes, cityPlotWorld, false);
+        AbstractPlotLoader.pasteSchematic(null, this.schematicBytes, cityPlotWorld, false, true);
     }
 }

@@ -141,7 +141,7 @@ public class CityPlotWorld extends PlotWorld {
 
         // paste initial schematic to reset plot
         try {
-            AbstractPlotLoader.pasteSchematic(null, PlotUtils.getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes(), getBukkitWorld()), this, true);
+            AbstractPlotLoader.pasteSchematic(null, PlotUtils.getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes(), getBukkitWorld()), this, true, false);
         } catch (IOException e) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Could not paste schematic!"), e);
         }

@@ -218,16 +218,16 @@ public abstract class AbstractPlotLoader {
     protected void generateStructure() throws Exception {
         Utils.runSync(() -> {
             if (plotType.hasEnvironment()) {
-                pasteSchematic(null, this.schematicBytes, this.plotWorld, false);
+                pasteSchematic(null, this.schematicBytes, this.plotWorld, false, false);
             } else {
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(this.plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes, this.plotWorld.getBukkitWorld()), this.plotWorld, true);
+                pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes, this.plotWorld.getBukkitWorld()), this.plotWorld, true, false);
             }
             return null;
         }).get();
     }
 
-    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea) throws IOException {
+    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
         // load world if not loaded already
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());
