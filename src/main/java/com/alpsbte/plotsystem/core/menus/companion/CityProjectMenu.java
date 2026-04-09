@@ -16,9 +16,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -68,7 +66,8 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     @Override
     protected void setItemClickEventsAsync() {
         getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->
-                generateRandomPlot(clickPlayer, getValidCityProjects(selectedPlotDifficulty, clickPlayer, country), selectedPlotDifficulty));
+                CompletableFuture.runAsync(() ->
+                        generateRandomPlot(clickPlayer, getValidCityProjects(selectedPlotDifficulty, clickPlayer, country), selectedPlotDifficulty)));
 
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
 
@@ -125,7 +124,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     public static boolean generateRandomPlot(Player player, @NotNull List<CityProject> items, PlotDifficulty selectedPlotDifficulty) {
         PlotDifficulty difficulty = selectedPlotDifficulty;
         if (items.isEmpty()) {
-            player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1));
             return false;
         }
         CityProject randomCity = items.get(Utils.getRandom().nextInt(items.size()));
@@ -138,10 +137,10 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
             sqlError(player, e);
             return false;
         }
-        player.closeInventory();
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.closeInventory());
         boolean successful = PlotHandler.assignAndGenerateRandomPlot(builder, randomCity, difficulty);
-        if (successful) player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1);
-        return true;
+        if (successful) Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1));
+        return successful;
     }
 
     public static @NotNull @Unmodifiable List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, @NotNull Country country) {
@@ -210,8 +209,10 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     private static void sqlError(@NotNull Player clickPlayer, Exception ex) {
         Utils.logSqlException(ex);
-        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        });
         Thread.currentThread().interrupt();
     }
 }
