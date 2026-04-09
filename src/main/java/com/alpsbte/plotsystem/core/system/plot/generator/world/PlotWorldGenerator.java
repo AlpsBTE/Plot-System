@@ -124,6 +124,10 @@ public class PlotWorldGenerator {
         assert world != null;
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
 
+        world.setDifficulty(Difficulty.PEACEFUL);
+        world.setSpawnFlags(false, false);
+        world.setAutoSave(false);
+
         // Configure multiverse world
         mvWorld.get().setAllowFlight(true);
         mvWorld.get().setGameMode(GameMode.CREATIVE);

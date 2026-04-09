@@ -147,18 +147,27 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onSwitchWorld(@NotNull UUID playerUUID, int tutorialWorldIndex) {
-        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
+    public CompletableFuture<Void> switchWorldAsync(@NotNull UUID playerUUID, int tutorialWorldIndex) {
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return CompletableFuture.completedFuture(null);
         if (tutorialWorldIndex == 1 && (plotGenerator == null || !tutorialPlot.getWorld().isWorldGenerated())) {
-            plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
-            try {
-                onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
-            } catch (Exception ex) {
-                onException(ex);
-                return;
-            }
+            return CompletableFuture.runAsync(() -> {
+                plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
+                try {
+                    onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }).thenCompose(ignored -> {
+                CompletableFuture<Void> future = new CompletableFuture<>();
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
+                        super.switchWorldAsync(playerUUID, tutorialWorldIndex).whenComplete((result, throwable) -> {
+                            if (throwable != null) future.completeExceptionally(throwable);
+                            else future.complete(result);
+                        }));
+                return future;
+            });
         }
-        super.onSwitchWorld(playerUUID, tutorialWorldIndex);
+        return super.switchWorldAsync(playerUUID, tutorialWorldIndex);
     }
 
     @Override

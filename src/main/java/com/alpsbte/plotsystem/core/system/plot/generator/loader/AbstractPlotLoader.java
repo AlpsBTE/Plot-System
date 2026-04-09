@@ -268,7 +268,14 @@ public abstract class AbstractPlotLoader {
     }
 
     protected void onException(Exception e) {
-        PlotHandler.abandonPlot(this.plot);
+        try {
+            Utils.runSync(() -> {
+                PlotHandler.abandonPlot(this.plot);
+                return null;
+            }).get();
+        } catch (Exception ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up plot after generation error!"), ex);
+        }
 
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot!"), e);
         Utils.runSync(() -> {

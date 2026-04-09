@@ -42,6 +42,7 @@ public class TutorialNPCHologram extends DecentHologramDisplay {
     @Override
     public void create(Player player) {
         Bukkit.getScheduler().runTask(FancyNpcsPlugin.get().getPlugin(), () -> {
+            if (npc.getNpc() == null) return;
             if (npc.getNpc().getIsVisibleForPlayer().containsKey(player.getUniqueId())
                     && npc.getNpc().getIsVisibleForPlayer().get(player.getUniqueId())) {
                 super.create(player);

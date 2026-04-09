@@ -55,7 +55,12 @@ public class TutorialPlotLoader extends AbstractPlotLoader {
 
     public void setBuildingEnabled(boolean buildingEnabled) {
         this.buildingEnabled = buildingEnabled;
-        setBuildRegionPermissions(plotWorld.getProtectedBuildRegion());
+        ProtectedRegion buildRegion = plotWorld.getProtectedBuildRegion();
+        if (buildRegion == null) {
+            PlotSystem.getPlugin().getComponentLogger().warn("Tutorial build region was not available while updating build permissions for plot {}.", plot.getId());
+            return;
+        }
+        setBuildRegionPermissions(buildRegion);
     }
 
     public boolean isWorldEditEnabled() {
@@ -64,7 +69,12 @@ public class TutorialPlotLoader extends AbstractPlotLoader {
 
     public void setWorldEditEnabled(boolean worldEditEnabled) {
         this.worldEditEnabled = worldEditEnabled;
-        setBuildRegionPermissions(plotWorld.getProtectedBuildRegion());
+        ProtectedRegion buildRegion = plotWorld.getProtectedBuildRegion();
+        if (buildRegion == null) {
+            PlotSystem.getPlugin().getComponentLogger().warn("Tutorial build region was not available while updating WorldEdit permissions for plot {}.", plot.getId());
+            return;
+        }
+        setBuildRegionPermissions(buildRegion);
     }
 
     @Override
