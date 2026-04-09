@@ -90,6 +90,14 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
 
         // If the player is playing in his own world, then additionally generate the plot in the city world
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
-        AbstractPlotLoader.pasteSchematic(null, this.schematicBytes, cityPlotWorld, false, true);
+        try {
+            Utils.runSync(() -> {
+                AbstractPlotLoader.pasteSchematic(null, this.schematicBytes, cityPlotWorld, false, true);
+                return null;
+            }).get();
+        } catch (Exception e) {
+            if (e.getCause() instanceof IOException ioException) throw ioException;
+            throw new IOException("Could not copy plot to city world!", e);
+        }
     }
 }
