@@ -271,8 +271,11 @@ public abstract class AbstractPlotLoader {
         PlotHandler.abandonPlot(this.plot);
 
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot!"), e);
-        builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-        builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        Utils.runSync(() -> {
+            builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+            builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            return null;
+        });
     }
 
     protected abstract void onCompletion();
