@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.com.zaxxer.hikaricp) {
         exclude(group = "org.slf4j")
     }
+    implementation(libs.com.github.querz.nbt)
     implementation(platform(libs.com.intellectualsites.bom.bom.newest))
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
     compileOnly(libs.com.sk89q.worldguard.worldguard.bukkit)

@@ -7,7 +7,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
 import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -131,7 +132,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getId()), getParticipantsString()));
-            PlotUtils.Actions.undoSubmit(plot);
+            PlotHandler.undoSubmit(plot);
         }
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -172,11 +173,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             try {
-                if (!PlotUtils.savePlotAsSchematic(plot)) {
+                if (!PlotHandler.savePlotAsSchematic(plot)) {
                     getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
                     PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"));
                 }
-            } catch (IOException | WorldEditException ex) {
+            } catch (IOException | WorldEditException | ExecutionException | InterruptedException ex) {
                 PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"), ex);
             }
         });

@@ -6,10 +6,6 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
-import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
@@ -23,9 +19,7 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_13;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
@@ -37,21 +31,18 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -65,13 +56,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -171,9 +159,10 @@ public final class PlotUtils {
     }
 
     public static boolean isPlayerOnPlot(@NotNull AbstractPlot plot, Player player) {
-        if (plot.getWorld().isWorldLoaded() && plot.getWorld().getBukkitWorld().getPlayers().contains(player)) {
+        PlotWorld world = plot.getWorld();
+        if (world.isWorldLoaded() && world.getBukkitWorld().getPlayers().contains(player)) {
             Location playerLoc = player.getLocation();
-            ProtectedRegion protectedRegion = plot.getWorld().getProtectedRegion();
+            ProtectedRegion protectedRegion = world.getProtectedRegion();
             return protectedRegion == null || protectedRegion.contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
         }
         return false;
@@ -198,9 +187,9 @@ public final class PlotUtils {
         return DependencyManager.getMultiverseCore().getWorldManager().isLoadedWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
-    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, World world) throws IOException {
+    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, byte[] initialSchematic, World world) throws IOException {
         Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(initialSchematic);
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
             clipboard = reader.read();
         }
@@ -234,60 +223,6 @@ public final class PlotUtils {
         return Paths.get(PlotSystem.getPlugin().getDataFolder().getAbsolutePath(), "tutorial", "schematics");
     }
 
-    public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException {
-        if (plot.getVersion() < 4) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
-            return false;
-        }
-
-        Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
-        }
-        if (clipboard == null) return false;
-
-        CuboidRegion cuboidRegion = getPlotAsRegion(plot);
-        if (cuboidRegion == null) return false;
-
-        BlockVector3 plotCenter = plot.getCenter();
-
-        // Get plot outline
-        List<BlockVector2> plotOutlines = plot.getOutline();
-
-        // Load finished plot region as cuboid region
-        if (!plot.getWorld().loadWorld()) return false;
-        com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-        Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
-
-        // Copy and write finished plot clipboard to schematic
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (Clipboard cb = new BlockArrayClipboard(region)) {
-            cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
-
-            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(Objects.requireNonNull(region.getWorld()), region, cb, region.getMinimumPoint());
-            Operations.complete(forwardExtentCopy);
-
-            try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-                double initialY = clipboard.getRegion().getMinimumY();
-                double offset = initialY - cuboidRegion.getMinimumY();
-                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
-            }
-        }
-
-        // Set Completed Schematic
-        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
-        if (!successful) return false;
-
-        // If plot was created in a void world, copy the result to the city world
-        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
-            var cpw = new CityPlotWorld(plot);
-            Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(cpw.getBukkitWorld()), BlockTypes.AIR);
-            AbstractPlotGenerator.pasteSchematic(airMask, outputStream.toByteArray(), cpw, false, true);
-        }
-        return true;
-    }
-
     public static @Nullable CompletableFuture<double[]> convertTerraToPlotXZ(@NotNull AbstractPlot plot, double[] terraCoords) throws IOException {
         // Load plot outlines schematic as clipboard
         Clipboard clipboard;
@@ -314,37 +249,15 @@ public final class PlotUtils {
         };
 
         // Return coordinates if they are in the schematic plot region
-        ProtectedRegion protectedPlotRegion = plot.getWorld().getProtectedRegion() != null
-                ? plot.getWorld().getProtectedRegion()
-                : plot.getWorld().getProtectedBuildRegion();
-        if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], plot.getWorld().getPlotHeightCentered(), (int) plotCoords[1]))) {
+        PlotWorld world = plot.getWorld();
+        ProtectedRegion protectedPlotRegion = world.getProtectedRegion() != null
+                ? world.getProtectedRegion()
+                : world.getProtectedBuildRegion();
+        if (protectedPlotRegion.contains(BlockVector3.at((int) plotCoords[0], world.getPlotHeightCentered(), (int) plotCoords[1]))) {
             return CompletableFuture.completedFuture(plotCoords);
         }
 
         return null;
-    }
-
-    public static void checkPlotsForLastActivity() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), () -> {
-            List<Plot> plots = DataProvider.PLOT.getPlots(Status.unfinished);
-            FileConfiguration config = PlotSystem.getPlugin().getConfig();
-            long inactivityIntervalDays = config.getLong(ConfigPaths.INACTIVITY_INTERVAL);
-            long rejectedInactivityIntervalDays = (config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? config.getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
-            if (inactivityIntervalDays == -2 && rejectedInactivityIntervalDays == -2) return;
-            for (Plot plot : plots) {
-                LocalDate lastActivity = plot.getLastActivity();
-                long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-                if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
-
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (Actions.abandonPlot(plot)) {
-                        PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
-                    } else {
-                        PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
-                    }
-                });
-            }
-        }, 0L, 20 * 60 * 60L); // Check every hour
     }
 
     public static void informPlayerAboutUnfinishedPlots(@NotNull Player player, Builder builder) {
@@ -364,119 +277,6 @@ public final class PlotUtils {
                 () -> informPlayerAboutUnfinishedPlots(player, Builder.byUUID(player.getUniqueId())),
                 20L * 60 * interval,
                 20L * 60 * interval));
-    }
-
-    public static final class Actions {
-        private Actions() {}
-
-        public static void submitPlot(@NotNull Plot plot) {
-            plot.setStatus(Status.unreviewed);
-
-            if (plot.getWorld().isWorldLoaded()) {
-                for (Player player : plot.getWorld() instanceof OnePlotWorld ? plot.getWorld().getBukkitWorld().getPlayers() : ((CityPlotWorld) plot.getWorld()).getPlayersOnPlot()) {
-                    player.teleport(Utils.getSpawnLocation());
-                }
-            }
-
-            plot.getPermissions().removeBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (!plot.getPlotMembers().isEmpty()) {
-                for (Builder builder : plot.getPlotMembers()) {
-                    plot.getPermissions().removeBuilderPerms(builder.getUUID());
-                }
-            }
-        }
-
-        public static void undoSubmit(@NotNull Plot plot) {
-            plot.setStatus(Status.unfinished);
-
-            plot.getPermissions().addBuilderPerms(plot.getPlotOwner().getUUID()).save();
-            if (!plot.getPlotMembers().isEmpty()) {
-                for (Builder builder : plot.getPlotMembers()) {
-                    plot.getPermissions().addBuilderPerms(builder.getUUID());
-                }
-            }
-        }
-
-        public static boolean abandonPlot(@NotNull AbstractPlot plot) {
-            try {
-                if (plot.getWorld() instanceof OnePlotWorld) {
-                    if (plot.getWorld().isWorldGenerated()) {
-                        if (plot.getWorld().isWorldLoaded()) {
-                            for (Player player : plot.getWorld().getBukkitWorld().getPlayers()) {
-                                player.teleport(Utils.getSpawnLocation());
-                            }
-                        }
-                        if (!plot.getWorld().deleteWorld()) PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete plot world " + plot.getWorld().getWorldName() + "!"));
-                    }
-                } else if (!(plot instanceof TutorialPlot)) {
-                    RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
-
-                    if (plot.getWorld().loadWorld()) {
-                        CityPlotWorld world = plot.getWorld();
-                        List<Player> playersToTeleport = new ArrayList<>(world.getPlayersOnPlot());
-
-                        RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world.getBukkitWorld()));
-                        if (regionManager != null) {
-                            for (Builder builder : ((Plot) plot).getPlotMembers()) {
-                                ((Plot) plot).removePlotMember(builder);
-                            }
-
-                            if (regionManager.hasRegion(world.getRegionName())) regionManager.removeRegion(world.getRegionName());
-                            if (regionManager.hasRegion(world.getRegionName() + "-1")) regionManager.removeRegion(world.getRegionName() + "-1");
-
-                            AbstractPlotGenerator.pasteSchematic(null, getOutlinesSchematicBytes(plot, world.getBukkitWorld()), world, true, false);
-                        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
-
-                        playersToTeleport.forEach(p -> p.teleport(Utils.getSpawnLocation()));
-                        if (plot.getWorld().isWorldLoaded()) plot.getWorld().unloadWorld(false);
-                    }
-                }
-            } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"), ex);
-                return false;
-            }
-
-            CompletableFuture.runAsync(() -> {
-                if (plot.getPlotType() == PlotType.TUTORIAL) return;
-                Plot dPlot = (Plot) plot;
-                boolean successful;
-                successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
-
-                for (Builder builder : dPlot.getPlotMembers()) {
-                    if (!successful) break;
-                    successful = dPlot.removePlotMember(builder);
-                }
-
-                if (successful && plot.getPlotOwner() != null) {
-                    Cache.clearCache(plot.getPlotOwner().getUUID());
-                    successful = plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
-                }
-
-                if (successful) {
-                    successful = dPlot.setPlotOwner(null)
-                            && dPlot.setLastActivity(true)
-                            && dPlot.setStatus(Status.unclaimed)
-                            && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
-                }
-
-                successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getId(), null);
-
-                if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
-            });
-            return true;
-        }
-
-        public static boolean deletePlot(Plot plot) {
-            if (abandonPlot(plot)) {
-                CompletableFuture.runAsync(() -> {
-                    if (DataProvider.PLOT.deletePlot(plot.getId())) return;
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
-                });
-                return true;
-            }
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
-            return false;
-        }
     }
 
     public static final class Cache {
@@ -560,19 +360,19 @@ public final class PlotUtils {
 
                     List<BlockVector2> points = plot.getBlockOutline();
 
-                    for (BlockVector2 point : points)
-                        if (point.distanceSq(playerPos2D) < 50 * 50) {
-                            if (!particleAPIEnabled) {
-                                player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
-                            } else {
-                                Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
-                                // create a particle packet
-                                Object packet = particles.FLAME().packet(true, loc);
-
-                                // send this packet to player
-                                particles.sendPacket(player, packet);
-                            }
+                    for (BlockVector2 point : points) {
+                        if (point.distanceSq(playerPos2D) >= 50 * 50) continue;
+                        if (!particleAPIEnabled) {
+                            player.spawnParticle(Particle.FLAME, point.x(), player.getLocation().getY() + 1, point.z(), 1, 0.0, 0.0, 0.0, 0);
+                            continue;
                         }
+                        Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
+                        // create a particle packet
+                        Object packet = particles.FLAME().packet(true, loc);
+
+                        // send this packet to player
+                        particles.sendPacket(player, packet);
+                    }
                 }
             }
         }
