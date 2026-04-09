@@ -71,8 +71,10 @@ public class OnePlotWorld extends PlotWorld {
         if (plot == null || isWorldGenerated()) return super.loadWorld();
 
         // Generate plot if it doesn't exist
-        if (plot.getPlotType() == PlotType.TUTORIAL || ((Plot) plot).getCompletedSchematic() == null)
+        if (plot.getPlotType() == PlotType.TUTORIAL)
             generateWorld(TutorialPlotLoader.class);
+        else if (((Plot) plot).getCompletedSchematic() == null)
+            generateWorld(DefaultPlotLoader.class);
 
         new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this);
 
