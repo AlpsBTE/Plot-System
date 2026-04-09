@@ -25,10 +25,15 @@
 package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import org.bukkit.GameRules;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.generator.ChunkGenerator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Random;
 
 public class SkeletonWorldGenerator {
     public static final String WORLD_NAME = "Skeleton";
@@ -78,5 +83,10 @@ public class SkeletonWorldGenerator {
 
     public static class EmptyChunkGenerator extends ChunkGenerator {
         // It should just do nothing
+
+        @Override
+        public @Nullable Location getFixedSpawnLocation(@NotNull World world, @NotNull Random random) {
+            return new Location(world, 0, 0, 0);
+        }
     }
 }
