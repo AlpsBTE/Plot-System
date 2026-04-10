@@ -86,6 +86,7 @@ public abstract class LangPaths {
         public static final String SUBMIT = MENU_TITLES + "submit";
         public static final String TELEPORT = MENU_TITLES + "teleport";
         public static final String ABANDON = MENU_TITLES + "abandon";
+        public static final String ABANDON_CONFIRM = MENU_TITLES + "abandon-confirm";
         public static final String UNDO_SUBMIT = MENU_TITLES + "undo-submit";
         public static final String MANAGE_MEMBERS = MENU_TITLES + "manage-members";
         public static final String FEEDBACK = MENU_TITLES + "feedback";

@@ -7,13 +7,11 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
@@ -21,7 +19,7 @@ public class AbandonConfirmMenu extends AbstractMenu {
     private final Plot plot;
 
     public AbandonConfirmMenu(Player player, Plot plot) {
-        super(3, "Abandon plot #" + plot.getId() + "?", player);
+        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.ABANDON_CONFIRM, String.valueOf(plot.getId())), player);
         this.plot = plot;
     }
 
