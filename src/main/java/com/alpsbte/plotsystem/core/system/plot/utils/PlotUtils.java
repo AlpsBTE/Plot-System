@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.core.system.plot.utils;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.commands.plot.CMD_Plot_Members;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
@@ -652,7 +653,8 @@ public final class PlotUtils {
         }
 
         public static void sendGroupTipMessage(@NotNull Plot plot, Player player) {
-            if (plot.getPlotMembers().isEmpty() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
+            if (plot.getPlotMembers().isEmpty() && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)
+                    && player.hasPermission(CMD_Plot_Members.PERMISSION)) {
                 Component tc = text("» ", DARK_GRAY)
                         .append(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_PLAY_WITH_FRIENDS), GRAY))
                         .clickEvent(ClickEvent.runCommand("/plot members " + plot.getId()))
