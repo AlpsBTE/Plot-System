@@ -259,7 +259,7 @@ public abstract class AbstractPlotGenerator {
     /**
      * Pastes the schematic to the plot center in the given world
      *
-     * @param pasteMask     - sets a mask for the paste operation, can be null
+     * @param pasteMask     - sets a mask for the paste operation, can be null - if the mast is not null, the paste operation ignores air blocks
      * @param schematicFile - plot/environment schematic file
      * @param world         - world to paste in
      * @param clearArea     - clears the plot area with air before pasting
@@ -300,6 +300,7 @@ public abstract class AbstractPlotGenerator {
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
                     .to(BlockVector3.at(world.getPlot().getCenter().x(), pasteY, world.getPlot().getCenter().z()))
+                    .ignoreAirBlocks(pasteMask != null)
                     .build();
             Operations.complete(clipboardHolder);
         }
