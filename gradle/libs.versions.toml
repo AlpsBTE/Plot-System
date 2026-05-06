@@ -20,7 +20,7 @@ org-mariadb-jdbc-mariadb-java-client = "3.5.7" #  https://central.sonatype.com/a
 com-intellectualsites-bom-bom-newest = "1.55" # Ref: https://github.com/IntellectualSites/bom
 # Plugins
 shadow = "9.3.1" # https://github.com/GradleUp/shadow/releases
-git-version = "4.3.0" # https://github.com/palantir/gradle-git-version/releases
+git-version = "5.0.0" # https://github.com/palantir/gradle-git-version/releases
 
 [libraries]
 com-alpsbte-alpslib-alpslib-hologram = { module = "com.alpsbte.alpslib:alpslib-hologram", version.ref = "com-alpsbte-alpslib-alpslib-hologram" }
