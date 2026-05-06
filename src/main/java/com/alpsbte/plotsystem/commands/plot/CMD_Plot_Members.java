@@ -25,6 +25,8 @@ import static net.kyori.adventure.text.Component.text;
 
 public class CMD_Plot_Members extends SubCommand {
 
+    public static final String PERMISSION = "plotsystem.plot.members";
+
     public CMD_Plot_Members(BaseCommand baseCommand) {
         super(baseCommand);
     }
@@ -104,6 +106,6 @@ public class CMD_Plot_Members extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.plot.members";
+        return PERMISSION;
     }
 }
