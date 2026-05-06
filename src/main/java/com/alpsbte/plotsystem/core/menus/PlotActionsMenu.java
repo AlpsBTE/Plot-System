@@ -138,8 +138,7 @@ public class PlotActionsMenu extends AbstractMenu {
 
         // Set click event for abandon plot item
         getMenu().getSlot(hasReview ? 14 : 16).setClickHandler((clickPlayer, clickInformation) -> {
-            clickPlayer.closeInventory();
-            clickPlayer.performCommand("plot abandon " + plot.getId());
+            new AbandonConfirmMenu(clickPlayer, plot);
         });
 
         // Set click event for feedback menu button

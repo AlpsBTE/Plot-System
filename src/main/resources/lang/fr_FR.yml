@@ -82,6 +82,7 @@ menu-title:
   submit: 'Soumettre'
   teleport: 'Téléport'
   abandon: 'Abandonner'
+  abandon-confirm: 'Abandonner le Plot #{0} ?'
   undo-submit: 'Annuler Soumission'
   manage-members: 'Gérer Membres'
   feedback: 'Retour | Review #{0}'

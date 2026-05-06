@@ -47,7 +47,7 @@ plot-undo-submit:
   material: FIRE_CHARGE
   modelId: ''
 plot-abandon:
-  material: BARRIER
+  material: TNT
   modelId: ''
 plot-teleport:
   material: COMPASS
@@ -111,9 +111,6 @@ review-point-five:
   modelId: ''
 review-submit:
   material: FIREWORK_ROCKET
-  modelId: ''
-review-cancel:
-  material: RED_CONCRETE
   modelId: ''
 review-info:
   material: head(46488)
