@@ -1,3 +1,27 @@
+/*
+ * The MIT License (MIT)
+ *
+ *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 package com.alpsbte.plotsystem.core.system.plot.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -5,9 +29,9 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.DefaultPlotLoader;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -22,47 +46,40 @@ import static net.kyori.adventure.text.Component.text;
 
 public class OnePlotWorld extends PlotWorld {
     private final Builder plotOwner;
+    private final AbstractPlot plot;
 
     public OnePlotWorld(@NotNull AbstractPlot plot) {
         super((plot instanceof TutorialPlot ? "T-" : "P-") + plot.getId(), plot);
+        this.plot = plot;
         this.plotOwner = plot.getPlotOwner();
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotLoader> boolean generateWorld(@NotNull Class<T> generator) {
         if (isWorldGenerated()) return false;
 
-        if (generator.isAssignableFrom(DefaultPlotGenerator.class)) {
-            new DefaultPlotGenerator(getPlot(), plotOwner);
-        } else if (generator.isAssignableFrom(TutorialPlotGenerator.class)) {
-            new TutorialPlotGenerator(getPlot(), plotOwner);
+        if (generator.isAssignableFrom(DefaultPlotLoader.class)) {
+            new DefaultPlotLoader(plot, plotOwner);
+        } else if (generator.isAssignableFrom(TutorialPlotLoader.class)) {
+            new TutorialPlotLoader(plot, plotOwner);
         } else return false;
         return true;
     }
 
     @Override
     public boolean loadWorld() {
-        if (getPlot() == null || isWorldGenerated()) return super.loadWorld();
+        if (plot == null || isWorldGenerated()) return super.loadWorld();
 
         // Generate plot if it doesn't exist
-        if (getPlot().getPlotType() == PlotType.TUTORIAL || ((Plot) getPlot()).getCompletedSchematic() == null)
-            generateWorld(TutorialPlotGenerator.class);
+        if (plot.getPlotType() == PlotType.TUTORIAL)
+            generateWorld(TutorialPlotLoader.class);
+        else if (((Plot) plot).getCompletedSchematic() == null)
+            generateWorld(DefaultPlotLoader.class);
 
-        new DefaultPlotGenerator(getPlot(), plotOwner, getPlot().getPlotType()) {
-            @Override
-            protected boolean init() {
-                return true;
-            }
-
-            @Override
-            protected void onComplete(boolean failed, boolean unloadWorld) {
-                getPlot().getPermissions().clearAllPerms();
-                super.onComplete(true, false);
-            }
-        };
+        new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this);
 
         if (!isWorldGenerated() || !isWorldLoaded()) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + getPlot().getId() + "!"));
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + plot.getId() + "!"));
             return false;
         }
         return true;
@@ -71,13 +88,10 @@ public class OnePlotWorld extends PlotWorld {
     @Override
     public boolean unloadWorld(boolean movePlayers) {
         boolean isTutorialPlot;
-        isTutorialPlot = getPlot().getPlotType() == PlotType.TUTORIAL;
+        isTutorialPlot = plot.getPlotType() == PlotType.TUTORIAL;
 
-        if (getPlot() != null) {
-            if (isTutorialPlot) return deleteWorld();
-            else return super.unloadWorld(movePlayers);
-        }
-        return false;
+        if (isTutorialPlot) return deleteWorld();
+        else return super.unloadWorld(movePlayers);
     }
 
     @Override
@@ -88,15 +102,15 @@ public class OnePlotWorld extends PlotWorld {
         player.setAllowFlight(true);
         player.setFlying(true);
 
-        if (getPlot() == null) return true;
-        if (getPlot().getPlotType() != PlotType.TUTORIAL) {
-            player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(getPlot().getId()))));
-            PlotUtils.ChatFormatting.sendLinkMessages(getPlot(), player);
+        if (plot == null) return true;
+        if (plot.getPlotType() != PlotType.TUTORIAL) {
+            player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getId()))));
+            PlotUtils.ChatFormatting.sendLinkMessages(plot, player);
         }
         Utils.updatePlayerInventorySlots(player);
 
-        if (!getPlot().getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
-        getPlot().setLastActivity(false);
+        if (!plot.getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
+        plot.setLastActivity(false);
 
         return true;
     }
@@ -109,5 +123,18 @@ public class OnePlotWorld extends PlotWorld {
     @Override
     public int getPlotHeightCentered() throws IOException {
         return MIN_WORLD_HEIGHT + super.getPlotHeightCentered();
+    }
+
+    @Override
+    public boolean onAbandon() {
+        if (!isWorldGenerated()) return super.onAbandon();
+        if (isWorldLoaded()) {
+            for (Player player : getBukkitWorld().getPlayers()) player.teleport(Utils.getSpawnLocation());
+        }
+        if (!deleteWorld()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete plot world " + getWorldName() + "!"));
+            return false;
+        }
+        return super.onAbandon();
     }
 }

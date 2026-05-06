@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
@@ -77,7 +78,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected void setItemClickEventsAsync() {
         getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->  // Set click event for random selection item
-                generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty));
+                CompletableFuture.runAsync(() -> generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty)));
 
         // Set click event for plots difficulty item
         getMenu().getSlot(6).setClickHandler((clickPlayer, clickInformation) -> {
