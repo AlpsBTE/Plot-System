@@ -5,10 +5,12 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.enums.Slot;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Builder {
@@ -79,6 +81,12 @@ public class Builder {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean setSlot(Slot slot, int plotId) {
+        // check for orphans and assign orphan if available
+        if (plotId == -1) {
+            List<Plot> orphans = getOrphans();
+            if (!orphans.isEmpty()) plotId = orphans.getFirst().getId();
+        }
+
         if (DataProvider.BUILDER.setSlot(this.uuid, plotId, slot)) {
             switch (slot) {
                 case FIRST -> firstSlot = plotId;
@@ -127,6 +135,11 @@ public class Builder {
             return Slot.THIRD;
         }
         return null;
+    }
+
+    private List<Plot> getOrphans() {
+        List<Plot> currentPlots = DataProvider.PLOT.getPlots(this, Status.unfinished, Status.unreviewed);
+        return currentPlots.stream().filter(plot -> getSlotByPlotId(plot.getId()) == null).toList();
     }
 
     public static Builder byUUID(UUID uuid) {
