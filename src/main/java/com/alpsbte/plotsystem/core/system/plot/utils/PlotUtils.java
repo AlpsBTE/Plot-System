@@ -1,5 +1,9 @@
 package com.alpsbte.plotsystem.core.system.plot.utils;
 
+import com.alpsbte.alpslib.utils.MapLink;
+import com.alpsbte.alpslib.utils.MapLinkEntryConfig;
+import com.alpsbte.alpslib.utils.MapLinks;
+import com.alpsbte.alpslib.utils.MapLinksConfig;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot_Members;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -25,8 +29,6 @@ import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
-import com.sk89q.worldedit.function.mask.BlockTypeMask;
-import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -34,9 +36,6 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldedit.world.block.BlockTypes;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -44,6 +43,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -384,45 +386,29 @@ public final class PlotUtils {
 
         public static void sendLinkMessages(AbstractPlot plot, Player player) {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-                Component[] tc = new Component[4];
-
-                String shortLinkGoogleMaps = null;
-                String shortLinkGoogleEarth = null;
-                String shortLinkOSM = null;
-                String shortLinkAppleLookAround = null;
-                String googleMaps = " Google Maps ";
-                String googleEarthWeb = " Google Earth Web ";
-                String openStreetMap = " Open Street Map ";
-                String appleLookAround = " Apple Maps Look Around ";
+                List<Component> linkMessages;
                 try {
-                    if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE)) {
-                        shortLinkGoogleMaps = ShortLink.generateShortLink(plot.getGoogleMapsLink());
-                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(googleMaps, GREEN), text(shortLinkGoogleMaps, GREEN)));
-                        shortLinkGoogleEarth = ShortLink.generateShortLink(plot.getGoogleEarthLink());
-                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(googleEarthWeb, GREEN), text(shortLinkGoogleEarth, GREEN)));
-                        shortLinkOSM = ShortLink.generateShortLink(plot.getOSMMapsLink());
-                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(openStreetMap, GREEN), text(shortLinkOSM, GREEN)));
-                        shortLinkAppleLookAround = ShortLink.generateShortLink(plot.getAppleLookAroundLink());
-                        tc[3] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK, GRAY, text(appleLookAround, GREEN), text(shortLinkAppleLookAround, GREEN)));
-                    } else {
-                        tc[0] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(googleMaps, GREEN)));
-                        tc[1] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(googleEarthWeb, GREEN)));
-                        tc[2] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(openStreetMap, GREEN)));
-                        tc[3] = text("» ", DARK_GRAY).append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK, GRAY, text(appleLookAround, GREEN)));
+                    String[] coordsSplit = plot.getGeoCoordinates().split(",");
+                    double lat = Double.parseDouble(coordsSplit[0]);
+                    double lon = Double.parseDouble(coordsSplit[1]);
+
+                    MapLinksConfig mapLinksConfig = getMapLinksConfigFromPlugin();
+                    MapLinks mapLinks = mapLinksConfig == null ? new MapLinks(lat, lon) : new MapLinks(lat, lon, mapLinksConfig);
+
+                    if (mapLinks.getAllLinks().isEmpty()) {
+                        PlotSystem.getPlugin().getComponentLogger().warn(text("No map links are enabled for plot #" + plot.getId()));
+                        return;
                     }
 
-                    tc[0] = tc[0].clickEvent(ClickEvent.openUrl((shortLinkGoogleMaps != null) ? shortLinkGoogleMaps : plot.getGoogleMapsLink()));
-                    tc[1] = tc[1].clickEvent(ClickEvent.openUrl((shortLinkGoogleEarth != null) ? shortLinkGoogleEarth : plot.getGoogleEarthLink()));
-                    tc[2] = tc[2].clickEvent(ClickEvent.openUrl((shortLinkOSM != null) ? shortLinkOSM : plot.getOSMMapsLink()));
-                    tc[3] = tc[3].clickEvent(ClickEvent.openUrl((shortLinkAppleLookAround != null) ? shortLinkAppleLookAround : plot.getAppleLookAroundLink()));
-                } catch (IOException | URISyntaxException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating short link!"), ex);
+                    boolean shortLinksEnabled = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.SHORTLINK_ENABLE);
+                    linkMessages = new ArrayList<>(mapLinks.getAllLinks().size());
+                    for (MapLink link : mapLinks.getAllLinks()) {
+                        linkMessages.add(buildMapLinkMessage(player, link.name(), link.url(), shortLinksEnabled));
+                    }
+                } catch (IOException | URISyntaxException | NumberFormatException | NullPointerException ex) {
+                    PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating map links!"), ex);
+                    return;
                 }
-
-                tc[0] = tc[0].hoverEvent(text(googleMaps));
-                tc[1] = tc[1].hoverEvent(text(googleEarthWeb));
-                tc[2] = tc[2].hoverEvent(text(openStreetMap));
-                tc[3] = tc[3].hoverEvent(text(appleLookAround));
 
                 // Temporary fix for bedrock players
                 Component coords = null;
@@ -442,14 +428,63 @@ public final class PlotUtils {
 
                 player.sendMessage(text(MSG_LINE, DARK_GRAY));
                 if (coords != null) player.sendMessage(text("Coords: ", GRAY).append(coords));
-                player.sendMessage(tc[0]);
-                player.sendMessage(tc[1]);
-                player.sendMessage(tc[2]);
-                player.sendMessage(tc[3]);
+                for (Component linkMessage : linkMessages) {
+                    player.sendMessage(linkMessage);
+                }
                 player.sendMessage(text(MSG_LINE, DARK_GRAY));
 
                 if (plot instanceof Plot p) sendGroupTipMessage(p, player);
             });
+        }
+
+        private static @NotNull Component buildMapLinkMessage(@NotNull Player player, @NotNull String providerName, @NotNull String targetUrl,
+                                                              boolean shortLinksEnabled) throws IOException, URISyntaxException {
+            String providerLabel = " " + providerName + " ";
+            Component message;
+            String clickUrl = targetUrl;
+
+            if (shortLinksEnabled) {
+                clickUrl = ShortLink.generateShortLink(targetUrl);
+                message = text("» ", DARK_GRAY)
+                        .append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK_WITH_SHORTLINK,
+                                GRAY, text(providerLabel, GREEN), text(clickUrl, GREEN)));
+            } else {
+                message = text("» ", DARK_GRAY)
+                        .append(LangUtil.getInstance().getComponent(player.getUniqueId(), LangPaths.Note.Action.CLICK_TO_OPEN_LINK,
+                                GRAY, text(providerLabel, GREEN)));
+            }
+
+            return message
+                    .clickEvent(ClickEvent.openUrl(clickUrl))
+                    .hoverEvent(text(providerLabel));
+        }
+
+        private static @Nullable MapLinksConfig getMapLinksConfigFromPlugin() {
+            ConfigurationSection linksRoot = PlotSystem.getPlugin().getConfig().getConfigurationSection(ConfigPaths.MAP_LINKS);
+            if (linksRoot == null) {
+                return null;
+            }
+
+            ConfigurationSection linksSection = linksRoot.getConfigurationSection("links");
+            if (linksSection == null) {
+                return null;
+            }
+
+            Map<String, MapLinkEntryConfig> links = new LinkedHashMap<>();
+            for (String key : linksSection.getKeys(false)) {
+                ConfigurationSection entry = linksSection.getConfigurationSection(key);
+                if (entry == null) {
+                    continue;
+                }
+
+                String id = entry.getString("id", key);
+                String name = entry.getString("name");
+                String template = entry.getString("url-template", entry.getString("urlTemplate"));
+                Boolean enabled = entry.isSet("enabled") ? entry.getBoolean("enabled") : null;
+                links.put(key, new MapLinkEntryConfig(id, name, template, enabled));
+            }
+
+            return links.isEmpty() ? null : new MapLinksConfig(links);
         }
 
         public static void sendGroupTipMessage(@NotNull Plot plot, Player player) {

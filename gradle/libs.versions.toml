@@ -8,7 +8,7 @@ com-alpsbte-alpslib-alpslib-hologram = "1.1.3"
 # https://mvn.alps-bte.com/service/rest/repository/browse/alps-bte/com/alpsbte/alpslib/alpslib-io/
 com-alpsbte-alpslib-alpslib-io = "1.2.5"
 # https://mvn.alps-bte.com/service/rest/repository/browse/alps-bte/com/alpsbte/alpslib/alpslib-utils/
-com-alpsbte-alpslib-alpslib-utils = "1.4.6"
+com-alpsbte-alpslib-alpslib-utils = "1.5.0"
 # https://mvn.alps-bte.com/service/rest/repository/browse/alps-bte/com/alpsbte/canvas/
 com-alpsbte-canvas = "1.3"
 # https://github.com/Arcaniax-Development/HeadDatabase-API/releases
