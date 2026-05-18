@@ -1,27 +1,3 @@
-/*
- *  The MIT License (MIT)
- *
- *  Copyright © 2021-2025, Alps BTE <bte.atchli@gmail.com>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
- */
-
 package com.alpsbte.plotsystem.core.system.plot.generator.loader;
 
 import com.alpsbte.plotsystem.PlotSystem;
@@ -227,6 +203,15 @@ public abstract class AbstractPlotLoader {
         }).get();
     }
 
+    /**
+     * Pastes the schematic to the plot center in the given world
+     *
+     * @param pasteMask     - sets a mask for the paste operation, can be null - if the mast is not null, the paste operation ignores air blocks
+     * @param schematicFile - plot/environment schematic file
+     * @param world         - world to paste in
+     * @param clearArea     - clears the plot area with air before pasting
+     * @param offset        - offset for the paste operation
+     */
     public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
         // load world if not loaded already
         if (!world.loadWorld()) return;
@@ -262,6 +247,7 @@ public abstract class AbstractPlotLoader {
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
                     .to(BlockVector3.at(world.getPlot().getCenter().x(), pasteY, world.getPlot().getCenter().z()))
+                    .ignoreAirBlocks(pasteMask != null)
                     .build();
             Operations.complete(clipboardHolder);
         }
