@@ -20,6 +20,8 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
+
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
@@ -133,7 +135,14 @@ public class PlotActionsMenu extends AbstractMenu {
                 clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.CANNOT_LOAD_LEGACY_PLOT)));
                 return;
             }
-            plot.getWorld().teleportPlayer(clickPlayer);
+            CompletableFuture.runAsync(() -> {
+                if (!plot.getWorld().isWorldGenerated() && !plot.getWorld().loadWorld()) return;
+
+                Utils.runSync(() -> {
+                    plot.getWorld().teleportPlayer(clickPlayer);
+                    return null;
+                });
+            });
         });
 
         // Set click event for abandon plot item

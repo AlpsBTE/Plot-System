@@ -115,7 +115,14 @@ public class PlotWorld implements IWorld {
             return false;
         }
 
-        return isWorldLoaded() || mvCore.getWorldManager().loadWorld(getWorldName()).isSuccess();
+        if (isWorldLoaded()) return true;
+
+        try {
+            return Utils.supplySync(() -> mvCore.getWorldManager().loadWorld(getWorldName()).isSuccess()).get();
+        } catch (Exception e) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world " + worldName + "!"), e);
+            return false;
+        }
     }
 
     @Override
