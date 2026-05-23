@@ -62,7 +62,13 @@ dependencies {
 }
 
 group = "com.alpsbte"
-version = semver.semVersion
+
+val rawVersion = semver.semVersion.toString()
+
+version = semver.semVersion.toString().let {
+    if ("-SNAPSHOT" in it) it else semver.version // If it's a release (no .SNAPSHOT Suffix) use the version without additional metadata
+}
+
 description = "An easy to use building system for the BuildTheEarth project."
 java.sourceCompatibility = JavaVersion.VERSION_21
 
