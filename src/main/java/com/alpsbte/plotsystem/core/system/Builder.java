@@ -81,17 +81,18 @@ public class Builder {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean setSlot(Slot slot, int plotId) {
+        int newPlotId = plotId;
         // check for orphans and assign orphan if available
         if (plotId == -1) {
             List<Plot> orphans = getOrphans();
-            if (!orphans.isEmpty()) plotId = orphans.getFirst().getId();
+            if (!orphans.isEmpty()) newPlotId = orphans.getFirst().getId();
         }
 
-        if (DataProvider.BUILDER.setSlot(this.uuid, plotId, slot)) {
+        if (DataProvider.BUILDER.setSlot(this.uuid, newPlotId, slot)) {
             switch (slot) {
-                case FIRST -> firstSlot = plotId;
-                case SECOND -> secondSlot = plotId;
-                default -> thirdSlot = plotId;
+                case FIRST -> firstSlot = newPlotId;
+                case SECOND -> secondSlot = newPlotId;
+                default -> thirdSlot = newPlotId;
             }
             return true;
         }
