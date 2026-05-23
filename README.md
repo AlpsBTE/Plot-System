@@ -111,6 +111,23 @@ dedicated to the Plot-System itself.</br>
 * Submitting a fix
 * Proposing new features
 
+### Commit Naming Conventions
+
+To keep our commit history clean and readable, please follow a naming convention for your commits by using one of the
+following prefixes (based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)):
+
+* `feat:` - A new feature
+* `fix:` - A bug fix
+* `docs:` - Documentation only changes
+* `style:` - Changes that do not affect the meaning of the code (white-space, formatting, etc.)
+* `refactor:` - A code change that neither fixes a bug nor adds a feature
+* `perf:` - A code change that improves performance
+* `test:` - Adding missing tests or correcting existing tests
+* `chore:` - Changes to the build process or auxiliary tools and libraries
+
+If no recognized prefix is provided, the maintainers may ask you to revise your commit message, or they may squash and
+rename the commit with an appropriate prefix upon merging.
+
 # License
 Distributed under the MIT License. See `LICENSE` for more information.
 

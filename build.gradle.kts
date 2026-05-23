@@ -1,6 +1,6 @@
 plugins {
     java
-    alias(libs.plugins.git.version)
+    alias(libs.plugins.git.semver)
     alias(libs.plugins.shadow)
 }
 
@@ -61,11 +61,8 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
 }
 
-val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
-val details = versionDetails()
-
 group = "com.alpsbte"
-version = "5.0.3" + "-" + details.gitHash + "-SNAPSHOT"
+version = semver.semVersion
 description = "An easy to use building system for the BuildTheEarth project."
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -90,6 +87,13 @@ tasks.assemble {
 tasks.jar {
     archiveClassifier = "UNSHADED"
     enabled = false // Disable the default jar task since we are using shadowJar
+}
+
+tasks.register("printNextReleaseVersion") {
+    val nextRelease = semver.version.toString().removeSuffix("-SNAPSHOT")
+    doLast {
+        println(nextRelease)
+    }
 }
 
 tasks.processResources {

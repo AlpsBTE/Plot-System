@@ -20,7 +20,7 @@ org-mariadb-jdbc-mariadb-java-client = "3.5.7" #  https://central.sonatype.com/a
 com-intellectualsites-bom-bom-newest = "1.55" # Ref: https://github.com/IntellectualSites/bom
 # Plugins
 shadow = "9.3.1" # https://github.com/GradleUp/shadow/releases
-git-version = "5.0.0" # https://github.com/palantir/gradle-git-version/releases
+git-semver = "0.19.0" # https://github.com/jmongard/Git.SemVersioning.Gradle/releases
 
 [libraries]
 com-alpsbte-alpslib-alpslib-hologram = { module = "com.alpsbte.alpslib:alpslib-hologram", version.ref = "com-alpsbte-alpslib-alpslib-hologram" }
@@ -41,5 +41,5 @@ org-mariadb-jdbc-mariadb-java-client = { module = "org.mariadb.jdbc:mariadb-java
 com-intellectualsites-bom-bom-newest = { module = "com.intellectualsites.bom:bom-newest", version.ref = "com-intellectualsites-bom-bom-newest" }
 
 [plugins]
-git-version = { id = "com.palantir.git-version", version.ref = "git-version" }
+git-semver = { id = "com.github.jmongard.git-semver-plugin", version.ref = "git-semver" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
