@@ -84,21 +84,23 @@ public class PlotWorldGenerator {
 
     protected void generateWorld() throws IOException {
         // copy skeleton world with correct world name
-        Path skeletonPath = Bukkit.getWorldContainer().toPath().resolve("Skeleton");
-        Path worldPath = Bukkit.getWorldContainer().toPath().resolve(worldName);
+        Path skeletonPath = Bukkit.getWorld("Skeleton").getWorldPath();
+        Path worldPath = skeletonPath.getParent().resolve(worldName); // TODO Switch to world tag once we only support 26.1+ & trmove the checks
         FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile());
 
         // delete uid.dat
-        Files.delete(worldPath.resolve("uid.dat"));
+        if (worldPath.resolve("uid.dat").toFile().exists()) Files.delete(worldPath.resolve("uid.dat"));
 
         // rename world name in level.dat
-        Path levelDat = worldPath.resolve("level.dat");
-        NamedTag level = NBTUtil.read(levelDat.toFile());
-        CompoundTag tag = (CompoundTag) level.getTag();
-        tag.remove("LevelName");
-        tag.putString("LevelName", worldName);
-        level.setTag(tag);
-        NBTUtil.write(level, levelDat.toFile());
+        if (worldPath.resolve("level.dat").toFile().exists()) {
+            Path levelDat = worldPath.resolve("level.dat");
+            NamedTag level = NBTUtil.read(levelDat.toFile());
+            CompoundTag tag = (CompoundTag) level.getTag();
+            tag.remove("LevelName");
+            tag.putString("LevelName", worldName);
+            level.setTag(tag);
+            NBTUtil.write(level, levelDat.toFile());
+        }
 
         // rename world in paper-world.yml
         Path paperWorld = worldPath.resolve("paper-world.yml");
