@@ -63,8 +63,6 @@ dependencies {
 
 group = "com.alpsbte"
 
-val rawVersion = semver.semVersion.toString()
-
 version = semver.semVersion.toString().let {
     if ("-SNAPSHOT" in it) it else semver.version // If it's a release (no .SNAPSHOT Suffix) use the version without additional metadata
 }
