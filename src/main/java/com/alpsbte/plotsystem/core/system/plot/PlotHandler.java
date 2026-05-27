@@ -102,7 +102,7 @@ public class PlotHandler {
         }
 
         // Assign
-        if (!builder.setSlot(builder.getFreeSlot(), plot.getId())) return false;
+        if (!builder.setSlot(freeSlot, plot.getId())) return false;
         if (!plot.setStatus(Status.unfinished)) return false;
         return plot.setPlotOwner(builder);
     }
