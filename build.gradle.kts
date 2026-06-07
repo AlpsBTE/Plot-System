@@ -94,7 +94,9 @@ tasks.jar {
 }
 
 tasks.register("printNextReleaseVersion") {
-    val nextRelease = semver.version.toString().removeSuffix("-SNAPSHOT")
+    description = "Prints the next full release version"
+    group = "versioning"
+    val nextRelease = semver.version.removeSuffix("-SNAPSHOT")
     doLast {
         println(nextRelease)
     }

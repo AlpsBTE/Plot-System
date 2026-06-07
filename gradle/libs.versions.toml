@@ -20,7 +20,7 @@ com-github-fierioziy-particlenativeapi-particlenativeapi-plugin = "3.3.2"
 # Ref: https://github.com/IntellectualSites/bom
 com-intellectualsites-bom-bom-newest = "1.56"
 # https://maven.enginehub.org/repo/com/sk89q/worldguard/worldguard-bukkit/
-com-sk89q-worldguard-worldguard-bukkit = "7.1.0-SNAPSHOT"
+com-sk89q-worldguard-worldguard-bukkit = "7.0.17"
 # https://github.com/brettwooldridge/HikariCP/tags
 com-zaxxer-hikaricp = "7.0.2"
 # Provided by Minecraft (Libs folder)
