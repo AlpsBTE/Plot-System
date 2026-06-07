@@ -19,7 +19,7 @@ repositories {
     }
 
     maven {
-        url = uri("https://repo.fancyplugins.de/releases")
+        url = uri("https://maven.fancyspaces.net/fancynpcs/fi-releases")
     }
 
     maven {
