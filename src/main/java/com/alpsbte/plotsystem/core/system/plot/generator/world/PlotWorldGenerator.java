@@ -83,17 +83,38 @@ public class PlotWorldGenerator {
     }
 
     protected void generateWorld() throws IOException {
-        // copy skeleton world with correct world name
         Path skeletonPath = Bukkit.getWorld("Skeleton").getWorldPath();
-        Path worldPath = skeletonPath.getParent().resolve(worldName); // TODO Switch to world tag once we only support 26.1+ & trmove the checks
-        FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile());
+
+        // detect world format
+        // old = level.dat in world root
+        // new = paper 26.1+ dimension layout
+        Path skeletonLevelPath;
+        Path worldLevelPath;
+
+        if (skeletonPath.resolve("level.dat").toFile().exists()) {
+            // old format (pre-26.1): world path is the level root
+            skeletonLevelPath = skeletonPath;
+            worldLevelPath = skeletonPath.getParent().resolve(worldName);
+        } else {
+            // new format (26.1+): world path is dimension folder, level root is 3 parents up
+            skeletonLevelPath = skeletonPath.getParent().getParent().getParent();
+            worldLevelPath = skeletonLevelPath.getParent().resolve(worldName);
+        }
+
+        // copy entire skeleton level directory with correct name
+        FileUtils.copyDirectory(skeletonLevelPath.toFile(), worldLevelPath.toFile());
+
+        // get dimension folder
+        Path dimensionRelativePath = skeletonLevelPath.relativize(skeletonPath);
+        Path worldDimensionPath = worldLevelPath.resolve(dimensionRelativePath);
 
         // delete uid.dat
-        if (worldPath.resolve("uid.dat").toFile().exists()) Files.delete(worldPath.resolve("uid.dat"));
+        Path uidDat = worldDimensionPath.resolve("uid.dat");
+        if (uidDat.toFile().exists()) Files.delete(uidDat);
 
         // rename world name in level.dat
-        if (worldPath.resolve("level.dat").toFile().exists()) {
-            Path levelDat = worldPath.resolve("level.dat");
+        Path levelDat = worldLevelPath.resolve("level.dat");
+        if (levelDat.toFile().exists()) {
             NamedTag level = NBTUtil.read(levelDat.toFile());
             CompoundTag tag = (CompoundTag) level.getTag();
             tag.remove("LevelName");
@@ -103,12 +124,14 @@ public class PlotWorldGenerator {
         }
 
         // rename world in paper-world.yml
-        Path paperWorld = worldPath.resolve("paper-world.yml");
-        String paperWorldContents = Files.readString(paperWorld);
-        String updatedContents = paperWorldContents
-                .replaceAll(SkeletonWorldGenerator.WORLD_NAME, worldName)
-                .replaceAll(SkeletonWorldGenerator.WORLD_NAME.toLowerCase(), worldName.toLowerCase());
-        Files.writeString(paperWorld, updatedContents);
+        Path paperWorld = worldDimensionPath.resolve("paper-world.yml");
+        if (paperWorld.toFile().exists()) {
+            String paperWorldContents = Files.readString(paperWorld);
+            String updatedContents = paperWorldContents
+                    .replaceAll(SkeletonWorldGenerator.WORLD_NAME, worldName)
+                    .replaceAll(SkeletonWorldGenerator.WORLD_NAME.toLowerCase(), worldName.toLowerCase());
+            Files.writeString(paperWorld, updatedContents);
+        }
     }
 
     protected void createMultiverseWorld() {
