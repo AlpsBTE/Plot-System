@@ -24,7 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
-import org.bukkit.GameRules;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -63,14 +63,14 @@ public class SkeletonWorldGenerator {
         assert bukkitWorld != null;
 
         // Set game rules
-        bukkitWorld.setGameRule(GameRules.RANDOM_TICK_SPEED, 0);
-        bukkitWorld.setGameRule(GameRules.ADVANCE_TIME, false);
-        bukkitWorld.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
-        bukkitWorld.setGameRule(GameRules.ADVANCE_WEATHER, false);
-        bukkitWorld.setGameRule(GameRules.KEEP_INVENTORY, true);
-        bukkitWorld.setGameRule(GameRules.SPAWN_MOBS, false);
-        bukkitWorld.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
-        bukkitWorld.setGameRule(GameRules.BLOCK_DROPS, false);
+        bukkitWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        bukkitWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
+        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
+        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        bukkitWorld.setGameRule(GameRule.DO_TILE_DROPS, false);
 
         // Set time to noon
         bukkitWorld.setTime(6000);
