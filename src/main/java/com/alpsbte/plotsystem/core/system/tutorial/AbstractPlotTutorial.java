@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
@@ -93,6 +94,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     @Override
     public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws Exception {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
+        if (schematicId < 0) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
             plotGenerator.generateOutlines(schematicId);
         }
@@ -114,11 +116,15 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     protected void prepareStage(PrepareStageAction action) {
+        AbstractStage stage = currentStage;
+        boolean pasteSchematic = isPasteSchematic;
         Bukkit.getScheduler().runTaskLater(PlotSystem.getPlugin(), () -> {
+            if (stage != currentStage) return;
+
             // paste initial schematic outlines of stage
-            if (isPasteSchematic) {
+            if (pasteSchematic) {
                 try {
-                    onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) currentStage).getInitSchematicId());
+                    onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) stage).getInitSchematicId());
                 } catch (Exception ex) {
                     onException(ex);
                     return;
@@ -153,7 +159,9 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             return CompletableFuture.runAsync(() -> {
                 plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
                 try {
-                    onPlotSchematicPaste(playerUUID, ((AbstractPlotStage) currentStage).getInitSchematicId());
+                    int schematicId = ((AbstractPlotStage) currentStage).getInitSchematicId();
+                    tutorialPlot.setTutorialSchematic(schematicId);
+                    onPlotSchematicPaste(playerUUID, schematicId);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }

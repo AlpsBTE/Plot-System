@@ -1,6 +1,6 @@
 plugins {
     java
-    alias(libs.plugins.git.version)
+    alias(libs.plugins.git.semver)
     alias(libs.plugins.shadow)
 }
 
@@ -19,7 +19,7 @@ repositories {
     }
 
     maven {
-        url = uri("https://repo.fancyplugins.de/releases")
+        url = uri("https://maven.fancyspaces.net/fancynpcs/fi-releases")
     }
 
     maven {
@@ -38,6 +38,10 @@ repositories {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
 }
+
+val paperNextEnabled = providers.gradleProperty("paperNext")
+    .map(String::toBoolean)
+    .orElse(false)
 
 dependencies {
     implementation(libs.com.alpsbte.canvas)
@@ -60,23 +64,22 @@ dependencies {
     compileOnly(libs.li.cinnazeyy.langlibs.api)
     compileOnly(libs.commons.io.commons.io)
     compileOnly(libs.io.papermc.paper.paper.api)
-}
 
-val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
-val details = versionDetails()
+    if (paperNextEnabled.get()) {
+        constraints {
+            compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+            compileOnly("com.github.decentsoftware-eu:decentholograms:2.10.0")
+        }
+    }
+}
 
 group = "com.alpsbte"
-version = "5.0.3" + "-" + details.gitHash + "-SNAPSHOT"
+
+version = semver.semVersion.toString().let {
+    if ("-SNAPSHOT" in it) it else semver.version // If it's a release (no .SNAPSHOT Suffix) use the version without additional metadata
+}
+
 description = "An easy to use building system for the BuildTheEarth project."
-java.sourceCompatibility = JavaVersion.VERSION_21
-
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-tasks.withType<Javadoc> {
-    options.encoding = "UTF-8"
-}
 
 tasks.shadowJar {
     archiveClassifier = ""
@@ -93,6 +96,15 @@ tasks.jar {
     enabled = false // Disable the default jar task since we are using shadowJar
 }
 
+tasks.register("printNextReleaseVersion") {
+    description = "Prints the next full release version"
+    group = "versioning"
+    val nextRelease = semver.version.removeSuffix("-SNAPSHOT")
+    doLast {
+        println(nextRelease)
+    }
+}
+
 tasks.processResources {
     // work around IDEA-296490
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -106,4 +118,38 @@ tasks.processResources {
             )
         }
     })
+}
+
+
+val targetJava = providers.gradleProperty("targetJava")
+    .map(String::toInt)
+    .orElse(21)
+
+java {
+    toolchain {
+        languageVersion.set(targetJava.map(JavaLanguageVersion::of))
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(targetJava)
+}
+
+tasks.withType<Javadoc>().configureEach {
+    options.encoding = "UTF-8"
+}
+
+tasks.register<GradleBuild>("buildPaperNext") {
+    group = "verification"
+    description = "Builds against Java 25 and the Paper-next dependency set"
+
+    tasks = listOf("clean", "build")
+
+    startParameter.projectProperties.putAll(
+        mapOf(
+            "paperNext" to "true",
+            "targetJava" to "25"
+        )
+    )
 }

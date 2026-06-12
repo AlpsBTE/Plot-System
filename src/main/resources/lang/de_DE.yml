@@ -82,6 +82,7 @@ menu-title:
   submit: 'Einreichen'
   teleport: 'Teleportieren'
   abandon: 'Löschen'
+  abandon-confirm: 'Plot #{0} löschen?'
   undo-submit: 'Einreichung Zurückziehen'
   manage-members: 'Mitglieder Verwalten'
   feedback: 'Feedback | Bewertung #{0}'

@@ -19,10 +19,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
@@ -147,11 +147,17 @@ public class TutorialPlot extends AbstractPlot {
     @Override
     public byte[] getInitialSchematicBytes() {
         File schematic;
-        String fileName = getTutorialID() + "-" + currentSchematicId + ".schem";
+        String fileName = getSchematicFileName(currentSchematicId);
         schematic = PlotUtils.getTutorialSchematicPath().resolve(fileName).toFile();
         try {
-            if (!schematic.exists()) FileUtils.copyInputStreamToFile(Objects.requireNonNull(PlotSystem.getPlugin()
-                    .getResource("tutorial/schematics/" + fileName + ".gz")), schematic);
+            if (!schematic.exists()) {
+                InputStream schematicResource = PlotSystem.getPlugin().getResource("tutorial/schematics/" + fileName + ".gz");
+                if (schematicResource == null) {
+                    PlotSystem.getPlugin().getComponentLogger().error("Tutorial schematic resource '{}' is missing!", fileName);
+                    return new byte[0];
+                }
+                FileUtils.copyInputStreamToFile(schematicResource, schematic);
+            }
             return Files.readAllBytes(schematic.toPath());
         } catch (IOException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while copying the schematic file!"), ex);
@@ -159,8 +165,14 @@ public class TutorialPlot extends AbstractPlot {
         return new byte[0];
     }
 
-    public void setTutorialSchematic(int schematicId) {
+    public boolean setTutorialSchematic(int schematicId) {
+        if (schematicId < 0) return false;
         currentSchematicId = schematicId;
+        return true;
+    }
+
+    private String getSchematicFileName(int schematicId) {
+        return getTutorialID() + "-" + schematicId + ".schem";
     }
 
     public static boolean isInProgress(int tutorialId, @NotNull UUID playerUUID) {

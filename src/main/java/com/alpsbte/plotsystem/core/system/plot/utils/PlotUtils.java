@@ -196,7 +196,7 @@ public final class PlotUtils {
         }
 
         Polygonal2DRegion region = new Polygonal2DRegion(
-                BukkitAdapter.adapt(world),
+                null,
                 plot.getOutline(),
                 clipboard.getMinimumPoint().y(),
                 clipboard.getMaximumPoint().y()

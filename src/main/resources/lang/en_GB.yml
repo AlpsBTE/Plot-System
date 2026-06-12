@@ -82,6 +82,7 @@ menu-title:
   submit: 'Submit'
   teleport: 'Teleport'
   abandon: 'Abandon'
+  abandon-confirm: 'Abandon plot #{0}?'
   undo-submit: 'Undo Submit'
   manage-members: 'Manage Members'
   feedback: 'Feedback | Review #{0}'

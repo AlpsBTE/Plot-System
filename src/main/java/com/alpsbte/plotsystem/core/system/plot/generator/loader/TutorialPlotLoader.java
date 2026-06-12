@@ -29,7 +29,7 @@ public class TutorialPlotLoader extends AbstractPlotLoader {
     }
 
     public void generateOutlines(int schematicId) throws Exception {
-        ((TutorialPlot) plot).setTutorialSchematic(schematicId);
+        if (!((TutorialPlot) plot).setTutorialSchematic(schematicId)) return;
         fetchSchematicData();
         generateStructure();
     }

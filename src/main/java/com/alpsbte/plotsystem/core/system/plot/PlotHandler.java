@@ -45,7 +45,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
@@ -72,7 +71,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -269,8 +272,7 @@ public class PlotHandler {
 
         // Load finished plot region as cuboid region
         if (!plot.getWorld().loadWorld()) return false;
-        com.sk89q.worldedit.world.World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-        Polygonal2DRegion region = new Polygonal2DRegion(world, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
+        Polygonal2DRegion region = new Polygonal2DRegion(null, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
 
         // Copy and write finished plot clipboard to schematic
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -1,0 +1,24 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: 'Features'
+    labels:
+      - 'enhancement'
+  - title: 'Bug Fixes'
+    labels:
+      - 'bug'
+  - title: 'Maintenance'
+    labels:
+      - 'dependencies'
+      - 'documentation'
+
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+change-title-escapes: '\<*_&'
+
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
