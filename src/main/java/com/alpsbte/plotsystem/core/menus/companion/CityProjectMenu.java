@@ -52,13 +52,13 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
         // Set tutorial item
         getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
-                TutorialsMenu.getTutorialItem(getMenuPlayer()) : MenuItems.borderItem());
+                TutorialsMenu.getTutorialItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         // Set previous page item
-        getMenu().getSlot(45).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(45).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         // Set next page item
-        getMenu().getSlot(53).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(53).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         super.setPreviewItems();
     }
@@ -162,7 +162,7 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("001111001")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

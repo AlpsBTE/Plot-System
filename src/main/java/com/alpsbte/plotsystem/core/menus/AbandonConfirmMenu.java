@@ -7,7 +7,6 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -58,7 +57,7 @@ public class AbandonConfirmMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.FULL_MASK)

@@ -115,10 +115,10 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         }
 
         // Set previous page item
-        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
 
         // Set next page item
-        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : Utils.DEFAULT_ITEM);
     }
 
     @Override
@@ -178,7 +178,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

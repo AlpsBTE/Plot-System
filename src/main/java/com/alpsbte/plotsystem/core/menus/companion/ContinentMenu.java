@@ -73,7 +73,7 @@ public class ContinentMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern("011111111")
                 .pattern("010101010")
                 .pattern("111101111")

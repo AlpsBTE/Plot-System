@@ -67,7 +67,7 @@ public class PlotTypeMenu extends AbstractMenu {
                                     .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
                                     .build())
                             .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
-                            .build() : MenuItems.borderItem());
+                            .build() : Utils.DEFAULT_ITEM);
 
 
 
@@ -117,7 +117,7 @@ public class PlotTypeMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(Utils.DEFAULT_ITEM)
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
