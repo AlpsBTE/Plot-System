@@ -40,6 +40,8 @@ import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -86,7 +88,7 @@ public class PlotWorldGenerator {
         // copy skeleton world with correct world name
         Path skeletonPath = Bukkit.getWorldContainer().toPath().resolve("Skeleton");
         Path worldPath = Bukkit.getWorldContainer().toPath().resolve(worldName);
-        FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile());
+        FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile(), new NotFileFilter(new NameFileFilter("session.lock")));
 
         // delete uid.dat
         Files.delete(worldPath.resolve("uid.dat"));
