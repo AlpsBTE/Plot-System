@@ -5,7 +5,7 @@ plugins {
 }
 
 repositories {
-    // mavenLocal() // NEVER use in Production/Commits!
+    mavenLocal() // NEVER use in Production/Commits!
     maven {
         url = uri("https://jitpack.io")
     }
