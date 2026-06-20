@@ -43,6 +43,9 @@ val paperNextEnabled = providers.gradleProperty("paperNext")
     .map(String::toBoolean)
     .orElse(false)
 
+val guavaPackage = "com.google.guava"
+val gsonPackage = "com.google.code.gson"
+
 dependencies {
     implementation(libs.com.alpsbte.canvas)
     implementation(libs.com.alpsbte.alpslib.alpslib.io)
@@ -52,10 +55,18 @@ dependencies {
     implementation(libs.com.zaxxer.hikaricp) {
         exclude(group = "org.slf4j")
     }
-    implementation(libs.com.github.querz.nbt)
-    implementation(platform(libs.com.intellectualsites.bom.bom.newest))
-    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
-    compileOnly(libs.com.sk89q.worldguard.worldguard.bukkit)
+    implementation(platform(libs.com.intellectualsites.bom.bom.newest)) {
+        exclude(group = guavaPackage)
+        exclude(group = gsonPackage)
+    }
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core") {
+        exclude(group = guavaPackage)
+        exclude(group = gsonPackage)
+    }
+    compileOnly(libs.com.sk89q.worldguard.worldguard.bukkit) {
+        exclude(group = guavaPackage)
+        exclude(group = gsonPackage)
+    }
     compileOnly(libs.multiverse.core)
     compileOnly(libs.com.github.fierioziy.particlenativeapi.particlenativeapi.plugin)
     compileOnly(libs.com.arcaniax.headdatabase.api)
@@ -122,7 +133,7 @@ tasks.processResources {
 
 val targetJava = providers.gradleProperty("targetJava")
     .map(String::toInt)
-    .orElse(21)
+    .orElse(25)
 
 java {
     toolchain {
@@ -141,14 +152,13 @@ tasks.withType<Javadoc>().configureEach {
 
 tasks.register<GradleBuild>("buildPaperNext") {
     group = "verification"
-    description = "Builds against Java 25 and the Paper-next dependency set"
+    description = "Builds against Paper-next dependency set"
 
     tasks = listOf("clean", "build")
 
     startParameter.projectProperties.putAll(
         mapOf(
-            "paperNext" to "true",
-            "targetJava" to "25"
+            "paperNext" to "true"
         )
     )
 }
