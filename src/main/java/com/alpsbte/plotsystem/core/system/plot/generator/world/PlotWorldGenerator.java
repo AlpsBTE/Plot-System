@@ -36,13 +36,13 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import net.querz.nbt.io.NBTUtil;
-import net.querz.nbt.io.NamedTag;
-import net.querz.nbt.tag.CompoundTag;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.SpawnCategory;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -51,8 +51,8 @@ import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.external.vavr.control.Option;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Objects;
 
 import static net.kyori.adventure.text.Component.text;
@@ -83,35 +83,14 @@ public class PlotWorldGenerator {
     }
 
     protected void generateWorld() throws IOException {
-        // copy skeleton world with correct world name
-        Path skeletonPath = Bukkit.getWorldContainer().toPath().resolve("Skeleton");
-        Path worldPath = Bukkit.getWorldContainer().toPath().resolve(worldName);
-        FileUtils.copyDirectory(skeletonPath.toFile(), worldPath.toFile());
-
-        // delete uid.dat
-        Files.delete(worldPath.resolve("uid.dat"));
-
-        // rename world name in level.dat
-        Path levelDat = worldPath.resolve("level.dat");
-        NamedTag level = NBTUtil.read(levelDat.toFile());
-        CompoundTag tag = (CompoundTag) level.getTag();
-        tag.remove("LevelName");
-        tag.putString("LevelName", worldName);
-        level.setTag(tag);
-        NBTUtil.write(level, levelDat.toFile());
-
-        // rename world in paper-world.yml
-        Path paperWorld = worldPath.resolve("paper-world.yml");
-        String paperWorldContents = Files.readString(paperWorld);
-        String updatedContents = paperWorldContents
-                .replaceAll(SkeletonWorldGenerator.WORLD_NAME, worldName)
-                .replaceAll(SkeletonWorldGenerator.WORLD_NAME.toLowerCase(), worldName.toLowerCase());
-        Files.writeString(paperWorld, updatedContents);
+        Path skeletonPath = Objects.requireNonNull(Bukkit.getWorld("Skeleton"), "Skeleton World is required at this point").getWorldPath();
+        Path worldLevelPath = skeletonPath.getParent().resolve(worldName.toLowerCase(Locale.ROOT));
+        FileUtils.copyDirectory(skeletonPath.toFile(), worldLevelPath.toFile(), new NotFileFilter(new NameFileFilter("metadata.dat")));
     }
 
     protected void createMultiverseWorld() {
         if (!worldManager.isLoadedWorld(worldName)) {
-            worldManager.importWorld(ImportWorldOptions.worldName(worldName)
+            worldManager.importWorld(ImportWorldOptions.worldKey(NamespacedKey.minecraft(worldName.toLowerCase(Locale.ROOT)))
                     .environment(environment)
                     .generator("Plot-System")
                     .useSpawnAdjust(false)
