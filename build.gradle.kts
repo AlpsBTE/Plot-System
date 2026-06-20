@@ -67,8 +67,7 @@ dependencies {
 
     if (paperNextEnabled.get()) {
         constraints {
-            compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
-            compileOnly("com.github.decentsoftware-eu:decentholograms:2.10.0")
+            compileOnly("io.papermc.paper:paper-api:26.2-rc-2.build.+")
         }
     }
 }

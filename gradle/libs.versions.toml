@@ -17,8 +17,6 @@ com-arcaniax-headdatabase-api = "1.3.3-SNAPSHOT"
 com-github-decentsoftware-eu-decentholograms = "2.9.9"
 # @pin https://github.com/Fierioziy/ParticleNativeAPI/releases - we are stuck at v3 for now. Need to migrate some time or remove it
 com-github-fierioziy-particlenativeapi-particlenativeapi-plugin = "3.3.2"
-# Ref: https://github.com/Querz/NBT
-com-github-querz-nbt-newest = "6.1"
 # Ref: https://github.com/IntellectualSites/bom
 com-intellectualsites-bom-bom-newest = "1.56"
 # https://maven.enginehub.org/repo/com/sk89q/worldguard/worldguard-bukkit/
@@ -53,7 +51,6 @@ com-alpsbte-canvas = { module = "com.alpsbte:canvas", version.ref = "com-alpsbte
 com-arcaniax-headdatabase-api = { module = "com.arcaniax:HeadDatabase-API", version.ref = "com-arcaniax-headdatabase-api" }
 com-github-decentsoftware-eu-decentholograms = { module = "com.github.decentsoftware-eu:decentholograms", version.ref = "com-github-decentsoftware-eu-decentholograms" }
 com-github-fierioziy-particlenativeapi-particlenativeapi-plugin = { module = "com.github.fierioziy.particlenativeapi:ParticleNativeAPI-plugin", version.ref = "com-github-fierioziy-particlenativeapi-particlenativeapi-plugin" }
-com-github-querz-nbt = { module = "com.github.Querz:NBT", version.ref = "com-github-querz-nbt-newest" }
 com-intellectualsites-bom-bom-newest = { module = "com.intellectualsites.bom:bom-newest", version.ref = "com-intellectualsites-bom-bom-newest" }
 com-sk89q-worldguard-worldguard-bukkit = { module = "com.sk89q.worldguard:worldguard-bukkit", version.ref = "com-sk89q-worldguard-worldguard-bukkit" }
 com-zaxxer-hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "com-zaxxer-hikaricp" }
