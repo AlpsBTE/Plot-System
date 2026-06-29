@@ -1,0 +1,189 @@
+name: Crowdin translation download
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 */7 * *'
+  pull_request:
+    branches: [ main ]
+    types: opened
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  crowdin-translation-download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Save existing translation config-versions
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          LANG_DIR = Path("src/main/resources/lang")
+          OUT = Path("/tmp/lang-config-versions.json")
+
+          versions = {}
+
+          for path in LANG_DIR.glob("*.yml"):
+              if path.name == "en_GB.yml":
+                  continue
+
+              text = path.read_text(encoding="utf-8")
+              match = re.search(r"(?m)^config-version:\s*(.+?)\s*$", text)
+
+              if match:
+                  versions[path.name] = match.group(1)
+
+          OUT.write_text(json.dumps(versions), encoding="utf-8")
+          PY
+
+      - name: Download translations from Crowdin
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: false
+          upload_translations: false
+          download_sources: false
+          download_translations: true
+
+          localization_branch_name: l10n_crowdin_translations
+          create_pull_request: true
+          pull_request_title: "New Crowdin translations"
+          commit_message: "New Crowdin translations"
+          pull_request_base_branch_name: "main"
+
+          project_id: ${{ vars.CROWDIN_PROJECT_ID }}
+          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          source: "src/main/resources/lang/en_GB.yml"
+          translation: "src/main/resources/lang/%locale_with_underscore%.%file_extension%"
+          download_translations_args: '--dest=Plot-System.yml'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Crowdin branch
+        shell: bash
+        run: |
+          sudo chown -R "$USER:$USER" "$GITHUB_WORKSPACE"
+
+          BRANCH="l10n_crowdin_translations"
+
+          git fetch origin "$BRANCH"
+          git checkout -B "$BRANCH" "origin/$BRANCH"
+
+      - name: Restore/bump config-version and drop config-only files
+        shell: bash
+        run: |
+          sudo chown -R "$USER:$USER" "$GITHUB_WORKSPACE" || true
+          chmod -R u+w src/main/resources/lang || true
+
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+          import re
+          import subprocess
+
+          LANG_DIR = Path("src/main/resources/lang")
+          VERSION_FILE = Path("/tmp/lang-config-versions.json")
+          CONFIG_RE = re.compile(r"(?m)^config-version:\s*(.+?)\s*$")
+
+          def run(*args, check=True):
+              return subprocess.run(
+                  ["git", *args],
+                  text=True,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE,
+                  check=check,
+              )
+
+          def git_show(ref, path):
+              result = run("show", f"{ref}:{path}", check=False)
+              if result.returncode != 0:
+                  return None
+              return result.stdout
+
+          def strip_config_version(text):
+              text = CONFIG_RE.sub("", text)
+              text = re.sub(r"\n{3,}", "\n\n", text)
+              return text.strip() + "\n" if text.strip() else ""
+
+          def with_config_version_last(text, version):
+              text = strip_config_version(text)
+              if not text.strip():
+                return ""
+              return text.rstrip() + f"\nconfig-version: {version}\n"
+
+          def bump_minor(version):
+              version = version.strip()
+              if "." in version:
+                  major, minor = version.split(".", 1)
+                  return f"{major}.{int(minor) + 1}"
+              return str(int(version) + 1)
+
+          saved_versions = {}
+          if VERSION_FILE.exists():
+              saved_versions = json.loads(VERSION_FILE.read_text(encoding="utf-8"))
+
+          for path in LANG_DIR.glob("*.yml"):
+              if path.name == "en_GB.yml":
+                  continue
+
+              rel = path.as_posix()
+              current_text = path.read_text(encoding="utf-8")
+              base_text = git_show("HEAD^", rel)
+
+              old_version = saved_versions.get(path.name)
+              new_version = "1.0" if old_version is None else bump_minor(old_version)
+
+              content_without_config = strip_config_version(current_text)
+
+              # New file from Crowdin, but it has no real translation content.
+              # Remove it from the branch/commit entirely.
+              if base_text is None and not content_without_config.strip():
+                  path.unlink(missing_ok=True)
+                  run("rm", "--ignore-unmatch", rel, check=False)
+                  print(f"Removed empty new file {rel}")
+                  continue
+
+              updated_text = with_config_version_last(current_text, new_version)
+
+              # New file with real translation content.
+              if base_text is None:
+                  path.write_text(updated_text, encoding="utf-8")
+                  print(f"Keeping new file {rel} with config-version {new_version}")
+                  continue
+
+              # Existing file where Crowdin only removed/changed config-version.
+              if strip_config_version(base_text) == strip_config_version(updated_text):
+                  run("checkout", "HEAD^", "--", rel)
+                  print(f"Restored {rel}; only config-version changed")
+                  continue
+
+              # Existing file with real translation/content changes.
+              path.write_text(updated_text, encoding="utf-8")
+              print(f"Keeping changed file {rel} with config-version {new_version}")
+          PY
+
+      - name: Amend Crowdin commit
+        shell: bash
+        run: |
+          BRANCH="l10n_crowdin_translations"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add src/main/resources/lang/*.yml
+
+          if git diff --cached --quiet; then
+            echo "No changes to amend."
+            exit 0
+          fi
+
+          git commit --amend --no-edit
+          git push --force-with-lease origin "$BRANCH"
