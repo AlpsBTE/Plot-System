@@ -1,4 +1,4 @@
-﻿# -----------------------------------------------------
+# -----------------------------------------------------
 # |            Plot System - by Alps BTE
 # -----------------------------------------------------
 # | [Github Repo] https://github.com/AlpsBTE/PlotSystem
@@ -22,7 +22,7 @@ plot:
   members: "建地成员"
   member: "建地成员"
   city: "城市"
-  country: "Country"
+  country: "国家"
   difficulty: "难度"
   status: "状态"
   score: "积分"
@@ -35,28 +35,28 @@ plot:
 # | City Projects
 # -----------------------------------------------------
 city-project:
-  cities: "Cities"
+  cities: "城市"
   open: "开启建地"
   in-progress: "进行中建地"
   completed: "已完成建地"
-  plots-available: 'Plots Available'
+  plots-available: '可用绘图集'
   no-plots-available: "无可用建地"
-  for-your-difficulty: "({0} for your difficulty)"
+  for-your-difficulty: "({0} 因您的困难)"
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
-  countries: "Countries"
+  countries: "国家"
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
 continent:
-  europe: "Europe"
-  asia: "Asia"
-  africa: "Africa"
+  europe: "欧洲"
+  asia: "亚洲"
+  africa: "非洲"
   oceania: "Oceania"
-  south-america: "South America"
-  north-america: "North America"
+  south-america: "南 非"
+  north-america: "2. 北美洲：决议草案"
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
@@ -67,84 +67,85 @@ difficulty:
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: "关闭"
-  back: "返回"
-  continue: 'Continue'
-  next-page: "下一页"
-  previous-page: "上一页"
-  error: "错误"
-  loading: "载入中..."
-  plot-difficulty: "土地难度"
-  slot: "槽位"
-  builder-utilities: "建筑师公用程式"
-  show-plots: "显示建地"
-  settings: "设定"
-  submit: "提交"
-  teleport: "传送"
-  abandon: "放弃"
-  undo-submit: "撤回提交"
-  manage-members: "管理成员"
-  feedback: "回馈 | 审核 #{0}"
-  custom-heads: "自定义头颅"
-  banner-maker: "旗帜产生器"
-  special-tools: "Special Blocks & Items"
-  review-point: "点"
-  review-points: "点"
-  cancel: "取消"
-  add-member-to-plot: "添加成员到建地"
-  companion: "伙伴"
-  companion-select-continent: 'Select A Continent'
-  companion-select-country: 'Select A Country'
-  companion-select-city: 'Select A City'
-  player-plots: "{0}块建地"
-  leave-plot: "离开建地"
-  review-plots: "审核建地"
-  review-plot: "审核建地 #{0}"
-  select-language: "选择语言"
-  select-plot-type: 'Select Plot Type'
-  select-focus-mode: "Select Focus Mode"
-  select-local-inspiration-mode: "Select Inspiration Mode"
-  select-city-inspiration-mode: "Select City Inspiration Mode"
-  filter-by-country: "Filter By Country"
-  information: "Info"
-  tutorials: 'Tutorials'
-  tutorial-stages: 'Tutorial Stages'
-  tutorial-end: 'End Tutorial'
-  tutorial-beginner: 'Get Started'
+  close: '关闭'
+  back: '返回'
+  continue: '继续'
+  next-page: '下一页'
+  previous-page: '上一页'
+  error: '错误'
+  loading: '载入中...'
+  plot-difficulty: '土地难度'
+  slot: '槽位'
+  builder-utilities: '建筑师公用程式'
+  show-plots: '显示建地'
+  settings: '设定'
+  submit: '提交'
+  teleport: '传送'
+  abandon: '放弃'
+  abandon-confirm: 'Abandon plot #{0}?'
+  undo-submit: '撤回提交'
+  manage-members: '管理成员'
+  feedback: '回馈 | 审核 #{0}'
+  custom-heads: '自定义头颅'
+  banner-maker: '旗帜产生器'
+  special-tools: '特殊块和物品'
+  review-point: '点'
+  review-points: '点'
+  cancel: '取消'
+  add-member-to-plot: '添加成员到建地'
+  companion: '伙伴'
+  companion-select-continent: '选择 A Continent'
+  companion-select-country: '选择国家'
+  companion-select-city: '选择城市'
+  player-plots: '{0}块建地'
+  leave-plot: '离开建地'
+  review-plots: '审核建地'
+  review-plot: '审核建地 #{0}'
+  select-language: '选择语言'
+  select-plot-type: '选择绘图类型'
+  select-focus-mode: '选择焦点模式'
+  select-local-inspiration-mode: '选择灵感模式'
+  select-city-inspiration-mode: '选择城市灵感模式'
+  filter-by-country: '按国家筛选'
+  information: '信息'
+  tutorials: '教程'
+  tutorial-stages: '教程阶段'
+  tutorial-end: '结束教程'
+  tutorial-beginner: '开始'
   companion-random: '随机选择'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: "发生错误..."
-  plot-difficulty-desc: "点击以切换..."
-  slot-desc: "点击城市计画区以创建新的建地"
-  builder-utilities-desc: "获取自定义头颅、旗帜与特殊方块"
-  show-plots-desc: "显示你所有的建地"
-  settings-desc: "修改你的使用者设定"
-  submit-plot-desc: "点击以完成此建地，并将其提交审核"
-  teleport-desc: "点击以传送至建地"
-  abandon-desc: "点击以重设你的建地，并将其交付他人"
-  undo-submit-desc: "点击以撤回你的提交"
-  manage-members-desc: "点击以开启建地成员选单，你可以在那添加 和移除在你建地上的其他玩家"
-  feedback-desc: "点击以查看你的建地审核回馈"
-  custom-heads-desc: "点击开启头驴选单以取得一种自定义头驴"
-  banner-maker-desc: "Click to create and save your own banners"
-  special-tools-desc: "Click here to access a variety of inaccessible blocks and items"
-  add-member-to-plot-desc: "邀请你的朋友到你的建地并开始共同建设"
-  review-points-desc: "点击以选取"
-  submit-review-desc: "提交选取点并标记建地供审核"
-  leave-plot-desc: "点击以离开此建地"
-  select-language-desc: "选择你的语言"
-  select-plot-type-desc: 'Choose your plot type'
+  error-desc: '发生错误...'
+  plot-difficulty-desc: '点击以切换...'
+  slot-desc: '点击城市计画区以创建新的建地'
+  builder-utilities-desc: '获取自定义头颅、旗帜与特殊方块'
+  show-plots-desc: '显示你所有的建地'
+  settings-desc: '修改你的使用者设定'
+  submit-plot-desc: '点击以完成此建地，并将其提交审核'
+  teleport-desc: '点击以传送至建地'
+  abandon-desc: '点击以重设你的建地，并将其交付他人'
+  undo-submit-desc: '点击以撤回你的提交'
+  manage-members-desc: '点击以开启建地成员选单，你可以在那添加 和移除在你建地上的其他玩家'
+  feedback-desc: '点击以查看你的建地审核回馈'
+  custom-heads-desc: '点击开启头驴选单以取得一种自定义头驴'
+  banner-maker-desc: '点击创建并保存您自己的横幅广告'
+  special-tools-desc: 'Click here to access a variety of inaccessible blocks and items'
+  add-member-to-plot-desc: '邀请你的朋友到你的建地并开始共同建设'
+  review-points-desc: '点击以选取'
+  submit-review-desc: '提交选取点并标记建地供审核'
+  leave-plot-desc: '点击以离开此建地'
+  select-language-desc: '选择你的语言'
+  select-plot-type-desc: '选择您的绘图类型'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
-  filter-desc: "Show All"
-  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
-  tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  filter-desc: "显示全部"
+  information-desc: "绘图最多可获得20个点。 如果绘图收到少于8点或一个类别有0点， 绘图被拒绝，生成器返回绘图以改进绘图。 如果绘图收到0个点, 它会被放弃."
+  tutorials-desc: '学习BuildTheEarth项目的基础知识，并通过各种主题的教程提高你的建筑技能。'
+  tutorial-end-desc: '您的进度将被保存。'
+  tutorial-beginner-desc: '学习如何构建BuildTheEarth 项目的基础知识。'
   companion-random-desc: '点击随机选择。'
 # -----------------------------------------------------
 # | Review
@@ -154,16 +155,17 @@ review:
   manage-plot: "管理建地"
   manage-and-review-plots: "管理与审核建地"
   accepted: "接受"
-  abandoned: "Abandoned"
   rejected: "驳回"
+  abandoned: "废弃的"
   feedback: "回馈"
   reviewer: "审核员"
-  no-feedback: "No feedback"
-  accuracy-points: "Accuracy points"
-  block-palette-points: "Block palette points"
-  toggle-points: "Toggle points"
-  total-points: "Total points"
-  player-language: "Player Language"
+  player-language: "玩家语言"
+  no-feedback: "没有反馈"
+  accuracy-points: "精度点"
+  block-palette-points: "阻止调色板点"
+  toggle-points: "切换点"
+  total-points: "总点数"
+  abandoned-in-days: "§6被弃置于§6{0} 天"
   criteria:
     accuracy: "准确性"
     accuracy-desc: "建筑的精确度如何？ %newline%%newline%- 看起来像在真实世界%newline%- 正确的轮廓%newline%- 正确的高度%newline%- 完成了"
@@ -174,39 +176,40 @@ review:
 # -----------------------------------------------------
 note:
   tip: "Tip"
-  under-construction: 'Under Construction'
+  under-construction: '正在建造中'
   wont-be-able-continue-building: "你将无法继续在此建地上进行建设！ "
   score-will-be-split: "审核时积分将分配给所有成员！ "
   player-has-to-be-online: "玩家必须上线！ "
-  optional: "Optional"
-  required: "Required"
-  criteria-fulfilled: "Fulfilled"
-  criteria-not-fulfilled: "Not fulfilled"
-  legacy: "LEGACY"
+  optional: "可选的"
+  required: "必填"
+  criteria-fulfilled: "已完成"
+  criteria-not-fulfilled: "未实现"
+  legacy: "LEGA"
   action:
-    read: 'Read'
-    read-more: 'Read More'
-    mark-as-read: 'Mark as read'
-    start: 'Start'
-    continue: "Continue"
-    continue-tutorial: 'Continue Tutorial'
-    create-plot: 'Create Plot'
+    read: '已读'
+    read-more: '阅读更多'
+    mark-as-read: '标记为已读'
+    start: '开始'
+    continue: "继续"
+    continue-tutorial: '继续教程'
+    create-plot: '创建图'
     right-click: "右键点击"
-    left-click: "Left Click"
-    accept: 'Accept'
-    reject: 'Reject'
-    click-to-create-plot: 'Click to create new plot...'
-    click-to-proceed: "Click to proceed..."
+    left-click: "左键点击"
+    accept: '接受'
+    reject: '拒绝'
+    click-to-create-plot: '点击创建新绘图...'
+    click-to-proceed: "点击继续..."
     click-to-remove-plot-member: "点击以从建地中移除成员..."
     click-to-open-link: "点击此区 以开启 {0} 连结..."
     click-to-open-link-with-shortlink: "§6点击此区 §7以开启 §a{0}§7 连结或使用此连结： §a{1}"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "§6点击此区 §a显示你的建地回馈..."
     click-to-show-open-reviews: "§6点击此区 §a显示公开审核..."
     click-to-show-plots: "§6点击此区 §a显示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩吗？ §6点击此区..."
-    tutorial-show-stages: 'Show Stages'
-    click-to-open-plots-menu: "点击此区 显示你的建地..."
-    click-to-toggle: "Click to toggle..."
+    tutorial-show-stages: '显示阶段'
+    click-to-open-plots-menu: '点击此区 显示你的建地...'
+    click-to-toggle: "点击切换..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -218,6 +221,9 @@ message:
     finished-plot: "§a §6{1}§a 的建地 §6#{0}§a 已完成！ "
     plot-marked-as-reviewed: "§a §6{1}§a 的建地 §6#{0}§a 已标记供审核！ "
     plot-rejected: "§a §6{1}§a 的建地 §6#{0}§a 已被驳回！"
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "§a尚未提交的建地 §6#{0}§a！ "
     undid-review: "§a尚未审核的建地 §6#{0}§a by §6{1}§a！ "
     reviewed-plot: "§a你的建地 §6#{0}§a 已被审核！ "
@@ -231,23 +237,23 @@ message:
     removed-plot-member: "§a从建地 §6#{1}§a 移除 §6{0}§a！ "
     left-plot: "§a剩余建地 §6#{0}§a！ "
     plot-will-get-abandoned-warning: "§c§l警告： §c此建地将自动废弃！ "
-    plot-will-be-rejected: "Plot will be rejected!"
-    plot-will-be-accepted: "Plot will be accepted"
-    plots-reviewed-singular: "{0} plot has been reviewed!"
-    plots-reviewed-plural: "{0} plots have been reviewed!"
+    plot-will-be-rejected: "绘图将被拒绝！"
+    plot-will-be-accepted: "绘图将被接受"
+    plots-reviewed-singular: "{0} 绘图已被审核！"
+    plots-reviewed-plural: "{0} 地块已被审核！"
     saving-plot: "§a储存建地..."
     creating-plot: "§a创建新建地..."
     created-new-plot: "§a创建新建地§a 为 §6{0}§a！ "
-    chat-enter-player: 'Please enter the name of the player in the chat.'
-    chat-enter-feedback: "Please enter a feedback for the player in the chat."
-    chat-input-expires-after: "Chat input expires after {0} minutes."
-    beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
-    beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
-    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
-    player-invite-to-sent: '{0} has invited you to help building on his plot.'
-    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
-    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
-    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
+    chat-enter-player: '请输入聊天中玩家的名称。'
+    chat-enter-feedback: "请在聊天中输入对玩家的反馈。"
+    chat-input-expires-after: "聊天输入在 {0} 分钟后过期"
+    beginner-tutorial-required: '完成本教程以参与该项目。'
+    beginner-tutorial-completed: '你准备建造自己的地皮了吗？现在这是你转过来的！'
+    player-invite-sent: '邀请已发送至 {0} 以加入您的地皮。'
+    player-invite-to-sent: '{0} 邀请您帮助在他的地皮上建成。'
+    player-invite-accepted: '邀请到 {0}绘图已被接受。'
+    player-invite-to-accepted: '{0} 已接受您的邀请并已添加到您的地皮中。'
+    player-invite-rejected: '{0}绘图的邀请已被拒绝。'
   error:
     plot-does-not-exist: "此建地不存在！ "
     plot-either-unclaimed-or-unreviewed: "此建地无人认领或尚未审核！ "
@@ -260,8 +266,8 @@ message:
     cannot-undo-review: "你无法撤回你自己未审核过的审核！ "
     cannot-send-feedback: "你无法发送你自己未审核过的回馈！ "
     cannot-review-own-plot: "你无法审核你所有的建地！ "
-    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
-    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
+    cannot-modify-legacy-plot: "旧地块不能被修改！"
+    cannot-load-legacy-plot: "无法加载旧版图！"
     player-has-no-permissions: "你没有权限做这个！ "
     player-has-no-invitations: "你没有受到邀请！ "
     player-is-not-allowed: "你不被允许做这个！ "
@@ -269,10 +275,10 @@ message:
     player-is-plot-member: "此玩家已经是此建地的成员！ "
     player-is-not-online: "此玩家不在线上！ "
     player-not-found: "无法找到该玩家！ "
-    player-already-invited: '{0} has already been invited to a plot.'
-    player-invite-expired: 'The invitation from {0} has expired.'
-    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
-    player-invite-to-rejected: '{0} has rejected your invitation.'
+    player-already-invited: '{0} 已被邀请到一个绘图。'
+    player-invite-expired: '来自 {0} 的邀请已过期。'
+    player-invite-to-expired: '您发送到 {0} 的邀请已过期。'
+    player-invite-to-rejected: '{0} 拒绝了您的邀请。'
     player-needs-to-be-on-plot: "你需要在一个建地上才能使用它！ "
     player-needs-higher-score: "你需要更高的积分来才能在这个难度度建设。"
     player-missing-tutorial: "玩家必須先完成教學才能加入劇情！"
@@ -280,170 +286,169 @@ message:
     no-plots-left: "此城市计画区没有剩余更多建地了。请选择其他计画区。"
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
-    chat-input-expired: "The chat input has expired."
-    tutorial-disabled: 'Tutorials are disabled on this server.'
-    tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-    review-not-found: "Review could not be found!"
+    chat-input-expired: "聊天输入已过期。"
+    tutorial-disabled: '教程在此服务器上被禁用。'
+    tutorial-already-running: "你已经在运行一个教程！在开始一个新教程之前完成它。"
+    review-not-found: "无法找到评论！"
 leaderboards:
   pages:
-    DAILY: "Daily"
-    WEEKLY: "Weekly"
-    MONTHLY: "Monthly"
-    YEARLY: "Yearly"
-    LIFETIME: "Lifetime"
-  actionbar-position: "Position #{0}"
-  actionbar-percentage: "Top {0}%"
+    DAILY: "每天"
+    WEEKLY: "每周的"
+    MONTHLY: "每月的"
+    YEARLY: "每年一次"
+    LIFETIME: "寿命"
+  actionbar-position: "位置 #{0}"
+  actionbar-percentage: "前 {0}%"
   not-on-leaderboard: "Not on leaderboard"
 tutorials:
-  stage: 'Stage'
-  new-stage-unlocked: 'NEW STAGE UNLOCKED'
-  tutorial-completed: 'TUTORIAL COMPLETED'
+  stage: '阶段'
+  new-stage-unlocked: '新状态未锁定'
+  tutorial-completed: '已完成'
   beginner:
     stage-1:
-      stage-1-title: 'Understanding the BuildTheEarth Project'
+      stage-1-title: '了解建筑TheEarth 项目'
       stage-1-messages:
-        - 'Hello {0}! Nice to meet you, my name is {1}. You´ve just stepped into the exciting world of the BuildTheEarth project!'
-        - 'Our mission is to recreate the entire planet Earth in Minecraft at a 1:1 scale. Yes, you heard right, at a 1:1 scale!'
-        - 'However, we at Alps BTE are only responsible to recreate the beautiful alpine countries of Austria, Switzerland and Liechtenstein.'
-        - 'Are you ready to learn how to build for BTE? I will guide you through the basics to participate in the project. Let´s continue!'
+        - '你好 {0}！很好地会见你，我的名字是 {1}。你刚刚进入建筑TheEarth 项目的激动人心的世界！'
+        - '我们的任务是在1:1比例尺的Minecraft中重新创建整个星球。是的，你听到了正确的声音，1:1比例尺！'
+        - '然而，我们阿尔卑斯山脉半岛只能负责重建美丽的阿尔卑斯山脉国家奥地利、瑞士和列支敦士登。'
+        - '您是否准备学习如何构建BTE？我将通过基础知识引导您参与这个项目。让您继续！'
       stage-1-tasks:
-        - 'Talk to {0} at the construction site.'
+        - '在建筑工地与 {0} 交谈。'
     stage-2:
-      stage-2-title: 'References'
+      stage-2-title: '参考'
       stage-2-messages:
-        - 'Welcome on your little island. Here we will construct our first building for the Build The Earth project!'
-        - 'Before we begin building, we need to know how the real-life building looks like. For that we use tools like {0} and {1}.'
-        - 'We use {2} to copy coordinates, so we can teleport to a specific point. In addition we can access {3} to have a closer look at the building.'
+        - '欢迎来到你的小岛上。在这里，我们将为建造地球项目建造我们的第一座建筑物！'
+        - '在我们开始建设之前，我们需要知道实际生活中的建筑是如何的。为此，我们使用了 {0} 和 {1}等工具。'
+        - '我们使用 {2} 来复制坐标，所以我们可以传送到某个特定点。 此外，我们可以进入 {3} 更仔细地看看大楼。'
         - '{4}'
-        - 'We use {5} to measure the height of the building. This is important to know, so the building has the correct height.'
+        - '我们使用 {5} 来测量建筑物的高度。这很重要，所以建筑物的高度是正确的。'
         - '{6}'
-        - 'Use the command {7} if you need the links later.'
+        - '如果您稍后需要链接，请使用命令 {7}。'
       stage-2-tasks:
     stage-3:
-      stage-3-title: 'Teleporting'
+      stage-3-title: '传送中'
       stage-3-messages:
-        - 'The building outlines are generated by default, but since they are mostly not accurate, we have to correct them. To correct the outlines we firstly need to teleport to the edges of the building.'
-        - 'Use the command {0} to teleport to the location in-game. {1} on one of the edges of the building to copy the coordinates.'
+        - '建筑轮廓默认情况下生成，但由于它们大多不准确，我们必须加以纠正。 为了纠正轮廓，我们首先需要传送到大楼的边缘。'
+        - '使用命令 {0} 传送到游戏中的位置。在建筑物边缘上的 {1} 复制坐标。'
         - '{2}'
-        - 'To continue teleport to the marked points. Try again!'
+        - '继续传送到标记点。再试一次！'
         - 'Switch to §6Satellite§f view in Google Maps to show the building in 3D.%newline%%newline%Click on §6Layers§f at the bottom left of the map. If no 3D buildings appear, enable the §6Globe View§f under "More".'
       stage-3-tasks:
-        - 'Teleport to all {0} edges of the building by using {1}.'
+        - '使用 {1} 传送到建筑物所有的 {0} 边缘。'
     stage-4:
-      stage-4-title: 'WorldEdit'
+      stage-4-title: '世界编辑'
       stage-4-messages:
-        - 'Before we continue with the outlines, we need to know an important tool called {0}. WorldEdit allows us to build faster and more efficiently.'
-        - 'In order to use WorldEdit, you need to get a <gold>wooden axe</gold>.'
-        - 'Now that you have your wooden axe, you can {1} and {2} on blocks to make your selection.'
+        - '在我们继续提纲之前，我们需要知道一个叫做 {0}的重要工具。世界编辑使我们能够更快和更有效地建立起来。'
+        - '要使用 WorldEdit，您需要得到一个 <gold>木斧</gold>。'
+        - '现在你有了你的木斧，你可以在方块上 {1} 和 {2} 进行选择。'
       stage-4-tasks:
-        - 'Use the command {0} to get your wooden axe.'
+        - '使用命令 {0} 获取你的木轴。'
     stage-5:
-      stage-5-title: 'Draw the Outlines'
+      stage-5-title: '绘制轮廓。'
       stage-5-messages:
-        - 'Now that we know about WorldEdit, we can draw the outlines of the building.'
-        - 'To draw the outlines, we use the command {0}.'
-        - '{1} to select the first point and {2} to select the second point.'
-        - 'To continue connect the points using {0}. Try again!'
+        - '既然我们知道WorldEdit，我们就可以画出大楼的轮廓。'
+        - '要绘制大纲，我们使用命令 {0}。'
+        - '{1} 选择第一点， {2} 选择第二点。'
+        - '要继续使用 {0}连接点。再试一次！'
       stage-5-tasks:
-        - 'Connect the points by using {0}.'
+        - '使用 {0} 连接点。'
     stage-6:
-      stage-6-title: 'Building Heights'
+      stage-6-title: '建筑高度'
       stage-6-messages:
         - 'Now that we have the building outlines, we need to <gold>measure</gold> the height of the building.'
-        - 'Calculate the height of the <gold>facade</gold> by subtracting the height of the <gold>ground</gold> from the height of the <gold>roof</gold>.'
-        - 'Enter the height (in metres) of the building facade in the chat to continue.'
+        - '计算 <gold>面的</gold> 面的高度，减去 <gold>地面</gold> <gold>顶</gold> 的高度。'
+        - '在聊天中输入建筑面的高度(以米为单位)以继续。'
         - '{0}'
-        - 'Well done! The height of the building is {1} blocks.'
-        - 'You´ve almost made it. The height of the building is {1} blocks.'
-        - 'You´ve almost made it. Try again!'
+        - '做得好！建筑物的高度是 {1} 块。'
+        - '你几乎制造了它。建筑物的高度是 {1} 块。'
+        - '你几乎制造了它。再试一次！'
         - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
       stage-6-tasks:
-        - 'Calculate the height of the building.'
+        - '计算建筑物的高度'
     stage-7:
-      stage-7-title: 'Building Shells'
+      stage-7-title: '构建Shells'
       stage-7-messages:
-        - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
-        - 'Teleport to at least §6one point§f of the roof ridge to §6connect§f the point(s) with the facade.'
-        - 'Use §6different types§f of blocks and colours for the shells to make it easier to §6separate§f the building into sections.'
-        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
-        - 'Use the WorldEdit command §6{0}§f to raise the walls quickly and easily.'
-        - 'Fill the roof by hand or use the WorldEdit command §6{1}§f. Alternatively use the command §6{2}§f to switch the selection for larger and more complex roofs.'
-        - 'Always check the §6height§f of the windows and doors so that it §6matches§f with the facade.'
+        - '现在我们终于可以在建筑物上开始！第一步是炮弹，我们现在可以从轮廓和建筑高度开始。'
+        - '传送到屋顶海脊的至少 §61点§f 到§6连接§f 与脸部的点'
+        - '使用 §6不同类型的方块和颜色来处理炮弹, 使它更容易用§6分隔§f 将建筑物分成章节.'
+        - '下一步，我们可以提高墙壁并盖屋顶。现在是标记窗户和门的时候了。'
+        - '使用 WorldEdit §6{0}§f 快速和轻松地提高墙壁。'
+        - '用手填充屋顶或使用WorldEd命令§6{1}§f. 或者，使用命令 §6{2}§f 切换选区以获取更大和更复杂的屋顶。'
+        - '总是检查窗户和门的 §6身高§f, 使它能够和脸部匹配§f。'
       stage-7-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - '阅读绘图上的所有提示并标记为已读。'
     stage-8:
-      stage-8-title: 'Windows'
+      stage-8-title: '窗口'
       stage-8-messages:
-        - 'The building shell is done! Let´s continue with the windows and doors.'
-        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
-        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
-        - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
-        - 'Use the same blocks as for the windows on the right. Try again!'
-        - 'Thank you for your help! Now we can continue with the texturing.'
+        - '建筑外壳已完成！让我们继续窗户和门。'
+        - '哦……看起来有两个窗口缺失。你能帮我放置它们吗？它们看起来与右侧一样。'
+        - 'Don Abud Thirdh 忘了§6darken§f §f§f 和 §6门§f, 所以你可以通过它们看到你。我们不会再构建内地!'
+        - '使用 §6banners§f, §6trapdoors§f 或 §6地毯§f等多种方法来构建BTE的窗口。'
+        - '使用与右侧窗口相同的方块。再试一次！'
+        - '感谢您的帮助！现在我们可以继续纹理操作。'
       stage-8-tasks:
-        - 'Place the missing window details.'
+        - '放置缺少的窗口详细信息。'
     stage-9:
-      stage-9-title: 'Texturing'
+      stage-9-title: '纹理'
       stage-9-messages:
-        - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
-        - 'Use §6Google Street View§f or §6images§f to make the right block choice, as aerial images are sometimes not very accurate.'
-        - 'Use the WorldEdit command §6{0}§f to simply replace the shell with your pattern.'
-        - 'Try to use §6block mixes§f and §6gradients§f for the walls and roof so that the building looks more realistic and stand out.'
+        - '文本是建筑过程的一个组成部分，必须使用正确的模块和颜色，使建筑物看起来现实。'
+        - '使用 §6Google Street View§f 或 §6图像§f 来做正确的方块选择，因为空中图像有时不十分准确。'
+        - '使用 WorldEdit §6{0}§f 简单地用您的图案替换shell。'
+        - '尝试使用 §6块混合物§f 和 §6梯度§f 作为墙壁和屋顶，以便建筑看起来更加现实，更加突出。'
       stage-9-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - '阅读绘图上的所有提示并标记为已读。'
     stage-10:
-      stage-10-title: 'Detailing & Further Steps'
+      stage-10-title: '详细信息和进一步步骤'
       stage-10-messages:
-        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
-        - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
-        - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
-        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
-        - 'Click here to learn more about the project.'
-        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
-        - 'If you want to explore the current progress of the map, check out the <gold>Terra</gold> server!'
-        - 'Happy building! ☺'
+        - '详细说明是最重要的进程之一，因为它使建设具有独特和独特性。'
+        - '添加 §6自定义横幅§f 和 §6自定义头§f 到你的构建中。使用命令 §6{0}§f 获得各种自定义头部。'
+        - '§6装饰§f 你的建筑物有许多方法。总是注意脸部和屋顶上的详细信息，例如§6chimneys§f, §6winds§f 和 §6gutters§f。'
+        - '感谢您的参与。您现在准备为BuildTheEarth 项目创建自己的建筑物！'
+        - '点击这里了解更多关于该项目的信息。'
+        - '到 <gold>以生成器</gold>的身份，在我们的服务器上创建并提交 <gold></gold> 的绘图。 您可以在我们的网站或 {1} 上找到更多有关应用程序进程的信息。'
+        - '如果你想要探索当前地图的进度, 请查看 <gold>Terra</gold> 服务器!'
+        - '建造愉快！ :smiling_face：'
       stage-10-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - '阅读绘图上的所有提示并标记为已读。'
 # -----------------------------------------------------
 # | Database
 # -----------------------------------------------------
 database:
   city-project:
     example-city:
-      name: 'Example City'
-      description: 'Some description'
+      name: '示例城市'
+      description: '一些描述'
   country:
     AT:
-      name: 'Austria'
+      name: '奥地利'
     CH:
-      name: 'Switzerland'
+      name: '瑞士'
     LI:
       name: 'Liechtenstein'
   difficulty:
     easy:
-      name: 'Easy'
+      name: '简单易用'
     medium:
-      name: 'Medium'
+      name: '中'
     hard:
-      name: 'Hard'
+      name: '难度:'
   status:
     unclaimed:
-      name: 'Unclaimed'
+      name: '未认领的'
     unfinished:
-      name: 'Unfinished'
+      name: '未完成'
     unreviewed:
-      name: 'Unreviewed'
+      name: '未审核'
     completed:
-      name: 'Completed'
+      name: '已完成'
   toggle-criteria:
-    built_on_outlines: 'Built on outlines'
-    correct_height: 'Correct building height'
-    correct_facade_colour: 'Correct building colour'
-    correct_roof_colour: 'Correct roof colour'
-    correct_roof_shape: 'Correct roof shape'
-    correct_amount_windows_doors: 'Correct amount of windows and doors'
-    correct_window_type: 'Correct window types'
-    windows_blacked_out: 'All windows blacked out'
-
+    built_on_outlines: '建立在轮廓上'
+    correct_height: '正确建筑高度'
+    correct_facade_colour: '校正建筑颜色'
+    correct_roof_colour: '校正屋顶颜色'
+    correct_roof_shape: '校正屋顶形状'
+    correct_amount_windows_doors: '正确的窗口和门数'
+    correct_window_type: '更正窗口类型'
+    windows_blacked_out: '所有窗口被炸出'
 # NOTE: Do not change
-config-version: 2.5
+config-version: 2.6

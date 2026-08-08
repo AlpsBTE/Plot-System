@@ -1,20 +1,20 @@
-#-----------------------------------------------------
-#|            Plot System - by Alps BTE
-#-----------------------------------------------------
-#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
 # | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
 # | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
 # | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
-#|
-#| [Formatting] Use %newline% for a newline
-#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-#-----------------------------------------------------
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# -----------------------------------------------------
 lang:
   name: "Magyar (HU)"
   head-id: "4284"
-#-----------------------------------------------------
-#| Plot
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
 plot:
   plot-name: "Telek"
   id: "Azonosító"
@@ -31,9 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Üres Tag Hely"
     shared-by-members: "(megosztva {0} tag által)"
-#-----------------------------------------------------
-#| City Projects
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
 city-project:
   cities: "Városok"
   open: "Elérhető Telkek"
@@ -42,14 +42,14 @@ city-project:
   plots-available: 'Elérhető Telkek'
   no-plots-available: "Nincs Elérhető Telek"
   for-your-difficulty: "({0} a saját nehézségi szintedhez)"
-#-----------------------------------------------------
-#| Countries
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
 country:
   countries: "Országok"
-#-----------------------------------------------------
-#| Continents
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
 continent:
   europe: "Európa"
   asia: "Ázsia"
@@ -57,15 +57,15 @@ continent:
   oceania: "Óceánia"
   south-america: "Dél-Amerika"
   north-america: "Észak-Amerika"
-#-----------------------------------------------------
-#| Difficulty
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
 difficulty:
   automatic: "Automatikus"
   score-multiplier: "Pontszám-szorzó"
-#-----------------------------------------------------
-#| Menu Titles
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
 menu-title:
   close: 'Bezárás'
   back: 'Vissza'
@@ -76,12 +76,13 @@ menu-title:
   loading: 'Betöltés...'
   plot-difficulty: 'Telek Nehézségi Szint'
   slot: 'Telek Hely'
-  builder-utilities: 'Builder Utilities'
+  builder-utilities: 'Építész Eszközök'
   show-plots: 'Telkek Megjelenítése'
   settings: 'Beállítások'
   submit: 'Beküldés'
   teleport: 'Teleportálás'
   abandon: 'Feladás'
+  abandon-confirm: 'Telek #{0} feladása?'
   undo-submit: 'Beküldés Visszavonása'
   manage-members: 'Tagok Kezelése'
   feedback: 'Visszajelzés | Értékelés #{0}'
@@ -112,9 +113,9 @@ menu-title:
   tutorial-end: 'Útmutató Befejezése'
   tutorial-beginner: 'Kezdés'
   companion-random: 'Véletlenszerű Kiválasztás'
-#-----------------------------------------------------
-#| Menu Descriptions
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
 menu-description:
   error-desc: 'Hiba történt...'
   plot-difficulty-desc: 'Kattints a Váltáshoz...'
@@ -146,9 +147,9 @@ menu-description:
   tutorial-end-desc: 'A haladásod el lesz mentve.'
   tutorial-beginner-desc: 'Tanuld meg a BuildTheEarth projektben való építés alapjait.'
   companion-random-desc: 'Kattints ide a random választáshoz.'
-#-----------------------------------------------------
-#| Review
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
 review:
   review-plot: "Telek Elbírálása"
   manage-plot: "Telek Kezelése"
@@ -164,15 +165,15 @@ review:
   block-palette-points: "Kocka paletta pontozása"
   toggle-points: "Pontok megjelenítése"
   total-points: "Összesített pontszám"
-  abandoned-in-days: "§6Abandoned in §6{0} days"
+  abandoned-in-days: "§6Fel lesz adva §6{0} nap múlva"
   criteria:
     accuracy: "Pontosság"
     accuracy-desc: "Mennyire pontos az épület?%newline%%newline%- Olyan mint a valóságban%newline%- Helyes körvonalak%newline%- Helyes magasság%newline%- Készen van"
     block-palette: "Kocka paletta"
     block-palette-desc: "Hány különböző kockát használtak és mennyire voltak kreatívak?%newline%%newline%- Kockák színének/textúrájának választása%newline%- Random kockák"
-#-----------------------------------------------------
-#| Notes
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
 note:
   tip: "Tipp"
   under-construction: 'Építés Alatt'
@@ -201,6 +202,7 @@ note:
     click-to-remove-plot-member: "Kattints ide egy tag eltávolításához a telekről..."
     click-to-open-link: "Kattints ide a {0} link megnyitásához..."
     click-to-open-link-with-shortlink: "§6Kattints Ide §7hogy megnyisd a §a{0}§7 linket vagy használd ezt a linket: §a{1}"
+    click-to-copy-to-clipboard: "Másolás a vágólapra"
     click-to-show-feedback: "§6Kattints Ide §ahogy megnézd a telkedre érkezett visszajelzést..."
     click-to-show-open-reviews: "§6Kattints Ide §ahogy lásd az értékelésre váró telkeket..."
     click-to-show-plots: "§6Kattints Ide §ahogy megtekintsd a telkeidet..."
@@ -208,9 +210,9 @@ note:
     tutorial-show-stages: 'Fázisok Megjelenítése'
     click-to-open-plots-menu: 'Kattints ide a telek menü megnyitásához...'
     click-to-toggle: "Kattints hogy bekapcsold a..."
-#-----------------------------------------------------
-#| Messages
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§aTeleportálás a(z) §6#{0}§a -as/es telekhez..."
@@ -219,6 +221,9 @@ message:
     finished-plot: "§aA(z) §6#{0}§a -as/es telek amit §6{1}§a épített, elkészült!"
     plot-marked-as-reviewed: "§aA(z) §6#{0}§a -as telek, amit §6{1}§a épített, elbíráltnak lett megjelölve!"
     plot-rejected: "§aA(z) §6#{0}§a -as telek, amit §6{1}§a épített, elutasítottnak lett megjelölve!"
+    plot-previously-rejected: "Ezt a telek korábban el lett utasítva ({0})."
+    plot-previously-rejected-feedback: "Elutasítás Indoklása:"
+    plot-previously-rejected-reviewer: "Elutasította:"
     undid-submission: "§aTelek §6#{0}§a beküldése vissza lett vonva!"
     undid-review: "§aA(z) §6{1}§a által épített, §6#{0}§a -as/es telek értékelése visszavonva!"
     reviewed-plot: "§aA §6#{0}§a -as/es telked el lett bírálva!"
@@ -405,9 +410,9 @@ tutorials:
         - 'Jó építést! ☺'
       stage-10-tasks:
         - 'Olvass el minden tippet a telken, hogy olvasottként legyenek megjelölve.'
-#-----------------------------------------------------
-#| Database
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
 database:
   city-project:
     example-city:
@@ -445,6 +450,5 @@ database:
     correct_amount_windows_doors: 'Helyes számú ablak és ajtó'
     correct_window_type: 'Helyes ablak fajta'
     windows_blacked_out: 'Minden ablak mögé nem lehet belátni'
-
-#NOTE: Do not change
-config-version: 1.0
+# NOTE: Do not change
+config-version: 1.1

@@ -18,19 +18,23 @@ public class LangUtil extends LanguageUtil {
         Plugin plugin = PlotSystem.getPlugin();
         LangLibAPI.register(plugin, new LanguageFile[]{
                 new LanguageFile(plugin, 2.5, Language.en_GB),
-                new LanguageFile(plugin, 2.5, Language.de_DE, "de_AT", "de_CH"),
+                new LanguageFile(plugin, 2.6, Language.de_DE, "de_AT", "de_CH"),
                 new LanguageFile(plugin, 2.5, Language.fr_FR, "fr_CA"),
-                new LanguageFile(plugin, 2.5, Language.pt_PT, "pt_BR"),
+                new LanguageFile(plugin, 2.6, Language.pt_PT, "pt_BR"),
                 new LanguageFile(plugin, 2.5, Language.ko_KR),
-                new LanguageFile(plugin, 2.5, Language.ru_RU, "ba_RU", "tt_RU"),
-                new LanguageFile(plugin, 2.5, Language.zh_CN),
-                new LanguageFile(plugin, 2.5, Language.zh_TW, "zh_HK"),
-                new LanguageFile(plugin, 1.1, Language.he_IL),
-                new LanguageFile(plugin, 1.0, Language.es_ES),
-                new LanguageFile(plugin, 1.0, Language.hu_HU),
-                new LanguageFile(plugin, 1.0, Language.nl_NL),
-                new LanguageFile(plugin, 1.0, Language.ro_RO),
+                new LanguageFile(plugin, 2.6, Language.ru_RU, "ba_RU", "tt_RU"),
+                new LanguageFile(plugin, 2.6, Language.zh_CN),
+                new LanguageFile(plugin, 2.6, Language.zh_TW, "zh_HK"),
+                new LanguageFile(plugin, 1.2, Language.he_IL),
+                new LanguageFile(plugin, 1.1, Language.es_ES),
+                new LanguageFile(plugin, 1.1, Language.hu_HU),
+                new LanguageFile(plugin, 1.1, Language.nl_NL),
+                new LanguageFile(plugin, 1.1, Language.ro_RO),
                 new LanguageFile(plugin, 1.0, Language.da_DK),
+                new LanguageFile(plugin, 1.0, Language.it_IT),
+                new LanguageFile(plugin, 1.0, Language.cs_CZ),
+                new LanguageFile(plugin, 1.0, Language.pl_PL),
+                new LanguageFile(plugin, 1.0, Language.sk_SK),
         });
         langUtilInstance = new LangUtil();
     }

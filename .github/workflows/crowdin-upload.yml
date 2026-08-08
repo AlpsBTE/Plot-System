@@ -1,0 +1,30 @@
+name: Crowdin translation upload
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/main/resources/lang/en_GB.yml'
+  workflow_dispatch:
+
+jobs:
+  crowdin-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Crowdin push
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          upload_translations: true
+          download_translations: false
+          upload_sources_args: '--dest=Plot-System.yml'
+          upload_translations_args: "--dest=Plot-System.yml"
+          source: "src/main/resources/lang/en_GB.yml"
+          translation: "src/main/resources/lang/%locale_with_underscore%.%file_extension%"
+          auto_approve_imported: 'true'
+        env:
+          CROWDIN_PROJECT_ID: ${{ vars.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}

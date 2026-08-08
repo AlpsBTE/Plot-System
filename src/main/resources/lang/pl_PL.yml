@@ -10,82 +10,82 @@
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # -----------------------------------------------------
 lang:
-  name: "English (GB)"
-  head-id: "27577"
+  name: "Polski (PL)"
+  head-id: "65646"
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
 plot:
-  plot-name: "Plot"
+  plot-name: "Działka"
   id: "ID"
-  owner: "Plot Owner"
-  members: "Plot Members"
-  member: "Plot Member"
-  city: "City"
-  country: "Country"
-  difficulty: "Difficulty"
+  owner: "Właściciel Działki"
+  members: "Członkowie Działki"
+  member: "Członek Działki"
+  city: "Miasto"
+  country: "Państwo"
+  difficulty: "Poziom trudności"
   status: "Status"
-  score: "Score"
-  total-score: "Total Score"
-  completed-plots: "Completed Plots"
+  score: "Wynik"
+  total-score: "Całkowity Wynik"
+  completed-plots: "Ukończone Działki"
   group-system:
-    empty-member-slot: "Empty Member Slot"
-    shared-by-members: "(shared by {0} members)"
+    empty-member-slot: "Pusty miejsce członka"
+    shared-by-members: "(współdzielone przez {0} graczy)"
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
 city-project:
-  cities: "Cities"
-  open: "Plots Open"
-  in-progress: "Plots In Progress"
-  completed: "Plots Completed"
-  plots-available: 'Plots Available'
-  no-plots-available: "No Plots Available"
-  for-your-difficulty: "({0} for your difficulty)"
+  cities: "Miasta"
+  open: "Otwarte działki"
+  in-progress: "Działki w trakcie budowy"
+  completed: "Działki ukończone"
+  plots-available: 'Dostępne działki'
+  no-plots-available: "Brak dostępnych działek"
+  for-your-difficulty: "({0} dla twojego poziomu trudności)"
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
-  countries: "Countries"
+  countries: "Państwa"
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
 continent:
-  europe: "Europe"
-  asia: "Asia"
-  africa: "Africa"
+  europe: "Europa"
+  asia: "Azja"
+  africa: "Afryka"
   oceania: "Oceania"
-  south-america: "South America"
-  north-america: "North America"
+  south-america: "Ameryka Południowa"
+  north-america: "Ameryka Północna"
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
-  automatic: "Automatic"
-  score-multiplier: "Score Multiplier"
+  automatic: "Automatyczny"
+  score-multiplier: "Mnożnik wyniku"
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: 'Close'
-  back: 'Back'
-  continue: 'Continue'
-  next-page: 'Next Page'
-  previous-page: 'Previous Page'
-  error: 'Error'
-  loading: 'Loading...'
-  plot-difficulty: 'Plot Difficulty'
-  slot: 'Slot'
-  builder-utilities: 'Builder Utilities'
-  show-plots: 'Show Plots'
-  settings: 'Settings'
-  submit: 'Submit'
-  teleport: 'Teleport'
-  abandon: 'Abandon'
+  close: 'Zamknij'
+  back: 'Cofnij'
+  continue: 'Kontynuuj'
+  next-page: 'Następna strona'
+  previous-page: 'Poprzednia strona'
+  error: 'Błąd'
+  loading: 'Ładowanie...'
+  plot-difficulty: 'Poziom trudności działki'
+  slot: 'Miejsce'
+  builder-utilities: 'Narzędzia budowlane'
+  show-plots: 'Pokaż Działki'
+  settings: 'Ustawienia'
+  submit: 'Potwierdź'
+  teleport: 'Teleportuj'
+  abandon: 'Porzuć'
   abandon-confirm: 'Abandon plot #{0}?'
-  undo-submit: 'Undo Submit'
-  manage-members: 'Manage Members'
-  feedback: 'Feedback | Review #{0}'
+  undo-submit: 'Cofnij Zatwierdzenie'
+  manage-members: 'Zarządzaj członkami'
+  feedback: 'Odzew | Przegląd #{0}'
   custom-heads: 'Custom Heads'
   banner-maker: 'Banner Maker'
   special-tools: 'Special Blocks & Items'
@@ -140,66 +140,66 @@ menu-description:
   select-plot-type-desc: 'Choose your plot type'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
-  filter-desc: "Show All"
-  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
-  tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
-  companion-random-desc: 'Click to select randomly.'
+  select-city-inspiration-mode-desc: "Buduj na latającej wyspie z otaczającą infrastrukturą i innymi działkami graczami wykrytymi w pobliżu twojej działki.%newline%%newline%+ Otaczająca Infrastruktura%newline%+ Otaczające działki"
+  filter-desc: "Pokaż Wszystkie"
+  information-desc: "Działka może otrzymać maksymalnie 20 punktów. Jeśli działka otrzyma mniej niż 8 punktów lub któraś kategoria otrzyma 0 punktów, działka zostanie odrzucona, a budowniczy otrzyma działkę do poprawy.  Jeśli działka otrzyma 0 punktów, zostanie porzucona."
+  tutorials-desc: 'Naucz się podstaw o projekcie BuildTheEarth i popraw swoje umiejętności z poradnikami na różne tematy.'
+  tutorial-end-desc: 'Twój postęp zostanie zapisany.'
+  tutorial-beginner-desc: 'Naucz się podstaw jak budować w projekcie BuildTheEarth.'
+  companion-random-desc: 'Kliknij, aby wybrać losowo.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
 review:
-  review-plot: "Review Plot"
-  manage-plot: "Manage Plot"
-  manage-and-review-plots: "Manage & Review Plots"
-  accepted: "Accepted"
-  rejected: "Rejected"
-  abandoned: "Abandoned"
-  feedback: "Feedback"
-  reviewer: "Reviewer"
-  player-language: "Player Language"
-  no-feedback: "No feedback"
-  accuracy-points: "Accuracy points"
-  block-palette-points: "Block palette points"
-  toggle-points: "Toggle points"
-  total-points: "Total points"
-  abandoned-in-days: "§6Abandoned in §6{0} days"
+  review-plot: "Oceń Działkę"
+  manage-plot: "Zarządzaj Działką"
+  manage-and-review-plots: "Zarządzaj & Oceń Działki"
+  accepted: "Zaakceptowana"
+  rejected: "Odrzucona"
+  abandoned: "Opuszczona"
+  feedback: "Odzew"
+  reviewer: "Oceniający"
+  player-language: "Język Gracza"
+  no-feedback: "Brak odpowiedzi"
+  accuracy-points: "Punkty dokładności"
+  block-palette-points: "Punkty palety kolorów"
+  toggle-points: "Pokaż punkty"
+  total-points: "Całkowita ilość punktów"
+  abandoned-in-days: "§7Porzucenie za §6{0} dni"
   criteria:
-    accuracy: "Accuracy"
-    accuracy-desc: "How accurate is the building?%newline%%newline%- Looks like in RL%newline%- Correct outlines%newline%- Correct height%newline%- Is completed"
-    block-palette: "Block Palette"
-    block-palette-desc: "How many different blocks are used and how creative are they?%newline%%newline%- Choice of blocks colours/textures%newline%- Random blocks"
+    accuracy: "Dokładność"
+    accuracy-desc: "Jak dokładny jest budynek?%newline%%newline%- Wygląda jak w rzeczywistości%newline%- Poprawne obrysy%newline%- Poprawna wysokość%newline%- Jest skończony"
+    block-palette: "Paleta kolorów"
+    block-palette-desc: "Jak wiele różnych bloków zostało użytych i jak kreatywni są?%newline%%newline%- Wybór kolorów bloków/tekstur%newline%- Losowe bloki"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
 note:
-  tip: "Tip"
-  under-construction: 'Under Construction'
-  wont-be-able-continue-building: "You wont be able to continue building on this plot!"
-  score-will-be-split: "Score will be split between all members when reviewed!"
-  player-has-to-be-online: "The player has to be online!"
-  optional: "Optional"
-  required: "Required"
-  criteria-fulfilled: "Fulfilled"
-  criteria-not-fulfilled: "Not fulfilled"
-  legacy: "LEGACY"
+  tip: "Podpowiedź"
+  under-construction: 'W trakcie budowy'
+  wont-be-able-continue-building: "Nie będziesz mógł dalej budować na tej działce!"
+  score-will-be-split: "Wynik zostanie rozdzielony pomiędzy wszystkich budowniczych, kiedy działka zostanie oceniona!"
+  player-has-to-be-online: "Gracz musi być online!"
+  optional: "Opcjonalnie"
+  required: "Wymagane"
+  criteria-fulfilled: "Spełnione"
+  criteria-not-fulfilled: "Nie spełnione"
+  legacy: "DZIEDZICTWO"
   action:
-    read: 'Read'
-    read-more: 'Read More'
-    mark-as-read: 'Mark as read'
+    read: 'Czytaj'
+    read-more: 'Czytaj więcej'
+    mark-as-read: 'Zaznacz jako przeczytane'
     start: 'Start'
-    continue: "Continue"
-    continue-tutorial: 'Continue Tutorial'
-    create-plot: 'Create Plot'
-    right-click: "Right Click"
-    left-click: "Left Click"
-    accept: 'Accept'
-    reject: 'Reject'
-    click-to-create-plot: 'Click to create new plot...'
-    click-to-proceed: "Click to proceed..."
-    click-to-remove-plot-member: "Click to remove member from plot..."
+    continue: "Kontynuuj"
+    continue-tutorial: 'Kontynuuj Poradnik'
+    create-plot: 'Stwórz działkę'
+    right-click: "Prawy Przycisk Myszy"
+    left-click: "Lewy Przycisk Myszy"
+    accept: 'Akceptuj'
+    reject: 'Odrzuć'
+    click-to-create-plot: 'Kliknij, aby stworzyć nową działkę...'
+    click-to-proceed: "Kliknij, aby przejść dalej..."
+    click-to-remove-plot-member: "Kliknij, aby usunąć gracza z działki..."
     click-to-open-link: "Click here to open the {0} link..."
     click-to-open-link-with-shortlink: "§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}"
     click-to-copy-to-clipboard: "Copy to clipboard"
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 2.5
+config-version: 1.0

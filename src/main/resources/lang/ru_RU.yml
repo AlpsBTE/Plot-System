@@ -1,4 +1,4 @@
-﻿# -----------------------------------------------------
+# -----------------------------------------------------
 # |            Plot System - by Alps BTE
 # -----------------------------------------------------
 # | [Github Repo] https://github.com/AlpsBTE/PlotSystem
@@ -67,46 +67,47 @@ difficulty:
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: "Закрыть"
-  back: "Назад"
+  close: 'Закрыть'
+  back: 'Назад'
   continue: 'Продолжить'
-  next-page: "Следующая Страница"
-  previous-page: "Предыдущая Страница"
-  error: "Ошибка"
-  loading: "Загрузка..."
-  plot-difficulty: "Сложность Участка"
-  slot: "Слот"
-  builder-utilities: "Утилиты для Строителей"
-  show-plots: "Показать Участки"
-  settings: "Настройки"
-  submit: "Отправить"
-  teleport: "Телепорт"
-  abandon: "Покинуть"
-  undo-submit: "Отменить Отправку"
-  manage-members: "Управлять Участниками"
-  feedback: "Обратная связь | Отзыв #{0}"
-  custom-heads: "Кастомные Головы"
-  banner-maker: "Создатель Баннеров"
-  special-tools: "Специальные блоки и предметы"
-  review-point: "Балл"
-  review-points: "Баллов"
-  cancel: "Отменить"
-  add-member-to-plot: "Добавить Участника к Участку"
-  companion: "Компаньонка"
+  next-page: 'Следующая Страница'
+  previous-page: 'Предыдущая Страница'
+  error: 'Ошибка'
+  loading: 'Загрузка...'
+  plot-difficulty: 'Сложность Участка'
+  slot: 'Слот'
+  builder-utilities: 'Утилиты для Строителей'
+  show-plots: 'Показать Участки'
+  settings: 'Настройки'
+  submit: 'Отправить'
+  teleport: 'Телепорт'
+  abandon: 'Покинуть'
+  abandon-confirm: 'Abandon plot #{0}?'
+  undo-submit: 'Отменить Отправку'
+  manage-members: 'Управлять Участниками'
+  feedback: 'Обратная связь | Отзыв #{0}'
+  custom-heads: 'Кастомные Головы'
+  banner-maker: 'Создатель Баннеров'
+  special-tools: 'Специальные блоки и предметы'
+  review-point: 'Балл'
+  review-points: 'Баллов'
+  cancel: 'Отменить'
+  add-member-to-plot: 'Добавить Участника к Участку'
+  companion: 'Меню'
   companion-select-continent: 'Выбрать Континент'
   companion-select-country: 'Выберите Страну'
   companion-select-city: 'Выбор Города'
-  player-plots: "{0} Участков"
-  leave-plot: "Покинуть Участок"
-  review-plots: "Оценить Участки"
-  review-plot: "Оценить Участок #{0}"
-  select-language: "Выберите Язык"
+  player-plots: '{0} Участков'
+  leave-plot: 'Покинуть Участок'
+  review-plots: 'Оценить Участки'
+  review-plot: 'Оценить Участок #{0}'
+  select-language: 'Выберите Язык'
   select-plot-type: 'Выбрать тип Участка'
-  select-focus-mode: "Select Focus Mode"
-  select-local-inspiration-mode: "Select Inspiration Mode"
-  select-city-inspiration-mode: "Select City Inspiration Mode"
-  filter-by-country: "Фильтровать по стране"
-  information: "Информация"
+  select-focus-mode: 'Выберите Режим Фокусировки'
+  select-local-inspiration-mode: 'Выберите Режим Вдохновения'
+  select-city-inspiration-mode: 'Выберите Расширенный Городской Режим'
+  filter-by-country: 'Фильтровать по стране'
+  information: 'Информация'
   tutorials: 'Обучение'
   tutorial-stages: 'Этапы обучения'
   tutorial-end: 'Конец обучения'
@@ -116,35 +117,35 @@ menu-title:
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: "Произошла Ошибка..."
-  plot-difficulty-desc: "Нажмите, чтобы переключить..."
-  slot-desc: "Нажмите на градостроительный проект чтобы создать новый участок"
-  builder-utilities-desc: "Получите доступ к кастомным головам, баннерам и специальным блокам"
-  show-plots-desc: "Показать все ваши участки"
-  settings-desc: "Изменить пользовательские настройки"
-  submit-plot-desc: "Нажмите, чтобы завершить этот участок и отправить его на оценку"
-  teleport-desc: "Нажмите, чтобы телепортироваться к участку"
-  abandon-desc: "Нажмите, чтобы сбросить ваш участок и отдать его кому-нибудь другому"
-  undo-submit-desc: "Нажмите, чтобы отменить вашу заявку на оценку"
-  manage-members-desc: "Нажмите, чтобы открыть меню Участников Участка, где вы можете добавить или удалить других игроков с вашего участка"
-  feedback-desc: "Нажмите, чтобы просмотреть оценку вашего участка"
-  custom-heads-desc: "Нажмите, чтобы открыть меню голов и получить кастомные головы"
-  banner-maker-desc: "Нажмите, чтобы создать и сохранить свои баннеры"
-  special-tools-desc: "Click here to access a variety of inaccessible blocks and items"
-  add-member-to-plot-desc: "Пригласите своих друзей к вашему участку и начните строить вместе"
-  review-points-desc: "Нажмите, чтобы выбрать"
-  submit-review-desc: "Отправить выбранные баллы и отметить участок как оценённый"
-  leave-plot-desc: "Нажмите, чтобы покинуть данный участок"
-  select-language-desc: "Выберите свой язык"
+  error-desc: 'Произошла Ошибка...'
+  plot-difficulty-desc: 'Нажмите, чтобы переключить...'
+  slot-desc: 'Нажмите на градостроительный проект чтобы создать новый участок'
+  builder-utilities-desc: 'Получите доступ к кастомным головам, баннерам и специальным блокам'
+  show-plots-desc: 'Показать все ваши участки'
+  settings-desc: 'Изменить пользовательские настройки'
+  submit-plot-desc: 'Нажмите, чтобы завершить этот участок и отправить его на оценку'
+  teleport-desc: 'Нажмите, чтобы телепортироваться к участку'
+  abandon-desc: 'Нажмите, чтобы сбросить ваш участок и отдать его кому-нибудь другому'
+  undo-submit-desc: 'Нажмите, чтобы отменить вашу заявку на оценку'
+  manage-members-desc: 'Нажмите, чтобы открыть меню Участников Участка, где вы можете добавить или удалить других игроков с вашего участка'
+  feedback-desc: 'Нажмите, чтобы просмотреть оценку вашего участка'
+  custom-heads-desc: 'Нажмите, чтобы открыть меню голов и получить кастомные головы'
+  banner-maker-desc: 'Нажмите, чтобы создать и сохранить свои баннеры'
+  special-tools-desc: 'Click here to access a variety of inaccessible blocks and items'
+  add-member-to-plot-desc: 'Пригласите своих друзей к вашему участку и начните строить вместе'
+  review-points-desc: 'Нажмите, чтобы выбрать'
+  submit-review-desc: 'Отправить выбранные баллы и отметить участок как оценённый'
+  leave-plot-desc: 'Нажмите, чтобы покинуть данный участок'
+  select-language-desc: 'Выберите свой язык'
   select-plot-type-desc: 'Выберите тип вашего Участка'
-  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
-  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
+  select-focus-mode-desc: "Стройте свой участок на парящем острове в пустоте.%newline%%newline%- Нет окружения%newline%- Нет соседних участков"
+  select-local-inspiration-mode-desc: "Стройте на парящем острове с окружающим миром в качестве ориентира.%newline%%newline%+ Окружение%newline%- Нет соседних участков"
+  select-city-inspiration-mode-desc: "Стройте на парящем острове с окружающим миром и участками других игроков, отсканированными рядом с вашим.%newline%%newline%+ Окружение%newline%+ Соседние участки"
   filter-desc: "Показать всё"
-  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
+  information-desc: "Участок может получить максимум 20 баллов. Если участок получает менее 8 баллов или в одной из категорий 0 баллов, он отклоняется, и строитель получает его обратно для доработки. Если участок получает 0 баллов, он сбрасывается."
+  tutorials-desc: 'Изучите основы проекта BuildTheEarth и улучшите свои навыки строительства с помощью уроков на различные темы.'
   tutorial-end-desc: 'Ваш прогресс будет сохранен.'
-  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
+  tutorial-beginner-desc: 'Изучите основы строительства для проекта BuildTheEarth.'
   companion-random-desc: 'Нажмите, чтобы выбрать случайным образом.'
 # -----------------------------------------------------
 # | Review
@@ -154,16 +155,17 @@ review:
   manage-plot: "Управлять участком"
   manage-and-review-plots: "Управление и Оценка Участков"
   accepted: "Одобрено"
-  abandoned: "Abandoned"
   rejected: "Отклонено"
+  abandoned: "Сброшен"
   feedback: "Отзыв"
   reviewer: "Оценщик"
   player-language: "Язык игрока"
   no-feedback: "Нет ответа"
   accuracy-points: "Баллы за точность"
   block-palette-points: "Баллы за цветовую палитру"
-  toggle-points: "Toggle points"
+  toggle-points: "Переключить баллы"
   total-points: "Всего баллов"
+  abandoned-in-days: "§6Заброшен §6{0} дней"
   criteria:
     accuracy: "Точность Воссоздания"
     accuracy-desc: "Насколько точно исполнено здание?%newline%%newline%- Выглядит как в настоящей жизни%newline%- Правильные контуры%newline%- Правильная высота%newline%- Полностью завершен"
@@ -180,9 +182,9 @@ note:
   player-has-to-be-online: "Игрок должен быть в сети!"
   optional: "Необязательно"
   required: "Требуется"
-  criteria-fulfilled: "Fulfilled"
-  criteria-not-fulfilled: "Not fulfilled"
-  legacy: "LEGACY"
+  criteria-fulfilled: "Выполнено"
+  criteria-not-fulfilled: "Не выполнено"
+  legacy: "УСТАРЕВШИЙ"
   action:
     read: 'Читать'
     read-more: 'Читать ещё'
@@ -200,13 +202,14 @@ note:
     click-to-remove-plot-member: "Нажмите, чтобы убрать участника с участка..."
     click-to-open-link: "Нажмите Здесь чтобы открыть {0} ссылку..."
     click-to-open-link-with-shortlink: "§6Нажмите Здесь §7чтобы открыть §a{0}§7 или воспользоваться этой ссылкой§a{1}"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "§6Нажмите, §aчтобы показать фидбэк о вашем участке..."
     click-to-show-open-reviews: "§6Нажмите, §aчтобы показать доступные оценки..."
     click-to-show-plots: "§6Нажмите,чтобы показать ваши участки..."
     click-to-play-with-friends: "§7Хотите играть с друзьями? §6Нажмите здесь..."
-    tutorial-show-stages: 'Show Stages'
-    click-to-open-plots-menu: "Нажмите, чтобы открыть меню участков..."
-    click-to-toggle: "Click to toggle..."
+    tutorial-show-stages: 'Показать этапы'
+    click-to-open-plots-menu: 'Нажмите, чтобы открыть меню участков...'
+    click-to-toggle: "Нажмите, чтобы переключить..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
@@ -218,6 +221,9 @@ message:
     finished-plot: "§aУчасток §6#{0}§a построенный §6{1}§a был завершён!"
     plot-marked-as-reviewed: "§aУчасток §6#{0}§a построенный §6{1}§aбыл помечена как оценённый!!"
     plot-rejected: "§aУчасток §6#{0}§a построенный §6{1}§a был отклонен!"
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "§aОтмена отправки участка §6#{0}§a!"
     undid-review: "§aОтмена оценки участка §6#{0}§a построенным §6{1}§a!"
     reviewed-plot: "§aВаш участок §6#{0}§a был оценён!"
@@ -240,14 +246,14 @@ message:
     created-new-plot: "§aСоздан новый участок§a для §6{0}§a!"
     chat-enter-player: 'Пожалуйста, введите имя игрока в чате.'
     chat-enter-feedback: "Пожалуйста, введите ответ для игрока в чат."
-    chat-input-expires-after: "Chat input expires after {0} minutes."
-    beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
-    beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
-    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
-    player-invite-to-sent: '{0} has invited you to help building on his plot.'
+    chat-input-expires-after: "Время ввода в чат истекает через {0} минут."
+    beginner-tutorial-required: 'Пройдите обучение, чтобы принять участие в проекте.'
+    beginner-tutorial-completed: 'Готовы построить свой собственный участок? Теперь ваша очередь!'
+    player-invite-sent: 'Приглашение присоединиться к вашему участку отправлено игроку {0}.'
+    player-invite-to-sent: '{0} пригласил вас помочь в строительстве на его участке.'
     player-invite-accepted: 'Приглашение на участок {0} было принято.'
     player-invite-to-accepted: '{0} принял ваше приглашение и был добавлен на ваш участок.'
-    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
+    player-invite-rejected: 'Приглашение на участок игрока {0} было отклонено.'
   error:
     plot-does-not-exist: "Этот участок не существует!"
     plot-either-unclaimed-or-unreviewed: "Этот участок не занят либо ещё не был оценён!!"
@@ -260,8 +266,8 @@ message:
     cannot-undo-review: "Вы не можете отменить оценку которую выставляли не вы!"
     cannot-send-feedback: "Вы не можете отправить отзыв к участку который оценивали не вы!"
     cannot-review-own-plot: "Вы не можете оценить свой участок!"
-    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
-    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
+    cannot-modify-legacy-plot: "Устаревшие участки нельзя изменять!"
+    cannot-load-legacy-plot: "Устаревшие участки нельзя загружать!"
     player-has-no-permissions: "У вас нет доступа для выполнения этого действия!"
     player-has-no-invitations: "У вас нет приглашений!"
     player-is-not-allowed: "Вам запрещено выполнение этого действия!"
@@ -269,10 +275,10 @@ message:
     player-is-plot-member: "Этот игрок уже участник этого участка!"
     player-is-not-online: "Этот игрок не в сети!"
     player-not-found: "Не удалось найти этого игрока!"
-    player-already-invited: '{0} has already been invited to a plot.'
-    player-invite-expired: 'The invitation from {0} has expired.'
-    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
-    player-invite-to-rejected: '{0} has rejected your invitation.'
+    player-already-invited: '{0} уже был приглашен на участок.'
+    player-invite-expired: 'Срок действия приглашения от {0} истек.'
+    player-invite-to-expired: 'Срок действия приглашения, отправленного игроку {0}, истек.'
+    player-invite-to-rejected: '{0} отклонил ваше приглашение.'
     player-needs-to-be-on-plot: "Вам нужно быть на участке чтобы использовать это!"
     player-needs-higher-score: "Вам нужна более высокая оценка чтобы строить на этом уровне сложности."
     player-missing-tutorial: "Чтобы стать участником Участка, игрок должен сначала пройти обучение!"
@@ -280,126 +286,126 @@ message:
     no-plots-left: "У этого градостроительного проекта больше не осталось участков. Пожалуйста, выберите другой проект."
     please-wait: "Пожалуйста, подождите несколько секунд перед созданием нового участка!"
     all-slots-occupied: "Все ваши слоты заняты! Пожалуйста, завершите текущие участки, прежде чем создавать новый."
-    chat-input-expired: "The chat input has expired."
+    chat-input-expired: "Время ввода в чат истекло."
     tutorial-disabled: 'Обучение на этом сервере отключено.'
-    tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-    review-not-found: "Review could not be found!"
+    tutorial-already-running: "У вас уже запущено обучение! Завершите его перед началом нового."
+    review-not-found: "Оценка не найдена!"
 leaderboards:
   pages:
     DAILY: "За день"
     WEEKLY: "За неделю"
-    MONTHLY: "Monthly"
-    YEARLY: "Yearly"
-    LIFETIME: "Lifetime"
+    MONTHLY: "За месяц"
+    YEARLY: "За год"
+    LIFETIME: "За всё время"
   actionbar-position: "Позиция #{0}"
   actionbar-percentage: "Топ {0}%"
   not-on-leaderboard: "Not on leaderboard"
 tutorials:
-  stage: 'Stage'
-  new-stage-unlocked: 'NEW STAGE UNLOCKED'
-  tutorial-completed: 'TUTORIAL COMPLETED'
+  stage: 'Этап'
+  new-stage-unlocked: 'ОТКРЫТ НОВЫЙ ЭТАП'
+  tutorial-completed: 'ОБУЧЕНИЕ ЗАВЕРШЕНО'
   beginner:
     stage-1:
       stage-1-title: 'Что такое проект BuildTheEarth'
       stage-1-messages:
         - 'Привет, {0}! Рад тебя видеть, моё имя {1}. Ты зашёл в удивительный мир проекта BuildTheEarth!'
         - 'Наша миссия - воссоздание всей планеты Земля в Minecraft в масштабе 1к1. Да, ты не ослышался, 1к1!'
-        - 'However, we at Alps BTE are only responsible to recreate the beautiful alpine countries of Austria, Switzerland and Liechtenstein.'
+        - 'Однако мы в Alps BTE отвечаем только за воссоздание красивых альпийских стран: Австрии, Швейцарии и Лихтенштейна.'
         - 'Готов научиться строить на BTE? Я расскажу тебе основы для участия в проекте. Продолжим!'
       stage-1-tasks:
-        - 'Talk to {0} at the construction site.'
+        - 'Поговорите с {0} на строительной площадке.'
     stage-2:
       stage-2-title: 'Референсы'
       stage-2-messages:
         - 'Добро пожаловать на твой небольшой остров. Здесь ты построишь своё первое здание в проекте BuildTheEarth!'
-        - 'Before we begin building, we need to know how the real-life building looks like. For that we use tools like {0} and {1}.'
-        - 'We use {2} to copy coordinates, so we can teleport to a specific point. In addition we can access {3} to have a closer look at the building.'
+        - 'Перед началом строительства нам нужно знать, как здание выглядит в реальной жизни. Для этого мы используем такие инструменты, как {0} и {1}.'
+        - 'Мы используем {2} для копирования координат, чтобы можно было телепортироваться в конкретную точку. Кроме того, мы можем зайти в {3}, чтобы рассмотреть здание поближе.'
         - '{4}'
-        - 'We use {5} to measure the height of the building. This is important to know, so the building has the correct height.'
+        - 'Мы используем {5}, чтобы измерить высоту здания. Это важно знать, чтобы у здания была правильная высота.'
         - '{6}'
-        - 'Use the command {7} if you need the links later.'
+        - 'Используйте команду {7}, если ссылки понадобятся вам позже.'
       stage-2-tasks:
     stage-3:
       stage-3-title: 'Телепортация'
       stage-3-messages:
-        - 'The building outlines are generated by default, but since they are mostly not accurate, we have to correct them. To correct the outlines we firstly need to teleport to the edges of the building.'
-        - 'Use the command {0} to teleport to the location in-game. {1} on one of the edges of the building to copy the coordinates.'
+        - 'Контуры здания генерируются по умолчанию, но так как они часто неточны, нам нужно их исправить. Чтобы исправить контуры, нам сначала нужно телепортироваться к краям здания.'
+        - 'Используйте команду {0}, чтобы телепортироваться к локации в игре. {1} на одном из краев здания, чтобы скопировать координаты.'
         - '{2}'
-        - 'To continue teleport to the marked points. Try again!'
-        - 'Switch to §6Satellite§f view in Google Maps to show the building in 3D.%newline%%newline%Click on §6Layers§f at the bottom left of the map. If no 3D buildings appear, enable the §6Globe View§f under "More".'
+        - 'Чтобы продолжить, телепортируйтесь к отмеченным точкам. Попробуйте снова!'
+        - 'Переключитесь на вид со §6Спутника§f в Google Maps, чтобы увидеть здания в 3D.%newline%%newline%Нажмите на §6Слои§f в левом нижнем углу карты. Если 3D здания не появляются, включите §6Режим глобуса§f в разделе «Ещё».'
       stage-3-tasks:
-        - 'Teleport to all {0} edges of the building by using {1}.'
+        - 'Телепортируйтесь ко всем {0} краям здания, используя {1}.'
     stage-4:
       stage-4-title: 'WorldEdit'
       stage-4-messages:
-        - 'Before we continue with the outlines, we need to know an important tool called {0}. WorldEdit allows us to build faster and more efficiently.'
-        - 'In order to use WorldEdit, you need to get a <gold>wooden axe</gold>.'
-        - 'Now that you have your wooden axe, you can {1} and {2} on blocks to make your selection.'
+        - 'Прежде чем мы продолжим с контурами, нам нужно узнать о важном инструменте под названием {0}. WorldEdit позволяет нам строить быстрее и эффективнее.'
+        - 'Чтобы использовать WorldEdit, вам нужно получить <gold>деревянный топор</gold>.'
+        - 'Теперь, когда у вас есть деревянный топор, вы можете нажать {1} и {2} по блокам, чтобы сделать выделение.'
       stage-4-tasks:
         - 'Используй команду {0} , чтобы получить деревянный топор.'
     stage-5:
       stage-5-title: 'Сделайте контуры'
       stage-5-messages:
-        - 'Now that we know about WorldEdit, we can draw the outlines of the building.'
-        - 'To draw the outlines, we use the command {0}.'
-        - '{1} to select the first point and {2} to select the second point.'
-        - 'To continue connect the points using {0}. Try again!'
+        - 'Теперь, когда мы знаем о WorldEdit, мы можем нарисовать контуры здания.'
+        - 'Для рисования контуров мы используем команду {0}.'
+        - '{1}, чтобы выбрать первую точку, и {2}, чтобы выбрать вторую точку.'
+        - 'Чтобы продолжить, соедините точки, используя {0}. Попробуйте снова!'
       stage-5-tasks:
         - 'Соедините точки, используя {0}.'
     stage-6:
-      stage-6-title: 'Building Heights'
+      stage-6-title: 'Высота здания'
       stage-6-messages:
-        - 'Now that we have the building outlines, we need to <gold>measure</gold> the height of the building.'
-        - 'Calculate the height of the <gold>facade</gold> by subtracting the height of the <gold>ground</gold> from the height of the <gold>roof</gold>.'
-        - 'Enter the height (in metres) of the building facade in the chat to continue.'
+        - 'Теперь, когда у нас есть контуры здания, нам нужно <gold>измерить</gold> высоту здания.'
+        - 'Вычислите высоту <gold>фасада</gold>, вычитая высоту <gold>земли</gold> из высоты <gold>крыши</gold>.'
+        - 'Введите высоту (в метрах) фасада здания в чат, чтобы продолжить.'
         - '{0}'
-        - 'Well done! The height of the building is {1} blocks.'
-        - 'You´ve almost made it. The height of the building is {1} blocks.'
-        - 'You´ve almost made it. Try again!'
-        - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
+        - 'Отлично! Высота здания составляет {1} блоков.'
+        - 'Вы почти справились. Высота здания составляет {1} блоков.'
+        - 'Вы почти справились. Попробуйте снова!'
+        - 'Вы можете §6узнать§f высоту в Google Earth в §6правом нижнем§f углу карты.%newline%%newline%Чтобы §6измерить§f высоту, наведите §6курсор мыши§f на карту.'
       stage-6-tasks:
-        - 'Calculate the height of the building.'
+        - 'Рассчитайте высоту здания.'
     stage-7:
-      stage-7-title: 'Building Shells'
+      stage-7-title: 'Каркас здания'
       stage-7-messages:
-        - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
-        - 'Teleport to at least §6one point§f of the roof ridge to §6connect§f the point(s) with the facade.'
-        - 'Use §6different types§f of blocks and colours for the shells to make it easier to §6separate§f the building into sections.'
-        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
-        - 'Use the WorldEdit command §6{0}§f to raise the walls quickly and easily.'
-        - 'Fill the roof by hand or use the WorldEdit command §6{1}§f. Alternatively use the command §6{2}§f to switch the selection for larger and more complex roofs.'
-        - 'Always check the §6height§f of the windows and doors so that it §6matches§f with the facade.'
+        - 'Теперь мы наконец можем приступить к зданию! Первые шаги — это каркас, который мы можем начать делать, имея контуры и высоту здания.'
+        - 'Телепортируйтесь как минимум к §6одной точке§f конька крыши, чтобы §6соединить§f точку(и) с фасадом.'
+        - 'Используйте §6разные типы§f блоков и цветов для каркаса, чтобы было легче §6разделить§f здание на секции.'
+        - 'Далее мы можем поднять стены и закрыть крышу. Теперь пришло время отметить окна и двери.'
+        - 'Используйте команду WorldEdit §6{0}§f, чтобы быстро и легко поднять стены.'
+        - 'Заполните крышу вручную или используйте команду WorldEdit §6{1}§f. Альтернативно используйте команду §6{2}§f для переключения выделения для больших и сложных крыш.'
+        - 'Всегда проверяйте §6высоту§f окон и дверей, чтобы она §6совпадала§f с фасадом.'
       stage-7-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Прочитайте все советы на участке и отметьте их как прочитанные.'
     stage-8:
       stage-8-title: 'Окна'
       stage-8-messages:
-        - 'The building shell is done! Let´s continue with the windows and doors.'
-        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
-        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
-        - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
-        - 'Use the same blocks as for the windows on the right. Try again!'
-        - 'Thank you for your help! Now we can continue with the texturing.'
+        - 'Каркас здания готов! Давайте продолжим с окнами и дверями.'
+        - 'Ох... похоже, не хватает двух окон. Можете помочь мне их поставить? Они выглядят так же, как на правой стороне.'
+        - 'Не забудьте §6затемнить§f §6окна§f и §6двери§f, чтобы сквозь них нельзя было смотреть. Мы не строим интерьеры!'
+        - 'Есть много способов построить окна для BTE, используя, например, §6баннеры§f, §6люки§f или §6ковры§f.'
+        - 'Используйте те же блоки, что и для окон справа. Попробуйте снова!'
+        - 'Спасибо за помощь! Теперь мы можем продолжить с текстурированием.'
       stage-8-tasks:
-        - 'Place the missing window details.'
+        - 'Разместите недостающие детали окон.'
     stage-9:
-      stage-9-title: 'Texturing'
+      stage-9-title: 'Текстурирование'
       stage-9-messages:
-        - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
-        - 'Use §6Google Street View§f or §6images§f to make the right block choice, as aerial images are sometimes not very accurate.'
-        - 'Use the WorldEdit command §6{0}§f to simply replace the shell with your pattern.'
-        - 'Try to use §6block mixes§f and §6gradients§f for the walls and roof so that the building looks more realistic and stand out.'
+        - 'Текстурирование — неотъемлемая часть процесса строительства. Важно использовать правильные блоки и цвета, чтобы здание выглядело реалистично.'
+        - 'Используйте §6Google Street View§f или §6изображения§f, чтобы правильно выбрать блоки, так как снимки со спутника иногда не очень точны.'
+        - 'Используйте команду WorldEdit §6{0}§f, чтобы просто заменить каркас вашим паттерном.'
+        - 'Старайтесь использовать §6миксы блоков§f и §6градиенты§f для стен и крыши, чтобы здание выглядело более реалистично и выделялось.'
       stage-9-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Прочитайте все советы на участке и отметьте их как прочитанные.'
     stage-10:
       stage-10-title: 'Детализация и следующие шаги'
       stage-10-messages:
-        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
-        - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
-        - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
-        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
-        - 'Click here to learn more about the project.'
-        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
+        - 'Детализация — один из самых важных процессов, так как она делает здание отличительным и уникальным.'
+        - 'Добавляйте §6кастомные баннеры§f и §6головы§f к вашим постройкам. Используйте команду §6{0}§f, чтобы получить множество кастомных голов.'
+        - 'Есть много способов §6украсить§f ваши здания. Всегда обращайте внимание на детали на фасаде и крышах, такие как §6дымоходы§f, §6окна§f и §6водостоки§f.'
+        - 'Спасибо за участие. Теперь вы готовы создавать свои собственные здания для проекта BuildTheEarth!'
+        - 'Нажмите здесь, чтобы узнать больше о проекте.'
+        - 'Чтобы <gold>подать заявку на строителя</gold>, создайте и отправьте <gold>один или несколько участков</gold> на нашем сервере. Вы можете найти больше информации о процессе подачи заявки на нашем сайте или {1}.'
         - 'Если вы хотите изучить текущий прогресс карты, проверьте <gold>Terra</gold> сервер!'
         - 'Приятного строительства! ☺'
       stage-10-tasks:
@@ -410,7 +416,7 @@ tutorials:
 database:
   city-project:
     example-city:
-      name: 'Example City'
+      name: 'Пример города'
       description: 'Описание'
   country:
     AT:
@@ -444,6 +450,5 @@ database:
     correct_amount_windows_doors: 'Правильное количество окон и дверей'
     correct_window_type: 'Правильные типы окон'
     windows_blacked_out: 'Все окна затемнены'
-
 # NOTE: Do not change
-config-version: 2.5
+config-version: 2.6
