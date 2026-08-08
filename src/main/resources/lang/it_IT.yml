@@ -330,7 +330,7 @@ tutorials:
       stage-3-messages:
         - 'I contorni dell''edificio sono generati per impostazione predefinita, ma poiché non sono per lo più accurati, dobbiamo correggerli. Per correggere i contorni dobbiamo innanzitutto teletrasportarci ai bordi dell''edificio.'
         - 'Usa il comando {0} per teletrasportarti nella posizione in gioco. {1} su uno dei bordi dell''edificio per copiare le coordinate.'
-        - ''
+        - '{2}'
         - 'Per continuare a teletrasportarti nei punti contrassegnati. Riprova!'
         - 'Passa alla vista §6Satellite§f su Google Maps per mostrare l''edificio in 3D.%newline%%newline%Clecca su §6Livelli§f in basso a sinistra della mappa. Se non vengono visualizzati edifici 3D, abilita la vista §6Globe§f sotto "Altro".'
       stage-3-tasks:
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correggi i tipi di finestra'
     windows_blacked_out: 'Tutte le finestre sono rimosse'
 # NOTE: Do not change
-config-version: 1.0
+config-version: 1.1

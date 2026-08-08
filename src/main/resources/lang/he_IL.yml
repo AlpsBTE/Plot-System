@@ -244,7 +244,7 @@ message:
     saving-plot: "ֲ§aשומרים את הפלוט..."
     creating-plot: "ֲ§aיוצרים פלוט חדש..."
     created-new-plot: "ֲ§aפלוט חדש נוצר עבור ֲ§6{0}ֲ§a!"
-    chat-enter-player: "אנא הקלד את שם השחקן בצ'אט."
+    chat-enter-player: 'אנא הקלד את שם השחקן בצ''אט.'
     chat-enter-feedback: "אנא הקלד משוב עבור השחקן בצ'אט."
     chat-input-expires-after: "הזנת הצ'אט תפוג לאחר {0} דקות."
     beginner-tutorial-required: 'השלם את ההדרכה כדי להשתתף בפרויקט.'
@@ -357,7 +357,7 @@ tutorials:
       stage-6-messages:
         - 'כעת כשיש לנו את קווי המתאר, עלינו <gold>למדוד</gold> את גובה המבנה.'
         - 'חשב את גובה ה<gold>חזית</gold> על ידי חיסור גובה ה<gold>קרקע</gold> מגובה ה<gold>גג</gold>.'
-        - "הזן את הגובה (במטרים) של חזית המבנה בצ'אט להמשך."
+        - 'הזן את הגובה (במטרים) של חזית המבנה בצ''אט להמשך.'
         - '{0}'
         - 'כל הכבוד! גובה המבנה הוא {1} בלוקים.'
         - 'אתה כמעט שם. גובה המבנה הוא {1} בלוקים.'
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

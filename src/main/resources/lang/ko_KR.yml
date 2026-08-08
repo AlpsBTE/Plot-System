@@ -299,7 +299,7 @@ leaderboards:
     LIFETIME: "Lifetime"
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
-  not-on-leaderboard: "Not on Leaderboard"
+  not-on-leaderboard: "Not on leaderboard"
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 2.5
+config-version: 2.6
