@@ -2,9 +2,6 @@ name: Crowdin translation upload
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'src/main/resources/lang/en_GB.yml'
   workflow_dispatch:
 
 jobs:
