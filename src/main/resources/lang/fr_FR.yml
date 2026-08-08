@@ -1,20 +1,20 @@
-#-----------------------------------------------------
-#|            Plot System - by Alps BTE
-#-----------------------------------------------------
-#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
-#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
-#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
-#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
-#|
-#| [Formatting] Use %newline% for a newline
-#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-#-----------------------------------------------------
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# -----------------------------------------------------
 lang:
   name: "Français (FR)"
   head-id: "21905"
-#-----------------------------------------------------
-#| Plot
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
 plot:
   plot-name: "Plot"
   id: "ID"
@@ -31,9 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Slot de Membre Vide"
     shared-by-members: "(Partagé avec {0} membres)"
-#-----------------------------------------------------
-#| City Projects
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
 city-project:
   cities: "Villes"
   open: "Plots Ouvert"
@@ -42,14 +42,14 @@ city-project:
   plots-available: 'Parcelles Disponibles'
   no-plots-available: "Aucun Plots Disponibles"
   for-your-difficulty: "({0} pour votre difficulté)"
-#-----------------------------------------------------
-#| Countries
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
 country:
   countries: "Pays"
-#-----------------------------------------------------
-#| Continents
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
 continent:
   europe: "Europe"
   asia: "Asie"
@@ -57,15 +57,15 @@ continent:
   oceania: "Océanie"
   south-america: "Amérique du Sud"
   north-america: "Amérique du Nord"
-#-----------------------------------------------------
-#| Difficulty
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
 difficulty:
   automatic: "Automatique"
   score-multiplier: "Score Multijoueur"
-#-----------------------------------------------------
-#| Menu Titles
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
 menu-title:
   close: 'Fermer'
   back: 'Retour'
@@ -113,9 +113,9 @@ menu-title:
   tutorial-end: 'Tutoriel de fin'
   tutorial-beginner: 'Débuter'
   companion-random: 'Sélection aléatoire'
-#-----------------------------------------------------
-#| Menu Descriptions
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
 menu-description:
   error-desc: 'Une erreur s''est produite...'
   plot-difficulty-desc: 'Cliquez pour basculer...'
@@ -147,9 +147,9 @@ menu-description:
   tutorial-end-desc: 'Vos progrès seront sauvegardés.'
   tutorial-beginner-desc: 'Apprenez les bases pour construire pour le projet Build The Earth.'
   companion-random-desc: 'Cliquez sur pour sélectionner aléatoirement.'
-#-----------------------------------------------------
-#| Review
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
 review:
   review-plot: "Revoir le tracé"
   manage-plot: "Gérer le tracé"
@@ -171,9 +171,9 @@ review:
     accuracy-desc: "Quelle est la précision du bâtiment?%newline%%newline%- Ressemble à RL%newline%- Contours corrects%newline%- Hauteur correcte%newline%- Est terminé"
     block-palette: "palette de blocs"
     block-palette-desc: "Combien de blocs différents sont utilisés et à quel point sont-ils créatifs?%newline%%newline%- Choix des couleurs/textures des blocs%newline%- Blocs aléatoires"
-#-----------------------------------------------------
-#| Notes
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
 note:
   tip: "Conseil"
   under-construction: 'En construction'
@@ -210,9 +210,9 @@ note:
     tutorial-show-stages: 'Montrer les étapes'
     click-to-open-plots-menu: 'Cliquez pour ouvrir le menu des parcelles...'
     click-to-toggle: "Click to toggle..."
-#-----------------------------------------------------
-#| Messages
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§aTéléportation pour plot §6#{0}§a..."
@@ -450,6 +450,5 @@ database:
     correct_amount_windows_doors: 'Correct amount of windows and doors'
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
-
-#NOTE: Do not change
+# NOTE: Do not change
 config-version: 2.5

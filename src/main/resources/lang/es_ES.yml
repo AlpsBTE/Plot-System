@@ -1,20 +1,20 @@
-#-----------------------------------------------------
-#|            Plot System - by Alps BTE
-#-----------------------------------------------------
-#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
-#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
-#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
-#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
-#|
-#| [Formatting] Use %newline% for a newline
-#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-#-----------------------------------------------------
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# -----------------------------------------------------
 lang:
   name: "Español (ES)"
   head-id: "28358"
-#-----------------------------------------------------
-#| Plot
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
 plot:
   plot-name: "Parcela"
   id: "ID"
@@ -31,9 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Espacio libre"
     shared-by-members: "(Compartido por {0} miembros)"
-#-----------------------------------------------------
-#| City Projects
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
 city-project:
   cities: "Ciudades"
   open: "Parcela abierta"
@@ -42,14 +42,14 @@ city-project:
   plots-available: 'Parcelas disponibles'
   no-plots-available: "Parcelas no disponibles"
   for-your-difficulty: "({0} para tu dificultad)"
-#-----------------------------------------------------
-#| Countries
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
 country:
   countries: "Países"
-#-----------------------------------------------------
-#| Continents
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
 continent:
   europe: "Europa"
   asia: "Asia"
@@ -57,15 +57,15 @@ continent:
   oceania: "Oceanía"
   south-america: "América del sur"
   north-america: "América del norte"
-#-----------------------------------------------------
-#| Difficulty
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
 difficulty:
   automatic: "Automático"
   score-multiplier: "Multiplicador de puntaje"
-#-----------------------------------------------------
-#| Menu Titles
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
 menu-title:
   close: 'Cerca'
   back: 'Atrás'
@@ -82,6 +82,7 @@ menu-title:
   submit: 'Entregar'
   teleport: 'Teletransporte'
   abandon: 'Abandonar'
+  abandon-confirm: 'Abandon plot #{0}?'
   undo-submit: 'Deshacer entrega'
   manage-members: 'Gestionar miembros'
   feedback: 'Comentarios | Revisión #{0}'
@@ -112,9 +113,9 @@ menu-title:
   tutorial-end: 'Finalizar Tutorial'
   tutorial-beginner: 'Iniciación'
   companion-random: 'Selección aleatoria'
-#-----------------------------------------------------
-#| Menu Descriptions
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
 menu-description:
   error-desc: 'Se ha producido un error...'
   plot-difficulty-desc: 'Clic para cambiar...'
@@ -146,9 +147,9 @@ menu-description:
   tutorial-end-desc: 'Tu progreso será guardado.'
   tutorial-beginner-desc: 'Aprende los conceptos básicos como construir para el proyecto BuildTheEarth.'
   companion-random-desc: 'Haga clic para seleccionar aleatoriamente.'
-#-----------------------------------------------------
-#| Review
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
 review:
   review-plot: "Revisar parcela"
   manage-plot: "Gestionar Parcela"
@@ -170,9 +171,9 @@ review:
     accuracy-desc: "¿Qué tan preciso es el edificio? %newline%%newline% - Parece similar a RL %newline%- Esquemas correctos %newline%- Altura correcta %newline%- Se completa"
     block-palette: "Paleta de Bloques"
     block-palette-desc: "¿Cuántos bloques diferentes se utilizan y cuán creativos son? %newline%%newline% - Elección de colores de bloques/texturas %newline% - Bloques aleatorios"
-#-----------------------------------------------------
-#| Notes
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
 note:
   tip: "Consejo"
   under-construction: 'En construcción'
@@ -201,6 +202,7 @@ note:
     click-to-remove-plot-member: "Haga clic para eliminar miembro de la parcela..."
     click-to-open-link: "Haga clic aquí para abrir el enlace {0}..."
     click-to-open-link-with-shortlink: "§6Haz clic aquí §7para abrir el enlace §a{0}§7 o usa este enlace: §a{1}"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "§6 Haz clic aquí §ato mostrar tus comentarios..."
     click-to-show-open-reviews: "§6 Haz clic aquí §ato mostrar reseñas abiertas..."
     click-to-show-plots: "§6 Haz clic aquí §ato mostrar tus parcelas..."
@@ -208,9 +210,9 @@ note:
     tutorial-show-stages: 'Mostrar etapas'
     click-to-open-plots-menu: 'Haga clic para abrir el menú de parcelas...'
     click-to-toggle: "Clic para alternar..."
-#-----------------------------------------------------
-#| Messages
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§a Teletránsportarse a parcela §6#{0}§a..."
@@ -219,6 +221,9 @@ message:
     finished-plot: "§a ¡La parcela §6#{0}§a de §6{1}§a ha terminado!"
     plot-marked-as-reviewed: "§a¡La parcela §6#{0}§a de §6{1}§a se ha marcado como revisada!"
     plot-rejected: "§a¡La parcela §6#{0}§a de §6{1}§a ha sido rechazada!"
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "§a¡Se deshizo el envío a revisión de la parcela §6#{0}§a!"
     undid-review: "§a¡Se deshizo la revisión de la parcela §6#{0}§a de §6{1}§a!"
     reviewed-plot: "§a¡Tu parcela §6#{0}§a ha sido revisada!"
@@ -226,7 +231,7 @@ message:
     unreviewed-plots: "§a¡Hay §6{0}§a parcelas sin revisar!"
     unfinished-plot: "§a¡Tienes §6{0}§a parcela sin terminar!"
     unfinished-plots: "§a¡Tienes §6{0}§a parcelas sin terminar!"
-    enabled-build-permissions: ""
+    enabled-build-permissions: "§aEnabled build permissions for reviewers on plot §6#{0}§a!"
     disabled-build-permissions: "§a¡Se deshabilitaron permisos de construcción para supervisores en la parcela §6#{0}§a!"
     updated-plot-feedback: "§a¡Se actualizaron los comentarios de la parcela §6#{0}§a!"
     removed-plot-member: "§a¡Se eliminó a §6{0}§a de la parcela §6#{1}§a!"
@@ -357,7 +362,7 @@ tutorials:
         - 'Well done! The height of the building is {1} blocks.'
         - 'You´ve almost made it. The height of the building is {1} blocks.'
         - 'You´ve almost made it. Try again!'
-        - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
+        - 'Puedes §6leer§ la elevación de Google Earth en la parte §inferior derecha§f del mapa. %newline%%newline% Para §6measure§f la altura, mueve el §puntero§ en el mapa.'
       stage-6-tasks:
         - 'Calculate the height of the building.'
     stage-7:
@@ -405,9 +410,9 @@ tutorials:
         - 'Happy building! ☺'
       stage-10-tasks:
         - 'Read all tips on the plot and mark them as read.'
-#-----------------------------------------------------
-#| Database
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
 database:
   city-project:
     example-city:
@@ -445,5 +450,5 @@ database:
     correct_amount_windows_doors: 'Cantidad correcta de ventanas y puertas'
     correct_window_type: 'Tipos correctos de ventanas'
     windows_blacked_out: 'Todas las ventanas bloqueadas'
-#NOTE: Do not change
-config-version: 1.0
+# NOTE: Do not change
+config-version: 1.1

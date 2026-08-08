@@ -1,20 +1,20 @@
-#-----------------------------------------------------
-#|            Plot System - by Alps BTE
-#-----------------------------------------------------
-#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
-#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
-#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
-#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
-#|
-#| [Formatting] Use %newline% for a newline
-#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-#-----------------------------------------------------
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# -----------------------------------------------------
 lang:
   name: "Deutsch (DE)"
   head-id: "522"
-#-----------------------------------------------------
-#| Plot
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
 plot:
   plot-name: "Plot"
   id: "ID"
@@ -31,9 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Leerer Mitglied-Slot"
     shared-by-members: "(wird von {0} Mitgliedern geteilt)"
-#-----------------------------------------------------
-#| City Projects
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
 city-project:
   cities: "Städte"
   open: "Offene Plots"
@@ -42,14 +42,14 @@ city-project:
   plots-available: 'Plots Verfügbar'
   no-plots-available: "Keine Plots Verfügbar"
   for-your-difficulty: "({0} für deinen Schwierigkeitsgrad)"
-#-----------------------------------------------------
-#| Countries
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
 country:
   countries: "Länder"
-#-----------------------------------------------------
-#| Continents
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
 continent:
   europe: "Europa"
   asia: "Asien"
@@ -57,15 +57,15 @@ continent:
   oceania: "Ozeanien"
   south-america: "Südamerika"
   north-america: "Nordamerika"
-#-----------------------------------------------------
-#| Difficulty
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
 difficulty:
   automatic: "Automatisch"
   score-multiplier: "Punkte-Multiplikator"
-#-----------------------------------------------------
-#| Menu Titles
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
 menu-title:
   close: 'Schließen'
   back: 'Zurück'
@@ -113,9 +113,9 @@ menu-title:
   tutorial-end: 'Tutorial Beenden'
   tutorial-beginner: 'Erste Schritte'
   companion-random: 'Zufallsauswahl'
-#-----------------------------------------------------
-#| Menu Descriptions
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
 menu-description:
   error-desc: 'Ein Fehler ist aufgetreten...'
   plot-difficulty-desc: 'Zum Umschalten klicken...'
@@ -147,9 +147,9 @@ menu-description:
   tutorial-end-desc: 'Dein Fortschritt wird gespeichert.'
   tutorial-beginner-desc: 'Lerne die Baugrundlagen für das BuildTheEarth Projekt.'
   companion-random-desc: 'Klicke hier, um zufällig auszuwählen.'
-#-----------------------------------------------------
-#| Review
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
 review:
   review-plot: "Plot Bewerten"
   manage-plot: "Plot Verwalten"
@@ -165,15 +165,15 @@ review:
   block-palette-points: "Block Palette Punkte"
   toggle-points: "Schalter Punkte"
   total-points: "Gesamtpunkte"
-  abandoned-in-days: "§6Wird in §6{0} Tagen gelöscht"
+  abandoned-in-days: "§6Aufgegeben in §6{0} Tagen"
   criteria:
     accuracy: "Genauigkeit"
     accuracy-desc: "Wie akkurat ist das Gebäude?%newline%%newline%- Sieht aus wie in RL%newline%- Korrekte Umrisse%newline%- Korrekte Höhen%newline%- Ist vollständig"
     block-palette: "Block-Palette"
     block-palette-desc: "Wie viele und wie kreativ werden verschiedene Blöcke verwendet?%newline%%newline%- Wahl der Blockfarben/Texturen%newline%- Randomisierte Blöcke"
-#-----------------------------------------------------
-#| Notes
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
 note:
   tip: "Tipp"
   under-construction: 'In Arbeit'
@@ -210,9 +210,9 @@ note:
     tutorial-show-stages: 'Stages Anzeigen'
     click-to-open-plots-menu: 'Klicke hier, um das Plot Menü zu öffnen...'
     click-to-toggle: "Zum Umschalten klicken..."
-#-----------------------------------------------------
-#| Messages
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§aTeleportiere zum Plot §6#{0}§a..."
@@ -434,7 +434,7 @@ database:
       name: 'Schwer'
   status:
     unclaimed:
-      name: 'Unclaimed'
+      name: 'Nicht beansprucht'
     unfinished:
       name: 'Unvollendet'
     unreviewed:
@@ -450,5 +450,5 @@ database:
     correct_amount_windows_doors: 'Korrekte Anzahl von Fenstern und Türen'
     correct_window_type: 'Richtige Verstrebungen'
     windows_blacked_out: 'Alle Fenster verdunkelt'
-#NOTE: Do not change
-config-version: 2.5
+# NOTE: Do not change
+config-version: 2.6
