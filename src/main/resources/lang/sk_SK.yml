@@ -10,132 +10,132 @@
 # | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
 # -----------------------------------------------------
 lang:
-  name: "English (GB)"
-  head-id: "27577"
+  name: "Slovenčina (SK)"
+  head-id: "14662"
 # -----------------------------------------------------
 # | Plot
 # -----------------------------------------------------
 plot:
-  plot-name: "Plot"
+  plot-name: "Parcela"
   id: "ID"
-  owner: "Plot Owner"
-  members: "Plot Members"
-  member: "Plot Member"
-  city: "City"
-  country: "Country"
-  difficulty: "Difficulty"
-  status: "Status"
-  score: "Score"
-  total-score: "Total Score"
-  completed-plots: "Completed Plots"
+  owner: "Majiteľ parcely"
+  members: "Členovia parcely"
+  member: "Člen parcely"
+  city: "Mesto"
+  country: "Krajina"
+  difficulty: "Náročnosť"
+  status: "Stav"
+  score: "Skóre"
+  total-score: "Celkové skóre"
+  completed-plots: "Dokončené parcely"
   group-system:
-    empty-member-slot: "Empty Member Slot"
-    shared-by-members: "(shared by {0} members)"
+    empty-member-slot: "Voľný slot pre člena"
+    shared-by-members: "(zdieľané {0} členmi)"
 # -----------------------------------------------------
 # | City Projects
 # -----------------------------------------------------
 city-project:
-  cities: "Cities"
-  open: "Plots Open"
-  in-progress: "Plots In Progress"
-  completed: "Plots Completed"
-  plots-available: 'Plots Available'
-  no-plots-available: "No Plots Available"
-  for-your-difficulty: "({0} for your difficulty)"
+  cities: "Mestá"
+  open: "Otvorené parcely"
+  in-progress: "Rozpracované parcely"
+  completed: "Dokončené parcely"
+  plots-available: 'Dostupné parcely'
+  no-plots-available: "Žiadne dostupné parcely"
+  for-your-difficulty: "({0} pre vašu úroveň náročnosti)"
 # -----------------------------------------------------
 # | Countries
 # -----------------------------------------------------
 country:
-  countries: "Countries"
+  countries: "Krajiny"
 # -----------------------------------------------------
 # | Continents
 # -----------------------------------------------------
 continent:
-  europe: "Europe"
-  asia: "Asia"
-  africa: "Africa"
-  oceania: "Oceania"
-  south-america: "South America"
-  north-america: "North America"
+  europe: "Európa"
+  asia: "Ázia"
+  africa: "Afrika"
+  oceania: "Oceánia"
+  south-america: "Južná Amerika"
+  north-america: "Severná Amerika"
 # -----------------------------------------------------
 # | Difficulty
 # -----------------------------------------------------
 difficulty:
-  automatic: "Automatic"
-  score-multiplier: "Score Multiplier"
+  automatic: "Automatická"
+  score-multiplier: "Násobič skóre"
 # -----------------------------------------------------
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: 'Close'
-  back: 'Back'
-  continue: 'Continue'
-  next-page: 'Next Page'
-  previous-page: 'Previous Page'
-  error: 'Error'
-  loading: 'Loading...'
-  plot-difficulty: 'Plot Difficulty'
+  close: 'Zavrieť'
+  back: 'Späť'
+  continue: 'Pokračovať'
+  next-page: 'Ďalšia stránka'
+  previous-page: 'Predchádzajúca stránka'
+  error: 'Chyba'
+  loading: 'Načítavanie...'
+  plot-difficulty: 'Náročnosť parcely'
   slot: 'Slot'
-  builder-utilities: 'Builder Utilities'
-  show-plots: 'Show Plots'
-  settings: 'Settings'
-  submit: 'Submit'
+  builder-utilities: 'Nástroje pre staviteľa'
+  show-plots: 'Zobraziť parcely'
+  settings: 'Nastavenia'
+  submit: 'Odoslať'
   teleport: 'Teleport'
-  abandon: 'Abandon'
+  abandon: 'Opustiť'
   abandon-confirm: 'Abandon plot #{0}?'
-  undo-submit: 'Undo Submit'
-  manage-members: 'Manage Members'
-  feedback: 'Feedback | Review #{0}'
-  custom-heads: 'Custom Heads'
-  banner-maker: 'Banner Maker'
-  special-tools: 'Special Blocks & Items'
-  review-point: 'Point'
-  review-points: 'Points'
-  cancel: 'Cancel'
-  add-member-to-plot: 'Add Member to Plot'
-  companion: 'Companion'
-  companion-select-continent: 'Select A Continent'
-  companion-select-country: 'Select A Country'
-  companion-select-city: 'Select A City'
-  player-plots: '{0}s Plots'
-  leave-plot: 'Leave Plot'
-  review-plots: 'Review Plots'
-  review-plot: 'Review Plot #{0}'
-  select-language: 'Select Language'
-  select-plot-type: 'Select Plot Type'
-  select-focus-mode: 'Select Focus Mode'
-  select-local-inspiration-mode: 'Select Inspiration Mode'
-  select-city-inspiration-mode: 'Select City Inspiration Mode'
-  filter-by-country: 'Filter By Country'
+  undo-submit: 'Zrušiť odoslanie'
+  manage-members: 'Spravovať členov'
+  feedback: 'Spätná väzba | Hodnotenie #{0}'
+  custom-heads: 'Unikátne hlavy'
+  banner-maker: 'Tvorba bannerov'
+  special-tools: 'Špeciálne bloky a itemy'
+  review-point: 'Bod'
+  review-points: 'Body'
+  cancel: 'Zrušiť'
+  add-member-to-plot: 'Pridať člena do parcely'
+  companion: 'Sprievodca'
+  companion-select-continent: 'Vyberte kontinent'
+  companion-select-country: 'Vyberte krajinu'
+  companion-select-city: 'Vyberte mesto'
+  player-plots: 'Parcely hráča {0}'
+  leave-plot: 'Vzdať sa parcely'
+  review-plots: 'Zhodnotiť parcely'
+  review-plot: 'Zhodnotiť parcelu #{0}'
+  select-language: 'Vyberte jazyk'
+  select-plot-type: 'Vyberte typ parcely'
+  select-focus-mode: 'Vybrať Focus Mode'
+  select-local-inspiration-mode: 'Vybrať Inspiration Mode'
+  select-city-inspiration-mode: 'Vybrat City Inspiration Mode'
+  filter-by-country: 'Filtrovať podľa krajiny'
   information: 'Info'
-  tutorials: 'Tutorials'
-  tutorial-stages: 'Tutorial Stages'
-  tutorial-end: 'End Tutorial'
-  tutorial-beginner: 'Get Started'
-  companion-random: 'Random Selection'
+  tutorials: 'Tutoriály'
+  tutorial-stages: 'Fázy tutoriálu'
+  tutorial-end: 'Ukončiť tutoriál'
+  tutorial-beginner: 'Začíname'
+  companion-random: 'Náhodný výber'
 # -----------------------------------------------------
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: 'An error occurred...'
-  plot-difficulty-desc: 'Click to Switch...'
-  slot-desc: 'Click on a city project to create a new plot'
-  builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
-  show-plots-desc: 'Show all your plots'
-  settings-desc: 'Modify your user settings'
-  submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
-  teleport-desc: 'Click to teleport to the plot'
-  abandon-desc: 'Click to reset your plot and give it to someone else'
-  undo-submit-desc: 'Click to undo your submission'
-  manage-members-desc: 'Click to open the Plot Members menu, where you can add and remove other players on your plot'
-  feedback-desc: 'Click to view your plot review feedback'
-  custom-heads-desc: 'Click to open the head menu to get a variety of custom heads'
-  banner-maker-desc: 'Click to create and save your own banners'
+  error-desc: 'Vyskytla sa chyba.'
+  plot-difficulty-desc: 'Kliknite pre prepnutie...'
+  slot-desc: 'Kliknite na mestský projekt pre vytvorenie novej parcely'
+  builder-utilities-desc: 'Získajte prístup k unikátnym hlavám, bannerom a špeciálnym blokom'
+  show-plots-desc: 'Zobraziť všetky vaše parcely'
+  settings-desc: 'Upraviť užívateľské nastavenia'
+  submit-plot-desc: 'Kliknutím dokončíte túto parcelu a odošlete ju na hodnotenie'
+  teleport-desc: 'Kliknite pre teleportovanie na parcelu'
+  abandon-desc: 'Kliknutím resetujete svoju parcelu a odovzdáte ju niekomu inému'
+  undo-submit-desc: 'Kliknite pre zrušenie vášho odoslania'
+  manage-members-desc: 'Kliknite pre otvorenie menu členov parcely, kde môžete pridávať a odoberať ostatných hráčov vo svojej parcele'
+  feedback-desc: 'Kliknite pre zobrazenie spätnej väzby k hodnoteniu vašej parcely'
+  custom-heads-desc: 'Kliknutím otvoríte menu na získanie rôznych unikátnych hláv'
+  banner-maker-desc: 'Kliknite na vytvorenie a uloženie vlastných bannerov'
   special-tools-desc: 'Click to access a variety of inaccessible blocks and items'
   add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
   review-points-desc: 'Click to select'
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
-  leave-plot-desc: 'Click to leave this plot'
+  leave-plot-desc: 'Kliknite pre opustenie parcely'
   select-language-desc: 'Choose your language'
   select-plot-type-desc: 'Choose your plot type'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
@@ -306,7 +306,7 @@ tutorials:
   tutorial-completed: 'TUTORIAL COMPLETED'
   beginner:
     stage-1:
-      stage-1-title: 'Understanding the BuildTheEarth Project'
+      stage-1-title: 'Porozumenie projektu BuildTheEarth'
       stage-1-messages:
         - 'Hello {0}! Nice to meet you, my name is {1}. You´ve just stepped into the exciting world of the BuildTheEarth project!'
         - 'Our mission is to recreate the entire planet Earth in Minecraft at a 1:1 scale. Yes, you heard right, at a 1:1 scale!'
@@ -401,7 +401,7 @@ tutorials:
       stage-10-title: 'Detailing & Further Steps'
       stage-10-messages:
         - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
-        - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
+        - 'Pridajte do svojich stavieb §6vlastné bannery§f a §6unikátne hlavy§f. Použite príkaz §6{0}§f a získajte široký výber unikátnych hláv.'
         - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
         - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
         - 'Click here to learn more about the project.'
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 2.5
+config-version: 1.0

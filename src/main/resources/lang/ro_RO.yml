@@ -1,20 +1,20 @@
-#-----------------------------------------------------
-#|            Plot System - by Alps BTE
-#-----------------------------------------------------
-#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
 # | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
 # | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
 # | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
-#|
-#| [Formatting] Use %newline% for a newline
-#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-#-----------------------------------------------------
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# -----------------------------------------------------
 lang:
   name: "Română (RO)"
   head-id: "21899"
-#-----------------------------------------------------
-#| Plot
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
 plot:
   plot-name: "Plot"
   id: "ID"
@@ -31,9 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Loc de membru liber"
     shared-by-members: "(împărțit de {0} membri)"
-#-----------------------------------------------------
-#| City Projects
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
 city-project:
   cities: "Orașe"
   open: "Plot-uri deschise"
@@ -42,14 +42,14 @@ city-project:
   plots-available: 'Plot-uri disponibile'
   no-plots-available: "Niciun plot disponibil"
   for-your-difficulty: "({0} pentru dificultate)"
-#-----------------------------------------------------
-#| Countries
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
 country:
   countries: "Țări"
-#-----------------------------------------------------
-#| Continents
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
 continent:
   europe: "Europa"
   asia: "Asia"
@@ -57,15 +57,15 @@ continent:
   oceania: "Oceania"
   south-america: "America de Sud"
   north-america: "America de Nord"
-#-----------------------------------------------------
-#| Difficulty
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
 difficulty:
   automatic: "Automat"
   score-multiplier: "Multiplicator de scor"
-#-----------------------------------------------------
-#| Menu Titles
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
 menu-title:
   close: 'Închide'
   back: 'Înapoi'
@@ -82,10 +82,11 @@ menu-title:
   submit: 'Trimite'
   teleport: 'Teleportează-te'
   abandon: 'Abandonează'
+  abandon-confirm: 'Abandon plot #{0}?'
   undo-submit: 'Anulează trimiterea'
   manage-members: 'Gestionare membri'
   feedback: 'Feedback | Evaluare #{0}'
-  custom-heads: 'Custom Heads'
+  custom-heads: 'Capete personalizate'
   banner-maker: 'Banner Maker'
   special-tools: 'Block-uri și item-uri speciale'
   review-point: 'Punct'
@@ -112,9 +113,9 @@ menu-title:
   tutorial-end: 'Încheie tutorial'
   tutorial-beginner: 'Începe'
   companion-random: 'Alegere aleatorie'
-#-----------------------------------------------------
-#| Menu Descriptions
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
 menu-description:
   error-desc: 'A apărut o eroare...'
   plot-difficulty-desc: 'Clic pentru a comuta...'
@@ -146,9 +147,9 @@ menu-description:
   tutorial-end-desc: 'Progresul tău va fi salvat.'
   tutorial-beginner-desc: 'Învață bazele construitului în proiectul Build The Earth.'
   companion-random-desc: 'Click pentru a alege aleatoriu.'
-#-----------------------------------------------------
-#| Review
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
 review:
   review-plot: "Evaluează Plot"
   manage-plot: "Gestionează Plot"
@@ -170,9 +171,9 @@ review:
     accuracy-desc: "Care este acuratețea clădirii? %newline%%newline%-Arată ca în viața reală%newline%- Contur corect%newline%-Înălțime corectă%newline%- E completă"
     block-palette: "Paleta de block-uri"
     block-palette-desc: "Număr block-uri diferite folosite și cât de creativ sunt folosite?%newline%%newline%- Alegerea culorilor/texturilor block-urilor%newline%- Block-uri aleatorii"
-#-----------------------------------------------------
-#| Notes
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
 note:
   tip: "Sfat"
   under-construction: 'În construcție'
@@ -199,8 +200,9 @@ note:
     click-to-create-plot: 'Clic pentru a crea un plot nou...'
     click-to-proceed: "Clic pentru a continua..."
     click-to-remove-plot-member: "Clic pentru a elimina membrul din plot..."
-    click-to-open-link: "Click pentru a deschide link-ul {0} ..."
+    click-to-open-link: "Click pentru a deschide link-ul {0}..."
     click-to-open-link-with-shortlink: "§6Clic aici §7pentru a deschide linkul §a{0}§7 sau folosește acest link: §a{1}"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "§6Clic aici §a pentru a afișa feedback-ul plot-ului tău..."
     click-to-show-open-reviews: "§6Clic aici §a pentru a vedea evaluările deschise..."
     click-to-show-plots: "§6Clic aici §a pentru a vedea plot-urile tale..."
@@ -208,9 +210,9 @@ note:
     tutorial-show-stages: 'Afișează etape'
     click-to-open-plots-menu: 'Clic pentru a deschide meniu plot-uri...'
     click-to-toggle: "Clic pentru a comuta..."
-#-----------------------------------------------------
-#| Messages
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§aSe teleportează la plot-ul §6#{0}§a..."
@@ -219,6 +221,9 @@ message:
     finished-plot: "§aPlot-ul §6#{0}§a de §6{1}§a a fost finalizat!"
     plot-marked-as-reviewed: "§aPlot-ul §6#{0}§a de §6{1}§a a fost marcat ca evaluat!"
     plot-rejected: "§aPlot-ul §6#{0}§a de §6{1}§a a fost refuzat!"
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "§aTrimiterea plot-ului §6#{0}§a a fost anulată!"
     undid-review: "§aEvaluarea plot-ului §6#{0}§a de §6{1}§a a fost anulată!"
     reviewed-plot: "§aPlot-ul tău §6#{0}§a a fost evaluat!"
@@ -405,9 +410,9 @@ tutorials:
         - 'Spor la construit! ☺'
       stage-10-tasks:
         - 'Citește toate sfaturile de pe plot și marchează-le citite.'
-#-----------------------------------------------------
-#| Database
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
 database:
   city-project:
     example-city:
@@ -445,6 +450,5 @@ database:
     correct_amount_windows_doors: 'Număr ferestre și uși corect'
     correct_window_type: 'Modele ferestre corecte'
     windows_blacked_out: 'Toate ferestrele închise cu block-uri'
-
-#NOTE: Do not change
-config-version: 1.0
+# NOTE: Do not change
+config-version: 1.1

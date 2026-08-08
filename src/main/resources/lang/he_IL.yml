@@ -82,6 +82,7 @@ menu-title:
   submit: 'הגש'
   teleport: 'טלפורט'
   abandon: 'נטוש'
+  abandon-confirm: 'Abandon plot #{0}?'
   undo-submit: 'בטל הגשה'
   manage-members: 'ניהול חברים'
   feedback: 'משוב | סקירה מס׳ {0}'
@@ -162,8 +163,9 @@ review:
   no-feedback: "אין משוב"
   accuracy-points: "Accuracy points"
   block-palette-points: "Block palette points"
-  toggle-points: ""
+  toggle-points: "Toggle points"
   total-points: "סך הכל נקודות"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
   criteria:
     accuracy: "דיוק"
     accuracy-desc: "עד כמה הבנייה מדויקת?%newline%%newline%- נראית כמו במציאות%newline%- קווי המתאר נכונים%newline%- גובה נכון%newline%- מושלמת"
@@ -200,6 +202,7 @@ note:
     click-to-remove-plot-member: "לחץ כדי להסיר חבר מהפלוט..."
     click-to-open-link: "לחץ כאן כדי לפתוח את הקישור {0}..."
     click-to-open-link-with-shortlink: "§6לחץ כאן ֲ§7כדי לפתוח את הקישור ֲ§a{0}ֲ§7 או השתמש בקישור הזה: ֲ§a{1{"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "ֲ§6לחץ כאן ֲ§כדי להציג את המשוב על הפלוט שלך..."
     click-to-show-open-reviews: "§6לחץ כאן ֲ§כדי להציג סקירות פתוחות..."
     click-to-show-plots: "ֲ§6לחץ כאן ֲ§כדי להציג את הפלוטים שלך..."
@@ -218,6 +221,9 @@ message:
     finished-plot: "ֲ§aפלוט ֲ§6#{0}ֲ§a של ֲ§6{1}ֲ§a הושלם!"
     plot-marked-as-reviewed: "ֲ§aפלוט ֲ§6#{0}ֲ§a של ֲ§6{1}ֲ§a סומן כסוקר!"
     plot-rejected: "ֲ§aפלוט ֲ§6#{0}ֲ§a של ֲ§6{1}ֲ§a נדחה!"
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "ֲ§aביטלת את ההגשה של פלוט ֲ§6#{0}ֲ§a!"
     undid-review: "ֲ§aביטלת את הסקירה של פלוט ֲ§6#{0}ֲ§a על ידי ֲ§6#{1}ֲ§a!"
     reviewed-plot: "ֲ§aהפלוט שלך ֲ§6#{0}ֲ§a סוקר!"
@@ -404,9 +410,9 @@ tutorials:
         - 'בנייה מהנה! ג˜÷'
       stage-10-tasks:
         - 'קרא את כל הטיפים במגרש וסמן אותם כנקראו.'
-#-----------------------------------------------------
-#| Database
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
 database:
   city-project:
     example-city:
@@ -445,4 +451,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.2

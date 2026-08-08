@@ -1,20 +1,20 @@
-#-----------------------------------------------------
-#|            Plot System - by Alps BTE
-#-----------------------------------------------------
-#| [Github Repo] https://github.com/AlpsBTE/PlotSystem
-#| [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
-#| [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
-#| [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
-#|
-#| [Formatting] Use %newline% for a newline
-#| [Formatting] Words that are wrapped in the {number} tag are replaced afterward
-#-----------------------------------------------------
+# -----------------------------------------------------
+# |            Plot System - by Alps BTE
+# -----------------------------------------------------
+# | [Github Repo] https://github.com/AlpsBTE/PlotSystem
+# | [Documentation] https://github.com/AlpsBTE/PlotSystem/wiki/
+# | [Contacts - Discord] R3tuxn, Cinnazeyy & Zoriot
+# | [Localisation Platform] https://crowdin.com/project/alps-bte-plot-system
+# |
+# | [Formatting] Use %newline% for a newline
+# | [Formatting] Words that are wrapped in the {number} tag are replaced afterward
+# -----------------------------------------------------
 lang:
   name: "Dansk (DK)"
   head-id: "4411"
-#-----------------------------------------------------
-#| Plot
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Plot
+# -----------------------------------------------------
 plot:
   plot-name: "Plot"
   id: "ID"
@@ -31,9 +31,9 @@ plot:
   group-system:
     empty-member-slot: "Tom Medlem Slot"
     shared-by-members: "(delt af {0} medlemmer)"
-#-----------------------------------------------------
-#| City Projects
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | City Projects
+# -----------------------------------------------------
 city-project:
   cities: "Byer"
   open: "Åbne Plot"
@@ -42,14 +42,14 @@ city-project:
   plots-available: 'Tilgængelige Plot'
   no-plots-available: "Ingen Plot Tilgængelige"
   for-your-difficulty: "({0} for din sværhed)"
-#-----------------------------------------------------
-#| Countries
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Countries
+# -----------------------------------------------------
 country:
   countries: "Lande"
-#-----------------------------------------------------
-#| Continents
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Continents
+# -----------------------------------------------------
 continent:
   europe: "Europa"
   asia: "Asien"
@@ -57,15 +57,15 @@ continent:
   oceania: "Oceania"
   south-america: "Sydamerika"
   north-america: "Nordamerika"
-#-----------------------------------------------------
-#| Difficulty
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Difficulty
+# -----------------------------------------------------
 difficulty:
   automatic: "Automatisk"
   score-multiplier: "Score Multiplikator"
-#-----------------------------------------------------
-#| Menu Titles
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Titles
+# -----------------------------------------------------
 menu-title:
   close: 'Luk'
   back: 'Tilbage'
@@ -82,6 +82,7 @@ menu-title:
   submit: 'Indsend'
   teleport: 'Teleportering'
   abandon: 'Abandon'
+  abandon-confirm: 'Abandon plot #{0}?'
   undo-submit: 'Fortryd Indsendelse'
   manage-members: 'Administrer Medlemmer'
   feedback: 'Tilbagemeldingforespørgsel #{0}'
@@ -112,9 +113,9 @@ menu-title:
   tutorial-end: 'Afslut Vejledning'
   tutorial-beginner: 'Kom I Gang'
   companion-random: 'Tilfældigt Markering'
-#-----------------------------------------------------
-#| Menu Descriptions
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Menu Descriptions
+# -----------------------------------------------------
 menu-description:
   error-desc: 'Der opstod en fejl...'
   plot-difficulty-desc: 'Klik for at Skifte...'
@@ -146,9 +147,9 @@ menu-description:
   tutorial-end-desc: 'Dine fremskridt vil blive gemt.'
   tutorial-beginner-desc: 'Lær det grundlæggende, hvordan man bygger til BuildTheEarth projektet.'
   companion-random-desc: 'Klik for at vælge tilfældigt.'
-#-----------------------------------------------------
-#| Review
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Review
+# -----------------------------------------------------
 review:
   review-plot: "Gennemgå Plot"
   manage-plot: "Administrer Plot"
@@ -170,9 +171,9 @@ review:
     accuracy-desc: "Hvor præcis er bygningen?%newline%%newline%- Ligner i RL%newline%- Korrekt skitserer%newline%- Korrekt højde%newline%- Fuldført"
     block-palette: "Bloker Palet"
     block-palette-desc: "Hvor mange forskellige blokke bruges, og hvor kreative er de?%newline%%newline%- Valg af blokke farver/teksturer%newline%- Tilfældige blokke"
-#-----------------------------------------------------
-#| Notes
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Notes
+# -----------------------------------------------------
 note:
   tip: "Tip"
   under-construction: 'Under Konstruktion'
@@ -201,6 +202,7 @@ note:
     click-to-remove-plot-member: "Klik for at fjerne medlem fra plot..."
     click-to-open-link: "Klik her for at åbne {0} linket..."
     click-to-open-link-with-shortlink: "§6Klik her §7for at åbne linket §a{0}§7 eller brug dette link: §a{1}"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "§6Klik her §ato viser dit plot feedback..."
     click-to-show-open-reviews: "§6Klik her §ato viser åbne anmeldelser..."
     click-to-show-plots: "§6Klik her §ato viser dine plots..."
@@ -208,9 +210,9 @@ note:
     tutorial-show-stages: 'Vis Trin'
     click-to-open-plots-menu: 'Klik for at åbne plot-menuen...'
     click-to-toggle: "Klik for at skifte..."
-#-----------------------------------------------------
-#| Messages
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Messages
+# -----------------------------------------------------
 message:
   info:
     teleporting-plot: "§aTeleporterer til plot §6#{0}§a..."
@@ -219,6 +221,9 @@ message:
     finished-plot: "§aPlot §6#{0}§a af §6{1}§a er blevet færdig!"
     plot-marked-as-reviewed: "§aPlot §6#{0}§a af §6{1}§a er blevet markeret som reviewed!"
     plot-rejected: "§aPlot §6#{0}§a af §6{1}§a er blevet afvist!"
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "§aUndid submission of plot §6#{0}§a!"
     undid-review: "§aUndid anmeldelse af plot §6#{0}§a af §6{1}§a!"
     reviewed-plot: "§aDit plot §6#{0}§a er blevet anmeldt!"
@@ -405,9 +410,9 @@ tutorials:
         - 'Glad bygning! ☺️'
       stage-10-tasks:
         - 'Læs alle tips på plottet og markér dem som læst.'
-#-----------------------------------------------------
-#| Database
-#-----------------------------------------------------
+# -----------------------------------------------------
+# | Database
+# -----------------------------------------------------
 database:
   city-project:
     example-city:
@@ -445,5 +450,5 @@ database:
     correct_amount_windows_doors: 'Korrekt antal vinduer og døre'
     correct_window_type: 'Korrigér vinduetyper'
     windows_blacked_out: 'Alle vinduer blacked ud'
-#NOTE: Do not change
+# NOTE: Do not change
 config-version: 1.0
