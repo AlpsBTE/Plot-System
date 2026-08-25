@@ -168,6 +168,7 @@ public class TutorialPlot extends AbstractPlot {
     public boolean setTutorialSchematic(int schematicId) {
         if (schematicId < 0) return false;
         currentSchematicId = schematicId;
+        invalidateSchematicMetadata();
         return true;
     }
 

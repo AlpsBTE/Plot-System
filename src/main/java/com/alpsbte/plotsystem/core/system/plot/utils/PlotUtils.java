@@ -24,7 +24,6 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.github.fierioziy.particlenativeapi.api.ParticleNativeAPI;
 import com.github.fierioziy.particlenativeapi.api.Particles_1_13;
 import com.github.fierioziy.particlenativeapi.plugin.ParticleNativePlugin;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
@@ -172,25 +171,21 @@ public final class PlotUtils {
     }
 
     public static @Nullable CuboidRegion getPlotAsRegion(@NotNull AbstractPlot plot) throws IOException {
-        Clipboard clipboard;
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(plot.getInitialSchematicBytes()))) {
-            clipboard = reader.read();
-        }
-        if (clipboard == null) return null;
-
         // No longer supported!
         if (plot.getVersion() < 4) return null;
 
+        if (!plot.getWorld().loadWorld()) return null;
+        AbstractPlot.SchematicMetadata metadata = plot.getSchematicMetadata();
         return new CuboidRegion(
-                clipboard.getMinimumPoint().withY(plot.getWorld().getPlotHeight()),
-                clipboard.getMaximumPoint().withY(PlotWorld.MAX_WORLD_HEIGHT));
+                metadata.minimumPoint().withY(plot.getWorld().getPlotHeight()),
+                metadata.maximumPoint().withY(plot.getWorld().getBukkitWorld().getMaxHeight() - 1));
     }
 
     public static boolean isPlotWorld(@NotNull World world) {
         return DependencyManager.getMultiverseCore().getWorldManager().isLoadedWorld(world) && (PlotWorld.isOnePlotWorld(world.getName()) || PlotWorld.isCityPlotWorld(world.getName()));
     }
 
-    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, byte[] initialSchematic, World world) throws IOException {
+    public static byte @Nullable [] getOutlinesSchematicBytes(@NotNull AbstractPlot plot, byte[] initialSchematic) throws IOException {
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(initialSchematic);
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
@@ -227,22 +222,15 @@ public final class PlotUtils {
     }
 
     public static @Nullable CompletableFuture<double[]> convertTerraToPlotXZ(@NotNull AbstractPlot plot, double[] terraCoords) throws IOException {
-        // Load plot outlines schematic as clipboard
-        Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
-        }
-        if (clipboard == null) return null;
-
         // Calculate min and max points of schematic
         CuboidRegion plotRegion = getPlotAsRegion(plot);
         if (plotRegion == null) return null;
+        AbstractPlot.SchematicMetadata metadata = plot.getSchematicMetadata();
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
         double[] schematicCoords = {
-                terraCoords[0] - clipboard.getMinimumPoint().x(),
-                terraCoords[1] - clipboard.getMinimumPoint().z()
+                terraCoords[0] - metadata.minimumPoint().x(),
+                terraCoords[1] - metadata.minimumPoint().z()
         };
 
         // Add additional plot sizes to relative plot schematic coordinates

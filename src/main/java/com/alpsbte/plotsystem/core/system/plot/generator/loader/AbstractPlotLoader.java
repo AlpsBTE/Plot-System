@@ -14,6 +14,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -51,28 +52,45 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.kyori.adventure.text.Component.text;
 
 public abstract class AbstractPlotLoader {
+    private static final ConcurrentHashMap<String, Object> WORLD_GENERATION_LOCKS = new ConcurrentHashMap<>();
+
     protected final AbstractPlot plot;
     protected final PlotType plotType;
     protected final PlotWorld plotWorld;
 
     protected final Builder builder;
+    protected final boolean completionActionsEnabled;
 
     protected byte[] schematicBytes = null;
+    private boolean successful;
 
     protected AbstractPlotLoader(@NotNull AbstractPlot plot, Builder builder, PlotType plotType, PlotWorld plotWorld) {
+        this(plot, builder, plotType, plotWorld, true);
+    }
+
+    protected AbstractPlotLoader(
+            @NotNull AbstractPlot plot,
+            Builder builder,
+            PlotType plotType,
+            PlotWorld plotWorld,
+            boolean completionActionsEnabled
+    ) {
         this.plot = plot;
         this.plotType = plotType;
         this.plotWorld = plotWorld;
         this.builder = builder;
+        this.completionActionsEnabled = completionActionsEnabled;
 
         PlotSystem.getPlugin().getComponentLogger().info("Loading plot #{}...", plot.getId());
-        PlotSystem.getPlugin().getComponentLogger().info("Plot Type: {}", plot.getPlotType().name());
+        PlotSystem.getPlugin().getComponentLogger().info("Plot Type: {}", plotType.name());
 
-        boolean successful = true;
+        successful = true;
         try {
             generateWorld();
             loadWorld();
@@ -88,10 +106,22 @@ public abstract class AbstractPlotLoader {
     }
 
     protected void generateWorld() throws Exception {
-        boolean generateWorld = plotType.hasOnePlotPerWorld() || !Utils.supplySync(plotWorld::isWorldGenerated).get();
-        if (!generateWorld) return;
+        ensureWorldGenerated(plotWorld);
+    }
 
-        new PlotWorldGenerator(plotWorld.getWorldName());
+    public static void ensureWorldGenerated(@NotNull PlotWorld world) throws Exception {
+        if (Utils.supplySync(world::isWorldGenerated).get()) return;
+
+        Object lock = WORLD_GENERATION_LOCKS.computeIfAbsent(world.getWorldName(), ignored -> new Object());
+        try {
+            synchronized (lock) {
+                if (!Utils.supplySync(world::isWorldGenerated).get()) {
+                    new PlotWorldGenerator(world.getWorldName());
+                }
+            }
+        } finally {
+            WORLD_GENERATION_LOCKS.remove(world.getWorldName(), lock);
+        }
     }
 
     protected void loadWorld() throws Exception {
@@ -117,8 +147,9 @@ public abstract class AbstractPlotLoader {
                 return null;
             }
 
+            int maxWorldHeight = plotWorld.getBukkitWorld().getMaxHeight() - 1;
             // Create build region for plot from the outline of the plot
-            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName(), plot.getOutline(), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
+            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName(), plot.getOutline(), PlotWorld.MIN_WORLD_HEIGHT, maxWorldHeight);
             protectedBuildRegion.setPriority(100);
 
             // Create protected plot region for plot
@@ -147,8 +178,9 @@ public abstract class AbstractPlotLoader {
 
     private @NotNull ProtectedRegion getProtectedRegion() {
         World weWorld = new BukkitWorld(plotWorld.getBukkitWorld());
-        CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
-        ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName() + "-1", cylinderRegion.polygonize(-1), PlotWorld.MIN_WORLD_HEIGHT, PlotWorld.MAX_WORLD_HEIGHT);
+        int maxWorldHeight = plotWorld.getBukkitWorld().getMaxHeight() - 1;
+        CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, maxWorldHeight);
+        ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName() + "-1", cylinderRegion.polygonize(-1), PlotWorld.MIN_WORLD_HEIGHT, maxWorldHeight);
         protectedRegion.setPriority(50);
         return protectedRegion;
     }
@@ -192,15 +224,30 @@ public abstract class AbstractPlotLoader {
     }
 
     protected void generateStructure() throws Exception {
-        Utils.runSync(() -> {
+        runFaweAsync(() -> {
             if (plotType.hasEnvironment()) {
                 pasteSchematic(null, this.schematicBytes, this.plotWorld, false, false);
             } else {
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(this.plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes, this.plotWorld.getBukkitWorld()), this.plotWorld, true, false);
+                pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false);
             }
-            return null;
         }).get();
+    }
+
+    /**
+     * Runs a WorldEdit operation on FAWE's asynchronous task executor.
+     */
+    public static CompletableFuture<Void> runFaweAsync(@NotNull FaweTask task) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        FaweAPI.getTaskManager().async(() -> {
+            try {
+                task.run();
+                future.complete(null);
+            } catch (Exception exception) {
+                future.completeExceptionally(exception);
+            }
+        });
+        return future;
     }
 
     /**
@@ -220,7 +267,12 @@ public abstract class AbstractPlotLoader {
         // set outline region with air
         if (clearArea) {
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
-                Polygonal2DRegion polyRegion = new Polygonal2DRegion(weWorld, world.getPlot().getOutline(), 0, PlotWorld.MAX_WORLD_HEIGHT);
+                Polygonal2DRegion polyRegion = new Polygonal2DRegion(
+                        weWorld,
+                        world.getPlot().getOutline(),
+                        world.getBukkitWorld().getMinHeight(),
+                        world.getBukkitWorld().getMaxHeight() - 1
+                );
                 editSession.setMask(new RegionMask(polyRegion));
                 editSession.setBlocks((Region) polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
             }
@@ -255,20 +307,30 @@ public abstract class AbstractPlotLoader {
 
     protected void onException(Exception e) {
         try {
-            Utils.runSync(() -> {
-                PlotHandler.abandonPlot(this.plot);
-                return null;
-            }).get();
+            if (!PlotHandler.abandonPlot(this.plot)) {
+                PlotSystem.getPlugin().getComponentLogger().error("Failed to clean up plot #{} after generation error!", plot.getId());
+            }
         } catch (Exception ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up plot after generation error!"), ex);
         }
 
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot!"), e);
         Utils.runSync(() -> {
-            builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-            builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            if (builder != null && builder.getPlayer() != null) {
+                builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                builder.getPlayer().playSound(builder.getPlayer().getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            }
             return null;
         });
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    @FunctionalInterface
+    public interface FaweTask {
+        void run() throws Exception;
     }
 
     protected abstract void onCompletion();

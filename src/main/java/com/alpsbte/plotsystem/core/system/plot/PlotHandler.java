@@ -62,7 +62,6 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
-import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -73,11 +72,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
@@ -85,30 +84,50 @@ import static net.kyori.adventure.text.Component.text;
 public class PlotHandler {
     private PlotHandler() {}
 
-    private static final Map<UUID, LocalDateTime> playerPlotGenerationHistory = new HashMap<>();
+    private static final Map<UUID, LocalDateTime> playerPlotGenerationHistory = new ConcurrentHashMap<>();
 
-    public static boolean assignPlot(Builder builder, Plot plot) {
+    private static boolean assignPlot(Builder builder, Plot plot, PlotType plotType) {
         Player player = builder.getPlayer();
 
         // Score Requirement met?
         if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !DataProvider.DIFFICULTY.builderMeetsRequirements(builder, plot.getDifficulty())) {
-            player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
-            player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
+            if (player != null) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
+                player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
+            }
             return false;
         }
 
         // Slot available?
         Slot freeSlot = builder.getFreeSlot();
         if (freeSlot == null) {
-            player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
-            player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
+            if (player != null) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ALL_SLOTS_OCCUPIED)));
+                player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
+            }
             return false;
         }
 
         // Assign
+        Status previousStatus = plot.getStatus();
+        PlotType previousType = plot.getPlotType();
         if (!builder.setSlot(freeSlot, plot.getId())) return false;
-        if (!plot.setStatus(Status.unfinished)) return false;
-        return plot.setPlotOwner(builder);
+        if (!plot.setStatus(Status.unfinished)) {
+            builder.setSlot(freeSlot, -1);
+            return false;
+        }
+        if (!plot.setPlotType(plotType)) {
+            plot.setStatus(previousStatus);
+            builder.setSlot(freeSlot, -1);
+            return false;
+        }
+        if (!plot.setPlotOwner(builder)) {
+            plot.setPlotType(previousType);
+            plot.setStatus(previousStatus);
+            builder.setSlot(freeSlot, -1);
+            return false;
+        }
+        return true;
     }
 
     public static boolean assignAndGeneratePlot(Builder builder, Plot plot) {
@@ -116,10 +135,15 @@ public class PlotHandler {
         if (type.equals(PlotType.CITY_INSPIRATION_MODE) && ConfigUtil.getInstance().configs[0].getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE))
             type = PlotType.LOCAL_INSPIRATION_MODE;
 
-        boolean successful = assignPlot(builder, plot);
-        if (successful) generatePlot(builder, plot, type);
+        if (!tryStartGeneration(builder)) return false;
 
-        return successful;
+        boolean assigned = assignPlot(builder, plot, type);
+        if (!assigned) {
+            removePlayerFromGenerationHistory(builder.getUUID());
+            return false;
+        }
+
+        return generatePlot(builder, plot, type);
     }
 
     public static boolean assignAndGenerateRandomPlot(Builder builder, CityProject city, PlotDifficulty difficulty) {
@@ -128,61 +152,78 @@ public class PlotHandler {
         return assignAndGeneratePlot(builder, randomPlot);
     }
 
-    public static void generatePlot(Builder builder, Plot plot, PlotType type) {
+    public static boolean generatePlot(Builder builder, Plot plot, PlotType type) {
         Player player = builder.getPlayer();
 
-        // Cooldown
-        if (playerPlotGenerationHistory.containsKey(builder.getUUID())) {
-            if (!playerPlotGenerationHistory.get(builder.getUUID()).isBefore(LocalDateTime.now().minusSeconds(10))) {
-                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLEASE_WAIT)));
-                player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
-                return;
-            }
-            playerPlotGenerationHistory.remove(builder.getUUID());
+        if (player != null) {
+            Utils.runSync(() -> {
+                player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.CREATING_PLOT)));
+                player.playSound(player.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, SoundCategory.MASTER, 1, 1, 0);
+                return null;
+            });
         }
-        playerPlotGenerationHistory.put(builder.getUUID(), LocalDateTime.now());
 
-        player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.CREATING_PLOT)));
-        player.playSound(player.getLocation(), Utils.SoundUtils.CREATE_PLOT_SOUND, SoundCategory.MASTER, 1, 1, 0);
+        DefaultPlotLoader loader = new DefaultPlotLoader(plot, builder, type, PlotWorld.getByType(type, plot));
+        return loader.isSuccessful();
+    }
 
-        new DefaultPlotLoader(plot, builder, type, PlotWorld.getByType(type, plot));
+    private static boolean tryStartGeneration(Builder builder) {
+        LocalDateTime now = LocalDateTime.now();
+        synchronized (playerPlotGenerationHistory) {
+            LocalDateTime lastGeneration = playerPlotGenerationHistory.get(builder.getUUID());
+            if (lastGeneration != null && !lastGeneration.isBefore(now.minusSeconds(10))) {
+                Player player = builder.getPlayer();
+                if (player == null) return false;
+                Utils.runSync(() -> {
+                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.PLEASE_WAIT)));
+                    player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
+                    return null;
+                });
+                return false;
+            }
+            playerPlotGenerationHistory.put(builder.getUUID(), now);
+            return true;
+        }
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean abandonPlot(AbstractPlot plot) {
-        boolean successfullyAbandoned = plot.getWorld().onAbandon();
-        if (!successfullyAbandoned) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
+        try {
+            boolean successfullyAbandoned = plot.getWorld().onAbandon();
+            if (!successfullyAbandoned) {
+                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
+                return false;
+            }
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up the world for plot " + plot.getId() + "!"), exception);
             return false;
         }
 
-        CompletableFuture.runAsync(() -> {
-            if (plot.getPlotType() == PlotType.TUTORIAL) return;
-            Plot dPlot = (Plot) plot;
-            boolean successful;
-            successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
+        if (plot.getPlotType() == PlotType.TUTORIAL) return true;
 
-            for (Builder builder : dPlot.getPlotMembers()) {
-                if (!successful) break;
-                successful = dPlot.removePlotMember(builder);
-            }
+        Plot dPlot = (Plot) plot;
+        boolean successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
 
-            if (successful && plot.getPlotOwner() != null) {
-                PlotUtils.Cache.clearCache(plot.getPlotOwner().getUUID());
-                successful = plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlot(dPlot), -1);
-            }
+        for (Builder builder : List.copyOf(dPlot.getPlotMembers())) {
+            successful &= dPlot.removePlotMember(builder);
+        }
 
-            if (successful) {
-                successful = dPlot.setPlotOwner(null)
-                        && dPlot.setLastActivity(true)
-                        && dPlot.setStatus(Status.unclaimed)
-                        && dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
-            }
+        Builder owner = plot.getPlotOwner();
+        if (owner != null) {
+            PlotUtils.Cache.clearCache(owner.getUUID());
+            Slot slot = owner.getSlot(dPlot);
+            successful &= slot != null && owner.setSlot(slot, -1);
+        }
 
-            successful = successful && DataProvider.PLOT.setCompletedSchematic(plot.getId(), null);
-            if (!successful) PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
-        });
-        return true;
+        successful &= dPlot.setPlotOwner(null);
+        successful &= dPlot.setLastActivity(true);
+        successful &= dPlot.setStatus(Status.unclaimed);
+        successful &= dPlot.setPlotType(PlotType.LOCAL_INSPIRATION_MODE);
+        successful &= DataProvider.PLOT.setCompletedSchematic(plot.getId(), null);
+        if (!successful) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
+        }
+        return successful;
     }
 
     public static boolean deletePlot(Plot plot) {
@@ -190,11 +231,9 @@ public class PlotHandler {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + "!"));
             return false;
         }
-        CompletableFuture.runAsync(() -> {
-            if (DataProvider.PLOT.deletePlot(plot.getId())) return;
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + " from the database!"));
-        });
-        return true;
+        if (DataProvider.PLOT.deletePlot(plot.getId())) return true;
+        PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + " from the database!"));
+        return false;
     }
 
     public static void abandonInactivePlots() {
@@ -208,7 +247,7 @@ public class PlotHandler {
             long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
             if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            CompletableFuture.runAsync(() -> {
                 if (!abandonPlot(plot)) {
                     PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
                     return;
@@ -277,19 +316,21 @@ public class PlotHandler {
 
         // Copy and write finished plot clipboard to schematic
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (Clipboard cb = new BlockArrayClipboard(region)) {
-            cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
+        AbstractPlotLoader.runFaweAsync(() -> {
+            try (Clipboard cb = new BlockArrayClipboard(region)) {
+                cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
 
-            World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(world, region, cb, region.getMinimumPoint());
-            Operations.complete(forwardExtentCopy);
+                World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
+                ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(world, region, cb, region.getMinimumPoint());
+                Operations.complete(forwardExtentCopy);
 
-            try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-                double initialY = clipboard.getRegion().getMinimumY();
-                double offset = initialY - cuboidRegion.getMinimumY();
-                writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
+                try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+                    double initialY = clipboard.getRegion().getMinimumY();
+                    double offset = initialY - cuboidRegion.getMinimumY();
+                    writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
+                }
             }
-        }
+        }).get();
 
         // Set Completed Schematic
         boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
@@ -298,8 +339,17 @@ public class PlotHandler {
         // If plot was created in a void world, copy the result to the city world
         if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
             var cpw = new CityPlotWorld(plot);
-            Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(cpw.getBukkitWorld()), BlockTypes.AIR);
-            AbstractPlotLoader.pasteSchematic(airMask, outputStream.toByteArray(), cpw, false, true);
+            if (!cpw.isWorldGenerated()) {
+                try {
+                    AbstractPlotLoader.ensureWorldGenerated(cpw);
+                } catch (Exception exception) {
+                    throw new IOException("Could not generate city plot world!", exception);
+                }
+            }
+            AbstractPlotLoader.runFaweAsync(() -> {
+                Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(cpw.getBukkitWorld()), BlockTypes.AIR);
+                AbstractPlotLoader.pasteSchematic(airMask, outputStream.toByteArray(), cpw, false, true);
+            }).get();
         }
         return true;
     }

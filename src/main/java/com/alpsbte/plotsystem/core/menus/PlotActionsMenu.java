@@ -91,7 +91,7 @@ public class PlotActionsMenu extends AbstractMenu {
                             .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.FEEDBACK), true).build())
                             .build());
         }
-        
+
         // Set plot members item
         if (!plot.isReviewed() && config.getBoolean(ConfigPaths.ENABLE_GROUP_SUPPORT)) {
             if ((getMenuPlayer() == plot.getPlotOwner().getPlayer() || getMenuPlayer().hasPermission("plotsystem.admin"))) {
@@ -136,7 +136,7 @@ public class PlotActionsMenu extends AbstractMenu {
                 return;
             }
             CompletableFuture.runAsync(() -> {
-                if (!plot.getWorld().isWorldGenerated() && !plot.getWorld().loadWorld()) return;
+                if (!plot.getWorld().loadWorld()) return;
 
                 Utils.runSync(() -> {
                     plot.getWorld().teleportPlayer(clickPlayer);

@@ -27,7 +27,6 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
-import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.DefaultPlotLoader;
@@ -58,27 +57,24 @@ public class OnePlotWorld extends PlotWorld {
     public <T extends AbstractPlotLoader> boolean generateWorld(@NotNull Class<T> generator) {
         if (isWorldGenerated()) return false;
 
-        if (generator.isAssignableFrom(DefaultPlotLoader.class)) {
-            new DefaultPlotLoader(plot, plotOwner);
-        } else if (generator.isAssignableFrom(TutorialPlotLoader.class)) {
-            new TutorialPlotLoader(plot, plotOwner);
+        AbstractPlotLoader loader;
+        if (DefaultPlotLoader.class.isAssignableFrom(generator)) {
+            loader = new DefaultPlotLoader(plot, plotOwner);
+        } else if (TutorialPlotLoader.class.isAssignableFrom(generator)) {
+            loader = new TutorialPlotLoader(plot, plotOwner);
         } else return false;
-        return true;
+        return loader.isSuccessful();
     }
 
     @Override
     public boolean loadWorld() {
         if (plot == null || isWorldGenerated()) return super.loadWorld();
 
-        // Generate plot if it doesn't exist
-        if (plot.getPlotType() == PlotType.TUTORIAL)
-            generateWorld(TutorialPlotLoader.class);
-        else if (((Plot) plot).getCompletedSchematic() == null)
-            generateWorld(DefaultPlotLoader.class);
-
-        new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this);
-
-        if (!isWorldGenerated() || !isWorldLoaded()) {
+        // Rebuild a missing plot world exactly once, including completed plots.
+        AbstractPlotLoader loader = plot.getPlotType() == PlotType.TUTORIAL
+                ? new TutorialPlotLoader(plot, plotOwner)
+                : new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this, false);
+        if (!loader.isSuccessful() || !isWorldGenerated() || !isWorldLoaded()) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + plot.getId() + "!"));
             return false;
         }
@@ -128,13 +124,19 @@ public class OnePlotWorld extends PlotWorld {
     @Override
     public boolean onAbandon() {
         if (!isWorldGenerated()) return super.onAbandon();
-        if (isWorldLoaded()) {
-            for (Player player : getBukkitWorld().getPlayers()) player.teleport(Utils.getSpawnLocation());
-        }
-        if (!deleteWorld()) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete plot world " + getWorldName() + "!"));
+        try {
+            boolean deleted = Utils.supplySync(() -> {
+                if (isWorldLoaded()) {
+                    for (Player player : getBukkitWorld().getPlayers()) player.teleport(Utils.getSpawnLocation());
+                }
+                return deleteWorld();
+            }).get();
+            if (deleted) return super.onAbandon();
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not delete plot world " + getWorldName() + "!"), exception);
             return false;
         }
-        return super.onAbandon();
+        PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete plot world " + getWorldName() + "!"));
+        return false;
     }
 }

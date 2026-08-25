@@ -36,8 +36,6 @@ import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -56,7 +54,6 @@ import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 import org.mvplugins.multiverse.core.world.options.LoadWorldOptions;
 import org.mvplugins.multiverse.external.vavr.control.Option;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -174,14 +171,8 @@ public class PlotWorld implements IWorld {
     @Override
     public int getPlotHeightCentered() throws IOException {
         if (plot == null) return 0;
-
-        Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
-        }
-        if (clipboard == null) return 0;
-        return (int) clipboard.getRegion().getCenter().y() - clipboard.getMinimumPoint().y();
+        AbstractPlot.SchematicMetadata metadata = plot.getSchematicMetadata();
+        return metadata.center().y() - metadata.minimumPoint().y();
     }
 
     @Override

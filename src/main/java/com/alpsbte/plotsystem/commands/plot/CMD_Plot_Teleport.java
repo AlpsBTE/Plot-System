@@ -67,6 +67,7 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                 return;
             }
 
+            if (!plot.getWorld().loadWorld()) return;
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plot.getWorld().teleportPlayer(player));
         });
     }

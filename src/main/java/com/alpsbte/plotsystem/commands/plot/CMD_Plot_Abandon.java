@@ -67,11 +67,12 @@ public class CMD_Plot_Abandon extends SubCommand {
                 return;
             }
 
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                if (!PlotHandler.abandonPlot(plot)) return;
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getId() + "")));
-                player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
-            });
+            if (PlotHandler.abandonPlot(plot)) {
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getId() + "")));
+                    player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
+                });
+            }
         });
     }
 

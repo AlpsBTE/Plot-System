@@ -29,9 +29,9 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -47,6 +47,10 @@ import java.io.IOException;
 public class DefaultPlotLoader extends AbstractPlotLoader {
     public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder, PlotType plotType, PlotWorld plotWorld) {
         super(plot, builder, plotType, plotWorld);
+    }
+
+    public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder, PlotType plotType, PlotWorld plotWorld, boolean completionActionsEnabled) {
+        super(plot, builder, plotType, plotWorld, completionActionsEnabled);
     }
 
     public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder) {
@@ -66,24 +70,26 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
 
         byte[] completedSchematic = p.getCompletedSchematic();
         if (completedSchematic != null) {
-            Utils.runSync(() -> {
+            runFaweAsync(() -> {
                 Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, completedSchematic, plotWorld, true, true);
-                return null;
+                pasteSchematic(airMask, completedSchematic, plotWorld, false, true);
             }).get();
         } else super.generateStructure();
-        copyToCityWorld();
+        copyToCityWorld(completedSchematic == null ? schematicBytes : completedSchematic, completedSchematic != null);
     }
 
     @Override
     protected void onCompletion() {
+        if (!completionActionsEnabled) return;
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            plot.getWorld().teleportPlayer(builder.getPlayer());
+            if (builder == null || builder.getPlayer() == null) return;
+            PlotUtils.Cache.clearCache(builder.getUUID());
+            plotWorld.teleportPlayer(builder.getPlayer());
             LangUtil.getInstance().broadcast(LangPaths.Message.Info.CREATED_NEW_PLOT, builder.getName());
         });
     }
 
-    protected void copyToCityWorld() throws IOException {
+    protected void copyToCityWorld(byte[] structureBytes, boolean completedSchematic) throws IOException {
         assert plot instanceof Plot;
         if (plot.getStatus() == Status.completed) return;
         if (!PlotWorld.isOnePlotWorld(plotWorld.getWorldName())) return;
@@ -91,9 +97,12 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         // If the player is playing in his own world, then additionally generate the plot in the city world
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
         try {
-            Utils.runSync(() -> {
-                AbstractPlotLoader.pasteSchematic(null, this.schematicBytes, cityPlotWorld, false, true);
-                return null;
+            ensureWorldGenerated(cityPlotWorld);
+            runFaweAsync(() -> {
+                Mask mask = completedSchematic
+                        ? new BlockTypeMask(BukkitAdapter.adapt(cityPlotWorld.getBukkitWorld()), BlockTypes.AIR)
+                        : null;
+                AbstractPlotLoader.pasteSchematic(mask, structureBytes, cityPlotWorld, false, true);
             }).get();
         } catch (Exception e) {
             if (e.getCause() instanceof IOException ioException) throw ioException;
