@@ -51,7 +51,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
+import org.mvplugins.multiverse.core.world.options.LoadWorldOptions;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -118,7 +121,11 @@ public class PlotWorld implements IWorld {
         if (isWorldLoaded()) return true;
 
         try {
-            return Utils.supplySync(() -> mvCore.getWorldManager().loadWorld(getWorldName()).isSuccess()).get();
+            return Utils.supplySync(() -> {
+                Option<MultiverseWorld> world = mvCore.getWorldManager().getWorld(getWorldName());
+                if (world.isEmpty()) return false;
+                return mvCore.getWorldManager().loadWorld(LoadWorldOptions.world(world.get())).isSuccess();
+            }).get();
         } catch (Exception e) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world " + worldName + "!"), e);
             return false;

@@ -133,9 +133,8 @@ public class PlotSystem extends JavaPlugin {
         }
 
         // Generate Skeleton World
-        if (Bukkit.getWorld("Skeleton") == null) {
-            getComponentLogger().info("No skeleton world found!");
-            getComponentLogger().info("Generating skeleton world...");
+        if (Bukkit.getWorld(SkeletonWorldGenerator.WORLD_KEY) == null) {
+            getComponentLogger().info("No skeleton world found! Generating skeleton world...");
             new SkeletonWorldGenerator();
         }
 

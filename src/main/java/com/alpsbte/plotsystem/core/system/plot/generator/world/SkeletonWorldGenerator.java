@@ -26,6 +26,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import org.bukkit.GameRules;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 
 public class SkeletonWorldGenerator {
-    public static final String WORLD_NAME = "Skeleton";
+    public static final NamespacedKey WORLD_KEY = NamespacedKey.minecraft("skeleton");
     private static final World.Environment ENVIRONMENT = World.Environment.NORMAL;
     private static final WorldType WORLD_TYPE = WorldType.FLAT;
     private static final String GENERATOR_SETTINGS = "{\"features\": false,\"layers\": [{\"block\": \"air\", \"height\": 1}],\"biome\":\"plains\"}";
@@ -50,7 +51,7 @@ public class SkeletonWorldGenerator {
     }
 
     protected void generateWorld() {
-        WorldCreator worldCreator = new WorldCreator(WORLD_NAME)
+        WorldCreator worldCreator = WorldCreator.ofKey(WORLD_KEY)
                 .environment(ENVIRONMENT)
                 .type(WORLD_TYPE)
                 .generator(new SkeletonWorldGenerator.EmptyChunkGenerator())
