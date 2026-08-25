@@ -24,6 +24,7 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import org.bukkit.GameRules;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -46,7 +47,9 @@ public class SkeletonWorldGenerator {
 
     public SkeletonWorldGenerator() {
         generateWorld();
+        PlotWorldGenerator.createMultiverseWorld(DependencyManager.getMultiverseCore().getWorldManager(), this.world.getName());
         configureWorld();
+        PlotWorldGenerator.configureWorld(DependencyManager.getMultiverseCore().getWorldManager(), this.world.getName());
         saveWorld();
     }
 

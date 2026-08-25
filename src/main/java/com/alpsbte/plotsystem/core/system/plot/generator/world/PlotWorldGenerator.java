@@ -83,12 +83,16 @@ public class PlotWorldGenerator {
     }
 
     protected void generateWorld() throws IOException {
-        Path skeletonPath = Objects.requireNonNull(Bukkit.getWorld("Skeleton"), "Skeleton World is required at this point").getWorldPath();
+        Path skeletonPath = worldManager.getWorld(SkeletonWorldGenerator.WORLD_KEY.value()).get().getOfflineWorldFolder().toPath();
         Path worldLevelPath = skeletonPath.getParent().resolve(worldName.toLowerCase(Locale.ROOT));
         FileUtils.copyDirectory(skeletonPath.toFile(), worldLevelPath.toFile(), new NotFileFilter(new NameFileFilter("metadata.dat")));
     }
 
     protected void createMultiverseWorld() {
+        createMultiverseWorld(worldManager, worldName);
+    }
+
+    protected static void createMultiverseWorld(WorldManager worldManager, String worldName) {
         if (!worldManager.isLoadedWorld(worldName)) {
             worldManager.importWorld(ImportWorldOptions.worldKey(NamespacedKey.minecraft(worldName.toLowerCase(Locale.ROOT)))
                     .environment(environment)
@@ -99,6 +103,10 @@ public class PlotWorldGenerator {
     }
 
     protected void configureWorld() {
+        configureWorld(worldManager, worldName);
+    }
+
+    protected static void configureWorld(WorldManager worldManager, String worldName) {
         World world = Bukkit.getWorld(worldName);
         assert world != null;
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);

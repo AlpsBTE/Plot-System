@@ -21,6 +21,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -133,7 +134,7 @@ public class PlotSystem extends JavaPlugin {
         }
 
         // Generate Skeleton World
-        if (Bukkit.getWorld(SkeletonWorldGenerator.WORLD_KEY) == null) {
+        if (!DependencyManager.getMultiverseCore().getWorldManager().isWorld(SkeletonWorldGenerator.WORLD_KEY.value())) {
             getComponentLogger().info("No skeleton world found! Generating skeleton world...");
             new SkeletonWorldGenerator();
         }
