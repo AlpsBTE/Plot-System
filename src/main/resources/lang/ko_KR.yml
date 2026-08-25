@@ -67,46 +67,47 @@ difficulty:
 # | Menu Titles
 # -----------------------------------------------------
 menu-title:
-  close: "닫기"
-  back: "뒤로가기"
+  close: '닫기'
+  back: '뒤로가기'
   continue: 'Continue'
-  next-page: "다음 페이지"
-  previous-page: "이전 페이지"
-  error: "에러"
-  loading: "로딩 중..."
-  plot-difficulty: "플롯 난이도"
-  slot: "슬롯"
-  builder-utilities: "건축 도구"
-  show-plots: "플롯 보이기"
-  settings: "설정"
-  submit: "제출하기"
-  teleport: "텔레포트"
-  abandon: "버리기"
-  undo-submit: "제출 취소하기"
-  manage-members: "멤버 관리하기"
-  feedback: "피드백 | 리뷰 #{0}"
-  custom-heads: "커스텀 헤드"
-  banner-maker: "현수막 제조기"
-  special-tools: "Special Blocks & Items"
-  review-point: "점"
-  review-points: "점"
-  cancel: "취소"
-  add-member-to-plot: "플롯에 멤버 추가하기"
-  companion: "메뉴"
+  next-page: '다음 페이지'
+  previous-page: '이전 페이지'
+  error: '에러'
+  loading: '로딩 중...'
+  plot-difficulty: '플롯 난이도'
+  slot: '슬롯'
+  builder-utilities: '건축 도구'
+  show-plots: '플롯 보이기'
+  settings: '설정'
+  submit: '제출하기'
+  teleport: '텔레포트'
+  abandon: '버리기'
+  abandon-confirm: 'Abandon plot #{0}?'
+  undo-submit: '제출 취소하기'
+  manage-members: '멤버 관리하기'
+  feedback: '피드백 | 리뷰 #{0}'
+  custom-heads: '커스텀 헤드'
+  banner-maker: '현수막 제조기'
+  special-tools: 'Special Blocks & Items'
+  review-point: '점'
+  review-points: '점'
+  cancel: '취소'
+  add-member-to-plot: '플롯에 멤버 추가하기'
+  companion: '메뉴'
   companion-select-continent: 'Select A Continent'
   companion-select-country: 'Select A Country'
   companion-select-city: 'Select A City'
-  player-plots: "{0}님의 플롯"
-  leave-plot: "플롯 떠나기"
-  review-plots: "플롯 리뷰하기"
-  review-plot: "플롯 리뷰 #{0}"
-  select-language: "언어 설정"
+  player-plots: '{0}님의 플롯'
+  leave-plot: '플롯 떠나기'
+  review-plots: '플롯 리뷰하기'
+  review-plot: '플롯 리뷰 #{0}'
+  select-language: '언어 설정'
   select-plot-type: 'Select Plot Type'
-  select-focus-mode: "Select Focus Mode"
-  select-local-inspiration-mode: "Select Inspiration Mode"
-  select-city-inspiration-mode: "Select City Inspiration Mode"
-  filter-by-country: "Filter By Country"
-  information: "Info"
+  select-focus-mode: 'Select Focus Mode'
+  select-local-inspiration-mode: 'Select Inspiration Mode'
+  select-city-inspiration-mode: 'Select City Inspiration Mode'
+  filter-by-country: 'Filter By Country'
+  information: 'Info'
   tutorials: 'Tutorials'
   tutorial-stages: 'Tutorial Stages'
   tutorial-end: 'End Tutorial'
@@ -116,26 +117,26 @@ menu-title:
 # | Menu Descriptions
 # -----------------------------------------------------
 menu-description:
-  error-desc: "에러가 발생했습니다."
-  plot-difficulty-desc: "클릭하여 변경하기"
-  slot-desc: "도시 프로젝트를 클릭해 새로운 플롯을 생성하세요"
-  builder-utilities-desc: "클릭하여 커스텀 헤드와 현수막, 그리고 특수 블록을 얻으세요"
-  show-plots-desc: "자신의 플롯 확인하기"
-  settings-desc: "사용자 설정 변경하기"
-  submit-plot-desc: "플롯이 완성되었다면 리뷰될 수 있도록 클릭해서 제출하세요"
-  teleport-desc: "클릭하여 플롯으로 이동하기"
-  abandon-desc: "클릭하여 초기화 및 다른 사람이 건축하도록 하기"
-  undo-submit-desc: "클릭하여 제출 취소하기"
-  manage-members-desc: "클릭하여 플롯에 다른 플레이어를 추가 혹은 제외할 수 있는 플롯 멤버 메뉴를 여세요"
-  feedback-desc: "클릭하여 플롯 리뷰 피드백 보기"
-  custom-heads-desc: "클릭하여 다양한 커스텀 헤드를 얻으세요"
-  banner-maker-desc: "Click to create and save your own banners"
-  special-tools-desc: "Click here to access a variety of inaccessible blocks and items"
-  add-member-to-plot-desc: "플롯에 친구를 초대해 함께 건축하세요"
-  review-points-desc: "클릭하여 선택"
-  submit-review-desc: "선택한 점수를 부여하고 플롯을 리뷰된 것으로 표시합니다"
-  leave-plot-desc: "클릭하여 플롯에서 나가기"
-  select-language-desc: "언어를 선택하세요"
+  error-desc: '에러가 발생했습니다.'
+  plot-difficulty-desc: '클릭하여 변경하기'
+  slot-desc: '도시 프로젝트를 클릭해 새로운 플롯을 생성하세요'
+  builder-utilities-desc: '클릭하여 커스텀 헤드와 현수막, 그리고 특수 블록을 얻으세요'
+  show-plots-desc: '자신의 플롯 확인하기'
+  settings-desc: '사용자 설정 변경하기'
+  submit-plot-desc: '플롯이 완성되었다면 리뷰될 수 있도록 클릭해서 제출하세요'
+  teleport-desc: '클릭하여 플롯으로 이동하기'
+  abandon-desc: '클릭하여 초기화 및 다른 사람이 건축하도록 하기'
+  undo-submit-desc: '클릭하여 제출 취소하기'
+  manage-members-desc: '클릭하여 플롯에 다른 플레이어를 추가 혹은 제외할 수 있는 플롯 멤버 메뉴를 여세요'
+  feedback-desc: '클릭하여 플롯 리뷰 피드백 보기'
+  custom-heads-desc: '클릭하여 다양한 커스텀 헤드를 얻으세요'
+  banner-maker-desc: 'Click to create and save your own banners'
+  special-tools-desc: 'Click here to access a variety of inaccessible blocks and items'
+  add-member-to-plot-desc: '플롯에 친구를 초대해 함께 건축하세요'
+  review-points-desc: '클릭하여 선택'
+  submit-review-desc: '선택한 점수를 부여하고 플롯을 리뷰된 것으로 표시합니다'
+  leave-plot-desc: '클릭하여 플롯에서 나가기'
+  select-language-desc: '언어를 선택하세요'
   select-plot-type-desc: 'Choose your plot type'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
@@ -154,8 +155,8 @@ review:
   manage-plot: "플롯 관리하기"
   manage-and-review-plots: "플롯 리뷰 / 관리하기"
   accepted: "승낙됨"
-  abandoned: "Abandoned"
   rejected: "거절됨"
+  abandoned: "Abandoned"
   feedback: "피드백"
   reviewer: "검토자"
   player-language: "Player Language"
@@ -164,6 +165,7 @@ review:
   block-palette-points: "Block palette points"
   toggle-points: "Toggle points"
   total-points: "Total points"
+  abandoned-in-days: "§6Abandoned in §6{0} days"
   criteria:
     accuracy: "정확도"
     accuracy-desc: "얼마나 정확하게 건축되었나요?%newline%%newline%- 현실과의 유사성%newline%- 올바른 외곽선%newline%- 올바른 높이%newline%- 완성도"
@@ -200,12 +202,13 @@ note:
     click-to-remove-plot-member: "클릭하여 플롯에서 멤버 퇴출하기"
     click-to-open-link: "여기를 클릭해 {0} 페이지를 여세요!"
     click-to-open-link-with-shortlink: "§6여기§7를 클릭해 §a{0}§7 페이지를 열거나 이 링크를 사용하세요: §a{1}"
+    click-to-copy-to-clipboard: "Copy to clipboard"
     click-to-show-feedback: "§6여기§a를 클릭해 자신 플롯의 피드백을 확인하세요!"
     click-to-show-open-reviews: "§6여기§a를 클릭해 대기 중인 리뷰들을 확인하세요!"
     click-to-show-plots: "§6여기§a를 클릭해 자신의 플롯들을 확인하세요!"
     click-to-play-with-friends: "§7친구와 플레이하시려면 §6여기§7를 클릭하세요!"
     tutorial-show-stages: 'Show Stages'
-    click-to-open-plots-menu: "클릭하여 플롯 메뉴 열기..."
+    click-to-open-plots-menu: '클릭하여 플롯 메뉴 열기...'
     click-to-toggle: "Click to toggle..."
 # -----------------------------------------------------
 # | Messages
@@ -218,6 +221,9 @@ message:
     finished-plot: "§6{1}§a님의 플롯 §6#{0}§a(이)가 완성되었습니다!"
     plot-marked-as-reviewed: "§6{1}§a님의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
     plot-rejected: "§6{1}§a님의 플롯 §6#{0}§a(이)가 거절되었습니다."
+    plot-previously-rejected: "This plot has been rejected before ({0})."
+    plot-previously-rejected-feedback: "Rejection Feedback:"
+    plot-previously-rejected-reviewer: "Rejected by:"
     undid-submission: "§a플롯 §6#{0}§a의 제출을 취소하였습니다!"
     undid-review: "§6{1}§a님의 플롯 §6#{0}§a의 리뷰를 취소하였습니다!"
     reviewed-plot: "§a당신의 플롯 §6#{0}§a(이)가 리뷰되었습니다!"
@@ -293,7 +299,7 @@ leaderboards:
     LIFETIME: "Lifetime"
   actionbar-position: "Position #{0}"
   actionbar-percentage: "Top {0}%"
-  not-on-leaderboard: "Not on leaderboard"
+  not-on-leaderboard: "Not on Leaderboard"
 tutorials:
   stage: 'Stage'
   new-stage-unlocked: 'NEW STAGE UNLOCKED'
@@ -444,6 +450,5 @@ database:
     correct_amount_windows_doors: 'Correct amount of windows and doors'
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
-
 # NOTE: Do not change
 config-version: 2.5

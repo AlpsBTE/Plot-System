@@ -30,7 +30,7 @@ de-oliver-fancynpcs = "2.9.2"
 # @pin https://artifactory.papermc.io/ui/native/universe/io/papermc/paper/paper-api/ We want to use the latest api buld
 io-papermc-paper-paper-api = "26.1.2.build.+"
 # https://mvn.alps-bte.com/service/rest/repository/browse/alps-bte/li/cinnazeyy/LangLibs-API/
-li-cinnazeyy-langlibs-api = "1.5.2"
+li-cinnazeyy-langlibs-api = "1.5.3"
 # https://repo.onarandombox.com/#/multiverse-releases/org/mvplugins/multiverse/core/multiverse-core
 multiverse-core = "5.7.0"
 #  https://central.sonatype.com/artifact/org.mariadb.jdbc/mariadb-java-client
